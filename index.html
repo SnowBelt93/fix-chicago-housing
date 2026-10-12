@@ -255,6 +255,8 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 @media (max-width:859px) and (max-height:740px){body:not(.sheetmin) .mapctl{display:none}}
 body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:none}
 @media (min-width:860px){body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:block}}
+.card .hook{margin:0;padding:8px 10px;border-left:4px solid #d64a56;background:#fdf0f1;font-size:13.5px;color:var(--ink)}
+.legend i.ill{background:#d64a56}
 .goalmath{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;background:var(--paper-2);border-radius:var(--r);padding:10px 12px}
 .goalmath b{display:block;font-family:var(--f-display);font-size:24px;color:var(--nav);line-height:1}
 .goalmath span{font-size:11.5px;color:var(--ink-2);line-height:1.3;display:block;margin-top:2px}
@@ -641,6 +643,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <div><i class="lt"></i>Mid-rise</div>
     <div><i class="lt"></i>High-rise</div>
     <div><i class="lo"></i>Office → homes</div>
+    <div id="lgIll" hidden><i class="ill"></i>Illegal to build today</div>
     <div id="lgRing" hidden><i class="ring"></i>½ mile of a station (≈10-min walk)</div>
   </div>
   <div class="hoodbanner" id="hoodBanner" hidden><b id="hbName"></b><span id="hbLine"></span></div>
@@ -668,6 +671,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow)</span></div>
       </div>
       <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
+      <p class="hook" id="introHook" hidden>See the red buildings behind this box? Those <b id="hookNum"></b> buildings would be <b>illegal to build today</b>: mostly 2-flats and 3-flats on land now zoned for single-family houses.</p>
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <ol>
         <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
@@ -793,7 +797,7 @@ const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.to
 // ---------------- plan state ----------------
 const blankPlan = () => ({areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
 let plan = blankPlan();
-let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false;
+let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false, introHook = !lsGet("upzone-intro", false) && !/#u\d/.test(location.hash);
 const tierFor = (num) => plan.areas[num] || 0;
 
 function hash01(i, salt){
@@ -826,7 +830,7 @@ function compute(A, statsOnly){
     const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2;
     let e = st * FLOOR_M, c = 0;
     if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
-    if (showIllegal && (f & 64)) c = 6;
+    if ((showIllegal || introHook) && (f & 64)) c = 6;
     if (t > 0){
       touched++;
       const T = TIERS[t];
@@ -1449,6 +1453,7 @@ async function boot(){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; tot += A.n; for (let i = 0; i < A.n; i++) if (A.fl[i] & 64) n++; }
     $("tool-illegal").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
+    $("hookNum").textContent = fmt(n); $("introHook").hidden = false;
   }
   render();
 }
@@ -1468,6 +1473,7 @@ let viewState = isWide()
   ? {longitude:-87.72, latitude:41.86, zoom:11.0, pitch:55, bearing:-22, maxPitch:75, minZoom:9.6, maxZoom:18}
   : {longitude:-87.655, latitude:41.80, zoom:10.3, pitch:50, bearing:-18, maxPitch:75, minZoom:9.2, maxZoom:18};
 const HOME_VIEW = {...viewState};
+if (introHook) viewState = {...viewState, longitude:-87.695, latitude:41.915, zoom:isWide() ? 12.6 : 12.0, pitch:50, bearing:-15};  // first visit: open over the 2-flat belt so the red "illegal" buildings show
 zoomBandNow = zoomBand(viewState.zoom);
 const lighting = new deck.LightingEffect({
   ambient: new deck.AmbientLight({color:[255,255,255], intensity:1.15}),
@@ -1586,6 +1592,7 @@ function layers(){
   const L = [];
   if (!META) return L;
   $("lgRing").hidden = !(plan.tod || plan.metra);
+  $("lgIll").hidden = !(showIllegal || introHook);
   const P = look === "playful";
   { // basemap: region land, Lake Michigan, the city, a crisp city edge, and neighboring towns for context
     const B = BASES[MAPSTYLE];
@@ -1647,7 +1654,7 @@ function layers(){
     getPosition:d => [d[0], d[1], 2], getText:d => d[3], getAngle:d => d[2], getSize:zoomBandNow === 2 ? 14 : 11.5, sizeUnits:"pixels",
     getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
     billboard:false, updateTriggers:{getSize:zoomBandNow}}));
-  L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels",
+  L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
     getColor:[60,40,100,255], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:700, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,240], parameters:{depthCompare:"always"}}));
@@ -2073,7 +2080,7 @@ setLook("model");
   else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }
   buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
-  const closeIntro = () => { lsSet("upzone-intro", true); tourPending = true; hideModal("intro", () => setTimeout(() => { maybeMyth("illegal"); if ($("myth").hidden) startTour(); }, 250)); };
+  const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(() => { maybeMyth("illegal"); if ($("myth").hidden) startTour(); }, 250)); };
   $("introGo").addEventListener("click", closeIntro);
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
 })();
