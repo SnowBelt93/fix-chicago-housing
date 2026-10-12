@@ -709,7 +709,6 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow)</span></div>
       </div>
       <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
-      <p class="hook" id="introHook" hidden>See the red buildings behind this box? <b id="hookNum"></b> Chicago buildings would be <b>illegal to build today</b>: mostly 2-flats and 3-flats on land now zoned for single-family houses.</p>
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <ol>
         <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
@@ -1512,7 +1511,6 @@ async function boot(){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; tot += A.n; for (let i = 0; i < A.n; i++) if (A.fl[i] & 64) n++; }
     $("tool-illegal").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
-    $("hookNum").textContent = "About " + fmt(Math.round(n / 1000) * 1000); $("introHook").hidden = false;
   }
   render();
 }
@@ -1532,6 +1530,11 @@ let viewState = isWide()
   ? {longitude:-87.72, latitude:41.86, zoom:11.0, pitch:55, bearing:-22, maxPitch:75, minZoom:9.6, maxZoom:18}
   : {longitude:-87.655, latitude:41.80, zoom:10.3, pitch:50, bearing:-18, maxPitch:75, minZoom:9.2, maxZoom:18};
 const HOME_VIEW = {...viewState};
+const BOUNDS = {w:-88.05, e:-87.30, s:41.58, n:42.10};   // the city plus a little of the suburbs and lake
+function clampView(v){
+  const lon = Math.min(BOUNDS.e, Math.max(BOUNDS.w, v.longitude)), lat = Math.min(BOUNDS.n, Math.max(BOUNDS.s, v.latitude));
+  return lon === v.longitude && lat === v.latitude ? v : {...v, longitude: lon, latitude: lat};
+}
 if (introHook) viewState = {...viewState, longitude:-87.695, latitude:41.915, zoom:isWide() ? 12.6 : 12.0, pitch:50, bearing:-15};  // first visit: open over the 2-flat belt so the red "illegal" buildings show
 zoomBandNow = zoomBand(viewState.zoom);
 const lighting = new deck.LightingEffect({
@@ -1543,7 +1546,7 @@ const deckgl = new deck.Deck({
   initialViewState: viewState,
   controller: {touchRotate:true, dragRotate:true},
   effects: [lighting],
-  onViewStateChange: ({viewState: v}) => { const b = zoomBand(v.zoom); viewState = v; if (b !== zoomBandNow){ zoomBandNow = b; scheduleRender(); } },
+  onViewStateChange: ({viewState: v}) => { v = clampView(v); const b = zoomBand(v.zoom); viewState = v; if (b !== zoomBandNow){ zoomBandNow = b; scheduleRender(); } return v; },
   getTooltip: ({object, layer}) => {
     if (!object || !layer) return null;
     let text = null;
@@ -1596,6 +1599,7 @@ function loadBasemap(){
 }
 deckgl.setProps({onAfterRender: syncBasemap});
 loadBasemap();
+if (BASEMAP_OK){ const b = document.createElement("script"); b.defer = true; b.src = "https://static.cloudflareinsights.com/beacon.min.js"; b.setAttribute("data-cf-beacon", '{"token": "1e9dc637635a4e7c8afaa420c1136085"}'); document.head.appendChild(b); }
 function camTo(patch){
   viewState = {...viewState, ...patch, transitionDuration: reduceMotion ? 0 : 550, transitionInterpolator: new deck.LinearInterpolator(["bearing", "pitch", "zoom", "longitude", "latitude"])};
   deckgl.setProps({initialViewState: viewState});
@@ -1609,29 +1613,41 @@ document.querySelectorAll("#mapctl button").forEach(b => b.addEventListener("cli
   else if (c === "tilt"){ const flat = v.pitch > 5; camTo({pitch: flat ? 0 : 55}); b.textContent = flat ? "3D" : "2D"; }
   else if (c === "home"){ camTo({...HOME_VIEW}); $("mapctl").querySelector('[data-cam="tilt"]').textContent = "2D"; }
 }));
-// keyboard: WASD / arrows move, Q/E spin, R/F tilt, +/- zoom (ignored while typing)
+// keyboard: hold WASD / arrows to glide, Q/E spin, R/F tilt, +/- zoom (ignored while typing or with a dialog open)
+const KEYS = new Set(); let keyRaf = 0, keyLast = 0;
+const KEYMAP = {w:"up", arrowup:"up", s:"down", arrowdown:"down", a:"left", arrowleft:"left", d:"right", arrowright:"right", q:"spinL", e:"spinR", r:"tiltU", f:"tiltD", "+":"zoomIn", "=":"zoomIn", "-":"zoomOut", "_":"zoomOut"};
+function keyLoop(now){
+  const dt = Math.min(0.05, (now - (keyLast || now)) / 1000); keyLast = now;
+  if (!KEYS.size){ keyRaf = 0; keyLast = 0; return; }
+  const v = viewState, vp = deckgl.getViewports()[0];
+  let dx = 0, dy = 0, patch = {};
+  if (KEYS.has("left")) dx -= 1; if (KEYS.has("right")) dx += 1; if (KEYS.has("up")) dy -= 1; if (KEYS.has("down")) dy += 1;
+  if ((dx || dy) && vp){
+    const speed = Math.min(vp.width, vp.height) * 0.9 * dt;          // about 90% of the screen per second
+    const ll = vp.unproject([vp.width / 2 + dx * speed, vp.height / 2 + dy * speed]);
+    if (ll && isFinite(ll[0])){ patch.longitude = ll[0]; patch.latitude = ll[1]; }
+  }
+  if (KEYS.has("spinL")) patch.bearing = (v.bearing || 0) - 60 * dt;
+  if (KEYS.has("spinR")) patch.bearing = (v.bearing || 0) + 60 * dt;
+  if (KEYS.has("tiltU")) patch.pitch = Math.min(75, (v.pitch || 0) + 40 * dt);
+  if (KEYS.has("tiltD")) patch.pitch = Math.max(0, (v.pitch || 0) - 40 * dt);
+  if (KEYS.has("zoomIn")) patch.zoom = Math.min(18, v.zoom + 1.2 * dt);
+  if (KEYS.has("zoomOut")) patch.zoom = Math.max(isWide() ? 9.6 : 9.2, v.zoom - 1.2 * dt);
+  viewState = clampView({...v, ...patch, transitionDuration: 0});
+  deckgl.setProps({initialViewState: viewState});
+  keyRaf = requestAnimationFrame(keyLoop);
+}
 addEventListener("keydown", (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const tag = (e.target.tagName || "").toLowerCase();
   if (tag === "input" || tag === "textarea" || tag === "select" || e.target.isContentEditable) return;
   if (!$("intro").hidden || !$("myth").hidden || !$("result").hidden) return;
-  const k = e.key.toLowerCase(), v = viewState;
-  const move = {w:[0,-1], arrowup:[0,-1], s:[0,1], arrowdown:[0,1], a:[-1,0], arrowleft:[-1,0], d:[1,0], arrowright:[1,0]}[k];
-  if (move){
-    const vp = deckgl.getViewports()[0]; if (!vp) return;
-    const step = Math.min(vp.width, vp.height) * 0.22;
-    const ll = vp.unproject([vp.width / 2 + move[0] * step, vp.height / 2 + move[1] * step]);
-    camTo({longitude: ll[0], latitude: ll[1]}); e.preventDefault(); return;
-  }
-  if (k === "q") camTo({bearing: (v.bearing || 0) - 30});
-  else if (k === "e") camTo({bearing: (v.bearing || 0) + 30});
-  else if (k === "r") camTo({pitch: Math.min(75, (v.pitch || 0) + 10)});
-  else if (k === "f") camTo({pitch: Math.max(0, (v.pitch || 0) - 10)});
-  else if (k === "+" || k === "=") camTo({zoom: Math.min(18, v.zoom + 0.75)});
-  else if (k === "-" || k === "_") camTo({zoom: Math.max(isWide() ? 9.6 : 9.2, v.zoom - 0.75)});
-  else return;
-  e.preventDefault();
+  const a = KEYMAP[e.key.toLowerCase()]; if (!a) return;
+  e.preventDefault(); KEYS.add(a);
+  if (!keyRaf) keyRaf = requestAnimationFrame(keyLoop);
 });
+addEventListener("keyup", (e) => { const a = KEYMAP[e.key.toLowerCase()]; if (a) KEYS.delete(a); });
+addEventListener("blur", () => KEYS.clear());
 function flyTo(lon, lat, zoom, bearing){
   if (reduceMotion) return;
   deckgl.setProps({initialViewState:{...viewState, longitude:lon, latitude:lat, zoom, bearing: bearing ?? viewState.bearing, transitionDuration:1100, transitionInterpolator:new deck.FlyToInterpolator()}});
