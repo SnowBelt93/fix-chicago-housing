@@ -186,6 +186,11 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .status.idea{background:#e3ebf3;color:#294f74}
 .status.law{background:var(--ink);color:#fff}
 .status.else{background:#e3f1e8;color:#1f5f3a}
+.status.worse{background:#fbe3e6;color:#9b1027}
+.policy.worse .switch[aria-checked="true"]{background:var(--star) !important;border-color:var(--star) !important}
+.policy.worse.on{border-color:rgba(228,0,43,.45)}
+.policy.worse .gain{color:#9b1027}
+.keys .neg{color:#ffd9de;font-weight:700}
 .policy p{font-size:12.5px}
 .policy .gain{font-family:var(--f-data);font-size:12px;color:var(--ink-2)}
 .policy .src,.srcs{font-size:11.5px;color:var(--ink-3)}
@@ -329,7 +334,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   body.wide .pane{box-sizing:border-box;max-width:1180px;margin:0 auto;width:100%;padding:20px 24px 32px;gap:20px}
   body.wide .pane > .group > .eyebrow,body.wide .pgroup > summary .eyebrow{font-size:12px}
   /* cards in an even grid, actions pinned to the bottom of each card */
-  body.wide #policies,body.wide #policiesElse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:stretch}
+  body.wide #policies,body.wide #policiesElse,body.wide #policiesWorse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:stretch}
   body.wide .policy{height:100%;box-sizing:border-box}
   body.wide .policy .more-btn{margin-top:auto}
   body.wide .townq + .townq{margin-top:0}
@@ -631,6 +636,10 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
             <div class="group"><p class="small">Each card says what actually happened where it passed.</p>
             <div class="group" id="policiesElse"></div></div>
           </details>
+          <details class="pgroup"><summary><span class="eyebrow">Ones that cut supply · see what not to do</span></summary>
+            <div class="group"><p class="small">Each of these has a real goal, and some help people who already have a home. Each also means fewer new homes, so rent climbs faster. Turn one on to see the cost.</p>
+            <div class="group" id="policiesWorse"></div></div>
+          </details>
           <details class="pgroup"><summary><span class="eyebrow">Already law (built into today's numbers)</span></summary>
           <div class="group">
             <div class="policy"><div class="top"><div class="t"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
@@ -674,13 +683,14 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="sidekeys" id="sideKeys"></div>
         </div>
         <div class="group">
-          <div class="eyebrow">Jobs and taxes</div>
+          <div class="eyebrow">Jobs, taxes and the city budget</div>
           <div class="facts">
             <div class="fact"><b id="impJobs">–</b><span>jobs in the year they're built</span></div>
             <div class="fact"><b id="impJobs2">–</b><span>lasting local jobs</span></div>
             <div class="fact"><b id="impTax">–</b><span>local taxes & fees a year</span></div>
           </div>
-          <p class="small">NAHB's local impact of building 100 apartments: 161 jobs and $2.2M in local revenue the first year, then 44 jobs and $503K a year (2015 dollars).</p>
+          <p class="small" id="impBudget"></p>
+          <p class="small">NAHB's local impact of building 100 apartments: 161 jobs and $2.2M in local revenue the first year, then 44 jobs and $503K a year (2015 dollars). The city projects an $882M budget gap for 2027 (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>).</p>
         </div>
         <div class="group">
           <div class="eyebrow">Can they afford a 1-bedroom in 2041?</div>
@@ -754,6 +764,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
             <dd>Downtown has 141.9M sq ft of office space and 27.2% vacancy (<a href="https://content.cushmanwakefield.com/api/public/content/afebd680503f4418a7c6cb0b53fb9c03" target="_blank" rel="noopener">Cushman & Wakefield, Q2 2026</a>). Chicago's 2026 conversions turn about 4M sq ft into 3,900+ homes (<a href="https://chicago.suntimes.com/other-views/2026/08/03/building-housing-affordable-requirements-ordinance-regulations-development-lylena-estabine" target="_blank" rel="noopener">Sun-Times op-ed</a>), about 1,026 sq ft per home. Nearly 27% of office stock could convert (<a href="https://www.wbez.org/real-estate-development/2025/04/25/office-residential-conversions-apartments-housing-downtown" target="_blank" rel="noopener">CommercialCafe via WBEZ</a>); developers disagree on whether that's too high or too low.</dd></div>
           <div><dt>Jobs and taxes</dt>
             <dd>Per 100 new apartments: 161 local jobs and $2.2M local revenue the first year, then 44 jobs and $503K a year (2015 dollars) (<a href="https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/economic-impact/economic-impact-local-area-2015.pdf" target="_blank" rel="noopener">NAHB, 2015</a>).</dd></div>
+          <div><dt>Policies that cut supply</dt>
+            <dd>Downzoning: from 1990 to 2010, downzoned North Side and downtown areas grew housing 1.8% vs 9.6% elsewhere (<a href="https://findingspress.org/article/147490-downzoning-chicago-how-local-land-use-policy-has-reduced-housing-construction-and-reinforced-segregation" target="_blank" rel="noopener">Freemark & Kisiel, 2025</a>). Parking: garage parking adds about $1,700 a year, 17% of rent (<a href="https://accessmagazine.org/spring-2017/the-hidden-cost-of-bundled-parking/" target="_blank" rel="noopener">Gabbe & Pierce, 2017</a>). Rent control: covered San Francisco tenants were nearly 20% more likely to stay, landlords cut rental supply 15%, citywide rents rose 5.1% (<a href="https://nber.org/papers/w24181" target="_blank" rel="noopener">Diamond, McQuade & Qian</a>); St. Paul permits fell from 2,000+ a year to about 1,200 after its 2021 cap (<a href="https://www.minneapolisfed.org/article/2026/housing-policies-in-saint-paul-yield-mixed-results-data-and-developers-say" target="_blank" rel="noopener">Minneapolis Fed, 2026</a>). Transfer tax: LA apartment permits fell 18% in Measure ULA's first year (<a href="https://therealdeal.com/la/2025/04/21/multifamily-permitting-falls-18-percent-in-la" target="_blank" rel="noopener">UCLA Lewis Center via The Real Deal</a>). The game subtracts what each policy would cost from the ~4,900 homes a year Chicago builds anyway, so your total can go below zero.</dd></div>
           <div><dt>People and pay</dt>
             <dd>Median wages are BLS May 2025 for the Chicago metro, via <a href="https://wagedex.com/jobs/registered-nurses/metro/chicago-naperville-elgin-il-in" target="_blank" rel="noopener">WageDex</a>. Wages grow 3.2% a year (<a href="https://www.bls.gov/news.release/archives/eci_07312026.htm" target="_blank" rel="noopener">BLS Employment Cost Index, June 2026</a>). The people are made up; their jobs and pay are real.</dd></div>
           <div><dt>Game assumptions (not measured)</dt>
@@ -769,6 +781,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Suburban Metra stations build 30% as much as an average Chicago L station at the same level; megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
+                <li>Policies that cut supply cost this share of the homes Chicago builds anyway: downzoning 25%, parking minimums 10%, moratoriums 15%, rent control 30%, transfer tax 5%. They also cut rezoned projects: parking minimums 15%, moratoriums 20% (and 25% later), rent control 40% on buildings of 3+ homes, transfer tax 18% on buildings of 20+.</li>
+                <li>Local taxes use NAHB's 2015-dollar estimate, compared with the city's 2027 budget gap; it counts revenue to every local government, not just City Hall, and leaves out what new residents cost to serve.</li>
               </ul></dd></div>
           <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
           <div><dt>Big projects in the pipeline</dt>
@@ -857,6 +871,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div class="fact"><b id="resShort">–</b><span>shortage in 2041 with your plan</span></div>
         <div class="fact"><b id="resRent">–</b><span>median rent in 2041 with your plan</span></div>
         <div class="fact"><b id="resAff">–</b><span>affordable homes built</span></div>
+        <div class="fact"><b id="resTax">–</b><span id="resTaxLbl">a year in local taxes by 2041</span></div>
       </div>
       <div class="chartBox">
         <div class="ctitle">Housing shortage<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
@@ -942,6 +957,12 @@ const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 
 const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
 const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
 const JOBS1 = 1.61, JOBS2 = 0.44, TAX2 = 5030;
+const BUDGET_GAP = 882e6;   // City of Chicago's projected 2027 budget gap (WTTW, Sept 2026)
+// policies that cut supply (all game assumptions, anchored on the research cited on each card):
+// share of the homes Chicago builds anyway that each one costs, and how much each cuts rezoned projects
+const WORSE_BASE = {down:0.25, pmin:0.10, mora:0.15, rentc:0.30, xfer:0.05};
+const PMIN_FACTOR = 0.85, MORA_FACTOR = 0.80, MORA_DELAY = 1.25, RENTC_FACTOR = 0.60, XFER_FACTOR = 0.82;
+const baseCut = () => { let keep = 1; for (const k in WORSE_BASE) if (plan.p[k]) keep *= 1 - WORSE_BASE[k]; return 1 - keep; };
 const SOUTH_WEST = new Set([...Array.from({length:9}, (_, i) => 23 + i), ...Array.from({length:42}, (_, i) => 34 + i)]);
 const SIDES = [{k:"North Side", c:"#4f7fa8"}, {k:"Downtown", c:"#8a6bb0"}, {k:"West Side", c:"#5e8f6b"}, {k:"South Side", c:"#e8962e"}];
 const sideOf = (n) => (n === 8 || n === 32 || n === 33) ? 1 : (n >= 23 && n <= 31) ? 2 : (n >= 34 && n <= 75) ? 3 : 0;
@@ -959,15 +980,15 @@ const PLAYFUL = {lake:[88,196,232], land:[214,240,196], tiers:[null,[255,210,63]
 let look = "model";
 const tierColor = (t) => t === 5 ? (look === "playful" ? PLAYFUL.office : OFFICE_COLOR) : (look === "playful" ? PLAYFUL.tiers[t] : TIERS[t].color);
 const $ = (id) => document.getElementById(id);
-const fmt = (n) => Math.round(n).toLocaleString("en-US");
-const money = (n) => n >= 1e6 ? "$" + (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + "M" : "$" + fmt(n);
+const fmt = (n) => { const r = Math.round(n); return (r < 0 ? "−" : "") + Math.abs(r).toLocaleString("en-US"); };
+const money = (n) => { const a = Math.abs(n); return (n < 0 ? "−" : "") + (a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e8 ? 0 : 1) + "M" : "$" + fmt(a)); };
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
 const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
 
 // ---------------- plan state ----------------
-const blankPlan = () => ({areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
+const blankPlan = () => ({areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, down:0, pmin:0, mora:0, rentc:0, xfer:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
 let plan = blankPlan();
 let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false, introHook = !lsGet("upzone-intro", false) && !/#u\d/.test(location.hash);
 const tierFor = (num) => plan.areas[num] || 0;
@@ -1013,17 +1034,24 @@ function compute(A, statsOnly){
       const nearTransit = (f & 3) >= 1 || (f & 4);
       let p = p0;
       if (P.stair && (t === 2 || t === 3) && lot < 7500) p *= 1 + STAIR_BOOST;
-      if ((P.park || P.mpls) && !nearTransit) p *= 1 + PARK_BOOST;
+      if ((P.park || P.mpls) && !P.pmin && !nearTransit) p *= 1 + PARK_BOOST;
       if (P.small && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
       if (gross >= 10) p *= ARO_FACTOR[P.aro];
+      if (P.pmin) p *= PMIN_FACTOR;                       // parking mandates back
+      if (P.mora) p *= MORA_FACTOR;                       // moratoriums / extra review
+      if (P.rentc && gross >= 3) p *= RENTC_FACTOR;       // rent control covering new buildings
+      if (P.xfer && gross >= 20) p *= XFER_FACTOR;        // transfer tax hits big buildings when they sell
       if (p > 0.6) p = 0.6;
       if (typ && !(f & 8) && st < T.h && fp <= 20000 && net >= 1 && hash01(i, A.num) < p){
         let yb = 1 + Math.floor(hash01(i, A.num + 977) * YEARS);
         if (P.permits) yb = Math.max(1, Math.ceil(yb * PERMIT_SPEED));
-        added += homes; replaced += un; byYear[yb] += homes;
-        if (nearTransit) walk += homes;
-        if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
-        if (yb <= year){ e = T.h * FLOOR_M; c = t; addedNow += homes; }
+        if (P.mora) yb = Math.ceil(yb * MORA_DELAY);      // extra review pushes some projects past 2041
+        if (yb <= YEARS){
+          added += homes; replaced += un; byYear[yb] += homes;
+          if (nearTransit) walk += homes;
+          if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
+          if (yb <= year){ e = T.h * FLOOR_M; c = t; addedNow += homes; }
+        }
       }
     }
     if (!statsOnly){ A.elev[i] = e; A.col[i] = c; }
@@ -1054,8 +1082,9 @@ function totals(useYear){
     sides[sideOf(A.num)] += A.added;
   }
   const ph = policyHomes(), f = useYear ? year / YEARS : 1;
-  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, sub: ph.sub * f};
-  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub;
+  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, sub: ph.sub * f,
+    worse: -CITY_PACE * baseCut() * (useYear ? year : YEARS)};   // homes Chicago would have built anyway, lost to supply-cutting policies
+  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub + parts.worse;
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
   if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
   aff += Math.round(ph.social * SOCIAL_AFF + ph.mega * MEGA_AFF);
@@ -1065,7 +1094,7 @@ function planHomesAt(y){
   let z = 0;
   for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
   const ph = policyHomes();
-  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub) * y / YEARS;
+  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub) * y / YEARS - CITY_PACE * baseCut() * y;
 }
 const target = () => TARGETS[plan.g].n;
 const needed = () => target() + GAP_GROWTH * YEARS;
@@ -1231,12 +1260,33 @@ const POLICIES = [
     what:"Montgomery County's $100M revolving fund (the model for Chicago's Green Social Housing) has 1,100+ homes built or underway and targets 6,000 over 20 years, at least 30% affordable. Chicago's fund is $135M.",
     model:"Adds $270M to Chicago's fund at Montgomery County's target pace: about 12,150 homes in 15 years, 30% affordable.",
     src:[["Montgomery County HOC","https://www.hocmc.org/about-us/innovations/housing-production-fund/"],["NACo, 2026","https://www.naco.org/news/county-backed-loan-fund-unlocks-thousands-affordable-housing-units"],["Pro Builder","https://www.probuilder.com/utopia/innovative-financing-model-affordable-housing"]]},
+  // ---- Policies that cut supply (to see what not to do) ----
+  {key:"down", group:"worse", title:"Downzone the neighborhoods", status:["worse","Chicago, 1970s–2010s"],
+    what:"Since the 1970s, Chicago alderpeople have downzoned dozens of neighborhoods, usually at neighbors' request. From 1990 to 2010, downzoned North Side and downtown areas grew their housing 1.8% while similar areas that weren't downzoned grew 9.6%. Downzoned areas also lost rental homes and got whiter and pricier.",
+    model:"Assumption: a new round of downzoning cuts the homes Chicago builds anyway by 25%. Areas you rezone keep your zoning.",
+    src:[["Freemark & Kisiel, 2025","https://findingspress.org/article/147490-downzoning-chicago-how-local-land-use-policy-has-reduced-housing-construction-and-reinforced-segregation"],["MPC, 2023","https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades"]]},
+  {key:"pmin", group:"worse", title:"Bring back parking minimums", status:["worse","Chicago ended them, 2025"],
+    what:"In July 2025 Chicago ended parking requirements near transit, about 74% of the city. Bringing them back means every new building has to carve out space for cars again. Garage parking adds about $1,700 a year, or 17% of rent, to a typical apartment, whether or not the renter owns a car.",
+    model:"Assumption: 15% fewer rezoned projects get built (parking eats lot space and budget), and 10% fewer of the homes Chicago builds anyway. Turns off \"No parking minimums anywhere.\"",
+    src:[["Chicago Cityscape, 2025","https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f"],["Gabbe & Pierce, 2017","https://accessmagazine.org/spring-2017/the-hidden-cost-of-bundled-parking/"],["Hess & Rehler, 2021","https://doi.org/10.1080/01944363.2020.1864225"]]},
+  {key:"mora", group:"worse", title:"Slow it down: moratoriums and extra review", status:["worse","Chicago, 606 & Pilsen, 2021"],
+    what:"Since 2021 Chicago has charged up to $15,000 to demolish a house or 2-flat near the 606 trail and in Pilsen, to slow gentrification. Demolitions there fell 88% and 25%. It keeps the old buildings, but every one kept is a bigger building that doesn't go up. Research finds metros with slow approvals get 20–25% fewer permits.",
+    model:"Assumption: 20% fewer rezoned projects get built and they arrive 25% later (some slip past 2041), and 15% fewer of the homes Chicago builds anyway.",
+    src:[["WTTW, 2022","https://news.wttw.com/2022/03/21/effort-extend-demolition-fee-pilsen-along-606-trail-advances"],["Mayer & Somerville","https://realestate.wharton.upenn.edu/wp-content/uploads/2017/03/331.pdf"]]},
+  {key:"rentc", group:"worse", title:"Rent control, including new buildings", status:["worse","Banned in Illinois since 1997"],
+    what:"Illinois has barred cities from capping rents since 1997, and bills to lift the ban keep coming back. Rent control does help people who already have a home: in San Francisco, covered tenants were nearly 20% more likely to stay put. But landlords there cut rental supply 15%, which pushed citywide rents up 5.1%. St. Paul capped rents at 3% in 2021, new buildings included; permits fell from over 2,000 a year to about 1,200, and below 400 by 2024. The city has since exempted all new construction.",
+    model:"Assumption: 40% fewer rezoned projects of 3+ homes get built (about St. Paul's first-year drop), and 30% fewer of the homes Chicago builds anyway. The game doesn't count the real benefit to tenants who stay.",
+    src:[["Diamond, McQuade & Qian","https://nber.org/papers/w24181"],["Minneapolis Fed, 2026","https://www.minneapolisfed.org/article/2026/housing-policies-in-saint-paul-yield-mixed-results-data-and-developers-say"],["Capitol News Illinois","https://capitolnewsillinois.com/news/lawmaker-advances-bill-to-repeal-state-ban-on-rent-control/"]]},
+  {key:"xfer", group:"worse", title:"Mansion tax on big property sales", status:["worse","Los Angeles, 2023"],
+    what:"LA's Measure ULA taxes property sales above about $5M at 4% and above $10M at 5.5%, to pay for housing. Big sales fell by about half, apartment permits fell 18% in its first year (about 1,910 fewer apartments in buildings of 20+), and it raised $320M in its second year against up to $1.1B a year promised. Chicago voters turned down a version (Bring Chicago Home) in 2024.",
+    model:"Assumption: 18% fewer rezoned projects of 20+ homes get built (LA's first-year drop), and 5% fewer of the homes Chicago builds anyway.",
+    src:[["UCLA Lewis Center via The Real Deal, 2025","https://therealdeal.com/la/2025/04/21/multifamily-permitting-falls-18-percent-in-la"],["Commercial Observer, 2025","https://commercialobserver.com/2025/04/measure-ula-ucla-los-angeles-investment/"],["ABC7 Chicago, 2024","https://abc7chicago.com/post/bring-chicago-home-election-illinois-results-vote/14548366/"]]},
 ];
 function buildPolicies(){
-  $("policies").innerHTML = ""; $("policiesElse").innerHTML = "";
+  $("policies").innerHTML = ""; $("policiesElse").innerHTML = ""; $("policiesWorse").innerHTML = "";
   POLICIES.forEach(P => {
-    const el = P.group === "else" ? $("policiesElse") : $("policies");
-    const d = document.createElement("div"); d.className = "policy"; d.id = "pol-" + P.key;
+    const el = P.group === "else" ? $("policiesElse") : P.group === "worse" ? $("policiesWorse") : $("policies");
+    const d = document.createElement("div"); d.className = "policy" + (P.group === "worse" ? " worse" : ""); d.id = "pol-" + P.key;
     d.innerHTML = '<div class="top"><div class="t"><h3></h3><span class="status"></span> <span class="rank" title="Ranked by homes added with your current map"></span></div></div><span class="gain"></span><span class="ptally" hidden></span><button type="button" class="more-btn" aria-expanded="false">What happened &amp; sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
     const mb = d.querySelector(".more-btn"), more = d.querySelector(".more");
     mb.setAttribute("aria-controls", (more.id = "more-" + P.key));
@@ -1267,12 +1317,14 @@ $("expandAll").addEventListener("click", (e) => {
   document.querySelectorAll("#pane-policies .policy .more").forEach(m => { m.hidden = !open; });
   document.querySelectorAll("#pane-policies .more-btn").forEach(b => b.setAttribute("aria-expanded", String(open)));
 });
-const SPATIAL = new Set(["build","stair","pre","permits","aro","mpls","camb","small","park","comm"]);
+const SPATIAL = new Set(["build","stair","pre","permits","aro","mpls","camb","small","park","comm","pmin","mora","rentc","xfer"]);
 const later = (fn) => requestAnimationFrame(() => setTimeout(fn, 30));   // let the knob/highlight start moving before the heavy recompute
 const ELSE_KEYS = new Set(POLICIES.filter(p => p.group === "else").map(p => p.key));
 function setPolicy(key, v){
   const was = plan.p[key];
   plan.p[key] = v;
+  if (v && key === "pmin") plan.p.park = 0;         // the two parking policies can't both be on
+  if (v && key === "park") plan.p.pmin = 0;
   if (SPATIAL.has(key)) recompute(); else render();
   if (key === "aro"){ if (v !== was) maybeMyth("aro"); }
   else if (v && !was){
@@ -1304,7 +1356,8 @@ const ZERO = {   // why a spatial policy adds nothing with the current map
 function sortPolicies(){
   const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES, mega: MEGA_TOTAL * MEGA_BUILT};
   for (const k in ph) GAIN[k] = ph[k];
-  ["policies", "policiesElse"].forEach(id => {
+  GAIN.down = CITY_PACE * WORSE_BASE.down * YEARS;
+  ["policies", "policiesElse", "policiesWorse"].forEach(id => {
     const box = $(id);
     [...box.children].sort((a, b) => (GAIN[b.id.slice(4)] || 0) - (GAIN[a.id.slice(4)] || 0)).forEach((el, i) => {
       box.appendChild(el);
@@ -1331,6 +1384,7 @@ function renderPolicies(){
     else if (P.key === "mega") g.textContent = (v ? "+" : "Would add +") + fmt(MEGA_TOTAL * MEGA_BUILT) + " homes";
     else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
+    else if (P.key === "down") g.textContent = (v ? "" : "Would cost ") + fmt(-CITY_PACE * WORSE_BASE.down * YEARS) + " homes Chicago builds anyway";
   });
   $("pCount").textContent = on;
   const CS = communityStats && communityStats.all;
@@ -1350,6 +1404,11 @@ function renderPolicies(){
         return;
       }
       const m = marginal(k, cur), d = $("pol-" + k).querySelector(".gain");
+      if (WORSE_BASE[k] != null){
+        const base = CITY_PACE * WORSE_BASE[k] * YEARS, tot = Math.abs(m) + base;
+        d.textContent = (plan.p[k] ? "" : "Would cost ") + fmt(-tot) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning)" : " Chicago builds anyway");
+        GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
+      }
       if (k === "aro"){
         d.textContent = (plan.p.aro === 1 ? "Today's setting" : (m >= 0 ? "+" : "−") + fmt(Math.abs(m)) + " homes vs. today") + " · " + fmt(affNow) + " affordable homes";
       } else d.textContent = Math.abs(m) >= 1 ? (plan.p[k] ? "+" + fmt(m) + " homes with your current plan" : "Would add +" + fmt(-m) + " with your current plan") : (ZERO[k] || "Adds nothing with your current map yet");
@@ -1546,6 +1605,11 @@ const REACT = {
   permits:["Faster permits? In THIS city?","I applied for a permit in 2019. Tell my grandkids I said hi."],
   else:["Wait, other cities just… did this? And it worked?","Minneapolis did it and the sky didn't fall. It just snowed, like normal.","We could copy Texas on housing? Weird timeline, but okay.","Stealing good ideas from other cities is the most Chicago thing ever."],
   vac:["My cousin's 'investment property' has been empty since 2019. Fair.","Empty homes paying up for the people who need homes? Sounds right."],
+  down:["Finally, my view of the parking lot is protected forever.","Downzoned! My block will look exactly like 1978. Rent, unfortunately, will not.","Fewer neighbors, higher rent. Bold strategy."],
+  pmin:["A 4-flat with 8 parking spaces. Very normal, very cool.","Nothing says 'housing crisis solved' like housing for cars.","Every renter pays for the garage. Even the ones who take the Blue Line."],
+  mora:["Let's pause all building until we figure out why nobody's building.","Another layer of review? The architect just aged five years.","Great news: the study about the study has been approved."],
+  rentc:["My rent's frozen! Now if only someone would build my kid an apartment.","Love the cap. Wish anyone was building anything new.","Locked in at $1,200 forever. I'm never moving. Not even for a better job."],
+  xfer:["Tax the big sales, get fewer big sales. Who could've seen it coming? LA, apparently.","The developer just did the math and went to Evanston.","Funds housing by making less housing. Very efficient."],
   social:["Public housing that pays for itself? Apparently Maryland figured it out.","Mixed-income buildings the city owns a piece of. Okay, I'm listening."],
 };
 let lastReact = 0, commentEpoch = 0;
@@ -1956,7 +2020,7 @@ function animateNumber(to){
   const step = (now) => { const k = Math.max(0, Math.min(1, (now - t0) / dur)), e = playing ? k : 1 - Math.pow(1 - k, 3); shownTotal = from + (to - from) * e; $("homes").textContent = fmt(shownTotal); if (k < 1) tickRaf = requestAnimationFrame(step); };
   tickRaf = requestAnimationFrame(step);
 }
-function gradeFor(pct){ return pct >= 100 ? "A+" : pct >= 85 ? "A" : pct >= 70 ? "B" : pct >= 50 ? "C" : pct >= 25 ? "D" : pct > 0 ? "F" : "–"; }
+function gradeFor(pct){ return pct >= 100 ? "A+" : pct >= 85 ? "A" : pct >= 70 ? "B" : pct >= 50 ? "C" : pct >= 25 ? "D" : pct > 0 || pct < 0 ? "F" : "–"; }
 
 let scrubbing = false;
 function render(){
@@ -1970,9 +2034,10 @@ function render(){
   $("shortLbl").textContent = short > 0 ? "homes short in " + yrLabel : "shortage closed by " + yrLabel;
   const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total);
   $("rent").textContent = "$" + fmt(rp);
-  $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : "");
-  $("pace").textContent = fmt(CITY_PACE * year);
-  $("paceLbl").textContent = "built by " + yrLabel + " at today's pace";
+  $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : rp - rn >= 1 ? " (+$" + fmt(rp - rn) + ")" : "");
+  const cut = baseCut();
+  $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
+  $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
   { const aff = tf.total > 0 ? tf.aff * Math.min(1, tv.total / tf.total) : 0; $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(aff); }   // affordable homes built by the year shown
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
@@ -1980,6 +2045,7 @@ function render(){
   const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"], ["Big projects", tv.parts.mega, "--s-mega"], ["Suburban Metra", tv.parts.sub, "--s-sub"]];
   $("keys").innerHTML = "";
   keyDefs.filter(k => k[1] > 0).forEach(([n, v, c]) => { const s = document.createElement("span"); s.style.setProperty("--c", "var(" + c + ")"); s.textContent = n + " " + fmt(v); $("keys").appendChild(s); });
+  if (tv.parts.worse <= -1){ const s = document.createElement("span"); s.className = "neg"; s.style.setProperty("--c", "var(--star)"); s.textContent = "Supply cuts " + fmt(tv.parts.worse); $("keys").appendChild(s); }
   if (!$("keys").children.length){ const s = document.createElement("span"); s.style.setProperty("--c", "var(--line)"); s.textContent = "Pick a level near the L to start building"; $("keys").appendChild(s); }
   $("touched").textContent = (tf.touchedPct < 10 && tf.touchedPct > 0 ? tf.touchedPct.toFixed(1) : Math.round(tf.touchedPct)) + "%";
   const g = gradeFor(tf.total / goal * 100), ge = $("grade");
@@ -2056,6 +2122,10 @@ function renderImpact(t){
   $("impJobs").textContent = fmt(t.total * JOBS1);
   $("impJobs2").textContent = fmt(t.total * JOBS2);
   $("impTax").textContent = money(t.total * TAX2);
+  { const rev = t.total * TAX2, pct = Math.round(Math.abs(rev) / BUDGET_GAP * 100);
+    $("impBudget").textContent = Math.abs(t.total) < 1 ? "Add some homes to see what they'd do for the city budget." :
+      rev > 0 ? "By 2041 these homes would bring in about " + money(rev) + " a year in local taxes and fees, about " + pct + "% of the gap the city projects for 2027. Not all of it reaches City Hall: property taxes are split among the city, Chicago Public Schools, Cook County and others, and new neighbors need services too. Homes near existing streets, pipes and trains are the cheapest to serve."
+      : "Your plan means about " + money(-rev) + " a year less in local taxes and fees than doing nothing, about " + pct + "% of the gap the city projects for 2027. Fewer homes means a smaller tax base to cover the same bills."; }
   const sum = t.sides.reduce((a, b) => a + b, 0) || 1;
   const sb = $("sideBar"), sk = $("sideKeys"); sb.innerHTML = ""; sk.innerHTML = "";
   SIDES.forEach((s, i) => {
@@ -2230,13 +2300,15 @@ function showResult(){
   const rNo = ys.map(y => rentNoChange(y)), rPlan = ys.map((y, i) => rentWithPlan(y, homes[i]));
   const end = YEARS, closedAt = planShort.findIndex(v => v <= 0);
   $("resTitle").textContent = closedAt >= 0 ? "Shortage closed by " + (START + closedAt) + ". Look at you." :
-    homes[end] > 0 ? "Better, but still " + fmt(planShort[end]) + " homes short." : "Doing nothing: the shortage grows to " + fmt(noShort[end]) + ".";
+    homes[end] > 0 ? "Better, but still " + fmt(planShort[end]) + " homes short." : homes[end] <= -1 ? "Worse than doing nothing: " + fmt(planShort[end]) + " homes short." : "Doing nothing: the shortage grows to " + fmt(noShort[end]) + ".";
   const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
-  $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : base + " Change some zoning or flip on a policy and run it again.";
+  $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : homes[end] <= -1 ? base + " Your plan means " + fmt(-homes[end]) + " fewer homes than doing nothing, so rent climbs even faster." : base + " Change some zoning or flip on a policy and run it again.";
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
   $("resAff").textContent = fmt(totals(false).aff);
+  { const rev = homes[end] * TAX2; $("resTax").textContent = money(rev);
+    $("resTaxLbl").textContent = (rev < 0 ? "a year less in local taxes by 2041" : "a year in local taxes by 2041") + " (" + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap)"; }
   $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
-  $("resRent").textContent = "$" + fmt(rPlan[end]) + (rNo[end] - rPlan[end] >= 1 ? " (−$" + fmt(rNo[end] - rPlan[end]) + ")" : "");
+  $("resRent").textContent = "$" + fmt(rPlan[end]) + (rNo[end] - rPlan[end] >= 1 ? " (−$" + fmt(rNo[end] - rPlan[end]) + ")" : rPlan[end] - rNo[end] >= 1 ? " (+$" + fmt(rPlan[end] - rNo[end]) + ")" : "");
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
   lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false);
   personaRows($("resPersonas"), homes[end]);
@@ -2360,20 +2432,29 @@ function fxFrame(now, dt, dpr){
 // ---------------- saving & sharing (no accounts) ----------------
 const ALPHA = "0123456789abcdefghijklmno";
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega"];
+const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer"];
 function encodePlan(p){
-  let s = "u4";
+  let s = "u5";
   for (let n = 1; n <= 77; n += 2){ const a = p.areas[n] || 0, b = n + 1 <= 77 ? (p.areas[n + 1] || 0) : 0; s += ALPHA[a * 5 + b]; }
   const P = p.p; let bits = 0;
   BIT_KEYS.forEach((k, i) => { if (P[k]) bits |= 1 << i; });
-  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + ALPHA[p.g] + ALPHA[p.sub || 0];
+  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + B32[(bits >> 15) & 31] + ALPHA[p.g] + ALPHA[p.sub || 0];
 }
 function decodeAreas(str, p){
   for (let i = 0; i < 39; i++){ const v = ALPHA.indexOf(str[i]), a = Math.floor(v / 5), b = v % 5, n = 1 + i * 2; if (a) p.areas[n] = a; if (b && n + 1 <= 77) p.areas[n + 1] = b; }
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u4([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])([0-4])/);
+  let m = s.match(/u5([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{4})([0-2])([0-4])/);
+  if (m){
+    const p = blankPlan(); decodeAreas(m[1], p);
+    p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
+    const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10) | (B32.indexOf(m[8][3]) << 15);
+    BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
+    p.g = +m[9]; p.sub = +m[10];
+    return p;
+  }
+  m = s.match(/u4([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])([0-4])/);
   if (m){
     const p = blankPlan(); decodeAreas(m[1], p);
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
@@ -2426,7 +2507,7 @@ $("copyLink").addEventListener("click", () => copyText(SHARE_BASE + "#" + encode
 $("copyCode").addEventListener("click", () => copyText(encodePlan(plan), "Plan code copied"));
 $("openCode").addEventListener("click", () => {
   const p = decodePlan($("codeIn").value);
-  if (!p){ toast("That code didn't work. Codes start with u4 (older u1–u3 codes still work)."); return; }
+  if (!p){ toast("That code didn't work. Codes start with u5 (older u1–u4 codes still work)."); return; }
   plan = p; $("codeIn").value = ""; unlockAll(true); recompute(); renderTargets(); toast("Plan opened");
 });
 // ---------- community (needs the site's /api; quietly hides itself where there is none, e.g. the claude.ai preview) ----------

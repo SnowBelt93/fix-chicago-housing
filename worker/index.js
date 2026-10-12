@@ -2,9 +2,9 @@
 // Static files are served by Workers Assets; only /api/* reaches this script.
 // No free text is stored (titles are generated from the plan), so nothing needs moderation.
 
-const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega"];
+const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const CODE_RE = /^u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}[0-2][0-4]$/;
+const CODE_RE = /^(u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
@@ -21,9 +21,10 @@ export default {
 };
 
 function features(code){
-  const f = {tod: +code[41], metra: +code[42], corr: +code[43], office: +code[44], str: +code[45], aro: +code[46], sub: +code[51], areas: 0};
+  const v5 = code[1] === "5";   // u5 has a 4th on/off character
+  const f = {tod: +code[41], metra: +code[42], corr: +code[43], office: +code[44], str: +code[45], aro: +code[46], sub: +code[v5 ? 52 : 51], areas: 0};
   for (let i = 2; i < 41; i++){ const v = parseInt(code[i], 25); if (Math.floor(v / 5)) f.areas++; if (v % 5) f.areas++; }
-  const bits = B32.indexOf(code[47]) | (B32.indexOf(code[48]) << 5) | (B32.indexOf(code[49]) << 10);
+  const bits = B32.indexOf(code[47]) | (B32.indexOf(code[48]) << 5) | (B32.indexOf(code[49]) << 10) | (v5 ? B32.indexOf(code[50]) << 15 : 0);
   BIT_KEYS.forEach((k, i) => { f[k] = bits & (1 << i) ? 1 : 0; });
   return f;
 }
