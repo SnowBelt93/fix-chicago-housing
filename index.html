@@ -5,7 +5,9 @@
 <meta property="og:title" content="Fix Chicago Housing">
 <meta property="og:description" content="Rezone real Chicago, flip real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="og.jpg">
+<meta property="og:image" content="https://fixchicagohousing.com/og.jpg">
+<meta property="og:url" content="https://fixchicagohousing.com/">
+<link rel="canonical" href="https://fixchicagohousing.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2b5da0">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e4002b' d='M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z'/%3E%3C/svg%3E">
@@ -23,7 +25,7 @@
   --paper:#ffffff; --paper-2:#eef3f8; --line:#d9dde3;
   --nav:#2b5da0; --nav-2:#1d4377; --flag:#41b6e6; --star:#e4002b;
   --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f;
-  --s-zone:#2b5da0; --s-adu:#2f8f5b; --s-str:#41b6e6; --s-lots:#7a4fb3; --s-office:#e08a1e;
+  --s-zone:#2b5da0; --s-adu:#2f8f5b; --s-str:#41b6e6; --s-lots:#7a4fb3; --s-office:#e08a1e; --s-mega:#5b3f8c; --s-sub:#0f7c86;
   --good:#1f7a45; --warn:#a8641b; --bad:#b4232c; --focus:#e4002b; --vac:#9aa3ae;
   --f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
   --f-body:"Public Sans", "Helvetica Neue", Arial, sans-serif;
@@ -36,6 +38,9 @@ html,body{height:100%}
 body{margin:0;background:var(--table);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;overflow:hidden;-webkit-font-smoothing:antialiased}
 #app{position:relative;height:100%;overflow:hidden}
 #map{position:absolute;inset:0;background:var(--table)}
+#basemap{position:absolute;inset:0;pointer-events:none;background:#eef1f4}
+#map.overlay{background:transparent}
+.credit a{color:inherit}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
@@ -64,7 +69,7 @@ a{color:var(--ink)}
 .hud .play{padding:0 12px 10px}
 .bar{position:relative;height:12px;border-radius:var(--r);background:var(--paper-2);border:1px solid var(--line);margin-top:8px;overflow:hidden;display:flex}
 .bar i{display:block;height:100%;width:0;transition:width .35s ease}
-.bar .z{background:var(--s-zone)} .bar .a{background:var(--s-adu)} .bar .s{background:var(--s-str)} .bar .l{background:var(--s-lots)} .bar .o{background:var(--s-office)} .bar .v{background:#9aa3ae} .bar .h{background:var(--star)}
+.bar .z{background:var(--s-zone)} .bar .a{background:var(--s-adu)} .bar .s{background:var(--s-str)} .bar .l{background:var(--s-lots)} .bar .o{background:var(--s-office)} .bar .v{background:#9aa3ae} .bar .h{background:var(--star)} .bar .m{background:var(--s-mega)} .bar .r{background:var(--s-sub)}
 .keys{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--ink-2)}
 .keys span{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
 .keys span::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--c)}
@@ -379,11 +384,12 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 </style>
 
 <div id="app">
+  <div id="basemap" aria-hidden="true"></div>
   <div id="map" aria-label="3D map of Chicago buildings"></div>
   <div class="loading" id="loading">Loading 481,000 Chicago buildings…</div>
 
   <section class="hud" id="hud" aria-live="polite">
-    <div class="fanbar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg>A fan-made game. Not affiliated with the City of Chicago.</div>
+    <div class="fanbar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg>Not affiliated with the City of Chicago.</div>
     <div class="brand">
       <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
       <h1>Fix Chicago Housing</h1><span class="load" id="loadTxt">0 / 77 neighborhoods</span><button class="look" id="lookBtn" type="button">Sources</button>
@@ -394,7 +400,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">new homes of <b id="goalNum">297,087</b> needed by 2041 ⓘ</button>
         <span class="grade" id="grade">Grade –</span>
       </div>
-      <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i></div>
+      <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="r"></i></div>
       <div class="keys" id="keys"></div>
     </div>
     <div class="stats">
@@ -437,6 +443,13 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="eyebrow">Near Metra stations in the city</div>
           <h3>Same idea, for the 74 Metra stops inside Chicago</h3>
           <div class="tiers" id="metraTiers"></div>
+        </div>
+        <div class="tool" id="tool-sub" data-unlock="metra">
+          <div class="eyebrow">Near Metra stations in the suburbs</div>
+          <h3>The shortage is regional. Zone the other 168 Metra stops too.</h3>
+          <p class="small">The goal counts the whole Chicago region, so suburban homes count. Same levels as in the city; assumption: each suburban station builds 30% as much as an average Chicago L station (bigger lots, less demand). Station count: <a href="https://en.wikipedia.org/wiki/Metra" target="_blank" rel="noopener">Metra (Wikipedia)</a>.</p>
+          <div class="tiers" id="subTiers"></div>
+          <span class="gain" id="subGain"></span>
         </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <div class="eyebrow">One neighborhood at a time</div>
@@ -603,9 +616,14 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and 20% sooner), no parking minimums +10%, small lots +20%.</li>
                 <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
+                <li>Suburban Metra stations build 30% as much as an average Chicago L station at the same level; megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
               </ul></dd></div>
           <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
+          <div><dt>Big projects in the pipeline</dt>
+            <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, but only about a tenth of the 2041 goal. Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's now a quantum computing park (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
+          <div><dt>Spot an error?</dt>
+            <dd>Tell us: <a href="mailto:feedback@fixchicagohousing.com?subject=Fix%20Chicago%20Housing%20feedback">feedback@fixchicagohousing.com</a>. Corrections with a source get fixed fast.</dd></div>
           <div><dt>Data</dt>
             <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (circa 2015), garages and sheds removed. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
           <div><dt>Not modeled</dt>
@@ -731,6 +749,19 @@ const CITY_LOTS = 7100, LOT_HOMES = 2, LOT_BUILT = 0.5;
 const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SPEED = 0.8;
 const ARO_SHARE = [0.10, 0.20, 0.30], ARO_FACTOR = [1.30, 1.0, 0.70];
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
+const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
+const SUB_PER_STATION = [0, 74, 276, 600, 1413];            // avg new homes per Chicago L station at each level, from this game's own model
+const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
+const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
+const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
+  {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet"},
+  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3207, side:0, st:"Rezoned Feb 2026; TIF in committee; bridge and roads unfunded"},
+  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases"},
+  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans"},
+  {n:"North Union", lon:-87.6345, lat:41.8995, homes:1978, side:1, st:"678 of 2,656 homes built; towers stalled"},
+  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Early phases; paced by CHA"},
+];
+const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
 const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 "other vacant"; assumption
 const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
 const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
@@ -760,7 +791,7 @@ function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return t
 const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
 
 // ---------------- plan state ----------------
-const blankPlan = () => ({areas:{}, tod:0, metra:0, corr:0, office:0, g:0, p:{build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
+const blankPlan = () => ({areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
 let plan = blankPlan();
 let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false;
 const tierFor = (num) => plan.areas[num] || 0;
@@ -833,6 +864,8 @@ function policyHomes(){
     office: OFFICE_SQFT * OFFICE_SHARE[plan.office] / SQFT_PER_HOME,
     vac: P.vac ? OTHER_VACANT * VAC_RETURN : 0,
     social: P.social ? SOCIAL_HOMES : 0,
+    mega: P.mega ? MEGA_TOTAL * MEGA_BUILT : 0,
+    sub: plan.sub ? SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR : 0,
   };
 }
 function totals(useYear){
@@ -845,17 +878,18 @@ function totals(useYear){
     sides[sideOf(A.num)] += A.added;
   }
   const ph = policyHomes(), f = useYear ? year / YEARS : 1;
-  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f};
-  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social;
+  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, sub: ph.sub * f};
+  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub;
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
+  if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
   aff += Math.round(ph.social * SOCIAL_AFF);
-  return {parts, total, replaced, walk, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
+  return {parts, total, replaced, walk: walk + ph.sub, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
 }
 function planHomesAt(y){
   let z = 0;
   for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
   const ph = policyHomes();
-  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social) * y / YEARS;
+  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub) * y / YEARS;
 }
 const target = () => TARGETS[plan.g].n;
 const needed = () => target() + GAP_GROWTH * YEARS;
@@ -897,7 +931,7 @@ function applyLocks(){
 }
 
 // ---------------- missions ----------------
-const maxTier = () => Math.max(plan.tod, plan.metra, plan.corr, plan.p.build ? 1 : 0, plan.p.camb || plan.p.comm ? 2 : 0, plan.p.mpls ? 3 : 0, ...Object.values(plan.areas), 0);
+const maxTier = () => Math.max(plan.tod, plan.metra, plan.sub, plan.corr, plan.p.build ? 1 : 0, plan.p.camb || plan.p.comm ? 2 : 0, plan.p.mpls ? 3 : 0, ...Object.values(plan.areas), 0);
 const MISSIONS = [
   {id:"m1", title:"Break ground", desc:"Unlock 10,000 new homes any way you like.", prog:t => t.total / 10000},
   {id:"m2", title:"Ride the rails", desc:"50,000 homes using only L and Metra station zoning (no neighborhoods, corridors or BUILD Act). Policies are fair game.",
@@ -980,6 +1014,10 @@ const POLICIES = [
     what:"ADUs became legal April 1, 2026, but 16 wards are still ADU-free, and coach houses must use registered-apprenticeship contractors. The 2021 pilot produced a few hundred units (373 per The Real Deal). This would make them by-right in every ward.",
     model:"Pilot pace (about 0.75% of eligible lots over 15 years) in all 50 wards, doubled by dropping the extra rules.",
     src:[["WTTW","https://news.wttw.com/2026/04/09/coach-house-ordinance-aimed-housing-affordability-crisis-takes-effect-chicago"],["The Real Deal","https://therealdeal.com/chicago/2025/05/15/chicagos-granny-flat-program-falls-flat/"]]},
+  {key:"mega", title:"Get the megaprojects built", status:["prop","Mostly stuck, 2026"],
+    what:"Chicago already approved or planned about 31,000 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (5,000), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (3,207) and the rest of North Union (1,978). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
+    model:"Assumption: half of those 31,063 planned homes get built by 2041 once the city funds the infrastructure. Even all of them would be about a tenth of the goal, which is why everyday zoning matters more.",
+    src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (Chicago YIMBY)","https://chicagoyimby.com/2022/05/updated-details-and-timelines-revealed-for-north-union-megadevelopment.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"]]},
   {key:"lots", title:"Build on city-owned vacant lots", status:["prop","City is selling lots now"],
     what:"The city owns more than 7,100 vacant lots, concentrated in Englewood, West Englewood, New City and North Lawndale, and sells them for $1 through its Missing Middle program.",
     model:"Assumption: half of the lots get a 2-flat within 15 years.",
@@ -1087,7 +1125,7 @@ const ZERO = {   // why a spatial policy adds nothing with the current map
   mpls:"Adds nothing beyond what your map already allows.", camb:"Adds nothing beyond what your map already allows.", build:"Adds nothing beyond what your map already allows.",
 };   // homes each policy adds (or would add) given the current map; used to sort the cards
 function sortPolicies(){
-  const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES};
+  const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES, mega: MEGA_TOTAL * MEGA_BUILT};
   for (const k in ph) GAIN[k] = ph[k];
   ["policies", "policiesElse"].forEach(id => {
     const box = $(id);
@@ -1113,6 +1151,7 @@ function renderPolicies(){
     if (P.key === "str") g.textContent = v ? "+" + fmt(ph.str) + " homes" : "Up to +" + fmt(STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2]) + " homes";
     else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
     else if (P.key === "lots") g.textContent = (v ? "+" : "Would add +") + fmt(CITY_LOTS * LOT_HOMES * LOT_BUILT) + " homes";
+    else if (P.key === "mega") g.textContent = (v ? "+" : "Would add +") + fmt(MEGA_TOTAL * MEGA_BUILT) + " homes";
     else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
   });
@@ -1191,7 +1230,7 @@ $("mythClose").addEventListener("click", () => hideModal("myth", () => { const n
 let tourPending = false, tourStep = 0;
 const TOUR = [
   {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
-  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use ↺ ↻ to spin the city and 2D to flatten it. On a computer, right-click and drag also spins and tilts."},
+  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use ↺ ↻ to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
   {el:() => document.querySelector('.tab[data-pane="policies"]'), t:"Then flip real policies", b:"Policies unlock at 30,000 homes. Each card says what it adds and where the number comes from."},
   {el:() => $("playBtn"), t:"Then hit Simulate", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
 ];
@@ -1272,7 +1311,7 @@ const TACTICS = [
   {t:"Trade discretion for clear design rules.", b:"Buildings that fit their block draw less opposition. Clear height and form rules in exchange for by-right approval.", s:[["'Political Architecture'","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"]]},
   {t:"Pair upzoning with tenant protections.", b:"In NYC's right-to-counsel program, 84% of tenants with a city-funded lawyer kept their homes. Urban Institute recommends pairing the two.", s:[["CityLand NYC","https://citylandnyc.org/city-releases-right-to-counsel-progress-report"],["Urban Institute, 2024","https://www.urban.org/urban-wire/how-embed-racial-equity-zoning-code-reform"]]},
 ];
-const TOWN_FOR = {low:"values", high:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
+const TOWN_FOR = {mega:"process", low:"values", high:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
 let seenTown = new Set(lsGet("fch-town", []));
 function showTown(k){
   const T = TOWN.find(x => x.k === k); if (!T) return;
@@ -1303,6 +1342,7 @@ function renderTown(){
 
 // ---------------- neighborhood reactions ----------------
 const REACT = {
+  mega:["The 78 has been 'coming soon' since I had hair.","Finally, something on that lot besides weeds and a Divvy dock.","A stadium AND apartments? Pick a lane. …Okay, both."],
   low:["A three-flat? On MY block? …Okay, fine, I grew up in one.","Sure, but where am I supposed to park my second car?","This will ruin the character of the neighborhood. The character is mostly vinyl siding.","My grandma rented out the upstairs unit for 40 years. Took you long enough.","Finally, my kid can move out of my basement and into somebody else's."],
   high:["Six stories?! What is this, Paris?","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the Jewel.","A tower by the L? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
   corr:["Apartments over the taquería? Sounds like a Logan Square starter pack.","New neighbors means new customers. Signed, every shop on this street.","This stretch has been 'about to get nice' since 1987.","Finally, something besides a vape shop and a vacant storefront."],
@@ -1446,10 +1486,51 @@ const deckgl = new deck.Deck({
     else if (layer.id === "metraDots") text = object.name + " (Metra " + object.line + ")";
     else if (layer.id === "stations") text = object.name + " (CTA)";
     else if (layer.id === "corrLines") text = corrName(object.name);
+    else if (layer.id === "mega") text = object.n + ": " + fmt(object.homes) + " homes planned, not yet built\n" + object.st + (plan.p.mega ? "" : "\nPolicies → Get the megaprojects built");
     return text ? {text, style:{fontFamily:"Public Sans, Arial, sans-serif", fontSize:"12px", background:"#1b2320", color:"#fff", borderRadius:"6px", padding:"6px 8px"}} : null;
   },
   onClick: (info) => { if (info.layer && info.layer.id === "areas" && info.object && isOpen("hoods")) selectArea(info.object.properties.num, true); },
 });
+// ---------- basemap: OpenFreeMap vector tiles (rivers, parks, suburbs, roads) drawn under the deck.gl city ----------
+const BASEMAP_OK = location.protocol.startsWith("http") && !/claude|anthropic|usercontent/.test(location.hostname) && !/[?&]basemap=0/.test(location.search);
+let bmap = null, USING_BASEMAP = false;
+function syncBasemap(){
+  if (!bmap) return;
+  const vp = deckgl.getViewports()[0]; if (!vp) return;
+  bmap.jumpTo({center:[vp.longitude, vp.latitude], zoom:vp.zoom, pitch:vp.pitch, bearing:vp.bearing});
+}
+function styleBasemap(){
+  const water = "#8cc4e8", green = "#cfe4c3";
+  (bmap.getStyle().layers || []).forEach(l => {
+    const id = l.id;
+    try {
+      if (/building/.test(id)) bmap.setLayoutProperty(id, "visibility", "none");                     // the game draws its own 3D buildings
+      else if (l.type === "background") bmap.setPaintProperty(id, "background-color", "#eef1f4");
+      else if (l.type === "fill" && /water/.test(id)) bmap.setPaintProperty(id, "fill-color", water);
+      else if (l.type === "line" && /waterway|river|canal/.test(id)) bmap.setPaintProperty(id, "line-color", water);
+      else if (l.type === "fill" && /park|wood|forest|grass|cemetery|golf|pitch|landcover/.test(id)) bmap.setPaintProperty(id, "fill-color", green);
+    } catch (e) {}
+  });
+}
+function loadBasemap(){
+  if (!BASEMAP_OK) return;
+  const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css"; document.head.appendChild(css);
+  const sc = document.createElement("script"); sc.src = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js";
+  sc.onload = () => {
+    try {
+      bmap = new maplibregl.Map({container:"basemap", style:"https://tiles.openfreemap.org/styles/positron", interactive:false, attributionControl:false,
+        center:[viewState.longitude, viewState.latitude], zoom:viewState.zoom, pitch:viewState.pitch, bearing:viewState.bearing, maxPitch:85, fadeDuration:0});
+      bmap.on("load", () => {
+        styleBasemap(); USING_BASEMAP = true; $("map").classList.add("overlay");
+        document.querySelector(".credit").innerHTML = 'Map © <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> · <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Buildings: City of Chicago';
+        syncBasemap(); scheduleRender();
+      });
+    } catch (e) { console.warn("basemap failed", e); }
+  };
+  document.head.appendChild(sc);
+}
+deckgl.setProps({onAfterRender: syncBasemap});
+loadBasemap();
 function camTo(patch){
   viewState = {...viewState, ...patch, transitionDuration: reduceMotion ? 0 : 550, transitionInterpolator: new deck.LinearInterpolator(["bearing", "pitch", "zoom", "longitude", "latitude"])};
   deckgl.setProps({initialViewState: viewState});
@@ -1463,6 +1544,29 @@ document.querySelectorAll("#mapctl button").forEach(b => b.addEventListener("cli
   else if (c === "tilt"){ const flat = v.pitch > 5; camTo({pitch: flat ? 0 : 55}); b.textContent = flat ? "3D" : "2D"; }
   else if (c === "home"){ camTo({...HOME_VIEW}); $("mapctl").querySelector('[data-cam="tilt"]').textContent = "2D"; }
 }));
+// keyboard: WASD / arrows move, Q/E spin, R/F tilt, +/- zoom (ignored while typing)
+addEventListener("keydown", (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || tag === "select" || e.target.isContentEditable) return;
+  if (!$("intro").hidden || !$("myth").hidden || !$("result").hidden) return;
+  const k = e.key.toLowerCase(), v = viewState;
+  const move = {w:[0,-1], arrowup:[0,-1], s:[0,1], arrowdown:[0,1], a:[-1,0], arrowleft:[-1,0], d:[1,0], arrowright:[1,0]}[k];
+  if (move){
+    const vp = deckgl.getViewports()[0]; if (!vp) return;
+    const step = Math.min(vp.width, vp.height) * 0.22;
+    const ll = vp.unproject([vp.width / 2 + move[0] * step, vp.height / 2 + move[1] * step]);
+    camTo({longitude: ll[0], latitude: ll[1]}); e.preventDefault(); return;
+  }
+  if (k === "q") camTo({bearing: (v.bearing || 0) - 30});
+  else if (k === "e") camTo({bearing: (v.bearing || 0) + 30});
+  else if (k === "r") camTo({pitch: Math.min(75, (v.pitch || 0) + 10)});
+  else if (k === "f") camTo({pitch: Math.max(0, (v.pitch || 0) - 10)});
+  else if (k === "+" || k === "=") camTo({zoom: Math.min(18, v.zoom + 0.75)});
+  else if (k === "-" || k === "_") camTo({zoom: Math.max(isWide() ? 9.6 : 9.2, v.zoom - 0.75)});
+  else return;
+  e.preventDefault();
+});
 function flyTo(lon, lat, zoom, bearing){
   if (reduceMotion) return;
   deckgl.setProps({initialViewState:{...viewState, longitude:lon, latitude:lat, zoom, bearing: bearing ?? viewState.bearing, transitionDuration:1100, transitionInterpolator:new deck.FlyToInterpolator()}});
@@ -1485,6 +1589,10 @@ function layers(){
   const P = look === "playful";
   { // basemap: region land, Lake Michigan, the city, a crisp city edge, and neighboring towns for context
     const B = BASES[MAPSTYLE];
+    if (USING_BASEMAP){
+      L.push(new deck.PathLayer({id:"edgeGlow", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:[43,93,160,50], getWidth:8, widthUnits:"pixels"}));
+      L.push(new deck.PathLayer({id:"edge", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:[43,93,160,220], getWidth:1.6, widthUnits:"pixels"}));
+    } else {
     if (B.region) L.push(new deck.SolidPolygonLayer({id:"region", parameters:FLAT, data:[[[-89.5,40.4],[-85.0,40.4],[-85.0,45.0],[-89.5,45.0]]], getPolygon:d => d, getFillColor:B.region}));
     L.push(new deck.SolidPolygonLayer({id:"lake", parameters:FLAT, data:[META.lake], getPolygon:d => d, getFillColor:B.lake}));
     L.push(new deck.SolidPolygonLayer({id:"land", parameters:FLAT, data:META.cityOutline, getPolygon:d => d, getFillColor:B.land}));
@@ -1492,6 +1600,7 @@ function layers(){
     L.push(new deck.PathLayer({id:"edge", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:B.edge, getWidth:1.6, widthUnits:"pixels"}));
     if (B.towns && META.towns && zoomBandNow < 2) L.push(new deck.TextLayer({id:"towns", data:META.towns, getPosition:d => [d[1], d[2]], getText:d => d[0], getSize:11, sizeUnits:"pixels",
       getColor:B.towns, fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:2, outlineColor:B.townHalo, parameters:{depthCompare:"always"}}));
+    }
   }
   L.push(new deck.GeoJsonLayer({
     id:"areas", parameters:FLAT, data:META.outlines, pickable:true, stroked:true, filled:true,
@@ -1500,7 +1609,7 @@ function layers(){
     getLineWidth: f => f.properties.num === selected ? 3 : 1, lineWidthUnits:"pixels",
     updateTriggers:{getFillColor:JSON.stringify(plan.areas) + plan.p.build + look, getLineColor:selected + look, getLineWidth:selected},
   }));
-  if (STREETS){
+  if (STREETS && !USING_BASEMAP){
     const S = STREETS, base = {coordinateSystem:deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:S.origin, _pathType:"open", widthUnits:"meters", parameters:FLAT, capRounded:false};
     if (zoomBandNow >= 1) L.push(new deck.PathLayer({...base, id:"stLocal", data:S.loc, getWidth:7, widthMinPixels:0.6, getColor:[194,203,215, zoomBandNow === 2 ? 255 : 160]}));
     L.push(new deck.PathLayer({...base, id:"stArt", data:S.art, getWidth:14, widthMinPixels:1, getColor:[170,182,199]}));
@@ -1534,10 +1643,14 @@ function layers(){
       transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 750, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}},
     }));
   }
-  if (META.streetLabels && zoomBandNow >= 1) L.push(new deck.TextLayer({id:"stLabels", data:zoomBandNow === 2 ? META.streetLabels : META.streetLabels.filter(l => l[4] === 1 || l[4] === 2),
+  if (META.streetLabels && zoomBandNow >= 1 && !USING_BASEMAP) L.push(new deck.TextLayer({id:"stLabels", data:zoomBandNow === 2 ? META.streetLabels : META.streetLabels.filter(l => l[4] === 1 || l[4] === 2),
     getPosition:d => [d[0], d[1], 2], getText:d => d[3], getAngle:d => d[2], getSize:zoomBandNow === 2 ? 14 : 11.5, sizeUnits:"pixels",
     getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
     billboard:false, updateTriggers:{getSize:zoomBandNow}}));
+  L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels",
+    getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
+  if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
+    getColor:[60,40,100,255], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:700, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,240], parameters:{depthCompare:"always"}}));
   L.push(new deck.ScatterplotLayer({id:"stations", data:META.stations, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:P ? [31,27,58,230] : [27,35,32,230], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2, updateTriggers:{getFillColor:look}}));
   if (META.metra && isOpen("metra")) L.push(new deck.ScatterplotLayer({id:"metraDots", data:META.metra, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:[79,127,168,235], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2}));
   return L;
@@ -1566,6 +1679,7 @@ function afterZoning(t, kind, place){
 }
 function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); }
 function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(t >= 3 ? "high" : "metra"); if (t >= 3) maybeMyth("lux"); } }
+function setSub(t){ const was = plan.sub; plan.sub = t; render(); if (t > was) react(t >= 3 ? "high" : "metra"); }
 function setCorr(t){ const was = plan.corr; plan.corr = t; recompute(); if (t > was){ react("corr"); maybeMyth("density"); } }
 function setOffice(v){ const was = plan.office; plan.office = v; recompute(); if (v > was) react("office"); if (v && !was) flyTo(-87.632, 41.881, isWide() ? 14 : 13.6, -30); }
 function setAreaTier(num, t){
@@ -1606,10 +1720,10 @@ function render(){
   $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : "");
   $("pace").textContent = fmt(CITY_PACE * year);
   $("paceLbl").textContent = "built by " + yrLabel + " at today's pace";
-  const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social]];
+  const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
-  const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"]];
+  const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"], ["Big projects", tv.parts.mega, "--s-mega"], ["Suburban Metra", tv.parts.sub, "--s-sub"]];
   $("keys").innerHTML = "";
   keyDefs.filter(k => k[1] > 0).forEach(([n, v, c]) => { const s = document.createElement("span"); s.style.setProperty("--c", "var(" + c + ")"); s.textContent = n + " " + fmt(v); $("keys").appendChild(s); });
   if (!$("keys").children.length){ const s = document.createElement("span"); s.style.setProperty("--c", "var(--line)"); s.textContent = "Pick a level near the L to start building"; $("keys").appendChild(s); }
@@ -1622,7 +1736,8 @@ function render(){
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : "15-year outlook";
   $("yrTxt").textContent = START + year;
   $("yrTrack").style.width = (year / YEARS * 100) + "%";
-  ["todTiers","metraTiers","corrTiers","hoodTiers"].forEach(id => $(id)._sync && $(id)._sync());
+  ["todTiers","metraTiers","subTiers","corrTiers","hoodTiers"].forEach(id => $(id)._sync && $(id)._sync());
+  $("subGain").textContent = plan.sub ? "+" + fmt(SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR) + " homes across " + SUB_STATIONS + " suburban stations" : "Mid-rise everywhere would add +" + fmt(SUB_STATIONS * SUB_PER_STATION[3] * SUB_FACTOR) + " homes";
   $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
   renderHood(); renderHoodList(); renderMissions(tf); renderPolicies(); renderImpact(tf);
   if (year === YEARS) checkUnlocks(tf.total);
@@ -1712,6 +1827,7 @@ $("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(
 $("unlockAll").addEventListener("click", () => { unlockAll(); render(); });
 tierButtons($("todTiers"), () => plan.tod, setTod);
 tierButtons($("metraTiers"), () => plan.metra, setMetra);
+tierButtons($("subTiers"), () => plan.sub, setSub);
 tierButtons($("corrTiers"), () => plan.corr, setCorr);
 tierButtons($("hoodTiers"), () => tierFor(selected), t => selected && setAreaTier(selected, t));
 ["None","+5% of offices","+15%","+27% (max)"].forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = i; b.textContent = lv; b.addEventListener("click", () => setOffice(i)); $("officeSeg").appendChild(b); });
@@ -1847,20 +1963,29 @@ function celebrate(msg){
 // ---------------- saving & sharing (no accounts) ----------------
 const ALPHA = "0123456789abcdefghijklmno";
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm"];
+const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega"];
 function encodePlan(p){
-  let s = "u3";
+  let s = "u4";
   for (let n = 1; n <= 77; n += 2){ const a = p.areas[n] || 0, b = n + 1 <= 77 ? (p.areas[n + 1] || 0) : 0; s += ALPHA[a * 5 + b]; }
   const P = p.p; let bits = 0;
   BIT_KEYS.forEach((k, i) => { if (P[k]) bits |= 1 << i; });
-  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + ALPHA[p.g];
+  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + ALPHA[p.g] + ALPHA[p.sub || 0];
 }
 function decodeAreas(str, p){
   for (let i = 0; i < 39; i++){ const v = ALPHA.indexOf(str[i]), a = Math.floor(v / 5), b = v % 5, n = 1 + i * 2; if (a) p.areas[n] = a; if (b && n + 1 <= 77) p.areas[n + 1] = b; }
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u3([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])/);
+  let m = s.match(/u4([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])([0-4])/);
+  if (m){
+    const p = blankPlan(); decodeAreas(m[1], p);
+    p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
+    const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10);
+    BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
+    p.g = +m[9]; p.sub = +m[10];
+    return p;
+  }
+  m = s.match(/u3([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])/);
   if (m){
     const p = blankPlan(); decodeAreas(m[1], p);
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
