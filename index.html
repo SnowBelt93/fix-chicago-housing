@@ -238,18 +238,23 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .pgroup:not([open]) > summary::after{content:"▸"}
 .pgroup > summary .eyebrow{margin:0}
 .pgroup > .group{margin-top:10px}
-.expandall{border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:650;color:var(--nav);cursor:pointer;justify-self:start}
+.expandall{border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:650;color:var(--nav);cursor:pointer;align-self:flex-start}
 .credit{position:absolute;z-index:2;left:12px;bottom:calc(46% + 10px);font-size:10.5px;color:var(--ink-2);background:rgba(255,255,255,.75);padding:2px 6px;border-radius:4px}
 .toast{position:absolute;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(46% + 14px);background:var(--ink);color:#fff;padding:9px 15px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1}
 /* public comment bubble */
-.comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;background:var(--paper);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;box-shadow:0 6px 18px rgba(27,35,32,.14);font-size:13px;opacity:0;transform:translate(var(--tx,0),0);transition:opacity .3s ease;pointer-events:none;will-change:transform,opacity;--tx:0}
-.comment.on{opacity:1;transform:translate(var(--tx,0),0);pointer-events:auto}
+.comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;pointer-events:none}
 @media (min-width:860px){
-  .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:420px;border-radius:14px;text-align:center;--tx:-50%}
+  .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:440px;transform:translateX(-50%);text-align:center}
   body.wide .comment{left:50%;top:auto;bottom:28px}
 }
-.comment .ans{margin-top:6px;border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:700;color:var(--nav);cursor:pointer}
+.cbox{position:relative;display:flex;flex-direction:column;gap:4px;background:var(--paper);border:2px solid var(--nav);border-top:5px solid var(--star,#e4002b);border-radius:14px;padding:12px 40px 12px 16px;box-shadow:0 14px 36px rgba(20,30,50,.30);font-size:13px;pointer-events:auto;transform-origin:50% 0}
+@media (min-width:860px){ .cbox{padding:12px 40px} body.wide .cbox{transform-origin:50% 100%} }
+.cbox q{display:block;font-family:var(--f-serif,Georgia,serif);font-size:17px;line-height:1.3;font-weight:600;color:var(--ink);quotes:"\201C" "\201D"}
+.cbox span{order:-1;display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--star,#e4002b)}
+.cbox .ans{align-self:center;margin-top:4px;border:0;background:var(--nav);color:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.cbox .cx{position:absolute;top:4px;right:4px;width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--ink-2);font-size:22px;line-height:1;cursor:pointer}
+.cbox .cx:hover{background:rgba(43,93,160,.1);color:var(--nav)}
 .tip{position:fixed;z-index:12;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13.5px}
 .tip b{display:block;font-family:var(--f-display,inherit);font-size:17px;margin:2px 0 3px}.tip p{margin:0 0 10px;color:#dfe5ee}
 .tip .step{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3cc}
@@ -296,7 +301,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 @media (min-width:860px){
   .widebtn{display:block;position:absolute;right:6px;top:7px;z-index:6;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 8px;font:600 12px var(--f-body);color:var(--ink);cursor:pointer;box-shadow:-10px 0 10px rgba(255,255,255,.95)}
   .sheet .tabs{padding-right:44px}
-  body.wide .sheet .tabs{padding-right:110px}
+  body.wide .sheet .tabs{padding:2px 110px 0;justify-content:center}
+  body.wide .sheet .tab{flex:0 0 auto;padding:11px 20px 12px;font-size:14px}
   .sheet{transition:left .38s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.2,.8,.2,1),height .38s cubic-bezier(.2,.8,.2,1)}
   body.wide .sheet{left:432px;width:calc(100% - 448px) !important;height:calc(100% - 32px) !important}
   body.wide .legend,body.wide .mapctl,body.wide .hoodbanner{opacity:0;pointer-events:none}
@@ -304,21 +310,23 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   body.wide .pane{box-sizing:border-box;max-width:1180px;margin:0 auto;width:100%;padding:20px 24px 32px;gap:20px}
   body.wide .pane > .group > .eyebrow,body.wide .pgroup > summary .eyebrow{font-size:12px}
   /* cards in an even grid, actions pinned to the bottom of each card */
-  body.wide #policies,body.wide #policiesElse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:stretch}
+  body.wide #policies,body.wide #policiesElse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:stretch}
   body.wide .policy{height:100%;box-sizing:border-box}
   body.wide .policy .more-btn{margin-top:auto}
   body.wide .townq + .townq{margin-top:0}
   body.wide .pgroup{padding-top:16px}
   /* Build tab: two columns of tidy cards */
   body.wide #pane-zoning:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
-  body.wide #pane-zoning > .row{grid-column:1 / -1}
+  body.wide #pane-zoning > .row{grid-column:1 / -1;justify-content:center}
+  body.wide #pane-zoning > .tool:nth-child(odd):nth-last-child(2){grid-column:1 / -1;justify-self:center;width:calc(50% - 7px)}
   body.wide #pane-zoning .tool{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0;border-top:1px solid var(--line)}
   /* Share: tools on the left, community on the right */
   body.wide #pane-share .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
   /* Impact and The math use the width */
-  body.wide #pane-impact .facts{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  body.wide #pane-impact .facts{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
   body.wide #personas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
-  body.wide dl.math{columns:2;column-gap:32px}
+  body.wide dl.math{display:block;columns:2;column-gap:40px}
+  body.wide .math dd,body.wide .pane p{max-width:none}
   body.wide dl.math > div{break-inside:avoid;margin-bottom:14px}
 }
 .fanmini{display:none}
@@ -358,12 +366,6 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .townq::after{content:" ›";color:var(--nav)}
 .townq.done{color:var(--ink-3);font-weight:500}.townq.done::before{content:"✓ ";color:var(--nav);font-weight:700}
 .tactic{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}.tactic p{margin:3px 0}
-.comment{display:flex;flex-direction:column;gap:4px;border:2px solid var(--nav) !important;border-top:5px solid var(--star,#e4002b) !important;padding:12px 16px !important;box-shadow:0 14px 36px rgba(20,30,50,.30) !important}
-.comment q{display:block;font-family:var(--f-serif,Georgia,serif);font-size:17px;line-height:1.3;font-weight:600;color:var(--ink);quotes:"\201C" "\201D"}
-.comment span{order:-1;display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--star,#e4002b)}
-.comment .ans{align-self:center;background:var(--nav) !important;color:#fff !important;border-radius:999px !important;padding:6px 14px !important;margin-top:4px}
-.comment.on{animation:bubbleIn .55s cubic-bezier(.16,1,.3,1) both}
-@keyframes bubbleIn{from{opacity:0;transform:translate(var(--tx,0),14px) scale(.94)}to{opacity:1;transform:translate(var(--tx,0),0) scale(1)}}
 .hoodbanner{position:absolute;z-index:2;left:12px;right:96px;bottom:calc(46% + 34px);max-width:340px;background:rgba(28,36,48,.82);color:#fff;padding:9px 12px 10px;display:flex;flex-direction:column;gap:3px;pointer-events:none}
 .hoodbanner b{font-family:var(--f-display);font-weight:800;font-size:28px;line-height:.95}
 .hoodbanner span{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.15}
@@ -765,7 +767,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <button type="button" data-cam="home" aria-label="Reset view" title="Reset view">⌂</button>
   </div>
   <div class="tip" id="tip" role="dialog" aria-live="polite" hidden><span class="step" id="tipStep"></span><b id="tipT"></b><p id="tipB"></p><div class="row"><button type="button" class="btn quiet" id="tipSkip">Skip</button><button type="button" class="btn primary" id="tipNext">Next</button></div></div>
-  <div class="comment" id="comment" aria-live="polite"><q id="commentQ"></q><span id="commentBy"></span><button type="button" class="ans" id="commentAns" hidden>How to answer this ›</button></div>
+  <div class="comment" id="comment" hidden><div class="cbox" id="cbox" role="status" aria-live="polite"><q id="commentQ"></q><span id="commentBy"></span><button type="button" class="ans" id="commentAns" hidden>How to answer this ›</button><button type="button" class="cx" id="commentX" aria-label="Close comment">×</button></div></div>
   <div class="toast" id="toast" role="status"></div>
   <canvas id="fx" aria-hidden="true"></canvas>
 
@@ -1494,7 +1496,7 @@ const REACT = {
   high:["Six stories?! What is this, Paris?","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the grocery store.","A tower by the L? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
   corr:["Apartments over the taquería? Sounds like a Logan Square starter pack.","New neighbors means new customers. Signed, every shop on this street.","This stretch has been 'about to get nice' since 1987.","Finally, something besides a vape shop and a vacant storefront."],
   metra:["Wait, I can live by the train AND get downtown in 20 minutes?","Living next to the tracks is great until the 5:12 a.m. express.","Metra-adjacent? My real estate agent just fainted with joy."],
-  office:["Turn the Loop into a neighborhood? The Pedway is about to get weird.","My old cubicle is now somebody's walk-in closet. Respect.","Downtown at night might finally have people who aren't leaving a Bulls game."],
+  office:["Turn the Loop into a neighborhood? The Pedway is about to get weird.","My old cubicle is now somebody's walk-in closet. Respect.","The Loop after 6 p.m. might finally have more people than pigeons."],
   str:["Where are my in-laws supposed to stay? (Answer: a hotel, Linda.)","My building just got three new neighbors who actually live here.","The rolling-suitcase parade on my block thanks you for your service."],
   adu:["A coach house? My garage has been waiting for this moment.","Grandma gets the coach house, I get my sanity back. Everybody wins."],
   build:["Springfield telling Chicago what to do? Classic.","A 4-flat next door? I live in a 4-flat. Carry on."],
@@ -1506,19 +1508,48 @@ const REACT = {
   vac:["My cousin's 'investment property' has been empty since 2019. Fair.","Empty homes paying up for the people who need homes? Sounds right."],
   social:["Public housing that pays for itself? Apparently Maryland figured it out.","Mixed-income buildings the city owns a piece of. Okay, I'm listening."],
 };
-let lastReact = 0, reactTimer = 0;
+let lastReact = 0, commentGen = 0;
 let commentTown = null;
-$("commentAns").addEventListener("click", () => { $("comment").classList.remove("on"); if (commentTown) showTown(commentTown); });
+// the card slides up and fades in; it stays until the player closes it (or a new comment replaces it)
+const CIN = [{opacity:0, transform:"translateY(14px) scale(.96)"}, {opacity:1, transform:"none"}];
+const COUT = [{opacity:1, transform:"none"}, {opacity:0, transform:"translateY(-8px) scale(.97)"}];
+function commentOpen(){ return !$("comment").hidden; }
+function hideComment(){
+  if (!commentOpen()) return Promise.resolve();
+  const gen = ++commentGen, box = $("cbox");
+  if (reduceMotion || !box.animate){ $("comment").hidden = true; return Promise.resolve(); }
+  box.getAnimations().forEach(a => a.cancel());
+  const a = box.animate(COUT, {duration:180, easing:"cubic-bezier(.4,0,1,1)", fill:"forwards"});
+  return a.finished.then(() => { if (gen === commentGen){ $("comment").hidden = true; a.cancel(); } }, () => {});
+}
+let commentQueued = 0;
+function showComment(line, by, town){
+  // wait until the map has finished redrawing after the change, so the card animates on an idle frame instead of stuttering
+  const id = ++commentQueued;
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (id === commentQueued) showCommentNow(line, by, town); }, 40)));
+}
+function showCommentNow(line, by, town){
+  const swap = commentOpen();
+  const go = () => {
+    $("commentQ").textContent = line; $("commentBy").textContent = by;
+    commentTown = town; $("commentAns").hidden = !town;
+    const el = $("comment"), box = $("cbox"); el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+    el.hidden = false; ++commentGen;
+    if (reduceMotion || !box.animate) return;
+    box.getAnimations().forEach(a => a.cancel());
+    box.animate(CIN, {duration: swap ? 320 : 460, easing:"cubic-bezier(.16,1,.3,1)"});
+  };
+  if (swap && !reduceMotion) hideComment().then(go); else go();
+}
+$("commentX").addEventListener("click", () => { commentQueued++; hideComment(); });
+$("commentAns").addEventListener("click", () => { const t = commentTown; hideComment(); if (t) showTown(t); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && commentOpen() && $("myth").hidden && $("result").hidden && $("intro").hidden) hideComment(); });
 function react(kind, place){
   const pool = REACT[kind]; if (!pool) return;
   const now = performance.now(); if (now - lastReact < 3500 && kind !== "high") return;
   lastReact = now;
   const line = pool[Math.floor(Math.random() * pool.length)];
-  $("commentQ").textContent = line;
-  $("commentBy").textContent = "Public comment" + (place ? ", " + place + " community meeting" : "");
-  commentTown = TOWN_FOR[kind] || null; $("commentAns").hidden = !commentTown;
-  const el = $("comment"); el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
-  el.classList.add("on"); clearTimeout(reactTimer); reactTimer = setTimeout(() => el.classList.remove("on"), commentTown ? 6500 : 4200);
+  showComment(line, "Public comment" + (place ? ", " + place + " community meeting" : ""), TOWN_FOR[kind] || null);
 }
 
 // ---------------- data loading ----------------
@@ -2040,7 +2071,7 @@ function orbit(){
 $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
-  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop";
+  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; commentQueued++; hideComment();
   recompute();
   if (!reduceMotion) orbit();
   playTimer = setInterval(() => {
@@ -2127,47 +2158,68 @@ function lineChart(svg, base, mine, fy, fromZero){
 // ---------------- toast + celebration ----------------
 let toastT = 0;
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+let fxParts = [], fxRaf = 0, fxW = 0, fxH = 0;
 function celebrate(msg){
   toast(msg);
   if (reduceMotion) return;
-  const cv = $("fx"), ctx = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1);
-  const W = cv.width = cv.clientWidth * dpr, H = cv.height = cv.clientHeight * dpr;
+  const cv = $("fx"), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (!fxRaf){ fxW = cv.width = cv.clientWidth * dpr; fxH = cv.height = cv.clientHeight * dpr; fxParts = []; }
+  const W = fxW, H = fxH, sc = H / 900;   // physics scale with screen height
   const cols = ["#41b6e6", "#41b6e6", "#e4002b", "#e4002b", "#ffffff", "#2b5da0", "#f2c94c"];   // Chicago flag blue + red, white, navy, a little gold
-  const ps = [], sc = H / 900;   // physics scale with screen height
+  const t0 = performance.now();
   const burst = (side, n, delay) => {
     for (let k = 0; k < n; k++){
       const ang = (side < 0 ? -64 : -116) + (Math.random() - 0.5) * 30, sp = (45 + Math.random() * 25) * sc;
-      const shape = Math.random();
-      ps.push({x: side < 0 ? -10 : W + 10, y: H * 0.92, vx: Math.cos(ang * Math.PI / 180) * sp, vy: Math.sin(ang * Math.PI / 180) * sp,
-        w: (7 + Math.random() * 6) * dpr, h: (10 + Math.random() * 8) * dpr, shape: shape < 0.62 ? 0 : shape < 0.85 ? 1 : 2,
+      const shape = Math.random(), w = (7 + Math.random() * 6) * dpr, h = (10 + Math.random() * 8) * dpr;
+      fxParts.push({x: side < 0 ? -10 : W + 10, y: H * 0.92, vx: Math.cos(ang * Math.PI / 180) * sp, vy: Math.sin(ang * Math.PI / 180) * sp,
+        w, h, shape: shape < 0.62 ? 0 : shape < 0.85 ? 1 : 2,
         tilt: Math.random() * Math.PI * 2, spin: (Math.random() - 0.5) * 0.35, flip: Math.random() * Math.PI * 2, flipV: 0.12 + Math.random() * 0.18,
-        wob: Math.random() * 10, c: cols[Math.floor(Math.random() * cols.length)], born: delay, life: 3600 + Math.random() * 1400});
+        wob: Math.random() * 10, c: cols[Math.floor(Math.random() * cols.length)], born: t0 + delay,
+        floor: H - (1 + Math.random() * 7) * dpr - (shape < 0.62 ? h / 4 : shape < 0.85 ? w / 2.4 : w * 0.6),   // pieces pile up in a thin band along the bottom edge
+        landed: 0, bounced: 0, sy: 1, rest: 2600 + Math.random() * 2400, melt: 1600 + Math.random() * 900});
     }
   };
   burst(-1, 90, 0); burst(1, 90, 0); burst(-1, 45, 260); burst(1, 45, 260);
+  if (!fxRaf){ let last = t0; fxRaf = requestAnimationFrame(function frame(now){ fxFrame(now, Math.max(0, Math.min(2, (now - last) / 16.67)), dpr); last = now; fxRaf = fxParts.length ? requestAnimationFrame(frame) : 0; }); }
+}
+function fxFrame(now, dt, dpr){
+  const ctx = $("fx").getContext("2d"), W = fxW, H = fxH, sc = H / 900;
+  ctx.clearRect(0, 0, W, H);
   const star = (r) => { ctx.beginPath(); for (let a = 0; a < 12; a++){ const rr = a % 2 ? r * 0.45 : r, t = a * Math.PI / 6 - Math.PI / 2; ctx.lineTo(Math.cos(t) * rr, Math.sin(t) * rr); } ctx.closePath(); ctx.fill(); };
-  const t0 = performance.now(); let last = t0;
-  (function frame(now){
-    const dt = Math.min(2, (now - last) / 16.67); last = now; const age = now - t0;
-    ctx.clearRect(0, 0, W, H);
-    let alive = 0;
-    ps.forEach(p => {
-      if (age < p.born) { alive++; return; }
-      const t = age - p.born; if (t > p.life) return; alive++;
+  const ease = 1 - Math.pow(0.85, dt);
+  fxParts = fxParts.filter(p => {
+    if (now < p.born) return true;
+    let alpha = 1, shrink = 1;
+    if (!p.landed){
       p.vx *= Math.pow(0.955, dt); p.vy = p.vy * Math.pow(0.94, dt) + 0.32 * sc * dt;      // air drag + gravity: shoots up fast, floats down slowly
       p.wob += 0.08 * dt; p.x += (p.vx + Math.sin(p.wob) * 1.2 * dpr) * dt; p.y += p.vy * dt;
-      p.tilt += p.spin * dt; p.flip += p.flipV * dt;
-      const fade = t > p.life - 600 ? (p.life - t) / 600 : 1;
-      ctx.save(); ctx.globalAlpha = Math.max(0, fade); ctx.translate(p.x, p.y); ctx.rotate(p.tilt); ctx.scale(1, Math.cos(p.flip));   // 3D-ish flutter
-      ctx.fillStyle = p.c;
-      if (p.c === "#ffffff"){ ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = 2 * dpr; }
-      if (p.shape === 0) ctx.fillRect(-p.w / 2, -p.h / 4, p.w, p.h / 2);
-      else if (p.shape === 1){ ctx.beginPath(); ctx.arc(0, 0, p.w / 2.4, 0, Math.PI * 2); ctx.fill(); }
-      else star(p.w * 0.75);                                                                             // little six-point stars
-      ctx.restore();
-    });
-    if (alive) requestAnimationFrame(frame); else ctx.clearRect(0, 0, W, H);
-  })(t0);
+      p.tilt += p.spin * dt; p.flip += p.flipV * dt; p.sy = Math.cos(p.flip);
+      if (p.x < -60 || p.x > W + 60) return false;
+      if (p.y >= p.floor && p.vy > 0){
+        p.y = p.floor;
+        if (!p.bounced && p.vy > 2 * sc){ p.vy *= -0.3; p.vx *= 0.5; p.spin *= 0.4; p.bounced = 1; }   // one little hop
+        else { p.landed = now; p.vy = 0; p.vx *= 0.4; p.sy0 = p.sy; }
+      }
+      if (now - p.born > 14000) return false;                                                   // never landed (safety)
+    } else {
+      // resting on the bottom: slide to a stop and lie flat
+      p.vx *= Math.pow(0.8, dt); p.x += p.vx * dt;
+      const flat = p.shape === 0 ? Math.PI : p.shape === 2 ? Math.PI / 3 : Math.PI * 2;
+      p.tilt += (Math.round(p.tilt / flat) * flat - p.tilt) * ease;
+      p.sy += ((p.sy0 < 0 ? -1 : 1) - p.sy) * ease;
+      const t = now - p.landed - p.rest;
+      if (t > 0){ const k = t / p.melt; if (k >= 1) return false; alpha = 1 - k * k * (3 - 2 * k); shrink = 1 - 0.25 * k; }   // slow dissolve
+    }
+    ctx.save(); ctx.globalAlpha = alpha; ctx.translate(p.x, p.y + (1 - shrink) * p.h * 0.3); ctx.rotate(p.tilt); ctx.scale(shrink, p.sy * shrink);   // 3D-ish flutter while falling
+    ctx.fillStyle = p.c;
+    if (p.c === "#ffffff"){ ctx.shadowColor = "rgba(0,0,0,.25)"; ctx.shadowBlur = 2 * dpr; }
+    if (p.shape === 0) ctx.fillRect(-p.w / 2, -p.h / 4, p.w, p.h / 2);
+    else if (p.shape === 1){ ctx.beginPath(); ctx.arc(0, 0, p.w / 2.4, 0, Math.PI * 2); ctx.fill(); }
+    else star(p.w * 0.75);                                                                           // little six-point stars
+    ctx.restore();
+    return true;
+  });
+  if (!fxParts.length) ctx.clearRect(0, 0, W, H);
 }
 
 // ---------------- saving & sharing (no accounts) ----------------
