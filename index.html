@@ -243,7 +243,14 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .toast{position:absolute;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(46% + 14px);background:var(--ink);color:#fff;padding:9px 15px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
 .toast.on{opacity:1}
 /* public comment bubble */
-.comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;pointer-events:none}
+.comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;pointer-events:none;display:flex;flex-direction:column;gap:8px}
+@media (max-width:859px){
+  .cbox{transition:transform .38s cubic-bezier(.16,1,.3,1)}
+  .cbox > *{transition:opacity .2s}
+  .cbox + .cbox{position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;transform-origin:50% 100%;transform:translateY(9px) scale(.95);pointer-events:none}
+  .cbox + .cbox + .cbox{z-index:-2;transform:translateY(18px) scale(.9)}
+  .cbox + .cbox > *{opacity:0}
+}
 @media (min-width:860px){
   .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:440px;transform:translateX(-50%);text-align:center}
   body.wide .comment{left:50%;top:auto;bottom:28px}
@@ -767,7 +774,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <button type="button" data-cam="home" aria-label="Reset view" title="Reset view">⌂</button>
   </div>
   <div class="tip" id="tip" role="dialog" aria-live="polite" hidden><span class="step" id="tipStep"></span><b id="tipT"></b><p id="tipB"></p><div class="row"><button type="button" class="btn quiet" id="tipSkip">Skip</button><button type="button" class="btn primary" id="tipNext">Next</button></div></div>
-  <div class="comment" id="comment" hidden><div class="cbox" id="cbox" role="status" aria-live="polite"><q id="commentQ"></q><span id="commentBy"></span><button type="button" class="ans" id="commentAns" hidden>How to answer this ›</button><button type="button" class="cx" id="commentX" aria-label="Close comment">×</button></div></div>
+  <div class="comment" id="comment" aria-live="polite" hidden></div>
   <div class="toast" id="toast" role="status"></div>
   <canvas id="fx" aria-hidden="true"></canvas>
 
@@ -1508,45 +1515,53 @@ const REACT = {
   vac:["My cousin's 'investment property' has been empty since 2019. Fair.","Empty homes paying up for the people who need homes? Sounds right."],
   social:["Public housing that pays for itself? Apparently Maryland figured it out.","Mixed-income buildings the city owns a piece of. Okay, I'm listening."],
 };
-let lastReact = 0, commentGen = 0;
-let commentTown = null;
-// the card slides up and fades in; it stays until the player closes it (or a new comment replaces it)
+let lastReact = 0, commentEpoch = 0;
+// public comments stack: the newest slides in on top and older ones move down (on phones they tuck in behind it).
+// Each card stays until its × is clicked; past 3, the oldest drops off.
 const CIN = [{opacity:0, transform:"translateY(14px) scale(.96)"}, {opacity:1, transform:"none"}];
 const COUT = [{opacity:1, transform:"none"}, {opacity:0, transform:"translateY(-8px) scale(.97)"}];
-function commentOpen(){ return !$("comment").hidden; }
-function hideComment(){
-  if (!commentOpen()) return Promise.resolve();
-  const gen = ++commentGen, box = $("cbox");
-  if (reduceMotion || !box.animate){ $("comment").hidden = true; return Promise.resolve(); }
-  box.getAnimations().forEach(a => a.cancel());
-  const a = box.animate(COUT, {duration:180, easing:"cubic-bezier(.4,0,1,1)", fill:"forwards"});
-  return a.finished.then(() => { if (gen === commentGen){ $("comment").hidden = true; a.cancel(); } }, () => {});
+const CMAX = 3, deskMQ = window.matchMedia("(min-width:860px)");
+const liveCards = () => [...$("comment").querySelectorAll(".cbox:not(.closing)")];
+function flipCards(mutate){
+  // slide the cards that stay from where they were to where they end up
+  if (reduceMotion || !deskMQ.matches){ mutate(); return; }
+  const cards = liveCards(), before = new Map(cards.map(c => [c, c.getBoundingClientRect().top]));
+  mutate();
+  cards.forEach(c => { if (!c.isConnected) return; const dy = before.get(c) - c.getBoundingClientRect().top;
+    if (Math.abs(dy) > 0.5) c.animate([{transform:`translateY(${dy}px)`}, {transform:"none"}], {duration:380, easing:"cubic-bezier(.16,1,.3,1)"}); });
 }
-let commentQueued = 0;
+function closeCard(card){
+  if (!card || card.classList.contains("closing")) return;
+  card.classList.add("closing");
+  const done = () => { if (!card.isConnected) return; flipCards(() => card.remove()); if (!$("comment").querySelector(".cbox")) $("comment").hidden = true; };
+  if (reduceMotion || !card.animate) return done();
+  card.getAnimations().forEach(a => a.cancel());
+  card.animate(COUT, {duration:180, easing:"cubic-bezier(.4,0,1,1)", fill:"forwards"}).finished.then(done, done);
+}
+function closeAllComments(){ commentEpoch++; liveCards().forEach(closeCard); }
 function showComment(line, by, town){
   // wait until the map has finished redrawing after the change, so the card animates on an idle frame instead of stuttering
-  const id = ++commentQueued;
-  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (id === commentQueued) showCommentNow(line, by, town); }, 40)));
+  const ep = commentEpoch;
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (ep === commentEpoch) showCommentNow(line, by, town); }, 40)));
 }
 function showCommentNow(line, by, town){
-  const swap = commentOpen();
-  const go = () => {
-    $("commentQ").textContent = line; $("commentBy").textContent = by;
-    commentTown = town; $("commentAns").hidden = !town;
-    const el = $("comment"), box = $("cbox"); el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
-    el.hidden = false; ++commentGen;
-    if (reduceMotion || !box.animate) return;
-    box.getAnimations().forEach(a => a.cancel());
-    box.animate(CIN, {duration: swap ? 320 : 460, easing:"cubic-bezier(.16,1,.3,1)"});
-  };
-  if (swap && !reduceMotion) hideComment().then(go); else go();
+  const box = $("comment");
+  if (liveCards().some(c => c.dataset.line === line)) return;
+  box.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+  const card = document.createElement("div"); card.className = "cbox"; card.dataset.line = line;
+  card.innerHTML = '<q></q><span></span><button type="button" class="ans" hidden>How to answer this ›</button><button type="button" class="cx" aria-label="Close comment">×</button>';
+  card.querySelector("q").textContent = line; card.querySelector("span").textContent = by;
+  if (town){ const a = card.querySelector(".ans"); a.hidden = false; a.addEventListener("click", () => { closeCard(card); showTown(town); }); }
+  card.querySelector(".cx").addEventListener("click", () => closeCard(card));
+  box.hidden = false;
+  flipCards(() => box.prepend(card));
+  if (!reduceMotion && card.animate) card.animate(CIN, {duration:460, easing:"cubic-bezier(.16,1,.3,1)"});
+  liveCards().slice(CMAX).forEach(closeCard);
 }
-$("commentX").addEventListener("click", () => { commentQueued++; hideComment(); });
-$("commentAns").addEventListener("click", () => { const t = commentTown; hideComment(); if (t) showTown(t); });
-addEventListener("keydown", (e) => { if (e.key === "Escape" && commentOpen() && $("myth").hidden && $("result").hidden && $("intro").hidden) hideComment(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && $("myth").hidden && $("result").hidden && $("intro").hidden) closeCard(liveCards()[0]); });
 function react(kind, place){
   const pool = REACT[kind]; if (!pool) return;
-  const now = performance.now(); if (now - lastReact < 3500 && kind !== "high") return;
+  const now = performance.now(); if (now - lastReact < 1200) return;   // clicking through levels quickly doesn't pile up cards
   lastReact = now;
   const line = pool[Math.floor(Math.random() * pool.length)];
   showComment(line, "Public comment" + (place ? ", " + place + " community meeting" : ""), TOWN_FOR[kind] || null);
@@ -2071,7 +2086,7 @@ function orbit(){
 $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
-  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; commentQueued++; hideComment();
+  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments();
   recompute();
   if (!reduceMotion) orbit();
   playTimer = setInterval(() => {
