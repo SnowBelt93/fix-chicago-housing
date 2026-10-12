@@ -80,7 +80,7 @@ A free, browser-based game on a real 3D model of Chicago's ~481,000 buildings. P
   - Prerogative reform: +15%.
   - Faster permits: +10% chance, and homes arrive about 20% sooner.
   - Single stair: +25% for 6-flat and mid-rise projects on lots under 7,500 sq ft.
-  - Affordable requirement (ARO) dial: ×1.28 / 1.0 / 0.72 on projects of 10+ homes (gross, not net), with 10 / 20 / 30% affordable.
+  - Affordable requirement (ARO) dial: ×1.30 / 1.0 / 0.70 on projects of 10+ homes (gross, not net), with 10 / 20 / 30% affordable.
   - No parking minimums (`park`, or `mpls`): +10% on lots NOT near transit (assumption; Chicago already dropped mandates near transit).
   - Small-lot homes (`small`): +20% for 3-flat and 6-flat projects on lots of 5,000+ sq ft (assumption).
 - **"Worked in other cities" zoning rules** (in `tierAt`):
@@ -91,7 +91,7 @@ A free, browser-based game on a real 3D model of Chicago's ~481,000 buildings. P
 - **Policies that add homes without changing the map:**
   - Office conversions: 141.9M sq ft × (5 / 15 / 27%) ÷ 1,026 sq ft per home.
   - Coach houses / ADUs: eligible lots × 0.75% × (2 − 34/50).
-  - Short-term rentals: 11,236 listings × 68.9% entire homes × (10% or 50%).
+  - Short-term rentals: 11,236 listings × 80.2% entire homes × (10% or 50%).
   - City-owned lots: 7,100 lots × 2 homes × 50%.
   - Empty-homes tax (`vac`, Vancouver): 60,223 "other vacant" homes (ACS 2024 B25004) × 10% returned (assumption).
   - Triple the social housing fund (`social`, Montgomery County): +$270M at 6,000 homes per $100M over 20 years, counted for 15 years ≈ 12,150 homes, 30% affordable.
@@ -142,6 +142,7 @@ A free, browser-based game on a real 3D model of Chicago's ~481,000 buildings. P
 - **Motion (v11):** modals rise in / sink out (`hideModal()`), panes fade, details slide open, grade pops on change. Simulation: one year = `YEAR_MS` (700 ms); buildings rise continuously (elevation transition = one year, linear); neighborhoods update in a 6-frame ripple (`recomputeWave`); camera does one smooth eased 70° orbit with a slight pitch arc (`orbit()`). All motion is off under prefers-reduced-motion.
 - **Myths (v11):** each card is myth quote → one-line verdict (`a`) → plain-language explanation (`b`) → sources.
 - **Goal explained (v11):** intro shows 165,687 today + 131,400 growth = 297,087; the Missions tab shows the same equation for whichever shortage estimate is selected.
+- **v12:** station zones are pre-merged shapes (`meta.json` ringL/ringM/ringLM from `tools/prep_rings.py`) so overlapping circles read as one zone; camera buttons (zoom, spin, 2D/3D, reset) plus a walkthrough step; zoom limited to the city region; basemap presets in `BASES` (island / region / night, default region) with an extended Lake Michigan shape and neighboring-town labels; policies that add nothing explain why (`ZERO`); ARO card explains the tradeoff and that real-world evidence is mixed.
 - **The math tab:** zoning table with code citations, decision rules, baseline, rent effect, shortage estimates, ARO, offices, NAHB, people, an explicit "Game assumptions (not measured)" list, myths, data, and what's not modeled. Every source is a link.
 - **Save tab:** autosave, named saves, share link (`#u3...`), plan code, and open a code.
 - **Plan code `u3`:** `"u3"` + 39 area chars + tod, metra, corr, office, str, aro (one char each) + 3 base-32 chars of on/off bits in `BIT_KEYS` order (`build, stair, adu, lots, pre, permits, mpls, camb, small, park, vac, social, comm`) + goal. Only `[0-9a-v]`. **Append new on/off policies to the end of `BIT_KEYS`** so old codes still decode. `u2` and `u1` still decode.
