@@ -1,0 +1,25 @@
+# Downloads the open datasets the game's prep scripts need (run by hand from the Actions tab).
+# The cloud workspace that builds the game can't reach the data portals directly, so this runs on GitHub.
+name: Fetch open data
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p tools/raw
+          get(){ echo "== $1"; curl -sSfL --retry 3 -m 600 "$2" -o "tools/raw/$1" && ls -la "tools/raw/$1" && head -c 600 "tools/raw/$1"; echo; }
+          get wards2023.geojson "https://data.cityofchicago.org/api/geospatial/p293-wvbd?method=export&format=GeoJSON" || true
+          get city_owned_land.csv 'https://data.cityofchicago.org/resource/aksk-kvfp.csv?$limit=60000' || true
+          get cta_l_daily_2025.csv "https://data.cityofchicago.org/resource/5neh-572f.csv?\$where=date%20between%20'2025-01-01T00:00:00'%20and%20'2025-12-31T23:59:59'&\$limit=200000" || true
+          get cook_vacant_2025.csv "https://datacatalog.cookcountyil.gov/resource/nj4t-kc8j.csv?\$select=pin,class,lat,lon,township_name,year&\$where=year=2025%20AND%20class='100'&\$limit=400000" || true
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw
+          git commit -m "Fetch open data for prep scripts" || echo "nothing to commit"
+          git push
