@@ -306,6 +306,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .hud,.sheet,.legend,.mapctl,.credit{background:rgba(255,255,255,.9) !important;-webkit-backdrop-filter:blur(12px) saturate(1.15);backdrop-filter:blur(12px) saturate(1.15)}
 .hud .scoreband{background:rgba(43,93,160,.96)}
 @media (min-width:860px){
+  body:not(.wide) .sheet .tabs{padding-right:38px;padding-left:4px}
+  body:not(.wide) .sheet .tab{padding-left:4px;padding-right:4px;font-size:12.5px}
   .widebtn{display:block;position:absolute;right:6px;top:7px;z-index:6;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 8px;font:600 12px var(--f-body);color:var(--ink);cursor:pointer;box-shadow:-10px 0 10px rgba(255,255,255,.95)}
   .sheet .tabs{padding-right:44px}
   body.wide .sheet .tabs{padding:2px 110px 0;justify-content:center}
@@ -526,7 +528,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <button class="tab" role="tab" aria-selected="false" data-pane="missions">Missions <span class="n" id="mCount">0/7</span></button>
       <button class="tab" role="tab" aria-selected="false" data-pane="impact">Impact</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="share">Share</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="math">The math</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="math">Math</button>
     </div>
     <div class="panes">
       <!-- Build -->
@@ -855,7 +857,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div class="row"><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
-      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in "The math".</p>
+      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in the Math tab.</p>
       <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
@@ -1750,7 +1752,7 @@ document.querySelectorAll("#mapctl button").forEach(b => b.addEventListener("cli
 const KEYS = new Set(); let keyRaf = 0, keyLast = 0;
 const KEYMAP = {w:"up", arrowup:"up", s:"down", arrowdown:"down", a:"left", arrowleft:"left", d:"right", arrowright:"right", q:"spinL", e:"spinR", r:"tiltU", f:"tiltD", "+":"zoomIn", "=":"zoomIn", "-":"zoomOut", "_":"zoomOut"};
 function keyLoop(now){
-  const dt = Math.min(0.05, (now - (keyLast || now)) / 1000); keyLast = now;
+  const dt = Math.max(0, Math.min(0.05, (now - (keyLast || now)) / 1000)); keyLast = now;
   if (!KEYS.size){ keyRaf = 0; keyLast = 0; return; }
   const v = viewState, vp = deckgl.getViewports()[0];
   let dx = 0, dy = 0, patch = {};
@@ -1917,7 +1919,7 @@ function animateNumber(to){
   if (reduceMotion){ $("homes").textContent = fmt(to); shownTotal = to; return; }
   cancelAnimationFrame(tickRaf);
   const from = shownTotal, t0 = performance.now(), dur = playing ? YEAR_MS : 600;
-  const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = playing ? k : 1 - Math.pow(1 - k, 3); shownTotal = from + (to - from) * e; $("homes").textContent = fmt(shownTotal); if (k < 1) tickRaf = requestAnimationFrame(step); };
+  const step = (now) => { const k = Math.max(0, Math.min(1, (now - t0) / dur)), e = playing ? k : 1 - Math.pow(1 - k, 3); shownTotal = from + (to - from) * e; $("homes").textContent = fmt(shownTotal); if (k < 1) tickRaf = requestAnimationFrame(step); };
   tickRaf = requestAnimationFrame(step);
 }
 function gradeFor(pct){ return pct >= 100 ? "A+" : pct >= 85 ? "A" : pct >= 70 ? "B" : pct >= 50 ? "C" : pct >= 25 ? "D" : pct > 0 ? "F" : "–"; }
@@ -2076,7 +2078,7 @@ function orbit(){
   const start = {...viewState}, total = YEARS * YEAR_MS;
   const frame = (now) => {
     if (!playing) return;
-    const k = Math.min(1, (now - t0) / total), ease = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const k = Math.max(0, Math.min(1, (now - t0) / total)), ease = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     viewState = {...viewState, bearing: start.bearing + 70 * ease, pitch: Math.min(65, start.pitch + 8 * Math.sin(Math.PI * k)), transitionDuration: 0};
     deckgl.setProps({initialViewState: viewState});
     camRaf = requestAnimationFrame(frame);
