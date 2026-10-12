@@ -1,0 +1,19 @@
+{
+  // Fix Chicago Housing: static game files + a small community API (worker/index.js)
+  "name": "fix-chicago-housing",
+  "main": "worker/index.js",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  },
+  "durable_objects": {
+    "bindings": [{ "name": "COMMUNITY", "class_name": "Community" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Community"] }],
+  "routes": [
+    { "pattern": "fixchicagohousing.com", "custom_domain": true },
+    { "pattern": "www.fixchicagohousing.com", "custom_domain": true }
+  ],
+  "observability": { "enabled": true }
+}

@@ -257,6 +257,29 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 @media (min-width:860px){body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:block}}
 .card .hook{margin:0;padding:8px 10px;border-left:4px solid #d64a56;background:#fdf0f1;font-size:13.5px;color:var(--ink)}
 .legend i.ill{background:#d64a56}
+.clip{display:block;text-decoration:none;color:var(--ink);background:#fbfaf6;border:1px solid #e3ded2;border-left:4px solid var(--star,#e4002b);padding:10px 12px;border-radius:4px}
+.clip .src{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
+.clip b{display:block;font-family:var(--f-serif,Georgia,serif);font-size:20px;line-height:1.2;margin:3px 0}
+.clip .sub{display:block;font-size:13px;color:var(--ink-2)}
+.clip:hover b{text-decoration:underline}
+.doit{display:grid;gap:8px}
+.doit a,.doit button.dobtn{display:block;text-align:left;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--paper);color:var(--ink);text-decoration:none;font:inherit;cursor:pointer}
+.doit b{display:block;font-size:14px}.doit span{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.doit a::after{content:" ↗";color:var(--nav)}
+.comm .bars{display:grid;gap:5px;margin-top:6px}
+.comm .brow{display:grid;grid-template-columns:1fr 42px;gap:8px;align-items:center;font-size:12.5px}
+.comm .brow .t{position:relative;background:var(--paper-2);border-radius:3px;padding:3px 6px;overflow:hidden}
+.comm .brow .t i{position:absolute;inset:0 auto 0 0;background:rgba(43,93,160,.18)}
+.comm .brow .t span{position:relative}
+.comm .brow .p{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.gal{display:grid;gap:6px}
+.gal .gi{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;border:1px solid var(--line);border-radius:var(--r);padding:8px 10px}
+.gal .gi b{display:block;font-size:13.5px}.gal .gi span{font-size:12px;color:var(--ink-3)}
+.gal .gi button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;cursor:pointer}
+.gal .gi button.liked{color:var(--star,#e4002b);border-color:var(--star,#e4002b)}
+.seg2{display:flex;gap:6px;flex-wrap:wrap}.seg2 button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;cursor:pointer}
+.seg2 button[aria-pressed="true"]{background:var(--nav);color:#fff;border-color:var(--nav)}
+.ptally{font-size:12px;color:var(--ink-3)}
 .goalmath{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;background:var(--paper-2);border-radius:var(--r);padding:10px 12px}
 .goalmath b{display:block;font-family:var(--f-display);font-size:24px;color:var(--nav);line-height:1}
 .goalmath span{font-size:11.5px;color:var(--ink-2);line-height:1.3;display:block;margin-top:2px}
@@ -424,7 +447,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <button class="tab" role="tab" aria-selected="false" data-pane="policies">Policies <span class="n" id="pCount">0</span></button>
       <button class="tab" role="tab" aria-selected="false" data-pane="missions">Missions <span class="n" id="mCount">0/7</span></button>
       <button class="tab" role="tab" aria-selected="false" data-pane="impact">Impact</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="share">Save</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="share">Share</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="math">The math</button>
     </div>
     <div class="panes">
@@ -584,6 +607,18 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="eyebrow">Saved on this device</div>
           <div class="list" id="myPlans"><div class="empty">No saved plans yet.</div></div>
         </div>
+        <div class="group comm" id="commBox">
+          <div class="eyebrow">What other players chose</div>
+          <label class="small" for="homeHood">I live in</label>
+          <select class="txt homeHood" id="homeHood"><option value="0">Prefer not to say</option></select>
+          <div id="commStats"><div class="empty">Loading…</div></div>
+        </div>
+        <div class="group comm">
+          <div class="eyebrow">Plan gallery</div>
+          <div class="seg2" id="galSort"><button type="button" data-s="new" aria-pressed="true">Newest</button><button type="button" data-s="top" aria-pressed="false">Most liked</button><button type="button" data-s="hood" aria-pressed="false">My neighborhood</button></div>
+          <div class="gal" id="gallery"><div class="empty">Loading…</div></div>
+          <p class="small ptally">Post your plan from the results screen after you simulate. Open any plan to remix it.</p>
+        </div>
       </div>
 
       <!-- Math -->
@@ -661,6 +696,11 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 
   <div class="intro" id="intro" hidden>
     <div class="card" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <a class="clip" href="https://www.axios.com/local/chicago/2025/10/22/chicago-rent-35-percent-increase-post-pandemic" target="_blank" rel="noopener">
+        <span class="src">Axios Chicago · Oct 22, 2025</span>
+        <b>Rent in Chicago is rising faster than in other major cities</b>
+        <span class="sub">Up 35% since before the pandemic, per Zillow. Your job: build enough homes to stop it.</span>
+      </a>
       <div class="eyebrow">Your goal by 2041</div>
       <div class="big">297,087 new homes</div>
       <div class="goalmath">
@@ -714,6 +754,22 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <b>One thing zoning can't fix: interest rates</b>
         <p>Construction loans went from about 5% in 2019 to over 8.5% in 2023 (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2023/12/Making-It-Pencil-December-2023.pdf" target="_blank" rel="noopener">Terner Center</a>). US apartment starts fell about 36% from 2022 to 2024 (<a href="https://fred.stlouisfed.org/data/HOUST5F" target="_blank" rel="noopener">Census via FRED</a>), and Chicago's approvals dropped from about 9,500 in 2023 to about 4,300 in 2024 (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data</a>).</p>
         <p>A new high-rise apartment costs about $480,000 per home to build (<a href="https://www.bisnow.com/news/chicago/multifamily/why-doesnt-chicago-build-more-apartments-133834" target="_blank" rel="noopener">Bisnow, 2026</a>). By our rough math (a game estimate), that takes about $4,800 a month in rent to pay off, against about $3,000 average downtown rents (<a href="https://therealdeal.com/chicago/2025/03/11/downtown-chicago-apartment-rents-reach-new-peak/" target="_blank" rel="noopener">TRD, 2025</a>). Your zoning makes buildings legal; rates decide whether anyone can afford to build them.</p>
+      </div>
+      <div class="group">
+        <div class="eyebrow">Do something about it</div>
+        <div class="doit">
+          <button class="dobtn" type="button" id="doAlder"><b>Send your plan to your alderperson</b><span>Copies a short note with your plan link, then opens the city's ward lookup so you can find who to send it to.</span></button>
+          <a href="https://www.ilga.gov" target="_blank" rel="noopener"><b>Find your state legislators</b><span>Statewide bills like the BUILD Act are decided in Springfield. Look up your senator and representative under "Members".</span></a>
+          <a href="https://abundanthousingillinois.org/" target="_blank" rel="noopener"><b>Join a pro-housing group</b><span>Abundant Housing Illinois pushes for more homes of every kind.</span></a>
+          <a href="https://housingactionil.org/" target="_blank" rel="noopener"><b>Join an affordable-housing coalition</b><span>Housing Action Illinois works on affordability and tenant protections statewide.</span></a>
+        </div>
+      </div>
+      <div class="group">
+        <div class="eyebrow">Add it to the community</div>
+        <label class="small" for="homeHoodRes">Where do you live? (optional, shows how your neighbors play)</label>
+        <select class="txt homeHood" id="homeHoodRes"><option value="0">Prefer not to say</option></select>
+        <div class="row"><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
+        <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
       <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in "The math".</p>
       <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
@@ -1063,7 +1119,7 @@ function buildPolicies(){
   POLICIES.forEach(P => {
     const el = P.group === "else" ? $("policiesElse") : $("policies");
     const d = document.createElement("div"); d.className = "policy"; d.id = "pol-" + P.key;
-    d.innerHTML = '<div class="top"><div class="t"><h3></h3><span class="status"></span> <span class="rank" title="Ranked by homes added with your current map"></span></div></div><span class="gain"></span><button type="button" class="more-btn" aria-expanded="false">What happened &amp; sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
+    d.innerHTML = '<div class="top"><div class="t"><h3></h3><span class="status"></span> <span class="rank" title="Ranked by homes added with your current map"></span></div></div><span class="gain"></span><span class="ptally" hidden></span><button type="button" class="more-btn" aria-expanded="false">What happened &amp; sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
     const mb = d.querySelector(".more-btn"), more = d.querySelector(".more");
     mb.setAttribute("aria-controls", (more.id = "more-" + P.key));
     mb.addEventListener("click", () => { const o = more.hidden; more.hidden = !o; mb.setAttribute("aria-expanded", String(o)); });
@@ -1158,6 +1214,10 @@ function renderPolicies(){
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
   });
   $("pCount").textContent = on;
+  const CS = communityStats && communityStats.all;
+  POLICIES.forEach(P => { const el = $("pol-" + P.key).querySelector(".ptally"); if (!el) return;
+    const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
+    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " players turn this on"; });
   clearTimeout(gainTimer);
   if (loaded === 77 && !playing) gainTimer = setTimeout(() => {
     const cur = currentAdded(), affNow = totals(false).aff;
@@ -1434,6 +1494,7 @@ async function boot(){
   });
   render();
   loadStreets();
+  fillHoodSelects(); loadCommunity();
   const c = [-87.655, 41.89];
   const queue = [...META.areas].sort((a,b) => Math.hypot(a.lon-c[0],a.lat-c[1]) - Math.hypot(b.lon-c[0],b.lat-c[1]));
   let next = 0;
@@ -1881,6 +1942,8 @@ function stopPlay(finished){
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
 }
 function showResult(){
+  submitPlan(false).then(ok => { if (ok) loadCommunity(); });
+  $("resPublish").disabled = false; fillHoodSelects();
   const ys = Array.from({length: YEARS + 1}, (_, y) => y);
   const homes = ys.map(planHomesAt);
   const noShort = ys.map(y => target() + GAP_GROWTH * y);
@@ -2034,8 +2097,87 @@ $("copyLink").addEventListener("click", () => copyText(SHARE_BASE + "#" + encode
 $("copyCode").addEventListener("click", () => copyText(encodePlan(plan), "Plan code copied"));
 $("openCode").addEventListener("click", () => {
   const p = decodePlan($("codeIn").value);
-  if (!p){ toast("That code didn't work. Codes start with u3 (older u1 and u2 codes still work)."); return; }
+  if (!p){ toast("That code didn't work. Codes start with u4 (older u1–u3 codes still work)."); return; }
   plan = p; $("codeIn").value = ""; unlockAll(true); recompute(); renderTargets(); toast("Plan opened");
+});
+// ---------- community (needs the site's /api; quietly hides itself where there is none, e.g. the claude.ai preview) ----------
+const API_OK = location.protocol.startsWith("http") && !/claude|anthropic|usercontent/.test(location.hostname);
+let homeHood = +lsGet("fch-home", 0) || 0, communityStats = null, galSort = "new", liked = new Set(lsGet("fch-liked", [])), lastSubmitted = "";
+const hoodName = (n) => { const m = META && META.areas.find(a => a.num === n); return m ? m.name : ""; };
+const POLICY_TITLE = (k) => { const P = POLICIES.find(x => x.key === k); return P ? P.title : k; };
+async function api(path, body){
+  if (!API_OK) throw new Error("no api");
+  const r = await fetch(path, body ? {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)} : {});
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+function fillHoodSelects(){
+  document.querySelectorAll(".homeHood").forEach(sel => {
+    if (sel.options.length < 2) [...META.areas].sort((a, b) => a.name.localeCompare(b.name)).forEach(m => { const o = document.createElement("option"); o.value = m.num; o.textContent = m.name; sel.appendChild(o); });
+    sel.value = String(homeHood);
+  });
+}
+document.querySelectorAll(".homeHood").forEach(sel => sel.addEventListener("change", () => { homeHood = +sel.value; lsSet("fch-home", homeHood); fillHoodSelects(); loadCommunity(); }));
+function barRows(pairs){
+  return '<div class="bars">' + pairs.map(([label, v]) => '<div class="brow"><div class="t"><i style="width:' + Math.round(v * 100) + '%"></i><span>' + label + '</span></div><div class="p">' + Math.round(v * 100) + '%</div></div>').join("") + "</div>";
+}
+function esc(t){ const d = document.createElement("div"); d.textContent = t; return d.innerHTML; }
+function renderStats(){
+  const el = $("commStats"), S = communityStats;
+  if (!S || !S.all || !S.all.n){ el.innerHTML = '<div class="empty">No plans yet. Finish a simulation to be the first.</div>'; return; }
+  const A = S.all, top = Object.entries(A.policies).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  let h = '<p class="small"><b>' + fmt(A.n) + '</b> plans finished. The typical plan builds <b>' + fmt(A.medianHomes) + '</b> homes.</p>';
+  h += (top.length ? '<p class="small" style="margin:6px 0 0">Most popular policies</p>' + barRows(top.map(([k, v]) => [esc(POLICY_TITLE(k)), v])) : '');
+  h += '<p class="small" style="margin:8px 0 0">Zoning near the L</p>' + barRows(TIERS.map((T, t) => [T.name, A.tod[t]]));
+  if (S.hood && homeHood){
+    const H = S.hood;
+    h += H.n ? '<p class="small" style="margin:10px 0 0"><b>Players from ' + esc(hoodName(homeHood)) + '</b>: ' + fmt(H.n) + ' plans, typically ' + fmt(H.medianHomes) + ' homes.</p>' + barRows(Object.entries(H.policies).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => [esc(POLICY_TITLE(k)), v]))
+             : '<p class="small" style="margin:10px 0 0">No plans from ' + esc(hoodName(homeHood)) + ' yet. Yours could be the first.</p>';
+  }
+  el.innerHTML = h;
+}
+async function renderGallery(){
+  const el = $("gallery");
+  try {
+    const q = galSort === "hood" ? "/api/gallery?sort=new&hood=" + homeHood : "/api/gallery?sort=" + galSort;
+    if (galSort === "hood" && !homeHood){ el.innerHTML = '<div class="empty">Pick where you live above to see your neighbors\' plans.</div>'; return; }
+    const {plans} = await api(q);
+    if (!plans.length){ el.innerHTML = '<div class="empty">No plans posted yet.</div>'; return; }
+    el.innerHTML = "";
+    plans.forEach(P => {
+      const d = document.createElement("div"); d.className = "gi";
+      const who = P.hood ? "A plan from " + hoodName(P.hood) : "A plan";
+      d.innerHTML = '<div><b></b><span></span></div><button type="button" class="op">Open</button><button type="button" class="lk"></button>';
+      d.querySelector("b").textContent = who;
+      d.querySelector("span").textContent = fmt(P.homes) + " homes · grade " + P.grade;
+      const lk = d.querySelector(".lk"); lk.textContent = "♥ " + P.likes; lk.classList.toggle("liked", liked.has(P.id));
+      d.querySelector(".op").addEventListener("click", () => { const p = decodePlan(P.code); if (!p) return; plan = p; unlockAll(true); recompute(); renderTargets(); toast("Opened " + who.toLowerCase() + ". Remix away."); });
+      lk.addEventListener("click", async () => { if (liked.has(P.id)) return; try { const r = await api("/api/like/" + P.id, {}); liked.add(P.id); lsSet("fch-liked", [...liked]); lk.textContent = "♥ " + r.likes; lk.classList.add("liked"); } catch (e) {} });
+      el.appendChild(d);
+    });
+  } catch (e) { el.innerHTML = '<div class="empty">The gallery is offline right now.</div>'; }
+}
+document.querySelectorAll("#galSort button").forEach(b => b.addEventListener("click", () => { galSort = b.dataset.s; document.querySelectorAll("#galSort button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderGallery(); }));
+async function loadCommunity(){
+  if (!API_OK){ document.querySelectorAll(".comm").forEach(e => e.hidden = true); $("resPublish").closest(".group").hidden = true; return; }
+  try { communityStats = await api("/api/stats" + (homeHood ? "?hood=" + homeHood : "")); } catch (e) { communityStats = null; }
+  renderStats(); renderGallery(); renderPolicies();
+}
+async function submitPlan(gallery){
+  const code = encodePlan(plan), t = totals(false), key = code + (gallery ? "g" : "");
+  if (!API_OK || key === lastSubmitted || t.total < 1) return false;
+  try { await api("/api/plan", {code, homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood, gallery: gallery ? 1 : 0}); lastSubmitted = key; return true; } catch (e) { return false; }
+}
+$("resPublish").addEventListener("click", async () => {
+  const ok = await submitPlan(true);
+  toast(ok ? "Posted to the gallery. See it under Share." : "Couldn't post right now. Try again in a bit.");
+  if (ok){ $("resPublish").disabled = true; galSort = "new"; loadCommunity(); }
+});
+$("doAlder").addEventListener("click", async () => {
+  const t = totals(false);
+  const note = "Hi, I'm a constituent. I played Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + SHARE_BASE + "#" + encodePlan(plan) + "\n\nWould you support zoning changes like these in our ward?";
+  try { await navigator.clipboard.writeText(note); toast("Note copied. Paste it into an email to your alderperson."); } catch (e) { toast("Couldn't copy automatically. Your plan link is in the Share tab."); }
+  window.open("https://chicago.gov/city/en/depts/mayor/provdrs/your_ward_and_alderman/svcs/find_my_alderman.html", "_blank", "noopener");
 });
 function myPlans(){ return lsGet("upzone-plans", []); }
 function renderMyPlans(){
