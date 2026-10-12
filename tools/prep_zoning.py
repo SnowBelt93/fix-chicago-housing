@@ -4,7 +4,7 @@ Flag buildings that would be "illegal to build today" under Chicago zoning.
 
 Run this on a machine with normal internet access (the cloud session that built the game
 couldn't reach the Chicago Data Portal). It:
-  1. downloads the city's current zoning districts (Chicago Data Portal, dataset 7cve-jgbp),
+  1. downloads the city's current zoning districts (Chicago Data Portal, dataset dj47-wfun),
   2. finds the zoning district under each building in b/*.wasm,
   3. sets flag bit 64 on buildings that hold more homes than their district allows
      on their (estimated) lot, and writes the .wasm files back in place.
@@ -24,14 +24,15 @@ Rules (Chicago Zoning Ordinance, Title 17; see SPEC.md for sources):
   districts are skipped. The RS-3 two-flat exception (60% of the block face already multi-unit) is ignored,
   so a few RS-3 two-flats get flagged that could qualify for it.
 """
-import json, math, os, re, struct, sys, urllib.request
+import collections, json, math, os, re, struct, sys, urllib.request
 import numpy as np
 from shapely.geometry import shape, Point
 from shapely.strtree import STRtree
 from shapely import prepared
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-URL = "https://data.cityofchicago.org/api/geospatial/7cve-jgbp?method=export&format=GeoJSON"
+# 7cve-jgbp is now only a map view (its export comes back empty); dj47-wfun is the dataset behind it.
+URL = "https://data.cityofchicago.org/resource/dj47-wfun.geojson?$limit=100000"
 CACHE = os.path.join(ROOT, "tools", "zoning.geojson")
 
 RES = {"RS-1": 6250, "RS-2": 5000, "RS-3": 2500, "RT-3.5": 1250, "RT-4": 1000, "RT-4A": 1000,
@@ -40,6 +41,7 @@ SUFFIX = {"1": 2500, "1.5": 1350, "2": 1000, "3": 400, "5": 200}
 
 def mla(zone):
     z = (zone or "").strip().upper()
+    z = re.sub(r"^RM-?(\d)-?(\.5)?$", r"RM-\1\2", z)   # the city's data has a few typos: RM4.5, RM5.5, RM4-.5
     if z in RES: return RES[z]
     m = re.match(r"^(B[123]|C[12])-(1\.5|1|2|3|5)$", z)
     if m: return SUFFIX[m.group(2)]
@@ -65,6 +67,7 @@ def main():
 
     meta = json.load(open(os.path.join(ROOT, "meta.json")))
     flagged = total = 0
+    seen = collections.Counter()                 # buildings per zoning class, for the summary
     for a in meta["areas"]:
         path = os.path.join(ROOT, "b", f"{a['num']}.wasm")
         buf = bytearray(open(path, "rb").read())
@@ -88,6 +91,7 @@ def main():
             for k in tree.query(p):
                 if preps[k].contains(p): zone = zones[k]; break
             limit = mla(zone)
+            seen[zone] += 1
             illegal = False
             if limit is not None and un[i] >= 2:
                 lot = fp[i] * 2                                                # fp is the footprint; lot ≈ 2 x footprint
@@ -98,6 +102,13 @@ def main():
             total += 1
         open(path, "wb").write(buf)
         print(a["name"], "done")
+    fam = lambda z: "no district found" if z is None else re.match(r"[A-Z]+", z.strip().upper() or "?").group(0)
+    for label, keep in (("parsed", True), ("skipped", False)):
+        rows = collections.Counter()
+        for z, n in seen.items():
+            if (mla(z) is not None) == keep: rows[z if keep else fam(z)] += n
+        print(f"{label}: {sum(rows.values()):,} buildings")
+        for z, n in rows.most_common(): print(f"  {z:<18}{n:>9,}")
     print(f"flagged {flagged:,} of {total:,} buildings as illegal to build today")
 
 if __name__ == "__main__":
