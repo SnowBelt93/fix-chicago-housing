@@ -624,8 +624,6 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
           <div><dt>Big projects in the pipeline</dt>
             <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, but only about a tenth of the 2041 goal. Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's now a quantum computing park (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
-          <div><dt>Spot an error?</dt>
-            <dd>Tell us: <a href="mailto:feedback@fixchicagohousing.com?subject=Fix%20Chicago%20Housing%20feedback">feedback@fixchicagohousing.com</a>. Corrections with a source get fixed fast.</dd></div>
           <div><dt>Data</dt>
             <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (circa 2015), garages and sheds removed. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
           <div><dt>Not modeled</dt>
@@ -671,7 +669,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow)</span></div>
       </div>
       <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
-      <p class="hook" id="introHook" hidden>See the red buildings behind this box? Those <b id="hookNum"></b> buildings would be <b>illegal to build today</b>: mostly 2-flats and 3-flats on land now zoned for single-family houses.</p>
+      <p class="hook" id="introHook" hidden>See the red buildings behind this box? <b id="hookNum"></b> Chicago buildings would be <b>illegal to build today</b>: mostly 2-flats and 3-flats on land now zoned for single-family houses.</p>
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <ol>
         <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
@@ -1453,7 +1451,7 @@ async function boot(){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; tot += A.n; for (let i = 0; i < A.n; i++) if (A.fl[i] & 64) n++; }
     $("tool-illegal").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
-    $("hookNum").textContent = fmt(n); $("introHook").hidden = false;
+    $("hookNum").textContent = "About " + fmt(Math.round(n / 1000) * 1000); $("introHook").hidden = false;
   }
   render();
 }
