@@ -1973,7 +1973,7 @@ function render(){
   $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : "");
   $("pace").textContent = fmt(CITY_PACE * year);
   $("paceLbl").textContent = "built by " + yrLabel + " at today's pace";
-  $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tf.aff);
+  { const aff = tf.total > 0 ? tf.aff * Math.min(1, tv.total / tf.total) : 0; $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(aff); }   // affordable homes built by the year shown
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
@@ -2100,12 +2100,13 @@ $("tierTable").innerHTML = TIERS.slice(1).map(T => '<tr><td>' + T.name + '</td><
 let playing = false, playTimer = 0, camRaf = 0;
 function recomputeWave(){
   // update neighborhoods a few per frame so the city rises in a ripple instead of one big hitch
-  const keys = Object.keys(AREAS), per = Math.ceil(keys.length / 6);
+  const keys = Object.keys(AREAS), per = Math.ceil(keys.length / 8);
   let i = 0;
   const step = () => {
     keys.slice(i, i + per).forEach(k => compute(AREAS[k]));
-    i += per; render();
-    if (i < keys.length) requestAnimationFrame(step);
+    i += per;
+    if (i < keys.length){ deckgl.setProps({layers: layers()}); requestAnimationFrame(step); }   // just the map mid-ripple; the panels update once per year
+    else render();
   };
   step();
 }
@@ -2204,9 +2205,11 @@ $("playBtn").addEventListener("click", () => {
 function scrubTo(y){ if (playing) return; year = Math.max(0, Math.min(YEARS, y)); scrubbing = true; recompute(); scrubbing = false; }
 $("yrRange").addEventListener("input", (e) => scrubTo(+e.target.value));
 $("resCompare").addEventListener("click", () => hideModal("result", () => {
-  // drop the city back to 2026, hold, then rise to 2041
-  scrubTo(0); toast("2026: the city today");
-  setTimeout(() => { scrubTo(YEARS); toast("2041 with your plan. Drag the timeline to see any year."); }, 2200);
+  // fly in over the neighborhood that changes most, drop the city back to 2026, hold, then rise to 2041
+  const m = reduceMotion ? null : cineStops()[0], wait = m ? 1300 : 0;
+  if (m){ const v = {zoom:isWide() ? 14.1 : 13.5, pitch:60, bearing:viewState.bearing}; deckgl.setProps({initialViewState:{...viewState, ...v, ...centerAt(m.lon, m.lat, v, visibleCenter()), transitionDuration:1200, transitionInterpolator:new deck.FlyToInterpolator()}}); }
+  setTimeout(() => { scrubTo(0); toast("2026: " + (m ? m.name + " today" : "the city today")); }, wait);
+  setTimeout(() => { scrubTo(YEARS); toast("2041 with your plan. Drag the timeline to see any year."); }, wait + 2400);
 }));
 function stopPlay(finished){
   clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; document.body.classList.remove("playing"); $("cineCap").hidden = true;
