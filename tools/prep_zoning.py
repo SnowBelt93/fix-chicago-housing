@@ -19,7 +19,8 @@ Rules (Chicago Zoning Ordinance, Title 17; see SPEC.md for sources):
   RS-1 6250, RS-2 5000, RS-3 2500, RT-3.5 1250, RT-4/RT-4A 1000, RM-4.5 700, RM-5/RM-5.5 400, RM-6/RM-6.5 300
   B/C districts by suffix: -1 2500, -1.5 1350, -2 1000, -3 400, -5 200 ; C3 allows no housing
   A detached house is allowed on any existing lot of record, so every lot allows at least 1 home.
-  Lot area is estimated as 2x the building footprint, the same assumption the game uses.
+  Lot area is estimated as 2x the building footprint, but never less than a standard
+  Chicago lot (25 x 125 = 3,125 sq ft), since small buildings cover well under half their lot.
   Downtown (D*), Planned Developments (PD), manufacturing (M*), parks (POS) and transportation (T)
   districts are skipped. The RS-3 two-flat exception (60% of the block face already multi-unit) is ignored,
   so a few RS-3 two-flats get flagged that could qualify for it.
@@ -94,7 +95,7 @@ def main():
             seen[zone] += 1
             illegal = False
             if limit is not None and un[i] >= 2:
-                lot = fp[i] * 2                                                # fp is the footprint; lot ≈ 2 x footprint
+                lot = max(fp[i] * 2, 3125)                                     # fp is the footprint; lot ≈ 2 x footprint, at least a standard lot
                 allowed = 0 if limit == 0 else max(1, int(lot // limit))
                 illegal = un[i] > allowed
             if illegal: buf[fl_off + i] |= 64; flagged += 1
