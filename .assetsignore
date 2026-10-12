@@ -1,0 +1,11 @@
+.git
+.github
+.serena
+worker
+tools
+node_modules
+wrangler.jsonc
+.assetsignore
+.gitignore
+CLAUDE.md
+README.md
