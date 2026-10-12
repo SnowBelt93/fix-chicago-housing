@@ -1,0 +1,1957 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fix Chicago Housing</title>
+<meta name="description" content="Rezone real Chicago, flip real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
+<meta property="og:title" content="Fix Chicago Housing">
+<meta property="og:description" content="Rezone real Chicago, flip real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2b5da0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e4002b' d='M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: full-bleed 3D model of the city; civic goal meter on top, tool sheet at the bottom on phones / left rail on desktop.
+   Default look "City Hall": Chicago flag blue + red six-point stars, city-website blue bands, condensed Big Shoulders headlines, square corners.
+   Fan-made and labeled as such: no city seal, logo or "official website" banner. Alternate look: playful sim. */
+[hidden]{display:none!important}
+:root{
+  --table:#e3e9ef;
+  --ink:#1c2430; --ink-2:#3d4654; --ink-3:#6b7280;
+  --paper:#ffffff; --paper-2:#eef3f8; --line:#d9dde3;
+  --nav:#2b5da0; --nav-2:#1d4377; --flag:#41b6e6; --star:#e4002b;
+  --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f;
+  --s-zone:#2b5da0; --s-adu:#2f8f5b; --s-str:#41b6e6; --s-lots:#7a4fb3; --s-office:#e08a1e;
+  --good:#1f7a45; --warn:#a8641b; --bad:#b4232c; --focus:#e4002b; --vac:#9aa3ae;
+  --f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --f-body:"Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --f-serif:"Source Serif 4", Georgia, serif;
+  --f-data:"Public Sans", "Helvetica Neue", Arial, sans-serif;
+  --r:2px;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:var(--table);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;overflow:hidden;-webkit-font-smoothing:antialiased}
+#app{position:relative;height:100%;overflow:hidden}
+#map{position:absolute;inset:0;background:var(--table)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:var(--ink)}
+
+/* ---------- goal meter ---------- */
+.hud{position:absolute;z-index:3;left:12px;right:12px;top:10px;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:0;overflow:hidden;box-shadow:0 6px 24px rgba(28,36,48,.16)}
+.fanbar{background:#f1f2f4;padding:4px 12px;font-family:var(--f-serif);font-size:11px;color:var(--ink-2);display:flex;align-items:center;gap:5px}
+.fanbar svg{width:9px;height:9px;fill:#9aa3ae;flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:8px;padding:7px 0 7px 12px;border-bottom:2px solid var(--line)}
+.brand .mark{width:38px;height:25px;flex:0 0 auto}
+.brand h1{margin:0;font-family:var(--f-display);font-weight:900;font-size:21px;letter-spacing:.01em;line-height:1;text-transform:uppercase}
+.brand .load{margin-left:auto;font-family:var(--f-data);font-size:10.5px;color:var(--ink-3);white-space:nowrap}
+.look{border:0;background:var(--nav);color:#fff;border-radius:0;padding:0 12px;align-self:stretch;margin:-7px 0;font-size:11.5px;font-weight:600;letter-spacing:.02em}
+.look:hover{background:var(--nav-2)}
+.scoreband{background:var(--nav);color:#fff;padding:9px 12px 10px}
+.score{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.score .big{font-family:var(--f-display);font-weight:900;font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.score .of{color:#fff;font-size:12.5px;border:0;background:none;padding:0;text-align:left;text-decoration:underline dotted rgba(255,255,255,.6);text-underline-offset:3px}
+.grade{margin-left:auto;font-family:var(--f-display);font-weight:800;font-size:16px;border-radius:0;padding:2px 9px;background:#fff;color:var(--nav);border:0}
+.grade.top{background:var(--star);color:#fff}
+.scoreband .bar{background:rgba(255,255,255,.22);border-color:transparent}
+.scoreband .bar .z{background:var(--flag)}
+.scoreband .keys{color:rgba(255,255,255,.92)}
+.hud .stats{padding:0 12px;margin-top:8px}
+.hud .play{padding:0 12px 10px}
+.bar{position:relative;height:12px;border-radius:var(--r);background:var(--paper-2);border:1px solid var(--line);margin-top:8px;overflow:hidden;display:flex}
+.bar i{display:block;height:100%;width:0;transition:width .35s ease}
+.bar .z{background:var(--s-zone)} .bar .a{background:var(--s-adu)} .bar .s{background:var(--s-str)} .bar .l{background:var(--s-lots)} .bar .o{background:var(--s-office)} .bar .v{background:#9aa3ae} .bar .h{background:var(--star)}
+.keys{display:flex;gap:10px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--ink-2)}
+.keys span{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.keys span::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--c)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+.stat{min-width:0}
+.stat b{display:block;font-family:var(--f-data);font-weight:500;font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat span{display:block;font-size:11px;color:var(--ink-3);line-height:1.25}
+.play{display:flex;align-items:center;gap:10px;margin-top:8px}
+.play button{border:0;background:var(--star);color:#fff;border-radius:var(--r);padding:8px 14px 8px 11px;font-family:var(--f-display);font-weight:800;font-size:16px;letter-spacing:.03em;text-transform:uppercase;display:inline-flex;align-items:center;gap:7px}
+.play button:hover{background:#c00024}
+.play button svg{width:14px;height:14px;fill:currentColor}
+.stat b{font-family:var(--f-display)!important;font-weight:800!important;font-size:19px!important}
+.play .yr{font-family:var(--f-data);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.play .track{flex:1;height:4px;border-radius:2px;background:var(--paper-2);position:relative;overflow:hidden}
+.play .track i{position:absolute;inset:0 auto 0 0;width:100%;background:var(--ink-3)}
+
+/* ---------- tool sheet ---------- */
+.sheet{position:absolute;z-index:3;left:0;right:0;bottom:0;height:46%;background:var(--paper);border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -8px 28px rgba(27,35,32,.14);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);transition:height .25s ease}
+.sheet{height:min(46%, calc(100% - var(--hudH, 300px) - 22px))}
+.sheet.min{height:104px}
+.grab{border:0;background:none;padding:8px 0 2px;display:flex;justify-content:center}
+.grab::before{content:"";width:40px;height:4px;border-radius:2px;background:var(--line)}
+.tabs{display:flex;padding:2px 8px 0;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tab{flex:1 0 auto;border:0;background:none;padding:9px 8px 10px;font-weight:650;font-stretch:88%;font-size:13px;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.tab .n{font-family:var(--f-data);font-size:10.5px;background:var(--paper-2);border-radius:999px;padding:1px 5px;margin-left:3px}
+.panes{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
+.pane{padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+.pane h2{margin:0;font-family:var(--f-display);font-weight:800;font-stretch:85%;font-size:19px;line-height:1.15;text-wrap:balance}
+.pane p{margin:0;color:var(--ink-2);max-width:62ch}
+.group{display:flex;flex-direction:column;gap:8px}
+.small{font-size:12px;color:var(--ink-3)}
+.tool{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.tool:last-child{border-bottom:0}
+.tool h3{margin:0;font-size:15px;font-weight:750;font-stretch:90%}
+.locked{position:relative}
+.locked > *:not(.lockmsg){opacity:.35;pointer-events:none;filter:grayscale(1)}
+.lockmsg{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--ink-2);background:var(--paper-2);border-radius:8px;padding:7px 10px}
+.lockmsg svg{width:13px;height:13px;flex:0 0 auto;fill:currentColor}
+
+.tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.tiers.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tier{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.tier .sw{width:100%;max-width:44px;height:22px;display:flex;align-items:flex-end;justify-content:center;gap:2px}
+.tier .sw s{display:block;width:9px;background:var(--c,var(--line));border-radius:1px 1px 0 0}
+.tier em{font-style:normal;font-weight:650;font-size:11.5px;font-stretch:82%;line-height:1.1;text-align:center}
+.tier small{font-family:var(--f-data);font-size:10px;color:var(--ink-3)}
+.tier[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--paper-2)}
+
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:9px 12px;font-weight:600;font-size:13px}
+.btn:hover{background:var(--paper-2)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.primary:hover{background:#2c3833}
+.btn.quiet{border-color:transparent;background:none;color:var(--ink-2);padding-inline:6px}
+.btn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:600;background:var(--paper-2);border:1px solid var(--line);white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.selname{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--paper)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fact{background:var(--paper-2);border-radius:8px;padding:8px 10px;min-width:0}
+.fact b{display:block;font-family:var(--f-data);font-weight:500;font-size:15px;font-variant-numeric:tabular-nums}
+.fact span{font-size:11px;color:var(--ink-3)}
+.list{display:flex;flex-direction:column}
+.item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .main{flex:1;min-width:0}
+.item .main b{display:block;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .main span{display:block;font-size:12px;color:var(--ink-3);font-family:var(--f-data)}
+.empty{font-size:13px;color:var(--ink-3);padding:4px 0}
+
+/* missions */
+.mission{display:flex;gap:12px;align-items:flex-start;padding:11px 12px;border:1px solid var(--line);border-radius:var(--r)}
+.mission .medal{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);border:2px dashed var(--line);font-family:var(--f-display);font-weight:800;font-size:13px;color:var(--ink-3)}
+.mission.done .medal{background:var(--t2);border:2px solid #c47f16;color:#4a2a05}
+.mission .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mission b{font-weight:700}
+.mission p{font-size:12.5px}
+.mprog{height:5px;border-radius:3px;background:var(--paper-2);overflow:hidden}
+.mprog i{display:block;height:100%;background:var(--ink-3);width:0;transition:width .3s}
+.mission.done .mprog i{background:var(--good)}
+.mstat{font-family:var(--f-data);font-size:11px;color:var(--ink-3)}
+.mstat.bad{color:var(--warn)}
+.targets{display:flex;flex-direction:column;gap:6px}
+.target{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:var(--r);padding:10px 12px}
+.target[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--paper-2)}
+.target .num{font-family:var(--f-data);font-weight:500;font-size:15px;min-width:76px;font-variant-numeric:tabular-nums}
+.target .what{font-size:12.5px;color:var(--ink-2)}
+.target .what b{display:block;color:var(--ink);font-size:13px}
+
+/* policies */
+.policy{border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:7px}
+.policy.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.policy .top{display:flex;align-items:flex-start;gap:10px}
+.policy .top .t{flex:1;min-width:0}
+.policy h3{margin:0;font-size:14.5px;font-weight:750;font-stretch:90%;line-height:1.2}
+.rank{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 6px;background:#fff;border:1px solid var(--line);color:var(--ink-3)}
+.rank:empty{display:none}.rank[data-size="big"]{color:#fff;background:var(--nav);border-color:var(--nav)}.rank[data-size="med"]{color:var(--nav);border-color:var(--nav)}
+.status{display:inline-block;margin-top:4px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:4px;padding:2px 6px;background:var(--paper-2);color:var(--ink-2)}
+.status.prop{background:#fdf1d6;color:#7a4d06}
+.status.stall{background:#f6e3dc;color:#7c3218}
+.status.part{background:#e2efe6;color:#245c3b}
+.status.idea{background:#e3ebf3;color:#294f74}
+.status.law{background:var(--ink);color:#fff}
+.status.else{background:#e3f1e8;color:#1f5f3a}
+.policy p{font-size:12.5px}
+.policy .gain{font-family:var(--f-data);font-size:12px;color:var(--ink-2)}
+.policy .src,.srcs{font-size:11.5px;color:var(--ink-3)}
+.switch{flex:0 0 auto;width:46px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--paper-2);position:relative;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .18s}
+.switch[aria-checked="true"]{background:var(--good);border-color:var(--good)}
+.switch[aria-checked="true"]::after{left:21px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--paper);padding:7px 4px;font-size:12px;font-weight:600;border-right:1px solid var(--line);line-height:1.2}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+
+/* impact */
+.sidebar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
+.sidebar i{display:block;height:100%}
+.sidekeys{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;font-size:12px}
+.sidekeys span{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.sidekeys span::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--c)}
+.persona{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:center}
+.persona:last-child{border-bottom:0}
+.persona b{font-weight:700}
+.persona .job{font-size:12px;color:var(--ink-3)}
+.persona .burden{grid-row:span 2;text-align:right;font-family:var(--f-data);font-size:12px;line-height:1.35;white-space:nowrap}
+.burden .ok{color:var(--good);font-weight:600}
+.burden .no{color:var(--bad);font-weight:600}
+.burden .was{color:var(--ink-3)}
+
+.math{display:flex;flex-direction:column;gap:12px;margin:0}
+.math dt{font-weight:700;font-size:13px}
+.math dd{margin:2px 0 0;color:var(--ink-2);font-size:13px;max-width:62ch}
+.math table{border-collapse:collapse;font-size:12.5px;width:100%}
+.math th,.math td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line)}
+.math td.n{font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.code{font-family:var(--f-data);font-size:11.5px;word-break:break-all;background:var(--paper-2);border-radius:8px;padding:8px 10px;user-select:all}
+
+.legend{position:absolute;z-index:2;right:12px;bottom:calc(min(46%, calc(100% - var(--hudH, 300px) - 22px)) + 10px);display:flex;flex-direction:column;gap:3px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:11px;color:var(--ink-2)}
+.legend div{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:2px;background:var(--c);border:1px solid rgba(0,0,0,.12)}
+.lgtoggle{display:none;border:0;background:none;padding:0;font:inherit;font-size:11px;font-weight:700;color:var(--ink-2);cursor:pointer;text-align:left}
+@media (max-width:859px){
+  body:not(.sheetmin) .hud .stats{display:none}      /* phones: keep the map visible while the tool sheet is open */
+  .lgtoggle{display:block}
+  .legend:not(.open) > div{display:none}
+  .lgtoggle::after{content:" ▸"} .legend.open .lgtoggle::after{content:" ▾"}
+}
+.legend i.ring{border-radius:50%;background:rgba(43,93,160,.18);border:1.5px solid rgba(43,93,160,.7)}
+.policy .more-btn{align-self:flex-start;border:0;background:none;padding:2px 0;font:inherit;font-size:12px;font-weight:650;color:var(--nav);cursor:pointer}
+.policy .more-btn::after{content:" ▾"}
+.policy .more-btn[aria-expanded="true"]::after{content:" ▴"}
+.policy .more{display:flex;flex-direction:column;gap:7px}
+.pgroup{border-top:1px solid var(--line);padding-top:10px}
+.pgroup > summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pgroup > summary::-webkit-details-marker{display:none}
+.pgroup > summary::after{content:"▾";color:var(--ink-3);font-size:13px}
+.pgroup:not([open]) > summary::after{content:"▸"}
+.pgroup > summary .eyebrow{margin:0}
+.pgroup > .group{margin-top:10px}
+.expandall{border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:650;color:var(--nav);cursor:pointer;justify-self:start}
+.credit{position:absolute;z-index:2;left:12px;bottom:calc(46% + 10px);font-size:10.5px;color:var(--ink-2);background:rgba(255,255,255,.75);padding:2px 6px;border-radius:4px}
+.toast{position:absolute;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(46% + 14px);background:var(--ink);color:#fff;padding:9px 15px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 32px);text-align:center}
+.toast.on{opacity:1}
+/* public comment bubble */
+.comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;background:var(--paper);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;box-shadow:0 6px 18px rgba(27,35,32,.14);font-size:13px;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s;pointer-events:none}
+.comment.on{opacity:1;transform:none;pointer-events:auto}
+.comment .ans{margin-top:6px;border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:700;color:var(--nav);cursor:pointer}
+.tip{position:fixed;z-index:12;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13.5px}
+.tip b{display:block;font-family:var(--f-display,inherit);font-size:17px;margin:2px 0 3px}.tip p{margin:0 0 10px;color:#dfe5ee}
+.tip .step{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3cc}
+.tip .row{display:flex;justify-content:space-between;gap:8px}.tip .btn.quiet{color:#cfd8e4;background:transparent;border-color:rgba(255,255,255,.3)}
+.tour-hi{outline:3px solid var(--star,#e4002b);outline-offset:3px;border-radius:6px}
+.mapctl{position:absolute;z-index:3;right:12px;top:calc(var(--hudH, 300px) + 22px);display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 4px 14px rgba(28,36,48,.14);overflow:hidden}
+.mapctl button{width:40px;height:38px;border:0;border-bottom:1px solid var(--line);background:none;font:600 18px/1 var(--f-body);color:var(--ink);cursor:pointer}
+.mapctl button:last-child{border-bottom:0}.mapctl button:hover{background:var(--paper-2)}
+.mapctl button[data-cam="tilt"]{font-size:12px;font-weight:700}
+@media (min-width:860px){.mapctl{top:56px;right:16px}}
+@media (max-width:859px) and (max-height:740px){body:not(.sheetmin) .mapctl{display:none}}
+body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:none}
+@media (min-width:860px){body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:block}}
+.goalmath{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;background:var(--paper-2);border-radius:var(--r);padding:10px 12px}
+.goalmath b{display:block;font-family:var(--f-display);font-size:24px;color:var(--nav);line-height:1}
+.goalmath span{font-size:11.5px;color:var(--ink-2);line-height:1.3;display:block;margin-top:2px}
+.goalmath .op{font-family:var(--f-display);font-size:24px;color:var(--ink-3)}
+.goaleq{font-size:12.5px;background:var(--paper-2);border-radius:var(--r);padding:8px 10px;margin:6px 0 0}
+.card.myth .verdict{font-size:16px!important;font-weight:700;color:var(--ink)!important;border-left:4px solid var(--star,#e4002b);padding-left:10px}
+.fixbox{background:var(--paper-2);border-left:3px solid var(--nav);padding:8px 10px;border-radius:4px}
+.fixbox b{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--nav)}
+.fixbox p{margin:4px 0 0!important;font-size:13.5px!important}
+.townq{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--paper);border-radius:var(--r);padding:10px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer}
+.townq + .townq{margin-top:6px}
+.townq::after{content:" ›";color:var(--nav)}
+.townq.done{color:var(--ink-3);font-weight:500}.townq.done::before{content:"✓ ";color:var(--nav);font-weight:700}
+.tactic{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}.tactic p{margin:3px 0}
+.comment q{display:block;font-weight:650;quotes:"\201C" "\201D"}
+.comment span{display:block;margin-top:3px;font-size:11px;color:var(--ink-3)}
+.hoodbanner{position:absolute;z-index:2;left:12px;right:96px;bottom:calc(46% + 34px);max-width:340px;background:rgba(28,36,48,.82);color:#fff;padding:9px 12px 10px;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+.hoodbanner b{font-family:var(--f-display);font-weight:800;font-size:28px;line-height:.95}
+.hoodbanner span{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.15}
+.sheet.min ~ .legend,.sheet.min ~ .credit,.sheet.min ~ .toast{bottom:116px}
+.sheet.min ~ .hoodbanner{bottom:140px}
+.resgrade{position:relative;width:76px;height:76px;flex:0 0 auto}
+.resgrade svg{width:76px;height:76px;fill:var(--star)}
+.resgrade span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:900;font-size:28px;color:#fff}
+.reshead{display:flex;gap:12px;align-items:center}
+.loading{position:absolute;z-index:1;inset:0;display:grid;place-items:center;pointer-events:none;color:var(--ink-2);font-family:var(--f-data);font-size:12px}
+#fx{position:absolute;inset:0;z-index:9;pointer-events:none}
+
+/* modals */
+.intro{position:absolute;inset:0;z-index:10;background:rgba(27,35,32,.45);display:grid;place-items:center;padding:16px}
+.card{background:var(--paper);border-radius:14px;max-width:420px;width:100%;max-height:calc(100% - 32px);overflow:auto;padding:22px 20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-family:var(--f-display);font-weight:800;font-stretch:80%;font-size:28px;line-height:1.05;text-wrap:balance}
+.card .big{font-family:var(--f-display);font-weight:800;font-stretch:85%;font-size:44px;line-height:1;color:var(--s-zone)}
+.card ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2)}
+.card .row{justify-content:space-between}
+.card.myth{max-width:400px;gap:10px}
+.card.myth .eyebrow{color:var(--bad)}
+.card.myth h2{font-size:23px}
+.card.myth p{margin:0;color:var(--ink-2);font-size:14px}
+.card.result{max-width:460px}
+.card.result h2{font-size:24px}
+.ratecard{background:var(--paper-2);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px}
+.ratecard b{font-size:14px}
+.ratecard p{margin:0;font-size:12.5px;color:var(--ink-2)}
+.chartBox{display:flex;flex-direction:column;gap:4px}
+.ctitle{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:13px}
+.clegend{display:flex;gap:12px;font-size:11.5px;color:var(--ink-2);font-weight:500}
+.clegend span{display:inline-flex;align-items:center;gap:5px}
+.clegend .sw-plan{width:14px;height:2px;background:#c4570f}
+.clegend .sw-base{width:14px;height:0;border-top:2px dashed #6f7a76}
+.chart{width:100%;height:auto;display:block;touch-action:pan-y}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .axis{fill:var(--ink-3);font-family:var(--f-data);font-size:9.5px}
+.chart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .plan{stroke:#c4570f} .chart .base{stroke:#6f7a76;stroke-dasharray:4 3}
+.chart .dot-plan{fill:#c4570f;stroke:var(--paper);stroke-width:2} .chart .dot-base{fill:#6f7a76;stroke:var(--paper);stroke-width:2}
+.chart .zero{stroke:var(--ink-3);stroke-width:1}
+.chart .xh{stroke:var(--ink-3);stroke-width:1}
+.chart .tip rect{fill:var(--ink)} .chart .tip text{fill:#fff;font-family:var(--f-data);font-size:9.5px}
+.restats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+
+/* ---------- City Hall components ---------- */
+.tab{font-family:var(--f-body);font-weight:600;font-stretch:100%}
+.tab[aria-selected="true"]{color:var(--nav);border-bottom-color:var(--nav)}
+.tab .n{background:#e3ecf6;color:var(--nav)}
+.eyebrow{color:var(--nav)}
+.pane h2{font-family:var(--f-display);font-weight:800;font-size:25px;line-height:1;text-transform:uppercase;font-stretch:100%}
+.tool h3,.policy h3{font-family:var(--f-body);font-stretch:100%;font-weight:700}
+.tier[aria-pressed="true"]{border-color:var(--nav);box-shadow:inset 0 0 0 1px var(--nav);background:#eef5fb}
+.tier em{font-family:var(--f-body);font-stretch:100%}
+.btn.primary{background:var(--nav);border-color:var(--nav)}
+.btn.primary:hover{background:var(--nav-2)}
+.btn[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--nav);border-color:var(--nav)}
+.policy.on,.target[aria-pressed="true"]{border-color:var(--nav);box-shadow:inset 0 0 0 1px var(--nav);background:#f5f9fd}
+.switch[aria-checked="true"]{background:var(--nav);border-color:var(--nav)}
+.status.law{background:var(--nav)}
+.mission.done .medal{background:var(--star);border:2px solid var(--star);color:#fff}
+.mission .medal{border-radius:0}
+.fact b,.target .num,.persona .burden{font-family:var(--f-display);font-weight:800}
+.fact b{font-size:20px}
+.card h2{font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-stretch:100%}
+.card .big{color:var(--nav);font-family:var(--f-display);font-weight:900}
+.card.myth .eyebrow{color:var(--star)}
+.ratecard{background:#fff6d6}
+.toast{background:var(--nav-2)}
+.chart .plan{stroke:var(--nav)} .chart .dot-plan{fill:var(--nav)} .clegend .sw-plan{background:var(--nav)}
+.sheet{border-radius:10px 10px 0 0;border-top:3px solid var(--nav)}
+@media (min-width:860px){ .sheet{border-radius:var(--r);border:1px solid var(--line);border-top:3px solid var(--nav)} }
+
+@media (min-width:860px){
+  .hud{right:auto;width:400px;box-sizing:border-box;left:16px;top:16px;padding:12px 14px}
+  .sheet{left:16px;right:auto;width:400px;bottom:16px;height:calc(100% - var(--hudH, 300px) - 44px);min-height:220px;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 6px 24px rgba(27,35,32,.12);padding-bottom:0}
+  .sheet.min{height:calc(100% - var(--hudH, 300px) - 44px)}
+  .grab{display:none}
+  .legend,.sheet.min ~ .legend{bottom:16px;right:16px}
+  .credit,.sheet.min ~ .credit{left:auto;right:16px;bottom:auto;top:16px}
+  .toast,.sheet.min ~ .toast{bottom:28px;left:calc(50% + 210px)}
+  .comment{left:404px;right:auto;top:16px;margin-top:0}
+  .hoodbanner,.sheet.min ~ .hoodbanner{left:432px;right:auto;bottom:16px}
+}
+@media (max-width:430px){ .brand .load{display:none} .brand h1{font-size:19px} }
+@media (max-width:400px){
+  .score .big{font-size:30px}
+  .keys{gap:7px}
+}
+/* motion: modals rise in and sink out, panes fade, details slide open */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes sink{from{opacity:1;transform:none}to{opacity:0;transform:translateY(12px) scale(.98)}}
+@keyframes paneIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+.intro:not([hidden]){animation:fadeIn .22s ease-out}
+.intro:not([hidden]) > .card{animation:rise .34s cubic-bezier(.2,.8,.2,1)}
+.intro.closing{animation:fadeOut .2s ease-in forwards}
+.intro.closing > .card{animation:sink .2s ease-in forwards}
+.pane:not([hidden]){animation:paneIn .24s ease-out}
+.policy .more:not([hidden]),.pgroup[open] > .group,.pgroup[open] > div{animation:paneIn .22s ease-out}
+.tip:not([hidden]){animation:rise .28s cubic-bezier(.2,.8,.2,1)}
+.hoodbanner:not([hidden]){animation:rise .3s cubic-bezier(.2,.8,.2,1)}
+.grade.pop,#grade.pop{animation:pop .45s ease-out}
+.policy{transition:border-color .2s,box-shadow .2s,background-color .2s}
+.tier,.seg button,.tab{transition:background-color .15s,border-color .15s,color .15s,transform .1s}
+.tier:active,.seg button:active,.btn:active{transform:scale(.97)}
+.bar > *{transition:width .5s cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="app">
+  <div id="map" aria-label="3D map of Chicago buildings"></div>
+  <div class="loading" id="loading">Loading 481,000 Chicago buildings…</div>
+
+  <section class="hud" id="hud" aria-live="polite">
+    <div class="fanbar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg>A fan-made game. Not affiliated with the City of Chicago.</div>
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
+      <h1>Fix Chicago Housing</h1><span class="load" id="loadTxt">0 / 77 neighborhoods</span><button class="look" id="lookBtn" type="button">Sources</button>
+    </div>
+    <div class="scoreband">
+      <div class="score">
+        <span class="big" id="homes">0</span>
+        <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">new homes of <b id="goalNum">297,087</b> needed by 2041 ⓘ</button>
+        <span class="grade" id="grade">Grade –</span>
+      </div>
+      <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i></div>
+      <div class="keys" id="keys"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="short">–</b><span id="shortLbl">shortage in 2041</span></div>
+      <div class="stat"><b id="rent">–</b><span id="rentLbl">median rent in 2041</span></div>
+      <div class="stat"><b id="pace">–</b><span id="paceLbl">built anyway at today's pace</span></div>
+    </div>
+    <div class="play">
+      <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate next 15 years</span></button>
+      <span class="track"><i id="yrTrack"></i></span>
+      <span class="yr" id="yrTxt">2041</span>
+    </div>
+  </section>
+
+  <section class="sheet" id="sheet">
+    <button class="grab" id="grab" aria-label="Expand or collapse the tool panel"></button>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-pane="zoning">Build</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="policies">Policies <span class="n" id="pCount">0</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="missions">Missions <span class="n" id="mCount">0/7</span></button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="impact">Impact</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="share">Save</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="math">The math</button>
+    </div>
+    <div class="panes">
+      <!-- Build -->
+      <div class="pane" id="pane-zoning">
+        <div class="tool" id="tool-illegal" hidden>
+          <div class="eyebrow">They don't build them like they used to</div>
+          <button class="btn" id="illegalBtn" type="button" aria-pressed="false">Show buildings that would be illegal to build today</button>
+          <p class="small" id="illegalTxt"></p>
+        </div>
+        <div class="tool" id="tool-tod">
+          <div class="eyebrow">Near every L station</div>
+          <h3>What can go up within a half mile of the L?</h3>
+          <p class="small">The shaded circles on the map are that half mile around each station: about a 10-minute walk.</p>
+          <div class="tiers" id="todTiers"></div>
+        </div>
+        <div class="tool" id="tool-metra" data-unlock="metra">
+          <div class="eyebrow">Near Metra stations in the city</div>
+          <h3>Same idea, for the 74 Metra stops inside Chicago</h3>
+          <div class="tiers" id="metraTiers"></div>
+        </div>
+        <div class="tool" id="tool-hoods" data-unlock="hoods">
+          <div class="eyebrow">One neighborhood at a time</div>
+          <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick a neighborhood…</option></select>
+          <div id="hoodDetail" class="group" hidden>
+            <div class="selname"><h2 id="hoodName"></h2><span class="chip" id="hoodDemand"></span></div>
+            <div class="facts">
+              <div class="fact"><b id="hoodHomes">–</b><span>homes today</span></div>
+              <div class="fact"><b id="hoodAdded">–</b><span>new homes</span></div>
+              <div class="fact"><b id="hoodReplaced">–</b><span>homes replaced</span></div>
+            </div>
+            <div class="tiers" id="hoodTiers"></div>
+          </div>
+          <div class="eyebrow">Rezoned so far · <span id="touched">0%</span> of the city's buildings</div>
+          <div class="list" id="hoodList"></div>
+        </div>
+        <div class="tool" id="tool-corr" data-unlock="corr">
+          <div class="eyebrow">Commercial corridors</div>
+          <h3>Apartments over shops on 38 main streets</h3>
+          <p class="small">Ashland, Western, Milwaukee, Halsted, Clark, Broadway, Cicero, 63rd, 79th and more. Applies to lots facing the street.</p>
+          <div class="tiers" id="corrTiers"></div>
+        </div>
+        <div class="tool" id="tool-office" data-unlock="office">
+          <div class="eyebrow">Downtown office conversions</div>
+          <h3>Turn empty Loop offices into apartments</h3>
+          <p class="small">Downtown office vacancy is about 27% (Cushman &amp; Wakefield, Q2 2026). About 4,000 conversion homes are already underway, so they're in the baseline. This adds more.</p>
+          <div class="seg" id="officeSeg"></div>
+        </div>
+        <div class="row"><button class="btn quiet" id="reset" type="button">Start over</button><button class="btn quiet" id="unlockAll" type="button">Unlock all tools</button></div>
+      </div>
+
+      <!-- Policies -->
+      <div class="pane" id="pane-policies" hidden>
+        <div class="group" data-unlock="policies" id="policyWrap">
+          <div class="group">
+            <div class="eyebrow">Policies</div>
+            <p>Real proposals and reform ideas, ranked by how many homes each adds with your current map. Flip them on and watch.</p>
+          </div>
+          <button type="button" class="expandall" id="expandAll" aria-pressed="false">Show all details</button>
+          <details class="pgroup" open><summary><span class="eyebrow">Chicago &amp; Springfield proposals</span></summary>
+            <div class="group" id="policies"></div>
+          </details>
+          <details class="pgroup" open><summary><span class="eyebrow">Worked in other cities · not on the table here</span></summary>
+            <div class="group"><p class="small">Each card says what actually happened where it passed.</p>
+            <div class="group" id="policiesElse"></div></div>
+          </details>
+          <details class="pgroup"><summary><span class="eyebrow">Already law (built into today's numbers)</span></summary>
+          <div class="group">
+            <div class="policy"><div class="top"><div class="t"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
+              <p>Parking mandates ended in transit-served areas, about 74% of the city, starting September 2025.</p>
+              <span class="src"><a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">Chicago Cityscape</a></span></div>
+            <div class="policy"><div class="top"><div class="t"><h3>Green Social Housing fund</h3><span class="status law">Passed May 2025</span></div></div>
+              <p>A $135M revolving fund and a city-backed nonprofit developer for permanently affordable, mixed-income buildings.</p>
+              <span class="src"><a href="https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Green-Social-Housing-Ordinance-Passes.html" target="_blank" rel="noopener">City of Chicago</a></span></div>
+          </div>
+          </details>
+        </div>
+      </div>
+
+      <!-- Missions -->
+      <div class="pane" id="pane-missions" hidden>
+        <div class="group"><div class="eyebrow">Your missions</div><div id="missions" class="group"></div></div>
+        <div class="group">
+          <div class="eyebrow">Town hall · <span id="townCount"></span></div>
+          <p class="small">The ten things every community meeting hears, what the research actually says, and how another city got past it.</p>
+          <div id="townList"></div>
+          <details class="pgroup"><summary><span class="eyebrow">How to win the room</span></summary><div id="tacticList"></div></details>
+        </div>
+        <div class="group" id="targetGroup">
+          <div class="eyebrow">Which shortage are you solving?</div>
+          <p class="small">Real estimates, all for the Chicago region; no official count exists for the city alone. Chicago permitted about 4,900 homes in 2025, yet the regional shortage still grew by about 8,800 homes in a year. Your goal: today's gap plus 15 years of that growth, on top of today's pace.</p>
+          <div class="targets" id="targets"></div>
+          <p class="goaleq" id="goalEq"></p>
+        </div>
+      </div>
+
+      <!-- Impact -->
+      <div class="pane" id="pane-impact" hidden>
+        <div class="facts">
+          <div class="fact"><b id="impWalk">–</b><span>new homes a 10-min walk from the L or Metra</span></div>
+          <div class="fact"><b id="impAff">–</b><span>affordable homes (required share)</span></div>
+          <div class="fact"><b id="impRepl">–</b><span>existing homes torn down</span></div>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Where the new homes land</div>
+          <div class="sidebar" id="sideBar"></div>
+          <div class="sidekeys" id="sideKeys"></div>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Jobs and taxes</div>
+          <div class="facts">
+            <div class="fact"><b id="impJobs">–</b><span>jobs in the year they're built</span></div>
+            <div class="fact"><b id="impJobs2">–</b><span>lasting local jobs</span></div>
+            <div class="fact"><b id="impTax">–</b><span>local taxes & fees a year</span></div>
+          </div>
+          <p class="small">NAHB's local impact of building 100 apartments: 161 jobs and $2.2M in local revenue the first year, then 44 jobs and $503K a year (2015 dollars).</p>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Can they afford a 1-bedroom in 2041?</div>
+          <p class="small">Share of pay going to a typical Chicago 1-bedroom. Under 30% counts as affordable. Today's rent is $1,745 (Apartment List, Oct 2026); rents rise 3.4% a year and wages 3.2% a year (BLS Employment Cost Index).</p>
+          <div id="personas"></div>
+        </div>
+      </div>
+
+      <!-- Save & share -->
+      <div class="pane" id="pane-share" hidden>
+        <div class="group">
+          <div class="eyebrow">No account needed</div>
+          <p>Your current plan saves itself in this browser. Share it with a link: anyone who opens it sees your plan.</p>
+        </div>
+        <div class="group">
+          <div class="row" style="flex-wrap:nowrap">
+            <input class="txt" id="planName" maxlength="60" placeholder="Name your plan" aria-label="Plan name">
+            <button class="btn primary" id="savePlan" type="button">Save</button>
+          </div>
+          <div class="row">
+            <button class="btn" id="copyLink" type="button">Copy share link</button>
+            <button class="btn" id="copyCode" type="button">Copy plan code</button>
+          </div>
+          <div class="code" id="codeBox"></div>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Open a friend's plan</div>
+          <div class="row" style="flex-wrap:nowrap">
+            <input class="txt" id="codeIn" placeholder="Paste a plan code or link" aria-label="Plan code">
+            <button class="btn" id="openCode" type="button">Open</button>
+          </div>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Saved on this device</div>
+          <div class="list" id="myPlans"><div class="empty">No saved plans yet.</div></div>
+        </div>
+      </div>
+
+      <!-- Math -->
+      <div class="pane" id="pane-math" hidden>
+        <div class="group"><div class="eyebrow">How the numbers work</div><h2>A simple model, with every assumption on the table</h2></div>
+        <dl class="math">
+<div><dt>What each zoning level allows</dt>
+            <dd><div style="overflow-x:auto"><table><thead><tr><th>Level</th><th>Stories</th><th>Homes on a 25×125 lot</th><th>Based on Chicago zoning</th></tr></thead><tbody id="tierTable"></tbody></table></div><span class="small">Homes per lot follow the minimum lot area per home in the <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48908" target="_blank" rel="noopener">Chicago Zoning Ordinance §17-2-0303</a>. A 25×125 ft (3,125 sq ft) lot is the city standard (<a href="https://www.chipublib.org/blogs/post/technology-that-changed-chicago-subdivisions/" target="_blank" rel="noopener">Chicago Public Library</a>).</span></dd></div>
+          <div><dt>How the game decides what gets built</dt>
+            <dd>A rezoned lot can rebuild if it holds homes, or a small one- or two-story shop lot with a street address on a commercial corridor or within ¼ mile of the L (parks, museums, field houses and named landmarks are never touched), was built before 2000, is shorter than the new limit, sits on a lot under about 40,000 sq ft, and the new building adds at least one home. Within 15 years, 6% of those lots rebuild, times a neighborhood demand factor from 0.3× to 2.5× (its share of buildings built since 1990 vs. the city average, from the city's building data). Which lots rebuild is a fixed random draw, so the map and the count always match.</dd></div>
+          <div><dt>If nothing changes</dt>
+            <dd>Chicago keeps permitting about 4,900 homes a year (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data, 2025</a>), but the regional shortage keeps growing about 8,760 homes a year, Zillow's 2023→2024 change (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Mann Report</a>). Rents rise 3.4% a year, Chicago's 2025 asking-rent growth (<a href="https://www.matthews.com/market_insights/chicago-il-multifamily-market-report-q4-2025" target="_blank" rel="noopener">CoStar via Matthews</a>). Both trends are held flat for 15 years.</dd></div>
+          <div><dt>Rent effect</dt>
+            <dd>Each 1% added to Chicago's 1,282,248 homes (<a href="https://data.census.gov/table/ACSDT1Y2024.B25002?g=160XX00US1714000" target="_blank" rel="noopener">Census ACS 2024</a>) lowers rents about 0.19% compared with where they'd otherwise be (<a href="https://eprints.lse.ac.uk/127192/" target="_blank" rel="noopener">Mense, 2025</a>). Median gross rent $1,440 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/PST120223" target="_blank" rel="noopener">Census ACS 2020–24</a>); typical 1-bedroom $1,745 (<a href="https://www.apartmentlist.com/rent-report/il/chicago" target="_blank" rel="noopener">Apartment List, Oct 2026</a>).</dd></div>
+          <div><dt>Shortage estimates</dt>
+            <dd>165,687 homes underproduced, Chicago metro, 2022 (<a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a>). 115,282 home deficit, 2024 (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a>). 224,445 affordable homes missing for extremely low-income renters (<a href="https://therealdeal.com/chicago/2026/03/09/chicago-lacks-more-than-220k-affordable-homes" target="_blank" rel="noopener">Housing Action Illinois & NLIHC via The Real Deal</a>). 41% of Chicago is zoned single-family only (<a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a>).</dd></div>
+          <div><dt>Affordable requirement (ARO)</dt>
+            <dd>Chicago requires 10–20% affordable homes in projects of 10+ units that need a zoning change, city land or city money (<a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago</a>). The game applies the dial to new buildings of 10+ homes. Production effects follow Terner Center modeling for Los Angeles, where output fell about 30% going from an 11% to a 25% requirement (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Phillips, 2024</a>).</dd></div>
+          <div><dt>Office conversions</dt>
+            <dd>Downtown has 141.9M sq ft of office space and 27.2% vacancy (<a href="https://content.cushmanwakefield.com/api/public/content/afebd680503f4418a7c6cb0b53fb9c03" target="_blank" rel="noopener">Cushman & Wakefield, Q2 2026</a>). Chicago's 2026 conversions turn about 4M sq ft into 3,900+ homes (<a href="https://chicago.suntimes.com/other-views/2026/08/03/building-housing-affordable-requirements-ordinance-regulations-development-lylena-estabine" target="_blank" rel="noopener">Sun-Times op-ed</a>), about 1,026 sq ft per home. Nearly 27% of office stock could convert (<a href="https://www.wbez.org/real-estate-development/2025/04/25/office-residential-conversions-apartments-housing-downtown" target="_blank" rel="noopener">CommercialCafe via WBEZ</a>); developers disagree on whether that's too high or too low.</dd></div>
+          <div><dt>Jobs and taxes</dt>
+            <dd>Per 100 new apartments: 161 local jobs and $2.2M local revenue the first year, then 44 jobs and $503K a year (2015 dollars) (<a href="https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/economic-impact/economic-impact-local-area-2015.pdf" target="_blank" rel="noopener">NAHB, 2015</a>).</dd></div>
+          <div><dt>People and pay</dt>
+            <dd>Median wages are BLS May 2025 for the Chicago metro, via <a href="https://wagedex.com/jobs/registered-nurses/metro/chicago-naperville-elgin-il-in" target="_blank" rel="noopener">WageDex</a>. Wages grow 3.2% a year (<a href="https://www.bls.gov/news.release/archives/eci_07312026.htm" target="_blank" rel="noopener">BLS Employment Cost Index, June 2026</a>). The people are made up; their jobs and pay are real.</dd></div>
+          <div><dt>Game assumptions (not measured)</dt>
+            <dd>These are judgment calls, labeled everywhere they're used:
+              <ul style="margin:6px 0 0;padding-left:18px">
+                <li>6% of eligible lots rebuild in 15 years before the demand factor; lot size = 2× building footprint.</li>
+                <li>Short-term rental limits return 10% (precinct bans) or 50% (primary-residence rule) of entire-home listings.</li>
+                <li>Coach houses: pilot pace doubled when every ward allows them by right.</li>
+                <li>Half of city-owned vacant lots get a 2-flat; 10% of "other vacant" homes return under an empty-homes tax.</li>
+                <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and 20% sooner), no parking minimums +10%, small lots +20%.</li>
+                <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
+                <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
+                <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
+              </ul></dd></div>
+          <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
+          <div><dt>Data</dt>
+            <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (circa 2015), garages and sheds removed. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
+          <div><dt>Not modeled</dt>
+            <dd>Construction costs and interest rates (see the end of a simulation), school and transit capacity, and displacement beyond the homes directly replaced.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <div class="legend" id="legend">
+    <button type="button" class="lgtoggle" id="lgToggle" aria-expanded="false">Map key</button>
+    <div><i style="--c:#f4f3ee"></i>Existing</div>
+    <div><i class="lt"></i>3-flat</div>
+    <div><i class="lt"></i>6-flat</div>
+    <div><i class="lt"></i>Mid-rise</div>
+    <div><i class="lt"></i>High-rise</div>
+    <div><i class="lo"></i>Office → homes</div>
+    <div id="lgRing" hidden><i class="ring"></i>½ mile of a station (≈10-min walk)</div>
+  </div>
+  <div class="hoodbanner" id="hoodBanner" hidden><b id="hbName"></b><span id="hbLine"></span></div>
+  <div class="credit">Buildings &amp; streets: City of Chicago</div>
+  <div class="mapctl" id="mapctl" role="group" aria-label="Camera">
+    <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in">+</button>
+    <button type="button" data-cam="out" aria-label="Zoom out" title="Zoom out">−</button>
+    <button type="button" data-cam="left" aria-label="Spin left" title="Spin left (or right-click drag / two-finger twist)">↺</button>
+    <button type="button" data-cam="right" aria-label="Spin right" title="Spin right">↻</button>
+    <button type="button" data-cam="tilt" aria-label="Toggle 2D / 3D" title="Flat map / 3D">2D</button>
+    <button type="button" data-cam="home" aria-label="Reset view" title="Reset view">⌂</button>
+  </div>
+  <div class="tip" id="tip" role="dialog" aria-live="polite" hidden><span class="step" id="tipStep"></span><b id="tipT"></b><p id="tipB"></p><div class="row"><button type="button" class="btn quiet" id="tipSkip">Skip</button><button type="button" class="btn primary" id="tipNext">Next</button></div></div>
+  <div class="comment" id="comment" aria-live="polite"><q id="commentQ"></q><span id="commentBy"></span><button type="button" class="ans" id="commentAns" hidden>How to answer this ›</button></div>
+  <div class="toast" id="toast" role="status"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <div class="intro" id="intro" hidden>
+    <div class="card" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <div class="eyebrow">Your goal by 2041</div>
+      <div class="big">297,087 new homes</div>
+      <div class="goalmath">
+        <div><b>165,687</b><span>homes the region is missing today (Up for Growth)</span></div>
+        <div class="op">+</div>
+        <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow)</span></div>
+      </div>
+      <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
+      <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
+      <ol>
+        <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
+        <li>Flip on real policies Chicago is fighting about, from Airbnb limits to coach houses.</li>
+        <li>Hit "Simulate next 15 years," then share your plan and brag.</li>
+      </ol>
+      <div class="row"><button class="btn quiet" id="introAll" type="button">I know this stuff, unlock everything</button><button class="btn primary" id="introGo" type="button">Start building</button></div>
+    </div>
+  </div>
+
+  <div class="intro" id="myth" hidden>
+    <div class="card myth" role="dialog" aria-modal="true" aria-labelledby="mythTitle">
+      <div class="eyebrow" id="mythEyebrow">Myth check</div>
+      <h2 id="mythTitle"></h2>
+      <p class="verdict" id="mythVerdict" hidden></p>
+      <p id="mythBody"></p>
+      <div class="fixbox" id="mythFix" hidden><b>How another place got past it</b><p id="mythFixTxt"></p></div>
+      <span class="srcs" id="mythSrc"></span>
+      <div class="row"><span></span><button class="btn primary" id="mythClose" type="button">Got it</button></div>
+    </div>
+  </div>
+
+  <div class="intro" id="result" hidden>
+    <div class="card result" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+      <div class="eyebrow">2026 → 2041 · your plan vs. doing nothing</div>
+      <div class="reshead"><div class="resgrade" aria-label="Grade"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span id="resGrade">–</span></div><h2 id="resTitle"></h2></div>
+      <p class="small" id="resText" style="margin:0"></p>
+      <div class="restats">
+        <div class="fact"><b id="resShort">–</b><span>shortage in 2041 with your plan</span></div>
+        <div class="fact"><b id="resRent">–</b><span>median rent in 2041 with your plan</span></div>
+      </div>
+      <div class="chartBox">
+        <div class="ctitle">Housing shortage<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
+        <svg class="chart" id="chShort" role="img" aria-label="Housing shortage by year, no change versus your plan"></svg>
+      </div>
+      <div class="chartBox">
+        <div class="ctitle">Median rent<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
+        <svg class="chart" id="chRent" role="img" aria-label="Median rent by year, no change versus your plan"></svg>
+      </div>
+      <div class="group"><div class="eyebrow">Can they afford a 1-bedroom in 2041?</div><div id="resPersonas"></div></div>
+      <div class="ratecard">
+        <b>One thing zoning can't fix: interest rates</b>
+        <p>Construction loans went from about 5% in 2019 to over 8.5% in 2023 (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2023/12/Making-It-Pencil-December-2023.pdf" target="_blank" rel="noopener">Terner Center</a>). US apartment starts fell about 36% from 2022 to 2024 (<a href="https://fred.stlouisfed.org/data/HOUST5F" target="_blank" rel="noopener">Census via FRED</a>), and Chicago's approvals dropped from about 9,500 in 2023 to about 4,300 in 2024 (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data</a>).</p>
+        <p>A new high-rise apartment costs about $480,000 per home to build (<a href="https://www.bisnow.com/news/chicago/multifamily/why-doesnt-chicago-build-more-apartments-133834" target="_blank" rel="noopener">Bisnow, 2026</a>). By our rough math (a game estimate), that takes about $4,800 a month in rent to pay off, against about $3,000 average downtown rents (<a href="https://therealdeal.com/chicago/2025/03/11/downtown-chicago-apartment-rents-reach-new-peak/" target="_blank" rel="noopener">TRD, 2025</a>). Your zoning makes buildings legal; rates decide whether anyone can afford to build them.</p>
+      </div>
+      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in "The math".</p>
+      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/deck.gl@9.3.11/dist.min.js"></script>
+<script>
+(() => {
+"use strict";
+const SHARE_BASE = (location.protocol.startsWith("http") && !/claude|anthropic|usercontent|localhost/.test(location.hostname))
+  ? location.origin + location.pathname   // hosted on its own site
+  : "https://claude.ai/artifact/XHPMwjqFSW9C4Rbmg8Xe81";
+const YEAR_MS = 700;   // one simulated year; buildings rise continuously across it
+const STOCK = 1282248, ELASTICITY = 0.19, MEDIAN_RENT = 1440, BASE = 0.06, STD_LOT = 3125, FLOOR_M = 3.5, YEARS = 15, START = 2026;
+const GAP_GROWTH = 8760, RENT_GROWTH = 0.034, WAGE_GROWTH = 0.032, CITY_PACE = 4900, RENT_1BR = 1745;
+const TIERS = [
+  {name:"Today", h:0, k:0, color:null, bars:[0,0,0]},
+  {name:"3-flat", h:3, k:3, zone:"RT-4: 1 home per 1,000 sq ft of lot", color:[150,212,240], css:"var(--t1)", bars:[6,9,6]},
+  {name:"6-flat", h:4, k:6, zone:"RM-5: 1 per 400 sq ft (up to 7)", color:[65,182,230], css:"var(--t2)", bars:[9,12,9]},
+  {name:"Mid-rise", h:6, k:10, zone:"RM-6: 1 per 300 sq ft", color:[43,93,160], css:"var(--t3)", bars:[12,16,12]},
+  {name:"High-rise", h:12, k:20, zone:"RM-6.5: 1 per 300 sq ft, or 1 studio per 135 (mix)", color:[20,51,95], css:"var(--t4)", bars:[14,22,18]},
+];
+const OFFICE_COLOR = [224,138,30];
+const TARGETS = [
+  {n:165687, title:"Homes the region failed to build", what:"Up for Growth, 2022 data (2024 report). Chicago ranks 3rd-worst metro in the US."},
+  {n:115282, title:"Families doubled up with no home of their own", what:"Zillow analysis of Census data, 2024 (released 2026)."},
+  {n:224445, title:"Affordable homes missing for extremely low-income renters", what:"Housing Action Illinois & NLIHC, 2026. New market-rate homes help this indirectly, not one-for-one."},
+];
+// Sourced facts and labeled assumptions
+const STR_LISTINGS = 11236, ENTIRE_SHARE = 0.802, STR_RETURN = [0, 0.10, 0.50];
+const ADU_RATE15 = 0.0075, ADU_WARD_SHARE = 34 / 50;
+const CITY_LOTS = 7100, LOT_HOMES = 2, LOT_BUILT = 0.5;
+const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SPEED = 0.8;
+const ARO_SHARE = [0.10, 0.20, 0.30], ARO_FACTOR = [1.30, 1.0, 0.70];
+const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
+const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 "other vacant"; assumption
+const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
+const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
+const JOBS1 = 1.61, JOBS2 = 0.44, TAX2 = 5030;
+const SOUTH_WEST = new Set([...Array.from({length:9}, (_, i) => 23 + i), ...Array.from({length:42}, (_, i) => 34 + i)]);
+const SIDES = [{k:"North Side", c:"#4f7fa8"}, {k:"Downtown", c:"#8a6bb0"}, {k:"West Side", c:"#5e8f6b"}, {k:"South Side", c:"#e8962e"}];
+const sideOf = (n) => (n === 8 || n === 32 || n === 33) ? 1 : (n >= 23 && n <= 31) ? 2 : (n >= 34 && n <= 75) ? 3 : 0;
+const PERSONAS = [
+  {name:"Maria", job:"CTA bus operator", wage:65200},
+  {name:"Keisha", job:"Elementary teacher", wage:78390},
+  {name:"Dev", job:"Line cook", wage:38930},
+  {name:"Tom", job:"Home health aide", wage:38180},
+  {name:"Priya", job:"ER nurse", wage:100490},
+  {name:"Luis", job:"Electrician", wage:102350},
+];
+const EXIST = [248,249,251];
+const PLAYFUL = {lake:[88,196,232], land:[214,240,196], tiers:[null,[255,210,63],[255,159,28],[255,94,91],[123,92,255]], office:[0,166,166],
+  pastels:[[255,214,224],[204,232,255],[255,241,196],[220,210,255],[206,245,226]]};
+let look = "model";
+const tierColor = (t) => t === 5 ? (look === "playful" ? PLAYFUL.office : OFFICE_COLOR) : (look === "playful" ? PLAYFUL.tiers[t] : TIERS[t].color);
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => Math.round(n).toLocaleString("en-US");
+const money = (n) => n >= 1e6 ? "$" + (n / 1e6).toFixed(n >= 1e8 ? 0 : 1) + "M" : "$" + fmt(n);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
+
+// ---------------- plan state ----------------
+const blankPlan = () => ({areas:{}, tod:0, metra:0, corr:0, office:0, g:0, p:{build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
+let plan = blankPlan();
+let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false;
+const tierFor = (num) => plan.areas[num] || 0;
+
+function hash01(i, salt){
+  let x = (Math.imul(i, 2654435761 | 0) + salt * 40503) >>> 0;
+  x = (x ^ (x >>> 16)) >>> 0; x = Math.imul(x, 0x45d9f3b) >>> 0; x = (x ^ (x >>> 16)) >>> 0;
+  return x / 4294967296;
+}
+
+// ---------------- model ----------------
+function tierAt(A, i, T0){
+  const f = A.fl[i];
+  let t = T0;
+  if (plan.tod && (f & 3) >= 1 && plan.tod > t) t = plan.tod;
+  if (plan.metra && (f & 4) && plan.metra > t) t = plan.metra;
+  if (plan.corr && (f & 16) && plan.corr > t) t = plan.corr;
+  const P = plan.p;
+  if (f & 16){ if (P.mpls && t < 3) t = 3; if (P.comm && t < 2) t = 2; }
+  const small = A.un[i] >= 1 && A.un[i] <= 4;
+  if (small){ if (P.camb && t < 2) t = 2; else if ((P.build || P.mpls) && t < 1) t = 1; }
+  return t;
+}
+function compute(A, statsOnly){
+  const T0 = tierFor(A.num), P = plan.p, n = A.n;
+  const p0 = BASE * A.demand * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
+  const officeShare = OFFICE_SHARE[plan.office];
+  let addedNow = 0, added = 0, replaced = 0, touched = 0, walk = 0, aff = 0;
+  const byYear = new Float64Array(YEARS + 1);
+  for (let i = 0; i < n; i++){
+    const f = A.fl[i], t = tierAt(A, i, T0);
+    const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2;
+    let e = st * FLOOR_M, c = 0;
+    if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
+    if (showIllegal && (f & 64)) c = 6;
+    if (t > 0){
+      touched++;
+      const T = TIERS[t];
+      const lot = Math.min(40000, Math.max(2000, fp / 0.5));
+      const net = T.k * lot / STD_LOT - un;
+      const typ = un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000);  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
+      const homes = Math.floor(net), gross = Math.floor(T.k * lot / STD_LOT);
+      const nearTransit = (f & 3) >= 1 || (f & 4);
+      let p = p0;
+      if (P.stair && (t === 2 || t === 3) && lot < 7500) p *= 1 + STAIR_BOOST;
+      if ((P.park || P.mpls) && !nearTransit) p *= 1 + PARK_BOOST;
+      if (P.small && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
+      if (gross >= 10) p *= ARO_FACTOR[P.aro];
+      if (p > 0.6) p = 0.6;
+      if (typ && !(f & 8) && st < T.h && fp <= 20000 && net >= 1 && hash01(i, A.num) < p){
+        let yb = 1 + Math.floor(hash01(i, A.num + 977) * YEARS);
+        if (P.permits) yb = Math.max(1, Math.ceil(yb * PERMIT_SPEED));
+        added += homes; replaced += un; byYear[yb] += homes;
+        if (nearTransit) walk += homes;
+        if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
+        if (yb <= year){ e = T.h * FLOOR_M; c = t; addedNow += homes; }
+      }
+    }
+    if (!statsOnly){ A.elev[i] = e; A.col[i] = c; }
+  }
+  A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
+  if (!statsOnly) A.version++;
+}
+function policyHomes(){
+  const P = plan.p;
+  return {
+    adu: P.adu ? aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE) : 0,
+    str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[P.str],
+    lots: P.lots ? CITY_LOTS * LOT_HOMES * LOT_BUILT : 0,
+    office: OFFICE_SQFT * OFFICE_SHARE[plan.office] / SQFT_PER_HOME,
+    vac: P.vac ? OTHER_VACANT * VAC_RETURN : 0,
+    social: P.social ? SOCIAL_HOMES : 0,
+  };
+}
+function totals(useYear){
+  let zone = 0, zoneNow = 0, replaced = 0, touched = 0, n = 0, sw = 0, walk = 0, aff = 0;
+  const sides = [0, 0, 0, 0];
+  for (const k in AREAS){
+    const A = AREAS[k];
+    zone += A.added; zoneNow += A.addedNow; replaced += A.replaced; touched += A.touched; n += A.n; walk += A.walk; aff += A.aff;
+    if (SOUTH_WEST.has(A.num)) sw += A.added;
+    sides[sideOf(A.num)] += A.added;
+  }
+  const ph = policyHomes(), f = useYear ? year / YEARS : 1;
+  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f};
+  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social;
+  sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
+  aff += Math.round(ph.social * SOCIAL_AFF);
+  return {parts, total, replaced, walk, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
+}
+function planHomesAt(y){
+  let z = 0;
+  for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
+  const ph = policyHomes();
+  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social) * y / YEARS;
+}
+const target = () => TARGETS[plan.g].n;
+const needed = () => target() + GAP_GROWTH * YEARS;
+const rentNoChange = (y, base) => (base || MEDIAN_RENT) * Math.pow(1 + RENT_GROWTH, y);
+const rentWithPlan = (y, homes, base) => rentNoChange(y, base) * (1 - ELASTICITY * (homes / STOCK));
+
+// ---------------- unlocks ----------------
+const UNLOCKS = [
+  {at:10000, keys:["hoods","metra"], label:"Neighborhood zoning and Metra stations"},
+  {at:30000, keys:["policies"], label:"Policies"},
+  {at:60000, keys:["corr","office"], label:"Commercial corridors and office conversions"},
+];
+let unlocked = new Set(lsGet("fch-unlocked", []));
+const isOpen = (k) => unlocked.has(k);
+function unlockAll(quiet){ UNLOCKS.forEach(u => u.keys.forEach(k => unlocked.add(k))); lsSet("fch-unlocked", [...unlocked]); applyLocks(); if (!quiet) toast("Everything's unlocked. Go wild."); }
+function checkUnlocks(total){
+  if (loaded < 77) return;
+  UNLOCKS.forEach(u => {
+    if (total >= u.at && u.keys.some(k => !unlocked.has(k))){
+      u.keys.forEach(k => unlocked.add(k)); lsSet("fch-unlocked", [...unlocked]); applyLocks();
+      celebrate("Unlocked: " + u.label);
+    }
+  });
+}
+function applyLocks(){
+  document.querySelectorAll("[data-unlock]").forEach(el => {
+    const k = el.dataset.unlock, open = isOpen(k);
+    el.classList.toggle("locked", !open);
+    let msg = el.querySelector(":scope > .lockmsg");
+    if (!open && !msg){
+      const u = UNLOCKS.find(x => x.keys.includes(k));
+      msg = document.createElement("div"); msg.className = "lockmsg";
+      msg.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7V5a4 4 0 1 1 8 0v2h1v8H3V7h1zm2 0h4V5a2 2 0 1 0-4 0v2z"/></svg><span></span>';
+      msg.querySelector("span").textContent = "Unlocks at " + fmt(u.at) + " new homes";
+      el.prepend(msg);
+    } else if (open && msg) msg.remove();
+  });
+  $("unlockAll").hidden = UNLOCKS.every(u => u.keys.every(k => unlocked.has(k)));
+}
+
+// ---------------- missions ----------------
+const maxTier = () => Math.max(plan.tod, plan.metra, plan.corr, plan.p.build ? 1 : 0, plan.p.camb || plan.p.comm ? 2 : 0, plan.p.mpls ? 3 : 0, ...Object.values(plan.areas), 0);
+const MISSIONS = [
+  {id:"m1", title:"Break ground", desc:"Unlock 10,000 new homes any way you like.", prog:t => t.total / 10000},
+  {id:"m2", title:"Ride the rails", desc:"50,000 homes using only L and Metra station zoning (no neighborhoods, corridors or BUILD Act). Policies are fair game.",
+    prog:t => t.total / 50000, ok:() => !Object.keys(plan.areas).length && !plan.p.build && !plan.corr && !plan.p.mpls && !plan.p.camb && !plan.p.comm, why:"Only station-area zoning counts"},
+  {id:"m3", title:"Missing middle", desc:"80,000 homes with nothing taller than a 6-flat anywhere.",
+    prog:t => t.total / 80000, ok:() => maxTier() <= 2, why:"Nothing above 6-flat allowed"},
+  {id:"m4", title:"South & West Side", desc:"20,000 new homes on the South and West Sides. Most city-owned vacant lots are there.", prog:t => t.sw / 20000},
+  {id:"m5", title:"Light touch", desc:"60,000 homes while rezoning less than 15% of the city's buildings.",
+    prog:t => t.total / 60000, ok:t => t.touchedPct < 15, why:"Rezoned too much (keep it under 15%)"},
+  {id:"m6", title:"Affordable push", desc:"15,000 affordable homes through the affordable requirement. Careful: set it too high and nothing pencils.", prog:t => t.aff / 15000},
+  {id:"m7", title:"Close the gap by 2041", desc:"Cover today's shortage plus 15 years of growth. Pick which shortage below.", prog:t => t.total / needed()},
+];
+let won = new Set(lsGet("upzone-medals", []));
+function renderMissions(t){
+  const el = $("missions");
+  if (!el._built){
+    el.innerHTML = "";
+    MISSIONS.forEach((m, i) => {
+      const d = document.createElement("div"); d.className = "mission"; d.id = "mis-" + m.id;
+      d.innerHTML = '<div class="medal">' + (i + 1) + '</div><div class="body"><b></b><p></p><div class="mprog"><i></i></div><span class="mstat"></span></div>';
+      d.querySelector("b").textContent = m.title; d.querySelector("p").textContent = m.desc;
+      el.appendChild(d);
+    });
+    el._built = true;
+  }
+  let count = 0;
+  MISSIONS.forEach((m, i) => {
+    const d = $("mis-" + m.id), pr = Math.max(0, Math.min(1, m.prog(t))), ok = m.ok ? m.ok(t) : true;
+    const done = pr >= 1 && ok && loaded === 77;
+    if (done){ count++; if (!won.has(m.id)){ won.add(m.id); lsSet("upzone-medals", [...won]); celebrate("Mission complete: " + m.title); } }
+    d.classList.toggle("done", done);
+    d.querySelector(".medal").textContent = done ? "✓" : String(i + 1);
+    d.querySelector(".mprog i").style.width = (pr * 100) + "%";
+    const s = d.querySelector(".mstat");
+    s.classList.toggle("bad", !ok);
+    s.textContent = !ok ? m.why : done ? "Done" : Math.round(pr * 100) + "%" + (won.has(m.id) ? " · earned before" : "");
+  });
+  $("mCount").textContent = count + "/" + MISSIONS.length;
+}
+function renderTargets(){
+  const el = $("targets"); el.innerHTML = "";
+  TARGETS.forEach((T, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "target";
+    b.setAttribute("aria-pressed", String(plan.g === i));
+    b.innerHTML = '<span class="num"></span><span class="what"><b></b><span></span></span>';
+    b.querySelector(".num").textContent = fmt(T.n);
+    b.querySelector("b").textContent = T.title;
+    b.querySelector(".what span").textContent = T.what;
+    b.addEventListener("click", () => { plan.g = i; renderTargets(); render(); });
+    el.appendChild(b);
+  });
+  const eq = $("goalEq"); if (eq) eq.textContent = "Your goal: " + fmt(target()) + " missing today + " + fmt(GAP_GROWTH * YEARS) + " more by 2041 (" + fmt(GAP_GROWTH) + " a year × 15) = " + fmt(needed()) + " new homes, on top of today's building pace.";
+}
+
+// ---------------- policies ----------------
+const POLICIES = [
+  {key:"build", title:"BUILD Act: 2- to 4-flats on every residential lot", status:["stall","Stalled in Springfield, 2026"],
+    what:"Gov. Pritzker's package would legalize duplexes through 4-flats statewide, with more units on bigger lots. No committee votes in the 2026 session; he says he'll keep pushing.",
+    model:"Every lot with 1–4 homes gets at least 3-flat zoning.",
+    src:[["Daily Herald","https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/"],["Hoodline","https://hoodline.com/2026/03/pritzker-s-build-blitz-puts-chicago-zoning-on-the-hot-seat/"]]},
+  {key:"aro", title:"Affordable requirement (ARO)", status:["law","In effect since 2021"],
+    what:"Projects of 10+ homes that need a zoning change, city land or city money must rent 10–20% of units below market. The rest of the building pays for those units, so a higher requirement means more affordable homes in each building, but some buildings stop making financial sense and never get built. That's why raising it can lower the total.",
+    model:"Applies to new buildings of 10+ homes. Based on Terner Center modeling for Los Angeles: 30% means about 30% fewer of those buildings; 10% means about 30% more. Real-world studies are mixed: fewer homes got built in Boston's suburbs, but studies of the Bay Area and Baltimore–Washington found no clear drop. Treat the size of this effect as an estimate.",
+    levels:["Lower: 10%","Today: 20%","Higher: 30%"],
+    src:[["City of Chicago","https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html"],["Terner Center","https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf"],["Schuetz, Meltzer & Been","https://www.minneapolisfed.org/-/media/files/community/2019-housing-event-series/200903_schuetz_meltzer_been_paper.pdf"],["Hamilton, 2021 (Cityscape)","https://www.huduser.gov/PORTAL/periodicals/cityscpe/vol23num1/ch6.pdf"]]},
+  {key:"permits", title:"Faster permits: Cut the Tape", status:["part","Mostly underway, 2025"],
+    what:"Mayor Johnson's 2024 report had 107 fixes to Chicago's approval process; the city says 96 were underway or done by May 2025. Zoning changes averaged 116 days to approve in 2017 (Chicago Cityscape).",
+    model:"Assumption: 10% more projects get built and they arrive about 20% sooner. Research finds 20–25% fewer permits in slow-approval metros.",
+    src:[["City of Chicago","https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html"],["Mayer & Somerville","https://realestate.wharton.upenn.edu/wp-content/uploads/2017/03/331.pdf"],["Chicago Cityscape, 2017","https://www.chicagocityscape.com/blog/the-slowest-zoning-change-approved-this-year-took-714-days-74ec516b5b4d"]]},
+  {key:"str", title:"Limit short-term rentals (Airbnb)", status:["prop","Proposed in City Council"],
+    what:"Ald. Napolitano's measure would let alderpeople ban new short-term rentals precinct by precinct; it cleared committee in June 2025. New York's 2023 primary-residence rule is the tougher model. Chicago has about 11,200 active listings, roughly 80% of them entire homes.",
+    model:"Assumes precinct bans return 10% of entire-home listings to long-term renters, and a primary-residence rule returns 50%.",
+    levels:["Off","Precinct bans","Primary residence only"],
+    src:[["WTTW","https://news.wttw.com/2025/06/11/key-city-panel-advances-measure-would-allow-alderpeople-block-new-short-term-rentals"],["AirDNA","https://www.airdna.co/vacation-rental-data/app/us/illinois/chicago/supply"]]},
+  {key:"stair", title:"Single-stair apartment buildings", status:["prop","Proposed, hearing June 2026"],
+    what:"Would let some mid-size apartment buildings use one stairway instead of two, which makes 4–6 story buildings work on narrow Chicago lots. The Buildings and Fire departments oppose it on safety grounds.",
+    model:"Assumption: 25% more 6-flat and mid-rise projects get built on lots under 7,500 sq ft. It doesn't affect high-rises (they need two stairs everywhere) or 3-flats (already allowed one stair), so it adds nothing until you zone some areas for 6-flats or mid-rises.",
+    src:[["The Daily Line","https://www.thedailyline.com/chicago-city-council-zoning-committee-hearing-recap-single-stair-apartment-proposal-alderman-matt-martin-fire-buildings-department"]]},
+  {key:"adu", title:"Coach houses & basement units everywhere", status:["part","Partly passed: 34 of 50 wards"],
+    what:"ADUs became legal April 1, 2026, but 16 wards are still ADU-free, and coach houses must use registered-apprenticeship contractors. The 2021 pilot produced a few hundred units (373 per The Real Deal). This would make them by-right in every ward.",
+    model:"Pilot pace (about 0.75% of eligible lots over 15 years) in all 50 wards, doubled by dropping the extra rules.",
+    src:[["WTTW","https://news.wttw.com/2026/04/09/coach-house-ordinance-aimed-housing-affordability-crisis-takes-effect-chicago"],["The Real Deal","https://therealdeal.com/chicago/2025/05/15/chicagos-granny-flat-program-falls-flat/"]]},
+  {key:"lots", title:"Build on city-owned vacant lots", status:["prop","City is selling lots now"],
+    what:"The city owns more than 7,100 vacant lots, concentrated in Englewood, West Englewood, New City and North Lawndale, and sells them for $1 through its Missing Middle program.",
+    model:"Assumption: half of the lots get a 2-flat within 15 years.",
+    src:[["Illinois Policy Institute","https://www.illinoispolicy.org/press-releases/new-report-chicago-vacant-lots-fuel-crime-poverty-on-south-and-west-sides/"],["City of Chicago: Missing Middle","https://www.chicago.gov/missingmiddle"]]},
+  {key:"pre", title:"Rein in aldermanic prerogative", status:["idea","Reform idea"],
+    what:"Alderpeople can effectively veto housing in their wards. A 2023 federal HUD investigation found the practice fuels segregation and blocks affordable housing (HUD withdrew the finding in 2025).",
+    model:"Assumption: 15% more projects get built everywhere because fewer are blocked.",
+    src:[["WTTW, 2023","https://news.wttw.com/2023/11/28/aldermanic-prerogative-fuels-segregation-and-violates-black-latino-chicagoans-civil"],["Inside Climate News, 2025","https://insideclimatenews.org/news/07082025/trump-chicago-housing-environmental-racism/"]]},
+  // ---- Worked in other cities (not under consideration in Chicago) ----
+  {key:"mpls", group:"else", title:"Do what Minneapolis did", status:["else","Minneapolis, 2020"],
+    what:"The 2040 plan allowed 3 homes on any lot and 3–6 stories on transit corridors; the city ended parking minimums in 2021. From 2017 to 2022 Minneapolis grew its housing 12% (vs 4% in the rest of Minnesota) and rents rose 1% (vs 14%). 87% of new homes were in buildings of 20+ units; only 1% were 2–4-unit buildings.",
+    model:"Every lot with 1–4 homes gets 3-flat zoning, corridor lots get mid-rise, and the no-parking boost applies citywide.",
+    src:[["Pew, 2024","https://www.pew.org/en/research-and-analysis/articles/2024/01/04/minneapolis-land-use-reforms-offer-a-blueprint-for-housing-affordability"]]},
+  {key:"camb", group:"else", title:"4-story apartments on every residential lot", status:["else","Cambridge, MA, 2025"],
+    what:"Cambridge now allows 4 stories by right on nearly every residential lot (6 with affordable units) and dropped lot-size and unit caps. Early: about 400 homes permitted so far in 2026, vs about 350 starts a year in 2023–25.",
+    model:"Every lot with 1–4 homes gets at least 6-flat zoning. Early results are thin, so treat this as a what-if.",
+    src:[["City of Cambridge","https://www.cambridgema.gov/cdd/projects/zoning/multifamilyhousing"],["Hoodline/Boston Globe, 2026","https://hoodline.com/2026/07/cambridge-cul-de-sac-showdown-zoning-revamp-ignites-teardowns-protests-and-lawsuits/"]]},
+  {key:"small", group:"else", title:"Small-lot homes", status:["else","Houston, 1998 & 2013"],
+    what:"Houston cut its minimum lot size from 5,000 to 3,500 sq ft by right, and as little as 1,400 for some subdivisions. Nearly 80,000 homes have been built on small lots, and townhouses replacing single-family homes had a median assessed value of $340,000 vs $545,000 for other new houses.",
+    model:"Assumption: 20% more 3-flat and 6-flat projects on lots of 5,000+ sq ft, which can split into townhomes.",
+    src:[["Mercatus, 2023","https://mercatus.org/research/policy-briefs/learning-houstons-townhouse-reforms"],["Pew, 2023","https://www.pew.org/en/research-and-analysis/issue-briefs/2023/09/lot-size-reform-unlocks-affordable-homeownership-in-houston"]]},
+  {key:"park", group:"else", title:"No parking minimums anywhere", status:["else","Buffalo 2017, Austin 2023"],
+    what:"Chicago dropped parking mandates near transit; Buffalo, Minneapolis and Austin dropped them citywide. In Buffalo, mixed-use projects built 53% fewer parking spaces than the old rules required. Austin's median rent fell from $1,546 to $1,296 (2021–2026) amid record building.",
+    model:"Assumption: 10% more projects get built on lots outside transit areas, where mandates still apply.",
+    src:[["Hess & Rehler, 2021","https://doi.org/10.1080/01944363.2020.1864225"],["Pew on Austin, 2026","https://www.pew.org/en/research-and-analysis/articles/2026/03/18/austins-surge-of-new-housing-construction-drove-down-rents"]]},
+  {key:"comm", group:"else", title:"Housing by right on commercial land", status:["else","Texas, 2025"],
+    what:"Texas SB 840 lets apartments and mixed-use go up on commercially zoned land without a rezoning. A coalition report counts 1,250+ homes directly enabled in its first year.",
+    model:"Lots on Chicago's commercial corridors get at least 6-flat zoning.",
+    src:[["Dallas Morning News, 2026","https://www.dallasnews.com/opinion/editorials/article/texas-sb-840-housing-apartments-report-22373676.php"]]},
+  {key:"vac", group:"else", title:"Empty-homes tax", status:["else","Vancouver, 2017"],
+    what:"Vancouver taxes homes left empty (now 3% of value). Declared vacant homes fell 67% from 2017 to 2024 and the tax has put $194M toward affordable housing. Chicago has about 60,000 homes the Census counts as 'other vacant'.",
+    model:"Assumption: 10% of Chicago's 'other vacant' homes return to use. Many are in poor shape, so it's deliberately modest.",
+    src:[["City of Vancouver, 2025","https://vancouver.ca/files/cov/2025-empty-homes-tax-annual-report.pdf"],["Census ACS 2024 B25004","https://data.census.gov/table/ACSDT1Y2024.B25004?g=160XX00US1714000"]]},
+  {key:"social", group:"else", title:"Triple the social housing fund", status:["else","Montgomery County, MD, 2021"],
+    what:"Montgomery County's $100M revolving fund (the model for Chicago's Green Social Housing) has 1,100+ homes built or underway and targets 6,000 over 20 years, at least 30% affordable. Chicago's fund is $135M.",
+    model:"Adds $270M to Chicago's fund at Montgomery County's target pace: about 12,150 homes in 15 years, 30% affordable.",
+    src:[["Montgomery County HOC","https://www.hocmc.org/about-us/innovations/housing-production-fund/"],["NACo, 2026","https://www.naco.org/news/county-backed-loan-fund-unlocks-thousands-affordable-housing-units"],["Pro Builder","https://www.probuilder.com/utopia/innovative-financing-model-affordable-housing"]]},
+];
+function buildPolicies(){
+  $("policies").innerHTML = ""; $("policiesElse").innerHTML = "";
+  POLICIES.forEach(P => {
+    const el = P.group === "else" ? $("policiesElse") : $("policies");
+    const d = document.createElement("div"); d.className = "policy"; d.id = "pol-" + P.key;
+    d.innerHTML = '<div class="top"><div class="t"><h3></h3><span class="status"></span> <span class="rank" title="Ranked by homes added with your current map"></span></div></div><span class="gain"></span><button type="button" class="more-btn" aria-expanded="false">What happened &amp; sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
+    const mb = d.querySelector(".more-btn"), more = d.querySelector(".more");
+    mb.setAttribute("aria-controls", (more.id = "more-" + P.key));
+    mb.addEventListener("click", () => { const o = more.hidden; more.hidden = !o; mb.setAttribute("aria-expanded", String(o)); });
+    d.querySelector("h3").textContent = P.title;
+    const s = d.querySelector(".status"); s.textContent = P.status[1]; s.classList.add(P.status[0]);
+    d.querySelector(".what").textContent = P.what;
+    d.querySelector(".model").textContent = "How it's modeled: " + P.model;
+    const src = d.querySelector(".src"); src.append("Sources: ");
+    P.src.forEach(([t, u], i) => { if (i) src.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; src.append(a); });
+    if (P.levels){
+      const seg = document.createElement("div"); seg.className = "seg";
+      P.levels.forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = i; b.addEventListener("click", () => setPolicy(P.key, i)); seg.appendChild(b); });
+      d.insertBefore(seg, d.querySelector(".gain"));
+    } else {
+      const sw = document.createElement("button"); sw.type = "button"; sw.className = "switch"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-label", P.title);
+      sw.addEventListener("click", () => setPolicy(P.key, plan.p[P.key] ? 0 : 1));
+      d.querySelector(".top").appendChild(sw);
+    }
+    el.appendChild(d);
+  });
+}
+$("expandAll").addEventListener("click", (e) => {
+  const open = e.currentTarget.getAttribute("aria-pressed") !== "true";
+  e.currentTarget.setAttribute("aria-pressed", String(open));
+  e.currentTarget.textContent = open ? "Hide all details" : "Show all details";
+  document.querySelectorAll("#pane-policies .pgroup").forEach(g => { if (open) g.open = true; });
+  document.querySelectorAll("#pane-policies .policy .more").forEach(m => { m.hidden = !open; });
+  document.querySelectorAll("#pane-policies .more-btn").forEach(b => b.setAttribute("aria-expanded", String(open)));
+});
+const SPATIAL = new Set(["build","stair","pre","permits","aro","mpls","camb","small","park","comm"]);
+const ELSE_KEYS = new Set(POLICIES.filter(p => p.group === "else").map(p => p.key));
+function setPolicy(key, v){
+  const was = plan.p[key];
+  plan.p[key] = v;
+  if (SPATIAL.has(key)) recompute(); else render();
+  if (key === "aro"){ if (v !== was) maybeMyth("aro"); }
+  else if (v && !was){
+    react(ELSE_KEYS.has(key) ? (key === "vac" ? "vac" : key === "social" ? "social" : "else") : key);
+    if (key === "str") maybeMyth("airbnb");
+    if (key === "lots" || key === "social") maybeMyth("affordable");
+    if (key === "build") maybeMyth("filter");
+    if (ELSE_KEYS.has(key) && key !== "vac" && key !== "social") maybeMyth("upzone");
+  }
+}
+function currentAdded(){ let s = 0; for (const k in AREAS){ compute(AREAS[k], true); s += AREAS[k].added; } return s; }
+function marginal(key, cur){
+  const saved = plan.p[key]; plan.p[key] = key === "aro" ? 1 : (saved ? 0 : 1);
+  const alt = currentAdded();
+  plan.p[key] = saved;
+  return cur - alt;
+}
+let gainTimer = 0;
+const GAIN = {};
+const ZERO = {   // why a spatial policy adds nothing with the current map
+  stair:"Adds nothing yet: it only helps 6-flats and mid-rises on lots under 7,500 sq ft. Zone some areas for those and it kicks in.",
+  pre:"Adds nothing yet: it speeds up projects in areas you've rezoned. Rezone something first.",
+  permits:"Adds nothing yet: it speeds up projects in areas you've rezoned. Rezone something first.",
+  small:"Adds nothing yet: it only helps 3-flat and 6-flat zoning on lots of 5,000+ sq ft.",
+  park:"Adds nothing yet: it only helps rezoned lots outside transit areas, where parking rules still apply.",
+  comm:"Adds nothing with your map: your corridors are already zoned 6-flat or taller.",
+  mpls:"Adds nothing beyond what your map already allows.", camb:"Adds nothing beyond what your map already allows.", build:"Adds nothing beyond what your map already allows.",
+};   // homes each policy adds (or would add) given the current map; used to sort the cards
+function sortPolicies(){
+  const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES};
+  for (const k in ph) GAIN[k] = ph[k];
+  ["policies", "policiesElse"].forEach(id => {
+    const box = $(id);
+    [...box.children].sort((a, b) => (GAIN[b.id.slice(4)] || 0) - (GAIN[a.id.slice(4)] || 0)).forEach((el, i) => {
+      box.appendChild(el);
+      const g = GAIN[el.id.slice(4)] || 0, r = el.querySelector(".rank");
+      r.textContent = "#" + (i + 1) + " · " + (g >= 15000 ? "Big" : g >= 4000 ? "Medium" : "Small");
+      r.dataset.size = g >= 15000 ? "big" : g >= 4000 ? "med" : "small";
+    });
+  });
+}
+function renderPolicies(){
+  const ph = policyHomes();
+  let on = 0;
+  POLICIES.forEach(P => {
+    const d = $("pol-" + P.key), v = plan.p[P.key];
+    const active = P.key === "aro" ? v !== 1 : !!v;
+    if (active) on++;
+    d.classList.toggle("on", active);
+    const sw = d.querySelector(".switch"); if (sw) sw.setAttribute("aria-checked", String(!!v));
+    d.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
+    const g = d.querySelector(".gain");
+    if (P.key === "str") g.textContent = v ? "+" + fmt(ph.str) + " homes" : "Up to +" + fmt(STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2]) + " homes";
+    else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
+    else if (P.key === "lots") g.textContent = (v ? "+" : "Would add +") + fmt(CITY_LOTS * LOT_HOMES * LOT_BUILT) + " homes";
+    else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
+    else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
+  });
+  $("pCount").textContent = on;
+  clearTimeout(gainTimer);
+  if (loaded === 77 && !playing) gainTimer = setTimeout(() => {
+    const cur = currentAdded(), affNow = totals(false).aff;
+    [...SPATIAL].forEach(k => {
+      const m = marginal(k, cur), d = $("pol-" + k).querySelector(".gain");
+      if (k === "aro"){
+        d.textContent = (plan.p.aro === 1 ? "Today's setting" : (m >= 0 ? "+" : "−") + fmt(Math.abs(m)) + " homes vs. today") + " · " + fmt(affNow) + " affordable homes";
+      } else d.textContent = Math.abs(m) >= 1 ? (plan.p[k] ? "+" + fmt(m) + " homes with your current plan" : "Would add +" + fmt(-m) + " with your current plan") : (ZERO[k] || "Adds nothing with your current map yet");
+      GAIN[k] = k === "aro" ? 0 : Math.abs(m);
+    });
+    { const saved = plan.p.aro; plan.p.aro = 1; const base = currentAdded(); plan.p.aro = 0; GAIN.aro = Math.max(0, currentAdded() - base); plan.p.aro = saved; }
+    currentAdded();
+    if ($("pane-policies").hidden) sortPolicies();
+  }, 250);
+}
+
+// ---------------- myths ----------------
+const MYTHS = {
+  illegal:{t:"“They don't build them like they used to.”", a:"They can't. It's illegal on most of the city's land.",
+    b:"The 2-flats and 3-flats that define Chicago's neighborhoods are banned in much of the city today. 41% of Chicago is zoned for single-family houses only, and about a third of those lots are smaller than the zoning code's minimum, so even a single house there needs special approval.",
+    s:[["MPC, 2023","https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades"],["MPC, 2025","https://metroplanning.org/wp-content/uploads/2025/03/ZLUA_Affordable-Housing-Data-Brief.pdf"]]},
+  lux:{t:"“New luxury buildings make rents go up.”", a:"Usually the opposite: rents nearby tend to go down.",
+    b:"Higher-income renters who move into a new building would otherwise compete for older apartments nearby. A study of 11 US cities found rents near new buildings in lower-income areas ended up 5–7% lower than rents a bit farther away. In New York, adding 10% more homes within 500 feet lowered nearby rents about 1%.",
+    s:[["Asquith, Mast & Reed, 2023","https://research.upjohn.org/up_workingpapers/316"],["Li, 2022","https://ideas.repec.org/a/oup/jecgeo/v22y2022i6p1309-1352..html"]]},
+  filter:{t:"“New homes only help rich people.”", a:"They help people further down the ladder too, a few years later.",
+    b:"When someone moves into a new apartment, they leave an older one empty, and the next person moves into that one. Researchers followed these chains of moves: every 100 new market-rate homes opened up the equivalent of 45–70 homes in below-median-income neighborhoods, mostly within a few years. Helsinki found about the same. It's slow, and it doesn't replace subsidies for the lowest incomes.",
+    s:[["Mast, 2023","https://npr.brightspotcdn.com/f3/8c/d42a0f954679936ffd83de507b1a/journal-of-urban-economics-1-s2-0-s0094119021000656-main.pdf"],["Bratu et al., 2023","https://acris.aalto.fi/ws/portalfiles/portal/104404236/1_s2.0_S0094119022001048_main.pdf"]]},
+  airbnb:{t:"“It's all Airbnb's fault.”", a:"Short-term rentals are a small piece of the problem.",
+    b:"Airbnbs take some homes off the market, but the effect on rent is small: a 1% increase in listings raises local rents about 0.018%. Chicago's existing rules already cut listings about 16%. The city has roughly 11,200 listings; the region is short 165,000+ homes. Worth regulating, but it can't close the gap on its own.",
+    s:[["Barron, Kung & Proserpio, 2021","https://papers.ssrn.com/abstract=3006832"],["Jin, Wagman & Zhong, 2024","https://www.nber.org/papers/w32537"]]},
+  affordable:{t:"“Just build affordable housing instead.”", a:"Yes, and also: subsidy alone can't pay for all of it.",
+    b:"Subsidized affordable homes are expensive to build: Chicago's 2025 deals averaged $678,870 per home. The city is short about 103,000 affordable rentals, so building them all that way would cost roughly $70 billion. Subsidy matters most for the lowest incomes, but zoning that lets more homes get built has to carry much of the load.",
+    s:[["A City That Works, 2026","https://citythatworks.substack.com/p/chicago-doubles-down-on-unaffordable"],["CHA Research Lab, 2025","https://www.thecha.org/sites/default/files/2025-08/No-Room-to-Rent-CHA_08.25_Transparency.pdf"]]},
+  shrinking:{t:"“Chicago's losing people. Why build more?”", a:"Population barely moved, but the number of households grew.",
+    b:"Every household needs its own home, and more people live alone or in smaller households than they used to. So the same number of people needs more homes. From 2000 to 2020, Chicago added 80,761 households but only 48,162 homes, the only part of the region where homes fell behind households.",
+    s:[["CMAP, 2022","https://www.cmap.illinois.gov/updates/all/-/asset_publisher/UIMfSLnFfMB6/content/brief-overview-of-housing-unit-counts-and-tenure"]]},
+  density:{t:"“More density means more crime and traffic.”", a:"Not in Chicago's crime data, and each new neighbor drives a bit less.",
+    b:"A Chicago study found dense blocks mixing homes and shops have less crime than typical residential blocks, likely because more people are around to notice. On traffic, people in denser places drive slightly less each, not more: across many studies, 10% more density cuts driving per person about 0.4%. A block can still see more total trips, but homes near transit add fewer cars than the same homes at the edge of the region.",
+    s:[["Twinam, 2017","https://ideas.repec.org/a/eee/juecon/v100y2017icp104-119.html"],["Ewing & Cervero, 2010","https://planning.org/knowledgebase/resource/9149498"]]},
+  upzone:{t:"“Upzoning doesn't actually lower rents.”", a:"Where cities did it at scale, rents grew slower or fell.",
+    b:"Minneapolis allowed more homes on more land: from 2017 to 2022 its rents rose 1% while the rest of Minnesota's rose 14%. Austin loosened its rules and built record numbers of homes, and median rent fell from $1,546 to $1,296 (2021–2026). Six years after Auckland, New Zealand upzoned about three-quarters of the city, 3-bedroom rents were an estimated 22–35% below where they'd been heading. It works slowly and alongside other factors, but the direction is consistent.",
+    s:[["Pew on Minneapolis, 2024","https://www.pew.org/en/research-and-analysis/articles/2024/01/04/minneapolis-land-use-reforms-offer-a-blueprint-for-housing-affordability"],["Pew on Austin, 2026","https://www.pew.org/en/research-and-analysis/articles/2026/03/18/austins-surge-of-new-housing-construction-drove-down-rents"],["Greenaway-McGrevy, 2023 (working paper)","https://cdn.auckland.ac.nz/assets/business/about/our-research/research-institutes-and-centres/Economic-Policy-Centre--EPC-/WP016.pdf"]]},
+  aro:{t:"“Just make every new building include more affordable units.”", a:"Up to a point. Push too hard and fewer buildings get built at all.",
+    b:"Chicago's Affordable Requirements Ordinance (ARO) makes many new buildings rent 10–20% of their units below market. The rest of the building pays for those units, so a higher requirement means fewer projects make financial sense. Modeling for Los Angeles found total construction fell about 30% when the requirement rose from 11% to 25%, and affordable output topped out around 25%. Past that, both kinds of homes drop.",
+    s:[["Terner Center, 2024","https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf"]]},
+};
+let seenMyths = new Set(lsGet("fch-myths", []));
+let mythQueue = [];
+function maybeMyth(id){
+  if (seenMyths.has(id) || !MYTHS[id]) return;
+  seenMyths.add(id); lsSet("fch-myths", [...seenMyths]); renderMythList();
+  if (!$("myth").hidden || !$("result").hidden || !$("intro").hidden){ mythQueue.push(id); return; }
+  showMyth(id);
+}
+function showMyth(id){
+  const m = MYTHS[id];
+  $("mythEyebrow").textContent = "Myth check"; $("mythFix").hidden = true;
+  $("mythTitle").textContent = m.t;
+  $("mythVerdict").hidden = !m.a; $("mythVerdict").textContent = m.a || ""; $("mythBody").textContent = m.b;
+  const s = $("mythSrc"); s.innerHTML = ""; s.append("Sources: ");
+  m.s.forEach(([t, u], i) => { if (i) s.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; s.append(a); });
+  $("myth").hidden = false;
+}
+function hideModal(id, then){
+  const el = $(id);
+  if (reduceMotion || el.hidden){ el.hidden = true; if (then) then(); return; }
+  el.classList.add("closing");
+  setTimeout(() => { el.hidden = true; el.classList.remove("closing"); if (then) then(); }, 200);
+}
+$("mythClose").addEventListener("click", () => hideModal("myth", () => { const n = mythQueue.shift(); if (n) setTimeout(() => showMyth(n), 120); else if (tourPending) setTimeout(startTour, 200); }));
+// ---------------- first-run walkthrough: three tips, then out of the way ----------------
+let tourPending = false, tourStep = 0;
+const TOUR = [
+  {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
+  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use ↺ ↻ to spin the city and 2D to flatten it. On a computer, right-click and drag also spins and tilts."},
+  {el:() => document.querySelector('.tab[data-pane="policies"]'), t:"Then flip real policies", b:"Policies unlock at 30,000 homes. Each card says what it adds and where the number comes from."},
+  {el:() => $("playBtn"), t:"Then hit Simulate", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
+];
+function startTour(){ tourPending = false; if (lsGet("fch-tour", false)) return; tourStep = 0; showTip(); }
+function showTip(){
+  const T = TOUR[tourStep], tip = $("tip");
+  if (!T){ tip.hidden = true; lsSet("fch-tour", true); return; }
+  if (T.tab) showTab(T.tab);
+  const target = T.el(); if (!target){ tourStep++; return showTip(); }
+  $("tipT").textContent = T.t; $("tipB").textContent = T.b;
+  $("tipStep").textContent = (tourStep + 1) + " of " + TOUR.length;
+  $("tipNext").textContent = tourStep === TOUR.length - 1 ? "Let's go" : "Next";
+  tip.hidden = false;
+  const r = target.getBoundingClientRect(), W = innerWidth, H = innerHeight, tw = Math.min(300, W - 24);
+  tip.style.width = tw + "px";
+  const below = r.bottom + 12 + tip.offsetHeight < H;
+  tip.style.top = (below ? r.bottom + 10 : Math.max(10, r.top - tip.offsetHeight - 10)) + "px";
+  tip.style.left = Math.max(12, Math.min(W - tw - 12, r.left + r.width / 2 - tw / 2)) + "px";
+  tip.dataset.dir = below ? "up" : "down";
+  document.querySelectorAll(".tour-hi").forEach(e => e.classList.remove("tour-hi")); target.classList.add("tour-hi");
+}
+$("tipNext").addEventListener("click", () => { tourStep++; if (tourStep >= TOUR.length) document.querySelectorAll(".tour-hi").forEach(e => e.classList.remove("tour-hi")); showTip(); });
+$("tipSkip").addEventListener("click", () => { tourStep = TOUR.length; document.querySelectorAll(".tour-hi").forEach(e => e.classList.remove("tour-hi")); showTip(); });
+function renderMythList(){
+  const el = $("mythList"); el.innerHTML = "";
+  const ids = Object.keys(MYTHS).filter(id => seenMyths.has(id));
+  if (!ids.length){ el.innerHTML = '<div class="empty">Play a bit and myths pop up as they come up.</div>'; return; }
+  ids.forEach(id => { const r = document.createElement("div"); r.className = "item"; const b = document.createElement("button"); b.className = "btn quiet"; b.type = "button"; b.style.textAlign = "left"; b.textContent = MYTHS[id].t; b.addEventListener("click", () => showMyth(id)); r.appendChild(b); el.appendChild(r); });
+}
+
+
+// ---------------- town hall: common objections, what research finds, and how other places got past them ----------------
+const TOWN = [
+  {k:"traffic", q:"Great, 200 new neighbors and every one of them drives down my street.",
+   e:"Households near jobs and transit drive less. In the leading meta-analysis of travel studies, living somewhere central and job-rich cuts a household's driving far more than density alone (elasticity about −0.20 vs −0.04). Honest caveat: trips on the next block can still go up a bit.",
+   f:"California (SB 743, statewide in 2020) stopped treating 'cars waiting at intersections' as environmental harm and now measures total driving, which favors infill near transit.",
+   s:[["Ewing & Cervero elasticities (SACOG)","https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000"],["FHWA","https://www.fhwa.dot.gov/ENVIRONMENT/air_quality/conformity/research/emissions_benefits/benefits10.cfm"],["ITE guide to SB 743","https://www.westernite.org/SB%20743/ITE-Guide-to-SB-743-April-2021.pdf"]]},
+  {k:"parking", q:"I already circle the block for twenty minutes. Where do they park?",
+   e:"Bundled garage parking adds about $1,700 a year (~17%) to rent, and renters without cars still pay about $621 a year for it. After Buffalo dropped parking minimums, big projects built 47% fewer spaces than the old rules demanded, but still built parking where buyers wanted it.",
+   f:"Buffalo scrapped minimums citywide in 2017. Chicago ended mandates near CTA and Metra in July 2025.",
+   s:[["Gabbe & Pierce, 2017","https://accessmagazine.org/spring-2017/the-hidden-cost-of-bundled-parking/"],["University at Buffalo, 2021","https://www.buffalo.edu/ubnow/stories/2021/06/conversation-hess-parking-reform.html"],["Taft Law, 2025","https://www.taftlaw.com/news-events/law-bulletins/chicago-eliminates-parking-requirements-for-transit-served-locations/"]]},
+  {k:"character", q:"Nobody moved here to live in the shadow of a glass box.",
+   e:"Your neighborhood's character is three-flats and courtyard buildings that are now illegal to build on most of the city's land: 41% of Chicago is zoned for single-family homes only. In a survey experiment, buildings that matched their block in height and style won more support from owners and renters alike.",
+   f:"Portland (2021) allowed up to 4 homes per lot (6 with affordable units) but capped building size. In year one, 73% of new non-ADU homes were middle housing: duplexes to fourplexes about the size of a big house.",
+   s:[["Metropolitan Planning Council","https://metroplanning.org/affordable-housing-outcome-part-2-of-2/"],["'Political Architecture' study","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"],["City of Portland, 2023","https://www.portland.gov/bps/planning/rip/news/2023/7/5/new-study-shows-promising-housing-production-results-residential"]]},
+  {k:"values", q:"That's my retirement fund you're parking an apartment block next to.",
+   e:"In New York, new towers nudged nearby condo prices down about 0.9% per 10% more condos, with no significant effect on nearby 1–5 family homes. In Chicago, the 2015 transit upzoning raised the price of the upzoned lots themselves. Mixed evidence, but big losses for homeowners next door aren't the typical finding.",
+   f:"Houston's small-lot reforms (1998, 2013) let owners split and sell, and about 80,000 small-lot homes followed. Upzoning gives owners options, not just neighbors.",
+   s:[["Li, 2022 (paper)","https://www.gwern.net/doc/economics/georgism/2021-li-3.pdf"],["Bloomberg CityLab on Freemark, 2019","https://www.bloomberg.com/news/articles/2019-02-05/why-that-new-zoning-study-shouldn-t-deter-yimbys"],["Mercatus","https://mercatus.org/research/policy-briefs/learning-houstons-townhouse-reforms"]]},
+  {k:"displacement", q:"First comes the luxury tower, then my landlord doubles my rent.",
+   e:"In 11 US cities, big new buildings in low-income areas lowered nearby rents 5–7%. In San Francisco, new market-rate projects cut nearby renters' displacement risk about 17% (working paper). Mixed: a Minneapolis study found the cheapest units nearby rose about 6.7% while pricier ones fell.",
+   f:"Oregon (2019) paired statewide rent stabilization with legalizing duplexes in every city of 10,000+. Build more and protect tenants: you don't have to pick one.",
+   s:[["Asquith, Mast & Reed (Upjohn)","https://www.upjohn.org/research-highlights/new-apartment-buildings-low-income-areas-decrease-nearby-rents"],["Pennington, 2021","https://gwern.net/doc/economics/georgism/2021-pennington.pdf"],["Damiano & Frenier (UMN)","https://www.cura.umn.edu/research/build-baby-build-housing-submarkets-and-effects-new-construction-existing-rents"],["NLIHC on Oregon, 2019","https://nlihc.org/resource/field-oregon-advocates-celebrate-huge-wins-zoning-reform-and-affordable-housing-funding"]]},
+  {k:"schools", q:"The schools are packed and my basement floods every spring.",
+   e:"Chicago had 3.62M people in 1950 and 2.75M in 2020; much of its infrastructure was built for the bigger city. CPS has room for about 450,000 students and enrolls about 306,000. New apartments add few kids: about 10 school-age children per 100 newer rental units in a New Jersey study. Flooding is real, though: it needs local engineering, not a ban.",
+   f:"Montgomery County, MD (2020) ended school-based building freezes and charged fees in crowded areas instead; most enrollment growth was coming from existing houses turning over to young families.",
+   s:[["US Census Bureau","https://www.census.gov/about/history/stories/monthly/2021/october-2021.html"],["Civic Federation, 2025","https://civicfed.org/blog/chicago-public-schools-building-underutilization"],["Rutgers, 2018","https://highlandsnj.gov/wp-content/uploads/2021/02/the-school-age-children-study-rcre-july-2018.pdf"],["Greater Greater Washington, 2020","https://ggwash.org/view/79636/montgomery-eliminates-housing-moratorium-lowers-development-fees"]]},
+  {k:"crime", q:"More strangers, more break-ins. I'm just saying what everyone's thinking.",
+   e:"Studies of subsidized housing, the kind that draws this fear most, find no crime increase; in the poorest areas violent crime fell. A Chicago study found dense, mixed-use blocks have less crime: more eyes on the street. Honest version: 'no evidence it raises crime,' not 'it cuts crime.'",
+   f:"After New Jersey's Mount Laurel fights, a Princeton study of the affordable development found no effect on taxes, crime or property values in the town.",
+   s:[["Freedman & Owens, 2011","https://ideas.repec.org/a/eee/juecon/v70y2011i2-3p115-131.html"],["Diamond & McQuade (NBER)","https://nber.org/papers/w22204"],["Twinam, 2017 (APA)","https://planning.org/knowledgebase/resource/9182222"],["Princeton, 2013","https://www.princeton.edu/news/2013/11/07/mount-laurel-massey-finds-affordable-housing-model"]]},
+  {k:"luxury", q:"$3,000 studios with a dog spa. Who exactly is this for?",
+   e:"New buildings start chains of moves. Every 100 new market-rate homes open up the equivalent of 45–70 homes in below-median-income neighborhoods within a few years; Helsinki found about 66. It's slow and it doesn't replace subsidy for the lowest incomes.",
+   f:"Minneapolis upzoned corridors and ended parking minimums: housing grew 12% from 2017–2022 while rents rose 1%, vs 14% in the rest of Minnesota.",
+   s:[["Mast, 2023","https://npr.brightspotcdn.com/f3/8c/d42a0f954679936ffd83de507b1a/journal-of-urban-economics-1-s2-0-s0094119021000656-main.pdf"],["Bratu et al., 2023","https://acris.aalto.fi/ws/portalfiles/portal/104404236/1_s2.0_S0094119022001048_main.pdf"],["Pew, 2024","https://www.pew.org/en/research-and-analysis/articles/2024/01/04/minneapolis-land-use-reforms-offer-a-blueprint-for-housing-affordability"]]},
+  {k:"process", q:"My alderperson should decide what goes on my block. That's democracy.",
+   e:"Case-by-case vetoes mean every building is a fight. HUD found in 2023 that aldermanic prerogative fueled segregation (it withdrew the finding in 2025). California's streamlining law covered 18,000+ proposed homes in its first years, mostly affordable; Auckland's citywide upzoning added about 21,800 extra homes.",
+   f:"Austin legalized 3 homes per lot (2023) and small lots (2024); with record building, median rent fell from $1,546 to $1,296 (2021–2026).",
+   s:[["WTTW, 2023","https://news.wttw.com/2023/11/28/aldermanic-prerogative-fuels-segregation-and-violates-black-latino-chicagoans-civil"],["Terner Center: SB 35","https://ternercenter.berkeley.edu/blog/sb-35-evaluation"],["Auckland Council, 2024","https://ourauckland.aucklandcouncil.govt.nz/news/2024/03/auckland-upzoning-sparks-more-homes-and-improved-affordability/"],["Pew on Austin, 2026","https://www.pew.org/en/research-and-analysis/articles/2026/03/18/austins-surge-of-new-housing-construction-drove-down-rents"]]},
+  {k:"elsewhere", q:"I'm all for housing. Just not here. Somewhere more appropriate.",
+   e:"Who shows up decides. In 97 Massachusetts towns, 63% of speakers at housing meetings opposed projects and 15% supported them, and speakers skewed older, whiter and much more likely to own homes than voters. Moving meetings to Zoom didn't change it.",
+   f:"Massachusetts' MBTA Communities Act (2021) requires 177 transit towns to allow apartments by right. By May 2025, 75% had complied and 4,000+ homes were underway.",
+   s:[["Einstein, Glick & Palmer","https://www.cambridge.org/core/journals/perspectives-on-politics/article/abs/who-participates-in-local-government-evidence-from-meeting-minutes/C6505940E607B6392C4A8F53A9363DB1"],["Data for Progress, 2019","https://dataforprogress.org/blog/2019/3/12/neighborhood-defenders-and-the-capture-of-land-use-politics"],["Mass.gov, 2025","https://www.mass.gov/news/75-percent-of-mbta-communities-approve-multifamily-districts-to-create-more-housing"]]},
+];
+const TACTICS = [
+  {t:"Talk about neighbors and rent, not developers.", b:"Only 30–40% of voters believe more housing lowers prices, and opposition spikes when people hear developers will profit.", s:[["Nall, Elmendorf & Oklobdzija","https://papers.ssrn.com/abstract=4266459"],["UCLA Lewis Center","https://www.lewis.ucla.edu/research/opposition-to-development-or-developers"]]},
+  {t:"Decide citywide, not block by block.", b:"Renters oppose a building next door about as much as owners, but support more housing citywide. Rules beat one-off fights.", s:[["Hankinson (Harvard JCHS)","https://www.jchs.harvard.edu/research/publications/when-do-renters-behave-homeowners-high-rent-price-anxiety-and-nimbyism"]]},
+  {t:"Trade discretion for clear design rules.", b:"Buildings that fit their block draw less opposition. Clear height and form rules in exchange for by-right approval.", s:[["'Political Architecture'","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"]]},
+  {t:"Pair upzoning with tenant protections.", b:"In NYC's right-to-counsel program, 84% of tenants with a city-funded lawyer kept their homes. Urban Institute recommends pairing the two.", s:[["CityLand NYC","https://citylandnyc.org/city-releases-right-to-counsel-progress-report"],["Urban Institute, 2024","https://www.urban.org/urban-wire/how-embed-racial-equity-zoning-code-reform"]]},
+];
+const TOWN_FOR = {low:"values", high:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
+let seenTown = new Set(lsGet("fch-town", []));
+function showTown(k){
+  const T = TOWN.find(x => x.k === k); if (!T) return;
+  seenTown.add(k); lsSet("fch-town", [...seenTown]); renderTown();
+  $("mythEyebrow").textContent = "Town hall"; $("mythVerdict").hidden = true;
+  $("mythTitle").textContent = "“" + T.q + "”";
+  $("mythBody").textContent = T.e;
+  $("mythFix").hidden = false; $("mythFixTxt").textContent = T.f;
+  const s = $("mythSrc"); s.innerHTML = ""; s.append("Sources: ");
+  T.s.forEach(([t, u], i) => { if (i) s.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; s.append(a); });
+  $("myth").hidden = false;
+}
+function renderTown(){
+  const el = $("townList"); if (!el) return; el.innerHTML = "";
+  TOWN.forEach(T => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "townq" + (seenTown.has(T.k) ? " done" : "");
+    b.textContent = "“" + T.q + "”"; b.addEventListener("click", () => showTown(T.k)); el.appendChild(b);
+  });
+  $("townCount").textContent = seenTown.size + "/" + TOWN.length + " answered";
+  const tl = $("tacticList"); if (tl && !tl.childElementCount) TACTICS.forEach(x => {
+    const d = document.createElement("div"); d.className = "tactic";
+    const h = document.createElement("b"); h.textContent = x.t; const p = document.createElement("p"); p.className = "small"; p.textContent = x.b;
+    const sp = document.createElement("span"); sp.className = "src"; sp.append("Sources: ");
+    x.s.forEach(([t, u], i) => { if (i) sp.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; sp.append(a); });
+    d.append(h, p, sp); tl.appendChild(d);
+  });
+}
+
+// ---------------- neighborhood reactions ----------------
+const REACT = {
+  low:["A three-flat? On MY block? …Okay, fine, I grew up in one.","Sure, but where am I supposed to park my second car?","This will ruin the character of the neighborhood. The character is mostly vinyl siding.","My grandma rented out the upstairs unit for 40 years. Took you long enough.","Finally, my kid can move out of my basement and into somebody else's."],
+  high:["Six stories?! What is this, Paris?","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the Jewel.","A tower by the L? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
+  corr:["Apartments over the taquería? Sounds like a Logan Square starter pack.","New neighbors means new customers. Signed, every shop on this street.","This stretch has been 'about to get nice' since 1987.","Finally, something besides a vape shop and a vacant storefront."],
+  metra:["Wait, I can live by the train AND get downtown in 20 minutes?","Living next to the tracks is great until the 5:12 a.m. express.","Metra-adjacent? My real estate agent just fainted with joy."],
+  office:["Turn the Loop into a neighborhood? The Pedway is about to get weird.","My old cubicle is now somebody's walk-in closet. Respect.","Downtown at night might finally have people who aren't leaving a Bulls game."],
+  str:["Where are my in-laws supposed to stay? (Answer: a hotel, Linda.)","My building just got three new neighbors who actually live here.","The rolling-suitcase parade on my block thanks you for your service."],
+  adu:["A coach house? My garage has been waiting for this moment.","Grandma gets the coach house, I get my sanity back. Everybody wins."],
+  build:["Springfield telling Chicago what to do? Classic.","A 4-flat next door? I live in a 4-flat. Carry on."],
+  stair:["One staircase? The fire department would like a word.","Europe has done this for decades and their buildings aren't on fire. Mostly."],
+  pre:["My alderperson has opinions about this.","Wait, you mean one person can't just kill a building anymore?"],
+  lots:["That lot has been a mattress graveyard since 2009. Build something.","Homes on the empty lots? I'll bring the folding chairs to the ribbon cutting."],
+  permits:["Faster permits? In THIS city?","I applied for a permit in 2019. Tell my grandkids I said hi."],
+  else:["Wait, other cities just… did this? And it worked?","Minneapolis did it and the sky didn't fall. It just snowed, like normal.","We could copy Texas on housing? Weird timeline, but okay.","Stealing good ideas from other cities is the most Chicago thing ever."],
+  vac:["My cousin's 'investment property' has been empty since 2019. Fair.","Empty homes paying up for the people who need homes? Sounds right."],
+  social:["Public housing that pays for itself? Apparently Maryland figured it out.","Mixed-income buildings the city owns a piece of. Okay, I'm listening."],
+};
+let lastReact = 0, reactTimer = 0;
+let commentTown = null;
+$("commentAns").addEventListener("click", () => { $("comment").classList.remove("on"); if (commentTown) showTown(commentTown); });
+function react(kind, place){
+  const pool = REACT[kind]; if (!pool) return;
+  const now = performance.now(); if (now - lastReact < 3500 && kind !== "high") return;
+  lastReact = now;
+  const line = pool[Math.floor(Math.random() * pool.length)];
+  $("commentQ").textContent = line;
+  $("commentBy").textContent = "Public comment" + (place ? ", " + place + " community meeting" : "");
+  commentTown = TOWN_FOR[kind] || null; $("commentAns").hidden = !commentTown;
+  const el = $("comment"); el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+  el.classList.add("on"); clearTimeout(reactTimer); reactTimer = setTimeout(() => el.classList.remove("on"), commentTown ? 6500 : 4200);
+}
+
+// ---------------- data loading ----------------
+let STREETS = null;
+async function loadStreets(){
+  try {
+    const buf = await (await fetch("b/streets.wasm")).arrayBuffer(), dv = new DataView(buf);
+    const P = dv.getUint32(0, true), V = dv.getUint32(4, true), origin = [dv.getFloat64(8, true), dv.getFloat64(16, true)];
+    const cls = new Uint8Array(buf, 24, P); let o = 24 + P; o += (4 - o % 4) % 4;
+    const starts = new Uint32Array(buf, o, P + 1); o += 4 * (P + 1);
+    const xy = new Int16Array(buf, o, 2 * V);
+    const groups = {1:[], 2:[], 4:[]}; // expressways, arterials+collectors, local streets
+    for (let i = 0; i < P; i++) groups[cls[i] === 1 ? 1 : cls[i] === 4 ? 4 : 2].push(i);
+    const pack = (ids) => {
+      let n = 0; ids.forEach(i => n += starts[i + 1] - starts[i]);
+      const pos = new Float32Array(2 * n), st = new Uint32Array(ids.length); let k = 0;
+      ids.forEach((i, j) => { st[j] = k; for (let v = starts[i]; v < starts[i + 1]; v++){ pos[2 * k] = xy[2 * v] * 2; pos[2 * k + 1] = xy[2 * v + 1] * 2; k++; } });
+      return {length: ids.length, startIndices: st, attributes: {getPath: {value: pos, size: 2}}};
+    };
+    STREETS = {origin, exp: pack(groups[1]), art: pack(groups[2]), loc: pack(groups[4])};
+    scheduleRender();
+  } catch (e) { console.warn("streets failed", e); }
+}
+async function loadArea(m){
+  const buf = await (await fetch("b/" + m.num + ".wasm")).arrayBuffer();
+  const dv = new DataView(buf);
+  const N = dv.getUint32(0, true), V = dv.getUint32(4, true);
+  const lon0 = dv.getFloat64(8, true), lat0 = dv.getFloat64(16, true);
+  const q = new Int16Array(buf, 24, V * 2);
+  const pos = new Float32Array(V * 2);
+  for (let i = 0; i < pos.length; i++) pos[i] = q[i] * 0.5;
+  let o = 24 + 4 * V;
+  const nv = new Uint8Array(buf, o, N); o += N;
+  const st = new Uint8Array(buf, o, N); o += N;
+  const fl = new Uint8Array(buf, o, N); o += N;
+  o += (N * 3) % 2;
+  const un = new Uint16Array(buf, o, N); o += 2 * N;
+  const fp = new Uint16Array(buf, o, N);
+  const starts = new Uint32Array(N + 1);
+  let adu = 0;
+  for (let i = 0; i < N; i++){
+    starts[i + 1] = starts[i] + nv[i];
+    if (un[i] >= 1 && un[i] <= 4 && (st[i] || 1) <= 3 && fp[i] * 2 <= 4000) adu++;
+    if (fl[i] & 64) hasZoning = true;
+  }
+  aduLots += adu;
+  const A = {num:m.num, name:m.name, demand:m.demand, homes:m.homes, n:N, origin:[lon0, lat0], lon:m.lon, lat:m.lat,
+    st, fl, un, fp, elev:new Float32Array(N), col:new Uint8Array(N), version:0,
+    data:{length:N, startIndices:starts, attributes:{getPolygon:{value:pos, size:2}}}};
+  compute(A);
+  return A;
+}
+async function boot(){
+  META = await (await fetch("meta.json")).json();
+  const pick = $("hoodPick");
+  [...META.areas].sort((a,b) => a.name.localeCompare(b.name)).forEach(m => {
+    const o = document.createElement("option"); o.value = m.num; o.textContent = m.name; pick.appendChild(o);
+  });
+  render();
+  loadStreets();
+  const c = [-87.655, 41.89];
+  const queue = [...META.areas].sort((a,b) => Math.hypot(a.lon-c[0],a.lat-c[1]) - Math.hypot(b.lon-c[0],b.lat-c[1]));
+  let next = 0;
+  async function worker(){
+    while (next < queue.length){
+      const m = queue[next++];
+      try { AREAS[m.num] = await loadArea(m); } catch (e) { console.warn("area failed", m.num, e); }
+      loaded++;
+      scheduleRender();
+    }
+  }
+  await Promise.all([worker(), worker(), worker(), worker()]);
+  $("loading").hidden = true;
+  if (hasZoning){
+    let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; tot += A.n; for (let i = 0; i < A.n; i++) if (A.fl[i] & 64) n++; }
+    $("tool-illegal").hidden = false;
+    $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
+  }
+  render();
+}
+$("illegalBtn").addEventListener("click", () => {
+  showIllegal = !showIllegal; $("illegalBtn").setAttribute("aria-pressed", String(showIllegal));
+  $("illegalBtn").textContent = showIllegal ? "Hide the illegal buildings" : "Show buildings that would be illegal to build today";
+  recompute(); if (showIllegal) maybeMyth("illegal");
+});
+
+// ---------------- map ----------------
+{ const hud = $("hud"), setH = () => document.documentElement.style.setProperty("--hudH", hud.offsetHeight + "px");
+  setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(hud); else addEventListener("resize", setH); }
+const zoomBand = (z) => z >= 13.2 ? 2 : z >= 11.8 ? 1 : 0;
+let zoomBandNow = 0;
+const isWide = () => window.matchMedia("(min-width:860px)").matches;
+let viewState = isWide()
+  ? {longitude:-87.72, latitude:41.86, zoom:11.0, pitch:55, bearing:-22, maxPitch:75, minZoom:9.6, maxZoom:18}
+  : {longitude:-87.655, latitude:41.80, zoom:10.3, pitch:50, bearing:-18, maxPitch:75, minZoom:9.2, maxZoom:18};
+const HOME_VIEW = {...viewState};
+zoomBandNow = zoomBand(viewState.zoom);
+const lighting = new deck.LightingEffect({
+  ambient: new deck.AmbientLight({color:[255,255,255], intensity:1.15}),
+  sun: new deck.DirectionalLight({color:[255,250,240], intensity:1.5, direction:[-2,-3,-4]}),
+});
+const deckgl = new deck.Deck({
+  parent: $("map"),
+  initialViewState: viewState,
+  controller: {touchRotate:true, dragRotate:true},
+  effects: [lighting],
+  onViewStateChange: ({viewState: v}) => { const b = zoomBand(v.zoom); viewState = v; if (b !== zoomBandNow){ zoomBandNow = b; scheduleRender(); } },
+  getTooltip: ({object, layer}) => {
+    if (!object || !layer) return null;
+    let text = null;
+    if (layer.id === "areas"){ const num = object.properties.num, A = AREAS[num], t = tierFor(num); text = object.properties.name + (t ? " · " + TIERS[t].name : "") + (A && A.added ? "\n+" + fmt(A.added) + " homes" : ""); }
+    else if (layer.id === "metraDots") text = object.name + " (Metra " + object.line + ")";
+    else if (layer.id === "stations") text = object.name + " (CTA)";
+    else if (layer.id === "corrLines") text = corrName(object.name);
+    return text ? {text, style:{fontFamily:"Public Sans, Arial, sans-serif", fontSize:"12px", background:"#1b2320", color:"#fff", borderRadius:"6px", padding:"6px 8px"}} : null;
+  },
+  onClick: (info) => { if (info.layer && info.layer.id === "areas" && info.object && isOpen("hoods")) selectArea(info.object.properties.num, true); },
+});
+function camTo(patch){
+  viewState = {...viewState, ...patch, transitionDuration: reduceMotion ? 0 : 550, transitionInterpolator: new deck.LinearInterpolator(["bearing", "pitch", "zoom", "longitude", "latitude"])};
+  deckgl.setProps({initialViewState: viewState});
+}
+document.querySelectorAll("#mapctl button").forEach(b => b.addEventListener("click", () => {
+  const v = viewState, c = b.dataset.cam;
+  if (c === "in") camTo({zoom: Math.min(18, v.zoom + 1)});
+  else if (c === "out") camTo({zoom: Math.max(isWide() ? 9.6 : 9.2, v.zoom - 1)});
+  else if (c === "left") camTo({bearing: (v.bearing || 0) - 45});
+  else if (c === "right") camTo({bearing: (v.bearing || 0) + 45});
+  else if (c === "tilt"){ const flat = v.pitch > 5; camTo({pitch: flat ? 0 : 55}); b.textContent = flat ? "3D" : "2D"; }
+  else if (c === "home"){ camTo({...HOME_VIEW}); $("mapctl").querySelector('[data-cam="tilt"]').textContent = "2D"; }
+}));
+function flyTo(lon, lat, zoom, bearing){
+  if (reduceMotion) return;
+  deckgl.setProps({initialViewState:{...viewState, longitude:lon, latitude:lat, zoom, bearing: bearing ?? viewState.bearing, transitionDuration:1100, transitionInterpolator:new deck.FlyToInterpolator()}});
+}
+let renderQueued = false;
+function scheduleRender(){ if (!renderQueued){ renderQueued = true; requestAnimationFrame(() => { renderQueued = false; render(); }); } }
+
+const FLAT = {depthCompare:"always", depthWriteEnabled:false}; // flat map layers draw in order instead of z-fighting at ground level
+const BASES = {
+  island:  {bg:"#dde6ee", lake:[124,190,228], land:[246,248,251], edge:[43,93,160,230], glow:[43,93,160,40]},
+  region:  {bg:"#e7eaee", region:[231,234,238], lake:[124,190,228], land:[250,251,253], edge:[43,93,160,230], glow:[43,93,160,45], towns:[120,130,145,230], townHalo:[231,234,238,230]},
+  night:   {bg:"#16233b", region:[22,35,59], lake:[30,52,86], land:[246,248,251], edge:[65,182,230,255], glow:[65,182,230,70], towns:[150,170,200,220], townHalo:[22,35,59,230]},
+};
+let MAPSTYLE = (() => { try { const q = new URLSearchParams(location.search).get("base"); return BASES[q] ? q : "region"; } catch { return "region"; } })();
+document.documentElement.style.setProperty("--table", BASES[MAPSTYLE].bg);
+function layers(){
+  const L = [];
+  if (!META) return L;
+  $("lgRing").hidden = !(plan.tod || plan.metra);
+  const P = look === "playful";
+  { // basemap: region land, Lake Michigan, the city, a crisp city edge, and neighboring towns for context
+    const B = BASES[MAPSTYLE];
+    if (B.region) L.push(new deck.SolidPolygonLayer({id:"region", parameters:FLAT, data:[[[-89.5,40.4],[-85.0,40.4],[-85.0,45.0],[-89.5,45.0]]], getPolygon:d => d, getFillColor:B.region}));
+    L.push(new deck.SolidPolygonLayer({id:"lake", parameters:FLAT, data:[META.lake], getPolygon:d => d, getFillColor:B.lake}));
+    L.push(new deck.SolidPolygonLayer({id:"land", parameters:FLAT, data:META.cityOutline, getPolygon:d => d, getFillColor:B.land}));
+    L.push(new deck.PathLayer({id:"edgeGlow", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:B.glow, getWidth:9, widthUnits:"pixels"}));
+    L.push(new deck.PathLayer({id:"edge", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:B.edge, getWidth:1.6, widthUnits:"pixels"}));
+    if (B.towns && META.towns && zoomBandNow < 2) L.push(new deck.TextLayer({id:"towns", data:META.towns, getPosition:d => [d[1], d[2]], getText:d => d[0], getSize:11, sizeUnits:"pixels",
+      getColor:B.towns, fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:2, outlineColor:B.townHalo, parameters:{depthCompare:"always"}}));
+  }
+  L.push(new deck.GeoJsonLayer({
+    id:"areas", parameters:FLAT, data:META.outlines, pickable:true, stroked:true, filled:true,
+    getFillColor: f => { const t = Math.max(tierFor(f.properties.num), plan.p.build ? 1 : 0); return t ? [...tierColor(t), plan.areas[f.properties.num] ? 75 : 35] : [255,255,255,1]; },
+    getLineColor: f => f.properties.num === selected ? (P ? [31,27,58,255] : [228,0,43,255]) : (P ? [31,27,58,90] : [43,93,160,90]),
+    getLineWidth: f => f.properties.num === selected ? 3 : 1, lineWidthUnits:"pixels",
+    updateTriggers:{getFillColor:JSON.stringify(plan.areas) + plan.p.build + look, getLineColor:selected + look, getLineWidth:selected},
+  }));
+  if (STREETS){
+    const S = STREETS, base = {coordinateSystem:deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:S.origin, _pathType:"open", widthUnits:"meters", parameters:FLAT, capRounded:false};
+    if (zoomBandNow >= 1) L.push(new deck.PathLayer({...base, id:"stLocal", data:S.loc, getWidth:7, widthMinPixels:0.6, getColor:[194,203,215, zoomBandNow === 2 ? 255 : 160]}));
+    L.push(new deck.PathLayer({...base, id:"stArt", data:S.art, getWidth:14, widthMinPixels:1, getColor:[170,182,199]}));
+    L.push(new deck.PathLayer({...base, id:"stExp", data:S.exp, getWidth:24, widthMinPixels:1.5, getColor:[150,164,184]}));
+  }
+  { // half-mile station zones, merged into one shape so overlapping circles read as a single zone
+    const zone = (id, polys, t, a) => {
+      const c = tierColor(t);
+      L.push(new deck.SolidPolygonLayer({id:id + "Fill", parameters:FLAT, data:polys, getPolygon:d => d, getFillColor:[...c, a], updateTriggers:{getFillColor:t + look}}));
+      L.push(new deck.PathLayer({id:id + "Line", parameters:FLAT, data:polys.flatMap(p => p), getPath:d => d, getColor:[...c, 200], getWidth:1.4, widthUnits:"pixels", updateTriggers:{getColor:t + look}}));
+    };
+    if (META.ringL){
+      if (plan.tod && plan.metra && plan.tod === plan.metra) zone("zoneLM", META.ringLM, plan.tod, 46);
+      else {
+        if (plan.tod) zone("zoneL", META.ringL, plan.tod, 46);
+        if (plan.metra) zone("zoneM", META.ringM, plan.metra, 40);
+      }
+    }
+  }
+  if (plan.corr && META.corridors) L.push(new deck.PathLayer({id:"corrLines", parameters:FLAT, data:META.corridors, getPath:d => d.paths, pickable:true, getWidth:46, widthUnits:"meters", widthMinPixels:2, getColor:[...tierColor(plan.corr), 150], capRounded:true, jointRounded:true, updateTriggers:{getColor:plan.corr + look},
+    dataTransform: d => d.flatMap(c => c.paths.map(p => ({name:c.name, paths:p}))) }));
+  for (const k in AREAS){
+    const A = AREAS[k];
+    L.push(new deck.SolidPolygonLayer({
+      id:"b" + A.num, data:A.data, extruded:true,
+      coordinateSystem: deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:A.origin,
+      getElevation:(_, {index}) => A.elev[index],
+      getFillColor:(_, {index}) => { const c = A.col[index]; return c === 6 ? [214,74,86] : c ? tierColor(c) : (P ? PLAYFUL.pastels[(index * 7 + A.num) % 5] : EXIST); },
+      updateTriggers:{getElevation:A.version, getFillColor:A.version + look},
+      material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
+      transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 750, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}},
+    }));
+  }
+  if (META.streetLabels && zoomBandNow >= 1) L.push(new deck.TextLayer({id:"stLabels", data:zoomBandNow === 2 ? META.streetLabels : META.streetLabels.filter(l => l[4] === 1 || l[4] === 2),
+    getPosition:d => [d[0], d[1], 2], getText:d => d[3], getAngle:d => d[2], getSize:zoomBandNow === 2 ? 14 : 11.5, sizeUnits:"pixels",
+    getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
+    billboard:false, updateTriggers:{getSize:zoomBandNow}}));
+  L.push(new deck.ScatterplotLayer({id:"stations", data:META.stations, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:P ? [31,27,58,230] : [27,35,32,230], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2, updateTriggers:{getFillColor:look}}));
+  if (META.metra && isOpen("metra")) L.push(new deck.ScatterplotLayer({id:"metraDots", data:META.metra, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:[79,127,168,235], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2}));
+  return L;
+}
+
+// ---------------- UI ----------------
+function tierButtons(el, getT, setT){
+  el.innerHTML = "";
+  TIERS.forEach((T, t) => {
+    const b = document.createElement("button");
+    b.className = "tier"; b.type = "button"; b.dataset.t = t; b.setAttribute("aria-pressed", "false");
+    b.style.setProperty("--c", T.css || "var(--line)");
+    b.innerHTML = '<span class="sw">' + T.bars.map(h => '<s style="height:' + Math.max(h,3) + 'px"></s>').join("") + '</span><em></em><small></small>';
+    b.querySelector("em").textContent = T.name;
+    b.querySelector("small").textContent = t ? T.h + " fl" : "no change";
+    b.addEventListener("click", () => setT(t));
+    el.appendChild(b);
+  });
+  el._sync = () => el.querySelectorAll(".tier").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.t === getT())));
+}
+function recompute(nums){ (nums || Object.keys(AREAS)).forEach(k => { if (AREAS[k]) compute(AREAS[k]); }); render(); }
+function afterZoning(t, kind, place){
+  if (!t) return;
+  react(t >= 3 ? "high" : (kind || "low"), place);
+  if (t >= 3) maybeMyth("lux");
+}
+function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); }
+function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(t >= 3 ? "high" : "metra"); if (t >= 3) maybeMyth("lux"); } }
+function setCorr(t){ const was = plan.corr; plan.corr = t; recompute(); if (t > was){ react("corr"); maybeMyth("density"); } }
+function setOffice(v){ const was = plan.office; plan.office = v; recompute(); if (v > was) react("office"); if (v && !was) flyTo(-87.632, 41.881, isWide() ? 14 : 13.6, -30); }
+function setAreaTier(num, t){
+  const was = plan.areas[num] || 0;
+  if (t) plan.areas[num] = t; else delete plan.areas[num];
+  recompute([num]);
+  if (t > was){ const m = META.areas.find(a => a.num === num); afterZoning(t, "low", m && m.name); }
+}
+function selectArea(num, fromMap){
+  selected = +num;
+  $("hoodPick").value = String(selected);
+  if (fromMap){ showTab("zoning"); openSheet(); }
+  const m = META.areas.find(a => a.num === selected);
+  if (m) flyTo(m.lon, m.lat, isWide() ? 13 : 12.6);
+  render();
+}
+
+let lastTotal = 0, shownTotal = 0, tickRaf = 0, lastGrade = "";
+function animateNumber(to){
+  if (reduceMotion){ $("homes").textContent = fmt(to); shownTotal = to; return; }
+  cancelAnimationFrame(tickRaf);
+  const from = shownTotal, t0 = performance.now(), dur = playing ? YEAR_MS : 600;
+  const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = playing ? k : 1 - Math.pow(1 - k, 3); shownTotal = from + (to - from) * e; $("homes").textContent = fmt(shownTotal); if (k < 1) tickRaf = requestAnimationFrame(step); };
+  tickRaf = requestAnimationFrame(step);
+}
+function gradeFor(pct){ return pct >= 100 ? "A+" : pct >= 85 ? "A" : pct >= 70 ? "B" : pct >= 50 ? "C" : pct >= 25 ? "D" : pct > 0 ? "F" : "–"; }
+
+function render(){
+  const tv = totals(true), tf = totals(false), goal = needed();
+  if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
+  $("goalNum").textContent = fmt(goal);
+  const yrLabel = START + year;
+  const short = target() + GAP_GROWTH * year - tv.total;
+  $("short").textContent = short > 0 ? fmt(short) : "0";
+  $("shortLbl").textContent = short > 0 ? "homes short in " + yrLabel : "shortage closed by " + yrLabel;
+  const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total);
+  $("rent").textContent = "$" + fmt(rp);
+  $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : "");
+  $("pace").textContent = fmt(CITY_PACE * year);
+  $("paceLbl").textContent = "built by " + yrLabel + " at today's pace";
+  const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social]];
+  const bar = $("bar"), scale = Math.max(goal, tv.total);
+  segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
+  const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"]];
+  $("keys").innerHTML = "";
+  keyDefs.filter(k => k[1] > 0).forEach(([n, v, c]) => { const s = document.createElement("span"); s.style.setProperty("--c", "var(" + c + ")"); s.textContent = n + " " + fmt(v); $("keys").appendChild(s); });
+  if (!$("keys").children.length){ const s = document.createElement("span"); s.style.setProperty("--c", "var(--line)"); s.textContent = "Pick a level near the L to start building"; $("keys").appendChild(s); }
+  $("touched").textContent = (tf.touchedPct < 10 && tf.touchedPct > 0 ? tf.touchedPct.toFixed(1) : Math.round(tf.touchedPct)) + "%";
+  const g = gradeFor(tf.total / goal * 100), ge = $("grade");
+  ge.textContent = "Grade " + g; ge.classList.toggle("top", g === "A+" || g === "A");
+  if (loaded === 77 && g === "A+" && lastGrade && lastGrade !== "A+" && year === YEARS) celebrate("Shortage closed! " + fmt(tf.total) + " homes");
+  if (loaded === 77 && lastGrade && lastGrade !== g && !reduceMotion){ ge.classList.remove("pop"); void ge.offsetWidth; ge.classList.add("pop"); }
+  if (loaded === 77) lastGrade = g;
+  $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : "15-year outlook";
+  $("yrTxt").textContent = START + year;
+  $("yrTrack").style.width = (year / YEARS * 100) + "%";
+  ["todTiers","metraTiers","corrTiers","hoodTiers"].forEach(id => $(id)._sync && $(id)._sync());
+  $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
+  renderHood(); renderHoodList(); renderMissions(tf); renderPolicies(); renderImpact(tf);
+  if (year === YEARS) checkUnlocks(tf.total);
+  updateCode(); autosave();
+  deckgl.setProps({layers: layers()});
+}
+function renderHood(){
+  const det = $("hoodDetail");
+  if (!selected || !META){ det.hidden = true; $("hoodBanner").hidden = true; return; }
+  det.hidden = false;
+  const m = META.areas.find(a => a.num === selected), A = AREAS[selected];
+  const tb = tierFor(selected), dm = m.demand;
+  $("hoodBanner").hidden = false; $("hbName").textContent = m.name;
+  $("hbLine").textContent = (tb ? TIERS[tb].name : "Today's zoning") + " · " + (A ? "+" + fmt(A.added) + " new homes" : "loading") + " · " + (dm >= 1.8 ? "hot" : dm >= 0.9 ? "steady" : "soft") + " market " + dm.toFixed(1) + "×";
+  $("hoodName").textContent = m.name;
+  const d = m.demand, label = d >= 1.8 ? "Hot market" : d >= 0.9 ? "Steady market" : "Soft market";
+  $("hoodDemand").textContent = label + " · " + d.toFixed(1) + "×";
+  $("hoodHomes").textContent = fmt(m.homes);
+  $("hoodAdded").textContent = A ? "+" + fmt(A.added) : "…";
+  $("hoodReplaced").textContent = A ? fmt(A.replaced) : "…";
+}
+function renderHoodList(){
+  const el = $("hoodList"); el.innerHTML = "";
+  const nums = Object.keys(plan.areas).map(Number);
+  if (!nums.length){ el.innerHTML = '<div class="empty">No neighborhoods rezoned yet. Tap one on the map.</div>'; return; }
+  nums.map(n => ({n, m:META.areas.find(a => a.num === n), A:AREAS[n]})).filter(x => x.m)
+    .sort((a,b) => (b.A ? b.A.added : 0) - (a.A ? a.A.added : 0))
+    .forEach(({n, m, A}) => {
+      const t = plan.areas[n];
+      const row = document.createElement("div"); row.className = "item";
+      row.innerHTML = '<span class="chip" style="--c:' + TIERS[t].css + '"><span class="dot"></span></span><div class="main"><b></b><span></span></div><button class="btn quiet" type="button">Undo</button>';
+      row.querySelector(".chip").append(TIERS[t].name);
+      row.querySelector("b").textContent = m.name;
+      row.querySelector(".main span").textContent = A ? "+" + fmt(A.added) + " homes" : "loading…";
+      row.querySelector(".main").addEventListener("click", () => selectArea(n));
+      row.querySelector("button").addEventListener("click", () => setAreaTier(n, 0));
+      el.appendChild(row);
+    });
+}
+function personaRows(el, homes){
+  el.innerHTML = "";
+  const rNo = rentNoChange(YEARS, RENT_1BR), rPlan = rentWithPlan(YEARS, homes, RENT_1BR);
+  PERSONAS.forEach(p => {
+    const w = p.wage * Math.pow(1 + WAGE_GROWTH, YEARS);
+    const today = RENT_1BR * 12 / p.wage * 100, bNo = rNo * 12 / w * 100, bPlan = rPlan * 12 / w * 100;
+    const d = document.createElement("div"); d.className = "persona";
+    d.innerHTML = '<b></b><span class="burden"></span><span class="job"></span>';
+    d.querySelector("b").textContent = p.name;
+    d.querySelector(".job").textContent = p.job + " · $" + fmt(p.wage) + " today";
+    const bur = d.querySelector(".burden");
+    const line = (lbl, v) => { const s = document.createElement("span"); s.className = v <= 30 ? "ok" : "no"; s.textContent = lbl + Math.round(v) + "% of pay"; return s; };
+    const a = document.createElement("span"); a.className = "was"; a.textContent = "today " + Math.round(today) + "% · no change " + Math.round(bNo) + "%";
+    bur.append(a, document.createElement("br"), line("your plan: ", bPlan));
+    el.appendChild(d);
+  });
+}
+function renderImpact(t){
+  const zone = t.zoneFull;
+  $("impWalk").textContent = zone ? Math.round(t.walk / zone * 100) + "%" : "–";
+  $("impAff").textContent = fmt(t.aff);
+  $("impRepl").textContent = fmt(t.replaced);
+  $("impJobs").textContent = fmt(t.total * JOBS1);
+  $("impJobs2").textContent = fmt(t.total * JOBS2);
+  $("impTax").textContent = money(t.total * TAX2);
+  const sum = t.sides.reduce((a, b) => a + b, 0) || 1;
+  const sb = $("sideBar"), sk = $("sideKeys"); sb.innerHTML = ""; sk.innerHTML = "";
+  SIDES.forEach((s, i) => {
+    const seg = document.createElement("i"); seg.style.width = (t.sides[i] / sum * 100) + "%"; seg.style.background = s.c; sb.appendChild(seg);
+    const k = document.createElement("span"); k.style.setProperty("--c", s.c); k.textContent = s.k + " " + fmt(t.sides[i]) + " (" + Math.round(t.sides[i] / sum * 100) + "%)"; sk.appendChild(k);
+  });
+  personaRows($("personas"), t.total);
+}
+
+function showTab(name){
+  if (name === "policies" && $("pane-policies").hidden) sortPolicies();
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.pane === name)));
+  ["zoning","policies","missions","impact","share","math"].forEach(p => { $("pane-" + p).hidden = p !== name; });
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.pane); openSheet(); }));
+function syncSheet(){ document.body.classList.toggle("sheetmin", $("sheet").classList.contains("min")); }
+function openSheet(){ $("sheet").classList.remove("min"); syncSheet(); }
+$("grab").addEventListener("click", () => { $("sheet").classList.toggle("min"); syncSheet(); });
+$("lgToggle").addEventListener("click", () => { const o = $("legend").classList.toggle("open"); $("lgToggle").setAttribute("aria-expanded", String(o)); });
+$("goalBtn").addEventListener("click", () => { showTab("missions"); openSheet(); $("targetGroup").scrollIntoView({behavior: reduceMotion ? "auto" : "smooth"}); });
+$("hoodPick").addEventListener("change", e => { if (e.target.value) selectArea(e.target.value); else { selected = null; render(); } });
+$("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(); plan.g = g; recompute(); toast("Fresh start"); });
+$("unlockAll").addEventListener("click", () => { unlockAll(); render(); });
+tierButtons($("todTiers"), () => plan.tod, setTod);
+tierButtons($("metraTiers"), () => plan.metra, setMetra);
+tierButtons($("corrTiers"), () => plan.corr, setCorr);
+tierButtons($("hoodTiers"), () => tierFor(selected), t => selected && setAreaTier(selected, t));
+["None","+5% of offices","+15%","+27% (max)"].forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = i; b.textContent = lv; b.addEventListener("click", () => setOffice(i)); $("officeSeg").appendChild(b); });
+$("tierTable").innerHTML = TIERS.slice(1).map(T => '<tr><td>' + T.name + '</td><td class="n">' + T.h + '</td><td class="n">' + T.k + '</td><td>' + T.zone + '</td></tr>').join("");
+
+// ---------------- simulation ----------------
+let playing = false, playTimer = 0, camRaf = 0;
+function recomputeWave(){
+  // update neighborhoods a few per frame so the city rises in a ripple instead of one big hitch
+  const keys = Object.keys(AREAS), per = Math.ceil(keys.length / 6);
+  let i = 0;
+  const step = () => {
+    keys.slice(i, i + per).forEach(k => compute(AREAS[k]));
+    i += per; render();
+    if (i < keys.length) requestAnimationFrame(step);
+  };
+  step();
+}
+function orbit(){
+  let last = performance.now(), t0 = last;
+  const start = {...viewState}, total = YEARS * YEAR_MS;
+  const frame = (now) => {
+    if (!playing) return;
+    const k = Math.min(1, (now - t0) / total), ease = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    viewState = {...viewState, bearing: start.bearing + 70 * ease, pitch: Math.min(65, start.pitch + 8 * Math.sin(Math.PI * k)), transitionDuration: 0};
+    deckgl.setProps({initialViewState: viewState});
+    camRaf = requestAnimationFrame(frame);
+  };
+  camRaf = requestAnimationFrame(frame);
+}
+$("playBtn").addEventListener("click", () => {
+  if (playing){ stopPlay(); return; }
+  if (loaded < 77){ toast("Still loading the city…"); return; }
+  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop";
+  recompute();
+  if (!reduceMotion) orbit();
+  playTimer = setInterval(() => {
+    year++; reduceMotion ? recompute() : recomputeWave();
+    if (year >= YEARS) stopPlay(true);
+  }, reduceMotion ? 120 : YEAR_MS);
+});
+function stopPlay(finished){
+  clearInterval(playTimer); cancelAnimationFrame(camRaf); playing = false;
+  $("playBtn").querySelector("span").textContent = "Simulate next 15 years";
+  if (year !== YEARS){ year = YEARS; recompute(); }
+  if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
+}
+function showResult(){
+  const ys = Array.from({length: YEARS + 1}, (_, y) => y);
+  const homes = ys.map(planHomesAt);
+  const noShort = ys.map(y => target() + GAP_GROWTH * y);
+  const planShort = ys.map((y, i) => noShort[i] - homes[i]);
+  const rNo = ys.map(y => rentNoChange(y)), rPlan = ys.map((y, i) => rentWithPlan(y, homes[i]));
+  const end = YEARS, closedAt = planShort.findIndex(v => v <= 0);
+  $("resTitle").textContent = closedAt >= 0 ? "Shortage closed by " + (START + closedAt) + ". Look at you." :
+    homes[end] > 0 ? "Better, but still " + fmt(planShort[end]) + " homes short." : "Doing nothing: the shortage grows to " + fmt(noShort[end]) + ".";
+  const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
+  $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : base + " Change some zoning or flip on a policy and run it again.";
+  $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
+  $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
+  $("resRent").textContent = "$" + fmt(rPlan[end]) + (rNo[end] - rPlan[end] >= 1 ? " (−$" + fmt(rNo[end] - rPlan[end]) + ")" : "");
+  lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
+  lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false);
+  personaRows($("resPersonas"), homes[end]);
+  $("result").hidden = false;
+}
+$("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
+$("resShare").addEventListener("click", () => copyText(SHARE_BASE + "#" + encodePlan(plan), "Link copied. Send it to anyone."));
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs, parent){ const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function lineChart(svg, base, mine, fy, fromZero){
+  svg.innerHTML = "";
+  const W = 340, H = 150, pl = 54, pr = 12, pt = 12, pb = 22;
+  svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  const all = base.concat(mine);
+  let lo = Math.min(...all), hi = Math.max(...all);
+  if (fromZero) lo = Math.min(0, lo); else lo = lo * 0.96;
+  const span = hi - lo || 1, stepRaw = span / 3, mag = Math.pow(10, Math.floor(Math.log10(stepRaw)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= stepRaw);
+  lo = Math.floor(lo / step) * step; hi = Math.ceil(hi / step) * step;
+  const x = i => pl + (W - pl - pr) * i / (base.length - 1);
+  const y = v => pt + (H - pt - pb) * (1 - (v - lo) / (hi - lo));
+  for (let v = lo; v <= hi + 1e-6; v += step){
+    svgEl("line", {x1: pl, x2: W - pr, y1: y(v), y2: y(v), class: v === 0 && lo < 0 ? "zero" : "grid"}, svg);
+    svgEl("text", {x: pl - 6, y: y(v) + 3, "text-anchor": "end", class: "axis"}, svg).textContent = fy(v);
+  }
+  [0, 5, 10, 15].forEach(i => { svgEl("text", {x: x(i), y: H - 6, "text-anchor": i === 0 ? "start" : i === 15 ? "end" : "middle", class: "axis"}, svg).textContent = START + i; });
+  const path = vals => vals.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("");
+  svgEl("path", {d: path(base), class: "ln base"}, svg);
+  svgEl("path", {d: path(mine), class: "ln plan"}, svg);
+  const n = base.length - 1;
+  svgEl("circle", {cx: x(n), cy: y(base[n]), r: 4, class: "dot-base"}, svg);
+  svgEl("circle", {cx: x(n), cy: y(mine[n]), r: 4, class: "dot-plan"}, svg);
+  const xh = svgEl("line", {y1: pt, y2: H - pb, class: "xh", visibility: "hidden"}, svg);
+  const tip = svgEl("g", {class: "tip", visibility: "hidden"}, svg);
+  const tr = svgEl("rect", {rx: 4, height: 30}, tip);
+  const t1 = svgEl("text", {}, tip), t2 = svgEl("text", {}, tip);
+  const hit = svgEl("rect", {x: pl, y: 0, width: W - pl - pr, height: H, fill: "transparent"}, svg);
+  const move = (ev) => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) / r.width * W;
+    const i = Math.max(0, Math.min(n, Math.round((px - pl) / (W - pl - pr) * n)));
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
+    t1.textContent = (START + i) + "  no change " + fy(base[i]); t2.textContent = "your plan " + fy(mine[i]);
+    const w = Math.max(t1.getComputedTextLength ? t1.getComputedTextLength() : 120, 100) + 12;
+    const tx = Math.min(W - pr - w, Math.max(pl, x(i) - w / 2));
+    tr.setAttribute("x", tx); tr.setAttribute("y", pt); tr.setAttribute("width", w);
+    t1.setAttribute("x", tx + 6); t1.setAttribute("y", pt + 12); t2.setAttribute("x", tx + 6); t2.setAttribute("y", pt + 24);
+    tip.setAttribute("visibility", "visible");
+  };
+  hit.addEventListener("pointermove", move); hit.addEventListener("pointerdown", move);
+  hit.addEventListener("pointerleave", () => { xh.setAttribute("visibility", "hidden"); tip.setAttribute("visibility", "hidden"); });
+}
+
+// ---------------- toast + celebration ----------------
+let toastT = 0;
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
+function celebrate(msg){
+  toast(msg);
+  if (reduceMotion) return;
+  const cv = $("fx"), ctx = cv.getContext("2d"), dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr;
+  const cols = look === "playful" ? ["#ffd23f","#ff9f1c","#ff5e5b","#7b5cff","#2ec4b6","#3a86ff"] : ["#f2d64b","#efa733","#dd6f22","#94401a","#5e8f6b","#4f7fa8"];
+  const ps = Array.from({length:140}, () => ({x:cv.width * (0.3 + Math.random() * 0.4), y:cv.height * 0.35, vx:(Math.random() - 0.5) * 14 * dpr, vy:(-Math.random() * 12 - 4) * dpr, w:(4 + Math.random() * 6) * dpr, h:(6 + Math.random() * 8) * dpr, r:Math.random() * 6, vr:(Math.random() - 0.5) * 0.3, c:cols[Math.floor(Math.random() * cols.length)]}));
+  const t0 = performance.now();
+  (function frame(now){
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ps.forEach(p => { p.vy += 0.35 * dpr; p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h); ctx.restore(); });
+    if (now - t0 < 2400) requestAnimationFrame(frame); else ctx.clearRect(0, 0, cv.width, cv.height);
+  })(t0);
+}
+
+// ---------------- saving & sharing (no accounts) ----------------
+const ALPHA = "0123456789abcdefghijklmno";
+const B32 = "0123456789abcdefghijklmnopqrstuv";
+const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm"];
+function encodePlan(p){
+  let s = "u3";
+  for (let n = 1; n <= 77; n += 2){ const a = p.areas[n] || 0, b = n + 1 <= 77 ? (p.areas[n + 1] || 0) : 0; s += ALPHA[a * 5 + b]; }
+  const P = p.p; let bits = 0;
+  BIT_KEYS.forEach((k, i) => { if (P[k]) bits |= 1 << i; });
+  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + ALPHA[p.g];
+}
+function decodeAreas(str, p){
+  for (let i = 0; i < 39; i++){ const v = ALPHA.indexOf(str[i]), a = Math.floor(v / 5), b = v % 5, n = 1 + i * 2; if (a) p.areas[n] = a; if (b && n + 1 <= 77) p.areas[n + 1] = b; }
+}
+function decodePlan(code){
+  const s = String(code || "");
+  let m = s.match(/u3([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])/);
+  if (m){
+    const p = blankPlan(); decodeAreas(m[1], p);
+    p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
+    const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10);
+    BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
+    p.g = +m[9];
+    return p;
+  }
+  m = s.match(/u2([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v])([01])([0-2])/);
+  if (m){
+    const p = blankPlan(); decodeAreas(m[1], p);
+    p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
+    const bits = ALPHA.indexOf(m[8]) | (+m[9] << 5);
+    p.p.build = bits & 1 ? 1 : 0; p.p.stair = bits & 2 ? 1 : 0; p.p.adu = bits & 4 ? 1 : 0; p.p.lots = bits & 8 ? 1 : 0; p.p.pre = bits & 16 ? 1 : 0; p.p.permits = bits & 32 ? 1 : 0;
+    p.g = +m[10];
+    return p;
+  }
+  m = s.match(/u1([0-9a-o]{39})([0-4])([0-2])([0-9a-v])([0-2])/);
+  if (m){
+    const p = blankPlan(); decodeAreas(m[1], p);
+    p.tod = +m[2]; p.p.str = +m[3];
+    const bits = parseInt(m[4], 32);
+    p.p.build = bits & 1 ? 1 : 0; p.p.stair = bits & 2 ? 1 : 0; p.p.adu = bits & 4 ? 1 : 0; p.p.lots = bits & 8 ? 1 : 0; p.p.pre = bits & 16 ? 1 : 0;
+    p.g = +m[5];
+    return p;
+  }
+  return null;
+}
+function updateCode(){ $("codeBox").textContent = encodePlan(plan); }
+let saveT = 0;
+function autosave(){ clearTimeout(saveT); saveT = setTimeout(() => lsSet("upzone-current", {code: encodePlan(plan), name: $("planName").value}), 400); }
+async function copyText(txt, okMsg){
+  try { await navigator.clipboard.writeText(txt); toast(okMsg); }
+  catch {
+    const box = $("codeBox"); box.textContent = txt;
+    const r = document.createRange(); r.selectNodeContents(box); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    toast("Selected. Copy it from the box on the Save tab.");
+  }
+}
+$("copyLink").addEventListener("click", () => copyText(SHARE_BASE + "#" + encodePlan(plan), "Link copied. Send it to anyone."));
+$("copyCode").addEventListener("click", () => copyText(encodePlan(plan), "Plan code copied"));
+$("openCode").addEventListener("click", () => {
+  const p = decodePlan($("codeIn").value);
+  if (!p){ toast("That code didn't work. Codes start with u3 (older u1 and u2 codes still work)."); return; }
+  plan = p; $("codeIn").value = ""; unlockAll(true); recompute(); renderTargets(); toast("Plan opened");
+});
+function myPlans(){ return lsGet("upzone-plans", []); }
+function renderMyPlans(){
+  const el = $("myPlans"), list = myPlans(); el.innerHTML = "";
+  if (!list.length){ el.innerHTML = '<div class="empty">No saved plans yet.</div>'; return; }
+  list.slice().reverse().forEach(rec => {
+    const row = document.createElement("div"); row.className = "item";
+    row.innerHTML = '<div class="main"><b></b><span></span></div><button class="btn" type="button">Open</button><button class="btn quiet" type="button">Delete</button>';
+    row.querySelector("b").textContent = String(rec.name || "Untitled plan");
+    row.querySelector(".main span").textContent = fmt(Number(rec.homes) || 0) + " homes · grade " + String(rec.grade || "–");
+    const [open, del] = row.querySelectorAll("button");
+    open.addEventListener("click", () => { const p = decodePlan(rec.code); if (p){ plan = p; $("planName").value = String(rec.name || ""); recompute(); renderTargets(); toast("Opened " + (rec.name || "plan")); } });
+    del.addEventListener("click", () => { lsSet("upzone-plans", myPlans().filter(x => x.id !== rec.id)); renderMyPlans(); toast("Deleted"); });
+    el.appendChild(row);
+  });
+}
+$("savePlan").addEventListener("click", () => {
+  const t = totals(false), name = $("planName").value.trim() || "Plan " + (myPlans().length + 1);
+  const list = myPlans(); list.push({id: Date.now(), name: name.slice(0, 60), code: encodePlan(plan), homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100)});
+  if (lsSet("upzone-plans", list.slice(-30))){ renderMyPlans(); toast("Saved on this device"); }
+  else toast("This browser blocked saving. Use Copy share link instead.");
+});
+
+// ---------------- visual style ----------------
+function setLook(l){
+  look = l === "playful" ? "playful" : "model";
+  document.documentElement.dataset.look = look;
+  document.querySelectorAll(".legend .lt").forEach((i, k) => i.style.setProperty("--c", "rgb(" + tierColor(k + 1).join(",") + ")"));
+  document.querySelector(".legend .lo").style.setProperty("--c", "rgb(" + tierColor(5).join(",") + ")");
+  if (META) render();
+}
+$("lookBtn").addEventListener("click", () => { showTab("math"); openSheet(); });
+setLook("model");
+
+// ---------------- start ----------------
+(function init(){
+  const fromHash = decodePlan(location.hash);
+  const cur = lsGet("upzone-current", null);
+  if (fromHash){ plan = fromHash; unlockAll(true); setTimeout(() => toast("Opened a shared plan"), 600); }
+  else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }
+  buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
+  if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
+  const closeIntro = () => { lsSet("upzone-intro", true); tourPending = true; hideModal("intro", () => setTimeout(() => { maybeMyth("illegal"); if ($("myth").hidden) startTour(); }, 250)); };
+  $("introGo").addEventListener("click", closeIntro);
+  $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
+})();
+boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load the map data. Reload to try again."; });
+})();
+</script>
