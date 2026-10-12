@@ -83,8 +83,17 @@ a{color:var(--ink)}
 .play button svg{width:14px;height:14px;fill:currentColor}
 .stat b{font-family:var(--f-display)!important;font-weight:800!important;font-size:19px!important}
 .play .yr{font-family:var(--f-data);font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.play .track{flex:1;height:4px;border-radius:2px;background:var(--paper-2);position:relative;overflow:hidden}
-.play .track i{position:absolute;inset:0 auto 0 0;width:100%;background:var(--ink-3)}
+/* timeline: shows progress while simulating; afterwards drag it to see the city in any year */
+.yrrange{flex:1;min-width:60px;height:22px;margin:0;background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer;--p:100%}
+.yrrange:disabled{cursor:default}
+.yrrange::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(var(--ink-3) 0 0) 0 / var(--p) 100% no-repeat, var(--paper-2)}
+.yrrange::-moz-range-track{height:4px;border-radius:2px;background:linear-gradient(var(--ink-3) 0 0) 0 / var(--p) 100% no-repeat, var(--paper-2)}
+.yrrange::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--paper);border:2px solid var(--nav);box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.yrrange::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:var(--paper);border:2px solid var(--nav)}
+.yrrange:disabled::-webkit-slider-thumb{opacity:0}
+.yrrange:disabled::-moz-range-thumb{opacity:0}
+body.playing #hoodBanner{display:none}
+.cinecap{animation:fadeIn .5s ease both}
 
 /* ---------- tool sheet ---------- */
 .sheet{position:absolute;z-index:3;left:0;right:0;bottom:0;height:46%;background:var(--paper);border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:0 -8px 28px rgba(27,35,32,.14);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px);transition:height .25s ease}
@@ -305,6 +314,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 /* frosted panels: a little of the map shows through, text stays crisp */
 .hud,.sheet,.legend,.mapctl,.credit{background:rgba(255,255,255,.9) !important;-webkit-backdrop-filter:blur(12px) saturate(1.15);backdrop-filter:blur(12px) saturate(1.15)}
 .hud .scoreband{background:rgba(43,93,160,.96)}
+@media (max-width:859px){ .hud,.sheet,.legend,.mapctl,.credit{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(255,255,255,.97) !important} }   /* blur behind panels is costly on phones while the map moves */
 @media (min-width:860px){
   body:not(.wide) .sheet .tabs{padding-right:38px;padding-left:4px}
   body:not(.wide) .sheet .tab{padding-left:4px;padding-right:4px;font-size:12.5px}
@@ -456,12 +466,32 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   .legend,.sheet.min ~ .legend{bottom:16px;right:16px}
   .credit,.sheet.min ~ .credit{left:432px;right:auto;bottom:10px;top:auto}
   .toast,.sheet.min ~ .toast{bottom:28px;left:calc(50% + 210px)}
-  .hoodbanner,.sheet.min ~ .hoodbanner{left:432px;right:auto;bottom:16px}
+  .hoodbanner,.sheet.min ~ .hoodbanner{left:432px;right:auto;bottom:34px}   /* sits above the map credit line */
 }
 @media (max-width:430px){ .brand .load{display:none} .brand h1{font-size:19px} }
 @media (max-width:400px){
   .score .big{font-size:30px}
   .keys{gap:7px}
+}
+/* compact score panel on desktop: number and goal share a row, title on two lines, tighter spacing */
+@media (min-width:860px){
+  .hud{padding:10px 12px}
+  .fanbar{padding:3px 10px}
+  .brand{padding:6px 0 6px 10px}
+  .brand h1{font-size:23px !important;line-height:.92 !important;max-width:9.5em}
+  .scoreband{padding:8px 12px 9px}
+  .score{flex-wrap:nowrap;align-items:center;gap:10px}
+  .score .big{font-size:40px}
+  .score .of{flex:1;min-width:0;line-height:1.25}
+  .score .grade{flex:0 0 auto;white-space:nowrap}
+  .scoreband .bar{margin-top:7px}
+  .scoreband .keys{margin-top:4px}
+  .affline{margin-top:2px}
+  .hud .stats{margin-top:7px}
+  .stat b{font-size:18px !important}
+  .stat span{line-height:1.2}
+  .hud .play{padding-bottom:0}
+  .play{margin-top:7px}
 }
 /* motion: modals rise in and sink out, panes fade, details slide open */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -514,7 +544,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     </div>
     <div class="play">
       <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate next 15 years</span></button>
-      <span class="track"><i id="yrTrack"></i></span>
+      <input type="range" class="yrrange" id="yrRange" min="0" max="15" step="1" value="15" aria-label="Show the city in any year from 2026 to 2041" title="Drag to see any year">
       <span class="yr" id="yrTxt">2041</span>
     </div>
   </section>
@@ -766,6 +796,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <div id="lgRing" hidden><i class="ring"></i>½ mile of a station (≈10-min walk)</div>
   </div>
   <div class="hoodbanner" id="hoodBanner" hidden><b id="hbName"></b><span id="hbLine"></span></div>
+  <div class="hoodbanner cinecap" id="cineCap" hidden><b id="ccName"></b><span id="ccLine"></span></div>
   <div class="credit">Buildings &amp; streets: City of Chicago</div>
   <div class="mapctl" id="mapctl" role="group" aria-label="Camera">
     <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in">+</button>
@@ -858,7 +889,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
       <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in the Math tab.</p>
-      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
+      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
 </div>
@@ -1677,9 +1708,11 @@ const lighting = new deck.LightingEffect({
 });
 const deckgl = new deck.Deck({
   parent: $("map"),
+  useDevicePixels: Math.min(2, window.devicePixelRatio || 1),   // phones are 3×; drawing at 2× looks the same and is far cheaper
   initialViewState: viewState,
   controller: {touchRotate:true, dragRotate:true},
   effects: [lighting],
+  onInteractionStateChange: (st) => { if (playing && camRaf && (st.isDragging || st.isZooming || st.isRotating)){ cancelAnimationFrame(camRaf); camRaf = 0; $("cineCap").hidden = true; } },
   onViewStateChange: ({viewState: v}) => { v = clampView(v); const b = zoomBand(v.zoom); viewState = v; if (b !== zoomBandNow){ zoomBandNow = b; scheduleRender(); } return v; },
   getTooltip: ({object, layer}) => {
     if (!object || !layer) return null;
@@ -1700,6 +1733,7 @@ function syncBasemap(){
   if (!bmap) return;
   const vp = deckgl.getViewports()[0]; if (!vp) return;
   bmap.jumpTo({center:[vp.longitude, vp.latitude], zoom:vp.zoom, pitch:vp.pitch, bearing:vp.bearing});
+  if (bmap.redraw) bmap.redraw();   // draw the basemap in this same frame, so streets never trail the buildings by a frame
 }
 function styleBasemap(){
   const water = "#8cc4e8", green = "#cfe4c3";
@@ -1721,7 +1755,7 @@ function loadBasemap(){
   const sc = document.createElement("script"); sc.src = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js";
   sc.onload = () => {
     try {
-      bmap = new maplibregl.Map({container:"basemap", style:"https://tiles.openfreemap.org/styles/positron", interactive:false, attributionControl:false,
+      bmap = new maplibregl.Map({container:"basemap", style:"https://tiles.openfreemap.org/styles/positron", interactive:false, attributionControl:false, pixelRatio: Math.min(2, window.devicePixelRatio || 1),
         center:[viewState.longitude, viewState.latitude], zoom:viewState.zoom, pitch:viewState.pitch, bearing:viewState.bearing, maxPitch:85, fadeDuration:0});
       bmap.on("load", () => {
         styleBasemap(); USING_BASEMAP = true; $("map").classList.add("overlay");
@@ -1924,7 +1958,9 @@ function animateNumber(to){
 }
 function gradeFor(pct){ return pct >= 100 ? "A+" : pct >= 85 ? "A" : pct >= 70 ? "B" : pct >= 50 ? "C" : pct >= 25 ? "D" : pct > 0 ? "F" : "–"; }
 
+let scrubbing = false;
 function render(){
+  if (!scrubbing && !playing && year !== YEARS){ year = YEARS; recompute(); return; }   // any change snaps the timeline back to 2041
   const tv = totals(true), tf = totals(false), goal = needed();
   if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
   $("goalNum").textContent = fmt(goal);
@@ -1953,7 +1989,7 @@ function render(){
   if (loaded === 77) lastGrade = g;
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : "15-year outlook";
   $("yrTxt").textContent = START + year;
-  $("yrTrack").style.width = (year / YEARS * 100) + "%";
+  { const r = $("yrRange"); r.value = year; r.disabled = playing; r.style.setProperty("--p", (year / YEARS * 100) + "%"); }
   ["todTiers","metraTiers","subTiers","corrTiers","hoodTiers"].forEach(id => $(id)._sync && $(id)._sync());
   $("subGain").textContent = plan.sub ? "+" + fmt(SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR) + " homes across " + SUB_STATIONS + " suburban stations" : "Mid-rise everywhere would add +" + fmt(SUB_STATIONS * SUB_PER_STATION[3] * SUB_FACTOR) + " homes";
   $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
@@ -2073,6 +2109,75 @@ function recomputeWave(){
   };
   step();
 }
+// cinematic camera: fly to the three neighborhoods gaining the most homes (spread apart), hover over each, then pull back over the whole city
+function visibleCenter(){
+  const W = $("map").clientWidth, H = $("map").clientHeight;
+  if (document.body.classList.contains("wide")) return [W / 2, H / 2];
+  if (isWide()) return [432 + (W - 432) / 2, H * 0.55];
+  const top = $("hud").getBoundingClientRect().bottom, bot = $("sheet").getBoundingClientRect().top;
+  return [W / 2, bot > top + 80 ? (top + bot) / 2 : H / 2];
+}
+function centerAt(lon, lat, v, pos){
+  // map center that puts [lon, lat] at screen point pos for this zoom / pitch / bearing
+  const W = $("map").clientWidth, H = $("map").clientHeight; let c = [lon, lat];
+  try {
+    for (let k = 0; k < 3; k++){
+      const p = new deck.WebMercatorViewport({width:W, height:H, longitude:c[0], latitude:c[1], zoom:v.zoom, pitch:v.pitch, bearing:v.bearing}).unproject(pos);
+      c = [c[0] + lon - p[0], c[1] + lat - p[1]];
+    }
+  } catch (e) { c = [lon, lat]; }
+  return {longitude:c[0], latitude:c[1]};
+}
+function cineStops(){
+  const km = (a, b) => Math.hypot((a.lon - b.lon) * 83, (a.lat - b.lat) * 111);
+  const ranked = META.areas.filter(m => AREAS[m.num] && AREAS[m.num].added >= 300).sort((a, b) => AREAS[b.num].added - AREAS[a.num].added);
+  const pick = [];
+  for (const m of ranked){ if (pick.length >= 3) break; if (pick.every(q => km(q, m) > 3.5)) pick.push(m); }
+  // short path: start nearest the current view
+  const out = []; let at = {lon:viewState.longitude, lat:viewState.latitude};
+  while (pick.length){ pick.sort((a, b) => km(at, a) - km(at, b)); at = pick.shift(); out.push(at); }
+  return out;
+}
+function cinema(){
+  const stops = cineStops();
+  if (!stops.length) return orbit();
+  const total = YEARS * YEAR_MS, phone = !isWide(), pos = visibleCenter();
+  const zStop = phone ? 12.9 : 13.4, b0 = viewState.bearing;
+  const keys = [{t:0, v:{...viewState}}];
+  const seg = (total - 900) / stops.length, fly = Math.min(1500, seg * 0.42);
+  stops.forEach((m, i) => {
+    const t0 = i * seg, b = b0 + 25 * (i + 1);
+    const arrive = {zoom:zStop, pitch:60, bearing:b}, leave = {zoom:zStop + 0.25, pitch:60, bearing:b + 12};
+    keys.push({t:t0 + fly, v:{...arrive, ...centerAt(m.lon, m.lat, arrive, pos)}, fly:true, stop:m});
+    keys.push({t:t0 + seg, v:{...leave, ...centerAt(m.lon, m.lat, leave, pos)}});
+  });
+  const endV = {zoom:phone ? 10.1 : 10.7, pitch:48, bearing:b0 + 25 * stops.length + 30};
+  keys.push({t:total, v:{...endV, ...centerAt(-87.68, 41.84, endV, pos)}, fly:true, end:true});
+  const lerp = (a, b, k) => a + (b - a) * k, smooth = k => k * k * (3 - 2 * k);
+  const wrap = d => ((d + 540) % 360) - 180;
+  const cap = $("cineCap"); let capFor = null;
+  const t0 = performance.now();
+  const frame = (now) => {
+    if (!playing) return;
+    const t = Math.max(0, now - t0);
+    let j = 1; while (j < keys.length - 1 && t > keys[j].t) j++;
+    const A = keys[j - 1], B = keys[j], k0 = Math.max(0, Math.min(1, (t - A.t) / (B.t - A.t || 1))), k = B.fly ? smooth(k0) : k0;
+    const dist = Math.hypot((B.v.longitude - A.v.longitude) * 83, (B.v.latitude - A.v.latitude) * 111);
+    const arc = B.fly ? Math.min(1.3, dist / 6) * Math.sin(Math.PI * k) : 0;    // rise a little on longer flights
+    viewState = clampView({...viewState, longitude:lerp(A.v.longitude, B.v.longitude, k), latitude:lerp(A.v.latitude, B.v.latitude, k),
+      zoom:lerp(A.v.zoom, B.v.zoom, k) - arc, pitch:lerp(A.v.pitch, B.v.pitch, k), bearing:A.v.bearing + wrap(B.v.bearing - A.v.bearing) * k, transitionDuration:0});
+    deckgl.setProps({initialViewState: viewState});
+    // caption: the neighborhood we're over and its homes so far
+    const here = B.stop || (!B.fly && A.stop) || null;
+    if (here && (B.stop ? k0 > 0.55 : true)){
+      const Ar = AREAS[here.num];
+      if (capFor !== here.num){ capFor = here.num; cap.hidden = false; cap.style.animation = "none"; void cap.offsetWidth; cap.style.animation = ""; $("ccName").textContent = here.name; }
+      $("ccLine").textContent = "+" + fmt(Ar ? Ar.addedNow : 0) + " new homes by " + (START + year);
+    } else if (!here && capFor !== null){ capFor = null; cap.hidden = true; }
+    camRaf = requestAnimationFrame(frame);
+  };
+  camRaf = requestAnimationFrame(frame);
+}
 function orbit(){
   let last = performance.now(), t0 = last;
   const start = {...viewState}, total = YEARS * YEAR_MS;
@@ -2088,16 +2193,23 @@ function orbit(){
 $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
-  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments();
+  playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
   recompute();
-  if (!reduceMotion) orbit();
+  if (!reduceMotion) cinema();
   playTimer = setInterval(() => {
     year++; reduceMotion ? recompute() : recomputeWave();
     if (year >= YEARS) stopPlay(true);
   }, reduceMotion ? 120 : YEAR_MS);
 });
+function scrubTo(y){ if (playing) return; year = Math.max(0, Math.min(YEARS, y)); scrubbing = true; recompute(); scrubbing = false; }
+$("yrRange").addEventListener("input", (e) => scrubTo(+e.target.value));
+$("resCompare").addEventListener("click", () => hideModal("result", () => {
+  // drop the city back to 2026, hold, then rise to 2041
+  scrubTo(0); toast("2026: the city today");
+  setTimeout(() => { scrubTo(YEARS); toast("2041 with your plan. Drag the timeline to see any year."); }, 2200);
+}));
 function stopPlay(finished){
-  clearInterval(playTimer); cancelAnimationFrame(camRaf); playing = false;
+  clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; document.body.classList.remove("playing"); $("cineCap").hidden = true;
   $("playBtn").querySelector("span").textContent = "Simulate next 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
@@ -2431,7 +2543,7 @@ setLook("model");
   else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }
   buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
-  const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(() => { maybeMyth("illegal"); if ($("myth").hidden) startTour(); }, 250)); };
+  const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(startTour, 250)); };   // the "illegal today" myth waits until the player turns on that overlay
   $("introGo").addEventListener("click", closeIntro);
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
 })();
