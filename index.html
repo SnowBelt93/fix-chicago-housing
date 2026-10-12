@@ -2097,7 +2097,7 @@ tierButtons($("hoodTiers"), () => tierFor(selected), t => selected && setAreaTie
 $("tierTable").innerHTML = TIERS.slice(1).map(T => '<tr><td>' + T.name + '</td><td class="n">' + T.h + '</td><td class="n">' + T.k + '</td><td>' + T.zone + '</td></tr>').join("");
 
 // ---------------- simulation ----------------
-let playing = false, playTimer = 0, camRaf = 0;
+let playing = false, playTimer = 0, camRaf = 0, cineSheet = false;
 function recomputeWave(){
   // update neighborhoods a few per frame so the city rises in a ripple instead of one big hitch
   const keys = Object.keys(AREAS), per = Math.ceil(keys.length / 8);
@@ -2115,7 +2115,7 @@ function visibleCenter(){
   const W = $("map").clientWidth, H = $("map").clientHeight;
   if (document.body.classList.contains("wide")) return [W / 2, H / 2];
   if (isWide()) return [432 + (W - 432) / 2, H * 0.55];
-  const top = $("hud").getBoundingClientRect().bottom, bot = $("sheet").getBoundingClientRect().top;
+  const top = $("hud").getBoundingClientRect().bottom, bot = $("sheet").classList.contains("min") ? H - 104 : $("sheet").getBoundingClientRect().top;
   return [W / 2, bot > top + 80 ? (top + bot) / 2 : H / 2];
 }
 function centerAt(lon, lat, v, pos){
@@ -2195,6 +2195,8 @@ $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
   playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
+  cineSheet = !isWide() && !reduceMotion && !$("sheet").classList.contains("min");   // phones: tuck the tool sheet away so the flyover has room
+  if (cineSheet){ $("sheet").classList.add("min"); syncSheet(); }
   recompute();
   if (!reduceMotion) cinema();
   playTimer = setInterval(() => {
@@ -2213,6 +2215,7 @@ $("resCompare").addEventListener("click", () => hideModal("result", () => {
 }));
 function stopPlay(finished){
   clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; document.body.classList.remove("playing"); $("cineCap").hidden = true;
+  if (cineSheet){ $("sheet").classList.remove("min"); syncSheet(); cineSheet = false; }
   $("playBtn").querySelector("span").textContent = "Simulate next 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
