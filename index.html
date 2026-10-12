@@ -181,13 +181,17 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .policy .gain{font-family:var(--f-data);font-size:12px;color:var(--ink-2)}
 .policy .src,.srcs{font-size:11.5px;color:var(--ink-3)}
 .switch{flex:0 0 auto;width:46px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--paper-2);position:relative;padding:0}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .18s}
+.switch{transition:background-color .2s,border-color .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .24s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .switch[aria-checked="true"]{background:var(--good);border-color:var(--good)}
-.switch[aria-checked="true"]::after{left:21px}
+.switch[aria-checked="true"]::after{transform:translateX(18px)}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:var(--paper);padding:7px 4px;font-size:12px;font-weight:600;border-right:1px solid var(--line);line-height:1.2}
 .seg button:last-child{border-right:0}
-.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg{position:relative;isolation:isolate}
+.seg::before{content:"";position:absolute;z-index:0;top:0;bottom:0;left:0;width:calc(100% / var(--n, 3));transform:translateX(calc(var(--i, 0) * 100%));background:var(--nav);transition:transform .26s cubic-bezier(.2,.8,.2,1),opacity .2s;opacity:var(--on, 0)}
+.seg button{position:relative;z-index:1;background:transparent !important;transition:color .2s}
+.seg button[aria-pressed="true"]{color:#fff}
 
 /* impact */
 .sidebar{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--paper-2);border:1px solid var(--line)}
@@ -241,6 +245,11 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 /* public comment bubble */
 .comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;background:var(--paper);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:9px 12px;box-shadow:0 6px 18px rgba(27,35,32,.14);font-size:13px;opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s;pointer-events:none}
 .comment.on{opacity:1;transform:none;pointer-events:auto}
+@media (min-width:860px){
+  .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:420px;border-radius:14px;text-align:center;transform:translate(-50%, -8px)}
+  .comment.on{transform:translate(-50%, 0)}
+  body.wide .comment{left:50%;top:auto;bottom:28px}
+}
 .comment .ans{margin-top:6px;border:0;background:none;padding:0;font:inherit;font-size:12px;font-weight:700;color:var(--nav);cursor:pointer}
 .tip{position:fixed;z-index:12;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13.5px}
 .tip b{display:block;font-family:var(--f-display,inherit);font-size:17px;margin:2px 0 3px}.tip p{margin:0 0 10px;color:#dfe5ee}
@@ -281,16 +290,39 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .seg2 button[aria-pressed="true"]{background:var(--nav);color:#fff;border-color:var(--nav)}
 .ptally{font-size:12px;color:var(--ink-3)}
 .widebtn{display:none}
+.cols,.col{display:flex;flex-direction:column;gap:14px}
+/* frosted panels: a little of the map shows through, text stays crisp */
+.hud,.sheet,.legend,.mapctl,.credit{background:rgba(255,255,255,.9) !important;-webkit-backdrop-filter:blur(12px) saturate(1.15);backdrop-filter:blur(12px) saturate(1.15)}
+.hud .scoreband{background:rgba(43,93,160,.96)}
 @media (min-width:860px){
-  .widebtn{display:block;position:absolute;right:10px;top:8px;z-index:6;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 9px;font:600 12px var(--f-body);color:var(--ink);cursor:pointer}
-  .sheet .tabs{padding-right:92px}
-  body.wide .sheet{left:432px !important;right:16px;width:auto !important;top:16px;bottom:16px;height:auto !important}
-  body.wide .legend,body.wide .mapctl,body.wide .hoodbanner{display:none}
-  body.wide #policies,body.wide #policiesElse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;align-items:start}
+  .widebtn{display:block;position:absolute;right:6px;top:7px;z-index:6;border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:5px 8px;font:600 12px var(--f-body);color:var(--ink);cursor:pointer;box-shadow:-10px 0 10px rgba(255,255,255,.95)}
+  .sheet .tabs{padding-right:44px}
+  body.wide .sheet .tabs{padding-right:110px}
+  .sheet{transition:left .38s cubic-bezier(.2,.8,.2,1),width .38s cubic-bezier(.2,.8,.2,1),height .38s cubic-bezier(.2,.8,.2,1)}
+  body.wide .sheet{left:432px;width:calc(100% - 448px) !important;height:calc(100% - 32px) !important}
+  body.wide .legend,body.wide .mapctl,body.wide .hoodbanner{opacity:0;pointer-events:none}
+  .legend,.mapctl{transition:opacity .25s}
+  body.wide .pane{box-sizing:border-box;max-width:1180px;margin:0 auto;width:100%;padding:20px 24px 32px;gap:20px}
+  body.wide .pane > .group > .eyebrow,body.wide .pgroup > summary .eyebrow{font-size:12px}
+  /* cards in an even grid, actions pinned to the bottom of each card */
+  body.wide #policies,body.wide #policiesElse,body.wide #missions,body.wide #townList{display:grid !important;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;align-items:stretch}
+  body.wide .policy{height:100%;box-sizing:border-box}
+  body.wide .policy .more-btn{margin-top:auto}
   body.wide .townq + .townq{margin-top:0}
-  body.wide #pane-zoning:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 20px;align-content:start}
+  body.wide .pgroup{padding-top:16px}
+  /* Build tab: two columns of tidy cards */
+  body.wide #pane-zoning:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
   body.wide #pane-zoning > .row{grid-column:1 / -1}
+  body.wide #pane-zoning .tool{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0;border-top:1px solid var(--line)}
+  /* Share: tools on the left, community on the right */
+  body.wide #pane-share .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
+  /* Impact and The math use the width */
+  body.wide #pane-impact .facts{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  body.wide #personas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 24px}
+  body.wide dl.math{columns:2;column-gap:32px}
+  body.wide dl.math > div{break-inside:avoid;margin-bottom:14px}
 }
+@media (prefers-reduced-transparency:reduce){.hud,.sheet,.legend,.mapctl,.credit{background:#fff !important;backdrop-filter:none}}
 .goalmath{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;background:var(--paper-2);border-radius:var(--r);padding:10px 12px}
 .goalmath b{display:block;font-family:var(--f-display);font-size:24px;color:var(--nav);line-height:1}
 .goalmath span{font-size:11.5px;color:var(--ink-2);line-height:1.3;display:block;margin-top:2px}
@@ -363,7 +395,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .tier em{font-family:var(--f-body);font-stretch:100%}
 .btn.primary{background:var(--nav);border-color:var(--nav)}
 .btn.primary:hover{background:var(--nav-2)}
-.btn[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--nav);border-color:var(--nav)}
+.btn[aria-pressed="true"]{background:var(--nav);border-color:var(--nav)}
 .policy.on,.target[aria-pressed="true"]{border-color:var(--nav);box-shadow:inset 0 0 0 1px var(--nav);background:#f5f9fd}
 .switch[aria-checked="true"]{background:var(--nav);border-color:var(--nav)}
 .status.law{background:var(--nav)}
@@ -388,7 +420,6 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   .legend,.sheet.min ~ .legend{bottom:16px;right:16px}
   .credit,.sheet.min ~ .credit{left:auto;right:16px;bottom:auto;top:16px}
   .toast,.sheet.min ~ .toast{bottom:28px;left:calc(50% + 210px)}
-  .comment{left:404px;right:auto;top:16px;margin-top:0}
   .hoodbanner,.sheet.min ~ .hoodbanner{left:432px;right:auto;bottom:16px}
 }
 @media (max-width:430px){ .brand .load{display:none} .brand h1{font-size:19px} }
@@ -438,6 +469,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       </div>
       <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="r"></i></div>
       <div class="keys" id="keys"></div>
+      <div class="affline" id="affLine" hidden><b id="affNum">0</b> of them affordable (rent-restricted)</div>
     </div>
     <div class="stats">
       <div class="stat"><b id="short">–</b><span id="shortLbl">shortage in 2041</span></div>
@@ -453,7 +485,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 
   <section class="sheet" id="sheet">
     <button class="grab" id="grab" aria-label="Expand or collapse the tool panel"></button>
-    <button class="widebtn" id="wideBtn" type="button" aria-pressed="false" title="Show more at once">⤢ Expand</button>
+    <button class="widebtn" id="wideBtn" type="button" aria-pressed="false" title="Expand the panel" aria-label="Expand or collapse the panel">⤢</button>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-pane="zoning">Build</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="policies">Policies <span class="n" id="pCount">0</span></button>
@@ -567,7 +599,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <div class="pane" id="pane-impact" hidden>
         <div class="facts">
           <div class="fact"><b id="impWalk">–</b><span>new homes a 10-min walk from the L or Metra</span></div>
-          <div class="fact"><b id="impAff">–</b><span>affordable homes (required share)</span></div>
+          <div class="fact"><b id="impAff">–</b><span>affordable homes (rent-restricted)</span></div>
           <div class="fact"><b id="impRepl">–</b><span>existing homes torn down</span></div>
         </div>
         <div class="group">
@@ -593,6 +625,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 
       <!-- Save & share -->
       <div class="pane" id="pane-share" hidden>
+       <div class="cols"><div class="col">
         <div class="group">
           <div class="eyebrow">No account needed</div>
           <p>Your current plan saves itself in this browser. Share it with a link: anyone who opens it sees your plan.</p>
@@ -619,6 +652,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="eyebrow">Saved on this device</div>
           <div class="list" id="myPlans"><div class="empty">No saved plans yet.</div></div>
         </div>
+       </div><div class="col">
         <div class="group comm" id="commBox">
           <div class="eyebrow">What other players chose</div>
           <label class="small" for="homeHood">I live in</label>
@@ -631,6 +665,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="gal" id="gallery"><div class="empty">Loading…</div></div>
           <p class="small ptally">Post your plan from the results screen after you simulate. Open any plan to remix it.</p>
         </div>
+       </div></div>
       </div>
 
       <!-- Math -->
@@ -665,6 +700,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and 20% sooner), no parking minimums +10%, small lots +20%.</li>
                 <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
+                <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Suburban Metra stations build 30% as much as an average Chicago L station at the same level; megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
               </ul></dd></div>
@@ -751,6 +787,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <div class="restats">
         <div class="fact"><b id="resShort">–</b><span>shortage in 2041 with your plan</span></div>
         <div class="fact"><b id="resRent">–</b><span>median rent in 2041 with your plan</span></div>
+        <div class="fact"><b id="resAff">–</b><span>affordable homes built</span></div>
       </div>
       <div class="chartBox">
         <div class="ctitle">Housing shortage<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
@@ -831,6 +868,7 @@ const MEGA = [  // big master-planned projects (homes = planned homes not yet bu
   {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Early phases; paced by CHA"},
 ];
 const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
+const MEGA_AFF = 0.2;                                      // 20% affordable: the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to
 const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 "other vacant"; assumption
 const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
 const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
@@ -951,7 +989,7 @@ function totals(useYear){
   const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub;
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
   if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
-  aff += Math.round(ph.social * SOCIAL_AFF);
+  aff += Math.round(ph.social * SOCIAL_AFF + ph.mega * MEGA_AFF);
   return {parts, total, replaced, walk: walk + ph.sub, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
 }
 function planHomesAt(y){
@@ -1142,11 +1180,11 @@ function buildPolicies(){
     P.src.forEach(([t, u], i) => { if (i) src.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; src.append(a); });
     if (P.levels){
       const seg = document.createElement("div"); seg.className = "seg";
-      P.levels.forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = i; b.addEventListener("click", () => setPolicy(P.key, i)); seg.appendChild(b); });
+      P.levels.forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = i; b.addEventListener("click", () => { seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setPolicy(P.key, i)); }); seg.appendChild(b); });
       d.insertBefore(seg, d.querySelector(".gain"));
     } else {
       const sw = document.createElement("button"); sw.type = "button"; sw.className = "switch"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-label", P.title);
-      sw.addEventListener("click", () => setPolicy(P.key, plan.p[P.key] ? 0 : 1));
+      sw.addEventListener("click", () => { const v = plan.p[P.key] ? 0 : 1; sw.setAttribute("aria-checked", String(!!v)); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
       d.querySelector(".top").appendChild(sw);
     }
     el.appendChild(d);
@@ -1161,6 +1199,7 @@ $("expandAll").addEventListener("click", (e) => {
   document.querySelectorAll("#pane-policies .more-btn").forEach(b => b.setAttribute("aria-expanded", String(open)));
 });
 const SPATIAL = new Set(["build","stair","pre","permits","aro","mpls","camb","small","park","comm"]);
+const later = (fn) => requestAnimationFrame(() => setTimeout(fn, 30));   // let the knob/highlight start moving before the heavy recompute
 const ELSE_KEYS = new Set(POLICIES.filter(p => p.group === "else").map(p => p.key));
 function setPolicy(key, v){
   const was = plan.p[key];
@@ -1182,7 +1221,7 @@ function marginal(key, cur){
   plan.p[key] = saved;
   return cur - alt;
 }
-let gainTimer = 0;
+let gainTimer = 0, gainToken = 0;
 const GAIN = {};
 const ZERO = {   // why a spatial policy adds nothing with the current map
   stair:"Adds nothing yet: it only helps 6-flats and mid-rises on lots under 7,500 sq ft. Zone some areas for those and it kicks in.",
@@ -1231,18 +1270,26 @@ function renderPolicies(){
     el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " players turn this on"; });
   clearTimeout(gainTimer);
   if (loaded === 77 && !playing) gainTimer = setTimeout(() => {
-    const cur = currentAdded(), affNow = totals(false).aff;
-    [...SPATIAL].forEach(k => {
+    const cur = currentAdded(), affNow = totals(false).aff, keys = [...SPATIAL], token = ++gainToken;
+    const step = () => {
+      if (token !== gainToken || playing) return;
+      const k = keys.shift();
+      if (!k){
+        { const saved = plan.p.aro; plan.p.aro = 1; const base = currentAdded(); plan.p.aro = 0; GAIN.aro = Math.max(0, currentAdded() - base); plan.p.aro = saved; }
+        currentAdded();
+        if ($("pane-policies").hidden) sortPolicies();
+        return;
+      }
       const m = marginal(k, cur), d = $("pol-" + k).querySelector(".gain");
       if (k === "aro"){
         d.textContent = (plan.p.aro === 1 ? "Today's setting" : (m >= 0 ? "+" : "−") + fmt(Math.abs(m)) + " homes vs. today") + " · " + fmt(affNow) + " affordable homes";
       } else d.textContent = Math.abs(m) >= 1 ? (plan.p[k] ? "+" + fmt(m) + " homes with your current plan" : "Would add +" + fmt(-m) + " with your current plan") : (ZERO[k] || "Adds nothing with your current map yet");
       GAIN[k] = k === "aro" ? 0 : Math.abs(m);
-    });
-    { const saved = plan.p.aro; plan.p.aro = 1; const base = currentAdded(); plan.p.aro = 0; GAIN.aro = Math.max(0, currentAdded() - base); plan.p.aro = saved; }
-    currentAdded();
-    if ($("pane-policies").hidden) sortPolicies();
-  }, 250);
+      currentAdded();
+      setTimeout(step, 0);
+    };
+    step();
+  }, 400);
 }
 
 // ---------------- myths ----------------
@@ -1760,7 +1807,7 @@ function tierButtons(el, getT, setT){
     b.innerHTML = '<span class="sw">' + T.bars.map(h => '<s style="height:' + Math.max(h,3) + 'px"></s>').join("") + '</span><em></em><small></small>';
     b.querySelector("em").textContent = T.name;
     b.querySelector("small").textContent = t ? T.h + " fl" : "no change";
-    b.addEventListener("click", () => setT(t));
+    b.addEventListener("click", () => { el.querySelectorAll(".tier").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setT(t)); });
     el.appendChild(b);
   });
   el._sync = () => el.querySelectorAll(".tier").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.t === getT())));
@@ -1814,6 +1861,7 @@ function render(){
   $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : "");
   $("pace").textContent = fmt(CITY_PACE * year);
   $("paceLbl").textContent = "built by " + yrLabel + " at today's pace";
+  $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tf.aff);
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
@@ -1911,7 +1959,13 @@ function showTab(name){
   ["zoning","policies","missions","impact","share","math"].forEach(p => { $("pane-" + p).hidden = p !== name; });
 }
 document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.pane); openSheet(); }));
-function setWide(on){ document.body.classList.toggle("wide", on); $("wideBtn").setAttribute("aria-pressed", String(on)); $("wideBtn").textContent = on ? "⤡ Collapse" : "⤢ Expand"; lsSet("fch-wide", on); }
+function syncSeg(seg){
+  const bs = [...seg.querySelectorAll(":scope > button")], i = bs.findIndex(b => b.getAttribute("aria-pressed") === "true");
+  seg.style.setProperty("--n", bs.length); seg.style.setProperty("--i", Math.max(0, i)); seg.style.setProperty("--on", i >= 0 ? 1 : 0);
+}
+new MutationObserver(ms => { const done = new Set(); ms.forEach(m => { const seg = m.target.parentElement; if (seg && seg.classList.contains("seg") && !done.has(seg)){ done.add(seg); syncSeg(seg); } }); })
+  .observe(document.body, {subtree: true, attributes: true, attributeFilter: ["aria-pressed"]});
+function setWide(on){ document.body.classList.toggle("wide", on); $("wideBtn").setAttribute("aria-pressed", String(on)); $("wideBtn").textContent = on ? "⤡ Collapse" : "⤢"; $("wideBtn").title = on ? "Back to the sidebar" : "Expand the panel"; lsSet("fch-wide", on); }
 $("wideBtn").addEventListener("click", () => setWide(!document.body.classList.contains("wide")));
 setWide(!!lsGet("fch-wide", false));
 function syncSheet(){ document.body.classList.toggle("sheetmin", $("sheet").classList.contains("min")); }
@@ -1986,6 +2040,7 @@ function showResult(){
   const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
   $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : base + " Change some zoning or flip on a policy and run it again.";
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
+  $("resAff").textContent = fmt(totals(false).aff);
   $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
   $("resRent").textContent = "$" + fmt(rPlan[end]) + (rNo[end] - rPlan[end] >= 1 ? " (−$" + fmt(rNo[end] - rPlan[end]) + ")" : "");
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
