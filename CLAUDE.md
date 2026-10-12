@@ -143,6 +143,7 @@ A free, browser-based game on a real 3D model of Chicago's ~481,000 buildings. P
 - **Myths (v11):** each card is myth quote → one-line verdict (`a`) → plain-language explanation (`b`) → sources.
 - **Goal explained (v11):** intro shows 165,687 today + 131,400 growth = 297,087; the Missions tab shows the same equation for whichever shortage estimate is selected.
 - **v12:** station zones are pre-merged shapes (`meta.json` ringL/ringM/ringLM from `tools/prep_rings.py`) so overlapping circles read as one zone; camera buttons (zoom, spin, 2D/3D, reset) plus a walkthrough step; zoom limited to the city region; basemap presets in `BASES` (island / region / night, default region) with an extended Lake Michigan shape and neighboring-town labels; policies that add nothing explain why (`ZERO`); ARO card explains the tradeoff and that real-world evidence is mixed.
+- **v13 (branch `next`):** disclaimer now just "Not affiliated with the City of Chicago."; share links + preview image on fixchicagohousing.com; feedback email in The math; keyboard camera (WASD/arrows, Q/E, R/F, +/-); new levers: suburban Metra stations (`plan.sub`, 168 stations × game-model per-station homes × 0.3, assumption) and "Get the megaprojects built" (`p.mega`, `MEGA` list of 6 projects, 31,063 planned homes × 0.5, assumption) with purple map pins and a "Big projects in the pipeline" section in The math; plan code `u4` (= u3 + suburban tier; `mega` appended to BIT_KEYS); OpenFreeMap/MapLibre vector basemap under the deck canvas (camera synced in `onAfterRender`), only on our own domain, falling back to the built-in basemap elsewhere; zoning flags merged (103,328 of 481,262 buildings, 21.5%) and a first-visit intro hook that shows them red (`introHook`).
 - **The math tab:** zoning table with code citations, decision rules, baseline, rent effect, shortage estimates, ARO, offices, NAHB, people, an explicit "Game assumptions (not measured)" list, myths, data, and what's not modeled. Every source is a link.
 - **Save tab:** autosave, named saves, share link (`#u3...`), plan code, and open a code.
 - **Plan code `u3`:** `"u3"` + 39 area chars + tod, metra, corr, office, str, aro (one char each) + 3 base-32 chars of on/off bits in `BIT_KEYS` order (`build, stair, adu, lots, pre, permits, mpls, camb, small, park, vac, social, comm`) + goal. Only `[0-9a-v]`. **Append new on/off policies to the end of `BIT_KEYS`** so old codes still decode. `u2` and `u1` still decode.
@@ -220,7 +221,7 @@ A free, browser-based game on a real 3D model of Chicago's ~481,000 buildings. P
 **Data**
 - City of Chicago building footprints: https://github.com/Chicago/osd-building-footprints
 - City of Chicago street centerlines: https://github.com/Chicago/osd-street-center-line
-- Zoning districts (Chicago Data Portal): https://data.cityofchicago.org/api/geospatial/7cve-jgbp?method=export&format=GeoJSON
+- Zoning districts (Chicago Data Portal): https://data.cityofchicago.org/api/geospatial/dj47-wfun?method=export&format=GeoJSON
 
 **Worked in other cities (not on the table in Chicago)**
 - Minneapolis 2040 plan (Pew, 2024): https://www.pew.org/en/research-and-analysis/articles/2024/01/04/minneapolis-land-use-reforms-offer-a-blueprint-for-housing-affordability
