@@ -1,0 +1,23 @@
+# Downloads Cook County's 2022 building footprints (LiDAR heights) for Chicago (run by hand from the Actions tab).
+# tools/prep_fresh.py compares them with the city's 2013 footprints to drop demolished buildings and add new ones.
+name: Fetch 2022 building footprints
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p tools/raw
+          python3 tools/fetch_cook_2022.py tools/raw/cook_bldg_2022.bin.gz
+          ls -la tools/raw/cook_bldg_2022.bin.gz
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/cook_bldg_2022.bin.gz
+          git commit -m "Fetch Cook County 2022 building footprints" || echo "nothing to commit"
+          git pull --rebase && git push
