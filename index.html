@@ -2315,7 +2315,8 @@ function layers(){
   { // half-mile station zones, merged into one shape so overlapping circles read as a single zone
     const zone = (id, polys, t, a, noLine) => {
       const c = tierColor(t);
-      L.push(new deck.SolidPolygonLayer({id:id + "Fill", parameters:FLAT, data:polys, getPolygon:d => d, getFillColor:[...c, a], updateTriggers:{getFillColor:t + look}}));
+      if (zoomBandNow === 2){ a = Math.round(a * 0.35); noLine = true; }   // up close the zone is just a faint tint, not big circles
+      L.push(new deck.SolidPolygonLayer({id:id + "Fill", parameters:FLAT, data:polys, getPolygon:d => d, getFillColor:[...c, a], updateTriggers:{getFillColor:t + look + a}}));
       if (!noLine) L.push(new deck.PathLayer({id:id + "Line", parameters:FLAT, data:polys.flatMap(p => p), getPath:d => d, getColor:[...c, 120], getWidth:1, widthUnits:"pixels", updateTriggers:{getColor:t + look}}));
     };
     if (META.ringL){
