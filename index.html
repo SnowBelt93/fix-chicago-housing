@@ -124,6 +124,10 @@ body.playing #hoodBanner{display:none}
 .tiers.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .tiers.six{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}
 .tiers.six .tier em{font-size:11px}
+.typerow{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)}
+.typerow:first-of-type{border-top:0}
+.typerow .tt b{display:block;font-size:14px}
+.typerow .tt span{display:block;font-size:12px;color:var(--ink-3)}
 .tier{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .tier .sw{width:100%;max-width:44px;height:22px;display:flex;align-items:flex-end;justify-content:center;gap:2px}
 .tier .sw s{display:block;width:9px;background:var(--c,var(--line));border-radius:1px 1px 0 0}
@@ -189,6 +193,8 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .status.law{background:var(--ink);color:#fff}
 .status.else{background:#e3f1e8;color:#1f5f3a}
 .status.worse{background:#fbe3e6;color:#9b1027}
+.policy .scope{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--ink-3);margin-top:2px}
+.policy .scope select{font:inherit;font-weight:600;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--paper)}
 .policy.worse .switch[aria-checked="true"]{background:var(--star) !important;border-color:var(--star) !important}
 .policy.worse.on{border-color:rgba(228,0,43,.45)}
 .policy.worse .gain{color:#9b1027}
@@ -406,6 +412,14 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .hoodbanner span{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.15}
 .sheet.min ~ .legend,.sheet.min ~ .credit,.sheet.min ~ .toast{bottom:116px}
 .sheet.min ~ .hoodbanner{bottom:140px}
+.hoodcard{pointer-events:auto;max-width:420px;padding-right:40px}
+.hoodcard .hbx{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.hoodcard .hbx:hover{background:rgba(255,255,255,.14)}
+.hoodcard .hbt{margin-top:6px;margin-right:-28px}
+.hoodcard .hbt .tier{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#fff;padding:6px 2px 5px}
+.hoodcard .hbt .tier small{color:rgba(255,255,255,.7)}
+.hoodcard .hbt .tier[aria-pressed="true"]{background:#fff;color:var(--nav);border-color:#fff}
+.hoodcard .hbt .tier[aria-pressed="true"] small{color:var(--ink-3)}
 .resgrade{position:relative;width:76px;height:76px;flex:0 0 auto}
 .resgrade svg{width:76px;height:76px;fill:var(--star)}
 .resgrade span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:900;font-size:28px;color:#fff}
@@ -426,6 +440,39 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .card.myth h2{font-size:23px}
 .card.myth p{margin:0;color:var(--ink-2);font-size:14px}
 .card.result{max-width:460px}
+/* results as a front page */
+.card.result.paper{max-width:860px;background:#fbfaf6;color:#15191c;border-radius:2px;border-top:0}
+.paper .mast{text-align:center;border-bottom:3px double #15191c;padding-bottom:8px}
+.paper .mtop{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:#4a5560;border-bottom:1px solid #15191c;padding-bottom:6px;margin-bottom:6px}
+.paper .mname{font:700 46px/1 var(--f-serif,Georgia,serif);letter-spacing:.01em}
+.paper .med{font:italic 400 13px var(--f-serif,Georgia,serif);color:#4a5560;margin-top:4px}
+.paper .reshead{flex-direction:row-reverse;justify-content:space-between;align-items:flex-start;gap:16px;margin-top:4px}
+.paper .reshead h2,.paper #resTitle{font:900 44px/0.98 var(--f-display) !important;text-transform:uppercase;letter-spacing:.005em;margin:0}
+.paper .deck{margin:0;font:400 17px/1.4 var(--f-serif,Georgia,serif);color:#2c3338}
+.paper .paperrow{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;border-top:1px solid #15191c;padding-top:12px}
+.paper .resphoto{margin:0}
+.paper .resphoto img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#e3e1da}
+.paper .resphoto figcaption{font:italic 400 12.5px/1.35 var(--f-serif,Georgia,serif);color:#4a5560;margin-top:5px}
+.paper .restats{display:flex;flex-direction:column;gap:0}
+.paper .restats .eyebrow{color:var(--star);margin-bottom:4px}
+.paper .restats .fact{background:none;border:0;border-top:1px solid #d8d3c6;border-radius:0;padding:7px 0}
+.paper .restats .fact b{font-size:28px}
+.paper .lede{margin:0;columns:2;column-gap:22px;font:400 15px/1.5 var(--f-serif,Georgia,serif);color:#2c3338}
+.paper .lede::first-letter{float:left;font:700 42px/0.82 var(--f-serif,Georgia,serif);margin:4px 6px 0 0}
+.paper .chartBox,.paper .ratecard{background:#fff}
+.paper .charts2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:700px){.paper .charts2{grid-template-columns:1fr}}
+.paper > .row:last-child{border-top:3px double #15191c;padding-top:12px}
+.paper .btn{border-radius:0}
+.paper .btn.primary{background:var(--star);border-color:var(--star);font-family:var(--f-display);font-weight:800;letter-spacing:.04em;font-size:16px}
+@media (max-width:700px){
+  .paper .mname{font-size:32px}
+  .paper .mtop span:first-child{display:none}
+  .paper .reshead h2,.paper #resTitle{font-size:32px !important}
+  .paper .paperrow{grid-template-columns:1fr}
+  .paper .lede{columns:1}
+  .paper .resgrade,.paper .resgrade svg{width:58px;height:58px}
+}
 .card.result h2{font-size:24px}
 .ratecard{background:var(--paper-2);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:6px}
 .ratecard b{font-size:14px}
@@ -603,6 +650,14 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <p class="small">The goal counts the whole Chicago region, so suburban homes count. Same levels as in the city; assumption: each suburban station builds 30% as much as an average Chicago L station (bigger lots, less demand). Station count: <a href="https://en.wikipedia.org/wiki/Metra" target="_blank" rel="noopener">Metra (Wikipedia)</a>.</p>
           <div class="tiers" id="subTiers"></div>
           <span class="gain" id="subGain"></span>
+        </div>
+        <div class="tool" id="tool-types" data-unlock="hoods">
+          <div class="eyebrow">Zone by neighborhood type</div>
+          <h3>Set the rules for a whole kind of neighborhood</h3>
+          <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" id="typeTiers0"></div></div>
+          <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
+          <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
+          <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
         </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <div class="eyebrow">One neighborhood at a time</div>
@@ -816,6 +871,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Suburban Metra stations build 30% as much as an average Chicago L station at the same level; megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
+                <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
+                <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
                 <li>Tower level: 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at downtown's record leasing pace, about 6,500 apartments a year (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
                 <li>Vacant-lot gap financing: 15% of the ~31,000 privately owned vacant parcels (<a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j" target="_blank" rel="noopener">Cook County Assessor, 2025</a>, class 100) get a 2-flat by 2041 at up to $150,000 of subsidy per home (Missing Middle's cap, <a href="https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/" target="_blank" rel="noopener">Hoodline</a>), and rezoned projects in soft markets are 50% more likely.</li>
                 <li>Transit riders: one commuter per new home within ½ mile of the L or Metra, 37.9% of them by train or bus (ETOD 2020), two rides a workday for 250 days, valued at CTA's 2026 average of $1.24 a ride.</li>
@@ -850,7 +907,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <div id="lgIll" hidden><i class="ill"></i>Illegal to build today</div>
     <div id="lgRing" hidden><i class="ring"></i>½ mile of a station (≈10-min walk)</div>
   </div>
-  <div class="hoodbanner" id="hoodBanner" hidden><b id="hbName"></b><span id="hbLine"></span></div>
+  <div class="hoodbanner hoodcard" id="hoodBanner" hidden><button type="button" class="hbx" id="hbClose" aria-label="Close neighborhood">×</button><b id="hbName"></b><span id="hbLine"></span><div class="tiers hbt" id="hbTiers"></div></div>
   <div class="hoodbanner cinecap" id="cineCap" hidden><b id="ccName"></b><span id="ccLine"></span></div>
   <div class="ticker" id="ticker" hidden aria-live="polite"><span id="tkYear"></span><b id="tkText"></b></div>
   <div class="credit">Buildings &amp; streets: City of Chicago</div>
@@ -905,16 +962,22 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   </div>
 
   <div class="intro" id="result" hidden>
-    <div class="card result" role="dialog" aria-modal="true" aria-labelledby="resTitle">
-      <div class="eyebrow">2026 → 2041 · your plan vs. doing nothing</div>
+    <div class="card result paper" role="dialog" aria-modal="true" aria-labelledby="resTitle">
+      <div class="mast"><div class="mtop"><span>Final edition</span><span id="resDate">2041</span><span>Free</span></div>
+        <div class="mname">The Chicago Plan</div><div class="med">Fifteen years of your choices, simulated block by block</div></div>
       <div class="reshead"><div class="resgrade" aria-label="Grade"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span id="resGrade">–</span></div><h2 id="resTitle"></h2></div>
-      <p class="small" id="resText" style="margin:0"></p>
-      <div class="restats">
+      <p class="deck" id="resText"></p>
+      <div class="paperrow">
+      <figure class="resphoto"><img id="resPhoto" alt="Your city in 2041"><figcaption id="resCap"></figcaption></figure>
+      <div class="restats"><div class="eyebrow">By the numbers</div>
         <div class="fact"><b id="resShort">–</b><span>shortage in 2041 with your plan</span></div>
         <div class="fact"><b id="resRent">–</b><span>median rent in 2041 with your plan</span></div>
         <div class="fact"><b id="resAff">–</b><span>affordable homes built</span></div>
         <div class="fact"><b id="resTax">–</b><span id="resTaxLbl">a year in local taxes by 2041</span></div>
       </div>
+      </div>
+      <p class="lede" id="resLede"></p>
+      <div class="charts2">
       <div class="chartBox">
         <div class="ctitle">Housing shortage<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
         <svg class="chart" id="chShort" role="img" aria-label="Housing shortage by year, no change versus your plan"></svg>
@@ -922,6 +985,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <div class="chartBox">
         <div class="ctitle">Median rent<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
         <svg class="chart" id="chRent" role="img" aria-label="Median rent by year, no change versus your plan"></svg>
+      </div>
       </div>
       <div class="group"><div class="eyebrow">Can they afford a 1-bedroom in 2041?</div><div id="resPersonas"></div></div>
       <div class="ratecard">
@@ -946,7 +1010,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
       <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in the Math tab.</p>
-      <div class="row"><button class="btn" id="resImage" type="button">Share image</button><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
+      <div class="row"><button class="btn primary" id="resImage" type="button">★ Share this front page</button><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
 </div>
@@ -971,6 +1035,25 @@ const TIERS = [
 ];
 // Tower level: busiest L stations only, and no faster than downtown's record leasing year (Integra Realty via Connect CRE, 2021)
 const TOWER_CAP = 6500 * 15;
+// neighborhood types (meta.json "type", from tools/prep_extra.py): 0 downtown core, 1 mixed, 2 single-family (70%+ of residential buildings hold one home)
+const TYPE_NAMES = ["Downtown core", "Mixed neighborhoods", "Single-family areas"];
+const TYPE_ONE = ["downtown core", "mixed neighborhood", "single-family area"];
+const TYPE_HINT = ["The Loop, River North, West Loop, South Loop", "2-flats, 3-flats and main streets: Wicker Park, Bridgeport, Logan Square", "Mostly houses and bungalows: Beverly, Portage Park, Ashburn"];
+const typeOf = (num) => { const m = META && META.areas.find(a => a.num === +num); return m && m.type != null ? m.type : 1; };
+const areaMaxTier = (num) => typeOf(num) === 0 ? 5 : 4;
+// policies that can apply citywide or to one neighborhood type (0 citywide, 1 core, 2 mixed, 3 single-family)
+const SCOPED = ["build","adu","mpls","camb","small","park","vland","down","pmin","mora"];
+const inScope = (k, A) => { const s = plan.scope[k] || 0; return !s || (A.type != null ? A.type : typeOf(A.num)) === s - 1; };
+const scopeShare = (k) => {   // share of recent construction in the policy's area (proxy for where the ~4,900/yr get built)
+  const s = plan.scope[k] || 0; if (!s || !META) return 1;
+  let all = 0, mine = 0; META.areas.forEach(m => { const r = m.newShare * m.n; all += r; if (m.type === s - 1) mine += r; });
+  return all ? mine / all : 1;
+};
+// build timing: projects ramp up (approvals and design) instead of arriving evenly; game assumption
+const RAMP_W = [2,4,7,9,9,9,9,9,8,8,7,6,5,4,4];
+const RAMP_CUM = RAMP_W.reduce((a, w) => (a.push((a.length ? a[a.length - 1] : 0) + w), a), []);   // 2, 6, 13, ... 100
+const rampYear = (u) => { const x = u * 100; let y = 0; while (y < 14 && RAMP_CUM[y] <= x) y++; return y + 1; };
+const rampFrac = (y) => y <= 0 ? 0 : y >= YEARS ? 1 : RAMP_CUM[y - 1] / 100;
 let towerScale = 1;
 const OFFICE_COLOR = [224,138,30];
 const TARGETS = [
@@ -1006,14 +1089,15 @@ const JOBS1 = 1.61, JOBS2 = 0.44, TAX2 = 5030;
 const BUDGET_GAP = 882e6;
 // vacant-lot gap financing (Missing Middle-style): assumptions, labeled in The math
 const VL_UPTAKE = 0.15, VL_HOMES = 2, VL_SUBSIDY = 150000, VL_SOFT_BOOST = 0.5, VL_SOFT = 0.9;
-const vacantPriv = () => META && META.vacantByArea ? Object.values(META.vacantByArea).reduce((s, v) => s + v[0], 0) : 31370;
+const vacantPriv = (k) => META && META.vacantByArea ? META.areas.reduce((s, m) => s + (k && !inScope(k, m) ? 0 : (META.vacantByArea[m.num] || [0])[0]), 0) : 31370;
+const aduScoped = () => META ? META.areas.reduce((s, m) => s + (inScope("adu", m) ? (m.adu || 0) : 0), 0) : aduLots;
 // transit riders from homes near stations (ETOD 2020: near CTA stations with new development, 25.4% commute by train, 12.5% by bus)
 const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = 394e6 / 317e6, CTA_FARES = 394e6;   // CTA FY2026 budget   // City of Chicago's projected 2027 budget gap (WTTW, Sept 2026)
 // policies that cut supply (all game assumptions, anchored on the research cited on each card):
 // share of the homes Chicago builds anyway that each one costs, and how much each cuts rezoned projects
 const WORSE_BASE = {down:0.25, pmin:0.10, mora:0.15, rentc:0.30, xfer:0.05};
 const PMIN_FACTOR = 0.85, MORA_FACTOR = 0.80, MORA_DELAY = 1.25, RENTC_FACTOR = 0.60, XFER_FACTOR = 0.82;
-const baseCut = () => { let keep = 1; for (const k in WORSE_BASE) if (plan.p[k]) keep *= 1 - WORSE_BASE[k]; return 1 - keep; };
+const baseCut = () => { let keep = 1; for (const k in WORSE_BASE) if (plan.p[k]) keep *= 1 - WORSE_BASE[k] * (SCOPED.includes(k) ? scopeShare(k) : 1); return 1 - keep; };
 const SOUTH_WEST = new Set([...Array.from({length:9}, (_, i) => 23 + i), ...Array.from({length:42}, (_, i) => 34 + i)]);
 const SIDES = [{k:"North Side", c:"#4f7fa8"}, {k:"Downtown", c:"#8a6bb0"}, {k:"West Side", c:"#5e8f6b"}, {k:"South Side", c:"#e8962e"}];
 const sideOf = (n) => (n === 8 || n === 32 || n === 33) ? 1 : (n >= 23 && n <= 31) ? 2 : (n >= 34 && n <= 75) ? 3 : 0;
@@ -1039,7 +1123,7 @@ function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return t
 const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
 
 // ---------------- plan state ----------------
-const blankPlan = () => ({areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, vland:0, down:0, pmin:0, mora:0, rentc:0, xfer:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
+const blankPlan = () => ({scope:{}, areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, vland:0, down:0, pmin:0, mora:0, rentc:0, xfer:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
 let plan = blankPlan();
 let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false, introHook = !lsGet("upzone-intro", false) && !/#u\d/.test(location.hash);
 const tierFor = (num) => plan.areas[num] || 0;
@@ -1058,9 +1142,10 @@ function tierAt(A, i, T0){
   if (plan.metra && (f & 4) && plan.metra > t) t = plan.metra;
   if (plan.corr && (f & 16) && plan.corr > t) t = plan.corr;
   const P = plan.p;
-  if (f & 16){ if (P.mpls && t < 3) t = 3; if (P.comm && t < 2) t = 2; }
+  const mp = P.mpls && inScope("mpls", A);
+  if (f & 16){ if (mp && t < 3) t = 3; if (P.comm && t < 2) t = 2; }
   const small = A.un[i] >= 1 && A.un[i] <= 4;
-  if (small){ if (P.camb && t < 2) t = 2; else if ((P.build || P.mpls) && t < 1) t = 1; }
+  if (small){ if (P.camb && inScope("camb", A) && t < 2) t = 2; else if (((P.build && inScope("build", A)) || mp) && t < 1) t = 1; }
   return t;
 }
 function compute(A, statsOnly){
@@ -1086,20 +1171,20 @@ function compute(A, statsOnly){
       const nearTransit = (f & 3) >= 1 || (f & 4);
       let p = p0;
       if (P.stair && (t === 2 || t === 3) && lot < 7500) p *= 1 + STAIR_BOOST;
-      if ((P.park || P.mpls) && !P.pmin && !nearTransit) p *= 1 + PARK_BOOST;
-      if (P.small && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
+      if (((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A)) && !nearTransit) p *= 1 + PARK_BOOST;
+      if (P.small && inScope("small", A) && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
       if (gross >= 10) p *= ARO_FACTOR[P.aro];
-      if (P.pmin) p *= PMIN_FACTOR;                       // parking mandates back
-      if (P.mora) p *= MORA_FACTOR;                       // moratoriums / extra review
+      if (P.pmin && inScope("pmin", A)) p *= PMIN_FACTOR;   // parking mandates back
+      if (P.mora && inScope("mora", A)) p *= MORA_FACTOR;   // moratoriums / extra review
       if (P.rentc && gross >= 3) p *= RENTC_FACTOR;       // rent control covering new buildings
       if (P.xfer && gross >= 20) p *= XFER_FACTOR;        // transfer tax hits big buildings when they sell
       if (t === 5) p *= towerScale;
-      if (P.vland && A.demand < VL_SOFT) p *= 1 + VL_SOFT_BOOST;   // gap financing makes soft-market projects pencil                       // towers can't lease faster than downtown's record pace
+      if (P.vland && inScope("vland", A) && A.demand < VL_SOFT) p *= 1 + VL_SOFT_BOOST;   // gap financing makes soft-market projects pencil                       // towers can't lease faster than downtown's record pace
       if (p > 0.6) p = 0.6;
       if (typ && !(f & 8) && st < T.h && fp <= 20000 && net >= 1 && hash01(i, A.num) < p){
-        let yb = 1 + Math.floor(hash01(i, A.num + 977) * YEARS);
+        let yb = rampYear(hash01(i, A.num + 977));
         if (P.permits) yb = Math.max(1, Math.ceil(yb * PERMIT_SPEED));
-        if (P.mora) yb = Math.ceil(yb * MORA_DELAY);      // extra review pushes some projects past 2041
+        if (P.mora && inScope("mora", A)) yb = Math.ceil(yb * MORA_DELAY);      // extra review pushes some projects past 2041
         if (yb <= YEARS){
           added += homes; replaced += un; byYear[yb] += homes;
           if (nearTransit) walk += homes;
@@ -1118,14 +1203,14 @@ function compute(A, statsOnly){
 function policyHomes(){
   const P = plan.p;
   return {
-    adu: P.adu ? aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE) : 0,
+    adu: P.adu ? aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE) : 0,
     str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[P.str],
     lots: P.lots ? CITY_LOTS * LOT_HOMES * LOT_BUILT : 0,
     office: OFFICE_SQFT * OFFICE_SHARE[plan.office] / SQFT_PER_HOME,
     vac: P.vac ? OTHER_VACANT * VAC_RETURN : 0,
     social: P.social ? SOCIAL_HOMES : 0,
     mega: P.mega ? MEGA_TOTAL * MEGA_BUILT : 0,
-    vland: P.vland ? vacantPriv() * VL_HOMES * VL_UPTAKE : 0,
+    vland: P.vland ? vacantPriv("vland") * VL_HOMES * VL_UPTAKE : 0,
     sub: plan.sub ? SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR : 0,
   };
 }
@@ -1138,12 +1223,12 @@ function totals(useYear){
     if (SOUTH_WEST.has(A.num)) sw += A.added;
     sides[sideOf(A.num)] += A.added;
   }
-  const ph = policyHomes(), f = useYear ? year / YEARS : 1;
+  const ph = policyHomes(), f = useYear ? rampFrac(year) : 1;
   const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, sub: ph.sub * f, vland: ph.vland * f,
     worse: -CITY_PACE * baseCut() * (useYear ? year : YEARS)};   // homes Chicago would have built anyway, lost to supply-cutting policies
   const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub + parts.vland + parts.worse;
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
-  if (ph.vland && META.vacantByArea){ const tot = vacantPriv() || 1; for (const k in META.vacantByArea){ const share = META.vacantByArea[k][0] / tot; sides[sideOf(+k)] += ph.vland * share; if (SOUTH_WEST.has(+k)) sw += ph.vland * share; } }
+  if (ph.vland && META.vacantByArea){ const tot = vacantPriv("vland") || 1; META.areas.forEach(m => { if (!inScope("vland", m)) return; const share = (META.vacantByArea[m.num] || [0])[0] / tot; sides[sideOf(m.num)] += ph.vland * share; if (SOUTH_WEST.has(m.num)) sw += ph.vland * share; }); }
   if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
   aff += Math.round(ph.social * SOCIAL_AFF + ph.mega * MEGA_AFF);
   return {parts, total, replaced, walk: walk + ph.sub, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
@@ -1152,7 +1237,7 @@ function planHomesAt(y){
   let z = 0;
   for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
   const ph = policyHomes();
-  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub + ph.vland) * y / YEARS - CITY_PACE * baseCut() * y;
+  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub + ph.vland) * rampFrac(y) - CITY_PACE * baseCut() * y;
 }
 const target = () => TARGETS[plan.g].n;
 const needed = () => target() + GAP_GROWTH * YEARS;
@@ -1368,6 +1453,13 @@ function buildPolicies(){
       sw.addEventListener("click", () => { const v = plan.p[P.key] ? 0 : 1; sw.setAttribute("aria-checked", String(!!v)); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
       d.querySelector(".top").appendChild(sw);
     }
+    if (SCOPED.includes(P.key)){
+      const w = document.createElement("label"); w.className = "scope";
+      w.innerHTML = 'Where <select><option value="0">Citywide</option><option value="1">Downtown core</option><option value="2">Mixed neighborhoods</option><option value="3">Single-family areas</option></select>';
+      const sel = w.querySelector("select"); sel.setAttribute("aria-label", "Where " + P.title + " applies"); sel.dataset.k = P.key;
+      sel.addEventListener("change", () => { plan.scope[P.key] = +sel.value; if (!plan.scope[P.key]) delete plan.scope[P.key]; later(() => { if (plan.p[P.key]) (SPATIAL.has(P.key) ? recompute() : render()); else render(); }); });
+      d.insertBefore(w, d.querySelector(".gain"));
+    }
     el.appendChild(d);
   });
 }
@@ -1417,9 +1509,9 @@ const ZERO = {   // why a spatial policy adds nothing with the current map
   mpls:"Adds nothing beyond what your map already allows.", camb:"Adds nothing beyond what your map already allows.", build:"Adds nothing beyond what your map already allows.",
 };   // homes each policy adds (or would add) given the current map; used to sort the cards
 function sortPolicies(){
-  const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES, mega: MEGA_TOTAL * MEGA_BUILT};
+  const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES, mega: MEGA_TOTAL * MEGA_BUILT};
   for (const k in ph) GAIN[k] = ph[k];
-  GAIN.down = CITY_PACE * WORSE_BASE.down * YEARS;
+  GAIN.down = CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS;
   ["policies", "policiesElse", "policiesWorse"].forEach(id => {
     const box = $(id);
     [...box.children].sort((a, b) => (GAIN[b.id.slice(4)] || 0) - (GAIN[a.id.slice(4)] || 0)).forEach((el, i) => {
@@ -1442,14 +1534,15 @@ function renderPolicies(){
     d.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
     const g = d.querySelector(".gain");
     if (P.key === "str") g.textContent = v ? "+" + fmt(ph.str) + " homes" : "Up to +" + fmt(STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2]) + " homes";
-    else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduLots * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
+    else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
     else if (P.key === "lots") g.textContent = (v ? "+" : "Would add +") + fmt(CITY_LOTS * LOT_HOMES * LOT_BUILT) + " homes";
     else if (P.key === "mega") g.textContent = (v ? "+" : "Would add +") + fmt(MEGA_TOTAL * MEGA_BUILT) + " homes";
     else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
-    else if (P.key === "down") g.textContent = (v ? "" : "Would cost ") + fmt(-CITY_PACE * WORSE_BASE.down * YEARS) + " homes Chicago builds anyway";
+    else if (P.key === "down") g.textContent = (v ? "" : "Would cost ") + fmt(-CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS) + " homes Chicago builds anyway";
   });
   $("pCount").textContent = on;
+  document.querySelectorAll(".policy .scope select").forEach(sel => { sel.value = String(plan.scope[sel.dataset.k] || 0); });
   const CS = communityStats && communityStats.all;
   POLICIES.forEach(P => { const el = $("pol-" + P.key).querySelector(".ptally"); if (!el) return;
     const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
@@ -1468,12 +1561,12 @@ function renderPolicies(){
       }
       const m = marginal(k, cur), d = $("pol-" + k).querySelector(".gain");
       if (k === "vland"){
-        const fixed = vacantPriv() * VL_HOMES * VL_UPTAKE, tot = Math.abs(m) + fixed;
+        const fixed = vacantPriv("vland") * VL_HOMES * VL_UPTAKE, tot = Math.abs(m) + fixed;
         d.textContent = (plan.p.vland ? "+" : "Would add +") + fmt(tot) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning in soft markets)" : " on vacant lots");
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
       if (WORSE_BASE[k] != null){
-        const base = CITY_PACE * WORSE_BASE[k] * YEARS, tot = Math.abs(m) + base;
+        const base = CITY_PACE * WORSE_BASE[k] * (SCOPED.includes(k) ? scopeShare(k) : 1) * YEARS, tot = Math.abs(m) + base;
         d.textContent = (plan.p[k] ? "" : "Would cost ") + fmt(-tot) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning)" : " Chicago builds anyway");
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
@@ -1779,8 +1872,8 @@ async function loadArea(m){
     if (un[i] >= 1 && un[i] <= 4 && (st[i] || 1) <= 3 && fp[i] * 2 <= 4000) adu++;
     if (fl[i] & 64) hasZoning = true;
   }
-  aduLots += adu;
-  const A = {num:m.num, name:m.name, demand:m.demand, homes:m.homes, n:N, origin:[lon0, lat0], lon:m.lon, lat:m.lat,
+  aduLots += adu; m.adu = adu;
+  const A = {num:m.num, type:m.type != null ? m.type : 1, adu, name:m.name, demand:m.demand, homes:m.homes, n:N, origin:[lon0, lat0], lon:m.lon, lat:m.lat,
     st, fl, un, fp, elev:new Float32Array(N), col:new Uint8Array(N), version:0,
     data:{length:N, startIndices:starts, attributes:{getPolygon:{value:pos, size:2}}}};
   compute(A);
@@ -1813,6 +1906,7 @@ async function loadExtra(){
 let hasExtra = false;
 async function boot(){
   META = await (await fetch("meta.json")).json();
+  buildTypeTools();
   const pick = $("hoodPick");
   [...META.areas].sort((a,b) => a.name.localeCompare(b.name)).forEach(m => {
     const o = document.createElement("option"); o.value = m.num; o.textContent = m.name; pick.appendChild(o);
@@ -2035,7 +2129,7 @@ function layers(){
   }
   L.push(new deck.GeoJsonLayer({
     id:"areas", parameters:FLAT, data:META.outlines, pickable:true, stroked:true, filled:true,
-    getFillColor: f => { const t = Math.max(tierFor(f.properties.num), plan.p.build ? 1 : 0); return t ? [...tierColor(t), plan.areas[f.properties.num] ? 75 : 35] : [255,255,255,1]; },
+    getFillColor: f => { const t = Math.max(tierFor(f.properties.num), plan.p.build ? 1 : 0); return t ? [...tierColor(t === 5 ? 7 : t), plan.areas[f.properties.num] ? 75 : 35] : [255,255,255,1]; },
     getLineColor: f => f.properties.num === selected ? (P ? [31,27,58,255] : [228,0,43,255]) : (P ? [31,27,58,90] : [43,93,160,90]),
     getLineWidth: f => f.properties.num === selected ? 3 : 1, lineWidthUnits:"pixels",
     updateTriggers:{getFillColor:JSON.stringify(plan.areas) + plan.p.build + look, getLineColor:selected + look, getLineWidth:selected},
@@ -2139,7 +2233,6 @@ function setAreaTier(num, t){
 function selectArea(num, fromMap){
   selected = +num;
   $("hoodPick").value = String(selected);
-  if (fromMap){ showTab("zoning"); openSheet(); }
   const m = META.areas.find(a => a.num === selected);
   if (m) flyTo(m.lon, m.lat, isWide() ? 13 : 12.6);
   render();
@@ -2192,7 +2285,7 @@ function render(){
   $("lgVacP").hidden = !plan.p.vland; $("lgVacC").hidden = !plan.p.lots;
   if ((plan.p.vland || plan.p.lots) && !VACANT) loadVacant();
   { const r = $("yrRange"); r.value = year; r.disabled = playing; r.style.setProperty("--p", (year / YEARS * 100) + "%"); }
-  ["todTiers","metraTiers","subTiers","corrTiers","hoodTiers"].forEach(id => $(id)._sync && $(id)._sync());
+  ["todTiers","metraTiers","subTiers","corrTiers","hoodTiers","typeTiers0","typeTiers1","typeTiers2","hbTiers"].forEach(id => $(id) && $(id)._sync && $(id)._sync());
   $("subGain").textContent = plan.sub ? "+" + fmt(SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR) + " homes across " + SUB_STATIONS + " suburban stations" : "Mid-rise everywhere would add +" + fmt(SUB_STATIONS * SUB_PER_STATION[3] * SUB_FACTOR) + " homes";
   $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
   renderHood(); renderHoodList(); renderMissions(tf); renderPolicies(); renderImpact(tf);
@@ -2203,11 +2296,17 @@ function render(){
 function renderHood(){
   const det = $("hoodDetail");
   if (!selected || !META){ det.hidden = true; $("hoodBanner").hidden = true; return; }
+  if ($("hbTiers")._for !== selected){
+    // rebuild the zoning buttons for this neighborhood (only the downtown core can go to towers)
+    const num = selected, mx = areaMaxTier(num); $("hbTiers")._for = num;   // capture the neighborhood now: the change lands a frame later
+    tierButtons($("hbTiers"), () => tierFor(selected), t => setAreaTier(num, t), mx);
+    tierButtons($("hoodTiers"), () => tierFor(selected), t => setAreaTier(num, t), mx);
+  }
   det.hidden = false;
   const m = META.areas.find(a => a.num === selected), A = AREAS[selected];
   const tb = tierFor(selected), dm = m.demand;
   $("hoodBanner").hidden = false; $("hbName").textContent = m.name;
-  $("hbLine").textContent = (tb ? TIERS[tb].name : "Today's zoning") + " · " + (A ? "+" + fmt(A.added) + " new homes" : "loading") + " · " + (dm >= 1.8 ? "hot" : dm >= 0.9 ? "steady" : "soft") + " market " + dm.toFixed(1) + "×";
+  $("hbLine").textContent = TYPE_ONE[typeOf(selected)].replace(/^./, c => c.toUpperCase()) + " · " + (tb ? TIERS[tb].name : "Today's zoning") + " · " + (A ? "+" + fmt(A.added) + " new homes" : "loading") + " · " + (dm >= 1.8 ? "hot" : dm >= 0.9 ? "steady" : "soft") + " market " + dm.toFixed(1) + "×";
   $("hoodName").textContent = m.name;
   const d = m.demand, label = d >= 1.8 ? "Hot market" : d >= 0.9 ? "Steady market" : "Soft market";
   $("hoodDemand").textContent = label + " · " + d.toFixed(1) + "×";
@@ -2318,6 +2417,7 @@ function openSheet(){ $("sheet").classList.remove("min"); syncSheet(); }
 $("grab").addEventListener("click", () => { $("sheet").classList.toggle("min"); syncSheet(); });
 $("lgToggle").addEventListener("click", () => { const o = $("legend").classList.toggle("open"); $("lgToggle").setAttribute("aria-expanded", String(o)); });
 $("goalBtn").addEventListener("click", () => { showTab("missions"); openSheet(); $("targetGroup").scrollIntoView({behavior: reduceMotion ? "auto" : "smooth"}); });
+$("hbClose").addEventListener("click", () => { selected = null; $("hoodPick").value = ""; render(); });
 $("hoodPick").addEventListener("change", e => { if (e.target.value) selectArea(e.target.value); else { selected = null; render(); } });
 $("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(); plan.g = g; recompute(); toast("Fresh start"); });
 $("unlockAll").addEventListener("click", () => { unlockAll(); render(); });
@@ -2326,6 +2426,20 @@ tierButtons($("metraTiers"), () => plan.metra, setMetra);
 tierButtons($("subTiers"), () => plan.sub, setSub);
 tierButtons($("corrTiers"), () => plan.corr, setCorr);
 tierButtons($("hoodTiers"), () => tierFor(selected), t => selected && setAreaTier(selected, t));
+function typeAreas(ty){ return META ? META.areas.filter(m => m.type === ty).map(m => m.num) : []; }
+function setTypeTier(ty, t){
+  const nums = typeAreas(ty), was = Math.max(0, ...nums.map(n => plan.areas[n] || 0));
+  nums.forEach(n => { if (t) plan.areas[n] = Math.min(t, areaMaxTier(n)); else delete plan.areas[n]; });
+  recompute();
+  if (t > was) afterZoning(t, t >= 3 ? "high" : "low", TYPE_NAMES[ty]);
+}
+function typeTier(ty){ const nums = typeAreas(ty); if (!nums.length) return -1; const t0 = plan.areas[nums[0]] || 0; return nums.every(n => (plan.areas[n] || 0) === t0) ? t0 : -1; }
+function buildTypeTools(){
+  [0, 1, 2].forEach(ty => {
+    tierButtons($("typeTiers" + ty), () => typeTier(ty), t => setTypeTier(ty, t), ty === 0 ? 5 : 4);
+    $("typeHint" + ty).textContent = TYPE_HINT[ty] + " · " + typeAreas(ty).length + " areas";
+  });
+}
 ["None","+5% of offices","+15%","+27% (max)"].forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = i; b.textContent = lv; b.addEventListener("click", () => setOffice(i)); $("officeSeg").appendChild(b); });
 $("tierTable").innerHTML = TIERS.slice(1).map(T => '<tr><td>' + T.name + '</td><td class="n">' + T.h + '</td><td class="n">' + T.k + '</td><td>' + T.zone + '</td></tr>').join("");
 
@@ -2506,8 +2620,11 @@ function showResult(){
   const planShort = ys.map((y, i) => noShort[i] - homes[i]);
   const rNo = ys.map(y => rentNoChange(y)), rPlan = ys.map((y, i) => rentWithPlan(y, homes[i]));
   const end = YEARS, closedAt = planShort.findIndex(v => v <= 0);
-  $("resTitle").textContent = closedAt >= 0 ? "Shortage closed by " + (START + closedAt) + ". Look at you." :
-    homes[end] > 0 ? "Better, but still " + fmt(planShort[end]) + " homes short." : homes[end] <= -1 ? "Worse than doing nothing: " + fmt(planShort[end]) + " homes short." : "Doing nothing: the shortage grows to " + fmt(noShort[end]) + ".";
+  $("resTitle").textContent = closedAt >= 0 ? "Chicago closes its housing shortage by " + (START + closedAt) :
+    homes[end] > 0 ? "Chicago builds " + fmt(homes[end]) + " homes; shortage " + (planShort[end] < noShort[0] ? "shrinks" : "still grows") + " to " + fmt(planShort[end]) :
+    homes[end] <= -1 ? "Shortage worsens to " + fmt(planShort[end]) + " as the city builds less than doing nothing" : "Do-nothing plan: shortage grows to " + fmt(noShort[end]);
+  { const d = new Date(START + YEARS, 9, 12); $("resDate").textContent = d.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric", year:"numeric"}); }
+  frontPage(homes[end]);
   const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
   $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : homes[end] <= -1 ? base + " Your plan means " + fmt(-homes[end]) + " fewer homes than doing nothing, so rent climbs even faster." : base + " Change some zoning or flip on a policy and run it again.";
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
@@ -2523,47 +2640,72 @@ function showResult(){
   $("result").hidden = false;
 }
 $("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
-let lastResult = null;
+let lastResult = null, lastPhoto = null, lastCaption = "";
+function topAreas(n){ return Object.values(AREAS).filter(A => A.added >= 1).sort((a, b) => b.added - a.added).slice(0, n); }
+function frontPage(homesEnd){
+  const t = totals(false), top = topAreas(3), names = top.map(A => A.name);
+  const list = names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0] || "";
+  lastCaption = names.length ? list + " gained the most homes. Dark blue: buildings that went up by " + (START + YEARS) + "." : "Chicago in " + (START + YEARS) + ".";
+  $("resCap").textContent = lastCaption;
+  const walk = t.zoneFull > 0 ? Math.round(t.walk / t.zoneFull * 100) : 0;
+  const P0 = PERSONAS[0], w = P0.wage * Math.pow(1 + WAGE_GROWTH, YEARS);
+  const bNo = Math.round(rentNoChange(YEARS, RENT_1BR) * 12 / w * 100), bPlan = Math.round(rentWithPlan(YEARS, homesEnd, RENT_1BR) * 12 / w * 100);
+  let lede = homesEnd >= 1 ? (names.length ? "Most of the new homes went up in " + list + (walk ? ", and " + walk + "% of them are within a ten-minute walk of a train" : "") + ". " : "")
+    : "With fewer homes going up than the city builds today, the gap between people and places to live keeps widening. ";
+  lede += P0.name + ", a " + P0.job.replace(/^[A-Z][a-z]/, c => c.toLowerCase()) + ", would spend " + bNo + "% of her pay on a one-bedroom with no changes. " + (bPlan !== bNo ? "Under this plan it's " + bPlan + "%." : "Under this plan it's about the same.");
+  $("resLede").textContent = lede;
+  $("resPhoto").removeAttribute("src");
+  captureMap().then(c => {
+    // crop to the visible part of the map at the photo's 16:10 shape
+    const W = c.width, H = c.height, cx = isWide() && !document.body.classList.contains("wide") ? (432 + (window.innerWidth - 432) / 2) / window.innerWidth * W : W / 2;
+    let cw = Math.min(W, H * 1.6), ch = cw / 1.6; if (ch > H){ ch = H; cw = H * 1.6; }
+    const o = document.createElement("canvas"); o.width = 1120; o.height = 700;
+    o.getContext("2d").drawImage(c, Math.max(0, Math.min(W - cw, cx - cw / 2)), (H - ch) / 2, cw, ch, 0, 0, o.width, o.height);
+    lastPhoto = o; $("resPhoto").src = o.toDataURL("image/jpeg", 0.86);
+  });
+}
 async function makeShareCard(){
   const R = lastResult; if (!R) return null;
-  try { await Promise.all(['900 48px "Big Shoulders Display"', '700 20px "Public Sans"', '600 22px "Source Serif 4"'].map(f => document.fonts.load(f))); } catch (e) {}
-  const map = await captureMap();
+  try { await Promise.all(['900 48px "Big Shoulders Display"', '700 20px "Public Sans"', '700 40px "Source Serif 4"', 'italic 400 16px "Source Serif 4"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const photo = lastPhoto || await captureMap();
   const W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H;
-  const x = c.getContext("2d"), MW = 690;
-  // map, cropped to cover the left side, centered on the visible part of the screen
-  const sw = map.width, sh = map.height, scale = Math.max(MW / sw, H / sh), dw = sw * scale, dh = sh * scale;
-  const fx = isWide() && !document.body.classList.contains("wide") ? (432 + (window.innerWidth - 432) / 2) / window.innerWidth : 0.5;
-  x.drawImage(map, Math.min(0, Math.max(MW - dw, MW / 2 - dw * fx)), (H - dh) / 2, dw, dh);
-  // panel
-  x.fillStyle = "#ffffff"; x.fillRect(MW, 0, W - MW, H);
-  x.fillStyle = "#2b5da0"; x.fillRect(MW, 0, W - MW, 10);
-  const L = MW + 44;
-  const star = (cx, cy, r, col) => { x.beginPath(); for (let a = 0; a < 12; a++){ const rr = a % 2 ? r * 0.45 : r, t = a * Math.PI / 6 - Math.PI / 2; x.lineTo(cx + Math.cos(t) * rr, cy + Math.sin(t) * rr); } x.closePath(); x.fillStyle = col; x.fill(); };
-  // flag mark + title
-  x.fillStyle = "#fff"; x.fillRect(L, 46, 54, 34); x.strokeStyle = "#c9d0d8"; x.lineWidth = 1; x.strokeRect(L + .5, 46.5, 53, 33);
-  x.fillStyle = "#41b6e6"; x.fillRect(L + 1, 52, 52, 6); x.fillRect(L + 1, 68, 52, 6);
-  for (let i = 0; i < 4; i++) star(L + 9 + i * 12, 63, 4.2, "#e4002b");
-  x.fillStyle = "#1b2320"; x.font = '900 34px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.textBaseline = "alphabetic";
-  x.fillText("FIX CHICAGO HOUSING", L + 66, 76, W - L - 66 - 30);
-  x.fillStyle = "#e4002b"; x.font = '800 15px "Public Sans", Arial, sans-serif';
-  x.fillText("MY PLAN FOR 2041", L, 132);
-  // big number
-  const neg = R.homes <= -1;
-  x.fillStyle = neg ? "#9b1027" : "#2b5da0"; x.font = '900 96px "Big Shoulders Display", "Arial Narrow", sans-serif';
-  x.fillText(fmt(R.homes), L, 222, W - L - 170);
-  x.fillStyle = "#1b2320"; x.font = '600 22px "Public Sans", Arial, sans-serif';
-  x.fillText(neg ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed", L, 256, W - L - 30);
+  const x = c.getContext("2d"), ink = "#15191c", L = 40, Rx = W - 40;
+  x.fillStyle = "#fbfaf6"; x.fillRect(0, 0, W, H);
+  // masthead
+  x.fillStyle = "#4a5560"; x.font = '600 13px "Public Sans", Arial, sans-serif'; x.textBaseline = "alphabetic";
+  const date = new Date(START + YEARS, 9, 12).toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric", year:"numeric"}).toUpperCase();
+  x.fillText("FINAL EDITION", L, 34); x.textAlign = "center"; x.fillText(date, W / 2, 34); x.textAlign = "right"; x.fillText("FIXCHICAGOHOUSING.COM", Rx, 34); x.textAlign = "left";
+  x.fillStyle = ink; x.fillRect(L, 44, Rx - L, 1.5);
+  x.font = '700 50px "Source Serif 4", Georgia, serif'; x.textAlign = "center"; x.fillText("The Chicago Plan", W / 2, 96); x.textAlign = "left";
+  x.fillRect(L, 110, Rx - L, 1.5); x.fillRect(L, 114, Rx - L, 1.5);
+  // headline (wraps to two lines)
+  const head = $("resTitle").textContent.toUpperCase();
+  x.font = '900 46px "Big Shoulders Display", "Arial Narrow", sans-serif';
+  const words = head.split(" "), lines = []; let cur = "";
+  words.forEach(wd => { const t = cur ? cur + " " + wd : wd; if (x.measureText(t).width > Rx - L - 120 && cur){ lines.push(cur); cur = wd; } else cur = t; }); if (cur) lines.push(cur);
+  lines.slice(0, 2).forEach((ln, k) => x.fillText(ln, L, 162 + k * 46, Rx - L - 120));
   // grade star
-  star(W - 92, 182, 52, "#e4002b");
-  x.fillStyle = "#fff"; x.font = '900 40px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.textAlign = "center"; x.fillText(R.grade, W - 92, 196); x.textAlign = "left";
-  // facts
-  const fact = (y, big, small) => { x.fillStyle = "#1b2320"; x.font = '800 34px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.fillText(big, L, y); x.fillStyle = "#4a5560"; x.font = '500 18px "Public Sans", Arial, sans-serif'; x.fillText(small, L, y + 26); };
-  fact(330, R.closedAt >= 0 ? "Closed by " + (START + R.closedAt) : fmt(R.short), R.closedAt >= 0 ? "the housing shortage" : "homes still short in 2041");
-  fact(410, "$" + fmt(R.rent) + (R.rentDiff >= 1 ? " (−$" + fmt(R.rentDiff) + ")" : R.rentDiff <= -1 ? " (+$" + fmt(-R.rentDiff) + ")" : ""), "median rent in 2041 vs. doing nothing");
-  fact(490, fmt(R.aff), "affordable homes");
+  const star = (cx, cy, r) => { x.beginPath(); for (let a = 0; a < 12; a++){ const rr = a % 2 ? r * 0.45 : r, t = a * Math.PI / 6 - Math.PI / 2; x.lineTo(cx + Math.cos(t) * rr, cy + Math.sin(t) * rr); } x.closePath(); x.fillStyle = "#e4002b"; x.fill(); };
+  star(Rx - 50, 168, 46); x.fillStyle = "#fff"; x.font = '900 34px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.textAlign = "center"; x.fillText(R.grade, Rx - 50, 180); x.textAlign = "left";
+  // photo
+  const top = 236, ph = H - top - 56, pw = Math.round(ph * 1.6);
+  if (photo){ const sw = photo.width, sh = photo.height, sc = Math.max(pw / sw, ph / sh); x.save(); x.beginPath(); x.rect(L, top, pw, ph); x.clip(); x.drawImage(photo, L + (pw - sw * sc) / 2, top + (ph - sh * sc) / 2, sw * sc, sh * sc); x.restore(); }
+  x.fillStyle = "#4a5560"; x.font = 'italic 400 14px "Source Serif 4", Georgia, serif'; x.fillText(lastCaption.length > 95 ? lastCaption.slice(0, 92) + "…" : lastCaption, L, top + ph + 20, pw);
+  // by the numbers
+  const sx = L + pw + 28, sw2 = Rx - sx;
+  x.fillStyle = "#e4002b"; x.font = '800 14px "Public Sans", Arial, sans-serif'; x.fillText("BY THE NUMBERS", sx, top + 12);
+  const rows = [[fmt(R.homes), R.homes <= -1 ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed"],
+    ["$" + fmt(R.rent) + (R.rentDiff >= 1 ? " (−$" + fmt(R.rentDiff) + ")" : R.rentDiff <= -1 ? " (+$" + fmt(-R.rentDiff) + ")" : ""), "median rent in 2041 vs. doing nothing"],
+    [fmt(R.aff), "affordable homes"]];
+  rows.forEach(([big, small], k) => {
+    const y = top + 30 + k * 78; x.fillStyle = "#d8d3c6"; x.fillRect(sx, y, sw2, 1);
+    x.fillStyle = ink; x.font = '800 38px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.fillText(big, sx, y + 40, sw2);
+    x.fillStyle = "#3a4248"; x.font = '400 16px "Source Serif 4", Georgia, serif'; x.fillText(small, sx, y + 62, sw2);
+  });
   // footer
-  x.fillStyle = "#2b5da0"; x.font = '700 20px "Public Sans", Arial, sans-serif'; x.fillText("Try your own: fixchicagohousing.com", L, 580);
-  x.fillStyle = "#6b7580"; x.font = '400 13px "Source Serif 4", Georgia, serif'; x.fillText("Not affiliated with the City of Chicago.", L, 604);
+  x.fillStyle = ink; x.fillRect(L, H - 30, Rx - L, 1);
+  x.fillStyle = "#2b5da0"; x.font = '700 15px "Public Sans", Arial, sans-serif'; x.fillText("Make your own plan at fixchicagohousing.com", L, H - 11);
+  x.fillStyle = "#6b7580"; x.font = '400 12px "Source Serif 4", Georgia, serif'; x.textAlign = "right"; x.fillText("Not affiliated with the City of Chicago.", Rx, H - 11); x.textAlign = "left";
   return new Promise(res => c.toBlob(b => res(b), "image/png"));
 }
 $("resImage").addEventListener("click", async (e) => {
@@ -2699,18 +2841,29 @@ const ALPHA = "0123456789abcdefghijklmno";
 const B32 = "0123456789abcdefghijklmnopqrstuv";
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 function encodePlan(p){
-  let s = "u5";
-  for (let n = 1; n <= 77; n += 2){ const a = p.areas[n] || 0, b = n + 1 <= 77 ? (p.areas[n + 1] || 0) : 0; s += ALPHA[a * 5 + b]; }
+  let s = "u6";
+  for (let n = 1; n <= 77; n++) s += ALPHA[p.areas[n] || 0];
   const P = p.p; let bits = 0;
   BIT_KEYS.forEach((k, i) => { if (P[k]) bits |= 1 << i; });
-  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + B32[(bits >> 15) & 31] + ALPHA[p.g] + ALPHA[p.sub || 0];
+  return s + ALPHA[p.tod] + ALPHA[p.metra] + ALPHA[p.corr] + ALPHA[p.office] + ALPHA[P.str] + ALPHA[P.aro] + B32[bits & 31] + B32[(bits >> 5) & 31] + B32[(bits >> 10) & 31] + B32[(bits >> 15) & 31] + ALPHA[p.g] + ALPHA[p.sub || 0] + SCOPED.map(k => ALPHA[(p.scope && p.scope[k]) || 0]).join("");
 }
 function decodeAreas(str, p){
   for (let i = 0; i < 39; i++){ const v = ALPHA.indexOf(str[i]), a = Math.floor(v / 5), b = v % 5, n = 1 + i * 2; if (a) p.areas[n] = a; if (b && n + 1 <= 77) p.areas[n + 1] = b; }
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u5([0-9a-o]{39})([0-5])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{4})([0-2])([0-4])/);
+  let m = s.match(/u6([0-5]{77})([0-5])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{4})([0-2])([0-4])([0-3]{10})/);
+  if (m){
+    const p = blankPlan();
+    for (let i = 0; i < 77; i++){ const v = +m[1][i]; if (v) p.areas[i + 1] = v; }
+    p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
+    const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10) | (B32.indexOf(m[8][3]) << 15);
+    BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
+    p.g = +m[9]; p.sub = +m[10];
+    SCOPED.forEach((k, i) => { const v = +m[11][i]; if (v) p.scope[k] = v; });
+    return p;
+  }
+  m = s.match(/u5([0-9a-o]{39})([0-5])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{4})([0-2])([0-4])/);
   if (m){
     const p = blankPlan(); decodeAreas(m[1], p);
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
@@ -2772,7 +2925,7 @@ $("copyLink").addEventListener("click", () => copyText(SHARE_BASE + "#" + encode
 $("copyCode").addEventListener("click", () => copyText(encodePlan(plan), "Plan code copied"));
 $("openCode").addEventListener("click", () => {
   const p = decodePlan($("codeIn").value);
-  if (!p){ toast("That code didn't work. Codes start with u5 (older u1–u4 codes still work)."); return; }
+  if (!p){ toast("That code didn't work. Codes start with u6 (older u1–u5 codes still work)."); return; }
   plan = p; $("codeIn").value = ""; unlockAll(true); recompute(); renderTargets(); toast("Plan opened");
 });
 // ---------- community (needs the site's /api; quietly hides itself where there is none, e.g. the claude.ai preview) ----------

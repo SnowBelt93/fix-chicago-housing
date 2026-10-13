@@ -6,7 +6,7 @@ Outputs (run from the repo root: python3 tools/prep_extra.py):
                  Layout: uint32 area count, then per area: uint32 num, uint32 N, N bytes.
   b/vacant.wasm  vacant parcels: uint32 nPrivate, uint32 nCity, then int32 (lon*1e6, lat*1e6) pairs, private first.
   wards.json     simplified 2023 ward outlines for the map.
-  meta.json      adds "busy" (stations used for the Tower level), "vacantByArea" {num: [private, city]},
+  meta.json      adds "busy" (stations used for the Tower level), "vacantByArea" {num: [private, city]}, per-area "sf" and "type",
                  and "wardStats" {ward: [buildings, illegalToday]}.
 Building order is untouched (it is the random seed)."""
 import json, struct, csv, os, collections
@@ -114,6 +114,17 @@ for wd, g in sorted(wards, key=lambda t: t[0]):
                'lon': round(g.representative_point().x, 5), 'lat': round(g.representative_point().y, 5)})
 json.dump(wj, open(os.path.join(ROOT, 'wards.json'), 'w'), separators=(',', ':'))
 print('wards.json', os.path.getsize(os.path.join(ROOT, 'wards.json')), 'bytes')
+
+# ---- neighborhood types: 0 downtown core, 1 mixed (2-flats, 3-flats, main streets), 2 single-family (70%+ of residential buildings hold one home)
+CORE = {8, 28, 32, 33}
+for a in meta['areas']:
+    buf = open(os.path.join(ROOT, 'b', f"{a['num']}.wasm"), 'rb').read()
+    N, V = struct.unpack_from('<II', buf, 0); o = 24 + 4 * V
+    un = np.frombuffer(buf, dtype='<u2', count=N, offset=o + 3 * N + ((3 * N) % 2))
+    res = int((un >= 1).sum()); sf = int((un == 1).sum()) / max(1, res)
+    a['sf'] = round(sf, 3)
+    a['type'] = 0 if a['num'] in CORE else (2 if sf >= 0.7 else 1)
+print('types:', collections.Counter(a['type'] for a in meta['areas']))
 
 meta['busy'] = busy
 meta['vacantByArea'] = {str(a['num']): [cp.get(a['num'], 0), cc.get(a['num'], 0)] for a in meta['areas']}
