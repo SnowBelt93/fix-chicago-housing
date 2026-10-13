@@ -509,6 +509,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .chart .axis{fill:var(--ink-3);font-family:var(--f-data);font-size:9.5px}
 .chart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
 .chart .plan{stroke:#c4570f} .chart .base{stroke:#6f7a76;stroke-dasharray:4 3}
+.chart .band{fill:#c4570f;fill-opacity:.14;stroke:none} .chart .plan.hi{stroke-width:1.25;stroke-opacity:.7}
 .chart .dot-plan{fill:#c4570f;stroke:var(--paper);stroke-width:2} .chart .dot-base{fill:#6f7a76;stroke:var(--paper);stroke-width:2}
 .chart .zero{stroke:var(--ink-3);stroke-width:1}
 .chart .xh{stroke:var(--ink-3);stroke-width:1}
@@ -863,11 +864,11 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 <div><dt>What each zoning level allows</dt>
             <dd><div style="overflow-x:auto"><table><thead><tr><th>Level</th><th>Stories</th><th>Homes on a 25×125 lot</th><th>Based on Chicago zoning</th></tr></thead><tbody id="tierTable"></tbody></table></div><span class="small">Homes per lot follow the minimum lot area per home in the <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48908" target="_blank" rel="noopener">Chicago Zoning Ordinance §17-2-0303</a>. A 25×125 ft (3,125 sq ft) lot is the city standard (<a href="https://www.chipublib.org/blogs/post/technology-that-changed-chicago-subdivisions/" target="_blank" rel="noopener">Chicago Public Library</a>).</span></dd></div>
           <div><dt>How the game decides what gets built</dt>
-            <dd>A rezoned lot can rebuild if it holds homes, or a small one- or two-story shop lot with a street address on a commercial corridor or within ¼ mile of the L (parks, museums, field houses and named landmarks are never touched), was built before 2000, is shorter than the new limit, sits on a lot under about 40,000 sq ft, and the new building adds at least one home. How many rebuild within 15 years comes from Chicago's own record. Each neighborhood has a demand factor from 0.3× to 2.5× (its share of buildings built since 1990 vs. the city average, from the city's building data). Matching 2013–2025 new-construction permits to the small homes standing in 2013 (<a href="https://data.cityofchicago.org/Buildings/Building-Permits/ydr8-5enu" target="_blank" rel="noopener">City of Chicago building permits</a>), lots where today's zoning already allowed more homes were torn down and rebuilt at these 15-year rates: about 0.4% in the softest markets, 3% at average demand and 7.4% in the hottest. The game doubles those rates for rezoned lots: in Auckland, permits in upzoned areas went from roughly 3,000 a year in 2016 to about 14,500 in 2021, an estimated 21,800 more homes than the trend (<a href="https://cowles.yale.edu/sites/default/files/2024-02/p1863.pdf" target="_blank" rel="noopener">Greenaway-McGrevy &amp; Phillips, 2023</a>), and in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often as lots in similar markets that didn't, except in the hottest neighborhoods, where teardowns are common either way. So a rezoned lot rebuilds with about a 0.8% chance in the softest markets, 6% at average demand and 15% in the hottest. Which lots rebuild is a fixed random draw, so the map and the count always match.</dd></div>
+            <dd>A rezoned lot can rebuild if it holds homes, or a small one- or two-story shop lot with a street address on a commercial corridor or within ¼ mile of the L (parks, museums, field houses and named landmarks are never touched), was built before 2000, is shorter than the new limit, sits on a lot under about 40,000 sq ft, and the new building adds at least one home beyond what today's zoning already allows there. Your plan only gets credit for those extra homes: rebuilds that are already legal are part of what Chicago builds anyway (each lot's current district and its minimum lot area per home, or floor area downtown, from the <a href="https://data.cityofchicago.org/api/geospatial/dj47-wfun?method=export&amp;format=GeoJSON" target="_blank" rel="noopener">city's zoning map</a>). How many rebuild within 15 years comes from Chicago's own record. Each neighborhood has a demand factor from 0.3× to 2.5× (its share of buildings built since 1990 vs. the city average, from the city's building data). Matching 2013–2025 new-construction permits to the small homes standing in 2013 (<a href="https://data.cityofchicago.org/Buildings/Building-Permits/ydr8-5enu" target="_blank" rel="noopener">City of Chicago building permits</a>), lots where today's zoning already allowed more homes were torn down and rebuilt at these 15-year rates: about 0.4% in the softest markets, 3% at average demand and 7.4% in the hottest. The game raises those rates by half for rezoned lots, a cautious reading of two findings: in Auckland, permits in upzoned areas went from roughly 3,000 a year in 2016 to about 14,500 in 2021, an estimated 21,800 more homes than the trend (<a href="https://cowles.yale.edu/sites/default/files/2024-02/p1863.pdf" target="_blank" rel="noopener">Greenaway-McGrevy &amp; Phillips, 2023</a>), and in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often as lots in similar markets that didn't, except in the hottest neighborhoods, where teardowns are common either way. So a rezoned lot rebuilds with about a 0.6% chance in the softest markets, 4.5% at average demand and 11% in the hottest. Which lots rebuild is a fixed random draw, so the map and the count always match.</dd></div>
           <div><dt>If nothing changes</dt>
             <dd>Chicago keeps permitting about 4,900 homes a year (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data, 2025</a>), but the regional shortage keeps growing about 8,760 homes a year, Zillow's 2023→2024 change (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Mann Report</a>). Rents rise 3.4% a year, Chicago's 2025 asking-rent growth (<a href="https://www.matthews.com/market_insights/chicago-il-multifamily-market-report-q4-2025" target="_blank" rel="noopener">CoStar via Matthews</a>). Both trends are held flat for 15 years.</dd></div>
           <div><dt>Rent effect</dt>
-            <dd>Each 1% added to Chicago's 1,282,248 homes (<a href="https://data.census.gov/table/ACSDT1Y2024.B25002?g=160XX00US1714000" target="_blank" rel="noopener">Census ACS 2024</a>) lowers rents about 0.19% compared with where they'd otherwise be (<a href="https://eprints.lse.ac.uk/127192/" target="_blank" rel="noopener">Mense, 2025</a>). Median gross rent $1,440 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/PST120223" target="_blank" rel="noopener">Census ACS 2020–24</a>); typical 1-bedroom $1,745 (<a href="https://www.apartmentlist.com/rent-report/il/chicago" target="_blank" rel="noopener">Apartment List, Oct 2026</a>).</dd></div>
+            <dd>Each 1% added to Chicago's 1,282,248 homes (<a href="https://data.census.gov/table/ACSDT1Y2024.B25002?g=160XX00US1714000" target="_blank" rel="noopener">Census ACS 2024</a>) lowers rents compared with where they'd otherwise be. Estimates differ by a factor of ten, so the game shows a range. The cautious end is 0.19% per 1% (<a href="https://eprints.lse.ac.uk/127192/" target="_blank" rel="noopener">Mense, 2025</a>), but that study measures a 1% rise in the year's new homes, not in all homes, so it understates the effect of adding to the stock. The strong end is 2% per 1%, from stock-based estimates that put the demand elasticity around −0.4 to −0.5 (<a href="https://doodles.mountainmath.ca/posts/2024-04-11-what-if-recent-apartment-buildings-in-vancouver-were-20-taller/" target="_blank" rel="noopener">Lauster &amp; von Bergmann, 2024</a>, summarizing Canadian and Australian government studies). Both use a constant-elasticity curve, so very large plans level off instead of driving rent to zero. Median gross rent $1,440 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/PST120223" target="_blank" rel="noopener">Census ACS 2020–24</a>); typical 1-bedroom $1,745 (<a href="https://www.apartmentlist.com/rent-report/il/chicago" target="_blank" rel="noopener">Apartment List, Oct 2026</a>).</dd></div>
           <div><dt>Shortage estimates</dt>
             <dd>165,687 homes underproduced, Chicago metro, 2022 (<a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a>). 115,282 home deficit, 2024 (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a>). 224,445 affordable homes missing for extremely low-income renters (<a href="https://therealdeal.com/chicago/2026/03/09/chicago-lacks-more-than-220k-affordable-homes" target="_blank" rel="noopener">Housing Action Illinois & NLIHC via The Real Deal</a>). City only: no study estimates Chicago's own shortage, so the game takes the city's share of the metro figure, 32.7%, because the city holds 1,282,248 of the metro's 3,924,020 homes (<a href="https://censusreporter.org/profiles/31000US16980-chicago-naperville-elgin-il-in/" target="_blank" rel="noopener">Census ACS 2024 via Census Reporter</a>): 54,141 missing today, growing 2,862 a year, a goal of 97,078 by 2041. 41% of Chicago is zoned single-family only (<a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a>).</dd></div>
           <div><dt>Affordable requirement (ARO)</dt>
@@ -883,7 +884,9 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div><dt>Game assumptions (not measured)</dt>
             <dd>These are judgment calls, labeled everywhere they're used:
               <ul style="margin:6px 0 0;padding-left:18px">
-                <li>Rezoning doubles the rebuild rate Chicago saw from 2013 to 2025 on lots where more homes were already allowed (the measured rates and the case for doubling are under "How the game decides what gets built"); lot size = 2× building footprint.</li>
+                <li>Rezoning raises Chicago's measured 2013–2025 rebuild rate by half (the rates and the reasoning are under "How the game decides what gets built"); lot size = 2× building footprint.</li>
+                <li>Homes today's zoning already allows on a lot don't count toward your plan. Downtown districts are converted at 900 sq ft of allowed floor area per home; planned developments and other special districts are treated as allowing none, so nothing is subtracted there.</li>
+                <li>Rent effect: the range runs from 0.19% to 2% lower rent per 1% more homes; the headline rent figure uses the cautious end.</li>
                 <li>Short-term rental limits return 10% (precinct bans) or 50% (primary-residence rule) of entire-home listings.</li>
                 <li>Coach houses: pilot pace doubled when every ward allows them by right.</li>
                 <li>Half of city-owned vacant lots get a 2-flat; 10% of "other vacant" homes return under an empty-homes tax.</li>
@@ -1009,7 +1012,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <svg class="chart" id="chShort" role="img" aria-label="Housing shortage by year, no change versus your plan"></svg>
       </div>
       <div class="chartBox">
-        <div class="ctitle">Median rent<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
+        <div class="ctitle">Median rent<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan (range)</span></span></div>
         <svg class="chart" id="chRent" role="img" aria-label="Median rent by year, no change versus your plan"></svg>
       </div>
       </div>
@@ -1049,13 +1052,16 @@ const SHARE_BASE = (location.protocol.startsWith("http") && !/claude|anthropic|u
   ? location.origin + location.pathname   // hosted on its own site
   : "https://claude.ai/artifact/XHPMwjqFSW9C4Rbmg8Xe81";
 const YEAR_MS = 700;   // one simulated year; buildings rise continuously across it
+// Rent effect, shown as a range: the cautious end is 0.19% lower rent per 1% more homes (Mense 2025, measured on the yearly flow of new homes);
+// the strong end is 2% per 1% (stock-based estimates: demand elasticity around −0.5, Lauster & von Bergmann 2024). Constant-elasticity form, so big plans don't go below zero.
+const ELASTICITY_HI = 2.0;
 const STOCK = 1282248, ELASTICITY = 0.19, MEDIAN_RENT = 1440, STD_LOT = 3125, FLOOR_M = 3.5, YEARS = 15, START = 2026;
 // Chance a rezoned lot is rebuilt within 15 years, by neighborhood demand factor. Each point is [demand, share]: the share of
 // Chicago's small pre-2000 home lots that today's zoning already allowed to hold more homes and that were torn down and rebuilt
 // in 2013–2025 (city building permits, corrected for the 87% of known rebuilds the matching finds, scaled to 15 years;
 // tools/calibrate_rebuild.py). Between points the rate is interpolated; outside them it stays flat.
 const REBUILD_OBS = [[0.38, 0.0042], [0.66, 0.0071], [0.97, 0.0304], [1.40, 0.0610], [2.40, 0.0736]];
-const UPZONE_LIFT = 2;   // assumption: rezoning doubles that rate (Auckland; in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often in most markets)
+const UPZONE_LIFT = 1.5;   // assumption: rezoning raises that rate by half (cautious: in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often in most markets; Auckland's upzoned areas did better)
 const rebuildRate = d => {
   const P = REBUILD_OBS; let r = P[P.length - 1][1];
   if (d <= P[0][0]) r = P[0][1];
@@ -1110,7 +1116,7 @@ const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 83, 287, 578, 1272];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
+const SUB_PER_STATION = [0, 22, 143, 346, 872];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
@@ -1444,7 +1450,7 @@ function prepStatic(A){
 }
 function compute(A, statsOnly){
   // only the year changed (simulation, timeline): the projects are the same, so just show which ones are built by now
-  const sig = encodePlan(plan) + "|" + towerScale + "|" + (showIllegal || introHook ? 1 : 0) + "|" + (A.ext ? 1 : 0) + (A.vk || 0);
+  const sig = encodePlan(plan) + "|" + towerScale + "|" + (showIllegal || introHook ? 1 : 0) + "|" + (A.ext ? 1 : 0) + (A.vk || 0) + (A.leg ? "L" : "");
   if (!statsOnly && A.sig === sig && A.statSig === sig && A.projects){ showYear(A); return; }
   const T0 = tierFor(A.num), P = plan.p, n = A.n;
   const p0 = rebuildRate(A.demand) * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
@@ -1477,6 +1483,8 @@ function compute(A, statsOnly){
   let vacUsed = 0;
   const lotAt = (j) => LOTS[j];
   const unitsAt = (j) => EL[j] === 2 ? 0 : UN[j];   // empty land has no homes to replace
+  const LEG = A.leg || null;
+  const baseAt = (j) => { const u = unitsAt(j), l = LEG !== null ? LEG[j] : 0; return l > u ? l : u; };   // homes the lot has, or could already have under today's zoning
   const canJoin = (j, t) => {   // a neighbour that could be bought into a site at level t (empty land is the easiest)
     if (claimed[j] >= 0) return 0;
     const e = EL[j];
@@ -1489,7 +1497,7 @@ function compute(A, statsOnly){
   const vlBoost = P.vland && inScope("vland", A) && A.demand < VL_SOFT;
   // the highest chance any project here could have: most candidates fail this cheap test before any other work
   const pUB = Math.min(0.6, p0 * (1 + STAIR_BOOST) * (1 + PARK_BOOST) * (1 + SMALL_BOOST) * Math.max(1, ARO_FACTOR[P.aro]) * (1 + VL_SOFT_BOOST) * VAC_EASE);
-  const tryAt = (i, t, f, lot, un, vac) => {
+  const tryAt = (i, t, f, lot, un, vac, base) => {
     const u = hash01(i, A.num);
     if (u >= pUB) return;
     const T = TIERS[t];
@@ -1509,7 +1517,7 @@ function compute(A, statsOnly){
     if (vac) p *= VAC_EASE;
     if (p > 0.6) p = 0.6;
     if (u >= p) return;
-    MB[0] = i; let nm = 1, siteLot = lot, existing = un, tt = t;   // site members go in a scratch buffer (no allocation unless the project is built)
+    MB[0] = i; let nm = 1, siteLot = lot, existing = un, baseSum = base, tt = t;   // site members go in a scratch buffer (no allocation unless the project is built)
     if (siteLot < SITE_MIN[t]){
       const R = rowOf(A, i), js = R.js, LO = R.lo, HI = R.hi;
       let s0 = R.s0, s1 = R.s1;
@@ -1519,7 +1527,7 @@ function compute(A, statsOnly){
         const j0 = LO[q], j1 = HI[q];
         if (j0 > s1 + SITE_GAP || j1 < s0 - SITE_GAP) continue;   // must touch the site: no jumping across a side street or a gap
         const tj = canJoin(j, t); if (tj < 2) continue;
-        MB[nm++] = j; siteLot += lotAt(j); existing += unitsAt(j); if (tj < tt) tt = tj;
+        MB[nm++] = j; siteLot += lotAt(j); existing += unitsAt(j); baseSum += baseAt(j); if (tj < tt) tt = tj;
         if (j0 < s0) s0 = j0; if (j1 > s1) s1 = j1;
         if (siteLot >= SITE_MIN[t] || nm >= SITE_MAX) break;
       }
@@ -1530,7 +1538,7 @@ function compute(A, statsOnly){
     const members = Array.from(MB.subarray(0, nm));
     const box = tt >= 3 ? siteBox(A, members, siteLot) : null;
     while (tt >= 3 && Math.min(box.W, box.D) < SITE_WIDTH[tt]) tt--;   // too narrow for that height: build lower
-    const TT = TIERS[tt], gross = Math.floor(TT.k * siteLot / STD_LOT), homes = gross - existing;
+    const TT = TIERS[tt], gross = Math.floor(TT.k * siteLot / STD_LOT), homes = gross - baseSum;   // only homes above what's already legal count
     if (homes < 1) return;
     let yb = rampYear(hash01(i, A.num + 977));
     if (P.permits || moraOn){   // shift a point within the year, so faster or slower approvals don't leave empty years
@@ -1557,16 +1565,17 @@ function compute(A, statsOnly){
     if (e !== 2) touched++;
     if (e === 0 || claimed[i] >= 0) continue;   // can't be rebuilt, or already bought into an earlier project's site
     const T = TIERS[t], lot = LOTS[i];
-    if (e === 2){ if (T.k * lot / STD_LOT >= 1) tryAt(i, t, FL[i], lot, 0, true); continue; }   // empty land: nothing to tear down
+    if (e === 2){ const b = baseAt(i); if (T.k * lot / STD_LOT - b >= 1) tryAt(i, t, FL[i], lot, 0, true, b); continue; }   // empty land: nothing to tear down
     if ((ST[i] || 1) >= T.h) continue;
-    const un = UN[i];
-    if (T.k * lot / STD_LOT - un < 1) continue;
-    tryAt(i, t, FL[i], lot, un, false);
+    const un = UN[i], b = baseAt(i);
+    if (T.k * lot / STD_LOT - b < 1) continue;
+    tryAt(i, t, FL[i], lot, un, false, b);
   }
   for (let i = n; i < NK; i++){   // vacant parcels with no building
     const t = LUT[TK[i]];
     if (t <= 0 || claimed[i] >= 0) continue;
-    if (TIERS[t].k * VAC_LOT / STD_LOT >= 1) tryAt(i, t, VF[i - n], VAC_LOT, 0, true);
+    const b = baseAt(i);
+    if (TIERS[t].k * VAC_LOT / STD_LOT - b >= 1) tryAt(i, t, VF[i - n], VAC_LOT, 0, true, b);
   }
   A.statSig = sig;
   A.vacUsed = vacUsed; A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
@@ -1640,7 +1649,13 @@ function planHomesAt(y){
 const target = () => TARGETS[plan.g].n;
 const needed = () => target() + gapGrowth() * YEARS;
 const rentNoChange = (y, base) => (base || MEDIAN_RENT) * Math.pow(1 + RENT_GROWTH, y);
-const rentWithPlan = (y, homes, base) => rentNoChange(y, base) * (1 - ELASTICITY * (homes / STOCK));
+const rentWithPlan = (y, homes, base, e) => rentNoChange(y, base) * Math.pow(1 + Math.max(-0.9, homes / STOCK), -(e == null ? ELASTICITY : e));
+const rentStrong = (y, homes, base) => rentWithPlan(y, homes, base, ELASTICITY_HI);
+const lessRange = (rn, lo, hi) => {   // "$58–$610 below" / "$40–$420 above" no change
+  const a = rn - lo, b = rn - hi;
+  if (Math.abs(a) < 1 && Math.abs(b) < 1) return "";
+  return a >= 0 ? "$" + fmt(a) + "–$" + fmt(b) + " below" : "$" + fmt(-a) + "–$" + fmt(-b) + " above";
+};
 
 // ---------------- unlocks ----------------
 const UNLOCKS = [
@@ -2324,6 +2339,18 @@ async function loadLand(){
     }
   } catch (e) { console.warn("land data failed", e); }
 }
+async function loadLegal(){   // homes today's zoning already allows on each lot (tools/prep_legal.py): a plan only gets credit above that
+  try {
+    const buf = await (await fetch("b/legal.wasm")).arrayBuffer(), dv = new DataView(buf);
+    let o = 4; const na = dv.getUint32(0, true);
+    for (let a = 0; a < na; a++){
+      const num = dv.getUint32(o, true), C = dv.getUint32(o + 4, true); o += 8;
+      const A = AREAS[num];
+      if (A && A.n + (A.vk || 0) === C){ A.leg = new Uint8Array(buf, o, C); A.sig = null; A.statSig = null; }
+      o += C; o += (4 - o % 4) % 4;
+    }
+  } catch (e) { console.warn("legal-capacity data failed", e); }
+}
 async function loadExtra(){
   try {
     const buf = await (await fetch("b/extra.wasm")).arrayBuffer(), dv = new DataView(buf);
@@ -2345,6 +2372,7 @@ async function loadExtra(){
     }
     hasExtra = true;
     await loadLand();
+    await loadLegal();
     recompute();   // hides buildings torn down since 2013 and enables the Tower rings
   } catch (e) { console.warn("extra data failed", e); }
 }
@@ -2720,9 +2748,9 @@ function render(){
   const short = target() + gapGrowth() * year - tv.total;
   $("short").textContent = short > 0 ? fmt(short) : "0";
   $("shortLbl").textContent = short > 0 ? "homes short in " + yrLabel : "shortage closed by " + yrLabel;
-  const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total);
+  const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total), rs = rentStrong(year, tv.total), rr = lessRange(rn, rp, rs);
   $("rent").textContent = "$" + fmt(rp);
-  $("rentLbl").textContent = "median rent in " + yrLabel + (rn - rp >= 1 ? " (−$" + fmt(rn - rp) + ")" : rp - rn >= 1 ? " (+$" + fmt(rp - rn) + ")" : "");
+  $("rentLbl").textContent = "median rent in " + yrLabel + (rr ? ", " + rr + " no change" : "");
   const cut = baseCut();
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
   $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
@@ -2796,18 +2824,18 @@ function renderHoodList(){
 }
 function personaRows(el, homes){
   el.innerHTML = "";
-  const rNo = rentNoChange(YEARS, RENT_1BR), rPlan = rentWithPlan(YEARS, homes, RENT_1BR);
+  const rNo = rentNoChange(YEARS, RENT_1BR), rPlan = rentWithPlan(YEARS, homes, RENT_1BR), rHi = rentStrong(YEARS, homes, RENT_1BR);
   PERSONAS.forEach(p => {
     const w = p.wage * Math.pow(1 + WAGE_GROWTH, YEARS);
-    const today = RENT_1BR * 12 / p.wage * 100, bNo = rNo * 12 / w * 100, bPlan = rPlan * 12 / w * 100;
+    const today = RENT_1BR * 12 / p.wage * 100, bNo = rNo * 12 / w * 100, bPlan = rPlan * 12 / w * 100, bHi = rHi * 12 / w * 100;
     const d = document.createElement("div"); d.className = "persona";
     d.innerHTML = '<b></b><span class="burden"></span><span class="job"></span>';
     d.querySelector("b").textContent = p.name;
     d.querySelector(".job").textContent = p.job + " · $" + fmt(p.wage) + " today";
     const bur = d.querySelector(".burden");
-    const line = (lbl, v) => { const s = document.createElement("span"); s.className = v <= 30 ? "ok" : "no"; s.textContent = lbl + Math.round(v) + "% of pay"; return s; };
+    const line = (lbl, v, v2) => { const s = document.createElement("span"); s.className = Math.min(v, v2) <= 30 ? "ok" : "no"; const a = Math.round(v), b = Math.round(v2); s.textContent = lbl + (a === b ? a : Math.min(a, b) + "–" + Math.max(a, b)) + "% of pay"; return s; };
     const a = document.createElement("span"); a.className = "was"; a.textContent = "today " + Math.round(today) + "% · no change " + Math.round(bNo) + "%";
-    bur.append(a, document.createElement("br"), line("your plan: ", bPlan));
+    bur.append(a, document.createElement("br"), line("your plan: ", bPlan, bHi));
     el.appendChild(d);
   });
 }
@@ -3084,7 +3112,7 @@ function showResult(){
   const homes = ys.map(planHomesAt);
   const noShort = ys.map(y => target() + gapGrowth() * y);
   const planShort = ys.map((y, i) => noShort[i] - homes[i]);
-  const rNo = ys.map(y => rentNoChange(y)), rPlan = ys.map((y, i) => rentWithPlan(y, homes[i]));
+  const rNo = ys.map(y => rentNoChange(y)), rPlan = ys.map((y, i) => rentWithPlan(y, homes[i])), rHi = ys.map((y, i) => rentStrong(y, homes[i]));
   const end = YEARS, closedAt = planShort.findIndex(v => v <= 0);
   $("resTitle").textContent = closedAt >= 0 ? "Chicago closes its housing shortage by " + (START + closedAt) :
     homes[end] > 0 ? "Chicago builds " + fmt(homes[end]) + " homes; shortage " + (planShort[end] < noShort[0] ? "shrinks" : "still grows") + " to " + fmt(planShort[end]) :
@@ -3098,11 +3126,11 @@ function showResult(){
   { const rev = homes[end] * TAX2; $("resTax").textContent = money(rev);
     $("resTaxLbl").textContent = (rev < 0 ? "a year less in local taxes by 2041" : "a year in local taxes by 2041") + " (" + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap)"; }
   $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
-  $("resRent").textContent = "$" + fmt(rPlan[end]) + (rNo[end] - rPlan[end] >= 1 ? " (−$" + fmt(rNo[end] - rPlan[end]) + ")" : rPlan[end] - rNo[end] >= 1 ? " (+$" + fmt(rPlan[end] - rNo[end]) + ")" : "");
+  { const rr = lessRange(rNo[end], rPlan[end], rHi[end]); $("resRent").textContent = rr ? "$" + fmt(Math.min(rPlan[end], rHi[end])) + "–$" + fmt(Math.max(rPlan[end], rHi[end])) : "$" + fmt(rPlan[end]); }
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
-  lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false);
+  lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false, rHi);
   personaRows($("resPersonas"), homes[end]);
-  lastResult = {homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], aff: totals(false).aff};
+  lastResult = {homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
   $("result").hidden = false;
 }
 $("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
@@ -3115,10 +3143,10 @@ function frontPage(homesEnd){
   $("resCap").textContent = lastCaption;
   const walk = t.zoneFull > 0 ? Math.round(t.walk / t.zoneFull * 100) : 0;
   const P0 = PERSONAS[0], w = P0.wage * Math.pow(1 + WAGE_GROWTH, YEARS);
-  const bNo = Math.round(rentNoChange(YEARS, RENT_1BR) * 12 / w * 100), bPlan = Math.round(rentWithPlan(YEARS, homesEnd, RENT_1BR) * 12 / w * 100);
+  const bNo = Math.round(rentNoChange(YEARS, RENT_1BR) * 12 / w * 100), bPlan = Math.round(rentWithPlan(YEARS, homesEnd, RENT_1BR) * 12 / w * 100), bHi = Math.round(rentStrong(YEARS, homesEnd, RENT_1BR) * 12 / w * 100);
   let lede = homesEnd >= 1 ? (names.length ? "The most new homes went up in " + list + (walk ? ", and " + walk + "% of them are within a ten-minute walk of a train" : "") + ". " : "")
     : "With fewer homes going up than the city builds today, the gap between people and places to live keeps widening. ";
-  lede += P0.name + ", a " + P0.job.replace(/^[A-Z][a-z]/, c => c.toLowerCase()) + ", would spend " + bNo + "% of her pay on a one-bedroom with no changes. " + (bPlan !== bNo ? "Under this plan it's " + bPlan + "%." : "Under this plan it's about the same.");
+  lede += P0.name + ", a " + P0.job.replace(/^[A-Z][a-z]/, c => c.toLowerCase()) + ", would spend " + bNo + "% of her pay on a one-bedroom with no changes. " + (bPlan !== bNo || bHi !== bNo ? "Under this plan it's " + (bHi === bPlan ? bPlan : Math.min(bPlan, bHi) + " to " + Math.max(bPlan, bHi)) + "%." : "Under this plan it's about the same.");
   $("resLede").textContent = lede;
   $("resPhoto").removeAttribute("src");
   captureMap().then(c => {
@@ -3161,7 +3189,7 @@ async function makeShareCard(){
   const sx = L + pw + 28, sw2 = Rx - sx;
   x.fillStyle = "#e4002b"; x.font = '800 14px "Public Sans", Arial, sans-serif'; x.fillText("BY THE NUMBERS", sx, top + 12);
   const rows = [[fmt(Math.abs(R.homes)), R.homes <= -1 ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed"],
-    ["$" + fmt(R.rent) + (R.rentDiff >= 1 ? " (−$" + fmt(R.rentDiff) + ")" : R.rentDiff <= -1 ? " (+$" + fmt(-R.rentDiff) + ")" : ""), "median rent in 2041 vs. doing nothing"],
+    [Math.abs(R.rentNo - R.rentHi) >= 1 ? "$" + fmt(Math.min(R.rent, R.rentHi)) + "–$" + fmt(Math.max(R.rent, R.rentHi)) : "$" + fmt(R.rent), "median rent in 2041 (no change: $" + fmt(R.rentNo) + ")"],
     [fmt(R.aff), "affordable homes"]];
   rows.forEach(([big, small], k) => {
     const y = top + 30 + k * 78; x.fillStyle = "#d8d3c6"; x.fillRect(sx, y, sw2, 1);
@@ -3192,11 +3220,11 @@ $("resShare").addEventListener("click", () => copyText(SHARE_BASE + "#" + encode
 
 const SVGNS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, parent){ const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
-function lineChart(svg, base, mine, fy, fromZero){
+function lineChart(svg, base, mine, fy, fromZero, band){
   svg.innerHTML = "";
   const W = 340, H = 150, pl = 54, pr = 12, pt = 12, pb = 22;
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
-  const all = base.concat(mine);
+  const all = base.concat(mine, band || []);
   let lo = Math.min(...all), hi = Math.max(...all);
   if (fromZero) lo = Math.min(0, lo); else lo = lo * 0.96;
   const span = hi - lo || 1, stepRaw = span / 3, mag = Math.pow(10, Math.floor(Math.log10(stepRaw)));
@@ -3210,8 +3238,10 @@ function lineChart(svg, base, mine, fy, fromZero){
   }
   [0, 5, 10, 15].forEach(i => { svgEl("text", {x: x(i), y: H - 6, "text-anchor": i === 0 ? "start" : i === 15 ? "end" : "middle", class: "axis"}, svg).textContent = START + i; });
   const path = vals => vals.map((v, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join("");
+  if (band) svgEl("path", {d: path(mine) + band.map((v, i) => "L" + x(i).toFixed(1) + " " + y(v).toFixed(1)).reverse().join("") + "Z", class: "band"}, svg);   // range of the rent effect
   svgEl("path", {d: path(base), class: "ln base"}, svg);
   svgEl("path", {d: path(mine), class: "ln plan"}, svg);
+  if (band) svgEl("path", {d: path(band), class: "ln plan hi"}, svg);
   const n = base.length - 1;
   svgEl("circle", {cx: x(n), cy: y(base[n]), r: 4, class: "dot-base"}, svg);
   svgEl("circle", {cx: x(n), cy: y(mine[n]), r: 4, class: "dot-plan"}, svg);
@@ -3224,7 +3254,7 @@ function lineChart(svg, base, mine, fy, fromZero){
     const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) / r.width * W;
     const i = Math.max(0, Math.min(n, Math.round((px - pl) / (W - pl - pr) * n)));
     xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
-    t1.textContent = (START + i) + "  no change " + fy(base[i]); t2.textContent = "your plan " + fy(mine[i]);
+    t1.textContent = (START + i) + "  no change " + fy(base[i]); t2.textContent = "your plan " + (band && Math.abs(band[i] - mine[i]) >= 1 ? fy(Math.min(mine[i], band[i])) + "–" + fy(Math.max(mine[i], band[i])) : fy(mine[i]));
     const w = Math.max(t1.getComputedTextLength ? t1.getComputedTextLength() : 120, 100) + 12;
     const tx = Math.min(W - pr - w, Math.max(pl, x(i) - w / 2));
     tr.setAttribute("x", tx); tr.setAttribute("y", pt); tr.setAttribute("width", w);
