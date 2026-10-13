@@ -637,7 +637,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <h3>What can go up within a half mile of the L?</h3>
           <p class="small">The shaded circles on the map are that half mile around each station: about a 10-minute walk.</p>
           <div class="tiers" id="todTiers"></div>
-          <p class="small" id="todNote" hidden>Tower: 30 stories within ¼ mile of the 26 busiest L stations (dark rings), high-rise near the rest. Capped at downtown's record leasing pace.</p>
+          <p class="small" id="todNote" hidden>Tower: 30 stories within ¼ mile of the 26 busiest L stations (darkest shading), high-rise near the rest. Capped at downtown's record leasing pace.</p>
         </div>
         <div class="tool" id="tool-metra" data-unlock="metra">
           <div class="eyebrow">Near Metra stations in the city</div>
@@ -2151,9 +2151,13 @@ function layers(){
     if (META.ringL){
       if (plan.tod && plan.metra && plan.tod === plan.metra) zone("zoneLM", META.ringLM, plan.tod, 46);
       else {
-        if (plan.tod) zone("zoneL", META.ringL, plan.tod, 46);
+        if (plan.tod) zone("zoneL", META.ringL, plan.tod === 5 ? 4 : plan.tod, 46);   // Tower: high-rise in the half mile, towers in the busy rings below
         if (plan.metra) zone("zoneM", META.ringM, plan.metra, 40);
       }
+    }
+    if (plan.tod === 5 && META.ringBusy){   // quarter mile of the busiest stations, merged into one shape like the zones above
+      zone("zoneBusy", META.ringBusy, 7, 70);
+      if (META.busy) L.push(new deck.ScatterplotLayer({id:"busy", data:META.busy, pickable:true, parameters:FLAT, getPosition:d => [d.lon, d.lat], getRadius:402, radiusUnits:"meters", getFillColor:[10,28,60,1]}));   // invisible, just for the ridership tooltip
     }
   }
   if (plan.corr && META.corridors) L.push(new deck.PathLayer({id:"corrLines", parameters:FLAT, data:META.corridors, getPath:d => d.paths, pickable:true, getWidth:46, widthUnits:"meters", widthMinPixels:2, getColor:[...tierColor(plan.corr), 150], capRounded:true, jointRounded:true, updateTriggers:{getColor:plan.corr + look},
@@ -2177,8 +2181,6 @@ function layers(){
   if (wardShown && WARDS){ const W = WARDS.find(w => w.ward === wardSel); if (W) L.push(new deck.PathLayer({id:"ward", data:W.polys.flatMap(p => p.map(r => ({path:r}))), parameters:FLAT, getPath:d => d.path, getWidth:4, widthUnits:"pixels", getColor:[228,0,43,230]})); }
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:7, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:7, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
-  if (plan.tod === 5 && META.busy) L.push(new deck.ScatterplotLayer({id:"busy", data:META.busy, pickable:true, parameters:FLAT, getPosition:d => [d.lon, d.lat], getRadius:402, radiusUnits:"meters",
-    stroked:true, filled:true, getFillColor:[10,28,60,30], getLineColor:[10,28,60,210], lineWidthMinPixels:1.5}));
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
