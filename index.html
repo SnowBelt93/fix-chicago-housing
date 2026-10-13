@@ -921,6 +921,97 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .mapctl button[data-cam="in"],.mapctl button[data-cam="out"],.mapctl button[data-cam="left"],.mapctl button[data-cam="right"]{display:none !important}   /* phones pinch, twist and zoom by touch */
   .comment{left:16px;right:16px;max-width:300px}
 }
+/* v34: hard mode link next to the goal (all sizes) */
+.goalrow{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 14px;margin-top:2px}
+.goalrow #goalBtn{margin:0 !important}
+.hardbtn{border:0;background:none;padding:0;font:700 12px var(--f-body);color:var(--star);text-decoration:underline;text-decoration-color:rgba(228,0,43,.4);text-underline-offset:3px;cursor:pointer}
+.hardbtn:hover{text-decoration-color:currentColor}
+@keyframes flashHard{0%{background:#fde3e8}100%{background:transparent}}
+.hardmode.flash{animation:flashHard 1.4s ease-out}
+.secbtns,.sheetdown,.toolsbtn{display:none}
+/* v34 phones (option B): a slim score bar on top, the map gets the room, and the tools sheet has three heights:
+   open (a tab's tools), menu (four section buttons + Simulate) and peek (Simulate only, the most map) */
+@media (max-width:859px){
+  :root{--sheetH:min(60%, calc(100% - var(--hudH, 150px) - 110px))}
+  body.sheetmin{--sheetH:calc(200px + env(safe-area-inset-bottom,0px))}
+  body.sheetpeek{--sheetH:calc(84px + env(safe-area-inset-bottom,0px))}
+  /* score bar */
+  .hud{padding-top:env(safe-area-inset-top,0px) !important}
+  .stripes{height:8px} .stripes i{height:2px}
+  .brand{position:absolute;z-index:1;top:calc(env(safe-area-inset-top,0px) + 12px);right:2px;padding:0 !important;border:0 !important;background:none}
+  .brand .mark,.brand h1,.brand .load{display:none !important}
+  .look{display:flex;align-items:center;height:44px;margin:0 !important;padding:0 10px !important;font-size:14px !important}
+  .scoreband{padding:6px 12px 0 !important}
+  .score{display:grid !important;grid-template-columns:56px minmax(0,1fr) 56px;grid-template-areas:"gr big ." "gr meta .";align-items:center;justify-items:center;gap:0 4px}
+  .score .big{grid-area:big;font-size:38px !important;line-height:1 !important}
+  .smeta{grid-area:meta;flex-direction:row !important;flex-wrap:wrap;justify-content:center;gap:0 6px;font-size:13.5px !important;text-align:center}
+  .grade{grid-area:gr;margin:0 !important;flex:none !important;width:48px !important;height:48px !important;font-size:22px !important}
+  .grade[data-g="A+"]{font-size:18px !important}
+  .scale{margin-top:6px !important;height:22px !important}
+  .scale .bar{height:6px !important}
+  .scale .ticks i{height:10px !important}
+  .scale .tlbls span{top:12px !important;font-size:11px !important}
+  .goalrow{justify-content:center;margin-top:4px !important}
+  .smeta .sgo{padding-left:7px;border-left:1px solid var(--line)}
+  .fanline{order:-1}
+  #goalBtn{font-size:13px !important}
+  .hardbtn{font-size:13px;padding:6px 0;margin:-6px 0}
+  .scoreband .keys,.hud .stats{display:none !important}
+  .fanline{margin:4px 12px 0 !important;padding:0 !important;border:0 !important;text-align:center;font-size:11.5px !important}
+  .scoreband{padding-bottom:8px !important}
+  body.sheetpeek .scale,body.sheetpeek .goalrow{display:none !important}
+  body.sheetpeek .score .big{font-size:30px !important}
+  body.sheetpeek .grade{width:40px !important;height:40px !important;font-size:19px !important}
+  /* the sheet */
+  .sheet{height:var(--sheetH) !important;padding-bottom:0 !important;transition:height .28s cubic-bezier(.2,.8,.2,1)}
+  .grab{display:flex !important;width:100%;height:24px;padding:0 !important;align-items:center;flex:0 0 auto}
+  .grab::before{width:44px !important;height:5px !important;border-radius:3px !important}
+  .sheetdown{display:flex;position:absolute;z-index:2;top:0;right:4px;width:44px;height:40px;border:0;background:none;align-items:center;justify-content:center;color:var(--ink-2);cursor:pointer}
+  .sheetdown svg,.toolsbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  body.sheetmin .sheetdown{display:none}
+  body.sheetmin .sheet .tabs,body.sheetmin .sheet .panes{display:none !important}
+  body.sheetmin .secbtns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:2px 16px 12px;flex:0 0 auto}
+  body.sheetpeek .secbtns{display:none}
+  .secbtns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:68px;padding:0;border:1px solid var(--line);border-radius:2px;background:#fff;font:600 15px var(--f-body);color:var(--ink);cursor:pointer}
+  .secbtns button svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .secbtns button:active{background:var(--paper-2)}
+  body.sheetmin .sheetfoot{margin-top:auto}
+  body.sheetpeek .sheetfoot .mini,body.sheetpeek .sheetfoot .tline{display:none !important}
+  body.sheetpeek .toolsbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;flex:0 0 64px;height:48px;border:1px solid var(--line);border-radius:2px;background:#fff;font:600 13px var(--f-body);color:var(--ink);cursor:pointer}
+  .sheetfoot{padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px)) !important}
+  .sheetfoot .play button{height:52px !important;font-size:21px !important}
+  .sheetfoot .mini b{font-size:22px !important}
+  .sheetfoot .mini span{font-size:13px !important}
+  .sheetfoot .tline{font-size:12px !important}
+  /* bigger tools */
+  .tabs{justify-content:flex-start !important;gap:22px !important;padding:0 16px !important;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;font-size:16px !important;padding:12px 0 10px !important}
+  .tab .n{font-size:13px !important}
+  .pane{padding:16px 16px 24px !important;font-size:15px}
+  .tool h3,.pane h2{font-size:20px !important}
+  .tool > p:not(.small){font-size:16px !important;line-height:1.45}
+  .pane .small,.tool .small{font-size:13.5px}
+  .tiers,.tiers.six,.tiers.four,.tiers.seven{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  .tool .tier,.typerow .tier{min-height:62px;padding:9px 2px 8px}
+  .tool .tier em,.typerow .tier em{font-size:15px}
+  .tool .tier small,.typerow .tier small{font-size:12.5px}
+  .policy h3{font-size:17px !important}
+  .policy .hnum b{font-size:26px !important}
+  .policy .hnum small,.policy .ptally,.policy > .gain{font-size:13.5px !important}
+  .ayenay button{padding:11px 22px !important;font-size:15px !important}
+  .policy .more-btn{font-size:15px !important;padding:6px 0 !important}
+  .policy .status{font-size:14px}
+  .pgroup > summary .eyebrow{font-size:19px !important}
+  .btn{min-height:44px}
+  /* things on the map sit just above the sheet, whatever its height */
+  .legend,.sheet.min ~ .legend,.sheet.peek ~ .legend{bottom:calc(var(--sheetH) + 10px) !important;max-height:calc(100% - var(--sheetH) - var(--hudH, 150px) - 30px) !important}
+  .credit,.sheet.min ~ .credit,.sheet.peek ~ .credit,.toast,.sheet.min ~ .toast{bottom:calc(var(--sheetH) + 10px) !important}
+  .hoodbanner,.hoodcard,.sheet.min ~ .hoodbanner{bottom:calc(var(--sheetH) + 12px) !important}
+  .legend,.credit,.hoodbanner,.toast{transition:bottom .28s cubic-bezier(.2,.8,.2,1)}
+  .comment{top:calc(var(--hudH, 150px) + 6px) !important;margin-top:0 !important}
+  .legend .lgtoggle{font-size:14px;min-height:30px}
+}
 /* motion: modals rise in and sink out, panes fade, details slide open */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
@@ -968,8 +1059,8 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
         <div class="ticks" aria-hidden="true"><i style="--at:.25"></i><i style="--at:.5"></i><i style="--at:.7"></i><i style="--at:.85"></i><i style="--at:1"></i></div>
         <div class="tlbls" aria-hidden="true"><span style="--at:.25">D</span><span style="--at:.5">C</span><span style="--at:.7">B</span><span style="--at:.85">A</span><span style="--at:1">A+</span></div>
       </div>
-      <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap to change the goal.">
-        <span id="goalLbl">Goal:</span> <b id="goalNum">97,078</b> homes by 2041</button>
+      <div class="goalrow"><button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap to change the goal.">
+        <span id="goalLbl">Goal:</span> <b id="goalNum">97,078</b> homes by 2041</button><button type="button" class="hardbtn" id="hardBtn">Try hard mode</button></div>
       <div class="keys" id="keys"></div>
     </div>
     <div class="stats">
@@ -984,7 +1075,9 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   </section>
 
   <section class="sheet" id="sheet">
-    <button class="grab" id="grab" aria-label="Show or hide the tool panel"></button>
+    <button class="grab" id="grab" aria-label="Show more or less of the tool panel"></button>
+    <button type="button" class="sheetdown" id="sheetDown" aria-label="Back to the map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="secbtns" id="secBtns"><button type="button" data-go="zoning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg>Build</button><button type="button" data-go="policies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 11h6M10 15h6"/></svg>Policies</button><button type="button" data-go="missions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6z"/></svg>Missions</button><button type="button" data-go="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Impact</button></div>
     <button class="widebtn" id="wideBtn" type="button" aria-pressed="false" title="Expand the panel" aria-label="Expand or collapse the panel">⤢</button>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-pane="zoning">Build</button>
@@ -1261,7 +1354,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
         </dl>
       </div>
     </div>
-    <div class="sheetfoot" id="sheetFoot"><div class="mini"><b id="rentMini">–</b><span>rent in 2041</span></div></div>
+    <div class="sheetfoot" id="sheetFoot"><button type="button" class="toolsbtn" id="toolsBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>Tools</button><div class="mini"><b id="rentMini">–</b><span>rent in 2041</span></div></div>
   </section>
 
   <div class="legend" id="legend">
@@ -2483,7 +2576,7 @@ let tourPending = false, tourStep = 0;
 const TOUR = [
   {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
   {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use the turn buttons to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
-  {el:() => document.querySelector('.tab[data-pane="policies"]'), t:"Then vote on real policies", b:"Policies unlock at 30,000 homes. Each item on the docket says what it adds and where the number comes from."},
+  {el:() => document.querySelector('.tab[data-pane="policies"]'), sheet:1, t:"Then vote on real policies", b:"Policies unlock at 30,000 homes. Each item on the docket says what it adds and where the number comes from."},
   {el:() => $("playBtn"), t:"Then hit Simulate", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
 ];
 function startTour(){ tourPending = false; if (lsGet("fch-tour", false)) return; tourStep = 0; showTip(); }
@@ -2492,6 +2585,7 @@ function showTip(){
   if (!T){ tip.hidden = true; lsSet("fch-tour", true); const n = mythQueue.shift(); if (n && $("myth").hidden) setTimeout(() => showMyth(n), 350); return; }
   if (tourStep === 0 && plan.tod){ tourStep = 1; return showTip(); }   // already picked an L level: skip "start here"
   if (T.tab) showTab(T.tab);
+  if (!isWide() && (T.tab || T.sheet) && sheetNow() !== "open"){ openSheet(); setTimeout(showTip, 340); return; }   // phones: open the tools first, then point
   const target = T.el(); if (!target){ tourStep++; return showTip(); }
   $("tipT").textContent = T.t; $("tipB").textContent = T.b;
   $("tipStep").textContent = (tourStep + 1) + " of " + TOUR.length;
@@ -3173,7 +3267,7 @@ function render(){
   const tv = totals(true), tf = totals(false), goal = needed();
   if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
   $("goalNum").textContent = fmt(goal);
-  { const hard = plan.g !== 3; $("goalLbl").textContent = hard ? "Hard mode:" : "Goal:"; document.body.classList.toggle("hard", hard); }
+  { const hard = plan.g !== 3; $("goalLbl").textContent = hard ? "Hard mode:" : "Goal:"; document.body.classList.toggle("hard", hard); $("hardBtn").textContent = hard ? "What's hard mode?" : "Try hard mode"; }
   const yrLabel = START + year;
   const short = target() + gapGrowth() * year - tv.total;
   $("short").textContent = short > 0 ? fmt(short) : "";
@@ -3339,11 +3433,27 @@ new MutationObserver(ms => { const done = new Set(); ms.forEach(m => { const seg
 function setWide(on){ document.body.classList.toggle("wide", on); $("wideBtn").setAttribute("aria-pressed", String(on)); $("wideBtn").textContent = on ? "⤡ Collapse" : "⤢"; $("wideBtn").title = on ? "Back to the sidebar" : "Expand the panel"; lsSet("fch-wide", on); }
 $("wideBtn").addEventListener("click", () => setWide(!document.body.classList.contains("wide")));
 setWide(!!lsGet("fch-wide", false));
-function syncSheet(){ document.body.classList.toggle("sheetmin", $("sheet").classList.contains("min")); }
-function openSheet(){ $("sheet").classList.remove("min"); syncSheet(); }
-$("grab").addEventListener("click", () => { $("sheet").classList.toggle("min"); syncSheet(); });
+// phones: the tool sheet has three heights: "open" (a tab's tools), "menu" (section buttons + Simulate) and "peek" (Simulate only)
+function syncSheet(){ const sh = $("sheet"); document.body.classList.toggle("sheetmin", sh.classList.contains("min")); document.body.classList.toggle("sheetpeek", sh.classList.contains("peek")); }
+const sheetNow = () => { const sh = $("sheet"); return sh.classList.contains("peek") ? "peek" : sh.classList.contains("min") ? "menu" : "open"; };
+function sheetState(st){ const sh = $("sheet"); sh.classList.toggle("min", st !== "open"); sh.classList.toggle("peek", st === "peek"); syncSheet(); }
+function openSheet(){ sheetState("open"); }
+$("grab").addEventListener("click", () => { const st = sheetNow(); sheetState(st === "open" ? "menu" : st === "menu" ? "peek" : "menu"); });
+$("sheetDown").addEventListener("click", () => sheetState("menu"));
+$("toolsBtn").addEventListener("click", () => sheetState("menu"));
+document.querySelectorAll("#secBtns button").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.go); openSheet(); }));
+{ let y0 = null, x0 = 0;   // swipe the sheet's edge up or down to change its height (not inside the scrolling tools)
+  $("sheet").addEventListener("touchstart", e => { if (isWide() || e.target.closest(".panes")) { y0 = null; return; } y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; }, {passive: true});
+  $("sheet").addEventListener("touchend", e => {
+    if (y0 === null) return; const t = e.changedTouches[0], dy = t.clientY - y0, dx = t.clientX - x0; y0 = null;
+    if (Math.abs(dy) < 36 || Math.abs(dy) < Math.abs(dx)) return;
+    const order = ["peek", "menu", "open"], i = order.indexOf(sheetNow()), step = Math.abs(dy) > 170 ? 2 : 1;
+    sheetState(order[Math.max(0, Math.min(2, i + (dy < 0 ? step : -step)))]);
+  }, {passive: true}); }
+if (!isWide()) sheetState("menu");   // phones start with the map in view
 $("lgToggle").addEventListener("click", () => { const o = $("legend").classList.toggle("open"); $("lgToggle").setAttribute("aria-expanded", String(o)); });
 $("goalBtn").addEventListener("click", () => { showTab("missions"); openSheet(); $("targetGroup").scrollIntoView({behavior: reduceMotion ? "auto" : "smooth"}); });
+$("hardBtn").addEventListener("click", () => { showTab("missions"); openSheet(); setTimeout(() => { const h = document.querySelector("#targets .hardmode"); if (h){ h.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "start"}); h.classList.remove("flash"); void h.offsetWidth; h.classList.add("flash"); } }, 60); });
 $("hbClose").addEventListener("click", () => { selected = null; $("hoodPick").value = ""; render(); });
 $("hoodPick").addEventListener("change", e => { if (e.target.value) selectArea(e.target.value); else { selected = null; render(); } });
 $("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(); plan.g = g; recompute(); toast("Fresh start"); });
@@ -3388,7 +3498,7 @@ function visibleCenter(){
   const W = $("map").clientWidth, H = $("map").clientHeight;
   if (document.body.classList.contains("wide")) return [W / 2, H / 2];
   if (isWide()) return [432 + (W - 432) / 2, H * 0.55];
-  const top = $("hud").getBoundingClientRect().bottom, bot = $("sheet").classList.contains("min") ? H - 104 : $("sheet").getBoundingClientRect().top;
+  const top = $("hud").getBoundingClientRect().bottom, st = sheetNow(), bot = st === "peek" ? H - 96 : st === "menu" ? H - 210 : $("sheet").getBoundingClientRect().top;
   return [W / 2, bot > top + 80 ? (top + bot) / 2 : H / 2];
 }
 function centerAt(lon, lat, v, pos){
@@ -3468,8 +3578,8 @@ $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
   playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
-  cineSheet = !isWide() && !reduceMotion && !$("sheet").classList.contains("min");   // phones: tuck the tool sheet away so the flyover has room
-  if (cineSheet){ $("sheet").classList.add("min"); syncSheet(); }
+  cineSheet = !isWide() && !reduceMotion ? sheetNow() : false;   // phones: tuck the tool sheet away so the flyover has room
+  if (cineSheet) sheetState("peek");
   headlines = reduceMotion ? [] : planHeadlines();
   recompute();
   if (!reduceMotion) cinema();
@@ -3532,7 +3642,7 @@ function showHeadline(h){
 function hideHeadline(){ $("ticker").hidden = true; headlines = []; }
 function stopPlay(finished){
   clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); $("cineCap").hidden = true;
-  if (cineSheet){ $("sheet").classList.remove("min"); syncSheet(); cineSheet = false; }
+  if (cineSheet){ sheetState(cineSheet === "peek" ? "peek" : "menu"); cineSheet = false; }
   $("playBtn").querySelector("span").textContent = "Simulate 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
