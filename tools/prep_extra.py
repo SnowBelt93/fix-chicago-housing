@@ -190,6 +190,28 @@ corr_zone = unary_union(corr_lines).buffer(150 / TO_FT)
 # the first len(priv_raw) entries of vac_all are the private parcels (same filter, same order)
 n_priv_raw = len([1 for r in csv.DictReader(open(os.path.join(RAW, 'cook_vacant_2025.csv'))) if r['township_name'] in CHI and r['lat'] and r['lon']])
 keep = np.array([i not in covered_all for i in range(n_priv_raw)])
+# drop parcel points that sit in a street (right-of-way remnants and slivers): within a street's half-width of its centreline
+# (b/streets.wasm, 2 m units; half-widths 20 m expressway, 13 arterial, 11 collector, 10 local; a 25x125 ft lot's centre is 14+ m away)
+sb = open(os.path.join(ROOT, 'b', 'streets.wasm'), 'rb').read()
+sP, sV = struct.unpack_from('<II', sb, 0); slon0, slat0 = struct.unpack_from('<dd', sb, 8)
+scls = np.frombuffer(sb, dtype=np.uint8, count=sP, offset=24); so = 24 + sP; so += (-so) % 4
+sst = np.frombuffer(sb, dtype=np.uint32, count=sP + 1, offset=so); so += 4 * (sP + 1)
+sxy = np.frombuffer(sb, dtype=np.int16, count=2 * sV, offset=so).reshape(-1, 2).astype(np.float64) * 2
+HALF_W = {1: 20, 2: 13, 3: 11, 4: 10}
+s_lines = [shapely.LineString(sxy[sst[i]:sst[i + 1]]) for i in range(sP) if sst[i + 1] - sst[i] >= 2]
+s_half = np.array([HALF_W.get(int(scls[i]), 10) for i in range(sP) if sst[i + 1] - sst[i] >= 2], dtype=np.float64)
+s_tree = shapely.STRtree(s_lines)
+cand = vac_all[:n_priv_raw]
+sx = (cand[:, 0] - slon0) * DECK * np.cos(np.radians(slat0)); sy = (cand[:, 1] - slat0) * DECK
+SP = shapely.points(np.column_stack([sx, sy]))
+qi, qj = s_tree.query(SP, predicate='dwithin', distance=20)
+in_street = np.zeros(n_priv_raw, dtype=bool)
+if len(qi):
+    d = shapely.distance(SP[qi], np.array(s_lines, dtype=object)[qj])
+    hit = d < s_half[qj] - 1
+    in_street[qi[hit]] = True
+print('vacant parcel points inside a street right-of-way (dropped):', int((keep & in_street).sum()))
+keep &= ~in_street
 pp = vac_all[:n_priv_raw][keep]
 P = shapely.points(pp)
 ip, ia = ctree.query(P, predicate='within')
