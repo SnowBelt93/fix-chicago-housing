@@ -431,6 +431,15 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .hoodcard .hbt .tier small{color:rgba(255,255,255,.7)}
 .hoodcard .hbt .tier[aria-pressed="true"]{background:#fff;color:var(--nav);border-color:#fff}
 .hoodcard .hbt .tier[aria-pressed="true"] small{color:var(--ink-3)}
+@media (max-width:859px){   /* phones: a compact card that fits between the score panel and the credit line; the map key steps aside while it's open */
+  .hoodcard{right:12px;max-width:none;bottom:calc(min(46%, calc(100% - var(--hudH, 300px) - 22px)) + 36px);padding:7px 40px 8px 10px;gap:2px}
+  .hoodcard b{font-size:21px}
+  .hoodcard span{font-size:12.5px;line-height:1.2}
+  .hoodcard .hbt{margin-top:4px;margin-right:-30px}
+  .hoodcard .hbt .tier{padding:5px 1px;gap:2px}
+  .hoodcard .hbt .tier .sw{display:none}
+  body:has(#hoodBanner:not([hidden])) .legend{display:none}
+}
 .resgrade{position:relative;width:76px;height:76px;flex:0 0 auto}
 .resgrade svg{width:76px;height:76px;fill:var(--star)}
 .resgrade span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-weight:900;font-size:28px;color:#fff}
@@ -861,7 +870,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div><dt>Shortage estimates</dt>
             <dd>165,687 homes underproduced, Chicago metro, 2022 (<a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a>). 115,282 home deficit, 2024 (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a>). 224,445 affordable homes missing for extremely low-income renters (<a href="https://therealdeal.com/chicago/2026/03/09/chicago-lacks-more-than-220k-affordable-homes" target="_blank" rel="noopener">Housing Action Illinois & NLIHC via The Real Deal</a>). 41% of Chicago is zoned single-family only (<a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a>).</dd></div>
           <div><dt>Affordable requirement (ARO)</dt>
-            <dd>Chicago requires 10–20% affordable homes in projects of 10+ units that need a zoning change, city land or city money (<a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago</a>). The game applies the dial to new buildings of 10+ homes. Production effects follow Terner Center modeling for Los Angeles, where output fell about 30% going from an 11% to a 25% requirement (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Phillips, 2024</a>).</dd></div>
+            <dd>Chicago requires 10–20% affordable homes in projects of 10+ units that need a zoning change, city land or city money (<a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago</a>). The game applies the dial to new buildings of 10+ homes. Production effects follow Terner Center modeling for Los Angeles, where output fell about 30% going from an 11% to a 25% requirement (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Phillips, 2024</a>). "None" uses the same study's no-requirement scenario: 398,800 homes over 10 years vs. about 233,000 at 20% (interpolated between its 16% and 25% runs), so 10+-home projects are about 1.7× as likely to get built, and none of their homes are affordable.</dd></div>
           <div><dt>Office conversions</dt>
             <dd>Downtown has 141.9M sq ft of office space and 27.2% vacancy (<a href="https://content.cushmanwakefield.com/api/public/content/afebd680503f4418a7c6cb0b53fb9c03" target="_blank" rel="noopener">Cushman & Wakefield, Q2 2026</a>). Chicago's 2026 conversions turn about 4M sq ft into 3,900+ homes (<a href="https://chicago.suntimes.com/other-views/2026/08/03/building-housing-affordable-requirements-ordinance-regulations-development-lylena-estabine" target="_blank" rel="noopener">Sun-Times op-ed</a>), about 1,026 sq ft per home. Nearly 27% of office stock could convert (<a href="https://www.wbez.org/real-estate-development/2025/04/25/office-residential-conversions-apartments-housing-downtown" target="_blank" rel="noopener">CommercialCafe via WBEZ</a>); developers disagree on whether that's too high or too low.</dd></div>
           <div><dt>Jobs and taxes</dt>
@@ -1078,7 +1087,7 @@ const STR_LISTINGS = 11236, ENTIRE_SHARE = 0.802, STR_RETURN = [0, 0.10, 0.50];
 const ADU_RATE15 = 0.0075, ADU_WARD_SHARE = 34 / 50;
 const CITY_LOTS = 7100, LOT_HOMES = 2, LOT_BUILT = 0.5;
 const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SPEED = 0.8;
-const ARO_SHARE = [0.10, 0.20, 0.30], ARO_FACTOR = [1.30, 1.0, 0.70];
+const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
 const SUB_PER_STATION = [0, 74, 276, 600, 1413];            // avg new homes per Chicago L station at each level, from this game's own model
@@ -1354,8 +1363,8 @@ const POLICIES = [
     src:[["Daily Herald","https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/"],["Hoodline","https://hoodline.com/2026/03/pritzker-s-build-blitz-puts-chicago-zoning-on-the-hot-seat/"]]},
   {key:"aro", title:"Affordable requirement (ARO)", status:["law","In effect since 2021"],
     what:"Projects of 10+ homes that need a zoning change, city land or city money must rent 10–20% of units below market. The rest of the building pays for those units, so a higher requirement means more affordable homes in each building, but some buildings stop making financial sense and never get built. That's why raising it can lower the total.",
-    model:"Applies to new buildings of 10+ homes. Based on Terner Center modeling for Los Angeles: 30% means about 30% fewer of those buildings; 10% means about 30% more. Real-world studies are mixed: fewer homes got built in Boston's suburbs, but studies of the Bay Area and Baltimore–Washington found no clear drop. Treat the size of this effect as an estimate.",
-    levels:["Lower: 10%","Today: 20%","Higher: 30%"],
+    model:"Applies to new buildings of 10+ homes. Based on Terner Center modeling for Los Angeles: 30% means about 30% fewer of those buildings; 10% means about 30% more; no requirement means about 70% more, but none of them affordable (Terner's no-requirement scenario built 398,800 homes vs. about 233,000 near a 20% requirement). Real-world studies are mixed: fewer homes got built in Boston's suburbs, but studies of the Bay Area and Baltimore–Washington found no clear drop. Treat the size of this effect as an estimate.",
+    levels:["None","Lower: 10%","Today: 20%","Higher: 30%"], vals:[3, 0, 1, 2],
     src:[["City of Chicago","https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html"],["Terner Center","https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf"],["Schuetz, Meltzer & Been","https://www.minneapolisfed.org/-/media/files/community/2019-housing-event-series/200903_schuetz_meltzer_been_paper.pdf"],["Hamilton, 2021 (Cityscape)","https://www.huduser.gov/PORTAL/periodicals/cityscpe/vol23num1/ch6.pdf"]]},
   {key:"permits", title:"Faster permits: Cut the Tape", status:["part","Mostly underway, 2025"],
     what:"Mayor Johnson's 2024 report had 107 fixes to Chicago's approval process; the city says 96 were underway or done by May 2025. Zoning changes averaged 116 days to approve in 2017 (Chicago Cityscape).",
@@ -1458,7 +1467,7 @@ function buildPolicies(){
     P.src.forEach(([t, u], i) => { if (i) src.append(" · "); const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = t; src.append(a); });
     if (P.levels){
       const seg = document.createElement("div"); seg.className = "seg";
-      P.levels.forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = i; b.addEventListener("click", () => { seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setPolicy(P.key, i)); }); seg.appendChild(b); });
+      P.levels.forEach((lv, i) => { const v = P.vals ? P.vals[i] : i, b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = v; b.addEventListener("click", () => { seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setPolicy(P.key, v)); }); seg.appendChild(b); });
       d.insertBefore(seg, d.querySelector(".gain"));
     } else {
       const sw = document.createElement("button"); sw.type = "button"; sw.className = "switch"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-label", P.title);
@@ -1566,7 +1575,7 @@ function renderPolicies(){
       if (token !== gainToken || playing) return;
       const k = keys.shift();
       if (!k){
-        { const saved = plan.p.aro; plan.p.aro = 1; const base = currentAdded(); plan.p.aro = 0; GAIN.aro = Math.max(0, currentAdded() - base); plan.p.aro = saved; }
+        { const saved = plan.p.aro; plan.p.aro = 1; const base = currentAdded(); plan.p.aro = 3; GAIN.aro = Math.max(0, currentAdded() - base); plan.p.aro = saved; }
         currentAdded();
         if ($("pane-policies").hidden) sortPolicies();
         return;
@@ -2875,7 +2884,7 @@ function decodeAreas(str, p){
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u6([0-5]{77})([0-5])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{4})([0-2])([0-4])([0-3]{10})/);
+  let m = s.match(/u6([0-5]{77})([0-5])([0-4])([0-4])([0-3])([0-2])([0-3])([0-9a-v]{4})([0-2])([0-4])([0-3]{10})/);
   if (m){
     const p = blankPlan();
     for (let i = 0; i < 77; i++){ const v = +m[1][i]; if (v) p.areas[i + 1] = v; }
