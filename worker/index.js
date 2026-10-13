@@ -4,7 +4,7 @@
 
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-5]{77}[0-5][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-2][0-4][0-3]{10})$/;
+const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-5]{77}[0-5][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-3][0-4][0-3]{10})$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
