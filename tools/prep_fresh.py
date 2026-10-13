@@ -114,6 +114,7 @@ for a in meta['areas']:
     gone = []; taller = set()
     for i in range(n13):
         if Ba[i] <= 0: continue
+        if d['st'][i] >= 10: continue   # towers aren't torn down in a decade; a gap here means the 2022 data is missing them (e.g. Lake Point Tower)
         if covB[i] < 0.3: gone.append(i); stats['gone_missing'] += 1; continue
         if newcov[i] >= 0.5 * covB[i]:
             gone.append(i); stats['gone_replaced'] += 1

@@ -795,7 +795,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <select class="pick" id="wardPick" aria-label="Choose your ward"><option value="">Pick your ward…</option></select>
           <div id="wardBox" hidden>
             <div class="facts">
-              <div class="fact"><b id="wdIll">–</b><span>of buildings couldn't be built under today's zoning (city: 20%)</span></div>
+              <div class="fact"><b id="wdIll">–</b><span>of buildings couldn't be built under today's zoning (city: <span id="wdCity">19%</span>)</span></div>
               <div class="fact"><b id="wdHomes">–</b><span>new homes your plan adds here</span></div>
               <div class="fact"><b id="wdRank">–</b><span>rank among 50 wards</span></div>
             </div>
@@ -886,7 +886,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Short-term rental limits return 10% (precinct bans) or 50% (primary-residence rule) of entire-home listings.</li>
                 <li>Coach houses: pilot pace doubled when every ward allows them by right.</li>
                 <li>Half of city-owned vacant lots get a 2-flat; 10% of "other vacant" homes return under an empty-homes tax.</li>
-                <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and 20% sooner), no parking minimums +10%, small lots +20%.</li>
+                <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and homes arrive about 7 months sooner: 20% of a roughly three-year approval and build), no parking minimums +10%, small lots +20%.</li>
                 <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
@@ -894,19 +894,19 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
-                <li>Tower level: 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at downtown's record leasing pace, about 6,500 apartments a year (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
+                <li>Tower level: 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at about 6,500 apartments a year, near downtown's best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
                 <li>Vacant-lot gap financing: 15% of the ~31,000 privately owned vacant parcels (<a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j" target="_blank" rel="noopener">Cook County Assessor, 2025</a>, class 100) get a 2-flat by 2041 at up to $150,000 of subsidy per home (Missing Middle's cap, <a href="https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/" target="_blank" rel="noopener">Hoodline</a>), and rezoned projects in soft markets are 50% more likely.</li>
-                <li>Transit riders: one commuter per new home within ½ mile of the L or Metra, 37.9% of them by train or bus (ETOD 2020), two rides a workday for 250 days, valued at CTA's 2026 average of $1.24 a ride.</li>
+                <li>Transit riders: one commuter per new home within ½ mile of the L or Metra, 37.9% of them by train or bus (ETOD 2020, from 2012–16 census data), two rides a workday for 250 days, valued at CTA's 2026 average of $1.24 a ride.</li>
                 <li>Policies that cut supply cost this share of the homes Chicago builds anyway: downzoning 25%, parking minimums 10%, moratoriums 15%, rent control 30%, transfer tax 5%. They also cut rezoned projects: parking minimums 15%, moratoriums 20% (and 25% later), rent control 40% on buildings of 3+ homes, transfer tax 18% on buildings of 20+.</li>
                 <li>Local taxes use NAHB's 2015-dollar estimate, compared with the city's 2027 budget gap; it counts revenue to every local government, not just City Hall, and leaves out what new residents cost to serve.</li>
               </ul></dd></div>
           <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
           <div><dt>Big projects in the pipeline</dt>
-            <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, but only about a tenth of the 2041 goal. Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's now a quantum computing park (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
+            <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, but only about a tenth of the 2041 goal. Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's slated to become a quantum computing campus (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
           <div><dt>Privacy</dt>
             <dd>No accounts, no cookies, no ads. Visits are counted with Cloudflare Web Analytics, which doesn't use cookies or track you across sites. Finished plans are stored anonymously for "What other players chose"; your IP address is never stored, only a scrambled code that changes daily and is used to stop spam.</dd></div>
           <div><dt>Data</dt>
-            <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (released February 2013; the city hasn't published a newer version), garages and sheds removed, brought up to date with <a href="https://gis.cookcountyil.gov/traditional/rest/services/buildingFootprint_2022/MapServer" target="_blank" rel="noopener">Cook County's 2022 building footprints</a> (aerial survey with LiDAR heights): 14,581 buildings that were torn down or replaced by 2022, or whose lot is vacant today (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a> vacant land, 2025, or the city's land inventory), are removed; 18,694 buildings that went up after 2013 are added with their measured height (they can't be rebuilt in the game, and the homes inside them aren't counted because the county data has no unit counts); and about 42,000 buildings with no recorded stories get them from LiDAR (roof height less 4 ft, ÷ 13 ft a floor). These fixes lower totals a bit in busy neighborhoods: some lots the 2013 data treated as one-story shops are really three-story buildings, and some lots were already rebuilt. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
+            <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (released February 2013; the city's portal copy was last updated in 2015), garages and sheds removed, brought up to date with <a href="https://gis.cookcountyil.gov/traditional/rest/services/buildingFootprint_2022/MapServer" target="_blank" rel="noopener">Cook County's 2022 building footprints</a> (aerial survey with LiDAR heights): 14,563 buildings that were torn down or replaced by 2022, or whose lot is vacant today (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a> vacant land, 2025, or the city's land inventory), are removed; 18,694 buildings that appear in the 2022 data but not the 2013 data are added with their measured height (they can't be rebuilt in the game, and the homes inside them aren't counted because the county data has no unit counts); and about 42,000 buildings with no recorded stories get them from LiDAR (roof height less 4 ft, ÷ 13 ft a floor). These fixes lower totals a bit in busy neighborhoods: some lots the 2013 data treated as one-story shops are really three-story buildings, and some lots were already rebuilt. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
           <div><dt>Not modeled</dt>
             <dd>Construction costs and interest rates (see the end of a simulation), school and transit capacity, and displacement beyond the homes directly replaced.</dd></div>
         </dl>
@@ -1049,7 +1049,7 @@ const GAP_GROWTH = 8760, RENT_GROWTH = 0.034, WAGE_GROWTH = 0.032, CITY_PACE = 4
 const TIERS = [
   {name:"Today", h:0, k:0, color:null, bars:[0,0,0]},
   {name:"3-flat", h:3, k:3, zone:"RT-4: 1 home per 1,000 sq ft of lot", color:[150,212,240], css:"var(--t1)", bars:[6,9,6]},
-  {name:"6-flat", h:4, k:6, zone:"RM-5: 1 per 400 sq ft (up to 7)", color:[65,182,230], css:"var(--t2)", bars:[9,12,9]},
+  {name:"6-flat", h:4, k:6, zone:"RM-5: 1 per 400 sq ft (capped at a realistic 6)", color:[65,182,230], css:"var(--t2)", bars:[9,12,9]},
   {name:"Mid-rise", h:6, k:10, zone:"RM-6: 1 per 300 sq ft", color:[43,93,160], css:"var(--t3)", bars:[12,16,12]},
   {name:"High-rise", h:12, k:20, zone:"RM-6.5: 1 per 300 sq ft, or 1 studio per 135 (mix)", color:[20,51,95], css:"var(--t4)", bars:[14,22,18]},
   {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations and in the downtown core", color:[10,28,60], css:"var(--t5)", bars:[16,26,22]},
@@ -1086,19 +1086,19 @@ const TARGETS = [
 const STR_LISTINGS = 11236, ENTIRE_SHARE = 0.802, STR_RETURN = [0, 0.10, 0.50];
 const ADU_RATE15 = 0.0075, ADU_WARD_SHARE = 34 / 50;
 const CITY_LOTS = 7100, LOT_HOMES = 2, LOT_BUILT = 0.5;
-const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SPEED = 0.8;
+const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT = 0.6;   // faster permits: homes arrive ~7 months sooner (20% of a ~3-year approval and build; assumption)
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 74, 276, 600, 1413];            // avg new homes per Chicago L station at each level, from this game's own model
+const SUB_PER_STATION = [0, 52, 228, 514, 1234];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
   {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet"},
-  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3207, side:0, st:"Rezoned Feb 2026; TIF in committee; bridge and roads unfunded"},
+  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3207, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; second bridge unfunded"},
   {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases"},
   {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans"},
-  {n:"North Union", lon:-87.6345, lat:41.8995, homes:1978, side:1, st:"678 of 2,656 homes built; towers stalled"},
+  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started"},
   {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Early phases; paced by CHA"},
 ];
 const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
@@ -1107,13 +1107,13 @@ const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 
 const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
 const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
 const JOBS1 = 1.61, JOBS2 = 0.44, TAX2 = 5030;
-const BUDGET_GAP = 882e6;
+const BUDGET_GAP = 882e6;   // City of Chicago's projected 2027 budget gap (WTTW, Sept 2026)
 // vacant-lot gap financing (Missing Middle-style): assumptions, labeled in The math
 const VL_UPTAKE = 0.15, VL_HOMES = 2, VL_SUBSIDY = 150000, VL_SOFT_BOOST = 0.5, VL_SOFT = 0.9;
 const vacantPriv = (k) => META && META.vacantByArea ? META.areas.reduce((s, m) => s + (k && !inScope(k, m) ? 0 : (META.vacantByArea[m.num] || [0])[0]), 0) : 31370;
 const aduScoped = () => META ? META.areas.reduce((s, m) => s + (inScope("adu", m) ? (m.adu || 0) : 0), 0) : aduLots;
 // transit riders from homes near stations (ETOD 2020: near CTA stations with new development, 25.4% commute by train, 12.5% by bus)
-const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = 394e6 / 317e6, CTA_FARES = 394e6;   // CTA FY2026 budget   // City of Chicago's projected 2027 budget gap (WTTW, Sept 2026)
+const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = 394e6 / 317e6, CTA_FARES = 394e6;   // CTA FY2026 budget
 // policies that cut supply (all game assumptions, anchored on the research cited on each card):
 // share of the homes Chicago builds anyway that each one costs, and how much each cuts rezoned projects
 const WORSE_BASE = {down:0.25, pmin:0.10, mora:0.15, rentc:0.30, xfer:0.05};
@@ -1137,7 +1137,7 @@ let look = "model";
 const tierColor = (t) => t === 7 ? TIERS[5].color : t === 5 ? (look === "playful" ? PLAYFUL.office : OFFICE_COLOR) : (look === "playful" ? PLAYFUL.tiers[t] : TIERS[t].color);
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => { const r = Math.round(n); return (r < 0 ? "−" : "") + Math.abs(r).toLocaleString("en-US"); };
-const money = (n) => { const a = Math.abs(n); return (n < 0 ? "−" : "") + (a >= 999.5e6 ? "$" + (a / 1e9).toFixed(a >= 1e10 ? 0 : 1) + "B" : a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e8 ? 0 : 1) + "M" : "$" + fmt(a)); };
+const money = (n) => { const a = Math.abs(n); if (a < 0.5) return "$0"; return (n < 0 ? "−" : "") + (a >= 999.5e6 ? "$" + (a / 1e9).toFixed(a >= 1e10 ? 0 : 1) + "B" : a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e8 ? 0 : 1) + "M" : "$" + fmt(a)); };
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
@@ -1206,8 +1206,13 @@ function compute(A, statsOnly){
       if (p > 0.6) p = 0.6;
       if (typ && !(f & 8) && st < T.h && fp <= 20000 && net >= 1 && hash01(i, A.num) < p){
         let yb = rampYear(hash01(i, A.num + 977));
-        if (P.permits) yb = Math.max(1, Math.ceil(yb * PERMIT_SPEED));
-        if (P.mora && inScope("mora", A)) yb = Math.ceil(yb * MORA_DELAY);      // extra review pushes some projects past 2041
+        const slow = P.mora && inScope("mora", A);
+        if (P.permits || slow){   // scale a point within the year, so faster or slower approvals don't leave empty years
+          let yt = yb - hash01(i, A.num + 555);
+          if (P.permits) yt = Math.max(0.01, yt - PERMIT_SHIFT);
+          if (slow) yt *= MORA_DELAY;                                        // extra review pushes some projects past 2041
+          yb = Math.max(1, Math.ceil(yt));
+        }
         if (yb <= YEARS){
           added += homes; replaced += un; byYear[yb] += homes;
           if (nearTransit) walk += homes;
@@ -1238,11 +1243,11 @@ function policyHomes(){
   };
 }
 function totals(useYear){
-  let zone = 0, zoneNow = 0, replaced = 0, touched = 0, n = 0, sw = 0, walk = 0, aff = 0;
+  let zone = 0, zoneNow = 0, replaced = 0, touched = 0, n = 0, sw = 0, walk = 0, aff = 0, affReq = 0;
   const sides = [0, 0, 0, 0];
   for (const k in AREAS){
     const A = AREAS[k];
-    zone += A.added; zoneNow += A.addedNow; replaced += A.replaced; touched += A.touched; n += A.n; walk += A.walk; aff += A.aff;
+    zone += A.added; zoneNow += A.addedNow; replaced += A.replaced; touched += A.touched; n += A.n - (A.goneN || 0); walk += A.walk; aff += A.aff;
     if (SOUTH_WEST.has(A.num)) sw += A.added;
     sides[sideOf(A.num)] += A.added;
   }
@@ -1253,8 +1258,10 @@ function totals(useYear){
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
   if (ph.vland && META.vacantByArea){ const tot = vacantPriv("vland") || 1; META.areas.forEach(m => { if (!inScope("vland", m)) return; const share = (META.vacantByArea[m.num] || [0])[0] / tot; sides[sideOf(m.num)] += ph.vland * share; if (SOUTH_WEST.has(m.num)) sw += ph.vland * share; }); }
   if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
-  aff += Math.round(ph.social * SOCIAL_AFF + ph.mega * MEGA_AFF);
-  return {parts, total, replaced, walk: walk + ph.sub, aff, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
+  affReq = aff;                                                         // from the affordable requirement alone
+  const affOther = Math.round(ph.social * SOCIAL_AFF + ph.mega * MEGA_AFF);
+  aff = useYear ? Math.max(0, (zone > 0 ? affReq * zoneNow / zone : 0) + affOther * f) : affReq + affOther;   // by the year shown
+  return {parts, total, replaced, walk, aff, affReq, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
 }
 function planHomesAt(y){
   let z = 0;
@@ -1312,7 +1319,7 @@ const MISSIONS = [
   {id:"m4", title:"South & West Side", desc:"20,000 new homes on the South and West Sides. Most city-owned vacant lots are there.", prog:t => t.sw / 20000},
   {id:"m5", title:"Light touch", desc:"60,000 homes while rezoning less than 15% of the city's buildings.",
     prog:t => t.total / 60000, ok:t => t.touchedPct < 15, why:"Rezoned too much (keep it under 15%)"},
-  {id:"m6", title:"Affordable push", desc:"15,000 affordable homes through the affordable requirement. Careful: set it too high and nothing pencils.", prog:t => t.aff / 15000},
+  {id:"m6", title:"Affordable push", desc:"15,000 affordable homes through the affordable requirement. A higher requirement means more affordable homes in each building, but fewer buildings.", prog:t => t.affReq / 15000},
   {id:"m7", title:"Close the gap by 2041", desc:"Cover today's shortage plus 15 years of growth. Pick which shortage below.", prog:t => t.total / needed()},
 ];
 let won = new Set(lsGet("upzone-medals", []));
@@ -1370,7 +1377,7 @@ const POLICIES = [
     src:[["City of Chicago","https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html"],["Terner Center","https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf"],["Schuetz, Meltzer & Been","https://www.minneapolisfed.org/-/media/files/community/2019-housing-event-series/200903_schuetz_meltzer_been_paper.pdf"],["Hamilton, 2021 (Cityscape)","https://www.huduser.gov/PORTAL/periodicals/cityscpe/vol23num1/ch6.pdf"]]},
   {key:"permits", title:"Faster permits: Cut the Tape", status:["part","Mostly underway, 2025"],
     what:"Mayor Johnson's 2024 report had 107 fixes to Chicago's approval process; the city says 96 were underway or done by May 2025. Zoning changes averaged 116 days to approve in 2017 (Chicago Cityscape).",
-    model:"Assumption: 10% more projects get built and they arrive about 20% sooner. Research finds 20–25% fewer permits in slow-approval metros.",
+    model:"Assumption: 10% more projects get built and they arrive about 7 months sooner (20% of a roughly three-year approval and build). Research finds 20–25% fewer permits in slow-approval metros.",
     src:[["City of Chicago","https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html"],["Mayer & Somerville","https://realestate.wharton.upenn.edu/wp-content/uploads/2017/03/331.pdf"],["Chicago Cityscape, 2017","https://www.chicagocityscape.com/blog/the-slowest-zoning-change-approved-this-year-took-714-days-74ec516b5b4d"]]},
   {key:"str", title:"Limit short-term rentals (Airbnb)", status:["prop","Proposed in City Council"],
     what:"Ald. Napolitano's measure would let alderpeople ban new short-term rentals precinct by precinct; it cleared committee in June 2025. New York's 2023 primary-residence rule is the tougher model. Chicago has about 11,200 active listings, roughly 80% of them entire homes.",
@@ -1386,14 +1393,14 @@ const POLICIES = [
     model:"Pilot pace (about 0.75% of eligible lots over 15 years) in all 50 wards, doubled by dropping the extra rules.",
     src:[["WTTW","https://news.wttw.com/2026/04/09/coach-house-ordinance-aimed-housing-affordability-crisis-takes-effect-chicago"],["The Real Deal","https://therealdeal.com/chicago/2025/05/15/chicagos-granny-flat-program-falls-flat/"]]},
   {key:"mega", title:"Get the megaprojects built", status:["prop","Mostly stuck, 2026"],
-    what:"Chicago already approved or planned about 31,000 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (5,000), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (3,207) and the rest of North Union (1,978). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
-    model:"Assumption: half of those 31,063 planned homes get built by 2041 once the city funds the infrastructure. Even all of them would be about a tenth of the goal, which is why everyday zoning matters more.",
-    src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (Chicago YIMBY)","https://chicagoyimby.com/2022/05/updated-details-and-timelines-revealed-for-north-union-megadevelopment.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"]]},
+    what:"Chicago already approved or planned about 31,000 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (5,000), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (3,207) and the rest of North Union (2,007). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
+    model:"Assumption: half of those 31,094 planned homes get built by 2041 once the city funds the infrastructure. Even all of them would be about a tenth of the goal, which is why everyday zoning matters more.",
+    src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (City of Chicago)","https://chicago.gov/city/en/depts/dcd/supp_info/north-union.html"],["The 78 zoning, 2018 (Sun-Times)","https://www.pressreader.com/usa/chicago-sun-times/20181213/281646781230679"],["Bronzeville Lakefront (CBS)","https://www.cbsnews.com/chicago/news/former-michael-reese-hospital-campus-to-be-transformed-under-3-8-billion-bronzeville-lakefront-redevelopment-plan"],["Foundry Park plan (Chicago YIMBY)","https://chicagoyimby.com/2026/02/city-council-approves-plans-for-foundry-park.html"],["1901 Project groundbreaking (Chicago YIMBY)","https://chicagoyimby.com/2026/06/groundbreaking-held-for-the-1901-project-around-united-center.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"]]},
   {key:"lots", title:"Build on city-owned vacant lots", status:["prop","City is selling lots now"],
     what:"The city owns more than 7,100 vacant lots, concentrated in Englewood, West Englewood, New City and North Lawndale, and sells them for $1 through its Missing Middle program.",
     model:"Assumption: half of the lots get a 2-flat within 15 years.",
     src:[["Illinois Policy Institute","https://www.illinoispolicy.org/press-releases/new-report-chicago-vacant-lots-fuel-crime-poverty-on-south-and-west-sides/"],["City of Chicago: Missing Middle","https://www.chicago.gov/missingmiddle"]]},
-  {key:"vland", title:"Close the gap on vacant lots", status:["part","Pilot: Missing Middle, 2024–26"],
+  {key:"vland", title:"Close the gap on vacant lots", status:["part","Pilot: Missing Middle, 2025–26"],
     what:"On much of the South and West Sides, a new 2-flat costs more to build than it would sell for, so lots stay empty even where zoning already allows homes. Chicago's Missing Middle program sells city lots for $1 and covers up to $150,000 per home; its fourth round is 62 homes on 30 lots. There are also about 31,000 privately owned vacant parcels in the city (Cook County Assessor, 2025). This scales the idea up to them.",
     model:"Assumption: at up to $150,000 per home, 15% of private vacant parcels get a 2-flat by 2041 (about 9,400 homes, roughly $1.4B in subsidy, or about $94M a year), and rezoned projects in soft-market neighborhoods (demand under 0.9×) are 50% more likely to get built. The green dots are the parcels.",
     src:[["Hoodline, Sep 2026","https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/"],["City of Chicago: Missing Middle","https://www.chicago.gov/missingmiddle"],["Cook County Assessor parcels","https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j"]]},
@@ -1432,19 +1439,19 @@ const POLICIES = [
     src:[["Montgomery County HOC","https://www.hocmc.org/about-us/innovations/housing-production-fund/"],["NACo, 2026","https://www.naco.org/news/county-backed-loan-fund-unlocks-thousands-affordable-housing-units"],["Pro Builder","https://www.probuilder.com/utopia/innovative-financing-model-affordable-housing"]]},
   // ---- Policies that cut supply (to see what not to do) ----
   {key:"down", group:"worse", title:"Downzone the neighborhoods", status:["worse","Chicago, 1970s–2010s"],
-    what:"Since the 1970s, Chicago alderpeople have downzoned dozens of neighborhoods, usually at neighbors' request. From 1990 to 2010, downzoned North Side and downtown areas grew their housing 1.8% while similar areas that weren't downzoned grew 9.6%. Downzoned areas also lost rental homes and got whiter and pricier.",
+    what:"Since the 1970s, Chicago alderpeople have downzoned dozens of neighborhoods, usually at neighbors' request. From 1990 to 2010, downzoned North Side and downtown areas grew their housing 1.8% while similar areas that weren't downzoned grew 9.6%. Downzoned areas also lost rental homes and got whiter and higher-valued.",
     model:"Assumption: a new round of downzoning cuts the homes Chicago builds anyway by 25%. Areas you rezone keep your zoning.",
     src:[["Freemark & Kisiel, 2025","https://findingspress.org/article/147490-downzoning-chicago-how-local-land-use-policy-has-reduced-housing-construction-and-reinforced-segregation"],["MPC, 2023","https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades"]]},
   {key:"pmin", group:"worse", title:"Bring back parking minimums", status:["worse","Chicago ended them, 2025"],
-    what:"In July 2025 Chicago ended parking requirements near transit, about 74% of the city. Bringing them back means every new building has to carve out space for cars again. Garage parking adds about $1,700 a year, or 17% of rent, to a typical apartment, whether or not the renter owns a car.",
+    what:"In July 2025 Chicago voted to end parking requirements near transit, about 74% of the city. Bringing them back means every new building has to carve out space for cars again. Garage parking adds about $1,700 a year, or 17% of rent, to a typical apartment; even renters without a car pay about $621 a year for it.",
     model:"Assumption: 15% fewer rezoned projects get built (parking eats lot space and budget), and 10% fewer of the homes Chicago builds anyway. Turns off \"No parking minimums anywhere.\"",
     src:[["Chicago Cityscape, 2025","https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f"],["Gabbe & Pierce, 2017","https://accessmagazine.org/spring-2017/the-hidden-cost-of-bundled-parking/"],["Hess & Rehler, 2021","https://doi.org/10.1080/01944363.2020.1864225"]]},
   {key:"mora", group:"worse", title:"Slow it down: moratoriums and extra review", status:["worse","Chicago, 606 & Pilsen, 2021"],
-    what:"Since 2021 Chicago has charged up to $15,000 to demolish a house or 2-flat near the 606 trail and in Pilsen, to slow gentrification. Demolitions there fell 88% and 25%. It keeps the old buildings, but every one kept is a bigger building that doesn't go up. Research finds metros with slow approvals get 20–25% fewer permits.",
+    what:"Since 2021 Chicago has charged a fee to demolish homes near the 606 trail and in Pilsen, to slow gentrification; since 2024 it's $20,000 per home lost or $60,000 per building. Demolitions there fell 88% and 25% in the first year. It keeps the old buildings, but every one kept is a bigger building that doesn't go up. Research finds metros with slow approvals get 20–25% fewer permits.",
     model:"Assumption: 20% fewer rezoned projects get built and they arrive 25% later (some slip past 2041), and 15% fewer of the homes Chicago builds anyway.",
     src:[["WTTW, 2022","https://news.wttw.com/2022/03/21/effort-extend-demolition-fee-pilsen-along-606-trail-advances"],["Mayer & Somerville","https://realestate.wharton.upenn.edu/wp-content/uploads/2017/03/331.pdf"]]},
   {key:"rentc", group:"worse", title:"Rent control, including new buildings", status:["worse","Banned in Illinois since 1997"],
-    what:"Illinois has barred cities from capping rents since 1997, and bills to lift the ban keep coming back. Rent control does help people who already have a home: in San Francisco, covered tenants were nearly 20% more likely to stay put. But landlords there cut rental supply 15%, which pushed citywide rents up 5.1%. St. Paul capped rents at 3% in 2021, new buildings included; permits fell from over 2,000 a year to about 1,200, and below 400 by 2024. The city has since exempted all new construction.",
+    what:"Illinois has barred cities from capping rents since 1997, and bills to lift the ban keep coming back. Rent control does help people who already have a home: in San Francisco, covered tenants were nearly 20% more likely to stay put. But landlords there cut rental supply 15%, which pushed citywide rents up 5.1%. St. Paul capped rents at 3% in 2021, new buildings included; permits fell from over 2,000 a year to about 1,200 in 2022–23. The city has since exempted all new construction.",
     model:"Assumption: 40% fewer rezoned projects of 3+ homes get built (about St. Paul's first-year drop), and 30% fewer of the homes Chicago builds anyway. The game doesn't count the real benefit to tenants who stay.",
     src:[["Diamond, McQuade & Qian","https://nber.org/papers/w24181"],["Minneapolis Fed, 2026","https://www.minneapolisfed.org/article/2026/housing-policies-in-saint-paul-yield-mixed-results-data-and-developers-say"],["Capitol News Illinois","https://capitolnewsillinois.com/news/lawmaker-advances-bill-to-repeal-state-ban-on-rent-control/"]]},
   {key:"xfer", group:"worse", title:"Mansion tax on big property sales", status:["worse","Los Angeles, 2023"],
@@ -1515,10 +1522,19 @@ function setPolicy(key, v){
 }
 function currentAdded(){ let s = 0; for (const k in AREAS){ compute(AREAS[k], true); s += AREAS[k].added; } return s; }
 function marginal(key, cur){
-  const saved = plan.p[key]; plan.p[key] = key === "aro" ? 1 : (saved ? 0 : 1);
+  const P = plan.p, saved = {park:P.park, pmin:P.pmin, [key]:P[key]};
+  P[key] = key === "aro" ? 1 : (saved[key] ? 0 : 1);
+  if (key === "park" && P.park) P.pmin = 0;        // the two parking policies can't both be on
+  if (key === "pmin" && P.pmin) P.park = 0;
   const alt = currentAdded();
-  plan.p[key] = saved;
+  Object.assign(P, saved);
   return cur - alt;
+}
+// homes Chicago builds anyway that one supply-cutting policy costs, given the others that are on (they combine multiplicatively)
+function baseCost(k){
+  const P = plan.p, s = P[k];
+  P[k] = 1; const on = baseCut(); P[k] = 0; const off = baseCut(); P[k] = s;
+  return CITY_PACE * YEARS * (on - off);
 }
 let gainTimer = 0, gainToken = 0;
 const GAIN = {};
@@ -1534,7 +1550,7 @@ const ZERO = {   // why a spatial policy adds nothing with the current map
 function sortPolicies(){
   const ph = {str: STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2], adu: aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE), lots: CITY_LOTS * LOT_HOMES * LOT_BUILT, vac: OTHER_VACANT * VAC_RETURN, social: SOCIAL_HOMES, mega: MEGA_TOTAL * MEGA_BUILT};
   for (const k in ph) GAIN[k] = ph[k];
-  GAIN.down = CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS;
+  GAIN.down = baseCost("down");
   ["policies", "policiesElse", "policiesWorse"].forEach(id => {
     const box = $(id);
     [...box.children].sort((a, b) => (GAIN[b.id.slice(4)] || 0) - (GAIN[a.id.slice(4)] || 0)).forEach((el, i) => {
@@ -1562,7 +1578,7 @@ function renderPolicies(){
     else if (P.key === "mega") g.textContent = (v ? "+" : "Would add +") + fmt(MEGA_TOTAL * MEGA_BUILT) + " homes";
     else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
-    else if (P.key === "down"){ const c = CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS; g.textContent = (v ? fmt(-c) : "Would cost " + fmt(c)) + " homes Chicago builds anyway"; }
+    else if (P.key === "down"){ const c = baseCost("down"); g.textContent = (v ? fmt(-c) : "Would cost " + fmt(c)) + " homes Chicago builds anyway"; }
   });
   $("pCount").textContent = on;
   document.querySelectorAll(".policy .scope select").forEach(sel => { sel.value = String(plan.scope[sel.dataset.k] || 0); });
@@ -1589,7 +1605,7 @@ function renderPolicies(){
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
       if (WORSE_BASE[k] != null){
-        const base = CITY_PACE * WORSE_BASE[k] * (SCOPED.includes(k) ? scopeShare(k) : 1) * YEARS, tot = Math.abs(m) + base;
+        const base = baseCost(k), tot = Math.abs(m) + base;
         d.textContent = (plan.p[k] ? fmt(-tot) : "Would cost " + fmt(tot)) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning)" : " Chicago builds anyway");
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
@@ -1607,7 +1623,7 @@ function renderPolicies(){
 // ---------------- myths ----------------
 const MYTHS = {
   tower:{t:"“Why not just build skyscrapers everywhere?”", a:"Towers are the priciest homes to build, so they only work where rents are highest.",
-    b:"Steel-and-concrete high-rises cost about $65–71 more per square foot to build than shorter buildings (a Terner Center study of California projects), and they need elevators, deep foundations and extra fire safety. They pencil out downtown and next to the busiest stations, not on most blocks. Demand runs out too: even in its best year on record, downtown Chicago leased about 6,500 new apartments. Loop zoning already allows supertalls; cost and financing are what stop them. That's why spreading mid-rises and 3–6-flats across the city adds more homes in the game than stacking towers in a few spots.",
+    b:"Steel-and-concrete high-rises cost about $65–71 more per square foot to build than shorter buildings (a Terner Center study of California projects), and they need elevators, deep foundations and extra fire safety. They pencil out downtown and next to the busiest stations, not on most blocks. Demand runs out too: in 2021, its best year since at least 1999, downtown Chicago filled roughly 6,500–6,800 more apartments. Loop zoning already allows supertalls; cost and financing are what stop them. That's why spreading mid-rises and 3–6-flats across the city adds more homes in the game than stacking towers in a few spots.",
     s:[["Terner Center, 2020","https://ternercenter.berkeley.edu/wp-content/uploads/2020/08/Hard_Construction_Costs_March_2020.pdf"],["Integra Realty via Connect CRE, 2021","https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/"],["Bisnow","https://www.bisnow.com/news/chicago/multifamily/why-doesnt-chicago-build-more-apartments-133834"]]},
   illegal:{t:"“They don't build them like they used to.”", a:"They can't. It's illegal on most of the city's land.",
     b:"The 2-flats and 3-flats that define Chicago's neighborhoods are banned in much of the city today. 41% of Chicago is zoned for single-family houses only, and about a third of those lots are smaller than the zoning code's minimum, so even a single house there needs special approval.",
@@ -1922,7 +1938,17 @@ async function loadExtra(){
     let o = 4; const n = dv.getUint32(0, true);
     for (let i = 0; i < n; i++){
       const num = dv.getUint32(o, true), N = dv.getUint32(o + 4, true); o += 8;
-      if (AREAS[num] && AREAS[num].n === N) AREAS[num].ext = new Uint8Array(buf, o, N);
+      const A = AREAS[num];
+      if (A && A.n === N){
+        A.ext = new Uint8Array(buf, o, N);
+        let gone = 0, adu = 0;
+        for (let j = 0; j < N; j++){
+          if (A.ext[j] & 64){ gone++; continue; }
+          if (A.un[j] >= 1 && A.un[j] <= 4 && (A.st[j] || 1) <= 3 && A.fp[j] * 2 <= 4000) adu++;
+        }
+        A.goneN = gone; aduLots += adu - A.adu; A.adu = adu;
+        const m = META.areas.find(x => x.num === num); if (m) m.adu = adu;
+      }
       o += N;
     }
     hasExtra = true;
@@ -1958,6 +1984,7 @@ async function boot(){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; for (let i = 0; i < A.n; i++){ if (A.ext && (A.ext[i] & 64)) continue; tot++; if (A.fl[i] & 64) n++; } }
     $("tool-illegal").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
+    $("wdCity").textContent = Math.round(n / tot * 100) + "%";
   }
   render();
 }
@@ -2231,7 +2258,7 @@ function tierButtons(el, getT, setT, max = 4){
 }
 function fitTowers(){
   // scale tower odds so the total stays under the leasing cap (homes scale with the odds, so 1–2 passes converge)
-  if (plan.tod !== 5){ towerScale = 1; return; }
+  if (plan.tod !== 5 && !Object.values(plan.areas).includes(5)){ towerScale = 1; return; }
   for (let pass = 0; pass < 2; pass++){
     let tw = 0; for (const k in AREAS) tw += AREAS[k].tower || 0;
     let next = towerScale;
@@ -2294,7 +2321,7 @@ function render(){
   const cut = baseCut();
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
   $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
-  { const aff = tf.total > 0 ? tf.aff * Math.min(1, tv.total / tf.total) : 0; $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(aff); }   // affordable homes built by the year shown
+  { $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tv.aff); }   // affordable homes built by the year shown
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub], ["i", tv.parts.vland]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
@@ -2684,7 +2711,7 @@ function frontPage(homesEnd){
   const walk = t.zoneFull > 0 ? Math.round(t.walk / t.zoneFull * 100) : 0;
   const P0 = PERSONAS[0], w = P0.wage * Math.pow(1 + WAGE_GROWTH, YEARS);
   const bNo = Math.round(rentNoChange(YEARS, RENT_1BR) * 12 / w * 100), bPlan = Math.round(rentWithPlan(YEARS, homesEnd, RENT_1BR) * 12 / w * 100);
-  let lede = homesEnd >= 1 ? (names.length ? "Most of the new homes went up in " + list + (walk ? ", and " + walk + "% of them are within a ten-minute walk of a train" : "") + ". " : "")
+  let lede = homesEnd >= 1 ? (names.length ? "The most new homes went up in " + list + (walk ? ", and " + walk + "% of them are within a ten-minute walk of a train" : "") + ". " : "")
     : "With fewer homes going up than the city builds today, the gap between people and places to live keeps widening. ";
   lede += P0.name + ", a " + P0.job.replace(/^[A-Z][a-z]/, c => c.toLowerCase()) + ", would spend " + bNo + "% of her pay on a one-bedroom with no changes. " + (bPlan !== bNo ? "Under this plan it's " + bPlan + "%." : "Under this plan it's about the same.");
   $("resLede").textContent = lede;
@@ -2728,7 +2755,7 @@ async function makeShareCard(){
   // by the numbers
   const sx = L + pw + 28, sw2 = Rx - sx;
   x.fillStyle = "#e4002b"; x.font = '800 14px "Public Sans", Arial, sans-serif'; x.fillText("BY THE NUMBERS", sx, top + 12);
-  const rows = [[fmt(R.homes), R.homes <= -1 ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed"],
+  const rows = [[fmt(Math.abs(R.homes)), R.homes <= -1 ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed"],
     ["$" + fmt(R.rent) + (R.rentDiff >= 1 ? " (−$" + fmt(R.rentDiff) + ")" : R.rentDiff <= -1 ? " (+$" + fmt(-R.rentDiff) + ")" : ""), "median rent in 2041 vs. doing nothing"],
     [fmt(R.aff), "affordable homes"]];
   rows.forEach(([big, small], k) => {
