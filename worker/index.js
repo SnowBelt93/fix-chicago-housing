@@ -4,7 +4,7 @@
 
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-5]{77}[0-5][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-3][0-4][0-3]{10})$/;
+const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-6]{77}[0-6][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-3][0-4][0-3]{10})$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
@@ -107,7 +107,7 @@ export class Community {
       const homes = rows.map(r => r.homes).sort((a, b) => a - b);
       return {n, avgHomes: Math.round(homes.reduce((a, b) => a + b, 0) / n), medianHomes: homes[Math.floor(n / 2)], policies: on,
         str: [0,1,2].map(t => rows.filter(r => r.f.str === t).length / n), aro: [0,1,2,3].map(t => rows.filter(r => r.f.aro === t).length / n),
-        tod: lv("tod", 6), metra: lv("metra"), sub: lv("sub"), corr: lv("corr")};
+        tod: lv("tod", 7), metra: lv("metra"), sub: lv("sub"), corr: lv("corr")};
     };
     const all = this.cache.rows;
     return json({all: summarize(all), hood: hood ? summarize(all.filter(r => r.hood === hood)) : null}, 200, {"cache-control": "public, max-age=60"});
