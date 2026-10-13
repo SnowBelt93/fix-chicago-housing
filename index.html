@@ -894,7 +894,9 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
-                <li>Tower level: 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at about 6,500 apartments a year, near downtown's best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
+                <li>Land assembly: bigger buildings need bigger sites, so a mid-rise project buys up neighboring lots on the same block face until it has about 5,000 sq ft of land (two city lots), a high-rise about 10,000 (four) and a tower about 20,000 (a quarter block). If the neighbors can't be bought (newer buildings, already taller, or zoned lower), it builds the biggest level its land allows. Each lot's chance of redeveloping stays the same; projects just come in fewer, bigger pieces. New buildings are drawn over the assembled lots, covering about 55–75% of the site, and towers sit on a 4-story podium.</li>
+                <li>Drawn heights vary from project to project (6-flat 3–4 stories, mid-rise 5–6, high-rise 9–12, tower 25–36). The homes come from lot area under the zoning, not from the drawn height.</li>
+                <li>Tower level: about 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at about 6,500 apartments a year, near downtown's best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
                 <li>Vacant-lot gap financing: 15% of the ~31,000 privately owned vacant parcels (<a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j" target="_blank" rel="noopener">Cook County Assessor, 2025</a>, class 100) get a 2-flat by 2041 at up to $150,000 of subsidy per home (Missing Middle's cap, <a href="https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/" target="_blank" rel="noopener">Hoodline</a>), and rezoned projects in soft markets are 50% more likely.</li>
                 <li>Transit riders: one commuter per new home within ½ mile of the L or Metra, 37.9% of them by train or bus (ETOD 2020, from 2012–16 census data), two rides a workday for 250 days, valued at CTA's 2026 average of $1.24 a ride.</li>
                 <li>Policies that cut supply cost this share of the homes Chicago builds anyway: downzoning 25%, parking minimums 10%, moratoriums 15%, rent control 30%, transfer tax 5%. They also cut rezoned projects: parking minimums 15%, moratoriums 20% (and 25% later), rent control 40% on buildings of 3+ homes, transfer tax 18% on buildings of 20+.</li>
@@ -921,7 +923,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
     <div><i class="lt"></i>6-flat</div>
     <div><i class="lt"></i>Mid-rise</div>
     <div><i class="lt"></i>High-rise</div>
-    <div id="lgTower" hidden><i style="--c:#0a1c3c"></i>Tower (30 fl)</div>
+    <div id="lgTower" hidden><i style="--c:#0a1c3c"></i>Tower (~30 fl)</div>
     <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i>Private vacant lot</div>
     <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i>City-owned lot</div>
     <div><i class="lo"></i>Office → homes</div>
@@ -1090,7 +1092,7 @@ const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 52, 228, 514, 1234];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
+const SUB_PER_STATION = [0, 52, 228, 513, 1134];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
@@ -1169,6 +1171,62 @@ function tierAt(A, i, T0){
   if (small){ if (P.camb && inScope("camb", A) && t < 2) t = 2; else if (((P.build && inScope("build", A)) || mp) && t < 1) t = 1; }
   return t;
 }
+// Land assembly (assumption): bigger buildings need bigger sites, so a project at these levels buys its neighbours along the
+// block face until it has this much lot (sq ft). If it can't, it builds the biggest level its land allows.
+const SITE_MIN = [0, 0, 0, 5000, 10000, 20000];     // mid-rise ~2 city lots, high-rise ~4, tower ~8 (a quarter block)
+const SITE_R = 35;                                  // metres: close enough to be the same block face, not across the alley or street
+const SITE_MAX = 10;                                // lots in one site at most
+const COVER = [0, 0.55, 0.6, 0.65, 0.7, 0.75];      // share of the site a new building covers (drawn footprint only)
+const lotOf = (fp) => Math.min(40000, Math.max(2000, fp / 0.5));
+// drawn height varies (homes come from lot area, not drawn height): 6-flat 3–4, mid-rise 5–6, high-rise 9–12, tower 25–36 stories
+const drawnStories = (t, r) => t === 1 ? 3 : t === 2 ? (r < 0.25 ? 3 : 4) : t === 3 ? (r < 0.4 ? 5 : 6) : t === 4 ? 9 + Math.floor(r * 4) : 25 + Math.floor(r * 12);
+function siteGrid(A){
+  if (A.grid) return;
+  const n = A.n, P = A.data.attributes.getPolygon.value, S = A.data.startIndices, cx = new Float32Array(n), cy = new Float32Array(n), g = new Map();
+  for (let i = 0; i < n; i++){
+    let x = 0, y = 0; const a = S[i], b = S[i + 1];
+    for (let k = a; k < b; k++){ x += P[2 * k]; y += P[2 * k + 1]; }
+    x /= Math.max(1, b - a); y /= Math.max(1, b - a); cx[i] = x; cy[i] = y;
+    const key = Math.floor(x / 25) * 4096 + Math.floor(y / 25); let c = g.get(key); if (!c) g.set(key, c = []); c.push(i);
+  }
+  A.cx = cx; A.cy = cy; A.grid = g;
+}
+function nearby(A, i){
+  siteGrid(A);
+  const x = A.cx[i], y = A.cy[i], gx = Math.floor(x / 25), gy = Math.floor(y / 25), out = [];
+  for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++){
+    const c = A.grid.get((gx + dx) * 4096 + gy + dy); if (!c) continue;
+    for (const j of c){ if (j === i) continue; const d = (A.cx[j] - x) ** 2 + (A.cy[j] - y) ** 2; if (d <= SITE_R * SITE_R) out.push([d, j]); }
+  }
+  return out.sort((a, b) => a[0] - b[0]);
+}
+// the new building: a box over the assembled lots, lined up with the first building, grown toward the site's lot coverage
+function siteShape(A, pr, h){
+  const P = A.data.attributes.getPolygon.value, S = A.data.startIndices, a = pr.members[0];
+  let ux = 1, uy = 0, best = 0;
+  for (let k = S[a]; k < S[a + 1]; k++){
+    const k2 = k + 1 < S[a + 1] ? k + 1 : S[a], dx = P[2 * k2] - P[2 * k], dy = P[2 * k2 + 1] - P[2 * k + 1], l = dx * dx + dy * dy;
+    if (l > best){ best = l; const r = Math.sqrt(l); ux = dx / r; uy = dy / r; }
+  }
+  const vx = -uy, vy = ux;
+  let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+  for (const m of pr.members) for (let k = S[m]; k < S[m + 1]; k++){
+    const x = P[2 * k], y = P[2 * k + 1], u = x * ux + y * uy, v = x * vx + y * vy;
+    if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v;
+  }
+  let L = u1 - u0, W = v1 - v0; const target = pr.siteLot * 0.0929 * COVER[pr.t];
+  if (L * W < target && L > 0 && W > 0){   // stretch the longer side (lot depth) toward the coverage target, at most 60%
+    if (L >= W){ const L2 = Math.min(target / W, L * 1.6), d = (L2 - L) / 2; u0 -= d; u1 += d; }
+    else { const W2 = Math.min(target / L, W * 1.6), d = (W2 - W) / 2; v0 -= d; v1 += d; }
+  }
+  const box = (a0, a1, b0, b1) => [[a0, b0], [a1, b0], [a1, b1], [a0, b1]].map(([u, v]) => [u * ux + v * vx, u * uy + v * vy]);
+  const ins = 0.6; u0 += ins; u1 -= ins; v0 += ins; v1 -= ins;
+  const c = pr.t === 5 ? 7 : pr.t;
+  if (pr.t !== 5) return [{p: box(u0, u1, v0, v1), h, c}];
+  // towers: a 4-story podium over the site and a slimmer tower on top of it
+  const cu = (u0 + u1) / 2, cv = (v0 + v1) / 2, hu = (u1 - u0) * 0.3, hv = (v1 - v0) * 0.3;
+  return [{p: box(u0, u1, v0, v1), h: Math.min(h, 4 * FLOOR_M), c}, {p: box(cu - hu, cu + hu, cv - hv, cv + hv), h, c}];
+}
 function compute(A, statsOnly){
   const T0 = tierFor(A.num), P = plan.p, n = A.n;
   const p0 = BASE * A.demand * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
@@ -1176,54 +1234,88 @@ function compute(A, statsOnly){
   let addedNow = 0, added = 0, replaced = 0, touched = 0, walk = 0, aff = 0, tower = 0;
   const wardHomes = new Float64Array(51);
   const byYear = new Float64Array(YEARS + 1);
-  const ext = A.ext;
+  const ext = A.ext, gone = (j) => ext && (ext[j] & 64);
+  const claimed = A.claimed && A.claimed.length === n ? A.claimed : (A.claimed = new Int32Array(n));
+  claimed.fill(-1);
+  const projects = [];
+  const canJoin = (j, t) => {   // a neighbour that could be bought into a site at level t
+    if (claimed[j] >= 0 || gone(j)) return 0;
+    const f = A.fl[j], st = A.st[j] || 1, un = A.un[j], fp = A.fp[j] * 2;
+    if ((f & 8) || st >= TIERS[t].h || fp > 20000) return 0;
+    if (!(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000))) return 0;
+    return tierAt(A, j, T0);
+  };
   for (let i = 0; i < n; i++){
-    if (ext && (ext[i] & 64)){ if (!statsOnly){ A.elev[i] = 0; A.col[i] = 8; } continue; }   // torn down since the 2013 footprints: the lot is vacant today
+    if (gone(i)) continue;   // torn down since the 2013 footprints: the lot is vacant today
     const f = A.fl[i], t = tierAt(A, i, T0);
-    const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2;
-    let e = st * FLOOR_M, c = 0;
-    if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
-    if ((showIllegal || introHook) && (f & 64)) c = 6;
-    if (t > 0){
-      touched++;
-      const T = TIERS[t];
-      const lot = Math.min(40000, Math.max(2000, fp / 0.5));
-      const net = T.k * lot / STD_LOT - un;
-      const typ = un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000);  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
-      const homes = Math.floor(net), gross = Math.floor(T.k * lot / STD_LOT);
-      const nearTransit = (f & 3) >= 1 || (f & 4);
-      let p = p0;
-      if (P.stair && (t === 2 || t === 3) && lot < 7500) p *= 1 + STAIR_BOOST;
-      if (((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A)) && !nearTransit) p *= 1 + PARK_BOOST;
-      if (P.small && inScope("small", A) && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
-      if (gross >= 10) p *= ARO_FACTOR[P.aro];
-      if (P.pmin && inScope("pmin", A)) p *= PMIN_FACTOR;   // parking mandates back
-      if (P.mora && inScope("mora", A)) p *= MORA_FACTOR;   // moratoriums / extra review
-      if (P.rentc && gross >= 3) p *= RENTC_FACTOR;       // rent control covering new buildings
-      if (P.xfer && gross >= 20) p *= XFER_FACTOR;        // transfer tax hits big buildings when they sell
-      if (t === 5) p *= towerScale;
-      if (P.vland && inScope("vland", A) && A.demand < VL_SOFT) p *= 1 + VL_SOFT_BOOST;   // gap financing makes soft-market projects pencil                       // towers can't lease faster than downtown's record pace
-      if (p > 0.6) p = 0.6;
-      if (typ && !(f & 8) && st < T.h && fp <= 20000 && net >= 1 && hash01(i, A.num) < p){
-        let yb = rampYear(hash01(i, A.num + 977));
-        const slow = P.mora && inScope("mora", A);
-        if (P.permits || slow){   // scale a point within the year, so faster or slower approvals don't leave empty years
-          let yt = yb - hash01(i, A.num + 555);
-          if (P.permits) yt = Math.max(0.01, yt - PERMIT_SHIFT);
-          if (slow) yt *= MORA_DELAY;                                        // extra review pushes some projects past 2041
-          yb = Math.max(1, Math.ceil(yt));
-        }
-        if (yb <= YEARS){
-          added += homes; replaced += un; byYear[yb] += homes;
-          if (nearTransit) walk += homes;
-          if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
-          if (t === 5) tower += homes;
-          if (A.ext) wardHomes[A.ext[i] & 63] += homes;
-          if (yb <= year){ e = T.h * FLOOR_M; c = t === 5 ? 7 : t; addedNow += homes; }
-        }
+    if (t <= 0) continue;
+    touched++;
+    if (claimed[i] >= 0) continue;   // already bought into an earlier project's site
+    const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2, T = TIERS[t];
+    const lot = lotOf(fp);
+    const typ = un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000);  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
+    if (!typ || (f & 8) || st >= T.h || fp > 20000 || T.k * lot / STD_LOT - un < 1) continue;
+    const siteEst = Math.max(lot, SITE_MIN[t]), grossEst = Math.floor(T.k * siteEst / STD_LOT);
+    const nearTransit = (f & 3) >= 1 || (f & 4);
+    let p = p0;
+    if (P.stair && (t === 2 || t === 3) && siteEst < 7500) p *= 1 + STAIR_BOOST;
+    if (((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A)) && !nearTransit) p *= 1 + PARK_BOOST;
+    if (P.small && inScope("small", A) && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
+    if (grossEst >= 10) p *= ARO_FACTOR[P.aro];
+    if (P.pmin && inScope("pmin", A)) p *= PMIN_FACTOR;   // parking mandates back
+    if (P.mora && inScope("mora", A)) p *= MORA_FACTOR;   // moratoriums / extra review
+    if (P.rentc && grossEst >= 3) p *= RENTC_FACTOR;     // rent control covering new buildings
+    if (P.xfer && grossEst >= 20) p *= XFER_FACTOR;      // transfer tax hits big buildings when they sell
+    if (t === 5) p *= towerScale;                        // towers can't lease faster than downtown's record pace
+    if (P.vland && inScope("vland", A) && A.demand < VL_SOFT) p *= 1 + VL_SOFT_BOOST;   // gap financing makes soft-market projects pencil
+    if (p > 0.6) p = 0.6;
+    // the chance is per lot, so a project that needs S lots' worth of land starts 1/S as often
+    if (hash01(i, A.num) >= p * lot / siteEst) continue;
+    const members = [i]; let siteLot = lot, existing = un, tt = t;
+    if (siteLot < SITE_MIN[t]){
+      for (const [, j] of nearby(A, i)){
+        const tj = canJoin(j, t); if (tj < 2) continue;
+        members.push(j); siteLot += lotOf(A.fp[j] * 2); existing += A.un[j]; if (tj < tt) tt = tj;
+        if (siteLot >= SITE_MIN[t] || members.length >= SITE_MAX) break;
       }
     }
-    if (!statsOnly){ A.elev[i] = e; A.col[i] = c; }
+    if (siteLot > siteEst && hash01(i, A.num + 4049) >= siteEst / siteLot) continue;   // keep the expected land per project at the per-lot rate when a site overshoots
+    while (tt > 2 && siteLot < SITE_MIN[tt]) tt--;     // couldn't buy enough land: build the biggest level the site allows
+    const TT = TIERS[tt], gross = Math.floor(TT.k * siteLot / STD_LOT), homes = gross - existing;
+    if (homes < 1) continue;
+    let yb = rampYear(hash01(i, A.num + 977));
+    const slow = P.mora && inScope("mora", A);
+    if (P.permits || slow){   // shift a point within the year, so faster or slower approvals don't leave empty years
+      let yt = yb - hash01(i, A.num + 555);
+      if (P.permits) yt = Math.max(0.01, yt - PERMIT_SHIFT);
+      if (slow) yt *= MORA_DELAY;                                        // extra review pushes some projects past 2041
+      yb = Math.max(1, Math.ceil(yt));
+    }
+    if (yb > YEARS) continue;
+    for (const m of members) claimed[m] = i;
+    added += homes; replaced += existing; byYear[yb] += homes;
+    if (nearTransit) walk += homes;
+    if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
+    if (tt === 5) tower += homes;
+    if (ext) wardHomes[ext[i] & 63] += homes;
+    if (yb <= year) addedNow += homes;
+    projects.push({members, siteLot, t: tt, yb});
+  }
+  if (!statsOnly){
+    for (let i = 0; i < n; i++){
+      if (gone(i)){ A.elev[i] = 0; A.col[i] = 8; continue; }
+      const f = A.fl[i]; let c = 0;
+      if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
+      if ((showIllegal || introHook) && (f & 64)) c = 6;
+      A.elev[i] = (A.st[i] || 1) * FLOOR_M; A.col[i] = c;
+    }
+    const shapes = [];
+    for (const pr of projects){
+      const built = pr.yb <= year, h = drawnStories(pr.t, hash01(pr.members[0], A.num + 733)) * FLOOR_M;
+      if (built) for (const m of pr.members){ A.elev[m] = 0; A.col[m] = 8; }   // the old buildings come down when the new one goes up
+      for (const sh of siteShape(A, pr, h)){ sh.h = built ? sh.h : 0; shapes.push(sh); }
+    }
+    A.proj = shapes;
   }
   A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
   if (!statsOnly) A.version++;
@@ -2194,10 +2286,10 @@ function layers(){
     L.push(new deck.PathLayer({...base, id:"stExp", data:S.exp, getWidth:24, widthMinPixels:1.5, getColor:[150,164,184]}));
   }
   { // half-mile station zones, merged into one shape so overlapping circles read as a single zone
-    const zone = (id, polys, t, a) => {
+    const zone = (id, polys, t, a, noLine) => {
       const c = tierColor(t);
       L.push(new deck.SolidPolygonLayer({id:id + "Fill", parameters:FLAT, data:polys, getPolygon:d => d, getFillColor:[...c, a], updateTriggers:{getFillColor:t + look}}));
-      L.push(new deck.PathLayer({id:id + "Line", parameters:FLAT, data:polys.flatMap(p => p), getPath:d => d, getColor:[...c, 200], getWidth:1.4, widthUnits:"pixels", updateTriggers:{getColor:t + look}}));
+      if (!noLine) L.push(new deck.PathLayer({id:id + "Line", parameters:FLAT, data:polys.flatMap(p => p), getPath:d => d, getColor:[...c, 200], getWidth:1.4, widthUnits:"pixels", updateTriggers:{getColor:t + look}}));
     };
     if (META.ringL){
       if (plan.tod && plan.metra && plan.tod === plan.metra) zone("zoneLM", META.ringLM, plan.tod, 46);
@@ -2207,7 +2299,7 @@ function layers(){
       }
     }
     if (plan.tod === 5 && META.ringBusy){   // quarter mile of the busiest stations, merged into one shape like the zones above
-      zone("zoneBusy", META.ringBusy, 7, 70);
+      zone("zoneBusy", META.ringBusy, 7, 38, true);   // just a darker wash, no outlines
       if (META.busy) L.push(new deck.ScatterplotLayer({id:"busy", data:META.busy, pickable:true, parameters:FLAT, getPosition:d => [d.lon, d.lat], getRadius:402, radiusUnits:"meters", getFillColor:[10,28,60,1]}));   // invisible, just for the ridership tooltip
     }
   }
@@ -2220,6 +2312,14 @@ function layers(){
       coordinateSystem: deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:A.origin,
       getElevation:(_, {index}) => A.elev[index],
       getFillColor:(_, {index}) => { const c = A.col[index]; return c === 8 ? [0,0,0,0] : c === 6 ? [214,74,86] : c ? tierColor(c) : (P ? PLAYFUL.pastels[(index * 7 + A.num) % 5] : EXIST); },
+      updateTriggers:{getElevation:A.version, getFillColor:A.version + look},
+      material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
+      transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 750, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}},
+    }));
+    if (A.proj && A.proj.length) L.push(new deck.SolidPolygonLayer({   // new buildings, drawn over their assembled sites
+      id:"p" + A.num, data:A.proj, extruded:true,
+      coordinateSystem: deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:A.origin,
+      getPolygon:d => d.p, getElevation:d => d.h, getFillColor:d => tierColor(d.c),
       updateTriggers:{getElevation:A.version, getFillColor:A.version + look},
       material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
       transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 750, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}},
