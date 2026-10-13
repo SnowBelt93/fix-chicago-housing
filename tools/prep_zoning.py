@@ -82,7 +82,7 @@ def main():
         o += (N * 3) % 2
         un = np.frombuffer(bytes(buf[o:o + 2 * N]), "<u2"); o += 2 * N
         fp = np.frombuffer(bytes(buf[o:o + 2 * N]), "<u2").astype(float) * 2
-        kx = 111320.0 * math.cos(math.radians(lat0)); ky = 110574.0
+        kx = 111319.49 * math.cos(math.radians(lat0)); ky = 111319.49   # same scale the building files use
         start = 0
         for i in range(N):
             k_ = int(nv[i]); pts = q[start:start + k_]; start += k_

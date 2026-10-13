@@ -158,7 +158,7 @@ for ai, a in enumerate(areas):
     lon0, lat0 = a['ll'].centroid.x, a['ll'].centroid.y
     allpts = np.array([p for b in bl for p in b[0]], dtype=np.float64)
     lons, lats = to_ll.transform(allpts[:, 0], allpts[:, 1])
-    kx = 111320.0 * math.cos(math.radians(lat0)); ky = 110574.0
+    kx = 111319.49 * math.cos(math.radians(lat0)); ky = 111319.49   # deck.gl METER_OFFSETS scale (Web Mercator sphere)
     mx = (np.array(lons) - lon0) * kx; my = (np.array(lats) - lat0) * ky
     q = np.round(np.stack([mx, my], 1) * 2).astype(np.int64)  # 0.5 m units
     assert q.min() > -32767 and q.max() < 32767, (a['name'], q.min(), q.max())
