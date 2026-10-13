@@ -291,6 +291,15 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 @media (min-width:860px){body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl button[data-cam="out"]{display:block}}
 .card .hook{margin:0;padding:8px 10px;border-left:4px solid #d64a56;background:#fdf0f1;font-size:13.5px;color:var(--ink)}
 .legend i.ill{background:#d64a56}
+/* simulation headlines */
+.ticker{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,190px);margin-top:8px;max-width:420px;background:#fbfaf6;border:1px solid #e3ded2;border-left:4px solid var(--star,#e4002b);border-radius:4px;padding:8px 12px 9px;box-shadow:0 10px 28px rgba(20,30,50,.22);pointer-events:none}
+.ticker span{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--star,#e4002b);font-weight:800}
+.ticker b{display:block;font-family:var(--f-serif,Georgia,serif);font-size:16px;line-height:1.25;color:var(--ink);margin-top:2px}
+@media (min-width:860px){
+  .ticker{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:520px;transform:translateX(-50%)}
+  .ticker b{font-size:19px}
+  body.wide .ticker{left:50%}
+}
 .clip{display:block;text-decoration:none;color:var(--ink);background:#fbfaf6;border:1px solid #e3ded2;border-left:4px solid var(--star,#e4002b);padding:10px 12px;border-radius:4px}
 .clip .src{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700}
 .clip b{display:block;font-family:var(--f-serif,Georgia,serif);font-size:20px;line-height:1.2;margin:3px 0}
@@ -409,6 +418,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .card .big{font-family:var(--f-display);font-weight:800;font-stretch:85%;font-size:44px;line-height:1;color:var(--s-zone)}
 .card ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2)}
 .card .row{justify-content:space-between}
+#result .row:last-child{flex-wrap:wrap;gap:8px}
 .card.myth{max-width:400px;gap:10px}
 .card.myth .eyebrow{color:var(--bad)}
 .card.myth h2{font-size:23px}
@@ -811,6 +821,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   </div>
   <div class="hoodbanner" id="hoodBanner" hidden><b id="hbName"></b><span id="hbLine"></span></div>
   <div class="hoodbanner cinecap" id="cineCap" hidden><b id="ccName"></b><span id="ccLine"></span></div>
+  <div class="ticker" id="ticker" hidden aria-live="polite"><span id="tkYear"></span><b id="tkText"></b></div>
   <div class="credit">Buildings &amp; streets: City of Chicago</div>
   <div class="mapctl" id="mapctl" role="group" aria-label="Camera">
     <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in">+</button>
@@ -904,7 +915,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
       <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in the Math tab.</p>
-      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
+      <div class="row"><button class="btn" id="resImage" type="button">Share image</button><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
 </div>
@@ -1794,10 +1805,27 @@ const deckgl = new deck.Deck({
 const BASEMAP_OK = location.protocol.startsWith("http") && !/claude|anthropic|usercontent/.test(location.hostname) && !/[?&]basemap=0/.test(location.search);
 let bmap = null, USING_BASEMAP = false;
 function syncBasemap(){
-  if (!bmap) return;
-  const vp = deckgl.getViewports()[0]; if (!vp) return;
-  bmap.jumpTo({center:[vp.longitude, vp.latitude], zoom:vp.zoom, pitch:vp.pitch, bearing:vp.bearing});
-  if (bmap.redraw) bmap.redraw();   // draw the basemap in this same frame, so streets never trail the buildings by a frame
+  const vp = deckgl.getViewports()[0];
+  if (bmap && vp){
+    bmap.jumpTo({center:[vp.longitude, vp.latitude], zoom:vp.zoom, pitch:vp.pitch, bearing:vp.bearing});
+    if (bmap.redraw) bmap.redraw();   // draw the basemap in this same frame, so streets never trail the buildings by a frame
+  }
+  if (shotResolve){ const r = shotResolve; shotResolve = null; r(grabMap()); }
+}
+let shotResolve = null;
+function grabMap(){
+  const dc = document.querySelector("#map canvas"), c = document.createElement("canvas");
+  c.width = dc.width; c.height = dc.height; const x = c.getContext("2d");
+  x.fillStyle = "#e9edf1"; x.fillRect(0, 0, c.width, c.height);
+  try { if (bmap) x.drawImage(bmap.getCanvas(), 0, 0, c.width, c.height); } catch (e) {}
+  try { x.drawImage(dc, 0, 0); } catch (e) {}
+  return c;
+}
+function captureMap(){
+  return new Promise(res => {
+    shotResolve = res; deckgl.redraw("capture");
+    setTimeout(() => { if (shotResolve === res){ shotResolve = null; res(grabMap()); } }, 900);
+  });
 }
 function styleBasemap(){
   const water = "#8cc4e8", green = "#cfe4c3";
@@ -2267,10 +2295,12 @@ $("playBtn").addEventListener("click", () => {
   playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
   cineSheet = !isWide() && !reduceMotion && !$("sheet").classList.contains("min");   // phones: tuck the tool sheet away so the flyover has room
   if (cineSheet){ $("sheet").classList.add("min"); syncSheet(); }
+  headlines = reduceMotion ? [] : planHeadlines();
   recompute();
   if (!reduceMotion) cinema();
   playTimer = setInterval(() => {
     year++; reduceMotion ? recompute() : recomputeWave();
+    const h = headlines.find(h => h.y === year); if (h) showHeadline(h);
     if (year >= YEARS) stopPlay(true);
   }, reduceMotion ? 120 : YEAR_MS);
 });
@@ -2283,8 +2313,50 @@ $("resCompare").addEventListener("click", () => hideModal("result", () => {
   setTimeout(() => { scrubTo(0); toast("2026: " + (m ? m.name + " today" : "the city today")); }, wait);
   setTimeout(() => { scrubTo(YEARS); toast("2041 with your plan. Drag the timeline to see any year."); }, wait + 2400);
 }));
+// ---------------- simulation headlines (all numbers come from the model) ----------------
+const HL_QUIPS = ["Cranes spotted.","The taquería line gets longer.","Neighbors argue about it online.","The corner store adds a second register.","Somebody's dog is very into the construction site.","Parking discourse reaches new heights.","The new coffee shop already has a line."];
+const HL_WORSE = {down:"downzoning", pmin:"parking mandates", mora:"the building moratorium", rentc:"rent control", xfer:"the mansion tax"};
+let headlines = [], hlTimer = 0;
+function planHeadlines(){
+  const ys = Array.from({length: YEARS + 1}, (_, y) => y), homes = ys.map(planHomesAt);
+  const shortAt = y => target() + GAP_GROWTH * y - homes[y];
+  const closedAt = ys.findIndex(y => y > 0 && shortAt(y) <= 0);
+  const marks = [25000, 50000, 100000, 150000, 200000, 250000, 300000];
+  const worst = Object.keys(WORSE_BASE).filter(k => plan.p[k]).sort((a, b) => WORSE_BASE[b] - WORSE_BASE[a])[0];
+  const picks = [2, 5, 8, 11, 14], used = new Set(), out = [];
+  let q = Math.floor(Math.random() * HL_QUIPS.length);
+  picks.forEach((y, i) => {
+    const y0 = i ? picks[i - 1] : 0;
+    let t = null;
+    if (closedAt > y0 && closedAt <= y) t = "Shortage closed. Economists stunned; the cranes stay up anyway.";
+    if (!t){ const m = marks.find(m => homes[y0] < m && homes[y] >= m); if (m && i) t = "Chicago passes " + fmt(m) + " new homes since 2026."; }
+    if (!t && i === 0 && worst) t = "Permits slump as " + HL_WORSE[worst] + " kicks in. Developers eye Evanston.";
+    if (!t && (i % 2 === 0 || homes[y] > 0)){
+      let best = null, n = 0;
+      for (const k in AREAS){ if (used.has(k)) continue; const b = AREAS[k].byYear; let s = 0; for (let j = y0 + 1; j <= y; j++) s += b[j]; if (s > n){ n = s; best = k; } }
+      if (best && n >= 100){ used.add(best); t = AREAS[best].name + " adds " + fmt(n) + " homes. " + HL_QUIPS[q++ % HL_QUIPS.length]; }
+    }
+    if (!t){
+      const rn = rentNoChange(y), rp = rentWithPlan(y, homes[y]), d = (rp - rn) / rn * 100;
+      if (d <= -1) t = "Rent is " + Math.round(-d) + "% below where it was headed. Landlords start offering a free month.";
+      else if (d >= 1) t = "Rent is " + Math.round(d) + "% above where it was headed. Roommate listings spike.";
+      else t = "The shortage grows to " + fmt(shortAt(y)) + " homes. Median rent hits $" + fmt(rp) + ".";
+    }
+    out.push({y, t});
+  });
+  return out;
+}
+function showHeadline(h){
+  const el = $("ticker");
+  el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+  $("tkYear").textContent = (START + h.y) + " · Chicago"; $("tkText").textContent = h.t;
+  el.hidden = false;
+  const tx = isWide() ? "translateX(-50%) " : "";
+  if (el.animate) el.animate([{opacity:0, transform:tx + "translateY(10px)"}, {opacity:1, transform:tx ? "translateX(-50%)" : "none"}], {duration:420, easing:"cubic-bezier(.16,1,.3,1)"});
+}
+function hideHeadline(){ $("ticker").hidden = true; headlines = []; }
 function stopPlay(finished){
-  clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; document.body.classList.remove("playing"); $("cineCap").hidden = true;
+  clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); $("cineCap").hidden = true;
   if (cineSheet){ $("sheet").classList.remove("min"); syncSheet(); cineSheet = false; }
   $("playBtn").querySelector("span").textContent = "Simulate next 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
@@ -2312,9 +2384,67 @@ function showResult(){
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
   lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false);
   personaRows($("resPersonas"), homes[end]);
+  lastResult = {homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], aff: totals(false).aff};
   $("result").hidden = false;
 }
 $("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
+let lastResult = null;
+async function makeShareCard(){
+  const R = lastResult; if (!R) return null;
+  try { await Promise.all(['900 48px "Big Shoulders Display"', '700 20px "Public Sans"', '600 22px "Source Serif 4"'].map(f => document.fonts.load(f))); } catch (e) {}
+  const map = await captureMap();
+  const W = 1200, H = 630, c = document.createElement("canvas"); c.width = W; c.height = H;
+  const x = c.getContext("2d"), MW = 690;
+  // map, cropped to cover the left side, centered on the visible part of the screen
+  const sw = map.width, sh = map.height, scale = Math.max(MW / sw, H / sh), dw = sw * scale, dh = sh * scale;
+  const fx = isWide() && !document.body.classList.contains("wide") ? (432 + (window.innerWidth - 432) / 2) / window.innerWidth : 0.5;
+  x.drawImage(map, Math.min(0, Math.max(MW - dw, MW / 2 - dw * fx)), (H - dh) / 2, dw, dh);
+  // panel
+  x.fillStyle = "#ffffff"; x.fillRect(MW, 0, W - MW, H);
+  x.fillStyle = "#2b5da0"; x.fillRect(MW, 0, W - MW, 10);
+  const L = MW + 44;
+  const star = (cx, cy, r, col) => { x.beginPath(); for (let a = 0; a < 12; a++){ const rr = a % 2 ? r * 0.45 : r, t = a * Math.PI / 6 - Math.PI / 2; x.lineTo(cx + Math.cos(t) * rr, cy + Math.sin(t) * rr); } x.closePath(); x.fillStyle = col; x.fill(); };
+  // flag mark + title
+  x.fillStyle = "#fff"; x.fillRect(L, 46, 54, 34); x.strokeStyle = "#c9d0d8"; x.lineWidth = 1; x.strokeRect(L + .5, 46.5, 53, 33);
+  x.fillStyle = "#41b6e6"; x.fillRect(L + 1, 52, 52, 6); x.fillRect(L + 1, 68, 52, 6);
+  for (let i = 0; i < 4; i++) star(L + 9 + i * 12, 63, 4.2, "#e4002b");
+  x.fillStyle = "#1b2320"; x.font = '900 34px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.textBaseline = "alphabetic";
+  x.fillText("FIX CHICAGO HOUSING", L + 66, 76, W - L - 66 - 30);
+  x.fillStyle = "#e4002b"; x.font = '800 15px "Public Sans", Arial, sans-serif';
+  x.fillText("MY PLAN FOR 2041", L, 132);
+  // big number
+  const neg = R.homes <= -1;
+  x.fillStyle = neg ? "#9b1027" : "#2b5da0"; x.font = '900 96px "Big Shoulders Display", "Arial Narrow", sans-serif';
+  x.fillText(fmt(R.homes), L, 222, W - L - 170);
+  x.fillStyle = "#1b2320"; x.font = '600 22px "Public Sans", Arial, sans-serif';
+  x.fillText(neg ? "fewer homes than doing nothing" : "new homes, of " + fmt(R.goal) + " needed", L, 256, W - L - 30);
+  // grade star
+  star(W - 92, 182, 52, "#e4002b");
+  x.fillStyle = "#fff"; x.font = '900 40px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.textAlign = "center"; x.fillText(R.grade, W - 92, 196); x.textAlign = "left";
+  // facts
+  const fact = (y, big, small) => { x.fillStyle = "#1b2320"; x.font = '800 34px "Big Shoulders Display", "Arial Narrow", sans-serif'; x.fillText(big, L, y); x.fillStyle = "#4a5560"; x.font = '500 18px "Public Sans", Arial, sans-serif'; x.fillText(small, L, y + 26); };
+  fact(330, R.closedAt >= 0 ? "Closed by " + (START + R.closedAt) : fmt(R.short), R.closedAt >= 0 ? "the housing shortage" : "homes still short in 2041");
+  fact(410, "$" + fmt(R.rent) + (R.rentDiff >= 1 ? " (−$" + fmt(R.rentDiff) + ")" : R.rentDiff <= -1 ? " (+$" + fmt(-R.rentDiff) + ")" : ""), "median rent in 2041 vs. doing nothing");
+  fact(490, fmt(R.aff), "affordable homes");
+  // footer
+  x.fillStyle = "#2b5da0"; x.font = '700 20px "Public Sans", Arial, sans-serif'; x.fillText("Try your own: fixchicagohousing.com", L, 580);
+  x.fillStyle = "#6b7580"; x.font = '400 13px "Source Serif 4", Georgia, serif'; x.fillText("Not affiliated with the City of Chicago.", L, 604);
+  return new Promise(res => c.toBlob(b => res(b), "image/png"));
+}
+$("resImage").addEventListener("click", async (e) => {
+  const btn = e.currentTarget; btn.disabled = true; const label = btn.textContent; btn.textContent = "Making image…";
+  try {
+    const blob = await makeShareCard(); if (!blob) return;
+    const file = new File([blob], "my-chicago-housing-plan.png", {type: "image/png"}), url = SHARE_BASE + "#" + encodePlan(plan);
+    if (navigator.canShare && navigator.canShare({files: [file]})){
+      try { await navigator.share({files: [file], title: "My plan to fix Chicago housing", text: "My plan to fix Chicago's housing shortage. Try yours: " + url}); } catch (err) {}
+    } else {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      toast("Image saved. Post it with your plan link: copy it with Copy share link.");
+    }
+  } finally { btn.disabled = false; btn.textContent = label; }
+});
 $("resShare").addEventListener("click", () => copyText(SHARE_BASE + "#" + encodePlan(plan), "Link copied. Send it to anyone."));
 
 const SVGNS = "http://www.w3.org/2000/svg";
