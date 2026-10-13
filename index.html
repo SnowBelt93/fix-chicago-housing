@@ -36,7 +36,7 @@
 }
 html,body{height:100%}
 html{background:#fff}
-body{margin:0;background:var(--table);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;overflow:hidden;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;overflow:hidden;-webkit-font-smoothing:antialiased}
 #app{position:relative;height:100%;overflow:hidden}
 #map{position:absolute;inset:0;background:var(--table)}
 #basemap{position:absolute;inset:0;pointer-events:none;background:#eef1f4}
@@ -599,7 +599,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .brand .load{margin-left:auto}
 .look{margin:0 0 0 auto;padding:4px 0;align-self:center;background:none;color:var(--nav);font:600 14px var(--f-body);letter-spacing:0;text-decoration:underline;text-decoration-color:rgba(43,93,160,.35);text-underline-offset:3px}
 .look:hover{background:none;color:var(--nav-2)}
-.brand .load + .look{margin-left:12px}
+.brand .load:not([hidden]) + .look{margin-left:12px}
 .fanline{margin:4px 24px 0;padding:0 0 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--ink-2)}
 .fanbar,.fanmini{display:none !important}
 .scoreband{padding:18px 24px 0 !important;color:var(--ink)}
@@ -709,6 +709,16 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
 .hardmode h3{margin:0;font:600 17px/1.3 var(--f-serif);color:var(--ink)}
 #goalLbl{font-weight:400}
 body.hard #goalLbl{color:var(--star);font-weight:700}
+.goalpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gp{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;border:1.5px solid var(--line);border-radius:2px;background:#fff;color:var(--ink);cursor:pointer}
+.gp b{font:800 15px/1.1 var(--f-body)}
+.gp .n{font:800 26px/1 var(--f-display);color:var(--nav)}
+.gp span:last-child{font-size:12px;line-height:1.3;color:var(--ink-2)}
+.gp[aria-checked="true"]{border-color:var(--nav);box-shadow:inset 0 0 0 1.5px var(--nav);background:var(--paper-2)}
+.gp.hard .n,.gp.hard b{color:var(--star)}
+.gp.hard[aria-checked="true"]{border-color:var(--star);box-shadow:inset 0 0 0 1.5px var(--star);background:#fdf1f3}
+.goalmath.hard b{color:var(--star)}
+.whyhard{margin:0;padding:8px 0 0 10px;border-left:3px solid var(--star)}
 .linkbtn{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--star);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 /* missions: a checklist with star stamps */
 .mission{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px 0}
@@ -862,7 +872,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .brand{padding:10px 16px 0;gap:10px}
   .brand .mark{width:28px;height:18px}
   .brand h1{font-size:21px !important}
-  .look{font-size:13px}
+  .look{font-size:13px;margin-left:auto !important}
   .fanline{margin:2px 16px 0;padding-bottom:8px;font-size:10.5px}
   .scoreband{padding:10px 16px 10px !important}
   .score{gap:12px}
@@ -908,6 +918,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .lgtoggle{font-size:12px;color:var(--nav)}
   .mapctl{right:12px}
   .mapctl button{width:40px;height:40px}
+  .mapctl button[data-cam="in"],.mapctl button[data-cam="out"],.mapctl button[data-cam="left"],.mapctl button[data-cam="right"]{display:none !important}   /* phones pinch, twist and zoom by touch */
   .comment{left:16px;right:16px;max-width:300px}
 }
 /* motion: modals rise in and sink out, panes fade, details slide open */
@@ -1009,6 +1020,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
           <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
           <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
           <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
+          <p class="small trafficnote">Traffic: new neighbors far from the L and Metra drive more, so homes there add more car trips than homes near a station (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
         </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <h3>One neighborhood at a time</h3>
@@ -1022,6 +1034,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
             </div>
             <div class="tiers" id="hoodTiers"></div>
           </div>
+          <p class="small trafficnote">Rezoning away from transit adds homes, and more traffic: households far from the L and Metra drive more (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
           <div class="sub">Rezoned so far: <span id="touched">0%</span> of the city's buildings</div>
           <div class="list" id="hoodList"></div>
         </div>
@@ -1094,6 +1107,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
           <div class="fact"><b id="impAff">–</b><span>affordable homes (rent-restricted)</span></div>
           <div class="fact"><b id="impRepl">–</b><span>existing homes torn down</span></div>
         </div>
+        <p class="small" id="impTraffic" hidden></p>
         <div class="group">
           <div class="eyebrow">Where the new homes land</div>
           <div class="sidebar" id="sideBar"></div>
@@ -1221,7 +1235,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Normal mode spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago). Hard mode asks the city to close the whole regional shortage, as if the suburbs only kept building at today's pace.</li>
-                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
+                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure. On the map they're drawn inside each project's planned-development area on the <a href="https://data.cityofchicago.org/api/geospatial/dj47-wfun?method=export&amp;format=GeoJSON" target="_blank" rel="noopener">zoning map</a>, around today's buildings and streets and out of parks, built from the middle out over the years. The buildings are illustrative: their floor area holds the homes the game counts (1,026 sq ft each), but the footprints and heights (mostly 5–12-story blocks with some 15–50-story towers) are made up, not the real site plans. Empty lots inside those areas leave the zoning model while the policy is on, so the same land isn't counted twice; at Cabrini-Green the vacant rowhouses are drawn as replaced, and at North Union the one- to three-story buildings west of Wells.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
@@ -1237,13 +1251,13 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
               </ul></dd></div>
           <div><dt>Myths you've unlocked</dt><dd><div class="list" id="mythList"></div></dd></div>
           <div><dt>Big projects in the pipeline</dt>
-            <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, but only about a tenth of the 2041 goal. Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's slated to become a quantum computing campus (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
+            <dd>Chicago's giant master plans add up to about 31,000 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly six years of the ~4,900 homes the city permits each year, or about a third of the city's 2041 goal (a tenth in hard mode). Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's slated to become a quantum computing campus (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>).</dd></div>
           <div><dt>Privacy</dt>
             <dd>No accounts, no cookies, no ads. Visits are counted with Cloudflare Web Analytics, which doesn't use cookies or track you across sites. Finished plans are stored anonymously for "What other players chose"; your IP address is never stored, only a scrambled code that changes daily and is used to stop spam.</dd></div>
           <div><dt>Data</dt>
             <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (released February 2013; the city's portal copy was last updated in 2015), garages and sheds removed, brought up to date with <a href="https://gis.cookcountyil.gov/traditional/rest/services/buildingFootprint_2022/MapServer" target="_blank" rel="noopener">Cook County's 2022 building footprints</a> (aerial survey with LiDAR heights): 14,563 buildings that were torn down or replaced by 2022, or whose lot is vacant today (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a> vacant land, 2025, or the city's land inventory), are removed; 18,694 buildings that appear in the 2022 data but not the 2013 data are added with their measured height (they can't be rebuilt in the game, and the homes inside them aren't counted because the county data has no unit counts); and about 42,000 buildings with no recorded stories get them from LiDAR (roof height less 4 ft, ÷ 13 ft a floor). These fixes lower totals a bit in busy neighborhoods: some lots the 2013 data treated as one-story shops are really three-story buildings, and some lots were already rebuilt. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
           <div><dt>Not modeled</dt>
-            <dd>Construction costs and interest rates (see the end of a simulation), school and transit capacity, and displacement beyond the homes directly replaced.</dd></div>
+            <dd>Construction costs and interest rates (see the end of a simulation), school and transit capacity, traffic, and displacement beyond the homes directly replaced. On traffic: households far from transit and jobs drive more, so homes added away from the L and Metra bring more car trips than homes near a station; the Impact tab shows how many of your new homes are in that group (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</dd></div>
         </dl>
       </div>
     </div>
@@ -1260,6 +1274,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
     <div><i class="lt"></i><span>High-rise</span><em>RM-6.5</em></div>
     <div id="lgTower" hidden><i style="--c:#0a1c3c"></i><span>Tower</span><em>DX-12</em></div>
     <div id="lgSuper" hidden><i style="--c:#161820"></i><span>Supertall</span><em>DX-16+</em></div>
+    <div id="lgMega" hidden><i style="--c:#765caa"></i><span>Big project (illustrative)</span></div>
     <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot</span></div>
     <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>City-owned lot</span></div>
     <div><i class="lo"></i><span>Offices to homes</span></div>
@@ -1291,15 +1306,23 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
         <b>Rent in Chicago is rising faster than in other major cities</b>
         <span class="sub">Up 35% since before the pandemic, per Zillow. Your job: build enough homes to stop it.</span>
       </a>
-      <div class="eyebrow">Your goal by 2041</div>
-      <div class="big">97,078 new homes</div>
-      <div class="goalmath">
+      <div class="eyebrow">Pick your goal for 2041</div>
+      <div class="goalpick" role="radiogroup" aria-label="Goal">
+        <button type="button" class="gp" id="introNormal" role="radio" aria-checked="true"><b>Normal</b><span class="n">97,078 homes</span><span>Chicago builds its share of the region's shortage</span></button>
+        <button type="button" class="gp hard" id="introHard" role="radio" aria-checked="false"><b>Hard mode</b><span class="n">297,087 homes</span><span>Chicago builds the whole region's shortage</span></button>
+      </div>
+      <div class="goalmath" id="introMath0">
         <div><b>54,141</b><span>homes Chicago is missing today: its 32.7% share of the region's 165,687 (Up for Growth)</span></div>
         <div class="op">+</div>
         <div><b>42,937</b><span>more as Chicago's share of the gap grows ~2,862 a year for 15 years (Zillow)</span></div>
       </div>
-      <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
-      <p class="small hardline" style="margin:0">Want it harder? <button type="button" class="linkbtn" id="introHard">Play hard mode</button>: the suburbs only keep pace and Chicago builds every home the region is missing, 297,087 by 2041.</p>
+      <div class="goalmath hard" id="introMath1" hidden>
+        <div><b>165,687</b><span>homes the whole Chicago region is missing today (Up for Growth)</span></div>
+        <div class="op">+</div>
+        <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow), while the suburbs just keep today's pace</span></div>
+      </div>
+      <p class="small whyhard"><b>Why hard mode?</b> Chicago had 3,620,962 people in 1950 (<a href="https://www.census.gov/programs-surveys/decennial-census/decade/decennial-facts.1950.html" target="_blank" rel="noopener">Census</a>) and 2,746,388 in 2020 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/POP010220" target="_blank" rel="noopener">Census</a>): about 875,000 fewer people paying for streets, pipes, schools and L lines built for a bigger city. Growing back spreads those costs over more taxpayers, helps close an $882 million budget gap (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>) and fills trains and buses. Hard mode puts Chicago back at the center of the region's growth.</p>
+      <p class="small" style="margin:0">Either way, that's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <ol>
         <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
@@ -1389,6 +1412,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
       <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: a range from Mense 2025 to stock-based estimates. Details in the Math tab.</p>
+      <p class="small whyhard" id="resHard" hidden><b>Too easy?</b> That beat Chicago's share of the region's shortage. <button type="button" class="linkbtn" id="resHardBtn">Try hard mode</button>: the city builds the whole region's 297,087 homes, the way it would if Chicago grew back toward its 1950 size.</p>
       <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
@@ -1468,12 +1492,13 @@ const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];  
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
-  {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet"},
-  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3207, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; second bridge unfunded"},
-  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases"},
-  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans"},
-  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started"},
-  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Early phases; paced by CHA"},
+  // fl: stories drawn on the map [mid-rise low, high, tower low, high]; illustrative only (an assumption, listed in The math)
+  {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet", fl:[7, 12, 25, 50]},
+  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3207, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; second bridge unfunded", fl:[5, 10, 15, 30]},
+  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases", fl:[6, 12, 20, 40]},
+  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans", fl:[6, 12, 18, 35]},
+  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started", fl:[8, 14, 18, 25]},
+  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Early phases; paced by CHA", fl:[4, 8, 10, 20]},
 ];
 const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
 const MEGA_AFF = 0.2;                                      // 20% affordable: the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to
@@ -1780,10 +1805,36 @@ function siteShape(A, pr){
   const floors = Math.max(1, Math.ceil(area / (tw * td)));
   return [{p: rect(b.cu, pc, W, PD), full: 4 * FLOOR_M, c, pod: 1}, {p: rect(b.cu, pc, tw, td), full: (floors + 4) * FLOOR_M, c, g: pr.gross, hf: floors}];   // hf: floors holding homes, above the podium
 }
+// Megaprojects on the map: footprints laid out inside each project's planned-development area (meta.json megaSites, from
+// tools/prep_mega.py), with heights set so the floor area holds the homes the game counts (SQFT_HOME each). Illustrative.
+let MEGA_BLD = null, MEGA_LAND = null;
+function megaPrep(){
+  if (MEGA_BLD || !META || !META.megaSites) return;
+  MEGA_BLD = []; MEGA_LAND = {};
+  MEGA.forEach((m, si) => {
+    const S = META.megaSites[m.n]; if (!S) return;
+    for (const k in S.land){ const L = MEGA_LAND[k] || (MEGA_LAND[k] = new Set()); S.land[k].forEach(i => L.add(i)); }
+    const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180), need = m.homes * MEGA_BUILT * SQFT_HOME * 0.0929;   // m² of floor area
+    const fps = S.fp.map(f => { const p = []; for (let j = 0; j < 8; j += 2) p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]);
+      const a = Math.abs((f[2] - f[0]) * (f[5] - f[1]) - (f[4] - f[0]) * (f[3] - f[1])); return {p, a, tower: Math.abs(Math.hypot(f[2] - f[0], f[3] - f[1]) - Math.hypot(f[4] - f[2], f[5] - f[3])) < 2 && a > 600}; });
+    const [lo, hi, tlo, thi] = m.fl, out = [];
+    let sum = 0;
+    for (let k = 0; k < fps.length && sum < need; k++){
+      const f = fps[k], r = hash01(k, 911 + si * 37), tw = f.a > 600 && (f.tower || hash01(k, 577 + si) < 0.2), st = tw ? tlo + Math.floor(r * (thi - tlo + 1)) : lo + Math.floor(r * (hi - lo + 1));
+      out.push({p: f.p, a: f.a, st}); sum += f.a * st;
+    }
+    if (sum < need) out.forEach(b => b.st = Math.min(80, Math.ceil(b.st * need / sum)));   // ran out of ground: go taller
+    else if (out.length){ const b = out[out.length - 1], rest = need - (sum - b.a * b.st); b.st = Math.max(3, Math.ceil(rest / b.a)); }
+    let cum = 0;
+    const tot = out.reduce((t, b) => t + b.a * b.st, 0);
+    out.forEach(b => { MEGA_BLD.push({p: b.p, full: b.st * FLOOR_M, at: cum / tot, site: si}); cum += b.a * b.st; });
+  });
+}
 // per-building inputs that don't depend on the plan: a 6-bit tier key (L distance, Metra, corridor, busy station, small lot),
 // whether it can be rebuilt (0 no, 1 building, 2 empty land, 255 replaced since 2013: skip), and its lot size
 function prepStatic(A){
-  const tag = (A.ext ? 1 : 0) + (A.open ? 2 : 0) + 4 * (A.vk || 0);
+  const ML = plan.p.mega && MEGA_LAND ? MEGA_LAND[A.num] : null;
+  const tag = (A.ext ? 1 : 0) + (A.open ? 2 : 0) + 4 * (A.vk || 0) + (ML ? 0.5 : 0);
   if (A.tk && A.tkTag === tag) return;
   const n = A.n, K = A.vk || 0, EX = A.ext || null, OP = A.open || null, TK = new Uint8Array(n + K), EL = new Uint8Array(n + K), LOT = new Float32Array(n + K);
   for (let i = 0; i < n; i++){
@@ -1794,6 +1845,7 @@ function prepStatic(A){
     else EL[i] = (f & 8) || fp > 20000 || !(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000)) ? 0 : 1;
   }
   for (let j = 0; j < K; j++){ const f = A.vf[j]; TK[n + j] = (f & 7) | (f & 16 ? 8 : 0) | (f & 128 ? 16 : 0) | 32; EL[n + j] = 2; LOT[n + j] = VAC_LOT; }
+  if (ML) ML.forEach(i => { if (i < n + K) EL[i] = 0; });   // a megaproject builds here, so the zoning model doesn't count it again
   A.tk = TK; A.el = EL; A.lot = LOT; A.tkTag = tag;
 }
 function compute(A, statsOnly){
@@ -1947,6 +1999,7 @@ function showYear(A){
     A.projKey = key; A.proj = []; A.projOf = [];
     projects.forEach((pr, k) => { if (!pr.box) pr.box = siteBox(A, pr.members, pr.siteLot); for (const sh of siteShape(A, pr)){ A.proj.push(sh); A.projOf.push(k); } });
   }
+  if (plan.p.mega && MEGA_LAND && MEGA_LAND[A.num] && rampFrac(year) > 0) MEGA_LAND[A.num].forEach(i => { if (i < n){ A.elev[i] = 0; A.col[i] = 8; } });
   const built = projects.map(pr => pr.yb <= year);
   projects.forEach((pr, k) => { if (built[k]) for (const m of pr.members) if (m < n){ A.elev[m] = 0; A.col[m] = 8; } });
   A.proj.forEach((sh, j) => { sh.h = built[A.projOf[j]] ? sh.full : 0; });
@@ -2096,9 +2149,9 @@ function renderTargets(){
   btn(3, el);   // normal mode: the city's own share
   const hard = document.createElement("div"); hard.className = "hardmode";
   const perYear = Math.round(((TARGETS[0].n + GAP_GROWTH * YEARS) / YEARS + CITY_PACE) / 100) * 100;
-  hard.innerHTML = '<h3>Hard mode: Chicago takes the whole region\'s gap</h3><p class="small"></p>';
+  hard.innerHTML = '<h3>Hard mode: Chicago takes the whole region\'s gap</h3><p class="small"></p><p class="small whyhard"><b>Why play it?</b> Chicago had 3,620,962 people in 1950 (<a href="https://www.census.gov/programs-surveys/decennial-census/decade/decennial-facts.1950.html" target="_blank" rel="noopener">Census</a>) and 2,746,388 in 2020 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/POP010220" target="_blank" rel="noopener">Census</a>), about 875,000 fewer people paying for streets, pipes, schools and L lines built for a bigger city. Growth spreads those costs over more taxpayers, helps close the $882 million budget gap (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>) and fills trains and buses.</p><p class="small pickest">Pick the estimate to beat:</p>';
   hard.querySelector("p").textContent = "The suburbs keep building only at today's pace, and the city closes the entire region's shortage, putting Chicago back at the center of the region's growth. With Up for Growth's estimate that's about " + fmt(perYear) + " homes a year inside city limits, more than two and a half times the roughly 9,500 Chicago approved in 2023 (";
-  { const a = document.createElement("a"); a.href = "https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "TRD Data"; hard.querySelector("p").append(a, "). Pick the estimate to beat:"); }
+  { const a = document.createElement("a"); a.href = "https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "TRD Data"; hard.querySelector("p").append(a, ")."); }
   [0, 1, 2].forEach(i => btn(i, hard));
   el.appendChild(hard);
   const eq = $("goalEq"); if (eq) eq.textContent = "Your goal: " + fmt(target()) + " missing today + " + fmt(gapGrowth() * YEARS) + " more by 2041 (" + fmt(gapGrowth()) + " a year × 15) = " + fmt(needed()) + " new homes, on top of today's building pace.";
@@ -2134,7 +2187,7 @@ const POLICIES = [
     src:[["WTTW","https://news.wttw.com/2026/04/09/coach-house-ordinance-aimed-housing-affordability-crisis-takes-effect-chicago"],["The Real Deal","https://therealdeal.com/chicago/2025/05/15/chicagos-granny-flat-program-falls-flat/"]]},
   {key:"mega", title:"Get the megaprojects built", status:["prop","Mostly stuck, 2026"],
     what:"Chicago already approved or planned about 31,000 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (5,000), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (3,207) and the rest of North Union (2,007). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
-    model:"Assumption: half of those 31,094 planned homes get built by 2041 once the city funds the infrastructure. Even all of them would be about a tenth of the goal, which is why everyday zoning matters more.",
+    model:"Assumption: half of those 31,094 planned homes get built by 2041 once the city funds the infrastructure. That half is about a sixth of the normal-mode goal and about 5% of hard mode's, so everyday zoning still does most of the work. The purple buildings on the map hold that many homes, but their shapes are made up, not the real site plans.",
     src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (City of Chicago)","https://chicago.gov/city/en/depts/dcd/supp_info/north-union.html"],["The 78 zoning, 2018 (Sun-Times)","https://www.pressreader.com/usa/chicago-sun-times/20181213/281646781230679"],["Bronzeville Lakefront (CBS)","https://www.cbsnews.com/chicago/news/former-michael-reese-hospital-campus-to-be-transformed-under-3-8-billion-bronzeville-lakefront-redevelopment-plan"],["Foundry Park plan (Chicago YIMBY)","https://chicagoyimby.com/2026/02/city-council-approves-plans-for-foundry-park.html"],["1901 Project groundbreaking (Chicago YIMBY)","https://chicagoyimby.com/2026/06/groundbreaking-held-for-the-1901-project-around-united-center.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"]]},
   {key:"lots", title:"Build on city-owned vacant lots", status:["prop","City is selling lots now"],
     what:"The city owns more than 7,100 vacant lots, concentrated in Englewood, West Englewood, New City and North Lawndale, and sells them for $1 through its Missing Middle program.",
@@ -2543,7 +2596,7 @@ function renderTown(){
 // ---------------- neighborhood reactions ----------------
 const REACT = {
   mega:["The 78 has been 'coming soon' since I had hair.","Finally, something on that lot besides weeds and a Divvy dock.","A stadium AND apartments? Pick a lane. …Okay, both."],
-  low:["A three-flat? On MY block? …Okay, fine, I grew up in one.","Sure, but where am I supposed to park my second car?","This will ruin the character of the neighborhood. The character is mostly vinyl siding.","My grandma rented out the upstairs unit for 40 years. Took you long enough.","Finally, my kid can move out of my basement and into somebody else's."],
+  low:["A three-flat? On MY block? …Okay, fine, I grew up in one.","Sure, but where am I supposed to park my second car?","This will ruin the character of the neighborhood. The character is mostly vinyl siding.","My grandma rented out the upstairs unit for 40 years. Took you long enough.","Finally, my kid can move out of my basement and into somebody else's.","Nearest L stop is two buses away. Hope the new neighbors like brake lights."],
   mid:["Six stories?! What is this, Paris?","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the grocery store.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
   high:["Twelve stories? My dog will have to look up.","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","A tall building by the train? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
   tower:["Thirty stories? This isn't New York. …Wait, who invented the skyscraper again?","Great, the wind tunnel on Wacker gets a sequel.","My view of the lake is now a view of somebody's view of the lake.","It'll cast a shadow on my shadow.","A tower by the L? Who could have guessed people want to live near trains."],
@@ -2745,6 +2798,7 @@ async function loadExtra(){
 let hasExtra = false;
 async function boot(){
   META = await (await fetch("meta.json")).json();
+  megaPrep();
   buildTypeTools();
   const pick = $("hoodPick");
   [...META.areas].sort((a,b) => a.name.localeCompare(b.name)).forEach(m => {
@@ -3030,6 +3084,11 @@ function layers(){
   if (wardShown && WARDS){ const W = WARDS.find(w => w.ward === wardSel); if (W) L.push(new deck.PathLayer({id:"ward", data:W.polys.flatMap(p => p.map(r => ({path:r}))), parameters:FLAT, getPath:d => d.path, getWidth:4, widthUnits:"pixels", getColor:[228,0,43,230]})); }
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
+  if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year); L.push(new deck.SolidPolygonLayer({id:"megaB", data:MEGA_BLD, extruded:true,
+    getPolygon:d => d.p, getElevation:d => d.at < f ? d.full : 0, getFillColor:[118,92,170],
+    updateTriggers:{getElevation:f},
+    material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
+    transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}})); } }
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
@@ -3144,7 +3203,7 @@ function render(){
   if (loaded === 77) lastGrade = g;
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : ""; $("loadTxt").hidden = loaded >= 77;
   $("yrTxt").textContent = START + year;
-  { const tall = Object.values(plan.areas); $("lgTower").hidden = plan.tod < 5 && !tall.some(v => v >= 5); $("lgSuper").hidden = plan.tod < 6 && !tall.includes(6); $("todNote").hidden = plan.tod < 5; }
+  { const tall = Object.values(plan.areas); $("lgTower").hidden = plan.tod < 5 && !tall.some(v => v >= 5); $("lgSuper").hidden = plan.tod < 6 && !tall.includes(6); $("lgMega").hidden = !plan.p.mega; $("todNote").hidden = plan.tod < 5; }
   $("lgVacP").hidden = !plan.p.vland; $("lgVacC").hidden = !plan.p.lots;
   if ((plan.p.vland || plan.p.lots) && !VACANT) loadVacant();
   { const r = $("yrRange"); r.value = year; r.disabled = playing; r.style.setProperty("--p", (year / YEARS * 100) + "%"); }
@@ -3214,6 +3273,8 @@ function personaRows(el, homes){
 function renderImpact(t){
   const zone = t.zoneFull;
   $("impWalk").textContent = zone ? Math.round(t.walk / zone * 100) + "%" : "–";
+  { const far = zone > 0 ? Math.round(100 - t.walk / zone * 100) : 0, el = $("impTraffic"); el.hidden = far < 5;
+    if (!el.hidden) el.innerHTML = "<b>Traffic:</b> " + far + "% of the homes from your zoning are more than a 10-minute walk from the L or Metra. Households there drive more than those near a station, so expect more car trips on nearby streets; homes near transit and jobs add the least driving (<a href=\"https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000\" target=\"_blank\" rel=\"noopener\">Ewing &amp; Cervero</a>). The game doesn't model traffic itself."; }
   $("impAff").textContent = fmt(t.aff);
   $("impRepl").textContent = fmt(t.replaced);
   $("impJobs").textContent = fmt(t.total * JOBS1);
@@ -3493,6 +3554,7 @@ function showResult(){
   const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
   $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : homes[end] <= -1 ? base + " Your plan means " + fmt(-homes[end]) + " fewer homes than doing nothing, so rent climbs even faster." : base + " Change some zoning or flip on a policy and run it again.";
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
+  $("resHard").hidden = plan.g !== 3 || homes[end] < needed() * 0.85;   // an A in normal mode: point to hard mode
   $("resAff").textContent = fmt(totals(false).aff);
   { const rev = homes[end] * TAX2; $("resTax").textContent = money(rev);
     $("resTaxLbl").textContent = (rev < 0 ? "Fewer homes than doing nothing means less local revenue, " : "Local taxes and fees from the new homes (NAHB estimate), ") + "equal to " + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap."; }
@@ -3927,10 +3989,19 @@ setLook("model");
   lsSet("fch-city-goal", true);
   buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
+  { const at = (new URLSearchParams(location.search).get("at") || "").split(",").map(Number);   // test hook: ?at=lon,lat,zoom[,bearing] points the camera there once loaded
+    if (at.length >= 3 && at.every(isFinite)){ const go = () => loaded === 77 ? setTimeout(() => deckgl.setProps({initialViewState:{...viewState, longitude:at[0], latitude:at[1], zoom:at[2], bearing:at[3] || 0}}), 800) : setTimeout(go, 500); go(); } }
   if (/[?&]qa=results/.test(location.search)){ const go = () => loaded === 77 && hasExtra ? setTimeout(showResult, 1500) : setTimeout(go, 500); go(); }   // test hook: open the front page without waiting for a 15-year simulation
   const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(startTour, 250)); };   // the "illegal today" myth waits until the player turns on that overlay
   $("introGo").addEventListener("click", closeIntro);
-  $("introHard").addEventListener("click", () => { plan.g = 0; renderTargets(); closeIntro(); render(); setTimeout(() => toast("Hard mode: " + fmt(needed()) + " homes by 2041. Good luck."), 400); });
+  $("resHardBtn").addEventListener("click", () => { plan.g = 0; renderTargets(); hideModal("result"); render(); setTimeout(() => toast("Hard mode: " + fmt(needed()) + " homes by 2041. Good luck."), 400); });
+  const syncIntroGoal = () => { const hard = plan.g !== 3;
+    $("introNormal").setAttribute("aria-checked", String(!hard)); $("introHard").setAttribute("aria-checked", String(hard));
+    $("introMath0").hidden = hard; $("introMath1").hidden = !hard; };
+  const introGoal = (hard) => { plan.g = hard ? (plan.g !== 3 ? plan.g : 0) : 3; renderTargets(); render(); syncIntroGoal(); };
+  $("introNormal").addEventListener("click", () => introGoal(false));
+  $("introHard").addEventListener("click", () => introGoal(true));
+  syncIntroGoal();
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
 })();
 boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load the map data. Reload to try again."; });
