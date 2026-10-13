@@ -1,0 +1,46 @@
+# Downloads Chicago building permits (new construction and demolition, 2013 on) and the current zoning map,
+# used to check the game's redevelopment rate against what actually got rebuilt (run by hand from the Actions tab).
+name: Fetch permits and zoning
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p tools/raw
+          python3 - <<'EOF'
+          import urllib.request, urllib.parse, csv, io, gzip, time
+          base = "https://data.cityofchicago.org/resource/ydr8-5enu.csv"
+          where = "permit_type in('PERMIT - NEW CONSTRUCTION','PERMIT - WRECKING/DEMOLITION') AND issue_date >= '2013-01-01T00:00:00'"
+          cols = "id,permit_,permit_type,issue_date,community_area,ward,latitude,longitude,work_description,reported_cost,street_number,street_direction,street_name"
+          rows, header, off = [], None, 0
+          while True:
+              q = urllib.parse.urlencode({"$select": cols, "$where": where, "$order": "id", "$limit": 50000, "$offset": off})
+              for t in range(5):
+                  try:
+                      data = urllib.request.urlopen(base + "?" + q, timeout=300).read().decode("utf-8"); break
+                  except Exception as e:
+                      print("retry", t, e); time.sleep(10)
+              r = list(csv.reader(io.StringIO(data)))
+              if header is None: header = r[0]
+              body = r[1:]
+              print("got", len(body), "at offset", off, flush=True)
+              rows += body
+              if len(body) < 50000: break
+              off += 50000
+          with gzip.open("tools/raw/permits_2013_on.csv.gz", "wt", newline="") as f:
+              w = csv.writer(f); w.writerow(header); w.writerows(rows)
+          print("permits", len(rows))
+          EOF
+          curl -sSfL --retry 3 -m 900 "https://data.cityofchicago.org/api/geospatial/dj47-wfun?method=export&format=GeoJSON" -o tools/raw/zoning.geojson && gzip -9 -f tools/raw/zoning.geojson && ls -la tools/raw/
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw
+          git commit -m "Fetch building permits and zoning map" || echo "nothing to commit"
+          git pull --rebase && git push
