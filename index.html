@@ -906,7 +906,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div><dt>Privacy</dt>
             <dd>No accounts, no cookies, no ads. Visits are counted with Cloudflare Web Analytics, which doesn't use cookies or track you across sites. Finished plans are stored anonymously for "What other players chose"; your IP address is never stored, only a scrambled code that changes daily and is used to stop spam.</dd></div>
           <div><dt>Data</dt>
-            <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (circa 2015), garages and sheds removed. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
+            <dd>Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (released February 2013; the city hasn't published a newer version), garages and sheds removed. 6,305 small buildings that now sit on a vacant parcel (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a> vacant land, 2025, or the city's land inventory) count as torn down: they're hidden and can't be rebuilt by zoning. Buildings finished after 2013 aren't on the map. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS.</dd></div>
           <div><dt>Not modeled</dt>
             <dd>Construction costs and interest rates (see the end of a simulation), school and transit capacity, and displacement beyond the homes directly replaced.</dd></div>
         </dl>
@@ -1176,7 +1176,9 @@ function compute(A, statsOnly){
   let addedNow = 0, added = 0, replaced = 0, touched = 0, walk = 0, aff = 0, tower = 0;
   const wardHomes = new Float64Array(51);
   const byYear = new Float64Array(YEARS + 1);
+  const ext = A.ext;
   for (let i = 0; i < n; i++){
+    if (ext && (ext[i] & 64)){ if (!statsOnly){ A.elev[i] = 0; A.col[i] = 8; } continue; }   // torn down since the 2013 footprints: the lot is vacant today
     const f = A.fl[i], t = tierAt(A, i, T0);
     const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2;
     let e = st * FLOOR_M, c = 0;
@@ -1924,7 +1926,7 @@ async function loadExtra(){
       o += N;
     }
     hasExtra = true;
-    if (plan.tod === 5) recompute();
+    recompute();   // hides buildings torn down since 2013 and enables the Tower rings
   } catch (e) { console.warn("extra data failed", e); }
 }
 let hasExtra = false;
@@ -1953,7 +1955,7 @@ async function boot(){
   await loadExtra();
   $("loading").hidden = true;
   if (hasZoning){
-    let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; tot += A.n; for (let i = 0; i < A.n; i++) if (A.fl[i] & 64) n++; }
+    let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; for (let i = 0; i < A.n; i++){ if (A.ext && (A.ext[i] & 64)) continue; tot++; if (A.fl[i] & 64) n++; } }
     $("tool-illegal").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
   }
@@ -2190,7 +2192,7 @@ function layers(){
       id:"b" + A.num, data:A.data, extruded:true,
       coordinateSystem: deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:A.origin,
       getElevation:(_, {index}) => A.elev[index],
-      getFillColor:(_, {index}) => { const c = A.col[index]; return c === 6 ? [214,74,86] : c ? tierColor(c) : (P ? PLAYFUL.pastels[(index * 7 + A.num) % 5] : EXIST); },
+      getFillColor:(_, {index}) => { const c = A.col[index]; return c === 8 ? [0,0,0,0] : c === 6 ? [214,74,86] : c ? tierColor(c) : (P ? PLAYFUL.pastels[(index * 7 + A.num) % 5] : EXIST); },
       updateTriggers:{getElevation:A.version, getFillColor:A.version + look},
       material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
       transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 750, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}},
@@ -2201,8 +2203,8 @@ function layers(){
     getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
     billboard:false, updateTriggers:{getSize:zoomBandNow}}));
   if (wardShown && WARDS){ const W = WARDS.find(w => w.ward === wardSel); if (W) L.push(new deck.PathLayer({id:"ward", data:W.polys.flatMap(p => p.map(r => ({path:r}))), parameters:FLAT, getPath:d => d.path, getWidth:4, widthUnits:"pixels", getColor:[228,0,43,230]})); }
-  if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:7, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
-  if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:7, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
+  if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
+  if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
@@ -2338,7 +2340,7 @@ function renderHood(){
   $("hoodName").textContent = m.name;
   const d = m.demand, label = d >= 1.8 ? "Hot market" : d >= 0.9 ? "Steady market" : "Soft market";
   $("hoodDemand").textContent = label + " · " + d.toFixed(1) + "×";
-  $("hoodHomes").textContent = fmt(m.homes);
+  $("hoodHomes").textContent = fmt(m.homes - ((m.gone && m.gone[1]) || 0));
   $("hoodAdded").textContent = A ? "+" + fmt(A.added) : "…";
   $("hoodReplaced").textContent = A ? fmt(A.replaced) : "…";
 }

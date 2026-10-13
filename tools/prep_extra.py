@@ -2,12 +2,14 @@
 
 Outputs (run from the repo root: python3 tools/prep_extra.py):
   b/extra.wasm   per-building byte, areas in meta.json order: ward number (bits 0-5, 0 = none)
+                 | 64 if the building is gone: the footprints are from 2013, and a parcel that is vacant today
+                   (Cook County class 100 in 2025, or city-owned land) sits inside it (small buildings only, not built 2000+)
                  | 128 if the building is within 1/4 mile of one of the busiest L stations (tower-eligible).
                  Layout: uint32 area count, then per area: uint32 num, uint32 N, N bytes.
   b/vacant.wasm  vacant parcels: uint32 nPrivate, uint32 nCity, then int32 (lon*1e6, lat*1e6) pairs, private first.
   wards.json     simplified 2023 ward outlines for the map.
-  meta.json      adds "busy" (stations used for the Tower level), "vacantByArea" {num: [private, city]}, per-area "sf" and "type",
-                 and "wardStats" {ward: [buildings, illegalToday]}.
+  meta.json      adds "busy" (stations used for the Tower level), "vacantByArea" {num: [private, city]}, per-area "sf", "type"
+                 and "gone" [buildings, homes] (on lots that are vacant today), and "wardStats" {ward: [buildings, illegalToday]}.
 Building order is untouched (it is the random seed)."""
 import json, struct, csv, os, collections
 import numpy as np
@@ -40,7 +42,39 @@ wf = json.load(open(os.path.join(RAW, 'wards2023.geojson')))['features']
 wards = [(int(f['properties']['ward']), shape(f['geometry'])) for f in wf]
 wtree = STRtree([g for _, g in wards])
 
+# ---- parcels that are vacant today: privately owned (Cook County class 100, 2025) and city-owned (still owned by the city)
+CHI = {'Hyde Park', 'Jefferson', 'Lake', 'Lake View', 'North Chicago', 'Rogers Park', 'South Chicago', 'West Chicago'}
+priv = [(float(r['lon']), float(r['lat'])) for r in csv.DictReader(open(os.path.join(RAW, 'cook_vacant_2025.csv')))
+        if r['township_name'] in CHI and r['lat'] and r['lon']]
+city = [(float(r['longitude']), float(r['latitude'])) for r in csv.DictReader(open(os.path.join(RAW, 'city_owned_land.csv')))
+        if r['property_status'] == 'Owned by City' and r.get('latitude') and r.get('longitude')]
+vac_all = np.array(priv + city)
+
 M_LAT = 111132.954
+def gone_in(num):
+    """Indices of small pre-2000 buildings that contain a parcel point that is vacant today (demolished since the 2013 footprints)."""
+    buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
+    N, V = struct.unpack_from('<II', buf, 0)
+    lon0, lat0 = struct.unpack_from('<dd', buf, 8)
+    q = np.frombuffer(buf, dtype='<i2', count=2 * V, offset=24).astype(np.float64) * 0.5
+    o = 24 + 4 * V
+    nv = np.frombuffer(buf, dtype=np.uint8, count=N, offset=o).astype(np.int64)
+    fl = np.frombuffer(buf, dtype=np.uint8, count=N, offset=o + 2 * N)
+    po = o + 3 * N + ((3 * N) % 2)
+    un = np.frombuffer(buf, dtype='<u2', count=N, offset=po)
+    fp = np.frombuffer(buf, dtype='<u2', count=N, offset=po + 2 * N).astype(np.float64) * 2
+    m_lon = M_LAT * np.cos(np.radians(lat0))
+    px = (vac_all[:, 0] - lon0) * m_lon; py = (vac_all[:, 1] - lat0) * M_LAT
+    sel = (np.abs(px) < 20000) & (np.abs(py) < 20000)
+    polys, s0 = [], 0
+    for i in range(N):
+        n = nv[i]; c = q[2 * s0:2 * (s0 + n)].reshape(-1, 2); s0 += n
+        polys.append(shapely.Polygon(c) if n >= 3 else shapely.Polygon())
+    tree = STRtree(polys)
+    _, ib = tree.query(shapely.points(px[sel], py[sel]), predicate='within')
+    g = sorted(set(int(b) for b in ib if fp[b] < 6000 and not (fl[b] & 8)))
+    return g, int(un[g].sum()) if g else 0
+
 def to_ll(num):
     buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
     N, V = struct.unpack_from('<II', buf, 0)
@@ -61,7 +95,7 @@ def to_ll(num):
 out = bytearray(struct.pack('<I', len(meta['areas'])))
 ward_b = collections.Counter(); ward_ill = collections.Counter()
 bl = np.array([[b['lon'], b['lat']] for b in busy])
-tower_n = 0
+tower_n = 0; gone_n = 0; gone_u = 0
 for a in meta['areas']:
     N, lon, lat, fl = to_ll(a['num'])
     pts = shapely.points(lon, lat)
@@ -74,21 +108,19 @@ for a in meta['areas']:
     near = (np.sqrt(dx * dx + dy * dy) <= 402).any(axis=1)
     tower_n += int(near.sum())
     w = w | (near.astype(np.uint8) << 7)
+    g, gu = gone_in(a['num'])
+    w[g] |= 64
+    a['gone'] = [len(g), gu]; gone_n += len(g); gone_u += gu
     for i in range(N):
         wd = w[i] & 63
-        if wd:
+        if wd and not (w[i] & 64):
             ward_b[int(wd)] += 1
             if fl[i] & 64: ward_ill[int(wd)] += 1
     out += struct.pack('<II', a['num'], N) + w.tobytes()
 open(os.path.join(ROOT, 'b', 'extra.wasm'), 'wb').write(out)
-print('extra.wasm', len(out), 'bytes; tower-eligible buildings', tower_n, '; buildings with a ward', sum(ward_b.values()))
+print('extra.wasm', len(out), 'bytes; tower-eligible buildings', tower_n, '; buildings with a ward', sum(ward_b.values()), '; gone (lot vacant today)', gone_n, 'buildings,', gone_u, 'homes')
 
-# ---- vacant parcels: privately owned (Cook County class 100, 2025) and city-owned (still owned by the city)
-CHI = {'Hyde Park', 'Jefferson', 'Lake', 'Lake View', 'North Chicago', 'Rogers Park', 'South Chicago', 'West Chicago'}
-priv = [(float(r['lon']), float(r['lat'])) for r in csv.DictReader(open(os.path.join(RAW, 'cook_vacant_2025.csv')))
-        if r['township_name'] in CHI and r['lat'] and r['lon']]
-city = [(float(r['longitude']), float(r['latitude'])) for r in csv.DictReader(open(os.path.join(RAW, 'city_owned_land.csv')))
-        if r['property_status'] == 'Owned by City' and r.get('latitude') and r.get('longitude')]
+# ---- vacant parcels (loaded above), counted per community area
 cas = [(f['properties']['num'], shape(f['geometry'])) for f in meta['outlines']['features']]
 ctree = STRtree([g for _, g in cas])
 def by_area(pts):
