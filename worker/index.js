@@ -4,7 +4,7 @@
 
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
-const CODE_RE = /^(u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]$/;
+const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-5]{77}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4}[0-2][0-4][0-3]{10})$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
@@ -21,6 +21,13 @@ export default {
 };
 
 function features(code){
+  if (code[1] === "6"){   // u6: one character per area (towers allowed downtown), then the same fields, then policy scopes
+    const f = {tod: +code[79], metra: +code[80], corr: +code[81], office: +code[82], str: +code[83], aro: +code[84], sub: +code[90], areas: 0};
+    for (let i = 2; i < 79; i++) if (code[i] !== "0") f.areas++;
+    const bits = B32.indexOf(code[85]) | (B32.indexOf(code[86]) << 5) | (B32.indexOf(code[87]) << 10) | (B32.indexOf(code[88]) << 15);
+    BIT_KEYS.forEach((k, i) => { f[k] = bits & (1 << i) ? 1 : 0; });
+    return f;
+  }
   const v5 = code[1] === "5";   // u5 has a 4th on/off character
   const f = {tod: +code[41], metra: +code[42], corr: +code[43], office: +code[44], str: +code[45], aro: +code[46], sub: +code[v5 ? 52 : 51], areas: 0};
   for (let i = 2; i < 41; i++){ const v = parseInt(code[i], 25); if (Math.floor(v / 5)) f.areas++; if (v % 5) f.areas++; }
