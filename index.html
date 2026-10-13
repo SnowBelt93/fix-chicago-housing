@@ -275,7 +275,7 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 }
 @media (min-width:860px){
   .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:440px;transform:translateX(-50%);text-align:center}
-  body.wide .comment{left:50%;top:auto;bottom:28px}
+  body.wide .comment{left:16px;width:400px;max-width:400px;transform:none;top:auto;bottom:16px}   /* expanded panel: comments sit over the map strip under the score card */
 }
 .cbox{position:relative;display:flex;flex-direction:column;gap:4px;background:var(--paper);border:2px solid var(--nav);border-top:5px solid var(--star,#e4002b);border-radius:14px;padding:12px 40px 12px 16px;box-shadow:0 14px 36px rgba(20,30,50,.30);font-size:13px;pointer-events:auto;transform-origin:50% 0}
 @media (min-width:860px){ .cbox{padding:12px 40px} body.wide .cbox{transform-origin:50% 100%} }
@@ -284,7 +284,7 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .cbox .ans{align-self:center;margin-top:4px;border:0;background:var(--nav);color:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .cbox .cx{position:absolute;top:4px;right:4px;width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--ink-2);font-size:22px;line-height:1;cursor:pointer}
 .cbox .cx:hover{background:rgba(43,93,160,.1);color:var(--nav)}
-.tip{position:fixed;z-index:12;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13.5px}
+.tip{position:fixed;z-index:12;box-sizing:border-box;background:var(--ink);color:#fff;border-radius:var(--r);padding:12px 14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13.5px}
 .tip b{display:block;font-family:var(--f-display,inherit);font-size:17px;margin:2px 0 3px}.tip p{margin:0 0 10px;color:#dfe5ee}
 .tip .step{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3cc}
 .tip .row{display:flex;justify-content:space-between;gap:8px}.tip .btn.quiet{color:#cfd8e4;background:transparent;border-color:rgba(255,255,255,.3)}
@@ -360,6 +360,12 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   body.wide #pane-zoning:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
   body.wide #pane-zoning > .row{grid-column:1 / -1;justify-content:center}
   body.wide #pane-zoning > .tool:nth-child(odd):nth-last-child(2){grid-column:1 / -1;justify-self:center;width:calc(50% - 7px)}
+  @media (max-width:1279px){   /* expanded panel on smaller laptops: one column so the level buttons don't squeeze, and tabs that fit */
+    body.wide #pane-zoning:not([hidden]){grid-template-columns:minmax(0,1fr)}
+    body.wide #pane-zoning > .tool:nth-child(odd):nth-last-child(2){width:auto;justify-self:stretch}
+    body.wide .sheet .tabs{padding:2px 104px 0 8px;justify-content:flex-start}
+    body.wide .sheet .tab{padding:11px 10px 12px;font-size:13px}
+  }
   body.wide #pane-zoning .tool{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin:0;border-top:1px solid var(--line)}
   /* Share: tools on the left, community on the right */
   body.wide #pane-share .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
@@ -412,6 +418,11 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 .hoodbanner span{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.15}
 .sheet.min ~ .legend,.sheet.min ~ .credit,.sheet.min ~ .toast{bottom:116px}
 .sheet.min ~ .hoodbanner{bottom:140px}
+@media (max-width:859px){
+  .credit{bottom:calc(min(46%, calc(100% - var(--hudH, 300px) - 22px)) + 10px)}
+  .legend{bottom:calc(min(46%, calc(100% - var(--hudH, 300px) - 22px)) + 38px);max-height:calc(100% - min(46%, calc(100% - var(--hudH, 300px) - 22px)) - 62px - var(--hudH, 300px));overflow:auto}
+  .sheet.min ~ .legend{bottom:144px;max-height:calc(100% - 168px - var(--hudH, 300px))}
+}
 .hoodcard{pointer-events:auto;max-width:420px;padding-right:40px}
 .hoodcard .hbx{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:22px;line-height:1;cursor:pointer}
 .hoodcard .hbx:hover{background:rgba(255,255,255,.14)}
@@ -564,6 +575,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 @keyframes sink{from{opacity:1;transform:none}to{opacity:0;transform:translateY(12px) scale(.98)}}
 @keyframes paneIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+#intro .card > .row:last-child{position:sticky;bottom:-18px;z-index:1;background:var(--paper);margin:0 0 -18px;padding:8px 0 18px}   /* short screens: the start button never scrolls out of view */
 .intro:not([hidden]){animation:fadeIn .22s ease-out}
 .intro:not([hidden]) > .card{animation:rise .34s cubic-bezier(.2,.8,.2,1)}
 .intro.closing{animation:fadeOut .2s ease-in forwards}
@@ -614,7 +626,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   </section>
 
   <section class="sheet" id="sheet">
-    <button class="grab" id="grab" aria-label="Expand or collapse the tool panel"></button>
+    <button class="grab" id="grab" aria-label="Show or hide the tool panel"></button>
     <button class="widebtn" id="wideBtn" type="button" aria-pressed="false" title="Expand the panel" aria-label="Expand or collapse the panel">⤢</button>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-pane="zoning">Build</button>
@@ -661,7 +673,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <div class="eyebrow">One neighborhood at a time</div>
-          <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick a neighborhood…</option></select>
+          <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick one…</option></select>
           <div id="hoodDetail" class="group" hidden>
             <div class="selname"><h2 id="hoodName"></h2><span class="chip" id="hoodDemand"></span></div>
             <div class="facts">
@@ -765,7 +777,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div class="facts">
             <div class="fact"><b id="trRiders">–</b><span>new daily transit commuters</span></div>
             <div class="fact"><b id="trRides">–</b><span>more rides a year</span></div>
-            <div class="fact"><b id="trFares">–</b><span>a year in fares</span></div>
+            <div class="fact"><b id="trFares">–</b><span id="trFaresLbl">a year in fares</span></div>
           </div>
           <p class="small" id="trText">Homes within a half mile of the L or Metra fill trains and buses. Near CTA stations with new development, 25.4% of commuters take the train and 12.5% the bus (<a href="https://www.chicago.gov/content/dam/city/sites/etod/Pdfs/ETOD-Appendix-C-9-13-20.pdf" target="_blank" rel="noopener">City of Chicago ETOD, 2020</a>). The CTA budgets $394M in fares on 317M rides for 2026, about $1.24 a ride (<a href="https://cst.brightspotcdn.com/9c/b0/c9bab8dc45b29c3a0aa9a418f543/fy2026-budget-book.pdf" target="_blank" rel="noopener">CTA 2026 budget</a>).</p>
         </div>
@@ -1031,7 +1043,7 @@ const TIERS = [
   {name:"6-flat", h:4, k:6, zone:"RM-5: 1 per 400 sq ft (up to 7)", color:[65,182,230], css:"var(--t2)", bars:[9,12,9]},
   {name:"Mid-rise", h:6, k:10, zone:"RM-6: 1 per 300 sq ft", color:[43,93,160], css:"var(--t3)", bars:[12,16,12]},
   {name:"High-rise", h:12, k:20, zone:"RM-6.5: 1 per 300 sq ft, or 1 studio per 135 (mix)", color:[20,51,95], css:"var(--t4)", bars:[14,22,18]},
-  {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations", color:[10,28,60], css:"var(--t5)", bars:[16,26,22]},
+  {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations and in the downtown core", color:[10,28,60], css:"var(--t5)", bars:[16,26,22]},
 ];
 // Tower level: busiest L stations only, and no faster than downtown's record leasing year (Integra Realty via Connect CRE, 2021)
 const TOWER_CAP = 6500 * 15;
@@ -1539,7 +1551,7 @@ function renderPolicies(){
     else if (P.key === "mega") g.textContent = (v ? "+" : "Would add +") + fmt(MEGA_TOTAL * MEGA_BUILT) + " homes";
     else if (P.key === "vac") g.textContent = (v ? "+" : "Would add +") + fmt(OTHER_VACANT * VAC_RETURN) + " homes";
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
-    else if (P.key === "down") g.textContent = (v ? "" : "Would cost ") + fmt(-CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS) + " homes Chicago builds anyway";
+    else if (P.key === "down"){ const c = CITY_PACE * WORSE_BASE.down * scopeShare("down") * YEARS; g.textContent = (v ? fmt(-c) : "Would cost " + fmt(c)) + " homes Chicago builds anyway"; }
   });
   $("pCount").textContent = on;
   document.querySelectorAll(".policy .scope select").forEach(sel => { sel.value = String(plan.scope[sel.dataset.k] || 0); });
@@ -1567,7 +1579,7 @@ function renderPolicies(){
       }
       if (WORSE_BASE[k] != null){
         const base = CITY_PACE * WORSE_BASE[k] * (SCOPED.includes(k) ? scopeShare(k) : 1) * YEARS, tot = Math.abs(m) + base;
-        d.textContent = (plan.p[k] ? "" : "Would cost ") + fmt(-tot) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning)" : " Chicago builds anyway");
+        d.textContent = (plan.p[k] ? fmt(-tot) : "Would cost " + fmt(tot)) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning)" : " Chicago builds anyway");
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
       if (k === "aro"){
@@ -1619,7 +1631,7 @@ let mythQueue = [];
 function maybeMyth(id){
   if (seenMyths.has(id) || !MYTHS[id]) return;
   seenMyths.add(id); lsSet("fch-myths", [...seenMyths]); renderMythList();
-  if (!$("myth").hidden || !$("result").hidden || !$("intro").hidden){ mythQueue.push(id); return; }
+  if (!$("myth").hidden || !$("result").hidden || !$("intro").hidden || !$("tip").hidden || tourPending){ mythQueue.push(id); return; }
   showMyth(id);
 }
 function showMyth(id){
@@ -1649,7 +1661,8 @@ const TOUR = [
 function startTour(){ tourPending = false; if (lsGet("fch-tour", false)) return; tourStep = 0; showTip(); }
 function showTip(){
   const T = TOUR[tourStep], tip = $("tip");
-  if (!T){ tip.hidden = true; lsSet("fch-tour", true); return; }
+  if (!T){ tip.hidden = true; lsSet("fch-tour", true); const n = mythQueue.shift(); if (n && $("myth").hidden) setTimeout(() => showMyth(n), 350); return; }
+  if (tourStep === 0 && plan.tod){ tourStep = 1; return showTip(); }   // already picked an L level: skip "start here"
   if (T.tab) showTab(T.tab);
   const target = T.el(); if (!target){ tourStep++; return showTip(); }
   $("tipT").textContent = T.t; $("tipB").textContent = T.b;
@@ -2224,7 +2237,8 @@ function afterZoning(t, kind, place){
   react(tallKind(t, kind || "low"), place);
   if (t >= 3) maybeMyth("lux");
 }
-function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); if (t === 5) maybeMyth("tower"); }
+function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); if (t === 5) maybeMyth("tower");
+  if (t && tourStep === 0 && !$("tip").hidden) setTimeout(() => { if (tourStep === 0 && !$("tip").hidden){ tourStep = 1; showTip(); } }, 1100); }
 function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(tallKind(t, "metra")); if (t >= 3) maybeMyth("lux"); } }
 function setSub(t){ const was = plan.sub; plan.sub = t; render(); if (t > was) react(tallKind(t, "metra")); }
 function setCorr(t){ const was = plan.corr; plan.corr = t; recompute(); if (t > was){ react("corr"); maybeMyth("density"); } }
@@ -2375,7 +2389,7 @@ function renderImpact(t){
   personaRows($("personas"), t.total);
   { const near = Math.max(0, t.walk), riders = near * TRANSIT_SHARE, rides = riders * RIDES_PER_COMMUTER, fares = rides * FARE_PER_RIDE;
     $("trRiders").textContent = fmt(riders); $("trRides").textContent = rides >= 1e6 ? (rides / 1e6).toFixed(1) + "M" : fmt(rides);
-    $("trFares").textContent = money(fares) + (fares >= 1 ? " (" + (fares / CTA_FARES * 100).toFixed(1) + "% of CTA fares)" : ""); }
+    $("trFares").textContent = money(fares); $("trFaresLbl").textContent = "a year in fares" + (fares >= 1 ? " (" + (fares / CTA_FARES * 100).toFixed(1) + "% of what CTA collects)" : ""); }
   renderWard();
 }
 let WARDS = null, wardSel = +(lsGet("fch-ward", 0)) || 0, wardShown = false;
@@ -2402,10 +2416,14 @@ $("wdShow").addEventListener("click", async (e) => {
   flyTo(W.lon, W.lat, isWide() ? 13.2 : 12.6);
 });
 
+const paneScroll = {};   // each tab keeps its own scroll position (they share one scroller)
 function showTab(name){
   if (name === "policies" && $("pane-policies").hidden) sortPolicies();
+  const P = ["zoning","policies","missions","impact","share","math"], sc = document.querySelector(".panes"), cur = P.find(p => !$("pane-" + p).hidden);
+  if (sc && cur && cur !== name) paneScroll[cur] = sc.scrollTop;
   document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.pane === name)));
-  ["zoning","policies","missions","impact","share","math"].forEach(p => { $("pane-" + p).hidden = p !== name; });
+  P.forEach(p => { $("pane-" + p).hidden = p !== name; });
+  if (sc && cur !== name) sc.scrollTop = paneScroll[name] || 0;
 }
 document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => { showTab(b.dataset.pane); openSheet(); }));
 function syncSeg(seg){
