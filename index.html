@@ -863,7 +863,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 <div><dt>What each zoning level allows</dt>
             <dd><div style="overflow-x:auto"><table><thead><tr><th>Level</th><th>Stories</th><th>Homes on a 25×125 lot</th><th>Based on Chicago zoning</th></tr></thead><tbody id="tierTable"></tbody></table></div><span class="small">Homes per lot follow the minimum lot area per home in the <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48908" target="_blank" rel="noopener">Chicago Zoning Ordinance §17-2-0303</a>. A 25×125 ft (3,125 sq ft) lot is the city standard (<a href="https://www.chipublib.org/blogs/post/technology-that-changed-chicago-subdivisions/" target="_blank" rel="noopener">Chicago Public Library</a>).</span></dd></div>
           <div><dt>How the game decides what gets built</dt>
-            <dd>A rezoned lot can rebuild if it holds homes, or a small one- or two-story shop lot with a street address on a commercial corridor or within ¼ mile of the L (parks, museums, field houses and named landmarks are never touched), was built before 2000, is shorter than the new limit, sits on a lot under about 40,000 sq ft, and the new building adds at least one home. Within 15 years, 6% of those lots rebuild, times a neighborhood demand factor from 0.3× to 2.5× (its share of buildings built since 1990 vs. the city average, from the city's building data). Which lots rebuild is a fixed random draw, so the map and the count always match.</dd></div>
+            <dd>A rezoned lot can rebuild if it holds homes, or a small one- or two-story shop lot with a street address on a commercial corridor or within ¼ mile of the L (parks, museums, field houses and named landmarks are never touched), was built before 2000, is shorter than the new limit, sits on a lot under about 40,000 sq ft, and the new building adds at least one home. How many rebuild within 15 years comes from Chicago's own record. Each neighborhood has a demand factor from 0.3× to 2.5× (its share of buildings built since 1990 vs. the city average, from the city's building data). Matching 2013–2025 new-construction permits to the small homes standing in 2013 (<a href="https://data.cityofchicago.org/Buildings/Building-Permits/ydr8-5enu" target="_blank" rel="noopener">City of Chicago building permits</a>), lots where today's zoning already allowed more homes were torn down and rebuilt at these 15-year rates: about 0.4% in the softest markets, 3% at average demand and 7.4% in the hottest. The game doubles those rates for rezoned lots: in Auckland, permits in upzoned areas went from roughly 3,000 a year in 2016 to about 14,500 in 2021, an estimated 21,800 more homes than the trend (<a href="https://cowles.yale.edu/sites/default/files/2024-02/p1863.pdf" target="_blank" rel="noopener">Greenaway-McGrevy &amp; Phillips, 2023</a>), and in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often as lots in similar markets that didn't, except in the hottest neighborhoods, where teardowns are common either way. So a rezoned lot rebuilds with about a 0.8% chance in the softest markets, 6% at average demand and 15% in the hottest. Which lots rebuild is a fixed random draw, so the map and the count always match.</dd></div>
           <div><dt>If nothing changes</dt>
             <dd>Chicago keeps permitting about 4,900 homes a year (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data, 2025</a>), but the regional shortage keeps growing about 8,760 homes a year, Zillow's 2023→2024 change (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Mann Report</a>). Rents rise 3.4% a year, Chicago's 2025 asking-rent growth (<a href="https://www.matthews.com/market_insights/chicago-il-multifamily-market-report-q4-2025" target="_blank" rel="noopener">CoStar via Matthews</a>). Both trends are held flat for 15 years.</dd></div>
           <div><dt>Rent effect</dt>
@@ -883,7 +883,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
           <div><dt>Game assumptions (not measured)</dt>
             <dd>These are judgment calls, labeled everywhere they're used:
               <ul style="margin:6px 0 0;padding-left:18px">
-                <li>6% of eligible lots rebuild in 15 years before the demand factor; lot size = 2× building footprint.</li>
+                <li>Rezoning doubles the rebuild rate Chicago saw from 2013 to 2025 on lots where more homes were already allowed (the measured rates and the case for doubling are under "How the game decides what gets built"); lot size = 2× building footprint.</li>
                 <li>Short-term rental limits return 10% (precinct bans) or 50% (primary-residence rule) of entire-home listings.</li>
                 <li>Coach houses: pilot pace doubled when every ward allows them by right.</li>
                 <li>Half of city-owned vacant lots get a 2-flat; 10% of "other vacant" homes return under an empty-homes tax.</li>
@@ -1049,7 +1049,19 @@ const SHARE_BASE = (location.protocol.startsWith("http") && !/claude|anthropic|u
   ? location.origin + location.pathname   // hosted on its own site
   : "https://claude.ai/artifact/XHPMwjqFSW9C4Rbmg8Xe81";
 const YEAR_MS = 700;   // one simulated year; buildings rise continuously across it
-const STOCK = 1282248, ELASTICITY = 0.19, MEDIAN_RENT = 1440, BASE = 0.06, STD_LOT = 3125, FLOOR_M = 3.5, YEARS = 15, START = 2026;
+const STOCK = 1282248, ELASTICITY = 0.19, MEDIAN_RENT = 1440, STD_LOT = 3125, FLOOR_M = 3.5, YEARS = 15, START = 2026;
+// Chance a rezoned lot is rebuilt within 15 years, by neighborhood demand factor. Each point is [demand, share]: the share of
+// Chicago's small pre-2000 home lots that today's zoning already allowed to hold more homes and that were torn down and rebuilt
+// in 2013–2025 (city building permits, corrected for the 87% of known rebuilds the matching finds, scaled to 15 years;
+// tools/calibrate_rebuild.py). Between points the rate is interpolated; outside them it stays flat.
+const REBUILD_OBS = [[0.38, 0.0042], [0.66, 0.0071], [0.97, 0.0304], [1.40, 0.0610], [2.40, 0.0736]];
+const UPZONE_LIFT = 2;   // assumption: rezoning doubles that rate (Auckland; in Chicago, lots that already allowed more were rebuilt 1.5–2.2× as often in most markets)
+const rebuildRate = d => {
+  const P = REBUILD_OBS; let r = P[P.length - 1][1];
+  if (d <= P[0][0]) r = P[0][1];
+  else for (let k = 1; k < P.length; k++) if (d <= P[k][0]){ r = P[k-1][1] + (P[k][1] - P[k-1][1]) * (d - P[k-1][0]) / (P[k][0] - P[k-1][0]); break; }
+  return r * UPZONE_LIFT;
+};
 const GAP_GROWTH = 8760, RENT_GROWTH = 0.034, WAGE_GROWTH = 0.032, CITY_PACE = 4900, RENT_1BR = 1745;
 const TIERS = [
   {name:"Today", h:0, k:0, color:null, bars:[0,0,0]},
@@ -1098,7 +1110,7 @@ const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 86, 297, 605, 1332];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
+const SUB_PER_STATION = [0, 83, 287, 578, 1272];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
@@ -1435,7 +1447,7 @@ function compute(A, statsOnly){
   const sig = encodePlan(plan) + "|" + towerScale + "|" + (showIllegal || introHook ? 1 : 0) + "|" + (A.ext ? 1 : 0) + (A.vk || 0);
   if (!statsOnly && A.sig === sig && A.statSig === sig && A.projects){ showYear(A); return; }
   const T0 = tierFor(A.num), P = plan.p, n = A.n;
-  const p0 = BASE * A.demand * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
+  const p0 = rebuildRate(A.demand) * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
   const officeShare = OFFICE_SHARE[plan.office];
   let addedNow = 0, added = 0, replaced = 0, touched = 0, walk = 0, aff = 0, tower = 0;
   const wardHomes = new Float64Array(51);
