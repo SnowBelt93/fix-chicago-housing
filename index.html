@@ -35,6 +35,7 @@
   color-scheme:light;
 }
 html,body{height:100%}
+html{background:#fff}
 body{margin:0;background:var(--table);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.4;overflow:hidden;-webkit-font-smoothing:antialiased}
 #app{position:relative;height:100%;overflow:hidden}
 #map{position:absolute;inset:0;background:var(--table)}
@@ -895,7 +896,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
                 <li>Empty land: lots that are vacant today can be built on when you rezone them, with no homes to replace. That's 25,678 privately owned vacant parcels with no building on them (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a>, 2025), each taken as one standard 25×125 ft lot, plus 8,976 lots where a home or small shop stood in 2013 but nothing stands today. An empty lot is 1.5× as likely to get built as an occupied one, since it earns nothing and there's nothing to tear down. City-owned lots stay with the city-lots policy, and the vacant-lot policy only counts parcels the zoning hasn't already built on.</li>
-                <li>Land assembly: bigger buildings need bigger sites, so a mid-rise project buys up neighboring lots on the same block face until it has about 5,000 sq ft of land (two city lots), a high-rise about 7,500 (three) and a tower about 15,000 (six). Lots that are vacant today count. If the neighbors can't be bought (newer buildings, already taller, or zoned lower), or the site is too narrow (under about 40 ft for a high-rise or 65 ft for a tower), it builds the biggest level its land allows. Each lot's chance of redeveloping stays the same; projects just come in fewer, bigger pieces.</li>
+                <li>Land assembly: bigger buildings need bigger sites, so a mid-rise project buys up the lots next door on the same block face (no skipping across a side street or a gap) until it has about 5,000 sq ft of land (two city lots), a high-rise about 7,500 (three) and a tower about 15,000 (six). Lots that are vacant today count. If the neighbors can't be bought (newer buildings, already taller, or zoned lower), or the site is too narrow (under about 30 ft for a mid-rise, 40 ft for a high-rise or 65 ft for a tower), it builds the biggest level its land allows. New buildings sit square to the street on the old footprints and only grow back toward the alley, never into a street. Each lot's chance of redeveloping stays the same; projects just come in fewer, bigger pieces.</li>
                 <li>Building size: each new building's floor area is its homes × 1,026 sq ft (the same per-home figure used for office conversions, which includes halls and walls). Drawn heights vary from project to project (6-flat 3–4 stories, mid-rise 5–6, high-rise 9–12, tower 25–36), and a building only spreads wider once it reaches its zoning height. Towers sit on a 4-story podium.</li>
                 <li>Tower level: about 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at about 6,500 apartments a year, near downtown's best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
                 <li>Vacant-lot gap financing: 15% of the ~31,000 privately owned vacant parcels (<a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j" target="_blank" rel="noopener">Cook County Assessor, 2025</a>, class 100) get a 2-flat by 2041 at up to $150,000 of subsidy per home (Missing Middle's cap, <a href="https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/" target="_blank" rel="noopener">Hoodline</a>), and rezoned projects in soft markets are 50% more likely.</li>
@@ -1093,7 +1094,7 @@ const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 87, 299, 630, 1406];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
+const SUB_PER_STATION = [0, 86, 297, 605, 1332];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
@@ -1179,7 +1180,7 @@ function tierFlags(A, f, busy, small, T0){
 // Land assembly (assumption): bigger buildings need bigger sites, so a project at these levels buys its neighbours along the
 // block face until it has this much lot (sq ft). If it can't, it builds the biggest level its land allows.
 const SITE_MIN = [0, 0, 0, 5000, 7500, 15000];      // mid-rise ~2 city lots (50 ft of frontage), high-rise ~3 (75 ft), tower ~6 (150 ft)
-const SITE_WIDTH = [0, 0, 0, 0, 12, 20];            // metres: narrowest side a high-rise / tower site can have (narrower sites build lower)
+const SITE_WIDTH = [0, 0, 0, 9, 12, 20];            // metres: narrowest side a mid-rise / high-rise / tower site can have (narrower sites build lower)
 const SITE_R = 35;                                  // metres: close enough to be the same block face, not across the alley or street
 const SITE_MAX = 10;                                // lots in one site at most
 const SQFT_HOME = 1026;                             // building floor area per home, incl. halls and walls (same figure as office conversions)
@@ -1203,19 +1204,116 @@ function siteGrid(A){
   }
   A.cx = cx; A.cy = cy; A.grid = g; A.nb = new Map();
 }
+const NB_D = new Float64Array(512), NB_J = new Int32Array(512);   // scratch for nearby()
 function nearby(A, i){   // neighbours within SITE_R, nearest first (cached per building)
   siteGrid(A);
   let out = A.nb.get(i); if (out) return out;
-  const x = A.cx[i], y = A.cy[i], gx = Math.floor(x / 25), gy = Math.floor(y / 25), c2 = [];
+  const x = A.cx[i], y = A.cy[i], gx = Math.floor(x / 25), gy = Math.floor(y / 25), R2 = SITE_R * SITE_R;
+  let m = 0;
   for (let dx = -2; dx <= 2; dx++) for (let dy = -2; dy <= 2; dy++){
     const c = A.grid.get((gx + dx) * 4096 + gy + dy); if (!c) continue;
-    for (const j of c){ if (j === i) continue; const d = (A.cx[j] - x) ** 2 + (A.cy[j] - y) ** 2; if (d <= SITE_R * SITE_R) c2.push([d, j]); }
+    for (let q = 0; q < c.length; q++){
+      const j = c[q]; if (j === i) continue;
+      const ex = A.cx[j] - x, ey = A.cy[j] - y, d = ex * ex + ey * ey; if (d > R2 || m >= 512) continue;
+      let k = m++; while (k > 0 && NB_D[k - 1] > d){ NB_D[k] = NB_D[k - 1]; NB_J[k] = NB_J[k - 1]; k--; }   // insertion sort: lists are short
+      NB_D[k] = d; NB_J[k] = j;
+    }
   }
-  out = c2.sort((a, b) => a[0] - b[0]).map(e => e[1]);
+  out = NB_J.slice(0, m);
   A.nb.set(i, out); return out;
 }
-// the site's buildable box: lined up with the block face (or the building, for one lot), stretched along the lot depth
-// toward 80% of the site's land (at most double the buildings' depth). u = along the face, v = depth.
+// Street centrelines for keeping new buildings off the streets: one grid of segments for the whole city (50 m cells, built
+// once streets have loaded), queried as points every 2.5 m inside a box in an area's local metres, with the street's half-width.
+const STREET_HALF = [10, 20, 13, 11, 10];   // metres from the centreline to the property line: expressway, arterial (80–100 ft), collector, local (66 ft)
+function streetSegs(){
+  if (STREETS.sgs) return STREETS.sgs;
+  const R = STREETS.raw; let ns = 0;
+  for (let p = 0; p < R.P; p++) ns += Math.max(0, R.starts[p + 1] - R.starts[p] - 1);
+  const SG = new Float32Array(5 * ns), cells = new Map(); let k = 0;
+  for (let p = 0; p < R.P; p++){
+    const h = STREET_HALF[R.cls[p]] || 10;
+    for (let v = R.starts[p]; v < R.starts[p + 1] - 1; v++, k++){
+      const x1 = R.xy[2 * v] * 2, y1 = R.xy[2 * v + 1] * 2, x2 = R.xy[2 * v + 2] * 2, y2 = R.xy[2 * v + 3] * 2;
+      SG[5 * k] = x1; SG[5 * k + 1] = y1; SG[5 * k + 2] = x2; SG[5 * k + 3] = y2; SG[5 * k + 4] = h;
+      const m = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 10)); let last = NaN;
+      for (let t = 0; t <= m; t++){
+        const key = Math.floor((x1 + (x2 - x1) * t / m) / 50) * 8192 + Math.floor((y1 + (y2 - y1) * t / m) / 50);
+        if (key === last) continue; last = key;
+        let c = cells.get(key); if (!c) cells.set(key, c = []); if (c[c.length - 1] !== k) c.push(k);
+      }
+    }
+  }
+  return (STREETS.sgs = {S: SG, cells, stamp: new Int32Array(ns), q: 0});
+}
+function streetPtsIn(A, x0, y0, x1, y1, fn){   // fn(x, y, halfWidth) for centreline points in the box; false if streets aren't loaded
+  if (!STREETS || !STREETS.raw) return false;
+  const G = streetSegs(), SG = G.S;
+  if (!A.sxf){ const [olon, olat] = STREETS.origin, [alon, alat] = A.origin, ok = 111319.49 * Math.cos(olat * Math.PI / 180), ak = 111319.49 * Math.cos(alat * Math.PI / 180); A.sxf = [(alon - olon) * ok, (alat - olat) * 111319.49, ok / ak]; }
+  const dx = A.sxf[0], dy = A.sxf[1], r = A.sxf[2], X0 = dx + x0 * r, X1 = dx + x1 * r, Y0 = dy + y0, Y1 = dy + y1, q = ++G.q;
+  for (let gx = Math.floor(X0 / 50); gx <= Math.floor(X1 / 50); gx++) for (let gy = Math.floor(Y0 / 50); gy <= Math.floor(Y1 / 50); gy++){
+    const c = G.cells.get(gx * 8192 + gy); if (!c) continue;
+    for (const k of c){
+      if (G.stamp[k] === q) continue; G.stamp[k] = q;
+      const ax = SG[5 * k], ay = SG[5 * k + 1], ex = SG[5 * k + 2] - ax, ey = SG[5 * k + 3] - ay;
+      let t0 = 0, t1 = 1;   // clip the segment to the box (Liang–Barsky)
+      const clip = (pp, qq) => { if (pp === 0) return qq >= 0; const t = qq / pp; if (pp < 0){ if (t > t1) return false; if (t > t0) t0 = t; } else { if (t < t0) return false; if (t < t1) t1 = t; } return true; };
+      if (!clip(-ex, ax - X0) || !clip(ex, X1 - ax) || !clip(-ey, ay - Y0) || !clip(ey, Y1 - ay)) continue;
+      const L = Math.hypot(ex, ey) * (t1 - t0), m = Math.max(1, Math.ceil(L / 2.5));
+      for (let s = 0; s <= m; s++){ const t = t0 + (t1 - t0) * s / m; fn((ax + ex * t - dx) / r, ay + ey * t - dy, SG[5 * k + 4]); }
+    }
+  }
+  return true;
+}
+// Each lot's street axes: Chicago buildings sit square to the street grid, so one of a building's edge directions runs along
+// the block face and the other runs back along the lot depth. The face is the direction its neighbours line up along.
+function axesOf(A, i){   // fills A.ax[2i], A.ax[2i+1] (face direction) and returns A.ax
+  siteGrid(A);
+  const NK = A.n + (A.vk || 0);
+  if (!A.ax || A.ax.length !== 2 * NK){ A.ax = new Float32Array(2 * NK); A.ax.fill(NaN); }
+  if (!isNaN(A.ax[2 * i])) return A.ax;
+  const P = A.data.attributes.getPolygon.value, S = A.data.startIndices, nb = nearby(A, i);
+  let ref = i;
+  if (i >= A.n){ ref = -1; for (const j of nb) if (j < A.n){ ref = j; break; } }   // a vacant parcel: borrow the nearest building's edges
+  let ex = 0, ey = 1, best = 0;
+  if (ref >= 0) for (let k = S[ref]; k < S[ref + 1]; k++){
+    const k2 = k + 1 < S[ref + 1] ? k + 1 : S[ref], dx = P[2 * k2] - P[2 * k], dy = P[2 * k2 + 1] - P[2 * k + 1], l = dx * dx + dy * dy;
+    if (l > best){ best = l; const r = Math.sqrt(l); ex = dx / r; ey = dy / r; }
+  }
+  // the longest edge is usually the depth; check against how the neighbours line up
+  let sa = 0, sb = 0;
+  for (const j of nb){ const ox = A.cx[j] - A.cx[i], oy = A.cy[j] - A.cy[i]; sa += Math.abs(ox * ex + oy * ey); sb += Math.abs(-ox * ey + oy * ex); }
+  let fx = -ey, fy = ex;                    // face = perpendicular to the longest edge…
+  if (nb.length >= 2 && sa > sb){ fx = ex; fy = ey; }   // …unless the neighbours line up along the longest edge
+  A.ax[2 * i] = fx; A.ax[2 * i + 1] = fy;
+  return A.ax;
+}
+const ROW_TOL = 10;   // metres: a neighbour on the same block face sits within this of the anchor along the lot depth
+const SITE_GAP = 9;   // metres: lots in one site must be next door (a side yard or one empty lot at most; a street is 20+ m)
+// neighbours on the same block face (within ROW_TOL along the depth), nearest first, with their extents along the face (cached)
+function rowOf(A, i){
+  if (!A.rowC) A.rowC = new Map();
+  let R = A.rowC.get(i); if (R) return R;
+  const AX = axesOf(A, i), fx = AX[2 * i], fy = AX[2 * i + 1], ax = A.cx[i], ay = A.cy[i];
+  const js = [], lo = [], hi = [];
+  for (const j of nearby(A, i)){
+    if (Math.abs((A.cx[j] - ax) * -fy + (A.cy[j] - ay) * fx) > ROW_TOL) continue;   // same block face: not behind the alley or across the street
+    faceSpan(A, j, fx, fy); js.push(j); lo.push(SPAN0); hi.push(SPAN1);
+  }
+  faceSpan(A, i, fx, fy);
+  R = {js: Int32Array.from(js), lo: Float32Array.from(lo), hi: Float32Array.from(hi), s0: SPAN0, s1: SPAN1};
+  A.rowC.set(i, R); return R;
+}
+let SPAN0 = 0, SPAN1 = 0;   // faceSpan() writes its result here (no allocation in the hot loop)
+const MB = new Int32Array(16);   // scratch: the lots in the site being assembled
+function faceSpan(A, j, fx, fy){   // a building's (or vacant parcel's) extent along the block face
+  const c = A.cx[j] * fx + A.cy[j] * fy;
+  if (j >= A.n){ SPAN0 = c - 3.8; SPAN1 = c + 3.8; return; }
+  const P = A.data.attributes.getPolygon.value, S = A.data.startIndices;
+  let lo = Infinity, hi = -Infinity;
+  for (let k = S[j]; k < S[j + 1]; k++){ const u = P[2 * k] * fx + P[2 * k + 1] * fy; if (u < lo) lo = u; if (u > hi) hi = u; }
+  SPAN0 = lo; SPAN1 = hi;
+}
+// the site's footprint box: the assembled lots' existing footprints, square to the street (u = along the face, v = depth)
 function siteBox(A, members, siteLot){
   siteGrid(A);
   const ck = members[0] + "," + members.length + "," + members[members.length - 1] + "," + siteLot;
@@ -1223,51 +1321,115 @@ function siteBox(A, members, siteLot){
   const hit = A.boxC.get(ck); if (hit) return hit;
   const r = siteBox0(A, members, siteLot); A.boxC.set(ck, r); return r;
 }
+const STP = new Float64Array(3 * 4096);   // scratch: street points near a site, in its (u, v) axes, with half-widths
 function siteBox0(A, members, siteLot){
-  const P = A.data.attributes.getPolygon.value, S = A.data.startIndices, a = members[0];
-  let ux = 1, uy = 0;
-  if (members.length > 1){   // face direction: from the first building to the farthest one
-    let far = a, fd = -1;
-    for (const m of members){ const d = (A.cx[m] - A.cx[a]) ** 2 + (A.cy[m] - A.cy[a]) ** 2; if (d > fd){ fd = d; far = m; } }
-    const dx = A.cx[far] - A.cx[a], dy = A.cy[far] - A.cy[a], r = Math.hypot(dx, dy) || 1; ux = dx / r; uy = dy / r;
-  } else {                   // one lot: the building's shorter side faces the street, so depth runs along its longest edge
-    let best = 0, ref = a;
-    if (a >= A.n){ ref = -1; for (const j of nearby(A, a)) if (j < A.n){ ref = j; break; } }   // a vacant parcel: line up with the nearest building
-    if (ref >= 0) for (let k = S[ref]; k < S[ref + 1]; k++){
-      const k2 = k + 1 < S[ref + 1] ? k + 1 : S[ref], dx = P[2 * k2] - P[2 * k], dy = P[2 * k2 + 1] - P[2 * k + 1], l = dx * dx + dy * dy;
-      if (l > best){ best = l; const r = Math.sqrt(l); ux = -dy / r; uy = dx / r; }
-    }
-  }
-  const vx = -uy, vy = ux;
-  let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
+  const P = A.data.attributes.getPolygon.value, S = A.data.startIndices;
+  const AX = axesOf(A, members[0]), ux = AX[2 * members[0]], uy = AX[2 * members[0] + 1], vx = -uy, vy = ux;
+  let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity, mu = 0, mv = 0;
   const ext = (x, y) => { const u = x * ux + y * uy, v = x * vx + y * vy; if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v; };
   for (const m of members){
+    mu += A.cx[m] * ux + A.cy[m] * uy; mv += A.cx[m] * vx + A.cy[m] * vy;
     if (m < A.n){ for (let k = S[m]; k < S[m + 1]; k++) ext(P[2 * k], P[2 * k + 1]); continue; }
-    const x = A.cx[m], y = A.cy[m];   // a vacant parcel: 25 ft of frontage, 125 ft deep (7.6 × 38 m)
-    for (const [du, dv] of [[-3.8, -19], [3.8, 19]]) ext(x + du * ux + dv * vx, y + du * uy + dv * vy);
+    const x = A.cx[m], y = A.cy[m];   // a vacant parcel: a typical footprint on a 25×125 ft lot (7.6 m wide, 19 m deep), centred on the lot
+    for (const [du, dv] of [[-3.8, -9.5], [3.8, 9.5]]) ext(x + du * ux + dv * vx, y + du * uy + dv * vy);
   }
-  const W = Math.max(u1 - u0, 1), D0 = Math.max(v1 - v0, 1), D = Math.max(D0, siteLot * 0.0929 * 0.85 / W);   // lot area ÷ frontage ≈ lot depth
-  const cv = (v0 + v1) / 2;
-  return {ux, uy, vx, vy, cu: (u0 + u1) / 2, cv, W, D};
+  mu /= members.length; mv /= members.length;
+  // street centreline points near the site (once per site, into a scratch buffer)
+  let ns = 0;
+  { const cx = (u0 + u1) / 2 * ux + (v0 + v1) / 2 * vx, cy = (u0 + u1) / 2 * uy + (v0 + v1) / 2 * vy, pad = 45;
+    const hx = Math.abs(ux) * (u1 - u0) / 2 + Math.abs(vx) * (v1 - v0) / 2 + pad, hy = Math.abs(uy) * (u1 - u0) / 2 + Math.abs(vy) * (v1 - v0) / 2 + pad;
+    streetPtsIn(A, cx - hx, cy - hy, cx + hx, cy + hy, (x, y, h) => { if (ns < STP.length) { STP[ns] = x * ux + y * uy; STP[ns + 1] = x * vx + y * vy; STP[ns + 2] = h; ns += 3; } }); }
+  // the box over old footprints can still reach a street (an odd-shaped lot, a diagonal street like Milwaukee or the Kennedy):
+  // trim the side facing the street, away from the buildings
+  const U0 = u0, U1 = u1, V0 = v0, V1 = v1;
+  const trim = (tight) => {
+    for (let q = 0; q < ns; q += 3){
+      const pu = STP[q], pv = STP[q + 1], m = tight ? 2 : STP[q + 2] - 4;
+      if (pu <= u0 - m || pu >= u1 + m || pv <= v0 - m || pv >= v1 + m) continue;
+      const nv0 = pv < mv ? Math.max(v0, pv + m) : v0, nv1 = pv < mv ? v1 : Math.min(v1, pv - m);
+      const nu0 = pu < mu ? Math.max(u0, pu + m) : u0, nu1 = pu < mu ? u1 : Math.min(u1, pu - m);
+      if ((u1 - u0) * ((v1 - v0) - (nv1 - nv0)) <= (v1 - v0) * ((u1 - u0) - (nu1 - nu0))){ v0 = nv0; v1 = nv1; } else { u0 = nu0; u1 = nu1; }
+    }
+  };
+  if (ns){
+    trim(false);
+    if (u1 - u0 < 5 || v1 - v0 < 5){ u0 = U0; u1 = U1; v0 = V0; v1 = V1; trim(true); }   // a lot right beside a wide street: just stay off it
+    if (u1 - u0 < 5 || v1 - v0 < 5){ u0 = U0; u1 = U1; v0 = V0; v1 = V1; }             // nothing sensible left: keep the old footprints
+  }
+  const cu = (u0 + u1) / 2, W = Math.max(u1 - u0, 4);
+  // which way is the back of the lot? Houses sit near the street, so the row across the street is closer than the row
+  // across the alley. Grow toward the side with more room, never toward the street.
+  let clrP = 60, clrM = 60;
+  const bx = cu * ux + ((v0 + v1) / 2) * vx, by = cu * uy + ((v0 + v1) / 2) * vy, EX = A.ext || null;
+  const rx = Math.abs(ux) * W / 2 + Math.abs(vx) * (v1 - v0) / 2 + 40, ry = Math.abs(uy) * W / 2 + Math.abs(vy) * (v1 - v0) / 2 + 40;   // far enough for the 24 m cap
+  for (let gx = Math.floor((bx - rx) / 25); gx <= Math.floor((bx + rx) / 25); gx++) for (let gy = Math.floor((by - ry) / 25); gy <= Math.floor((by + ry) / 25); gy++){
+    const c = A.grid.get(gx * 4096 + gy); if (!c) continue;
+    for (const j of c){
+      if (j >= A.n || (EX !== null && (EX[j] & 64)) || members.indexOf(j) >= 0) continue;   // empty land isn't in the way
+      const uj = A.cx[j] * ux + A.cy[j] * uy, vj = A.cx[j] * vx + A.cy[j] * vy;
+      if (Math.abs(uj - cu) > W / 2 + 2) continue;
+      if (vj > v1) clrP = Math.min(clrP, vj - v1 - 5); else if (vj < v0) clrM = Math.min(clrM, v0 - vj - 5);
+    }
+  }
+  // and never past the street: stay a metre short of the property line
+  let stP = Infinity, stM = Infinity;
+  for (let q = 0; q < ns; q += 3){
+    const uj = STP[q], vj = STP[q + 1], h = STP[q + 2];
+    if (uj < u0 - 4 || uj > u1 + 4) continue;   // behind or in front of the site (a side street can run alongside)
+    if (vj >= v1) stP = Math.min(stP, vj - v1 - h - 1); else if (vj <= v0) stM = Math.min(stM, v0 - vj - h - 1);
+  }
+  const capP = Math.min(clrP - 8, stP), capM = Math.min(clrM - 8, stM);
+  const back = capP >= capM ? 1 : -1, room = Math.max(0, Math.min(Math.max(capP, capM), 24));
+  return {ux, uy, vx, vy, cu, cv: (v0 + v1) / 2, W, D: Math.max(v1 - v0, 6), back, room};
 }
-// the new building, sized so floor area = homes × SQFT_HOME: footprint fills the box up to what's needed; if the box is too
-// small, it goes taller. Towers: a 4-story podium over the box and a tower holding the homes.
+// the new building, sized so floor area = homes × SQFT_HOME, and kept inside the old buildings' footprints: it gets shallower
+// to be as short as its drawn height, or taller (then a little deeper, at most 4 m each way) when the footprints are small.
+// Towers: a 4-story podium over the footprints and a tower holding the homes.
 function siteShape(A, pr){
   const b = pr.box, area = pr.gross * SQFT_HOME * 0.0929;      // m² of floor area
   const rect = (cu, cv, w, d) => [[cu - w / 2, cv - d / 2], [cu + w / 2, cv - d / 2], [cu + w / 2, cv + d / 2], [cu - w / 2, cv + d / 2]].map(([u, v]) => [u * b.ux + v * b.vx, u * b.uy + v * b.vy]);
-  const c = pr.t === 5 ? 7 : pr.t, W = Math.max(b.W - 1.2, 4), D = Math.max(b.D - 1.2, 4);
+  const c = pr.t === 5 ? 7 : pr.t, W = Math.max(b.W - 0.8, 4), D0 = Math.max(b.D - 0.8, 6);
+  const deeper = (D) => b.cv + b.back * (D - D0) / 2;   // grow toward the back of the lot, keep the street side where it was
   let st = drawnStories(pr.t, hash01(pr.members[0], A.num + 733));
   if (pr.t !== 5){
-    if (area / st > W * D) st = Math.min(TIERS[pr.t].h, Math.ceil(area / (W * D)));   // go up to the zoning limit before spreading out
-    const need = area / st, d = Math.min(Math.max(D, need / W), Math.max(need / W, pr.t >= 3 ? 18 : 12));   // a sensible depth, not a thin slab
-    return [{p: rect(b.cu, b.cv, Math.min(W, need / d), d), full: st * FLOOR_M, c, g: pr.gross}];
+    const dMin = Math.min(D0, pr.t >= 3 ? 18 : 10);          // a real apartment building is at least this deep
+    let D = D0, w = W;
+    if (area / st <= W * D0){                                 // room to spare: keep a real depth and use only the frontage it needs
+      D = Math.max(dMin, Math.min(D0, area / (st * W)));
+      w = Math.min(W, Math.max(area / (st * D), Math.min(W, 7.6)));
+      st = Math.max(1, Math.round(area / (w * D)));
+    } else {                                                  // footprints too small for that height: go up to the zoning height, then deepen toward the back
+      st = Math.min(TIERS[pr.t].h, Math.ceil(area / (W * D0)));
+      D = Math.min(Math.max(D0, area / (st * W)), D0 + b.room);
+      st = Math.max(st, Math.ceil(area / (W * D)));
+    }
+    return [{p: rect(b.cu, D > D0 ? deeper(D) : b.cv, w, D), full: st * FLOOR_M, c, g: pr.gross}];
   }
-  let floors = Math.max(st - 4, 1), plate = area / floors;
-  const side = Math.sqrt(plate), tw = Math.min(W * 0.92, Math.max(side, 18)), td = Math.min(D * 0.92, plate / tw);
-  if (tw * td < plate){ floors = Math.ceil(area / (tw * td)); st = floors + 4; }
-  return [{p: rect(b.cu, b.cv, W, D), full: 4 * FLOOR_M, c, pod: 1}, {p: rect(b.cu, b.cv, tw, td), full: st * FLOOR_M, c, g: pr.gross, hf: st - 4}];   // hf: floors holding homes, above the podium
+  const PD = D0 + b.room, pc = deeper(PD);                 // the podium covers the lot back toward the alley
+  const tw = Math.min(W * 0.9, Math.max(18, Math.sqrt(area / Math.max(st - 4, 1)))), td = Math.min(PD * 0.9, Math.max(16, area / Math.max(st - 4, 1) / tw));
+  const floors = Math.max(1, Math.ceil(area / (tw * td)));
+  return [{p: rect(b.cu, pc, W, PD), full: 4 * FLOOR_M, c, pod: 1}, {p: rect(b.cu, pc, tw, td), full: (floors + 4) * FLOOR_M, c, g: pr.gross, hf: floors}];   // hf: floors holding homes, above the podium
+}
+// per-building inputs that don't depend on the plan: a 6-bit tier key (L distance, Metra, corridor, busy station, small lot),
+// whether it can be rebuilt (0 no, 1 building, 2 empty land, 255 replaced since 2013: skip), and its lot size
+function prepStatic(A){
+  const tag = (A.ext ? 1 : 0) + (A.open ? 2 : 0) + 4 * (A.vk || 0);
+  if (A.tk && A.tkTag === tag) return;
+  const n = A.n, K = A.vk || 0, EX = A.ext || null, OP = A.open || null, TK = new Uint8Array(n + K), EL = new Uint8Array(n + K), LOT = new Float32Array(n + K);
+  for (let i = 0; i < n; i++){
+    const f = A.fl[i], un = A.un[i], fp = A.fp[i] * 2, st = A.st[i] || 1, gone = EX !== null && (EX[i] & 64) !== 0, op = OP !== null && OP[i] === 1;
+    TK[i] = (f & 7) | (f & 16 ? 8 : 0) | (EX !== null && (EX[i] & 128) ? 16 : 0) | ((un >= 1 && un <= 4) || op ? 32 : 0);
+    LOT[i] = lotOf(fp);
+    if (gone) EL[i] = op && fp <= 6000 && (un >= 1 || (f & 128)) ? 2 : 255;   // open lot of a torn-down home or small shop, or replaced
+    else EL[i] = (f & 8) || fp > 20000 || !(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000)) ? 0 : 1;
+  }
+  for (let j = 0; j < K; j++){ const f = A.vf[j]; TK[n + j] = (f & 7) | (f & 16 ? 8 : 0) | (f & 128 ? 16 : 0) | 32; EL[n + j] = 2; LOT[n + j] = VAC_LOT; }
+  A.tk = TK; A.el = EL; A.lot = LOT; A.tkTag = tag;
 }
 function compute(A, statsOnly){
+  // only the year changed (simulation, timeline): the projects are the same, so just show which ones are built by now
+  const sig = encodePlan(plan) + "|" + towerScale + "|" + (showIllegal || introHook ? 1 : 0) + "|" + (A.ext ? 1 : 0) + (A.vk || 0);
+  if (!statsOnly && A.sig === sig && A.statSig === sig && A.projects){ showYear(A); return; }
   const T0 = tierFor(A.num), P = plan.p, n = A.n;
   const p0 = BASE * A.demand * (P.pre ? 1 + PREROG_BOOST : 1) * (P.permits ? 1 + PERMIT_BOOST : 1);
   const officeShare = OFFICE_SHARE[plan.office];
@@ -1278,8 +1440,6 @@ function compute(A, statsOnly){
   const FL = A.fl, ST = A.st, UN = A.un, FP = A.fp, EX = A.ext || null, OP = A.open || null, VF = A.vf || null;
   const K = A.vk || 0, NK = n + K;
   const gone = (j) => j < n && EX !== null && (EX[j] & 64) !== 0;
-  const openLot = (j) => OP !== null && OP[j] === 1 && EX !== null && (EX[j] & 64) !== 0 && FP[j] * 2 <= 6000 && (UN[j] >= 1 || (FL[j] & 128) !== 0);
-  const open = (j) => j >= n || openLot(j);   // empty today: a vacant parcel, or the open lot of a torn-down home or shop
   const tod = plan.tod, metra = plan.metra, corr = plan.corr;
   const mp = !!(P.mpls && inScope("mpls", A)), comm = !!P.comm, camb = !!(P.camb && inScope("camb", A)), bld = !!((P.build && inScope("build", A)) || mp);
   const tierF = (f, busy, small) => {   // same rules as tierFlags()
@@ -1291,27 +1451,31 @@ function compute(A, statsOnly){
     if (small){ if (camb && t < 2) t = 2; else if (bld && t < 1) t = 1; }
     return t;
   };
-  const tierI = (i) => i >= n ? tierF(VF[i - n], (VF[i - n] & 128) !== 0, true)
-    : tierF(FL[i], EX !== null && (EX[i] & 128) !== 0, (UN[i] >= 1 && UN[i] <= 4) || (OP !== null && OP[i] === 1));
+  prepStatic(A);
+  const TK = A.tk, EL = A.el, LOTS = A.lot, LUT = new Int8Array(64);
+  for (let key = 0; key < 64; key++) LUT[key] = tierF((key & 7) | (key & 8 ? 16 : 0), (key & 16) !== 0, (key & 32) !== 0);
+  const tierI = (i) => LUT[TK[i]];
   const claimed = A.claimed && A.claimed.length === NK ? A.claimed : (A.claimed = new Int32Array(NK));
   claimed.fill(-1);
   const projects = [];
   let vacUsed = 0;
-  const lotAt = (j) => j >= n ? VAC_LOT : lotOf(FP[j] * 2);
-  const unitsAt = (j) => j >= n || gone(j) ? 0 : UN[j];
+  const lotAt = (j) => LOTS[j];
+  const unitsAt = (j) => EL[j] === 2 ? 0 : UN[j];   // empty land has no homes to replace
   const canJoin = (j, t) => {   // a neighbour that could be bought into a site at level t (empty land is the easiest)
     if (claimed[j] >= 0) return 0;
-    if (open(j)) return tierI(j);
-    if (gone(j)) return 0;   // replaced by a newer building since 2013
-    const f = FL[j], st = ST[j] || 1, un = UN[j], fp = FP[j] * 2;
-    if ((f & 8) || st >= TIERS[t].h || fp > 20000) return 0;
-    if (!(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000))) return 0;
-    return tierI(j);
+    const e = EL[j];
+    if (e === 2) return LUT[TK[j]];
+    if (e !== 1 || (ST[j] || 1) >= TIERS[t].h) return 0;   // can't be rebuilt, replaced since 2013, or already that tall
+    return LUT[TK[j]];
   };
   const stairOK = !!P.stair, parkOK = ((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A));
   const smallOK = !!(P.small && inScope("small", A)), pminOn = !!(P.pmin && inScope("pmin", A)), moraOn = !!(P.mora && inScope("mora", A));
   const vlBoost = P.vland && inScope("vland", A) && A.demand < VL_SOFT;
+  // the highest chance any project here could have: most candidates fail this cheap test before any other work
+  const pUB = Math.min(0.6, p0 * (1 + STAIR_BOOST) * (1 + PARK_BOOST) * (1 + SMALL_BOOST) * Math.max(1, ARO_FACTOR[P.aro]) * (1 + VL_SOFT_BOOST) * VAC_EASE);
   const tryAt = (i, t, f, lot, un, vac) => {
+    const u = hash01(i, A.num);
+    if (u >= pUB) return;
     const T = TIERS[t];
     const siteEst = Math.max(lot, SITE_MIN[t]), grossEst = Math.floor(T.k * siteEst / STD_LOT);
     const nearTransit = (f & 3) >= 1 || (f & 4) !== 0;
@@ -1328,21 +1492,28 @@ function compute(A, statsOnly){
     if (vlBoost) p *= 1 + VL_SOFT_BOOST;                 // gap financing makes soft-market projects pencil
     if (vac) p *= VAC_EASE;
     if (p > 0.6) p = 0.6;
-    const u = hash01(i, A.num);
     if (u >= p) return;
-    const members = [i]; let siteLot = lot, existing = un, tt = t;
+    MB[0] = i; let nm = 1, siteLot = lot, existing = un, tt = t;   // site members go in a scratch buffer (no allocation unless the project is built)
     if (siteLot < SITE_MIN[t]){
-      for (const j of nearby(A, i)){
+      const R = rowOf(A, i), js = R.js, LO = R.lo, HI = R.hi;
+      let s0 = R.s0, s1 = R.s1;
+      for (let q = 0; q < js.length; q++){
+        const j = js[q];
+        if (claimed[j] >= 0) continue;
+        const j0 = LO[q], j1 = HI[q];
+        if (j0 > s1 + SITE_GAP || j1 < s0 - SITE_GAP) continue;   // must touch the site: no jumping across a side street or a gap
         const tj = canJoin(j, t); if (tj < 2) continue;
-        members.push(j); siteLot += lotAt(j); existing += unitsAt(j); if (tj < tt) tt = tj;
-        if (siteLot >= SITE_MIN[t] || members.length >= SITE_MAX) break;
+        MB[nm++] = j; siteLot += lotAt(j); existing += unitsAt(j); if (tj < tt) tt = tj;
+        if (j0 < s0) s0 = j0; if (j1 > s1) s1 = j1;
+        if (siteLot >= SITE_MIN[t] || nm >= SITE_MAX) break;
       }
     }
     // each lot's chance is the same: a site that took k lots' worth of land starts 1/k as often
     if (u >= p * lot / siteLot) return;
     while (tt > 2 && siteLot < SITE_MIN[tt]) tt--;     // couldn't buy enough land: build the biggest level the site allows
-    const box = tt >= 4 ? siteBox(A, members, siteLot) : null;
-    while (tt >= 4 && Math.min(box.W, box.D) < SITE_WIDTH[tt]) tt--;   // too narrow for a tower or high-rise: build lower
+    const members = Array.from(MB.subarray(0, nm));
+    const box = tt >= 3 ? siteBox(A, members, siteLot) : null;
+    while (tt >= 3 && Math.min(box.W, box.D) < SITE_WIDTH[tt]) tt--;   // too narrow for that height: build lower
     const TT = TIERS[tt], gross = Math.floor(TT.k * siteLot / STD_LOT), homes = gross - existing;
     if (homes < 1) return;
     let yb = rampYear(hash01(i, A.num + 977));
@@ -1353,57 +1524,61 @@ function compute(A, statsOnly){
       yb = Math.max(1, Math.ceil(yt));
     }
     if (yb > YEARS) return;
-    for (const m of members){ claimed[m] = i; if (open(m)) vacUsed++; }
+    for (const m of members){ claimed[m] = i; if (EL[m] === 2) vacUsed++; }
     added += homes; replaced += existing; byYear[yb] += homes;
     if (nearTransit) walk += homes;
     if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
     if (tt === 5) tower += homes;
     if (i >= n) wardHomes[A.vw[i - n]] += homes; else if (EX !== null) wardHomes[EX[i] & 63] += homes;
     if (yb <= year) addedNow += homes;
-    projects.push({members, siteLot, t: tt, yb, gross, box});
+    if (!statsOnly) projects.push({members, siteLot, t: tt, yb, gross, box});
   };
   for (let i = 0; i < n; i++){
-    const g = EX !== null && (EX[i] & 64) !== 0, vac = g && openLot(i);
-    if (g && !vac) continue;   // torn down since 2013 and replaced by a newer building
-    const f = FL[i], t = tierI(i);
+    const e = EL[i];
+    if (e === 255) continue;   // torn down since 2013 and replaced by a newer building
+    const t = LUT[TK[i]];
     if (t <= 0) continue;
-    if (!vac) touched++;
-    if (claimed[i] >= 0) continue;   // already bought into an earlier project's site
-    const T = TIERS[t];
-    if (vac){ const lot = lotOf(FP[i] * 2); if (T.k * lot / STD_LOT >= 1) tryAt(i, t, f, lot, 0, true); continue; }   // empty land: nothing to tear down
-    const st = ST[i] || 1, fp = FP[i] * 2, un = UN[i];
-    if ((f & 8) || st >= T.h || fp > 20000) continue;
-    if (!(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000))) continue;  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
-    const lot = lotOf(fp);
+    if (e !== 2) touched++;
+    if (e === 0 || claimed[i] >= 0) continue;   // can't be rebuilt, or already bought into an earlier project's site
+    const T = TIERS[t], lot = LOTS[i];
+    if (e === 2){ if (T.k * lot / STD_LOT >= 1) tryAt(i, t, FL[i], lot, 0, true); continue; }   // empty land: nothing to tear down
+    if ((ST[i] || 1) >= T.h) continue;
+    const un = UN[i];
     if (T.k * lot / STD_LOT - un < 1) continue;
-    tryAt(i, t, f, lot, un, false);
+    tryAt(i, t, FL[i], lot, un, false);
   }
   for (let i = n; i < NK; i++){   // vacant parcels with no building
-    const t = tierI(i);
+    const t = LUT[TK[i]];
     if (t <= 0 || claimed[i] >= 0) continue;
     if (TIERS[t].k * VAC_LOT / STD_LOT >= 1) tryAt(i, t, VF[i - n], VAC_LOT, 0, true);
   }
-  if (!statsOnly){
-    for (let i = 0; i < n; i++){
-      if (gone(i)){ A.elev[i] = 0; A.col[i] = 8; continue; }
-      const f = A.fl[i]; let c = 0;
-      if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
-      if ((showIllegal || introHook) && (f & 64)) c = 6;
-      A.elev[i] = (A.st[i] || 1) * FLOOR_M; A.col[i] = c;
-    }
-    // shapes only change when the set of projects changes; year to year only their heights do (no re-tessellation)
-    let key = "";
-    for (const pr of projects) key += pr.members[0] + "." + pr.t + "." + pr.members.length + ",";
-    if (key !== A.projKey){
-      A.projKey = key; A.proj = []; A.projOf = [];
-      projects.forEach((pr, k) => { if (!pr.box) pr.box = siteBox(A, pr.members, pr.siteLot); for (const sh of siteShape(A, pr)){ A.proj.push(sh); A.projOf.push(k); } });
-    }
-    const built = projects.map(pr => pr.yb <= year);
-    projects.forEach((pr, k) => { if (built[k]) for (const m of pr.members) if (m < n){ A.elev[m] = 0; A.col[m] = 8; } });   // old buildings come down when the new one goes up
-    A.proj.forEach((sh, j) => { sh.h = built[A.projOf[j]] ? sh.full : 0; });
-  }
+  A.statSig = sig;
   A.vacUsed = vacUsed; A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
-  if (!statsOnly) A.version++;
+  if (!statsOnly){ A.sig = sig; A.projects = projects; showYear(A); }
+}
+// draw an area for the year shown: existing buildings, and the new ones built by now (their old buildings come down)
+function showYear(A){
+  const n = A.n, EX = A.ext || null, officeShare = OFFICE_SHARE[plan.office], projects = A.projects, hl = showIllegal || introHook;
+  for (let i = 0; i < n; i++){
+    if (EX !== null && (EX[i] & 64)){ A.elev[i] = 0; A.col[i] = 8; continue; }
+    const f = A.fl[i]; let c = 0;
+    if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
+    if (hl && (f & 64)) c = 6;
+    A.elev[i] = (A.st[i] || 1) * FLOOR_M; A.col[i] = c;
+  }
+  // shapes only change when the set of projects changes; year to year only their heights do (no re-tessellation)
+  let key = "";
+  for (const pr of projects) key += pr.members[0] + "." + pr.t + "." + pr.members.length + ",";
+  if (key !== A.projKey){
+    A.projKey = key; A.proj = []; A.projOf = [];
+    projects.forEach((pr, k) => { if (!pr.box) pr.box = siteBox(A, pr.members, pr.siteLot); for (const sh of siteShape(A, pr)){ A.proj.push(sh); A.projOf.push(k); } });
+  }
+  const built = projects.map(pr => pr.yb <= year);
+  projects.forEach((pr, k) => { if (built[k]) for (const m of pr.members) if (m < n){ A.elev[m] = 0; A.col[m] = 8; } });
+  A.proj.forEach((sh, j) => { sh.h = built[A.projOf[j]] ? sh.full : 0; });
+  let an = 0; for (let y = 1; y <= year; y++) an += A.byYear[y];
+  A.addedNow = an;
+  A.version++;
 }
 function policyHomes(){
   const P = plan.p;
@@ -2067,7 +2242,8 @@ async function loadStreets(){
       ids.forEach((i, j) => { st[j] = k; for (let v = starts[i]; v < starts[i + 1]; v++){ pos[2 * k] = xy[2 * v] * 2; pos[2 * k + 1] = xy[2 * v + 1] * 2; k++; } });
       return {length: ids.length, startIndices: st, attributes: {getPath: {value: pos, size: 2}}};
     };
-    STREETS = {origin, exp: pack(groups[1]), art: pack(groups[2]), loc: pack(groups[4])};
+    STREETS = {origin, exp: pack(groups[1]), art: pack(groups[2]), loc: pack(groups[4]), raw: {P, starts, xy, cls}};
+    if (hasExtra){ for (const k in AREAS){ const A = AREAS[k]; A.boxC = null; A.projKey = null; A.sig = null; } recompute(); }   // (normally streets arrive first) redo sites so they stay clear of the streets
     scheduleRender();
   } catch (e) { console.warn("streets failed", e); }
 }
@@ -2125,7 +2301,7 @@ async function loadLand(){
       if (ok){
         const vx = new Float32Array(k), vy = new Float32Array(k), vf = new Uint8Array(k), vw = new Uint8Array(k);
         for (let j = 0; j < k; j++){ vx[j] = dv.getInt16(o, true) * 0.5; vy[j] = dv.getInt16(o + 2, true) * 0.5; vf[j] = dv.getUint8(o + 4); vw[j] = dv.getUint8(o + 5); o += 6; }
-        Object.assign(A, {vk: k, vx, vy, vf, vw, grid: null, nb: null, claimed: null, projKey: null, boxC: null});
+        Object.assign(A, {vk: k, vx, vy, vf, vw, grid: null, nb: null, claimed: null, projKey: null, boxC: null, ax: null, rowC: null});
       } else o += 6 * k;
       o += (4 - o % 4) % 4;
     }
@@ -2164,7 +2340,7 @@ async function boot(){
     const o = document.createElement("option"); o.value = m.num; o.textContent = m.name; pick.appendChild(o);
   });
   render();
-  loadStreets();
+  const streetsP = loadStreets();   // before the first full compute: new buildings are kept clear of the streets
   fillHoodSelects(); loadCommunity();
   const c = [-87.655, 41.89];
   const queue = [...META.areas].sort((a,b) => Math.hypot(a.lon-c[0],a.lat-c[1]) - Math.hypot(b.lon-c[0],b.lat-c[1]));
@@ -2178,6 +2354,7 @@ async function boot(){
     }
   }
   await Promise.all([worker(), worker(), worker(), worker()]);
+  await streetsP;
   await loadExtra();
   $("loading").hidden = true;
   if (hasZoning){
