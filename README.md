@@ -1,6 +1,6 @@
 # Fix Chicago Housing
 
-A fan-made browser game on a 3D model of Chicago's ~481,000 buildings. Rezone the city, flip real housing policies, and simulate 15 years to see whether you can close the region's housing shortage. Every number in the game links to its source or is labeled as a game assumption.
+A fan-made browser game on a 3D model of Chicago's ~485,000 buildings. Rezone the city, flip real housing policies, and simulate 15 years to see whether you can close the region's housing shortage. Every number in the game links to its source or is labeled as a game assumption.
 
 *A fan-made game. Not affiliated with the City of Chicago.*
 
