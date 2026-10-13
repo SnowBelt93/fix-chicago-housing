@@ -1116,7 +1116,7 @@ let look = "model";
 const tierColor = (t) => t === 7 ? TIERS[5].color : t === 5 ? (look === "playful" ? PLAYFUL.office : OFFICE_COLOR) : (look === "playful" ? PLAYFUL.tiers[t] : TIERS[t].color);
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => { const r = Math.round(n); return (r < 0 ? "−" : "") + Math.abs(r).toLocaleString("en-US"); };
-const money = (n) => { const a = Math.abs(n); return (n < 0 ? "−" : "") + (a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e8 ? 0 : 1) + "M" : "$" + fmt(a)); };
+const money = (n) => { const a = Math.abs(n); return (n < 0 ? "−" : "") + (a >= 999.5e6 ? "$" + (a / 1e9).toFixed(a >= 1e10 ? 0 : 1) + "B" : a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e8 ? 0 : 1) + "M" : "$" + fmt(a)); };
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
 function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
@@ -1723,7 +1723,7 @@ const TACTICS = [
   {t:"Trade discretion for clear design rules.", b:"Buildings that fit their block draw less opposition. Clear height and form rules in exchange for by-right approval.", s:[["'Political Architecture'","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"]]},
   {t:"Pair upzoning with tenant protections.", b:"In NYC's right-to-counsel program, 84% of tenants with a city-funded lawyer kept their homes. Urban Institute recommends pairing the two.", s:[["CityLand NYC","https://citylandnyc.org/city-releases-right-to-counsel-progress-report"],["Urban Institute, 2024","https://www.urban.org/urban-wire/how-embed-racial-equity-zoning-code-reform"]]},
 ];
-const TOWN_FOR = {mega:"process", low:"values", high:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
+const TOWN_FOR = {mega:"process", low:"values", mid:"character", high:"character", tower:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
 let seenTown = new Set(lsGet("fch-town", []));
 function showTown(k){
   const T = TOWN.find(x => x.k === k); if (!T) return;
@@ -1756,7 +1756,9 @@ function renderTown(){
 const REACT = {
   mega:["The 78 has been 'coming soon' since I had hair.","Finally, something on that lot besides weeds and a Divvy dock.","A stadium AND apartments? Pick a lane. …Okay, both."],
   low:["A three-flat? On MY block? …Okay, fine, I grew up in one.","Sure, but where am I supposed to park my second car?","This will ruin the character of the neighborhood. The character is mostly vinyl siding.","My grandma rented out the upstairs unit for 40 years. Took you long enough.","Finally, my kid can move out of my basement and into somebody else's."],
-  high:["Six stories?! What is this, Paris?","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the grocery store.","A tower by the L? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
+  mid:["Six stories?! What is this, Paris?","I support housing, just not here, not now, and not that tall.","Great, more people to stand behind in line at the grocery store.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
+  high:["Twelve stories? My dog will have to look up.","It'll block my view of the other building that blocks my view.","I support housing, just not here, not now, and not that tall.","A tall building by the train? Who could have guessed people want to live near trains.","We demand a traffic study! (Lives two blocks from the Blue Line.)"],
+  tower:["Thirty stories? This isn't New York. …Wait, who invented the skyscraper again?","Great, the wind tunnel on Wacker gets a sequel.","My view of the lake is now a view of somebody's view of the lake.","It'll cast a shadow on my shadow.","A tower by the L? Who could have guessed people want to live near trains."],
   corr:["Apartments over the taquería? Sounds like a Logan Square starter pack.","New neighbors means new customers. Signed, every shop on this street.","This stretch has been 'about to get nice' since 1987.","Finally, something besides a vape shop and a vacant storefront."],
   metra:["Wait, I can live by the train AND get downtown in 20 minutes?","Living next to the tracks is great until the 5:12 a.m. express.","Metra-adjacent? My real estate agent just fainted with joy."],
   office:["Turn the Loop into a neighborhood? The Pedway is about to get weird.","My old cubicle is now somebody's walk-in closet. Respect.","The Loop after 6 p.m. might finally have more people than pigeons."],
@@ -2214,14 +2216,15 @@ function fitTowers(){
   }
 }
 function recompute(nums){ (nums || Object.keys(AREAS)).forEach(k => { if (AREAS[k]) compute(AREAS[k]); }); fitTowers(); render(); }
+const tallKind = (t, low) => t >= 5 ? "tower" : t === 4 ? "high" : t === 3 ? "mid" : low;
 function afterZoning(t, kind, place){
   if (!t) return;
-  react(t >= 3 ? "high" : (kind || "low"), place);
+  react(tallKind(t, kind || "low"), place);
   if (t >= 3) maybeMyth("lux");
 }
 function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); if (t === 5) maybeMyth("tower"); }
-function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(t >= 3 ? "high" : "metra"); if (t >= 3) maybeMyth("lux"); } }
-function setSub(t){ const was = plan.sub; plan.sub = t; render(); if (t > was) react(t >= 3 ? "high" : "metra"); }
+function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(tallKind(t, "metra")); if (t >= 3) maybeMyth("lux"); } }
+function setSub(t){ const was = plan.sub; plan.sub = t; render(); if (t > was) react(tallKind(t, "metra")); }
 function setCorr(t){ const was = plan.corr; plan.corr = t; recompute(); if (t > was){ react("corr"); maybeMyth("density"); } }
 function setOffice(v){ const was = plan.office; plan.office = v; recompute(); if (v > was) react("office"); if (v && !was) flyTo(-87.632, 41.881, isWide() ? 14 : 13.6, -30); }
 function setAreaTier(num, t){
@@ -2431,7 +2434,7 @@ function setTypeTier(ty, t){
   const nums = typeAreas(ty), was = Math.max(0, ...nums.map(n => plan.areas[n] || 0));
   nums.forEach(n => { if (t) plan.areas[n] = Math.min(t, areaMaxTier(n)); else delete plan.areas[n]; });
   recompute();
-  if (t > was) afterZoning(t, t >= 3 ? "high" : "low", TYPE_NAMES[ty]);
+  if (t > was) afterZoning(t, "low", TYPE_NAMES[ty]);
 }
 function typeTier(ty){ const nums = typeAreas(ty); if (!nums.length) return -1; const t0 = plan.areas[nums[0]] || 0; return nums.every(n => (plan.areas[n] || 0) === t0) ? t0 : -1; }
 function buildTypeTools(){
