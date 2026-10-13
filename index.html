@@ -894,6 +894,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
+                <li>Empty land: lots that are vacant today can be built on when you rezone them, with no homes to replace. That's 25,678 privately owned vacant parcels with no building on them (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a>, 2025), each taken as one standard 25×125 ft lot, plus 8,976 lots where a home or small shop stood in 2013 but nothing stands today. An empty lot is 1.5× as likely to get built as an occupied one, since it earns nothing and there's nothing to tear down. City-owned lots stay with the city-lots policy, and the vacant-lot policy only counts parcels the zoning hasn't already built on.</li>
                 <li>Land assembly: bigger buildings need bigger sites, so a mid-rise project buys up neighboring lots on the same block face until it has about 5,000 sq ft of land (two city lots), a high-rise about 7,500 (three) and a tower about 15,000 (six). Lots that are vacant today count. If the neighbors can't be bought (newer buildings, already taller, or zoned lower), or the site is too narrow (under about 40 ft for a high-rise or 65 ft for a tower), it builds the biggest level its land allows. Each lot's chance of redeveloping stays the same; projects just come in fewer, bigger pieces.</li>
                 <li>Building size: each new building's floor area is its homes × 1,026 sq ft (the same per-home figure used for office conversions, which includes halls and walls). Drawn heights vary from project to project (6-flat 3–4 stories, mid-rise 5–6, high-rise 9–12, tower 25–36), and a building only spreads wider once it reaches its zoning height. Towers sit on a 4-story podium.</li>
                 <li>Tower level: about 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at about 6,500 apartments a year, near downtown's best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
@@ -1092,7 +1093,7 @@ const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 52, 228, 521, 1199];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
+const SUB_PER_STATION = [0, 87, 299, 630, 1406];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
 const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
@@ -1113,6 +1114,8 @@ const BUDGET_GAP = 882e6;   // City of Chicago's projected 2027 budget gap (WTTW
 // vacant-lot gap financing (Missing Middle-style): assumptions, labeled in The math
 const VL_UPTAKE = 0.15, VL_HOMES = 2, VL_SUBSIDY = 150000, VL_SOFT_BOOST = 0.5, VL_SOFT = 0.9;
 const vacantPriv = (k) => META && META.vacantByArea ? META.areas.reduce((s, m) => s + (k && !inScope(k, m) ? 0 : (META.vacantByArea[m.num] || [0])[0]), 0) : 31370;
+// vacant parcels left for the vacant-lot policy once the zoning has built on some of them (so none are counted twice)
+const vacantLeft = (k) => Math.max(0, vacantPriv(k) - Object.values(AREAS).reduce((s, A) => s + (k && !inScope(k, A) ? 0 : (A.vacUsed || 0)), 0));
 const aduScoped = () => META ? META.areas.reduce((s, m) => s + (inScope("adu", m) ? (m.adu || 0) : 0), 0) : aduLots;
 // transit riders from homes near stations (ETOD 2020: near CTA stations with new development, 25.4% commute by train, 12.5% by bus)
 const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = 394e6 / 317e6, CTA_FARES = 394e6;   // CTA FY2026 budget
@@ -1159,15 +1162,17 @@ function hash01(i, salt){
 
 // ---------------- model ----------------
 function tierAt(A, i, T0){
-  const f = A.fl[i];
+  if (i >= A.n){ const j = i - A.n; return tierFlags(A, A.vf[j], A.vf[j] & 128, true, T0); }   // a vacant parcel (residential land)
+  return tierFlags(A, A.fl[i], A.ext && (A.ext[i] & 128), (A.un[i] >= 1 && A.un[i] <= 4) || (A.open && A.open[i]), T0);
+}
+function tierFlags(A, f, busy, small, T0){
   let t = T0;
-  if (plan.tod && (f & 3) >= 1){ const tt = plan.tod === 5 ? (A.ext && (A.ext[i] & 128) ? 5 : 4) : plan.tod; if (tt > t) t = tt; }
+  if (plan.tod && (f & 3) >= 1){ const tt = plan.tod === 5 ? (busy ? 5 : 4) : plan.tod; if (tt > t) t = tt; }
   if (plan.metra && (f & 4) && plan.metra > t) t = plan.metra;
   if (plan.corr && (f & 16) && plan.corr > t) t = plan.corr;
   const P = plan.p;
   const mp = P.mpls && inScope("mpls", A);
   if (f & 16){ if (mp && t < 3) t = 3; if (P.comm && t < 2) t = 2; }
-  const small = A.un[i] >= 1 && A.un[i] <= 4;
   if (small){ if (P.camb && inScope("camb", A) && t < 2) t = 2; else if (((P.build && inScope("build", A)) || mp) && t < 1) t = 1; }
   return t;
 }
@@ -1179,15 +1184,21 @@ const SITE_R = 35;                                  // metres: close enough to b
 const SITE_MAX = 10;                                // lots in one site at most
 const SQFT_HOME = 1026;                             // building floor area per home, incl. halls and walls (same figure as office conversions)
 const lotOf = (fp) => Math.min(40000, Math.max(2000, fp / 0.5));
+const VAC_LOT = 3125;   // a vacant parcel is taken as one standard 25×125 ft city lot (assumption: the parcel data has points, not sizes)
+const VAC_EASE = 1.5;   // an empty lot earns nothing and has nothing to tear down, so it sells or gets built 1.5× as readily (assumption)
 // drawn height varies; floor area always matches the homes (see siteShape): 6-flat 3–4, mid-rise 5–6, high-rise 9–12, tower 25–36
 const drawnStories = (t, r) => t === 1 ? 3 : t === 2 ? (r < 0.25 ? 3 : 4) : t === 3 ? (r < 0.4 ? 5 : 6) : t === 4 ? 9 + Math.floor(r * 4) : 25 + Math.floor(r * 12);
 function siteGrid(A){
   if (A.grid) return;
-  const n = A.n, P = A.data.attributes.getPolygon.value, S = A.data.startIndices, cx = new Float32Array(n), cy = new Float32Array(n), g = new Map();
-  for (let i = 0; i < n; i++){
-    let x = 0, y = 0; const a = S[i], b = S[i + 1];
-    for (let k = a; k < b; k++){ x += P[2 * k]; y += P[2 * k + 1]; }
-    x /= Math.max(1, b - a); y /= Math.max(1, b - a); cx[i] = x; cy[i] = y;
+  const n = A.n, k = A.vk || 0, P = A.data.attributes.getPolygon.value, S = A.data.startIndices, cx = new Float32Array(n + k), cy = new Float32Array(n + k), g = new Map();
+  for (let i = 0; i < n + k; i++){
+    let x = 0, y = 0;
+    if (i < n){
+      const a = S[i], b = S[i + 1];
+      for (let q = a; q < b; q++){ x += P[2 * q]; y += P[2 * q + 1]; }
+      x /= Math.max(1, b - a); y /= Math.max(1, b - a);
+    } else { x = A.vx[i - n]; y = A.vy[i - n]; }
+    cx[i] = x; cy[i] = y;
     const key = Math.floor(x / 25) * 4096 + Math.floor(y / 25); let c = g.get(key); if (!c) g.set(key, c = []); c.push(i);
   }
   A.cx = cx; A.cy = cy; A.grid = g; A.nb = new Map();
@@ -1207,6 +1218,12 @@ function nearby(A, i){   // neighbours within SITE_R, nearest first (cached per 
 // toward 80% of the site's land (at most double the buildings' depth). u = along the face, v = depth.
 function siteBox(A, members, siteLot){
   siteGrid(A);
+  const ck = members[0] + "," + members.length + "," + members[members.length - 1] + "," + siteLot;
+  if (!A.boxC) A.boxC = new Map();
+  const hit = A.boxC.get(ck); if (hit) return hit;
+  const r = siteBox0(A, members, siteLot); A.boxC.set(ck, r); return r;
+}
+function siteBox0(A, members, siteLot){
   const P = A.data.attributes.getPolygon.value, S = A.data.startIndices, a = members[0];
   let ux = 1, uy = 0;
   if (members.length > 1){   // face direction: from the first building to the farthest one
@@ -1214,17 +1231,20 @@ function siteBox(A, members, siteLot){
     for (const m of members){ const d = (A.cx[m] - A.cx[a]) ** 2 + (A.cy[m] - A.cy[a]) ** 2; if (d > fd){ fd = d; far = m; } }
     const dx = A.cx[far] - A.cx[a], dy = A.cy[far] - A.cy[a], r = Math.hypot(dx, dy) || 1; ux = dx / r; uy = dy / r;
   } else {                   // one lot: the building's shorter side faces the street, so depth runs along its longest edge
-    let best = 0;
-    for (let k = S[a]; k < S[a + 1]; k++){
-      const k2 = k + 1 < S[a + 1] ? k + 1 : S[a], dx = P[2 * k2] - P[2 * k], dy = P[2 * k2 + 1] - P[2 * k + 1], l = dx * dx + dy * dy;
+    let best = 0, ref = a;
+    if (a >= A.n){ ref = -1; for (const j of nearby(A, a)) if (j < A.n){ ref = j; break; } }   // a vacant parcel: line up with the nearest building
+    if (ref >= 0) for (let k = S[ref]; k < S[ref + 1]; k++){
+      const k2 = k + 1 < S[ref + 1] ? k + 1 : S[ref], dx = P[2 * k2] - P[2 * k], dy = P[2 * k2 + 1] - P[2 * k + 1], l = dx * dx + dy * dy;
       if (l > best){ best = l; const r = Math.sqrt(l); ux = -dy / r; uy = dx / r; }
     }
   }
   const vx = -uy, vy = ux;
   let u0 = Infinity, u1 = -Infinity, v0 = Infinity, v1 = -Infinity;
-  for (const m of members) for (let k = S[m]; k < S[m + 1]; k++){
-    const x = P[2 * k], y = P[2 * k + 1], u = x * ux + y * uy, v = x * vx + y * vy;
-    if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v;
+  const ext = (x, y) => { const u = x * ux + y * uy, v = x * vx + y * vy; if (u < u0) u0 = u; if (u > u1) u1 = u; if (v < v0) v0 = v; if (v > v1) v1 = v; };
+  for (const m of members){
+    if (m < A.n){ for (let k = S[m]; k < S[m + 1]; k++) ext(P[2 * k], P[2 * k + 1]); continue; }
+    const x = A.cx[m], y = A.cy[m];   // a vacant parcel: 25 ft of frontage, 125 ft deep (7.6 × 38 m)
+    for (const [du, dv] of [[-3.8, -19], [3.8, 19]]) ext(x + du * ux + dv * vx, y + du * uy + dv * vy);
   }
   const W = Math.max(u1 - u0, 1), D0 = Math.max(v1 - v0, 1), D = Math.max(D0, siteLot * 0.0929 * 0.85 / W);   // lot area ÷ frontage ≈ lot depth
   const cv = (v0 + v1) / 2;
@@ -1254,76 +1274,114 @@ function compute(A, statsOnly){
   let addedNow = 0, added = 0, replaced = 0, touched = 0, walk = 0, aff = 0, tower = 0;
   const wardHomes = new Float64Array(51);
   const byYear = new Float64Array(YEARS + 1);
-  const ext = A.ext, gone = (j) => ext && (ext[j] & 64);
-  const claimed = A.claimed && A.claimed.length === n ? A.claimed : (A.claimed = new Int32Array(n));
+  // hot loop: plain locals, no per-building closures
+  const FL = A.fl, ST = A.st, UN = A.un, FP = A.fp, EX = A.ext || null, OP = A.open || null, VF = A.vf || null;
+  const K = A.vk || 0, NK = n + K;
+  const gone = (j) => j < n && EX !== null && (EX[j] & 64) !== 0;
+  const openLot = (j) => OP !== null && OP[j] === 1 && EX !== null && (EX[j] & 64) !== 0 && FP[j] * 2 <= 6000 && (UN[j] >= 1 || (FL[j] & 128) !== 0);
+  const open = (j) => j >= n || openLot(j);   // empty today: a vacant parcel, or the open lot of a torn-down home or shop
+  const tod = plan.tod, metra = plan.metra, corr = plan.corr;
+  const mp = !!(P.mpls && inScope("mpls", A)), comm = !!P.comm, camb = !!(P.camb && inScope("camb", A)), bld = !!((P.build && inScope("build", A)) || mp);
+  const tierF = (f, busy, small) => {   // same rules as tierFlags()
+    let t = T0;
+    if (tod && (f & 3) >= 1){ const tt = tod === 5 ? (busy ? 5 : 4) : tod; if (tt > t) t = tt; }
+    if (metra && (f & 4) && metra > t) t = metra;
+    if (corr && (f & 16) && corr > t) t = corr;
+    if (f & 16){ if (mp && t < 3) t = 3; if (comm && t < 2) t = 2; }
+    if (small){ if (camb && t < 2) t = 2; else if (bld && t < 1) t = 1; }
+    return t;
+  };
+  const tierI = (i) => i >= n ? tierF(VF[i - n], (VF[i - n] & 128) !== 0, true)
+    : tierF(FL[i], EX !== null && (EX[i] & 128) !== 0, (UN[i] >= 1 && UN[i] <= 4) || (OP !== null && OP[i] === 1));
+  const claimed = A.claimed && A.claimed.length === NK ? A.claimed : (A.claimed = new Int32Array(NK));
   claimed.fill(-1);
   const projects = [];
-  const canJoin = (j, t) => {   // a neighbour that could be bought into a site at level t (a lot that's vacant today is the easiest)
+  let vacUsed = 0;
+  const lotAt = (j) => j >= n ? VAC_LOT : lotOf(FP[j] * 2);
+  const unitsAt = (j) => j >= n || gone(j) ? 0 : UN[j];
+  const canJoin = (j, t) => {   // a neighbour that could be bought into a site at level t (empty land is the easiest)
     if (claimed[j] >= 0) return 0;
-    if (gone(j)) return tierAt(A, j, T0);
-    const f = A.fl[j], st = A.st[j] || 1, un = A.un[j], fp = A.fp[j] * 2;
+    if (open(j)) return tierI(j);
+    if (gone(j)) return 0;   // replaced by a newer building since 2013
+    const f = FL[j], st = ST[j] || 1, un = UN[j], fp = FP[j] * 2;
     if ((f & 8) || st >= TIERS[t].h || fp > 20000) return 0;
     if (!(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000))) return 0;
-    return tierAt(A, j, T0);
+    return tierI(j);
   };
-  for (let i = 0; i < n; i++){
-    if (gone(i)) continue;   // torn down since the 2013 footprints: the lot is vacant today
-    const f = A.fl[i], t = tierAt(A, i, T0);
-    if (t <= 0) continue;
-    touched++;
-    if (claimed[i] >= 0) continue;   // already bought into an earlier project's site
-    const st = A.st[i] || 1, un = A.un[i], fp = A.fp[i] * 2, T = TIERS[t];
-    const lot = lotOf(fp);
-    const typ = un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000);  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
-    if (!typ || (f & 8) || st >= T.h || fp > 20000 || T.k * lot / STD_LOT - un < 1) continue;
+  const stairOK = !!P.stair, parkOK = ((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A));
+  const smallOK = !!(P.small && inScope("small", A)), pminOn = !!(P.pmin && inScope("pmin", A)), moraOn = !!(P.mora && inScope("mora", A));
+  const vlBoost = P.vland && inScope("vland", A) && A.demand < VL_SOFT;
+  const tryAt = (i, t, f, lot, un, vac) => {
+    const T = TIERS[t];
     const siteEst = Math.max(lot, SITE_MIN[t]), grossEst = Math.floor(T.k * siteEst / STD_LOT);
-    const nearTransit = (f & 3) >= 1 || (f & 4);
+    const nearTransit = (f & 3) >= 1 || (f & 4) !== 0;
     let p = p0;
-    if (P.stair && (t === 2 || t === 3) && siteEst < 7500) p *= 1 + STAIR_BOOST;
-    if (((P.park && inScope("park", A)) || (P.mpls && inScope("mpls", A))) && !(P.pmin && inScope("pmin", A)) && !nearTransit) p *= 1 + PARK_BOOST;
-    if (P.small && inScope("small", A) && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
+    if (stairOK && (t === 2 || t === 3) && siteEst < 7500) p *= 1 + STAIR_BOOST;
+    if (parkOK && !nearTransit) p *= 1 + PARK_BOOST;
+    if (smallOK && (t === 1 || t === 2) && lot >= 5000) p *= 1 + SMALL_BOOST;
     if (grossEst >= 10) p *= ARO_FACTOR[P.aro];
-    if (P.pmin && inScope("pmin", A)) p *= PMIN_FACTOR;   // parking mandates back
-    if (P.mora && inScope("mora", A)) p *= MORA_FACTOR;   // moratoriums / extra review
+    if (pminOn) p *= PMIN_FACTOR;                        // parking mandates back
+    if (moraOn) p *= MORA_FACTOR;                        // moratoriums / extra review
     if (P.rentc && grossEst >= 3) p *= RENTC_FACTOR;     // rent control covering new buildings
     if (P.xfer && grossEst >= 20) p *= XFER_FACTOR;      // transfer tax hits big buildings when they sell
     if (t === 5) p *= towerScale;                        // towers can't lease faster than downtown's record pace
-    if (P.vland && inScope("vland", A) && A.demand < VL_SOFT) p *= 1 + VL_SOFT_BOOST;   // gap financing makes soft-market projects pencil
+    if (vlBoost) p *= 1 + VL_SOFT_BOOST;                 // gap financing makes soft-market projects pencil
+    if (vac) p *= VAC_EASE;
     if (p > 0.6) p = 0.6;
     const u = hash01(i, A.num);
-    if (u >= p) continue;
+    if (u >= p) return;
     const members = [i]; let siteLot = lot, existing = un, tt = t;
     if (siteLot < SITE_MIN[t]){
       for (const j of nearby(A, i)){
         const tj = canJoin(j, t); if (tj < 2) continue;
-        members.push(j); siteLot += lotOf(A.fp[j] * 2); if (!gone(j)) existing += A.un[j]; if (tj < tt) tt = tj;
+        members.push(j); siteLot += lotAt(j); existing += unitsAt(j); if (tj < tt) tt = tj;
         if (siteLot >= SITE_MIN[t] || members.length >= SITE_MAX) break;
       }
     }
     // each lot's chance is the same: a site that took k lots' worth of land starts 1/k as often
-    if (u >= p * lot / siteLot) continue;
+    if (u >= p * lot / siteLot) return;
     while (tt > 2 && siteLot < SITE_MIN[tt]) tt--;     // couldn't buy enough land: build the biggest level the site allows
     const box = tt >= 4 ? siteBox(A, members, siteLot) : null;
     while (tt >= 4 && Math.min(box.W, box.D) < SITE_WIDTH[tt]) tt--;   // too narrow for a tower or high-rise: build lower
     const TT = TIERS[tt], gross = Math.floor(TT.k * siteLot / STD_LOT), homes = gross - existing;
-    if (homes < 1) continue;
+    if (homes < 1) return;
     let yb = rampYear(hash01(i, A.num + 977));
-    const slow = P.mora && inScope("mora", A);
-    if (P.permits || slow){   // shift a point within the year, so faster or slower approvals don't leave empty years
+    if (P.permits || moraOn){   // shift a point within the year, so faster or slower approvals don't leave empty years
       let yt = yb - hash01(i, A.num + 555);
       if (P.permits) yt = Math.max(0.01, yt - PERMIT_SHIFT);
-      if (slow) yt *= MORA_DELAY;                                        // extra review pushes some projects past 2041
+      if (moraOn) yt *= MORA_DELAY;                                      // extra review pushes some projects past 2041
       yb = Math.max(1, Math.ceil(yt));
     }
-    if (yb > YEARS) continue;
-    for (const m of members) claimed[m] = i;
+    if (yb > YEARS) return;
+    for (const m of members){ claimed[m] = i; if (open(m)) vacUsed++; }
     added += homes; replaced += existing; byYear[yb] += homes;
     if (nearTransit) walk += homes;
     if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
     if (tt === 5) tower += homes;
-    if (ext) wardHomes[ext[i] & 63] += homes;
+    if (i >= n) wardHomes[A.vw[i - n]] += homes; else if (EX !== null) wardHomes[EX[i] & 63] += homes;
     if (yb <= year) addedNow += homes;
     projects.push({members, siteLot, t: tt, yb, gross, box});
+  };
+  for (let i = 0; i < n; i++){
+    const g = EX !== null && (EX[i] & 64) !== 0, vac = g && openLot(i);
+    if (g && !vac) continue;   // torn down since 2013 and replaced by a newer building
+    const f = FL[i], t = tierI(i);
+    if (t <= 0) continue;
+    if (!vac) touched++;
+    if (claimed[i] >= 0) continue;   // already bought into an earlier project's site
+    const T = TIERS[t];
+    if (vac){ const lot = lotOf(FP[i] * 2); if (T.k * lot / STD_LOT >= 1) tryAt(i, t, f, lot, 0, true); continue; }   // empty land: nothing to tear down
+    const st = ST[i] || 1, fp = FP[i] * 2, un = UN[i];
+    if ((f & 8) || st >= T.h || fp > 20000) continue;
+    if (!(un >= 1 || ((f & 128) && st <= 2 && fp >= 900 && fp <= 12000))) continue;  // 128 = addressed shop lot on a corridor or by the L (no parks, museums, landmarks)
+    const lot = lotOf(fp);
+    if (T.k * lot / STD_LOT - un < 1) continue;
+    tryAt(i, t, f, lot, un, false);
+  }
+  for (let i = n; i < NK; i++){   // vacant parcels with no building
+    const t = tierI(i);
+    if (t <= 0 || claimed[i] >= 0) continue;
+    if (TIERS[t].k * VAC_LOT / STD_LOT >= 1) tryAt(i, t, VF[i - n], VAC_LOT, 0, true);
   }
   if (!statsOnly){
     for (let i = 0; i < n; i++){
@@ -1335,16 +1393,16 @@ function compute(A, statsOnly){
     }
     // shapes only change when the set of projects changes; year to year only their heights do (no re-tessellation)
     let key = "";
-    for (const pr of projects) key += pr.members[0] + "." + pr.t + "," ;
+    for (const pr of projects) key += pr.members[0] + "." + pr.t + "." + pr.members.length + ",";
     if (key !== A.projKey){
       A.projKey = key; A.proj = []; A.projOf = [];
       projects.forEach((pr, k) => { if (!pr.box) pr.box = siteBox(A, pr.members, pr.siteLot); for (const sh of siteShape(A, pr)){ A.proj.push(sh); A.projOf.push(k); } });
     }
     const built = projects.map(pr => pr.yb <= year);
-    projects.forEach((pr, k) => { if (built[k]) for (const m of pr.members){ A.elev[m] = 0; A.col[m] = 8; } });   // old buildings come down when the new one goes up
+    projects.forEach((pr, k) => { if (built[k]) for (const m of pr.members) if (m < n){ A.elev[m] = 0; A.col[m] = 8; } });   // old buildings come down when the new one goes up
     A.proj.forEach((sh, j) => { sh.h = built[A.projOf[j]] ? sh.full : 0; });
   }
-  A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
+  A.vacUsed = vacUsed; A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
   if (!statsOnly) A.version++;
 }
 function policyHomes(){
@@ -1357,7 +1415,7 @@ function policyHomes(){
     vac: P.vac ? OTHER_VACANT * VAC_RETURN : 0,
     social: P.social ? SOCIAL_HOMES : 0,
     mega: P.mega ? MEGA_TOTAL * MEGA_BUILT : 0,
-    vland: P.vland ? vacantPriv("vland") * VL_HOMES * VL_UPTAKE : 0,
+    vland: P.vland ? vacantLeft("vland") * VL_HOMES * VL_UPTAKE : 0,
     sub: plan.sub ? SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR : 0,
   };
 }
@@ -1655,7 +1713,7 @@ function baseCost(k){
   P[k] = 1; const on = baseCut(); P[k] = 0; const off = baseCut(); P[k] = s;
   return CITY_PACE * YEARS * (on - off);
 }
-let gainTimer = 0, gainToken = 0;
+let gainTimer = 0, gainToken = 0, gainsStale = true;
 const GAIN = {};
 const ZERO = {   // why a spatial policy adds nothing with the current map
   stair:"Adds nothing yet: it only helps 6-flats and mid-rises on lots under 7,500 sq ft. Zone some areas for those and it kicks in.",
@@ -1706,7 +1764,9 @@ function renderPolicies(){
     const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
     el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " players turn this on"; });
   clearTimeout(gainTimer);
-  if (loaded === 77 && !playing) gainTimer = setTimeout(() => {
+  gainsStale = true;
+  if (loaded === 77 && !playing && !$("pane-policies").hidden) gainTimer = setTimeout(() => {
+    gainsStale = false;
     const cur = currentAdded(), affNow = totals(false).aff, keys = [...SPATIAL], token = ++gainToken;
     const step = () => {
       if (token !== gainToken || playing) return;
@@ -1719,7 +1779,7 @@ function renderPolicies(){
       }
       const m = marginal(k, cur), d = $("pol-" + k).querySelector(".gain");
       if (k === "vland"){
-        const fixed = vacantPriv("vland") * VL_HOMES * VL_UPTAKE, tot = Math.abs(m) + fixed;
+        const fixed = vacantLeft("vland") * VL_HOMES * VL_UPTAKE, tot = Math.abs(m) + fixed;
         d.textContent = (plan.p.vland ? "+" : "Would add +") + fmt(tot) + " homes" + (Math.abs(m) >= 1 ? " (" + fmt(Math.abs(m)) + " of them from your rezoning in soft markets)" : " on vacant lots");
         GAIN[k] = tot; currentAdded(); setTimeout(step, 0); return;
       }
@@ -2051,6 +2111,26 @@ async function loadVacant(){
     scheduleRender();
   } catch (e) { console.warn("vacant data failed", e); }
 }
+// land that's empty today: open lots of torn-down buildings, and vacant parcels with no building (tools/prep_extra.py)
+async function loadLand(){
+  try {
+    const buf = await (await fetch("b/land.wasm")).arrayBuffer(), dv = new DataView(buf);
+    let o = 4; const na = dv.getUint32(0, true);
+    for (let a = 0; a < na; a++){
+      const num = dv.getUint32(o, true), N = dv.getUint32(o + 4, true); o += 8;
+      const A = AREAS[num], ok = A && A.n === N;
+      if (ok) A.open = new Uint8Array(buf, o, N);
+      o += N; o += (4 - o % 4) % 4;
+      const k = dv.getUint32(o, true); o += 4;
+      if (ok){
+        const vx = new Float32Array(k), vy = new Float32Array(k), vf = new Uint8Array(k), vw = new Uint8Array(k);
+        for (let j = 0; j < k; j++){ vx[j] = dv.getInt16(o, true) * 0.5; vy[j] = dv.getInt16(o + 2, true) * 0.5; vf[j] = dv.getUint8(o + 4); vw[j] = dv.getUint8(o + 5); o += 6; }
+        Object.assign(A, {vk: k, vx, vy, vf, vw, grid: null, nb: null, claimed: null, projKey: null, boxC: null});
+      } else o += 6 * k;
+      o += (4 - o % 4) % 4;
+    }
+  } catch (e) { console.warn("land data failed", e); }
+}
 async function loadExtra(){
   try {
     const buf = await (await fetch("b/extra.wasm")).arrayBuffer(), dv = new DataView(buf);
@@ -2071,6 +2151,7 @@ async function loadExtra(){
       o += N;
     }
     hasExtra = true;
+    await loadLand();
     recompute();   // hides buildings torn down since 2013 and enables the Tower rings
   } catch (e) { console.warn("extra data failed", e); }
 }
@@ -2580,7 +2661,7 @@ $("wdShow").addEventListener("click", async (e) => {
 
 const paneScroll = {};   // each tab keeps its own scroll position (they share one scroller)
 function showTab(name){
-  if (name === "policies" && $("pane-policies").hidden) sortPolicies();
+  if (name === "policies" && $("pane-policies").hidden){ sortPolicies(); if (gainsStale) setTimeout(renderPolicies, 30); }
   const P = ["zoning","policies","missions","impact","share","math"], sc = document.querySelector(".panes"), cur = P.find(p => !$("pane-" + p).hidden);
   if (sc && cur && cur !== name) paneScroll[cur] = sc.scrollTop;
   document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.pane === name)));

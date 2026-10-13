@@ -8,6 +8,12 @@ Outputs (run from the repo root: python3 tools/prep_extra.py):
                  | 128 if the building is within 1/4 mile of one of the busiest L stations (tower-eligible).
                  Layout: uint32 area count, then per area: uint32 num, uint32 N, N bytes.
   b/vacant.wasm  vacant parcels: uint32 nPrivate, uint32 nCity, then int32 (lon*1e6, lat*1e6) pairs, private first.
+  b/land.wasm    land that's empty today, per area (areas in meta.json order): uint32 num, uint32 N, uint8 open[N]
+                 (1 = this building is gone and nothing stands on its lot: vacant parcel or empty in the 2022 footprints),
+                 pad to 4 bytes, uint32 k, then k privately owned vacant parcels (Cook County class 100, 2025) that aren't
+                 under any building footprint: int16 x, int16 y (0.5 m units east/north of the area file's origin, deck scale),
+                 uint8 flags (same bits as buildings: 1-2 L distance, 4 Metra, 16 corridor; 128 = within 1/4 mi of a busy L station),
+                 uint8 ward; then pad to 4 bytes.
   wards.json     simplified 2023 ward outlines for the map.
   meta.json      adds "busy" (stations used for the Tower level), "vacantByArea" {num: [private, city]}, per-area "sf", "type"
                  and "gone" [buildings, homes] (on lots that are vacant today), and "wardStats" {ward: [buildings, illegalToday]}.
@@ -52,6 +58,8 @@ city = [(float(r['longitude']), float(r['latitude'])) for r in csv.DictReader(op
 vac_all = np.array(priv + city)
 FRESH = os.path.join(RAW, 'fresh_gone.json')
 fresh_gone = json.load(open(FRESH)) if os.path.exists(FRESH) else {}
+FOPEN = os.path.join(RAW, 'fresh_open.json')
+fresh_open = json.load(open(FOPEN)) if os.path.exists(FOPEN) else {}
 
 M_LAT = 111132.954          # real metres per degree of latitude here, for distances
 DECK = 111319.49            # the scale the building files are stored in (deck.gl METER_OFFSETS)
@@ -74,9 +82,26 @@ def gone_in(num):
         n = nv[i]; c = q[2 * s0:2 * (s0 + n)].reshape(-1, 2); s0 += n
         polys.append(shapely.Polygon(c) if n >= 3 else shapely.Polygon())
     tree = STRtree(polys)
-    _, ib = tree.query(shapely.points(px[sel], py[sel]), predicate='within')
+    ip, ib = tree.query(shapely.points(px[sel], py[sel]), predicate='within')
     g = sorted(set(int(b) for b in ib if fp[b] < 6000 and not (fl[b] & 8)))
-    return g, int(un[g].sum()) if g else 0
+    covered = set(np.where(sel)[0][ip].tolist())   # parcel points that sit under some footprint
+    return g, int(un[g].sum()) if g else 0, covered
+
+def city_owned_in(num):
+    """Buildings whose lot holds a city-owned parcel point (that land is the city's to sell, not open to private building)."""
+    buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
+    N, V = struct.unpack_from('<II', buf, 0); lon0, lat0 = struct.unpack_from('<dd', buf, 8)
+    q = np.frombuffer(buf, dtype='<i2', count=2 * V, offset=24).astype(np.float64) * 0.5
+    nv = np.frombuffer(buf, dtype=np.uint8, count=N, offset=24 + 4 * V).astype(np.int64)
+    cp = np.array(city) if city else np.zeros((0, 2))
+    px = (cp[:, 0] - lon0) * DECK * np.cos(np.radians(lat0)); py = (cp[:, 1] - lat0) * DECK
+    sel = (np.abs(px) < 20000) & (np.abs(py) < 20000)
+    polys, s0 = [], 0
+    for i in range(N):
+        n = nv[i]; c = q[2 * s0:2 * (s0 + n)].reshape(-1, 2); s0 += n
+        polys.append(shapely.Polygon(c) if n >= 3 else shapely.Polygon())
+    _, ib = STRtree(polys).query(shapely.points(px[sel], py[sel]), predicate='within')
+    return set(int(b) for b in ib)
 
 def units_of(num):
     buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
@@ -102,7 +127,7 @@ def to_ll(num):
 out = bytearray(struct.pack('<I', len(meta['areas'])))
 ward_b = collections.Counter(); ward_ill = collections.Counter()
 bl = np.array([[b['lon'], b['lat']] for b in busy])
-tower_n = 0; gone_n = 0; gone_u = 0
+tower_n = 0; gone_n = 0; gone_u = 0; covered_all = set(); open_lots = {}
 for a in meta['areas']:
     N, lon, lat, fl = to_ll(a['num'])
     pts = shapely.points(lon, lat)
@@ -115,7 +140,9 @@ for a in meta['areas']:
     near = (np.sqrt(dx * dx + dy * dy) <= 402).any(axis=1)
     tower_n += int(near.sum())
     w = w | (near.astype(np.uint8) << 7)
-    g, gu = gone_in(a['num'])
+    g, gu, cov = gone_in(a['num'])
+    covered_all |= cov
+    open_lots[a['num']] = sorted((set(g) | set(fresh_open.get(str(a['num']), []))) - city_owned_in(a['num']))   # nothing stands here today (city-owned lots stay with the city-lots policy)
     g = sorted(set(g) | set(fresh_gone.get(str(a['num']), [])))
     gu = int(sum(units_of(a['num'])[g])) if g else 0
     w[g] |= 64
@@ -144,6 +171,50 @@ vb = bytearray(struct.pack('<II', len(priv), len(city)))
 for lo, la in priv + city: vb += struct.pack('<ii', round(lo * 1e6), round(la * 1e6))
 open(os.path.join(ROOT, 'b', 'vacant.wasm'), 'wb').write(vb)
 print('vacant parcels in the city: private', len(priv), 'city-owned', len(city))
+
+# ---- land that's empty today: open lots of gone buildings, and private vacant parcels not under any footprint
+from shapely.ops import unary_union
+TO_FT = 3.28084
+def local(lon, lat, lon0, lat0):
+    return (lon - lon0) * DECK * np.cos(np.radians(lat0)), (lat - lat0) * DECK
+stations = np.array([[s_['lon'], s_['lat']] for s_ in meta['stations']]); metra = np.array([[s_['lon'], s_['lat']] for s_ in meta['metra']])
+def dist_m(pts, ref):
+    dx = (pts[:, None, 0] - ref[None, :, 0]) * M_LAT * np.cos(np.radians(41.84)); dy = (pts[:, None, 1] - ref[None, :, 1]) * M_LAT
+    return np.sqrt(dx * dx + dy * dy).min(axis=1)
+corr_lines = []
+for c in meta['corridors']:
+    for path in c['paths']:
+        xy = [((lo + 87.68) * M_LAT * np.cos(np.radians(41.84)), (la - 41.84) * M_LAT) for lo, la in path]
+        if len(xy) >= 2: corr_lines.append(shapely.LineString(xy))
+corr_zone = unary_union(corr_lines).buffer(150 / TO_FT)
+# the first len(priv_raw) entries of vac_all are the private parcels (same filter, same order)
+n_priv_raw = len([1 for r in csv.DictReader(open(os.path.join(RAW, 'cook_vacant_2025.csv'))) if r['township_name'] in CHI and r['lat'] and r['lon']])
+keep = np.array([i not in covered_all for i in range(n_priv_raw)])
+pp = vac_all[:n_priv_raw][keep]
+P = shapely.points(pp)
+ip, ia = ctree.query(P, predicate='within')
+area_of = {}
+for i, j in zip(ip.tolist(), ia.tolist()): area_of.setdefault(cas[j][0], []).append(i)
+dl = dist_m(pp, stations); dm = dist_m(pp, metra); db = dist_m(pp, bl)
+cx = (pp[:, 0] + 87.68) * M_LAT * np.cos(np.radians(41.84)); cy = (pp[:, 1] - 41.84) * M_LAT
+on_corr = shapely.contains_xy(corr_zone, cx, cy)
+pf = ((dl <= 402) * 2 + ((dl > 402) & (dl <= 805)) * 1 + (dm <= 805) * 4 + on_corr * 16 + (db <= 402) * 128).astype(np.uint8)
+wi, wj = wtree.query(P, predicate='within'); pw = np.zeros(len(pp), dtype=np.uint8); pw[wi] = [wards[j][0] for j in wj]
+lb = bytearray(struct.pack('<I', len(meta['areas']))); n_open = 0; n_parc = 0
+for a in meta['areas']:
+    num = a['num']; buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
+    N = struct.unpack_from('<I', buf, 0)[0]; lon0, lat0 = struct.unpack_from('<dd', buf, 8)
+    op = np.zeros(N, dtype=np.uint8); op[open_lots.get(num, [])] = 1; n_open += int(op.sum())
+    lb += struct.pack('<II', num, N) + op.tobytes(); lb += b'\0' * ((-len(lb)) % 4)
+    idx = area_of.get(num, []); k = len(idx); n_parc += k
+    x, y = local(pp[idx, 0], pp[idx, 1], lon0, lat0) if k else (np.array([]), np.array([]))
+    lb += struct.pack('<I', k)
+    for t_ in range(k):
+        lb += struct.pack('<hhBB', int(round(x[t_] * 2)), int(round(y[t_] * 2)), int(pf[idx[t_]]), int(pw[idx[t_]]))
+    lb += b'\0' * ((-len(lb)) % 4)
+    a['open'] = [int(op.sum()), k]
+open(os.path.join(ROOT, 'b', 'land.wasm'), 'wb').write(lb)
+print('land.wasm', len(lb), 'bytes; open lots of gone buildings', n_open, '; private vacant parcels not under a footprint', n_parc, 'of', n_priv_raw)
 
 # ---- simplified ward outlines
 wj = []

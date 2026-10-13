@@ -71,7 +71,7 @@ def write_area(num, d):
         if (N * 3) % 2: fh.write(b'\0')
         fh.write(d['un'].astype('<u2').tobytes()); fh.write(d['fp'].astype('<u2').tobytes())
 
-gone_all = {}; stats = collections.Counter(); DIAG = collections.defaultdict(list)
+gone_all = {}; open_all = {}; stats = collections.Counter(); DIAG = collections.defaultdict(list)
 for a in meta['areas']:
     num = a['num']; d = read_area(num)
     n13 = a.setdefault('n13', d['N']); v13 = a.setdefault('v13', d['V'])
@@ -111,11 +111,11 @@ for a in meta['areas']:
     best = np.full(n13, -1); bestA = np.zeros(n13)
     for b_, f_, v in zip(bi, fi, inter):
         if v > bestA[b_]: bestA[b_] = v; best[b_] = f_
-    gone = []; taller = set()
+    gone = []; taller = set(); missing = []
     for i in range(n13):
         if Ba[i] <= 0: continue
         if d['st'][i] >= 10: continue   # towers aren't torn down in a decade; a gap here means the 2022 data is missing them (e.g. Lake Point Tower)
-        if covB[i] < 0.3: gone.append(i); stats['gone_missing'] += 1; continue
+        if covB[i] < 0.3: gone.append(i); missing.append(i); stats['gone_missing'] += 1; continue   # nothing stands there in 2022: the lot is open
         if newcov[i] >= 0.5 * covB[i]:
             gone.append(i); stats['gone_replaced'] += 1
             f = best[i]; DIAG['repl'].append((Ba[i], Fa[f] if f >= 0 else 0, covB[i], newcov[i])); continue
@@ -133,7 +133,7 @@ for a in meta['areas']:
                 gone.append(i); taller.add(int(f)); stats['gone_taller'] += 1; continue
         if f >= 0 and d['st'][i] == 0 and covB[i] >= 0.5 and H[near[f]] > 0 and bestA[i] / max(Ba[i] + Fa[f] - bestA[i], 1e-9) >= 0.4:
             d['st'][i] = stories(H[near[f]]); stats['stories_filled'] += 1
-    gone_all[str(num)] = gone
+    gone_all[str(num)] = gone; open_all[str(num)] = missing
     # new buildings to append: new footprints whose centroid is in this area, plus rebuilt-taller ones
     add = [j for j in range(len(F)) if (newF[j] or j in taller) and area_of[near[j]] == num]
     for j in add: DIAG['add'].append((AR[near[j]], H[near[j]], covF[j]))
@@ -167,6 +167,7 @@ for a in meta['areas']:
     print(f"{a['name']}: {len(gone)} gone, {len(nv_new)} added, {stats['stories_filled']} stories filled so far", flush=True)
 
 json.dump(gone_all, open(os.path.join(RAW, 'fresh_gone.json'), 'w'), separators=(',', ':'))
+json.dump(open_all, open(os.path.join(RAW, 'fresh_open.json'), 'w'), separators=(',', ':'))   # gone buildings whose lot is empty in 2022 (not replaced)
 json.dump(meta, open(os.path.join(ROOT, 'meta.json'), 'w'), separators=(',', ':'))
 print(dict(stats))
 if os.environ.get('DIAG'): np.savez(os.environ['DIAG'], **{k: np.array(v) for k, v in DIAG.items()})   # optional diagnostics
