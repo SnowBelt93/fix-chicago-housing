@@ -24,7 +24,7 @@
   --ink:#1c2430; --ink-2:#3d4654; --ink-3:#6b7280;
   --paper:#ffffff; --paper-2:#eef3f8; --line:#d9dde3;
   --nav:#2b5da0; --nav-2:#1d4377; --flag:#41b6e6; --star:#e4002b;
-  --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f; --t5:#0a1c3c;
+  --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f; --t5:#0a1c3c; --t6:#161820;
   --s-zone:#2b5da0; --s-adu:#2f8f5b; --s-str:#41b6e6; --s-lots:#7a4fb3; --s-office:#e08a1e; --s-mega:#5b3f8c; --s-sub:#0f7c86; --s-vland:#6f9a3a;
   --good:#1f7a45; --warn:#a8641b; --bad:#b4232c; --focus:#e4002b; --vac:#9aa3ae;
   --f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
@@ -125,6 +125,8 @@ body.playing #hoodBanner{display:none}
 .tiers.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .tiers.six{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}
 .tiers.six .tier em{font-size:11px}
+.tiers.seven{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.hoodcard .hbt.seven{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
 .typerow{display:flex;flex-direction:column;gap:6px;padding:8px 0;border-top:1px solid var(--line)}
 .typerow:first-of-type{border-top:0}
 .typerow .tt b{display:block;font-size:14px}
@@ -883,9 +885,10 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
   .pane{padding:14px 16px 20px;gap:14px}
   .tool h3,.pane h2{font-size:18px !important}
   .tool > p:not(.small){font-size:14px}
-  .tiers,.tiers.six,.tiers.four{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .tiers,.tiers.six,.tiers.four,.tiers.seven{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
   .hoodcard .hbt{grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:3px}
   .hoodcard .hbt.six{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+  .hoodcard .hbt.seven{grid-template-columns:repeat(7,minmax(0,1fr)) !important}
   .sheetfoot{display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:#fff}
   .sheetfoot .mini{display:flex;flex-direction:column;gap:1px;flex:0 0 auto}
   .sheetfoot .mini b{font:700 20px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
@@ -945,11 +948,11 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
         <span class="grade" id="grade" role="img" aria-label="Grade" data-g="–">–</span>
       </div>
       <div class="scale" id="scale">
-        <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="r"></i><i class="i"></i></div>
+        <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="i"></i></div>
         <div class="ticks" aria-hidden="true"><i style="--at:.25"></i><i style="--at:.5"></i><i style="--at:.7"></i><i style="--at:.85"></i><i style="--at:1"></i></div>
         <div class="tlbls" aria-hidden="true"><span style="--at:.25">D</span><span style="--at:.5">C</span><span style="--at:.7">B</span><span style="--at:.85">A</span><span style="--at:1">A+</span></div>
       </div>
-      <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">Goal: <b id="goalNum">297,087</b> homes by 2041</button>
+      <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">Goal: <b id="goalNum">97,078</b> homes by 2041</button>
       <div class="keys" id="keys"></div>
     </div>
     <div class="stats">
@@ -986,19 +989,12 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
           <h3>What can go up near the L?</h3>
           <p>The shaded zones reach a half mile from each station, about a ten-minute walk.</p>
           <div class="tiers" id="todTiers"></div>
-          <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Capped at downtown's best leasing pace.</p>
+          <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Supertall: about 60 stories at the busiest stations inside the downtown core, towers at the other busy stations. Both together are capped at downtown's forecast leasing pace.</p>
         </div>
         <div class="tool" id="tool-metra" data-unlock="metra">
           <h3>Near Metra stations in the city</h3>
           <p>The same idea for the 74 Metra stops inside Chicago.</p>
           <div class="tiers" id="metraTiers"></div>
-        </div>
-        <div class="tool" id="tool-sub" data-unlock="metra">
-          <h3>Near Metra stations in the suburbs</h3>
-          <p>The shortage is regional. Zone the other 168 Metra stops too.</p>
-          <p class="small">The goal counts the whole Chicago region, so suburban homes count. Same levels as in the city; assumption: each suburban station builds 30% as much as an average Chicago L station (bigger lots, less demand). Station count: <a href="https://en.wikipedia.org/wiki/Metra" target="_blank" rel="noopener">Metra (Wikipedia)</a>.</p>
-          <div class="tiers" id="subTiers"></div>
-          <span class="gain" id="subGain"></span>
         </div>
         <div class="tool" id="tool-types" data-unlock="hoods">
           <h3>Zone by neighborhood type</h3>
@@ -1079,7 +1075,7 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
         </div>
         <div class="group" id="targetGroup">
           <div class="eyebrow">Which shortage are you solving?</div>
-          <p class="small">Real estimates, all for the Chicago region; no official count exists for the city alone. Chicago permitted about 4,900 homes in 2025, yet the regional shortage still grew by about 8,800 homes in a year. Your goal: today's gap plus 15 years of that growth, on top of today's pace.</p>
+          <p class="small">The default is Chicago's own share of the regional shortage: no study counts the city alone, so it takes the region's estimate in proportion to homes. The other three are for the whole Chicago region, which the city can't close on its own. Chicago permitted about 4,900 homes in 2025, yet the regional shortage still grew by about 8,800 homes in a year. Your goal: today's gap plus 15 years of that growth, on top of today's pace.</p>
           <div class="targets" id="targets"></div>
           <p class="goaleq" id="goalEq"></p>
         </div>
@@ -1194,7 +1190,7 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
           <div><dt>Rent effect</dt>
             <dd>Each 1% added to Chicago's 1,282,248 homes (<a href="https://data.census.gov/table/ACSDT1Y2024.B25002?g=160XX00US1714000" target="_blank" rel="noopener">Census ACS 2024</a>) lowers rents compared with where they'd otherwise be. Estimates differ by a factor of ten, so the game shows a range. The cautious end is 0.19% per 1% (<a href="https://eprints.lse.ac.uk/127192/" target="_blank" rel="noopener">Mense, 2025</a>), but that study measures a 1% rise in the year's new homes, not in all homes, so it understates the effect of adding to the stock. The strong end is 2% per 1%, from stock-based estimates that put the demand elasticity around −0.4 to −0.5 (<a href="https://doodles.mountainmath.ca/posts/2024-04-11-what-if-recent-apartment-buildings-in-vancouver-were-20-taller/" target="_blank" rel="noopener">Lauster &amp; von Bergmann, 2024</a>, summarizing Canadian and Australian government studies). Both use a constant-elasticity curve, so very large plans level off instead of driving rent to zero. Median gross rent $1,440 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/PST120223" target="_blank" rel="noopener">Census ACS 2020–24</a>); typical 1-bedroom $1,745 (<a href="https://www.apartmentlist.com/rent-report/il/chicago" target="_blank" rel="noopener">Apartment List, Oct 2026</a>).</dd></div>
           <div><dt>Shortage estimates</dt>
-            <dd>165,687 homes underproduced, Chicago metro, 2022 (<a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a>). 115,282 home deficit, 2024 (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a>). 224,445 affordable homes missing for extremely low-income renters (<a href="https://therealdeal.com/chicago/2026/03/09/chicago-lacks-more-than-220k-affordable-homes" target="_blank" rel="noopener">Housing Action Illinois & NLIHC via The Real Deal</a>). City only: no study estimates Chicago's own shortage, so the game takes the city's share of the metro figure, 32.7%, because the city holds 1,282,248 of the metro's 3,924,020 homes (<a href="https://censusreporter.org/profiles/31000US16980-chicago-naperville-elgin-il-in/" target="_blank" rel="noopener">Census ACS 2024 via Census Reporter</a>): 54,141 missing today, growing 2,862 a year, a goal of 97,078 by 2041. 41% of Chicago is zoned single-family only (<a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a>).</dd></div>
+            <dd>165,687 homes underproduced, Chicago metro, 2022 (<a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a>). 115,282 home deficit, 2024 (<a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a>). 224,445 affordable homes missing for extremely low-income renters (<a href="https://therealdeal.com/chicago/2026/03/09/chicago-lacks-more-than-220k-affordable-homes" target="_blank" rel="noopener">Housing Action Illinois & NLIHC via The Real Deal</a>). City only (the game's default goal): no study estimates Chicago's own shortage, so the game takes the city's share of the metro figure, 32.7%, because the city holds 1,282,248 of the metro's 3,924,020 homes (<a href="https://censusreporter.org/profiles/31000US16980-chicago-naperville-elgin-il-in/" target="_blank" rel="noopener">Census ACS 2024 via Census Reporter</a>): 54,141 missing today, growing 2,862 a year, a goal of 97,078 by 2041. 41% of Chicago is zoned single-family only (<a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a>).</dd></div>
           <div><dt>Affordable requirement (ARO)</dt>
             <dd>Chicago requires 10–20% affordable homes in projects of 10+ units that need a zoning change, city land or city money (<a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago</a>). The game applies the dial to new buildings of 10+ homes. Production effects follow Terner Center modeling for Los Angeles, where output fell about 30% going from an 11% to a 25% requirement (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Phillips, 2024</a>). "None" uses the same study's no-requirement scenario: 398,800 homes over 10 years vs. about 233,000 at 20% (interpolated between its 16% and 25% runs), so 10+-home projects are about 1.7× as likely to get built, and none of their homes are affordable.</dd></div>
           <div><dt>Office conversions</dt>
@@ -1218,8 +1214,8 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
                 <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
-                <li>The city-only goal spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago), and doesn't count suburban Metra homes.</li>
-                <li>Suburban Metra stations build 30% as much as an average Chicago L station at the same level; megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
+                <li>The city-only goal (the default) spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago).</li>
+                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you play.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
@@ -1227,6 +1223,7 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
                 <li>Land assembly: bigger buildings need bigger sites, so a mid-rise project buys up the lots next door on the same block face (no skipping across a side street or a gap) until it has about 5,000 sq ft of land (two city lots), a high-rise about 7,500 (three) and a tower about 15,000 (six). Lots that are vacant today count. If the neighbors can't be bought (newer buildings, already taller, or zoned lower), or the site is too narrow (under about 30 ft for a mid-rise, 40 ft for a high-rise or 65 ft for a tower), it builds the biggest level its land allows. New buildings sit square to the street on the old footprints and only grow back toward the alley, never into a street. Each lot's chance of redeveloping stays the same; projects just come in fewer, bigger pieces.</li>
                 <li>Building size: each new building's floor area is its homes × 1,026 sq ft (the same per-home figure used for office conversions, which includes halls and walls). Drawn heights vary from project to project (6-flat 3–4 stories, mid-rise 5–6, high-rise 9–12, tower 25–36), and a building only spreads wider once it reaches its zoning height. Towers sit on a 4-story podium.</li>
                 <li>Tower level: about 30 stories and 40 homes per standard lot (DX-12-style floor area at about 900 sq ft per home), only within ¼ mile of the 26 busiest L stations (2025 weekday entries of 4,000+, <a href="https://data.cityofchicago.org/Transportation/CTA-Ridership-L-Station-Entries-Daily-Totals/5neh-572f" target="_blank" rel="noopener">CTA</a>; airports left out), and capped at 97,500 apartments over 15 years, about 6,500 a year on average: the 2021 forecast for downtown, which would be its best year since at least 1999 (<a href="https://www.connectcre.com/stories/downtown-chicago-apartment-market-enjoys-stunning-rebound/" target="_blank" rel="noopener">Integra Realty via Connect CRE</a>).</li>
+                <li>Supertall level: about 60 stories and 80 homes per standard lot, only at the busiest L stations inside the downtown core (the Loop and the Near North, Near West and Near South Sides) or where you zone a core neighborhood for it. It's modeled on DX-16, the densest downtown district, which allows floor area 16 times the lot and has no maximum on bonus floor area bought through the Neighborhood Opportunity Bonus (<a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-49491" target="_blank" rel="noopener">Chicago Zoning Ordinance §17-4-1003</a>); the game assumes about 23 times the lot at about 900 sq ft per home. It shares the tower cap, so taller buildings mean fewer sites for the same downtown demand, not more homes than downtown can fill. Sites need about 20,000 sq ft and an 80 ft frontage.</li>
                 <li>Vacant-lot gap financing: 15% of the ~31,000 privately owned vacant parcels (<a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Parcel-Universe/nj4t-kc8j" target="_blank" rel="noopener">Cook County Assessor, 2025</a>, class 100) get a 2-flat by 2041 at up to $150,000 of subsidy per home (Missing Middle's cap, <a href="https://hoodline.com/2026/09/chicago-turns-30-vacant-south-side-lots-into-27-6m-housing-push/" target="_blank" rel="noopener">Hoodline</a>), and rezoned projects in soft markets are 50% more likely.</li>
                 <li>Transit riders: one commuter per new home within ½ mile of the L or Metra, 37.9% of them by train or bus (ETOD 2020, from 2012–16 census data), two rides a workday for 250 days, valued at CTA's 2026 average of $1.24 a ride.</li>
                 <li>Policies that cut supply cost this share of the homes Chicago builds anyway: downzoning 25%, parking minimums 10%, moratoriums 15%, rent control 30%, transfer tax 5%. They also cut rezoned projects: parking minimums 15%, moratoriums 20% (and 25% later), rent control 40% on buildings of 3+ homes, transfer tax 18% on buildings of 20+.</li>
@@ -1256,6 +1253,7 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
     <div><i class="lt"></i><span>Mid-rise</span><em>RM-6</em></div>
     <div><i class="lt"></i><span>High-rise</span><em>RM-6.5</em></div>
     <div id="lgTower" hidden><i style="--c:#0a1c3c"></i><span>Tower</span><em>DX-12</em></div>
+    <div id="lgSuper" hidden><i style="--c:#161820"></i><span>Supertall</span><em>DX-16+</em></div>
     <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot</span></div>
     <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>City-owned lot</span></div>
     <div><i class="lo"></i><span>Offices to homes</span></div>
@@ -1288,11 +1286,11 @@ body.wide #pane-policies .policy.on{border-color:var(--nav)}
         <span class="sub">Up 35% since before the pandemic, per Zillow. Your job: build enough homes to stop it.</span>
       </a>
       <div class="eyebrow">Your goal by 2041</div>
-      <div class="big">297,087 new homes</div>
+      <div class="big">97,078 new homes</div>
       <div class="goalmath">
-        <div><b>165,687</b><span>homes the region is missing today (Up for Growth)</span></div>
+        <div><b>54,141</b><span>homes Chicago is missing today: its 32.7% share of the region's 165,687 (Up for Growth)</span></div>
         <div class="op">+</div>
-        <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow)</span></div>
+        <div><b>42,937</b><span>more as Chicago's share of the gap grows ~2,862 a year for 15 years (Zillow)</span></div>
       </div>
       <p class="small" style="margin:0">That's on top of the ~4,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family houses only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
@@ -1421,6 +1419,7 @@ const TIERS = [
   {name:"Mid-rise", h:6, k:10, zone:"RM-6: 1 per 300 sq ft", color:[43,93,160], css:"var(--t3)", bars:[12,16,12]},
   {name:"High-rise", h:12, k:20, zone:"RM-6.5: 1 per 300 sq ft, or 1 studio per 135 (mix)", color:[20,51,95], css:"var(--t4)", bars:[14,22,18]},
   {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations and in the downtown core", color:[10,28,60], css:"var(--t5)", bars:[16,26,22]},
+  {name:"Supertall", h:60, k:80, zone:"DX-16 plus a downtown floor-area bonus (DX-16 has no maximum bonus, §17-4-1003): about 23× the lot at about 900 sq ft per home (assumed). Only in the downtown core: the Loop and the Near North, Near West and Near South Sides", color:[22,24,32], css:"var(--t6)", bars:[18,30,24]},
 ];
 // Tower level: busiest L stations only; 15-year total capped at 6,500 a year on average, Integra Realty's 2021 forecast for downtown (via Connect CRE)
 const TOWER_CAP = 6500 * 15;
@@ -1429,7 +1428,7 @@ const TYPE_NAMES = ["Downtown core", "Mixed neighborhoods", "Single-family areas
 const TYPE_ONE = ["downtown core", "mixed neighborhood", "single-family area"];
 const TYPE_HINT = ["The Loop, River North, West Loop, South Loop", "2-flats, 3-flats and main streets: Wicker Park, Bridgeport, Logan Square", "Mostly houses and bungalows: Beverly, Portage Park, Ashburn"];
 const typeOf = (num) => { const m = META && META.areas.find(a => a.num === +num); return m && m.type != null ? m.type : 1; };
-const areaMaxTier = (num) => typeOf(num) === 0 ? 5 : 4;
+const areaMaxTier = (num) => typeOf(num) === 0 ? 6 : 4;
 // policies that can apply citywide or to one neighborhood type (0 citywide, 1 core, 2 mixed, 3 single-family)
 const SCOPED = ["build","adu","mpls","camb","small","park","vland","down","pmin","mora"];
 const inScope = (k, A) => { const s = plan.scope[k] || 0; return !s || (A.type != null ? A.type : typeOf(A.num)) === s - 1; };
@@ -1450,7 +1449,7 @@ const TARGETS = [
   {n:165687, title:"Homes the region failed to build", what:"Up for Growth, 2022 data (2024 report). Chicago ranks 3rd-worst metro in the US."},
   {n:115282, title:"Families doubled up with no home of their own", what:"Zillow analysis of Census data, 2024 (released 2026)."},
   {n:224445, title:"Affordable homes missing for extremely low-income renters", what:"Housing Action Illinois & NLIHC, 2026. New market-rate homes help this indirectly, not one-for-one."},
-  {n:Math.round(165687 * CITY_SHARE), title:"Chicago's share of the region's shortage", what:"Up for Growth's metro shortage × the city's 32.7% of the region's homes (Census, 2024). The suburbs would build the rest, so suburban Metra homes don't count here.", growth:GAP_GROWTH * CITY_SHARE},
+  {n:Math.round(165687 * CITY_SHARE), title:"Chicago's share of the region's shortage", what:"Up for Growth's metro shortage × the city's 32.7% of the region's homes (Census, 2024). The suburbs would build the rest.", growth:GAP_GROWTH * CITY_SHARE},
 ];
 const gapGrowth = () => TARGETS[plan.g].growth || GAP_GROWTH;   // how fast the chosen shortage grows each year
 // Sourced facts and labeled assumptions
@@ -1460,9 +1459,6 @@ const CITY_LOTS = 7100, LOT_HOMES = 2, LOT_BUILT = 0.5;
 const STAIR_BOOST = 0.25, PREROG_BOOST = 0.15, PERMIT_BOOST = 0.10, PERMIT_SHIFT = 0.6;   // faster permits: homes arrive ~7 months sooner (20% of a ~3-year approval and build; assumption)
 const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.30, 1.0, 0.70, 1.70];   // index 3 = no requirement (added later, so old plan codes keep 0-2)
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
-const SUB_STATIONS = 242 - 74;                               // Metra's 242 year-round stations (Wikipedia) minus the 74 inside Chicago
-const SUB_PER_STATION = [0, 22, 143, 346, 872];            // avg new homes per Chicago L station at each level, from this game's own model (Oct 2026 data; rerun when the model or data change)
-const SUB_FACTOR = 0.3;                                     // assumption: a suburban station builds 30% as much as an average L station
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
   {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet"},
@@ -1517,7 +1513,7 @@ function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); return t
 const corrName = (s) => s.replace(/(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
 
 // ---------------- plan state ----------------
-const blankPlan = () => ({scope:{}, areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:0, p:{mega:0, vland:0, down:0, pmin:0, mora:0, rentc:0, xfer:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
+const blankPlan = () => ({scope:{}, areas:{}, tod:0, metra:0, sub:0, corr:0, office:0, g:3, p:{mega:0, vland:0, down:0, pmin:0, mora:0, rentc:0, xfer:0, build:0, stair:0, str:0, adu:0, lots:0, pre:0, permits:0, aro:1, mpls:0, camb:0, small:0, park:0, vac:0, social:0, comm:0}});
 let plan = blankPlan();
 let selected = null, META = null, AREAS = {}, loaded = 0, year = YEARS, aduLots = 0, hasZoning = false, showIllegal = false, introHook = !lsGet("upzone-intro", false) && !/#u\d/.test(location.hash);
 const tierFor = (num) => plan.areas[num] || 0;
@@ -1535,7 +1531,7 @@ function tierAt(A, i, T0){
 }
 function tierFlags(A, f, busy, small, T0){
   let t = T0;
-  if (plan.tod && (f & 3) >= 1){ const tt = plan.tod === 5 ? (busy ? 5 : 4) : plan.tod; if (tt > t) t = tt; }
+  if (plan.tod && (f & 3) >= 1){ const tt = plan.tod >= 5 ? (busy ? (plan.tod === 6 && typeOf(A.num) === 0 ? 6 : 5) : 4) : plan.tod; if (tt > t) t = tt; }
   if (plan.metra && (f & 4) && plan.metra > t) t = plan.metra;
   if (plan.corr && (f & 16) && plan.corr > t) t = plan.corr;
   const P = plan.p;
@@ -1546,8 +1542,8 @@ function tierFlags(A, f, busy, small, T0){
 }
 // Land assembly (assumption): bigger buildings need bigger sites, so a project at these levels buys its neighbours along the
 // block face until it has this much lot (sq ft). If it can't, it builds the biggest level its land allows.
-const SITE_MIN = [0, 0, 0, 5000, 7500, 15000];      // mid-rise ~2 city lots (50 ft of frontage), high-rise ~3 (75 ft), tower ~6 (150 ft)
-const SITE_WIDTH = [0, 0, 0, 9, 12, 20];            // metres: narrowest side a mid-rise / high-rise / tower site can have (narrower sites build lower)
+const SITE_MIN = [0, 0, 0, 5000, 7500, 15000, 20000];   // mid-rise ~2 city lots (50 ft of frontage), high-rise ~3 (75 ft), tower ~6 (150 ft), supertall ~6–7
+const SITE_WIDTH = [0, 0, 0, 9, 12, 20, 25];        // metres: narrowest side a mid-rise / high-rise / tower / supertall site can have (narrower sites build lower)
 const SITE_R = 35;                                  // metres: close enough to be the same block face, not across the alley or street
 const SITE_MAX = 10;                                // lots in one site at most
 const SQFT_HOME = 1026;                             // building floor area per home, incl. halls and walls (same figure as office conversions)
@@ -1555,7 +1551,7 @@ const lotOf = (fp) => Math.min(40000, Math.max(2000, fp / 0.5));
 const VAC_LOT = 3125;   // a vacant parcel is taken as one standard 25×125 ft city lot (assumption: the parcel data has points, not sizes)
 const VAC_EASE = 1.5;   // an empty lot earns nothing and has nothing to tear down, so it sells or gets built 1.5× as readily (assumption)
 // drawn height varies; floor area always matches the homes (see siteShape): 6-flat 3–4, mid-rise 5–6, high-rise 9–12, tower 25–36
-const drawnStories = (t, r) => t === 1 ? 3 : t === 2 ? (r < 0.25 ? 3 : 4) : t === 3 ? (r < 0.4 ? 5 : 6) : t === 4 ? 9 + Math.floor(r * 4) : 25 + Math.floor(r * 12);
+const drawnStories = (t, r) => t === 1 ? 3 : t === 2 ? (r < 0.25 ? 3 : 4) : t === 3 ? (r < 0.4 ? 5 : 6) : t === 4 ? 9 + Math.floor(r * 4) : t === 5 ? 25 + Math.floor(r * 12) : 50 + Math.floor(r * 20);
 function siteGrid(A){
   if (A.grid) return;
   const n = A.n, k = A.vk || 0, P = A.data.attributes.getPolygon.value, S = A.data.startIndices, cx = new Float32Array(n + k), cy = new Float32Array(n + k), g = new Map();
@@ -1758,7 +1754,7 @@ function siteShape(A, pr){
   const c = pr.t === 5 ? 7 : pr.t, W = Math.max(b.W - 0.8, 4), D0 = Math.max(b.D - 0.8, 6);
   const deeper = (D) => b.cv + b.back * (D - D0) / 2;   // grow toward the back of the lot, keep the street side where it was
   let st = drawnStories(pr.t, hash01(pr.members[0], A.num + 733));
-  if (pr.t !== 5){
+  if (pr.t < 5){
     const dMin = Math.min(D0, pr.t >= 3 ? 18 : 10);          // a real apartment building is at least this deep
     let D = D0, w = W;
     if (area / st <= W * D0){                                 // room to spare: keep a real depth and use only the frontage it needs
@@ -1809,9 +1805,10 @@ function compute(A, statsOnly){
   const gone = (j) => j < n && EX !== null && (EX[j] & 64) !== 0;
   const tod = plan.tod, metra = plan.metra, corr = plan.corr;
   const mp = !!(P.mpls && inScope("mpls", A)), comm = !!P.comm, camb = !!(P.camb && inScope("camb", A)), bld = !!((P.build && inScope("build", A)) || mp);
+  const core = typeOf(A.num) === 0;
   const tierF = (f, busy, small) => {   // same rules as tierFlags()
     let t = T0;
-    if (tod && (f & 3) >= 1){ const tt = tod === 5 ? (busy ? 5 : 4) : tod; if (tt > t) t = tt; }
+    if (tod && (f & 3) >= 1){ const tt = tod >= 5 ? (busy ? (tod === 6 && core ? 6 : 5) : 4) : tod; if (tt > t) t = tt; }
     if (metra && (f & 4) && metra > t) t = metra;
     if (corr && (f & 16) && corr > t) t = corr;
     if (f & 16){ if (mp && t < 3) t = 3; if (comm && t < 2) t = 2; }
@@ -1857,7 +1854,7 @@ function compute(A, statsOnly){
     if (moraOn) p *= MORA_FACTOR;                        // moratoriums / extra review
     if (P.rentc && grossEst >= 3) p *= RENTC_FACTOR;     // rent control covering new buildings
     if (P.xfer && grossEst >= 20) p *= XFER_FACTOR;      // transfer tax hits big buildings when they sell
-    if (t === 5) p *= towerScale;                        // towers can't lease faster than downtown's record pace
+    if (t >= 5) p *= towerScale;                        // towers can't lease faster than downtown's record pace
     if (vlBoost) p *= 1 + VL_SOFT_BOOST;                 // gap financing makes soft-market projects pencil
     if (vac) p *= VAC_EASE;
     if (p > 0.6) p = 0.6;
@@ -1897,7 +1894,7 @@ function compute(A, statsOnly){
     added += homes; replaced += existing; byYear[yb] += homes;
     if (nearTransit) walk += homes;
     if (gross >= 10) aff += Math.round(gross * ARO_SHARE[P.aro]);
-    if (tt === 5) tower += homes;
+    if (tt >= 5) tower += homes;
     if (i >= n) wardHomes[A.vw[i - n]] += homes; else if (EX !== null) wardHomes[EX[i] & 63] += homes;
     if (yb <= year) addedNow += homes;
     if (!statsOnly) projects.push({members, siteLot, t: tt, yb, gross, box});
@@ -1961,7 +1958,6 @@ function policyHomes(){
     social: P.social ? SOCIAL_HOMES : 0,
     mega: P.mega ? MEGA_TOTAL * MEGA_BUILT : 0,
     vland: P.vland ? vacantLeft("vland") * VL_HOMES * VL_UPTAKE : 0,
-    sub: plan.sub && plan.g !== 3 ? SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR : 0,   // outside the city: not counted toward the city-only goal
   };
 }
 function totals(useYear){
@@ -1974,9 +1970,9 @@ function totals(useYear){
     sides[sideOf(A.num)] += A.added;
   }
   const ph = policyHomes(), f = useYear ? rampFrac(year) : 1;
-  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, sub: ph.sub * f, vland: ph.vland * f,
+  const parts = {zone: useYear ? zoneNow : zone, office: ph.office * f, adu: ph.adu * f, str: ph.str * f, lots: ph.lots * f, vac: ph.vac * f, social: ph.social * f, mega: ph.mega * f, vland: ph.vland * f,
     worse: -CITY_PACE * baseCut() * (useYear ? year : YEARS)};   // homes Chicago would have built anyway, lost to supply-cutting policies
-  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.sub + parts.vland + parts.worse;
+  const total = parts.zone + parts.office + parts.adu + parts.str + parts.lots + parts.vac + parts.social + parts.mega + parts.vland + parts.worse;
   sides[1] += ph.office; sides[3] += ph.lots * 0.75; sides[2] += ph.lots * 0.25;
   if (ph.vland && META.vacantByArea){ const tot = vacantPriv("vland") || 1; META.areas.forEach(m => { if (!inScope("vland", m)) return; const share = (META.vacantByArea[m.num] || [0])[0] / tot; sides[sideOf(m.num)] += ph.vland * share; if (SOUTH_WEST.has(m.num)) sw += ph.vland * share; }); }
   if (ph.mega) MEGA.forEach(m => sides[m.side] += m.homes * MEGA_BUILT);
@@ -1989,7 +1985,7 @@ function planHomesAt(y){
   let z = 0;
   for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
   const ph = policyHomes();
-  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.sub + ph.vland) * rampFrac(y) - CITY_PACE * baseCut() * y;
+  return z + (ph.adu + ph.str + ph.lots + ph.office + ph.vac + ph.social + ph.mega + ph.vland) * rampFrac(y) - CITY_PACE * baseCut() * y;
 }
 const target = () => TARGETS[plan.g].n;
 const needed = () => target() + gapGrowth() * YEARS;
@@ -2037,7 +2033,7 @@ function applyLocks(){
 }
 
 // ---------------- missions ----------------
-const maxTier = () => Math.max(plan.tod, plan.metra, plan.sub, plan.corr, plan.p.build ? 1 : 0, plan.p.camb || plan.p.comm ? 2 : 0, plan.p.mpls ? 3 : 0, ...Object.values(plan.areas), 0);
+const maxTier = () => Math.max(plan.tod, plan.metra, plan.corr, plan.p.build ? 1 : 0, plan.p.camb || plan.p.comm ? 2 : 0, plan.p.mpls ? 3 : 0, ...Object.values(plan.areas), 0);
 const MISSIONS = [
   {id:"m1", title:"Break ground", desc:"Unlock 10,000 new homes any way you like.", prog:t => t.total / 10000},
   {id:"m2", title:"Ride the rails", desc:"50,000 homes using only L and Metra station zoning (no neighborhoods, corridors or BUILD Act). Policies are fair game.",
@@ -2079,8 +2075,8 @@ function renderMissions(t){
 }
 function renderTargets(){
   const el = $("targets"); el.innerHTML = "";
-  TARGETS.forEach((T, i) => {
-    const b = document.createElement("button"); b.type = "button"; b.className = "target";
+  [3, 0, 1, 2].forEach(i => {   // the city's own share first: it's the default
+    const T = TARGETS[i], b = document.createElement("button"); b.type = "button"; b.className = "target";
     b.setAttribute("aria-pressed", String(plan.g === i));
     b.innerHTML = '<span class="num"></span><span class="what"><b></b><span></span></span>';
     b.querySelector(".num").textContent = fmt(T.n);
@@ -2984,7 +2980,7 @@ function layers(){
     if (META.ringL){
       if (plan.tod && plan.metra && plan.tod === plan.metra) zone("zoneLM", META.ringLM, plan.tod, plan.tod >= 4 ? 24 : 46);
       else {
-        if (plan.tod) zone("zoneL", META.ringL, plan.tod === 5 ? 4 : plan.tod, plan.tod >= 4 ? 24 : 46);   // Tower: high-rise in the half mile, towers in the busy rings below
+        if (plan.tod) zone("zoneL", META.ringL, plan.tod >= 5 ? 4 : plan.tod, plan.tod >= 4 ? 24 : 46);   // Tower: high-rise in the half mile, towers in the busy rings below
         if (plan.metra) zone("zoneM", META.ringM, plan.metra, plan.metra >= 4 ? 22 : 40);
       }
     }
@@ -3029,7 +3025,7 @@ function layers(){
 
 // ---------------- UI ----------------
 function tierButtons(el, getT, setT, max = 4){
-  el.innerHTML = ""; el.classList.toggle("six", max === 5);
+  el.innerHTML = ""; el.classList.toggle("six", max === 5); el.classList.toggle("seven", max === 6);
   TIERS.slice(0, max + 1).forEach((T, t) => {
     const b = document.createElement("button");
     b.className = "tier"; b.type = "button"; b.dataset.t = t; b.setAttribute("aria-pressed", "false");
@@ -3044,7 +3040,7 @@ function tierButtons(el, getT, setT, max = 4){
 }
 function fitTowers(){
   // scale tower odds so the total stays under the leasing cap (homes scale with the odds, so 1–2 passes converge)
-  if (plan.tod !== 5 && !Object.values(plan.areas).includes(5)){ towerScale = 1; return; }
+  if (plan.tod < 5 && !Object.values(plan.areas).some(v => v >= 5)){ towerScale = 1; return; }
   for (let pass = 0; pass < 2; pass++){
     let tw = 0; for (const k in AREAS) tw += AREAS[k].tower || 0;
     let next = towerScale;
@@ -3067,10 +3063,9 @@ function afterZoning(t, kind, place){
   react(tallKind(t, kind || "low"), place);
   if (t >= 3) maybeMyth("lux");
 }
-function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); if (t === 5) maybeMyth("tower");
+function setTod(t){ const was = plan.tod; plan.tod = t; recompute(); if (t > was) afterZoning(t); if (t >= 5) maybeMyth("tower");
   if (t && tourStep === 0 && !$("tip").hidden) setTimeout(() => { if (tourStep === 0 && !$("tip").hidden){ tourStep = 1; showTip(); } }, 1100); }
 function setMetra(t){ const was = plan.metra; plan.metra = t; recompute(); if (t > was){ react(tallKind(t, "metra")); if (t >= 3) maybeMyth("lux"); } }
-function setSub(t){ const was = plan.sub; plan.sub = t; render(); if (t > was) react(tallKind(t, "metra")); }
 function setCorr(t){ const was = plan.corr; plan.corr = t; recompute(); if (t > was){ react("corr"); maybeMyth("density"); } }
 function setOffice(v){ const was = plan.office; plan.office = v; recompute(); if (v > was) react("office"); if (v && !was) flyTo(-87.632, 41.881, isWide() ? 14 : 13.6, -30); }
 function setAreaTier(num, t){
@@ -3115,11 +3110,11 @@ function render(){
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
   $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
   { $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tv.aff); }   // affordable homes built by the year shown
-  const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub], ["i", tv.parts.vland]];
+  const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["i", tv.parts.vland]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
   $("scale").style.setProperty("--g", goal / scale);   // grade ticks sit at shares of the goal
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
-  const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"], ["Big projects", tv.parts.mega, "--s-mega"], ["Suburban Metra", tv.parts.sub, "--s-sub"], ["Vacant lots", tv.parts.vland, "--s-vland"]];
+  const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"], ["Big projects", tv.parts.mega, "--s-mega"], ["Vacant lots", tv.parts.vland, "--s-vland"]];
   $("keys").innerHTML = "";
   keyDefs.filter(k => k[1] > 0).forEach(([n, v, c]) => { const s = document.createElement("span"); s.style.setProperty("--c", "var(" + c + ")"); s.textContent = n + " " + fmt(v); $("keys").appendChild(s); });
   if (tv.parts.worse <= -1){ const s = document.createElement("span"); s.className = "neg"; s.style.setProperty("--c", "var(--star)"); s.textContent = "Supply cuts " + fmt(tv.parts.worse); $("keys").appendChild(s); }
@@ -3132,12 +3127,11 @@ function render(){
   if (loaded === 77) lastGrade = g;
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : ""; $("loadTxt").hidden = loaded >= 77;
   $("yrTxt").textContent = START + year;
-  $("lgTower").hidden = plan.tod !== 5; $("todNote").hidden = plan.tod !== 5;
+  { const tall = Object.values(plan.areas); $("lgTower").hidden = plan.tod < 5 && !tall.some(v => v >= 5); $("lgSuper").hidden = plan.tod < 6 && !tall.includes(6); $("todNote").hidden = plan.tod < 5; }
   $("lgVacP").hidden = !plan.p.vland; $("lgVacC").hidden = !plan.p.lots;
   if ((plan.p.vland || plan.p.lots) && !VACANT) loadVacant();
   { const r = $("yrRange"); r.value = year; r.disabled = playing; r.style.setProperty("--p", (year / YEARS * 100) + "%"); }
-  ["todTiers","metraTiers","subTiers","corrTiers","hoodTiers","typeTiers0","typeTiers1","typeTiers2","hbTiers"].forEach(id => $(id) && $(id)._sync && $(id)._sync());
-  $("subGain").textContent = plan.sub ? "+" + fmt(SUB_STATIONS * SUB_PER_STATION[plan.sub] * SUB_FACTOR) + " homes across " + SUB_STATIONS + " suburban stations" + (plan.g === 3 ? " (not counted toward the city-only goal)" : "") : "Mid-rise everywhere would add +" + fmt(SUB_STATIONS * SUB_PER_STATION[3] * SUB_FACTOR) + " homes";
+  ["todTiers","metraTiers","corrTiers","hoodTiers","typeTiers0","typeTiers1","typeTiers2","hbTiers"].forEach(id => $(id) && $(id)._sync && $(id)._sync());
   $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
   renderHood(); renderHoodList(); renderMissions(tf); renderPolicies(); renderImpact(tf);
   if (year === YEARS) checkUnlocks(tf.total);
@@ -3276,9 +3270,8 @@ $("hbClose").addEventListener("click", () => { selected = null; $("hoodPick").va
 $("hoodPick").addEventListener("change", e => { if (e.target.value) selectArea(e.target.value); else { selected = null; render(); } });
 $("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(); plan.g = g; recompute(); toast("Fresh start"); });
 $("unlockAll").addEventListener("click", () => { unlockAll(); render(); });
-tierButtons($("todTiers"), () => plan.tod, setTod, 5);
+tierButtons($("todTiers"), () => plan.tod, setTod, 6);
 tierButtons($("metraTiers"), () => plan.metra, setMetra);
-tierButtons($("subTiers"), () => plan.sub, setSub);
 tierButtons($("corrTiers"), () => plan.corr, setCorr);
 tierButtons($("hoodTiers"), () => tierFor(selected), t => selected && setAreaTier(selected, t));
 function typeAreas(ty){ return META ? META.areas.filter(m => m.type === ty).map(m => m.num) : []; }
@@ -3291,7 +3284,7 @@ function setTypeTier(ty, t){
 function typeTier(ty){ const nums = typeAreas(ty); if (!nums.length) return -1; const t0 = plan.areas[nums[0]] || 0; return nums.every(n => (plan.areas[n] || 0) === t0) ? t0 : -1; }
 function buildTypeTools(){
   [0, 1, 2].forEach(ty => {
-    tierButtons($("typeTiers" + ty), () => typeTier(ty), t => setTypeTier(ty, t), ty === 0 ? 5 : 4);
+    tierButtons($("typeTiers" + ty), () => typeTier(ty), t => setTypeTier(ty, t), ty === 0 ? 6 : 4);
     $("typeHint" + ty).textContent = TYPE_HINT[ty] + " · " + typeAreas(ty).length + " areas";
   });
 }
@@ -3719,14 +3712,14 @@ function decodeAreas(str, p){
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u6([0-5]{77})([0-5])([0-4])([0-4])([0-3])([0-2])([0-3])([0-9a-v]{4})([0-3])([0-4])([0-3]{10})/);
+  let m = s.match(/u6([0-6]{77})([0-6])([0-4])([0-4])([0-3])([0-2])([0-3])([0-9a-v]{4})([0-3])([0-4])([0-3]{10})/);
   if (m){
     const p = blankPlan();
     for (let i = 0; i < 77; i++){ const v = +m[1][i]; if (v) p.areas[i + 1] = v; }
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
     const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10) | (B32.indexOf(m[8][3]) << 15);
     BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
-    p.g = +m[9]; p.sub = +m[10];
+    p.g = +m[9]; p.sub = 0;   // the old suburban Metra lever was removed; its character is ignored
     SCOPED.forEach((k, i) => { const v = +m[11][i]; if (v) p.scope[k] = v; });
     return p;
   }
@@ -3736,7 +3729,7 @@ function decodePlan(code){
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
     const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10) | (B32.indexOf(m[8][3]) << 15);
     BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
-    p.g = +m[9]; p.sub = +m[10];
+    p.g = +m[9]; p.sub = 0;   // the old suburban Metra lever was removed; its character is ignored
     return p;
   }
   m = s.match(/u4([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])([0-4])/);
@@ -3745,7 +3738,7 @@ function decodePlan(code){
     p.tod = +m[2]; p.metra = +m[3]; p.corr = +m[4]; p.office = +m[5]; p.p.str = +m[6]; p.p.aro = +m[7];
     const bits = B32.indexOf(m[8][0]) | (B32.indexOf(m[8][1]) << 5) | (B32.indexOf(m[8][2]) << 10);
     BIT_KEYS.forEach((k, i) => { p.p[k] = bits & (1 << i) ? 1 : 0; });
-    p.g = +m[9]; p.sub = +m[10];
+    p.g = +m[9]; p.sub = 0;   // the old suburban Metra lever was removed; its character is ignored
     return p;
   }
   m = s.match(/u3([0-9a-o]{39})([0-4])([0-4])([0-4])([0-3])([0-2])([0-2])([0-9a-v]{3})([0-2])/);
@@ -3912,7 +3905,8 @@ setLook("model");
   const fromHash = decodePlan(location.hash);
   const cur = lsGet("upzone-current", null);
   if (fromHash){ plan = fromHash; unlockAll(true); setTimeout(() => toast("Opened a shared plan"), 600); }
-  else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }
+  else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (!lsGet("fch-city-goal", false)) plan.g = 3; if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }   // saved before the city goal became the default: switch once
+  lsSet("fch-city-goal", true);
   buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
   if (/[?&]qa=results/.test(location.search)){ const go = () => loaded === 77 && hasExtra ? setTimeout(showResult, 1500) : setTimeout(go, 500); go(); }   // test hook: open the front page without waiting for a 15-year simulation
