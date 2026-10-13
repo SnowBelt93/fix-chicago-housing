@@ -2243,7 +2243,8 @@ async function loadStreets(){
       return {length: ids.length, startIndices: st, attributes: {getPath: {value: pos, size: 2}}};
     };
     STREETS = {origin, exp: pack(groups[1]), art: pack(groups[2]), loc: pack(groups[4]), raw: {P, starts, xy, cls}};
-    if (hasExtra){ for (const k in AREAS){ const A = AREAS[k]; A.boxC = null; A.projKey = null; A.sig = null; } recompute(); }   // (normally streets arrive first) redo sites so they stay clear of the streets
+    for (const k in AREAS){ const A = AREAS[k]; A.boxC = null; A.projKey = null; A.sig = null; }   // sites boxed before the streets arrived get redone
+    if (hasExtra) recompute();
     scheduleRender();
   } catch (e) { console.warn("streets failed", e); }
 }
@@ -2650,7 +2651,13 @@ function fitTowers(){
     towerScale = next; for (const k in AREAS) compute(AREAS[k]);
   }
 }
-function recompute(nums){ (nums || Object.keys(AREAS)).forEach(k => { if (AREAS[k]) compute(AREAS[k]); }); fitTowers(); render(); }
+const PERF_LOG = /[?&]perf\b/.test(location.search);   // ?perf logs how long each recompute takes (console "[fch]")
+function recompute(nums){
+  const t0 = PERF_LOG ? performance.now() : 0;
+  (nums || Object.keys(AREAS)).forEach(k => { if (AREAS[k]) compute(AREAS[k]); }); fitTowers();
+  if (PERF_LOG) console.log("[fch] recompute " + Math.round(performance.now() - t0) + " ms" + (nums ? " (" + nums.length + " areas)" : ""));
+  render();
+}
 const tallKind = (t, low) => t >= 5 ? "tower" : t === 4 ? "high" : t === 3 ? "mid" : low;
 function afterZoning(t, kind, place){
   if (!t) return;
