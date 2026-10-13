@@ -579,6 +579,329 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   .hud .play{padding-bottom:0}
   .play{margin-top:7px}
 }
+/* ---------- v30 look: flat civic paper (score ledger, council docket, clerk's slips, zoning-map key) ---------- */
+:root{--ink:#17202b;--ink-2:#44505e;--ink-3:#5a6573;--line:#c9d2dc;--grid:#dde3ea;--paper-2:#eef3f8;--rule:#9aa6b4;--table:#e8edf2}
+.hud,.sheet,.legend,.mapctl{background:#fff !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important}
+.hud .scoreband{background:none !important}
+.credit{background:rgba(255,255,255,.85) !important;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0}
+.eyebrow{text-transform:none;letter-spacing:0;font-weight:600;font-size:13px;color:var(--ink-2)}
+.btn,.chip,select.pick,input.txt,.fact,.mission,.target,.lockmsg,.code,.townq,.doit a,.doit button.dobtn,.gal .gi,.gal .gi button{border-radius:2px}
+.btn.primary{background:var(--nav);border-color:var(--nav)}
+/* score panel */
+.stripes{height:12px;display:flex;flex-direction:column;justify-content:space-between}
+.stripes i{display:block;height:4px;background:var(--flag)}
+.hud{padding:0 !important;border-radius:0}
+.brand{padding:14px 24px 0;gap:12px;border:0;align-items:center}
+.brand .mark{width:36px;height:24px}
+.brand h1{font:800 26px/1 var(--f-display) !important;text-transform:none;letter-spacing:.01em;max-width:none !important}
+.brand .load{margin-left:auto}
+.look{margin:0 0 0 auto;padding:4px 0;align-self:center;background:none;color:var(--nav);font:600 14px var(--f-body);letter-spacing:0;text-decoration:underline;text-decoration-color:rgba(43,93,160,.35);text-underline-offset:3px}
+.look:hover{background:none;color:var(--nav-2)}
+.brand .load + .look{margin-left:12px}
+.fanline{margin:4px 24px 0;padding:0 0 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+.fanbar,.fanmini{display:none !important}
+.scoreband{padding:18px 24px 0 !important;color:var(--ink)}
+.score{display:flex;align-items:center;gap:14px;flex-wrap:nowrap}
+.score .big{font:800 56px/.9 var(--f-display);letter-spacing:-.01em;color:var(--ink)}
+.smeta{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:14px;line-height:1.3}
+.smeta #homesLbl{font-weight:600}
+.smeta .sgo{color:var(--ink-2)} .smeta .sgo b{font-weight:400}
+.grade{margin-left:auto;flex:0 0 64px;width:64px;height:64px;padding:0;border:0;border-radius:0;display:grid;place-items:center;transform:rotate(-8deg);color:#fff;font:900 28px/1 var(--f-display);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 63,27.48 93.3,25 76,50 93.3,75 63,72.52 50,100 37,72.52 6.7,75 24,50 6.7,25 37,27.48' fill='%23e4002b'/%3E%3C/svg%3E") center/contain no-repeat}
+.grade.top{background-color:transparent;color:#fff}
+.grade[data-g="A+"]{font-size:23px}
+.grade[data-g="F"],.grade[data-g="–"]{color:var(--star);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,4 62,29.5 90,27 74,50 90,73 62,70.5 50,96 38,70.5 10,73 26,50 10,27 38,29.5' fill='none' stroke='%23e4002b' stroke-width='5'/%3E%3C/svg%3E")}
+.scale{position:relative;margin-top:14px;height:40px}
+.scale .bar,.scoreband .bar{height:12px;margin:0;border:0;border-radius:0;background:#e3e9ef}
+.scoreband .bar .z{background:var(--nav)}
+.scale .ticks i{position:absolute;top:0;height:18px;width:1px;background:var(--ink);left:calc(var(--g, 1) * var(--at) * 100%)}
+.scale .ticks i:last-child{margin-left:-1px}
+.scale .tlbls span{position:absolute;top:22px;left:calc(var(--g, 1) * var(--at) * 100%);transform:translateX(-50%);font:700 13px/1 var(--f-display);color:var(--ink)}
+.scale .tlbls span:last-child{transform:translateX(-80%)}
+.score + .scale + .of,#goalBtn{display:block;margin:2px 0 0;padding:0;border:0;background:none;color:var(--ink-2);font:400 12px var(--f-body);text-decoration:underline dotted var(--rule);text-underline-offset:3px;text-align:left;cursor:pointer}
+#goalBtn b{font-weight:600;color:var(--ink)}
+.scoreband .keys{margin-top:6px;color:var(--ink-2);font-size:11px;gap:4px 10px}
+.keys span::before{border-radius:0}
+.keys .neg{color:var(--bad)}
+.hud .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:0;padding:14px 24px 0 !important;margin:0 !important}
+.stat{padding:0 12px}
+.stat:first-child{padding-left:0}
+.stat:last-child{padding-right:0}
+.stat + .stat{border-left:1px solid var(--line)}
+.stat b{font:700 24px/1.1 var(--f-display) !important;color:var(--ink)}
+.stat span{font-size:12px;color:var(--ink-2);line-height:1.35;margin-top:2px}
+.play{flex-direction:column;align-items:stretch;gap:10px;margin:0 !important;padding:16px 24px 16px !important}
+.play button{height:52px;justify-content:center;gap:10px;padding:0 16px;border-radius:2px;font:800 22px var(--f-display);letter-spacing:.02em;text-transform:none}
+.play button svg{width:18px;height:18px}
+.tline{display:flex;align-items:center;gap:10px;font:700 13px var(--f-display);color:var(--ink-2)}
+.tline .yr{font:700 13px var(--f-display);color:var(--ink)}
+.yrrange{height:18px}
+.yrrange::-webkit-slider-runnable-track{height:10px;border-radius:0;border-bottom:1px solid var(--rule);background:linear-gradient(var(--nav),var(--nav)) 0 100%/var(--p) 3px no-repeat,repeating-linear-gradient(90deg,var(--rule) 0 1px,transparent 1px calc(100% / 15))}
+.yrrange::-moz-range-track{height:10px;border-radius:0;border-bottom:1px solid var(--rule);background:repeating-linear-gradient(90deg,var(--rule) 0 1px,transparent 1px calc(100% / 15))}
+.yrrange::-moz-range-progress{height:3px;background:var(--nav)}
+.yrrange::-webkit-slider-thumb{width:12px;height:12px;margin-top:1px;border-radius:1px;background:var(--nav);border:0;box-shadow:none}
+.yrrange::-moz-range-thumb{width:12px;height:12px;border-radius:1px;background:var(--nav);border:0}
+.sheetfoot{display:none}
+/* tool sheet */
+.sheet{border-radius:0 !important;box-shadow:none !important}
+.tabs{padding:0 16px;gap:16px;border-bottom:1px solid var(--line)}
+.tab{flex:0 0 auto;padding:12px 0 10px;font:600 14px var(--f-body) !important;color:var(--ink-2);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--nav)}
+.tab .n{background:none !important;color:var(--ink-3);font:400 13px var(--f-body);padding:0;margin-left:3px;border-radius:0}
+.tab .n:empty{display:none}
+.pane{padding:20px 24px 28px;gap:16px}
+.pane p{color:var(--ink-2)}
+.tool{gap:10px;padding-bottom:18px}
+.tool h3,.pane h2,.dockh{font:600 20px/1.25 var(--f-serif) !important;text-transform:none;margin:0;color:var(--ink)}
+.pane h2.dockh,.pane h2{font-size:22px !important}
+.tool > p:not(.small),.dockh + p,#policyWrap > .group > p{font:400 15px/1.5 var(--f-serif);color:var(--ink-2)}
+.tool .sub{font-size:13px;color:var(--ink-2)}
+.tier{border-radius:2px;border-color:var(--line);gap:4px;padding:10px 2px 8px}
+.tier em{font-weight:600;font-size:13px}
+.tier small{font:400 11.5px var(--f-body);color:var(--ink-2)}
+.tier .sw s{border-radius:0}
+.tier[aria-pressed="true"]{background:var(--nav) !important;border-color:var(--nav) !important;color:#fff;box-shadow:inset 0 -4px 0 var(--ink) !important}
+.tier[aria-pressed="true"] small{color:#dbe7f6}
+.tier[aria-pressed="true"] .sw s{background:#fff}
+.seg{border-radius:2px;border-color:var(--rule)}
+.seg button{min-height:36px;font-size:13px;border-right-color:var(--rule)}
+.seg::before{box-shadow:inset 0 -3px 0 var(--ink)}
+/* council docket */
+.policy{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 12px;padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none !important;box-shadow:none !important}
+.policy .rank{grid-column:1;grid-row:1;margin:0;padding:0;border:0;background:none !important;color:var(--ink-3) !important;font:700 22px/1.1 var(--f-display);letter-spacing:0;text-transform:none;font-variant-numeric:tabular-nums}
+.policy .top{grid-column:2;grid-row:1;min-width:0}
+.policy h3{font:600 15px/1.3 var(--f-body) !important;color:var(--ink)}
+.policy .hnum{grid-column:3;grid-row:1;text-align:right}
+.policy .hnum b{display:block;font:800 22px/1.1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--ink)}
+.policy .hnum small{font-size:12px;color:var(--ink-2)}
+.policy.neg .hnum b{color:var(--bad)}
+.policy .vote,.policy > .gain,.policy .more-btn,.policy .more{grid-column:2 / 4}
+.policy .vote{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin-top:8px}
+.policy .vote:empty{display:none}
+.policy .vote .seg{flex:1 1 220px}
+.policy .vote .seg.ayenay{flex:0 0 auto;display:inline-grid;grid-auto-columns:auto}
+.ayenay button{padding:7px 18px}
+.policy.worse.on .ayenay::before{background:var(--star)}
+.policy .scope{margin:0;color:var(--ink-2)}
+.policy .scope select{border-radius:2px}
+.policy .ptally{font-size:12px;color:var(--ink-2)}
+.policy > .gain{font-size:12.5px;color:var(--ink-2)}
+.policy.worse .gain{color:var(--ink-2)}
+.policy .status{display:inline-block;margin-top:6px;padding:2px 7px 1px;border:1.5px solid currentColor;border-radius:2px;background:none !important;font:700 13px/1.2 var(--f-display);letter-spacing:.03em;text-transform:none;transform:rotate(-2deg);transform-origin:left center}
+.status.prop{color:#9a5b00} .status.stall{color:#a3361c} .status.part{color:#1f7a45} .status.idea{color:var(--nav)} .status.law{color:var(--nav)} .status.else{color:#1f7a45} .status.worse{color:var(--bad)}
+.policy .more-btn{padding:0;font-size:13px;color:var(--nav);justify-self:start;text-align:left}
+.policy .more{padding:2px 0 2px 12px;border-left:2px solid var(--flag);gap:8px}
+.policy .more .what{font:400 15px/1.5 var(--f-serif);color:var(--ink);max-width:none}
+.policy.lawitem{display:block;padding:12px 0}
+#pane-policies .policy.on{border-bottom-color:var(--line)}
+body.wide #pane-policies .policy.on{border-color:var(--nav)}
+.policy.lawitem p{margin-top:6px}
+.pgroup{border-top:0;padding-top:4px}
+.pgroup > summary{padding:14px 0 8px;border-bottom:2px solid var(--ink);gap:10px}
+.pgroup > summary .eyebrow{font:600 17px/1.3 var(--f-serif);color:var(--ink)}
+.pgroup > summary .cnt{margin-left:auto;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.pgroup.worsegrp > summary{border-bottom-color:var(--star)}
+.pgroup > .group{margin-top:0}
+.expandall{color:var(--nav)}
+/* missions: a checklist with star stamps */
+.mission{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px 0}
+.mission .medal{flex:0 0 34px;height:34px;border:1.5px solid var(--line);background:#fff;color:var(--ink-3);font:800 15px var(--f-display)}
+.mission.done .medal{border:0;color:#fff;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 63,27.48 93.3,25 76,50 93.3,75 63,72.52 50,100 37,72.52 6.7,75 24,50 6.7,25 37,27.48' fill='%23e4002b'/%3E%3C/svg%3E") center/contain no-repeat;transform:rotate(-6deg)}
+.mprog{height:6px;border-radius:0;background:#e3e9ef}
+.mprog i{background:var(--nav)}
+.mission.done .mprog i{background:var(--nav)}
+.target{border-radius:2px}
+.target[aria-pressed="true"]{background:#fff;box-shadow:inset 0 -3px 0 var(--nav)}
+/* map key, camera, credit */
+.legend{border:1px solid var(--line);border-top:3px solid var(--nav);border-radius:0;padding:12px 14px;gap:6px;font-size:13px;color:var(--ink);min-width:200px;box-shadow:none}
+.legend .lghead{font:700 14px var(--f-body);margin-bottom:2px}
+.legend > div:not(.lghead){display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:10px;align-items:center}
+.legend > div[hidden]{display:none}
+.legend i{width:14px;height:14px;border-radius:1px}
+.legend em{font-style:normal;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.legend i.ring{border-radius:50%;background:rgba(43,93,160,.08);border:1.25px dashed var(--nav)}
+.legend .lglayer{display:flex;gap:8px;align-items:center;font-size:13px;border-top:1px solid var(--line);padding-top:8px;margin-top:2px;cursor:pointer}
+.legend .lglayer input{width:16px;height:16px;margin:0;accent-color:var(--nav)}
+.mapctl{border:1px solid var(--line);border-bottom:0;border-radius:0;box-shadow:none;overflow:visible}
+.mapctl button{width:44px;height:44px;display:grid;place-items:center;border-bottom:1px solid var(--line) !important}
+.mapctl button:last-child{border-bottom:1px solid var(--line) !important}
+.mapctl svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+.mapctl svg .dot{fill:var(--ink);stroke:none}
+.mapctl button[data-cam="tilt"]{font:800 15px var(--f-display)}
+/* public comments as numbered slips */
+.cbox{background:#fff;border:1px solid var(--line);border-top:2px dashed var(--rule);border-radius:0;padding:12px 44px 10px 16px;box-shadow:0 10px 26px rgba(23,32,43,.16);gap:6px;text-align:left}
+.cbox .cmeta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cbox .cmeta b{color:var(--ink)}
+.cbox .cmeta span{order:0;display:inline;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.cbox q{font:italic 400 17px/1.4 var(--f-serif)}
+.cbox .ans{align-self:flex-start;margin:0;padding:0;background:none;color:var(--nav);border-radius:0;font:600 13px var(--f-body)}
+.cbox .ans:hover{text-decoration:underline}
+.cbox .cx{top:6px;right:6px;border-radius:0;color:var(--ink-2)}
+.cbox .cx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round}
+.ticker{background:#fff;border:1px solid var(--line);border-top:2px solid var(--star);border-radius:0}
+.ticker span{text-transform:none;letter-spacing:0;font-weight:700;font-size:12px}
+.hoodbanner{border-radius:0}
+/* dialogs */
+.intro{background:rgba(23,32,43,.45)}
+.card{border-radius:2px;box-shadow:0 20px 50px rgba(23,32,43,.28)}
+.card h2{text-transform:none}
+.card.myth h2{font-size:26px}
+.clip{background:#fff;border:1px solid var(--line);border-left:3px solid var(--star);border-radius:0}
+.clip .src{text-transform:none;letter-spacing:0}
+.tip{border-radius:2px}
+.mission .medal{border-radius:0}
+/* results: a front page */
+.card.result.paper{max-width:1000px;background:#fff;color:var(--ink);border-radius:2px;padding:28px 36px 24px;gap:18px}
+.paper .mtop{display:flex;justify-content:space-between;gap:8px;margin:0;padding:0 0 6px;border-bottom:1px solid var(--ink);font:600 12px var(--f-body);letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.paper .mast{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:0;padding:0}
+.paper .mname{font:900 80px/.9 var(--f-display);letter-spacing:.01em}
+.paper .mrule{width:100%;display:flex;align-items:center;gap:14px}
+.paper .mrule i{flex:1;height:12px;background:linear-gradient(var(--flag),var(--flag)) 0 0/100% 4px no-repeat,linear-gradient(var(--flag),var(--flag)) 0 8px/100% 4px no-repeat}
+.paper .mrule svg{width:104px;height:20px;flex:0 0 auto}
+.paper .med{margin:0;font:italic 400 15px var(--f-serif);color:var(--ink-2)}
+.paper .reshead{display:flex;flex-direction:row;justify-content:flex-start;align-items:flex-start;gap:24px;margin:0;padding-top:18px;border-top:1px solid var(--line)}
+.paper .hl{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.paper .reshead h2,.paper #resTitle{font:800 46px/1 var(--f-display) !important;text-transform:none;letter-spacing:0;margin:0}
+.paper .deck{margin:0;font:400 19px/1.5 var(--f-serif);color:#2b3542}
+.paper .stampcol{flex:0 0 132px;display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
+.paper .resgrade,.paper .resgrade svg{width:112px;height:112px}
+.paper .resgrade{transform:rotate(-8deg)}
+.paper .resgrade span{font-size:48px}
+.paper .gcap{font:700 15px var(--f-display);text-align:center}
+.paper .paperrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;border-top:2px solid var(--ink);padding-top:18px}
+.paper .pleft,.paper .pright{display:flex;flex-direction:column;gap:16px;min-width:0}
+.paper .resphoto{margin:0}
+.paper .resphoto img{background:var(--table)}
+.paper .resphoto figcaption{font:italic 400 14px/1.4 var(--f-serif);color:var(--ink-2);margin-top:6px}
+.paper .charts2{grid-template-columns:1fr 1fr;gap:20px}
+.paper .chartBox{background:none}
+.paper .ctitle{flex-direction:column;align-items:flex-start;gap:2px;font:700 14px var(--f-body)}
+.paper .boxscore h3{margin:0 0 6px;font:800 22px var(--f-display)}
+.box{width:100%;border-collapse:collapse;font:400 14px var(--f-body);color:var(--ink);font-variant-numeric:tabular-nums}
+.box th{font:700 12px var(--f-body);color:var(--ink-2);text-align:right;padding:6px 0 6px 10px;border-bottom:2px solid var(--ink)}
+.box th:first-child{text-align:left;padding-left:0}
+.box td{padding:8px 0 8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+.box td:first-child{text-align:left;padding-left:0}
+.box td.plan{font:800 18px var(--f-display);white-space:nowrap}
+.boxscore .small{margin-top:6px}
+.paper .lede{columns:auto;font:400 16px/1.55 var(--f-serif);color:var(--ink)}
+.paper .lede::first-letter{float:none;font:inherit;margin:0}
+.paper .pbtns{flex-wrap:wrap;gap:10px;justify-content:flex-start}
+.paper .btn{min-height:44px;border-radius:2px}
+.paper .btn.primary{background:var(--nav);border-color:var(--nav);font:600 15px var(--f-body);letter-spacing:0}
+.paper > .row:last-child{border-top:1px solid var(--ink);padding-top:12px;justify-content:flex-end;gap:10px}
+.paper .ratecard{background:var(--paper-2);border-left:3px solid var(--nav);border-radius:0}
+.chart .base{stroke:#8a96a3;stroke-dasharray:6 5}
+.chart .band{fill:var(--nav);fill-opacity:.12}
+.persona .burden{font:500 12.5px/1.4 var(--f-body)}
+.persona .burden .ok,.persona .burden .no{font-weight:700}
+.chart .ln.plan{stroke-width:2.5}
+.clegend .sw-base{border-top-color:#8a96a3}
+@media (max-width:700px){
+  .card.result.paper{padding:18px 16px}
+  .paper .mname{font-size:48px}
+  .paper .mtop span:last-child{display:none}
+  .paper .reshead{gap:12px}
+  .paper .reshead h2,.paper #resTitle{font-size:30px !important}
+  .paper .deck{font-size:16px}
+  .paper .stampcol{flex-basis:76px}
+  .paper .resgrade,.paper .resgrade svg{width:68px;height:68px}
+  .paper .resgrade span{font-size:30px}
+  .paper .gcap{font-size:13px}
+  .paper .paperrow{grid-template-columns:1fr;gap:18px}
+  .paper .charts2{grid-template-columns:1fr}
+}
+/* desktop: one flush column on the left, the map fills the rest */
+@media (min-width:860px){
+  .hud{left:0 !important;top:0 !important;width:404px !important;border:0 !important;border-right:1px solid var(--line) !important;box-shadow:none !important}
+  .sheet,.sheet.min{left:0 !important;width:404px !important;top:auto;bottom:0 !important;height:calc(100% - var(--hudH, 300px)) !important;min-height:0;border:0 !important;border-right:1px solid var(--line) !important;border-top:0 !important}
+  body:not(.wide) .sheet .tabs{padding:0 44px 0 16px}
+  body:not(.wide) .sheet .tab{padding:12px 0 10px;font-size:14px}
+  .widebtn{top:8px;right:8px;border-radius:2px;box-shadow:none}
+  body.wide .sheet{left:404px !important;top:0;width:calc(100% - 404px) !important;height:100% !important;border-left:1px solid var(--line) !important}
+  body.wide .sheet .tabs{padding:0 110px;gap:24px}
+  body.wide .sheet .tab{padding:14px 0 12px}
+  body.wide .policy{border:1px solid var(--line);padding:14px;align-content:start}
+  .legend,.sheet.min ~ .legend{right:16px;bottom:16px}
+  .mapctl{top:16px;right:16px}
+  .credit,.sheet.min ~ .credit{left:420px;bottom:10px}
+  .hoodbanner,.sheet.min ~ .hoodbanner{left:420px;bottom:34px}
+  .toast,.sheet.min ~ .toast{left:calc(50% + 202px)}
+  .comment{left:calc(404px + (100% - 404px) / 2);top:24px;width:380px;max-width:380px;text-align:left}
+  .ticker{left:calc(404px + (100% - 404px) / 2);top:24px}
+  body.wide .comment{left:16px;width:372px}
+}
+@media (min-width:860px){
+  body:not(.wide) .sheet .tabs{gap:12px;padding:0 40px 0 16px}
+  body:not(.wide) .sheet .tab{font-size:13.5px !important}
+  .widebtn{width:30px;height:30px;padding:0;display:grid;place-items:center}
+}
+@media (min-width:860px) and (max-height:880px){   /* shorter laptop screens: tighten the score panel so the tools get room */
+  .brand{padding-top:10px}
+  .fanline{padding-bottom:8px}
+  .scoreband{padding-top:12px !important}
+  .score .big{font-size:48px}
+  .grade{flex-basis:56px;width:56px;height:56px;font-size:25px}
+  .scale{margin-top:10px}
+  .hud .stats{padding-top:10px !important}
+  .stat b{font-size:21px !important}
+  .play{padding:12px 24px !important;gap:8px}
+  .play button{height:46px;font-size:20px}
+}
+/* phones: score on top, tools in a bottom sheet with the simulate button pinned under them */
+@media (max-width:859px){
+  .hud{left:0;right:0;top:0;border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;padding-top:env(safe-area-inset-top,0px) !important}
+  .stripes{height:10px} .stripes i{height:3px}
+  .brand{padding:10px 16px 0;gap:10px}
+  .brand .mark{width:28px;height:18px}
+  .brand h1{font-size:21px !important}
+  .look{font-size:13px}
+  .fanline{margin:2px 16px 0;padding-bottom:8px;font-size:10.5px}
+  .scoreband{padding:10px 16px 10px !important}
+  .score{gap:12px}
+  .score .big{font-size:44px !important}
+  .smeta{font-size:13px}
+  .grade{flex-basis:48px;width:48px;height:48px;font-size:22px}
+  .grade[data-g="A+"]{font-size:18px}
+  .scale{margin-top:10px;height:32px}
+  .scale .bar{height:8px}
+  .scale .ticks i{height:12px}
+  .scale .tlbls span{top:15px;font-size:12px}
+  #goalBtn{font-size:11px;margin-top:0}
+  .hud .stats{padding:0 16px 10px !important}
+  .stat b{font-size:19px !important}
+  .stat span{font-size:11px}
+  .sheet{border-top:1px solid var(--line) !important;box-shadow:0 -6px 18px rgba(23,32,43,.08) !important}
+  .sheet.min{height:calc(176px + env(safe-area-inset-bottom,0px))}
+  .sheet.min ~ .legend{bottom:188px}
+  .sheet.min ~ .credit,.sheet.min ~ .toast{bottom:186px}
+  .sheet.min ~ .hoodbanner{bottom:212px}
+  .tabs{padding:0 12px;gap:0;justify-content:space-between}
+  .tab{font-size:14px !important;padding:12px 0 9px}
+  .tab .n{font-size:12px}
+  #pCount{display:none}
+  .pane{padding:14px 16px 20px;gap:14px}
+  .tool h3,.pane h2{font-size:18px !important}
+  .tool > p:not(.small){font-size:14px}
+  .tiers,.tiers.six,.tiers.four{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .hoodcard .hbt{grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:3px}
+  .hoodcard .hbt.six{grid-template-columns:repeat(6,minmax(0,1fr)) !important}
+  .sheetfoot{display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:#fff}
+  .sheetfoot .mini{display:flex;flex-direction:column;gap:1px;flex:0 0 auto}
+  .sheetfoot .mini b{font:700 20px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+  .sheetfoot .mini span{font-size:12px;color:var(--ink-2)}
+  .sheetfoot .play{flex:1;min-width:0;padding:0 !important;gap:6px}
+  .sheetfoot .play button{height:48px;font-size:20px}
+  .sheetfoot .tline{font-size:11px;gap:6px}
+  .sheetfoot .tline .y0{display:none}
+  .legend{padding:8px 12px;min-width:0;border-top-width:2px}
+  .legend .lghead{display:none}
+  .legend:not(.open) > .lglayer,.legend:not(.open) > div{display:none !important}
+  .lgtoggle{font-size:12px;color:var(--nav)}
+  .mapctl{right:12px}
+  .mapctl button{width:40px;height:40px}
+  .comment{left:16px;right:16px;max-width:300px}
+}
 /* motion: modals rise in and sink out, panes fade, details slide open */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
@@ -609,30 +932,34 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
   <div class="loading" id="loading">Loading 485,000 Chicago buildings…</div>
 
   <section class="hud" id="hud" aria-live="polite">
-    <div class="fanbar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg>Not affiliated with the City of Chicago.</div>
+    <div class="stripes" aria-hidden="true"><i></i><i></i></div>
     <div class="brand">
       <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
-      <h1>Fix Chicago Housing</h1><span class="fanmini">Not affiliated with the City of Chicago</span><span class="load" id="loadTxt">0 / 77 neighborhoods</span><button class="look" id="lookBtn" type="button">Sources</button>
+      <h1>Fix Chicago Housing</h1><span class="load" id="loadTxt">0 / 77 neighborhoods</span><button class="look" id="lookBtn" type="button">Sources</button>
     </div>
+    <p class="fanline">Not affiliated with the City of Chicago.</p>
     <div class="scoreband">
       <div class="score">
         <span class="big" id="homes">0</span>
-        <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">new homes of <b id="goalNum">297,087</b> needed by 2041 ⓘ</button>
-        <span class="grade" id="grade">Grade –</span>
+        <div class="smeta"><span id="homesLbl">new homes by 2041</span><span class="sgo"><b id="short">–</b> <span id="shortLbl">to go</span></span></div>
+        <span class="grade" id="grade" role="img" aria-label="Grade" data-g="–">–</span>
       </div>
-      <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="r"></i><i class="i"></i></div>
+      <div class="scale" id="scale">
+        <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="r"></i><i class="i"></i></div>
+        <div class="ticks" aria-hidden="true"><i style="--at:.25"></i><i style="--at:.5"></i><i style="--at:.7"></i><i style="--at:.85"></i><i style="--at:1"></i></div>
+        <div class="tlbls" aria-hidden="true"><span style="--at:.25">D</span><span style="--at:.5">C</span><span style="--at:.7">B</span><span style="--at:.85">A</span><span style="--at:1">A+</span></div>
+      </div>
+      <button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap for the math.">Goal: <b id="goalNum">297,087</b> homes by 2041</button>
       <div class="keys" id="keys"></div>
-      <div class="affline" id="affLine" hidden><b id="affNum">0</b> of them affordable (rent-restricted)</div>
     </div>
     <div class="stats">
-      <div class="stat"><b id="short">–</b><span id="shortLbl">shortage in 2041</span></div>
       <div class="stat"><b id="rent">–</b><span id="rentLbl">median rent in 2041</span></div>
+      <div class="stat" id="affLine" hidden><b id="affNum">0</b><span>of them affordable (rent-restricted)</span></div>
       <div class="stat"><b id="pace">–</b><span id="paceLbl">built anyway at today's pace</span></div>
     </div>
-    <div class="play">
-      <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate next 15 years</span></button>
-      <input type="range" class="yrrange" id="yrRange" min="0" max="15" step="1" value="15" aria-label="Show the city in any year from 2026 to 2041" title="Drag to see any year">
-      <span class="yr" id="yrTxt">2041</span>
+    <div class="play" id="playRow">
+      <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate 15 years</span></button>
+      <div class="tline"><span class="y0">2026</span><input type="range" class="yrrange" id="yrRange" min="0" max="15" step="1" value="15" aria-label="Show the city in any year from 2026 to 2041" title="Drag to see any year"><span class="yr" id="yrTxt">2041</span></div>
     </div>
   </section>
 
@@ -651,39 +978,38 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <!-- Build -->
       <div class="pane" id="pane-zoning">
         <div class="tool" id="tool-illegal" hidden>
-          <div class="eyebrow">They don't build them like they used to</div>
+          <h3>They don't build them like they used to</h3>
           <button class="btn" id="illegalBtn" type="button" aria-pressed="false">Show buildings that would be illegal to build today</button>
           <p class="small" id="illegalTxt"></p>
         </div>
         <div class="tool" id="tool-tod">
-          <div class="eyebrow">Near every L station</div>
-          <h3>What can go up within a half mile of the L?</h3>
-          <p class="small">The shaded circles on the map are that half mile around each station: about a 10-minute walk.</p>
+          <h3>What can go up near the L?</h3>
+          <p>The shaded zones reach a half mile from each station, about a ten-minute walk.</p>
           <div class="tiers" id="todTiers"></div>
           <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Capped at downtown's best leasing pace.</p>
         </div>
         <div class="tool" id="tool-metra" data-unlock="metra">
-          <div class="eyebrow">Near Metra stations in the city</div>
-          <h3>Same idea, for the 74 Metra stops inside Chicago</h3>
+          <h3>Near Metra stations in the city</h3>
+          <p>The same idea for the 74 Metra stops inside Chicago.</p>
           <div class="tiers" id="metraTiers"></div>
         </div>
         <div class="tool" id="tool-sub" data-unlock="metra">
-          <div class="eyebrow">Near Metra stations in the suburbs</div>
-          <h3>The shortage is regional. Zone the other 168 Metra stops too.</h3>
+          <h3>Near Metra stations in the suburbs</h3>
+          <p>The shortage is regional. Zone the other 168 Metra stops too.</p>
           <p class="small">The goal counts the whole Chicago region, so suburban homes count. Same levels as in the city; assumption: each suburban station builds 30% as much as an average Chicago L station (bigger lots, less demand). Station count: <a href="https://en.wikipedia.org/wiki/Metra" target="_blank" rel="noopener">Metra (Wikipedia)</a>.</p>
           <div class="tiers" id="subTiers"></div>
           <span class="gain" id="subGain"></span>
         </div>
         <div class="tool" id="tool-types" data-unlock="hoods">
-          <div class="eyebrow">Zone by neighborhood type</div>
-          <h3>Set the rules for a whole kind of neighborhood</h3>
+          <h3>Zone by neighborhood type</h3>
+          <p>Set the rules for a whole kind of neighborhood at once.</p>
           <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" id="typeTiers0"></div></div>
           <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
           <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
           <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
         </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
-          <div class="eyebrow">One neighborhood at a time</div>
+          <h3>One neighborhood at a time</h3>
           <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick one…</option></select>
           <div id="hoodDetail" class="group" hidden>
             <div class="selname"><h2 id="hoodName"></h2><span class="chip" id="hoodDemand"></span></div>
@@ -694,19 +1020,17 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
             </div>
             <div class="tiers" id="hoodTiers"></div>
           </div>
-          <div class="eyebrow">Rezoned so far · <span id="touched">0%</span> of the city's buildings</div>
+          <div class="sub">Rezoned so far: <span id="touched">0%</span> of the city's buildings</div>
           <div class="list" id="hoodList"></div>
         </div>
         <div class="tool" id="tool-corr" data-unlock="corr">
-          <div class="eyebrow">Commercial corridors</div>
           <h3>Apartments over shops on 38 main streets</h3>
-          <p class="small">Ashland, Western, Milwaukee, Halsted, Clark, Broadway, Cicero, 63rd, 79th and more. Applies to lots facing the street.</p>
+          <p>Ashland, Western, Milwaukee, Halsted, Clark, Broadway, Cicero, 63rd, 79th and more. Applies to lots facing the street.</p>
           <div class="tiers" id="corrTiers"></div>
         </div>
         <div class="tool" id="tool-office" data-unlock="office">
-          <div class="eyebrow">Downtown office conversions</div>
           <h3>Turn empty Loop offices into apartments</h3>
-          <p class="small">Downtown office vacancy is about 27% (Cushman &amp; Wakefield, Q2 2026). About 4,000 conversion homes are already underway, so they're in the baseline. This adds more.</p>
+          <p>Downtown office vacancy is about 27% (Cushman &amp; Wakefield, Q2 2026). About 4,000 conversion homes are already underway, so they're in the baseline. This adds more.</p>
           <div class="seg" id="officeSeg"></div>
         </div>
         <div class="row"><button class="btn quiet" id="reset" type="button">Start over</button><button class="btn quiet" id="unlockAll" type="button">Unlock all tools</button></div>
@@ -716,27 +1040,27 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <div class="pane" id="pane-policies" hidden>
         <div class="group" data-unlock="policies" id="policyWrap">
           <div class="group">
-            <div class="eyebrow">Policies</div>
-            <p>Real proposals and reform ideas, ranked by how many homes each adds with your current map. Flip them on and watch.</p>
+            <h2 class="dockh">The council docket</h2>
+            <p>Real proposals and reform ideas, ranked by how many homes each adds with your map. Vote aye to pass one and watch the city change.</p>
           </div>
           <button type="button" class="expandall" id="expandAll" aria-pressed="false">Show all details</button>
-          <details class="pgroup" open><summary><span class="eyebrow">Chicago &amp; Springfield proposals</span></summary>
+          <details class="pgroup" open><summary><span class="eyebrow">Before the council in Chicago and Springfield</span><span class="cnt" data-for="policies"></span></summary>
             <div class="group" id="policies"></div>
           </details>
-          <details class="pgroup" open><summary><span class="eyebrow">Worked in other cities · not on the table here</span></summary>
+          <details class="pgroup" open><summary><span class="eyebrow">Worked in other cities, not on the table here</span><span class="cnt" data-for="policiesElse"></span></summary>
             <div class="group"><p class="small">Each card says what actually happened where it passed.</p>
             <div class="group" id="policiesElse"></div></div>
           </details>
-          <details class="pgroup"><summary><span class="eyebrow">Ones that cut supply · see what not to do</span></summary>
+          <details class="pgroup worsegrp"><summary><span class="eyebrow">Ones that cut supply: what not to do</span><span class="cnt" data-for="policiesWorse"></span></summary>
             <div class="group"><p class="small">Each of these has a real goal, and some help people who already have a home. Each also means fewer new homes, so rent climbs faster. Turn one on to see the cost.</p>
             <div class="group" id="policiesWorse"></div></div>
           </details>
-          <details class="pgroup"><summary><span class="eyebrow">Already law (built into today's numbers)</span></summary>
+          <details class="pgroup"><summary><span class="eyebrow">Already law, built into today's numbers</span><span class="cnt">2 items</span></summary>
           <div class="group">
-            <div class="policy"><div class="top"><div class="t"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
+            <div class="policy lawitem"><div class="top"><div class="t"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
               <p>Parking mandates ended in transit-served areas, about 74% of the city, starting September 2025.</p>
               <span class="src"><a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">Chicago Cityscape</a></span></div>
-            <div class="policy"><div class="top"><div class="t"><h3>Green Social Housing fund</h3><span class="status law">Passed May 2025</span></div></div>
+            <div class="policy lawitem"><div class="top"><div class="t"><h3>Green Social Housing fund</h3><span class="status law">Passed May 2025</span></div></div>
               <p>A $135M revolving fund and a city-backed nonprofit developer for permanently affordable, mixed-income buildings.</p>
               <span class="src"><a href="https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Green-Social-Housing-Ordinance-Passes.html" target="_blank" rel="noopener">City of Chicago</a></span></div>
           </div>
@@ -920,33 +1244,36 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         </dl>
       </div>
     </div>
+    <div class="sheetfoot" id="sheetFoot"><div class="mini"><b id="rentMini">–</b><span>rent in 2041</span></div></div>
   </section>
 
   <div class="legend" id="legend">
     <button type="button" class="lgtoggle" id="lgToggle" aria-expanded="false">Map key</button>
-    <div><i style="--c:#f4f3ee"></i>Existing</div>
-    <div><i class="lt"></i>3-flat</div>
-    <div><i class="lt"></i>6-flat</div>
-    <div><i class="lt"></i>Mid-rise</div>
-    <div><i class="lt"></i>High-rise</div>
-    <div id="lgTower" hidden><i style="--c:#0a1c3c"></i>Tower (~30 fl)</div>
-    <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i>Private vacant lot</div>
-    <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i>City-owned lot</div>
-    <div><i class="lo"></i>Office → homes</div>
-    <div id="lgIll" hidden><i class="ill"></i>Illegal to build today</div>
-    <div id="lgRing" hidden><i class="ring"></i>½ mile of a station (≈10-min walk)</div>
+    <div class="lghead">Map key</div>
+    <div><i style="--c:#f4f3ee"></i><span>Existing building</span></div>
+    <div><i class="lt"></i><span>3-flat</span><em>RT-4</em></div>
+    <div><i class="lt"></i><span>6-flat</span><em>RM-5</em></div>
+    <div><i class="lt"></i><span>Mid-rise</span><em>RM-6</em></div>
+    <div><i class="lt"></i><span>High-rise</span><em>RM-6.5</em></div>
+    <div id="lgTower" hidden><i style="--c:#0a1c3c"></i><span>Tower</span><em>DX-12</em></div>
+    <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot</span></div>
+    <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>City-owned lot</span></div>
+    <div><i class="lo"></i><span>Offices to homes</span></div>
+    <div id="lgIll" hidden><i class="ill"></i><span>Illegal to build today</span></div>
+    <div id="lgRing" hidden><i class="ring"></i><span>Half mile of a station</span></div>
+    <label class="lglayer" id="lgIllWrap" hidden><input type="checkbox" id="lgIllChk"> Show buildings illegal to build today</label>
   </div>
   <div class="hoodbanner hoodcard" id="hoodBanner" hidden><button type="button" class="hbx" id="hbClose" aria-label="Close neighborhood">×</button><b id="hbName"></b><span id="hbLine"></span><div class="tiers hbt" id="hbTiers"></div></div>
   <div class="hoodbanner cinecap" id="cineCap" hidden><b id="ccName"></b><span id="ccLine"></span></div>
   <div class="ticker" id="ticker" hidden aria-live="polite"><span id="tkYear"></span><b id="tkText"></b></div>
   <div class="credit">Buildings &amp; streets: City of Chicago</div>
   <div class="mapctl" id="mapctl" role="group" aria-label="Camera">
-    <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in">+</button>
-    <button type="button" data-cam="out" aria-label="Zoom out" title="Zoom out">−</button>
-    <button type="button" data-cam="left" aria-label="Spin left" title="Spin left (or right-click drag / two-finger twist)">↺</button>
-    <button type="button" data-cam="right" aria-label="Spin right" title="Spin right">↻</button>
+    <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg></button>
+    <button type="button" data-cam="out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12"/></svg></button>
+    <button type="button" data-cam="left" aria-label="Spin left" title="Spin left (or right-click drag / two-finger twist)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8a6 6 0 1 1 0 5"/><path d="M3 4v4h4"/></svg></button>
+    <button type="button" data-cam="right" aria-label="Spin right" title="Spin right"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15 8a6 6 0 1 0 0 5"/><path d="M17 4v4h-4"/></svg></button>
     <button type="button" data-cam="tilt" aria-label="Toggle 2D / 3D" title="Flat map / 3D">2D</button>
-    <button type="button" data-cam="home" aria-label="Reset view" title="Reset view">⌂</button>
+    <button type="button" data-cam="home" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3"/><circle cx="10" cy="10" r="1.4" class="dot"/></svg></button>
   </div>
   <div class="tip" id="tip" role="dialog" aria-live="polite" hidden><span class="step" id="tipStep"></span><b id="tipT"></b><p id="tipB"></p><div class="row"><button type="button" class="btn quiet" id="tipSkip">Skip</button><button type="button" class="btn primary" id="tipNext">Next</button></div></div>
   <div class="comment" id="comment" aria-live="polite" hidden></div>
@@ -972,7 +1299,7 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
       <ol>
         <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
         <li>Flip on real policies Chicago is fighting about, from Airbnb limits to coach houses.</li>
-        <li>Hit "Simulate next 15 years," then share your plan and brag.</li>
+        <li>Hit "Simulate 15 years," then share your plan and brag.</li>
       </ol>
       <div class="row"><button class="btn quiet" id="introAll" type="button">I know this stuff, unlock everything</button><button class="btn primary" id="introGo" type="button">Start building</button></div>
     </div>
@@ -992,29 +1319,47 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 
   <div class="intro" id="result" hidden>
     <div class="card result paper" role="dialog" aria-modal="true" aria-labelledby="resTitle">
-      <div class="mast"><div class="mtop"><span>Final edition</span><span id="resDate">2041</span><span>Free</span></div>
-        <div class="mname">The Chicago Plan</div><div class="med">Fifteen years of your choices, simulated block by block</div></div>
-      <div class="reshead"><div class="resgrade" aria-label="Grade"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span id="resGrade">–</span></div><h2 id="resTitle"></h2></div>
-      <p class="deck" id="resText"></p>
+      <div class="mtop"><span>Final edition</span><span id="resDate">2041</span><span>Price: one zoning change</span></div>
+      <header class="mast"><div class="mname">The Chicago Plan</div>
+        <div class="mrule" aria-hidden="true"><i></i><svg viewBox="0 0 104 20"><g fill="#e4002b"><path transform="translate(2 1) scale(0.75)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(28 1) scale(0.75)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(54 1) scale(0.75)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(80 1) scale(0.75)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg><i></i></div>
+        <div class="med">Fifteen years of your choices, simulated block by block</div></header>
+      <div class="reshead">
+        <div class="hl"><h2 id="resTitle"></h2><p class="deck" id="resText"></p></div>
+        <div class="stampcol"><div class="resgrade" aria-label="Grade"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span id="resGrade">–</span></div><span class="gcap" id="resGradeCap"></span></div>
+      </div>
       <div class="paperrow">
-      <figure class="resphoto"><img id="resPhoto" alt="Your city in 2041"><figcaption id="resCap"></figcaption></figure>
-      <div class="restats"><div class="eyebrow">By the numbers</div>
-        <div class="fact"><b id="resShort">–</b><span>shortage in 2041 with your plan</span></div>
-        <div class="fact"><b id="resRent">–</b><span>median rent in 2041 with your plan</span></div>
-        <div class="fact"><b id="resAff">–</b><span>affordable homes built</span></div>
-        <div class="fact"><b id="resTax">–</b><span id="resTaxLbl">a year in local taxes by 2041</span></div>
-      </div>
-      </div>
-      <p class="lede" id="resLede"></p>
-      <div class="charts2">
-      <div class="chartBox">
-        <div class="ctitle">Housing shortage<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
-        <svg class="chart" id="chShort" role="img" aria-label="Housing shortage by year, no change versus your plan"></svg>
-      </div>
-      <div class="chartBox">
-        <div class="ctitle">Median rent<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan (range)</span></span></div>
-        <svg class="chart" id="chRent" role="img" aria-label="Median rent by year, no change versus your plan"></svg>
-      </div>
+        <div class="pleft">
+          <figure class="resphoto"><img id="resPhoto" alt="Your city in 2041"><figcaption id="resCap"></figcaption></figure>
+          <div class="charts2">
+            <div class="chartBox">
+              <div class="ctitle">The shortage, 2026 to 2041<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
+              <svg class="chart" id="chShort" role="img" aria-label="Housing shortage by year, no change versus your plan"></svg>
+            </div>
+            <div class="chartBox">
+              <div class="ctitle">Median rent, 2026 to 2041<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan (range)</span></span></div>
+              <svg class="chart" id="chRent" role="img" aria-label="Median rent by year, no change versus your plan"></svg>
+            </div>
+          </div>
+        </div>
+        <div class="pright">
+          <section class="boxscore" aria-label="Box score">
+            <h3>Box score</h3>
+            <table class="box">
+              <thead><tr><th scope="col">By 2041</th><th scope="col">No change</th><th scope="col">Your plan</th></tr></thead>
+              <tbody>
+                <tr><td>Homes built</td><td id="bxBuiltNo">–</td><td class="plan" id="bxBuilt">–</td></tr>
+                <tr><td>Shortage left</td><td id="bxShortNo">–</td><td class="plan" id="resShort">–</td></tr>
+                <tr><td>Median rent</td><td id="bxRentNo">–</td><td class="plan" id="resRent">–</td></tr>
+                <tr><td>Affordable homes added</td><td>none counted</td><td class="plan" id="resAff">–</td></tr>
+                <tr><td id="bxPayLbl">Pay going to rent</td><td id="bxPayNo">–</td><td class="plan" id="bxPay">–</td></tr>
+                <tr><td>Local taxes and fees a year</td><td>none counted</td><td class="plan" id="resTax">–</td></tr>
+              </tbody>
+            </table>
+            <p class="small" id="resTaxLbl"></p>
+          </section>
+          <p class="lede" id="resLede"></p>
+          <div class="row pbtns"><button class="btn primary" id="resImage" type="button">Share this front page</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button></div>
+        </div>
       </div>
       <div class="group"><div class="eyebrow">Can they afford a 1-bedroom in 2041?</div><div id="resPersonas"></div></div>
       <div class="ratecard">
@@ -1038,8 +1383,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
         <div class="row"><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
         <p class="small ptally">Finished plans are counted anonymously in "What other players chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
       </div>
-      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: Mense 2025. Details in the Math tab.</p>
-      <div class="row"><button class="btn primary" id="resImage" type="button">★ Share this front page</button><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button><button class="btn" id="resClose" type="button">Keep building</button></div>
+      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: a range from Mense 2025 to stock-based estimates. Details in the Math tab.</p>
+      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
 </div>
@@ -1847,7 +2192,10 @@ function buildPolicies(){
   POLICIES.forEach(P => {
     const el = P.group === "else" ? $("policiesElse") : P.group === "worse" ? $("policiesWorse") : $("policies");
     const d = document.createElement("div"); d.className = "policy" + (P.group === "worse" ? " worse" : ""); d.id = "pol-" + P.key;
-    d.innerHTML = '<div class="top"><div class="t"><h3></h3><span class="status"></span> <span class="rank" title="Ranked by homes added with your current map"></span></div></div><span class="gain"></span><span class="ptally" hidden></span><button type="button" class="more-btn" aria-expanded="false">What happened &amp; sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
+    d.innerHTML = '<span class="rank" title="Ranked by homes added with your current map"></span><div class="top"><div class="t"><h3></h3><span class="status"></span></div></div><div class="hnum"><b></b><small>homes</small></div><div class="vote"><span class="ptally" hidden></span></div><span class="gain"></span><button type="button" class="more-btn" aria-expanded="false">What happened and sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
+    { const gn = d.querySelector(".gain"), hn = d.querySelector(".hnum b");   // the big number repeats the homes figure from the line below it
+      const sync = () => { const t = gn.textContent, m = t.match(/([+−-])\s?([\d,]+)/), cost = /cost/i.test(t); hn.textContent = m ? (cost ? "−" : m[1] === "-" ? "−" : m[1]) + m[2] : (/nothing|today's setting/i.test(t) ? "0" : "…"); d.classList.toggle("neg", !!m && (cost || m[1] !== "+")); };
+      new MutationObserver(sync).observe(gn, {childList: true, characterData: true, subtree: true}); }
     const mb = d.querySelector(".more-btn"), more = d.querySelector(".more");
     mb.setAttribute("aria-controls", (more.id = "more-" + P.key));
     mb.addEventListener("click", () => { const o = more.hidden; more.hidden = !o; mb.setAttribute("aria-expanded", String(o)); });
@@ -1860,21 +2208,24 @@ function buildPolicies(){
     if (P.levels){
       const seg = document.createElement("div"); seg.className = "seg";
       P.levels.forEach((lv, i) => { const v = P.vals ? P.vals[i] : i, b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = v; b.addEventListener("click", () => { seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setPolicy(P.key, v)); }); seg.appendChild(b); });
-      d.insertBefore(seg, d.querySelector(".gain"));
-    } else {
-      const sw = document.createElement("button"); sw.type = "button"; sw.className = "switch"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-label", P.title);
-      sw.addEventListener("click", () => { const v = plan.p[P.key] ? 0 : 1; sw.setAttribute("aria-checked", String(!!v)); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
-      d.querySelector(".top").appendChild(sw);
+      d.querySelector(".vote").prepend(seg);
+    } else {   // a council vote: aye turns it on, nay turns it off
+      const seg = document.createElement("div"); seg.className = "seg ayenay"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Vote on " + P.title);
+      [["Aye", 1], ["Nay", 0]].forEach(([lbl, v]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lbl; b.dataset.vote = v; b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", () => { if (!!plan.p[P.key] === !!v) return; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
+        seg.appendChild(b); });
+      d.querySelector(".vote").prepend(seg);
     }
     if (SCOPED.includes(P.key)){
       const w = document.createElement("label"); w.className = "scope";
       w.innerHTML = 'Where <select><option value="0">Citywide</option><option value="1">Downtown core</option><option value="2">Mixed neighborhoods</option><option value="3">Single-family areas</option></select>';
       const sel = w.querySelector("select"); sel.setAttribute("aria-label", "Where " + P.title + " applies"); sel.dataset.k = P.key;
       sel.addEventListener("change", () => { plan.scope[P.key] = +sel.value; if (!plan.scope[P.key]) delete plan.scope[P.key]; later(() => { if (plan.p[P.key]) (SPATIAL.has(P.key) ? recompute() : render()); else render(); }); });
-      d.insertBefore(w, d.querySelector(".gain"));
+      d.querySelector(".vote").insertBefore(w, d.querySelector(".ptally"));
     }
     el.appendChild(d);
   });
+  document.querySelectorAll(".pgroup .cnt[data-for]").forEach(c => { const n = $(c.dataset.for).children.length; c.textContent = n + (n === 1 ? " item" : " items"); });
 }
 $("expandAll").addEventListener("click", (e) => {
   const open = e.currentTarget.getAttribute("aria-pressed") !== "true";
@@ -1939,7 +2290,7 @@ function sortPolicies(){
     [...box.children].sort((a, b) => (GAIN[b.id.slice(4)] || 0) - (GAIN[a.id.slice(4)] || 0)).forEach((el, i) => {
       box.appendChild(el);
       const g = GAIN[el.id.slice(4)] || 0, r = el.querySelector(".rank");
-      r.textContent = "#" + (i + 1) + " · " + (g >= 15000 ? "Big" : g >= 4000 ? "Medium" : "Small");
+      r.textContent = i + 1;
       r.dataset.size = g >= 15000 ? "big" : g >= 4000 ? "med" : "small";
     });
   });
@@ -1952,8 +2303,8 @@ function renderPolicies(){
     const active = P.key === "aro" ? v !== 1 : !!v;
     if (active) on++;
     d.classList.toggle("on", active);
-    const sw = d.querySelector(".switch"); if (sw) sw.setAttribute("aria-checked", String(!!v));
-    d.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
+    d.querySelectorAll(".ayenay button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.vote === (v ? 1 : 0))));
+    d.querySelectorAll(".seg:not(.ayenay) button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
     const g = d.querySelector(".gain");
     if (P.key === "str") g.textContent = v ? "+" + fmt(ph.str) + " homes" : "Up to +" + fmt(STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2]) + " homes";
     else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
@@ -1963,12 +2314,12 @@ function renderPolicies(){
     else if (P.key === "social") g.textContent = (v ? "+" : "Would add +") + fmt(SOCIAL_HOMES) + " homes, " + fmt(SOCIAL_HOMES * SOCIAL_AFF) + " affordable";
     else if (P.key === "down"){ const c = baseCost("down"); g.textContent = (v ? fmt(-c) : "Would cost " + fmt(c)) + " homes Chicago builds anyway"; }
   });
-  $("pCount").textContent = on;
+  $("pCount").textContent = on ? on + " passed" : "";
   document.querySelectorAll(".policy .scope select").forEach(sel => { sel.value = String(plan.scope[sel.dataset.k] || 0); });
   const CS = communityStats && communityStats.all;
   POLICIES.forEach(P => { const el = $("pol-" + P.key).querySelector(".ptally"); if (!el) return;
     const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
-    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " players turn this on"; });
+    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " players voted aye"; });
   clearTimeout(gainTimer);
   gainsStale = true;
   if (loaded === 77 && !playing && !$("pane-policies").hidden) gainTimer = setTimeout(() => {
@@ -2066,8 +2417,8 @@ $("mythClose").addEventListener("click", () => hideModal("myth", () => { const n
 let tourPending = false, tourStep = 0;
 const TOUR = [
   {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
-  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use ↺ ↻ to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
-  {el:() => document.querySelector('.tab[data-pane="policies"]'), t:"Then flip real policies", b:"Policies unlock at 30,000 homes. Each card says what it adds and where the number comes from."},
+  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use the turn buttons to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
+  {el:() => document.querySelector('.tab[data-pane="policies"]'), t:"Then vote on real policies", b:"Policies unlock at 30,000 homes. Each item on the docket says what it adds and where the number comes from."},
   {el:() => $("playBtn"), t:"Then hit Simulate", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
 ];
 function startTour(){ tourPending = false; if (lsGet("fch-tour", false)) return; tourStep = 0; showTip(); }
@@ -2233,13 +2584,16 @@ function showComment(line, by, town){
   const ep = commentEpoch;
   requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (ep === commentEpoch) showCommentNow(line, by, town); }, 40)));
 }
+let commentNo = 411;   // public comments are numbered like a clerk's record
 function showCommentNow(line, by, town){
   const box = $("comment");
   if (liveCards().some(c => c.dataset.line === line)) return;
   box.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
   const card = document.createElement("div"); card.className = "cbox"; card.dataset.line = line;
-  card.innerHTML = '<q></q><span></span><button type="button" class="ans" hidden>How to answer this ›</button><button type="button" class="cx" aria-label="Close comment">×</button>';
-  card.querySelector("q").textContent = line; card.querySelector("span").textContent = by;
+  card.innerHTML = '<div class="cmeta"><b></b><span></span></div><q></q><button type="button" class="ans" hidden>How to answer this</button><button type="button" class="cx" aria-label="Close comment"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg></button>';
+  const now = new Date(), hh = now.getHours() % 12 || 12, mm = String(now.getMinutes()).padStart(2, "0");
+  card.querySelector("q").textContent = line; card.querySelector(".cmeta b").textContent = "Public comment " + (++commentNo);
+  card.querySelector(".cmeta span").textContent = (by ? by + ", " : "") + hh + ":" + mm + (now.getHours() < 12 ? " am" : " pm");
   if (town){ const a = card.querySelector(".ans"); a.hidden = false; a.addEventListener("click", () => { closeCard(card); showTown(town); }); }
   card.querySelector(".cx").addEventListener("click", () => closeCard(card));
   box.hidden = false;
@@ -2253,7 +2607,7 @@ function react(kind, place){
   const now = performance.now(); if (now - lastReact < 1200) return;   // clicking through levels quickly doesn't pile up cards
   lastReact = now;
   const line = pool[Math.floor(Math.random() * pool.length)];
-  showComment(line, "Public comment" + (place ? ", " + place + " community meeting" : ""), TOWN_FOR[kind] || null);
+  showComment(line, place || "", TOWN_FOR[kind] || null);
 }
 
 // ---------------- data loading ----------------
@@ -2404,7 +2758,7 @@ async function boot(){
   $("loading").hidden = true;
   if (hasZoning){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; for (let i = 0; i < A.n; i++){ if (A.ext && (A.ext[i] & 64)) continue; tot++; if (A.fl[i] & 64) n++; } }
-    $("tool-illegal").hidden = false;
+    $("tool-illegal").hidden = false; $("lgIllWrap").hidden = false;
     $("illegalTxt").textContent = fmt(n) + " of the city's " + fmt(tot) + " buildings have more homes than today's zoning allows on their lot.";
     $("wdCity").textContent = Math.round(n / tot * 100) + "%";
   }
@@ -2413,9 +2767,14 @@ async function boot(){
 $("illegalBtn").addEventListener("click", () => {
   showIllegal = !showIllegal; $("illegalBtn").setAttribute("aria-pressed", String(showIllegal));
   $("illegalBtn").textContent = showIllegal ? "Hide the illegal buildings" : "Show buildings that would be illegal to build today";
+  $("lgIllChk").checked = showIllegal;
   recompute(); if (showIllegal) maybeMyth("illegal");
 });
+$("lgIllChk").addEventListener("change", () => { if ($("lgIllChk").checked !== showIllegal) $("illegalBtn").click(); });
 
+// phones: the simulate button and timeline live at the bottom of the tool sheet, next to the rent; desktop: under the score
+{ const mq = matchMedia("(max-width:859px)"), place = () => (mq.matches ? $("sheetFoot") : $("hud")).appendChild($("playRow"));
+  place(); mq.addEventListener ? mq.addEventListener("change", place) : mq.addListener(place); }
 // ---------------- map ----------------
 { const hud = $("hud"), setH = () => document.documentElement.style.setProperty("--hudH", hud.offsetHeight + "px");
   setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(hud); else addEventListener("resize", setH); }
@@ -2746,10 +3105,11 @@ function render(){
   $("goalNum").textContent = fmt(goal);
   const yrLabel = START + year;
   const short = target() + gapGrowth() * year - tv.total;
-  $("short").textContent = short > 0 ? fmt(short) : "0";
-  $("shortLbl").textContent = short > 0 ? "homes short in " + yrLabel : "shortage closed by " + yrLabel;
+  $("short").textContent = short > 0 ? fmt(short) : "";
+  $("shortLbl").textContent = short > 0 ? (year === YEARS ? "to go" : "short in " + yrLabel) : "Shortage closed by " + yrLabel;
+  $("homesLbl").textContent = "new homes by " + yrLabel;
   const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total), rs = rentStrong(year, tv.total), rr = lessRange(rn, rp, rs);
-  $("rent").textContent = "$" + fmt(rp);
+  $("rent").textContent = "$" + fmt(rp); $("rentMini").textContent = "$" + fmt(rp);
   $("rentLbl").textContent = "median rent in " + yrLabel + (rr ? ", " + rr + " no change" : "");
   const cut = baseCut();
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
@@ -2757,6 +3117,7 @@ function render(){
   { $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tv.aff); }   // affordable homes built by the year shown
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["r", tv.parts.sub], ["i", tv.parts.vland]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
+  $("scale").style.setProperty("--g", goal / scale);   // grade ticks sit at shares of the goal
   segs.forEach(([c, v]) => { bar.querySelector("." + c).style.width = (v / scale * 100) + "%"; });
   const keyDefs = [["Zoning", tv.parts.zone, "--s-zone"], ["Offices", tv.parts.office, "--s-office"], ["ADUs", tv.parts.adu, "--s-adu"], ["Airbnb limits", tv.parts.str, "--s-str"], ["City lots", tv.parts.lots, "--s-lots"], ["Empty homes", tv.parts.vac, "--vac"], ["Social housing", tv.parts.social, "--star"], ["Big projects", tv.parts.mega, "--s-mega"], ["Suburban Metra", tv.parts.sub, "--s-sub"], ["Vacant lots", tv.parts.vland, "--s-vland"]];
   $("keys").innerHTML = "";
@@ -2765,11 +3126,11 @@ function render(){
   if (!$("keys").children.length){ const s = document.createElement("span"); s.style.setProperty("--c", "var(--line)"); s.textContent = "Pick a level near the L to start building"; $("keys").appendChild(s); }
   $("touched").textContent = (tf.touchedPct < 10 && tf.touchedPct > 0 ? tf.touchedPct.toFixed(1) : Math.round(tf.touchedPct)) + "%";
   const g = gradeFor(tf.total / goal * 100), ge = $("grade");
-  ge.textContent = "Grade " + g; ge.classList.toggle("top", g === "A+" || g === "A");
+  ge.textContent = g; ge.dataset.g = g; ge.setAttribute("aria-label", "Grade " + g); ge.classList.toggle("top", g === "A+" || g === "A");
   if (loaded === 77 && g === "A+" && lastGrade && lastGrade !== "A+" && year === YEARS) celebrate("Shortage closed! " + fmt(tf.total) + " homes");
   if (loaded === 77 && lastGrade && lastGrade !== g && !reduceMotion){ ge.classList.remove("pop"); void ge.offsetWidth; ge.classList.add("pop"); }
   if (loaded === 77) lastGrade = g;
-  $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : "15-year outlook";
+  $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : ""; $("loadTxt").hidden = loaded >= 77;
   $("yrTxt").textContent = START + year;
   $("lgTower").hidden = plan.tod !== 5; $("todNote").hidden = plan.tod !== 5;
   $("lgVacP").hidden = !plan.p.vland; $("lgVacC").hidden = !plan.p.lots;
@@ -3101,7 +3462,7 @@ function hideHeadline(){ $("ticker").hidden = true; headlines = []; }
 function stopPlay(finished){
   clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); $("cineCap").hidden = true;
   if (cineSheet){ $("sheet").classList.remove("min"); syncSheet(); cineSheet = false; }
-  $("playBtn").querySelector("span").textContent = "Simulate next 15 years";
+  $("playBtn").querySelector("span").textContent = "Simulate 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
 }
@@ -3124,7 +3485,17 @@ function showResult(){
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
   $("resAff").textContent = fmt(totals(false).aff);
   { const rev = homes[end] * TAX2; $("resTax").textContent = money(rev);
-    $("resTaxLbl").textContent = (rev < 0 ? "a year less in local taxes by 2041" : "a year in local taxes by 2041") + " (" + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap)"; }
+    $("resTaxLbl").textContent = (rev < 0 ? "Fewer homes than doing nothing means less local revenue, " : "Local taxes and fees from the new homes (NAHB estimate), ") + "equal to " + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap."; }
+  {   // box score: no change vs. your plan
+    $("bxBuiltNo").textContent = fmt(CITY_PACE * YEARS); $("bxBuilt").textContent = fmt(CITY_PACE * YEARS + homes[end]);
+    $("bxShortNo").textContent = fmt(noShort[end]); $("bxRentNo").textContent = "$" + fmt(rNo[end]);
+    const P0 = PERSONAS[0], w0 = P0.wage * Math.pow(1 + WAGE_GROWTH, YEARS), pct = r => Math.round(r * 12 / w0 * 100);
+    const lo = pct(rentWithPlan(YEARS, homes[end], RENT_1BR)), hi = pct(rentStrong(YEARS, homes[end], RENT_1BR));
+    $("bxPayLbl").textContent = P0.name + "'s pay going to rent"; $("bxPayNo").textContent = pct(rentNoChange(YEARS, RENT_1BR)) + "%";
+    $("bxPay").textContent = (lo === hi ? lo : Math.min(lo, hi) + "–" + Math.max(lo, hi)) + "%";
+    const g = gradeFor(homes[end] / needed() * 100);
+    $("resGradeCap").textContent = {"A+":"Shortage closed", A:"Almost there", B:"Most of the way", C:"Halfway there", D:"A start", F: homes[end] < 0 ? "Going backwards" : "Barely moved"}[g] || "";
+  }
   $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
   { const rr = lessRange(rNo[end], rPlan[end], rHi[end]); $("resRent").textContent = rr ? "$" + fmt(Math.min(rPlan[end], rHi[end])) + "–$" + fmt(Math.max(rPlan[end], rHi[end])) : "$" + fmt(rPlan[end]); }
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
@@ -3544,6 +3915,7 @@ setLook("model");
   else if (cur && decodePlan(cur.code)){ plan = decodePlan(cur.code); if (cur.name) $("planName").value = String(cur.name).slice(0, 60); }
   buildPolicies(); renderTargets(); renderMyPlans(); renderMythList(); renderTown(); applyLocks();
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
+  if (/[?&]qa=results/.test(location.search)){ const go = () => loaded === 77 && hasExtra ? setTimeout(showResult, 1500) : setTimeout(go, 500); go(); }   // test hook: open the front page without waiting for a 15-year simulation
   const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(startTour, 250)); };   // the "illegal today" myth waits until the player turns on that overlay
   $("introGo").addEventListener("click", closeIntro);
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
