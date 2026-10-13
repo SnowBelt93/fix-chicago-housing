@@ -50,7 +50,8 @@ city = [(float(r['longitude']), float(r['latitude'])) for r in csv.DictReader(op
         if r['property_status'] == 'Owned by City' and r.get('latitude') and r.get('longitude')]
 vac_all = np.array(priv + city)
 
-M_LAT = 111132.954
+M_LAT = 111132.954          # real metres per degree of latitude here, for distances
+DECK = 111319.49            # the scale the building files are stored in (deck.gl METER_OFFSETS)
 def gone_in(num):
     """Indices of small pre-2000 buildings that contain a parcel point that is vacant today (demolished since the 2013 footprints)."""
     buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
@@ -63,8 +64,7 @@ def gone_in(num):
     po = o + 3 * N + ((3 * N) % 2)
     un = np.frombuffer(buf, dtype='<u2', count=N, offset=po)
     fp = np.frombuffer(buf, dtype='<u2', count=N, offset=po + 2 * N).astype(np.float64) * 2
-    m_lon = M_LAT * np.cos(np.radians(lat0))
-    px = (vac_all[:, 0] - lon0) * m_lon; py = (vac_all[:, 1] - lat0) * M_LAT
+    px = (vac_all[:, 0] - lon0) * DECK * np.cos(np.radians(lat0)); py = (vac_all[:, 1] - lat0) * DECK
     sel = (np.abs(px) < 20000) & (np.abs(py) < 20000)
     polys, s0 = [], 0
     for i in range(N):
@@ -89,8 +89,7 @@ def to_ll(num):
     safe = np.maximum(nv, 1)
     cx = np.add.reduceat(xs, starts) / safe if N else xs
     cy = np.add.reduceat(ys, starts) / safe if N else ys
-    m_lon = M_LAT * np.cos(np.radians(lat0))
-    return N, lon0 + cx / m_lon, lat0 + cy / M_LAT, fl
+    return N, lon0 + cx / (DECK * np.cos(np.radians(lat0))), lat0 + cy / DECK, fl
 
 out = bytearray(struct.pack('<I', len(meta['areas'])))
 ward_b = collections.Counter(); ward_ill = collections.Counter()

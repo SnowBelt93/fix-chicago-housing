@@ -12,7 +12,7 @@ from shapely.ops import linemerge
 SCR = os.path.dirname(os.path.abspath(__file__)); OUT = sys.argv[1]
 d = json.load(open(os.path.join(SCR, 'dl/sc/data/Transportation.geojson')))
 LON0, LAT0 = -87.68, 41.84
-KX = 111320.0 * math.cos(math.radians(LAT0)); KY = 110574.0
+KX = 111319.49 * math.cos(math.radians(LAT0)); KY = 111319.49   # deck.gl METER_OFFSETS scale
 by = collections.defaultdict(list)
 for f in d['features']:
     p = f['properties']; g = f['geometry']
