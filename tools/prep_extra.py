@@ -2,8 +2,9 @@
 
 Outputs (run from the repo root: python3 tools/prep_extra.py):
   b/extra.wasm   per-building byte, areas in meta.json order: ward number (bits 0-5, 0 = none)
-                 | 64 if the building is gone: the footprints are from 2013, and a parcel that is vacant today
-                   (Cook County class 100 in 2025, or city-owned land) sits inside it (small buildings only, not built 2000+)
+                 | 64 if the building is gone: the footprints are from 2013, and either a parcel that is vacant today
+                   (Cook County class 100 in 2025, or city-owned land) sits inside it (small buildings only, not built 2000+),
+                   or Cook County's 2022 footprints show it torn down or replaced (tools/raw/fresh_gone.json from prep_fresh.py)
                  | 128 if the building is within 1/4 mile of one of the busiest L stations (tower-eligible).
                  Layout: uint32 area count, then per area: uint32 num, uint32 N, N bytes.
   b/vacant.wasm  vacant parcels: uint32 nPrivate, uint32 nCity, then int32 (lon*1e6, lat*1e6) pairs, private first.
@@ -49,6 +50,8 @@ priv = [(float(r['lon']), float(r['lat'])) for r in csv.DictReader(open(os.path.
 city = [(float(r['longitude']), float(r['latitude'])) for r in csv.DictReader(open(os.path.join(RAW, 'city_owned_land.csv')))
         if r['property_status'] == 'Owned by City' and r.get('latitude') and r.get('longitude')]
 vac_all = np.array(priv + city)
+FRESH = os.path.join(RAW, 'fresh_gone.json')
+fresh_gone = json.load(open(FRESH)) if os.path.exists(FRESH) else {}
 
 M_LAT = 111132.954          # real metres per degree of latitude here, for distances
 DECK = 111319.49            # the scale the building files are stored in (deck.gl METER_OFFSETS)
@@ -74,6 +77,11 @@ def gone_in(num):
     _, ib = tree.query(shapely.points(px[sel], py[sel]), predicate='within')
     g = sorted(set(int(b) for b in ib if fp[b] < 6000 and not (fl[b] & 8)))
     return g, int(un[g].sum()) if g else 0
+
+def units_of(num):
+    buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
+    N, V = struct.unpack_from('<II', buf, 0); o = 24 + 4 * V
+    return np.frombuffer(buf, dtype='<u2', count=N, offset=o + 3 * N + ((3 * N) % 2))
 
 def to_ll(num):
     buf = open(os.path.join(ROOT, 'b', f'{num}.wasm'), 'rb').read()
@@ -108,6 +116,8 @@ for a in meta['areas']:
     tower_n += int(near.sum())
     w = w | (near.astype(np.uint8) << 7)
     g, gu = gone_in(a['num'])
+    g = sorted(set(g) | set(fresh_gone.get(str(a['num']), [])))
+    gu = int(sum(units_of(a['num'])[g])) if g else 0
     w[g] |= 64
     a['gone'] = [len(g), gu]; gone_n += len(g); gone_u += gu
     for i in range(N):
