@@ -167,8 +167,8 @@ A free, browser-based game on a real 3D model of Chicago's ~485,000 buildings. P
   - `tools/prep_extra.py` drops 397 vacant-parcel points that sit inside a street right-of-way (land.wasm parcels 25,282).
   - Speed: `prepStatic` (per-building tier key, eligibility and lot size; tier lookup table `LUT`), `pUB` early reject, a scratch site buffer (`MB`), and a signature fast path (`A.sig` → `showYear`) for year-only changes.
   - `html{background:#fff}` so iOS Safari's bar areas are white rather than the gray `--table` color.
-  - Checks (`scratchpad/audit/harness6.js`, which loads streets): shapes overlapping a drawn street went from 6.3% to 0.03% (existing buildings: 0.17%); shapes within 3° of the nearest street's direction went from 43% to 95% (existing buildings: 95%); no centerline inside any new shape; no tall slivers; floor area per home median 1,026 sq ft.
-  - Totals: L mid-rise 75.0k, L high-rise 165.3k, strong combo 305.2k (goal 297,087), core tower 183.7k. `SUB_PER_STATION` = [0,86,297,605,1332].
+  - Checks (`scratchpad/audit/harness6.js`, which loads streets): shapes overlapping a drawn street went from 6.3% to 0–0.03% (existing buildings: 0.17%); shapes within 3° of the nearest street's direction went from 43% to 95% (existing buildings: 95%); no centerline inside any new shape; no tall slivers; floor area per home median 1,026 sq ft.
+  - Totals (node harness and the live page agree): L mid-rise 74,994, L high-rise 165,173, strong combo 305,128 (goal 297,087), core tower 183,575. Add `?perf` to the URL to log each recompute's time to the console (`[fch]`); a full recompute at load took ~0.5 s on Kyle's Mac. `SUB_PER_STATION` = [0,86,297,605,1332].
   - Scripts: `align.js` (orientation and drawn-street overlap), `streetcheck.js`, `size.js`, `cmpver.js`, `sub.js`.
 - **The math tab:** zoning table with code citations, decision rules, baseline, rent effect, shortage estimates, ARO, offices, NAHB, people, an explicit "Game assumptions (not measured)" list, myths, data, and what's not modeled. Every source is a link.
 - **Save tab:** autosave, named saves, share link (`#u3...`), plan code, and open a code.
