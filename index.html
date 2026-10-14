@@ -2672,11 +2672,11 @@ const TACTICS = [
   {t:"Trade discretion for clear design rules.", b:"Buildings that fit their block draw less opposition. Clear height and form rules in exchange for by-right approval.", s:[["'Political Architecture'","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"]]},
   {t:"Pair upzoning with tenant protections.", b:"In NYC's right-to-counsel program, 84% of tenants with a city-funded lawyer kept their homes. Urban Institute recommends pairing the two.", s:[["CityLand NYC","https://citylandnyc.org/city-releases-right-to-counsel-progress-report"],["Urban Institute, 2024","https://www.urban.org/urban-wire/how-embed-racial-equity-zoning-code-reform"]]},
 ];
-const TOWN_FOR = {mega:"process", low:"values", mid:"character", high:"character", tower:"character", corr:"parking", metra:"traffic", tod:"traffic", office:"schools", str:"luxury", adu:"parking", build:"process", stair:"character", pre:"process", lots:"crime", permits:"process", else:"elsewhere", vac:"displacement", social:"luxury", hood:"character"};
 let seenTown = new Set(lsGet("fch-town", []));
 function showTown(k){
   const T = TOWN.find(x => x.k === k); if (!T) return;
   seenTown.add(k); lsSet("fch-town", [...seenTown]); renderTown();
+  document.querySelectorAll('.cbox[data-town="' + k + '"] .ans').forEach(a => { a.hidden = true; });   // other comments stop offering the card you just read
   $("mythEyebrow").textContent = "Town hall"; $("mythVerdict").hidden = true;
   $("mythTitle").textContent = "“" + T.q + "”";
   $("mythBody").textContent = T.e;
@@ -2728,7 +2728,10 @@ const REACT = {
   xfer:["Tax the big sales, get fewer big sales. Who could've seen it coming? LA, apparently.","The developer just did the math and went to Evanston.","Funds housing by making less housing. Very efficient."],
   social:["Public housing that pays for itself? Apparently Maryland figured it out.","Mixed-income buildings the city owns a piece of. Okay, I'm listening."],
 };
+// the town hall card each comment opens, by the objection it raises; comments that raise none get no "How to answer this"
+const LINE_TOWN = {"A three-flat? On MY block? …Okay, fine, I grew up in one.": "elsewhere", "Sure, but where am I supposed to park my second car?": "parking", "This will ruin the character of the neighborhood. The character is mostly vinyl siding.": "character", "Nearest L stop is two buses away. Hope the new neighbors like brake lights.": "traffic", "Six stories?! What is this, Paris?": "character", "I support housing, just not here, not now, and not that tall.": "elsewhere", "Great, more people to stand behind in line at the grocery store.": "schools", "We demand a traffic study! (Lives two blocks from the Blue Line.)": "traffic", "Twelve stories? My dog will have to look up.": "character", "It'll block my view of the other building that blocks my view.": "character", "Thirty stories? This isn't New York. …Wait, who invented the skyscraper again?": "character", "Great, the wind tunnel on Wacker gets a sequel.": "character", "My view of the lake is now a view of somebody's view of the lake.": "values", "It'll cast a shadow on my shadow.": "character", "Apartments over the taquería? Sounds like a Logan Square starter pack.": "displacement", "Springfield telling Chicago what to do? Classic.": "process", "My alderperson has opinions about this.": "process"};
 let lastReact = 0, commentEpoch = 0;
+const saidLines = new Set();
 // public comments stack: the newest slides in on top and older ones move down (on phones they tuck in behind it).
 // Each card stays until its × is clicked; past 3, the oldest drops off.
 const CIN = [{opacity:0, transform:"translateY(14px) scale(.96)"}, {opacity:1, transform:"none"}];
@@ -2767,7 +2770,7 @@ function showCommentNow(line, by, town){
   const now = new Date(), hh = now.getHours() % 12 || 12, mm = String(now.getMinutes()).padStart(2, "0");
   card.querySelector("q").textContent = line; card.querySelector(".cmeta b").textContent = "Public comment " + (++commentNo);
   card.querySelector(".cmeta span").textContent = (by ? by + ", " : "") + hh + ":" + mm + (now.getHours() < 12 ? " am" : " pm");
-  if (town){ const a = card.querySelector(".ans"); a.hidden = false; a.addEventListener("click", () => { closeCard(card); showTown(town); }); }
+  if (town && !seenTown.has(town)){ const a = card.querySelector(".ans"); a.hidden = false; card.dataset.town = town; a.addEventListener("click", () => { closeCard(card); showTown(town); }); }
   card.querySelector(".cx").addEventListener("click", () => closeCard(card));
   box.hidden = false;
   flipCards(() => box.prepend(card));
@@ -2779,8 +2782,10 @@ function react(kind, place){
   const pool = REACT[kind]; if (!pool) return;
   const now = performance.now(); if (now - lastReact < 1200) return;   // clicking through levels quickly doesn't pile up cards
   lastReact = now;
-  const line = pool[Math.floor(Math.random() * pool.length)];
-  showComment(line, place || "", TOWN_FOR[kind] || null);
+  const fresh = pool.filter(l => !saidLines.has(l)), from = fresh.length ? fresh : pool;   // new lines first; repeats only once a pool runs out
+  const line = from[Math.floor(Math.random() * from.length)]; saidLines.add(line);
+  const town = LINE_TOWN[line] || null;
+  showComment(line, place || "", town && !seenTown.has(town) ? town : null);   // each town hall card is offered once
 }
 
 // ---------------- data loading ----------------
