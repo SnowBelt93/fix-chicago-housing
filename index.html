@@ -852,6 +852,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   body:not(.wide) .sheet .tabs{gap:12px;padding:0 40px 0 16px}
   body:not(.wide) .sheet .tab{font-size:13.5px !important}
   .widebtn{width:30px;height:30px;padding:0;display:grid;place-items:center}
+  body.wide .widebtn{width:auto;padding:0 12px;white-space:nowrap}
 }
 @media (min-width:860px) and (max-height:880px){   /* shorter laptop screens: tighten the score panel so the tools get room */
   .brand{padding-top:10px}
@@ -2591,12 +2592,21 @@ function showTip(){
   $("tipStep").textContent = (tourStep + 1) + " of " + TOUR.length;
   $("tipNext").textContent = tourStep === TOUR.length - 1 ? "Let's go" : "Next";
   tip.hidden = false;
-  const r = target.getBoundingClientRect(), W = innerWidth, H = innerHeight, tw = Math.min(300, W - 24);
+  if (target.closest(".panes")) target.scrollIntoView({block: "nearest"});   // bring a tool inside the scrolling panel into view first
+  const W = innerWidth, H = innerHeight, tw = Math.min(300, W - 24);
   tip.style.width = tw + "px";
-  const below = r.bottom + 12 + tip.offsetHeight < H;
-  tip.style.top = (below ? r.bottom + 10 : Math.max(10, r.top - tip.offsetHeight - 10)) + "px";
-  tip.style.left = Math.max(12, Math.min(W - tw - 12, r.left + r.width / 2 - tw / 2)) + "px";
-  tip.dataset.dir = below ? "up" : "down";
+  const r = target.getBoundingClientRect(), th = tip.offsetHeight, clampTop = (y) => Math.max(10, Math.min(H - th - 10, y));
+  let dir;
+  const panel = isWide() && !document.body.classList.contains("wide") ? target.closest(".sheet,.hud") : null, right = panel ? panel.getBoundingClientRect().right : r.right;
+  if (W - right >= tw + 28){   // room beside it (the desktop sidebar): put the tip over the map, next to the target
+    dir = "left"; tip.style.left = (right + 14) + "px"; tip.style.top = clampTop(r.top + r.height / 2 - th / 2) + "px";
+  } else {
+    const below = r.bottom + 12 + th < H, above = r.top - th - 12 > 0;
+    dir = below ? "up" : above ? "down" : "none";
+    tip.style.top = (below ? r.bottom + 10 : above ? r.top - th - 10 : clampTop(H - th - 10)) + "px";
+    tip.style.left = Math.max(12, Math.min(W - tw - 12, r.left + r.width / 2 - tw / 2)) + "px";
+  }
+  tip.dataset.dir = dir;
   document.querySelectorAll(".tour-hi").forEach(e => e.classList.remove("tour-hi")); target.classList.add("tour-hi");
 }
 $("tipNext").addEventListener("click", () => { tourStep++; if (tourStep >= TOUR.length) document.querySelectorAll(".tour-hi").forEach(e => e.classList.remove("tour-hi")); showTip(); });
