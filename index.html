@@ -24,7 +24,7 @@
   --ink:#1c2430; --ink-2:#3d4654; --ink-3:#6b7280;
   --paper:#ffffff; --paper-2:#eef3f8; --line:#d9dde3;
   --nav:#2b5da0; --nav-2:#1d4377; --flag:#41b6e6; --star:#e4002b;
-  --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f; --t5:#0a1c3c; --t6:#161820;
+  --t1:#a9dcf3; --t2:#41b6e6; --t3:#2b5da0; --t4:#14335f; --t5:#0f7c86; --t6:#161820;
   --s-zone:#2b5da0; --s-adu:#2f8f5b; --s-str:#41b6e6; --s-lots:#7a4fb3; --s-office:#e08a1e; --s-mega:#5b3f8c; --s-sub:#0f7c86; --s-vland:#6f9a3a;
   --good:#1f7a45; --warn:#a8641b; --bad:#b4232c; --focus:#e4002b; --vac:#9aa3ae;
   --f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;
@@ -1139,7 +1139,8 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
         </div>
         <div class="tool" id="tool-office" data-unlock="office">
           <h3>Turn empty Loop offices into apartments</h3>
-          <p>Downtown office vacancy is about 27% (Cushman &amp; Wakefield, Q2 2026). About 4,000 conversion homes are already underway, so they're in the baseline. This adds more.</p>
+          <p>About 27% of downtown office space could become apartments (CommercialCafe), and about 4,000 conversion homes are already underway, so they're in the baseline. How much more of that convertible space gets done by 2041?</p>
+          <p class="small">Today's pipeline is about 4M sq ft, roughly 10% of the convertible space, and it took city subsidies (LaSalle Street) and several years. Half is a stretch: conversions cost about as much as building new.</p>
           <div class="seg" id="officeSeg"></div>
         </div>
         <div class="row"><button class="btn quiet" id="reset" type="button">Start over</button><button class="btn quiet" id="unlockAll" type="button">Unlock all tools</button></div>
@@ -1308,7 +1309,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
           <div><dt>Affordable requirement (ARO)</dt>
             <dd>Chicago requires 10–20% affordable homes in projects of 10+ units that need a zoning change, city land or city money (<a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago</a>). The game applies the dial to new buildings of 10+ homes. Production effects follow Terner Center modeling for Los Angeles, where output fell about 30% going from an 11% to a 25% requirement (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Phillips, 2024</a>). "None" uses the same study's no-requirement scenario: 398,800 homes over 10 years vs. about 233,000 at 20% (interpolated between its 16% and 25% runs), so 10+-home projects are about 1.7× as likely to get built, and none of their homes are affordable.</dd></div>
           <div><dt>Office conversions</dt>
-            <dd>Downtown has 141.9M sq ft of office space and 27.2% vacancy (<a href="https://content.cushmanwakefield.com/api/public/content/afebd680503f4418a7c6cb0b53fb9c03" target="_blank" rel="noopener">Cushman & Wakefield, Q2 2026</a>). Chicago's 2026 conversions turn about 4M sq ft into 3,900+ homes (<a href="https://chicago.suntimes.com/other-views/2026/08/03/building-housing-affordable-requirements-ordinance-regulations-development-lylena-estabine" target="_blank" rel="noopener">Sun-Times op-ed</a>), about 1,026 sq ft per home. Nearly 27% of office stock could convert (<a href="https://www.wbez.org/real-estate-development/2025/04/25/office-residential-conversions-apartments-housing-downtown" target="_blank" rel="noopener">CommercialCafe via WBEZ</a>); developers disagree on whether that's too high or too low.</dd></div>
+            <dd>Downtown has 141.9M sq ft of office space and 27.2% vacancy (<a href="https://content.cushmanwakefield.com/api/public/content/afebd680503f4418a7c6cb0b53fb9c03" target="_blank" rel="noopener">Cushman & Wakefield, Q2 2026</a>). Chicago's 2026 conversions turn about 4M sq ft into 3,900+ homes (<a href="https://chicago.suntimes.com/other-views/2026/08/03/building-housing-affordable-requirements-ordinance-regulations-development-lylena-estabine" target="_blank" rel="noopener">Sun-Times op-ed</a>), about 1,026 sq ft per home. Nearly 27% of office stock has conversion potential (<a href="https://www.wbez.org/real-estate-development/2025/04/25/office-residential-conversions-apartments-housing-downtown" target="_blank" rel="noopener">CommercialCafe via WBEZ</a>), about 38M sq ft; developers disagree on whether that's too high or too low, and conversions cost about as much as building new. The game's levels convert 10%, 25% or half of that convertible space by 2041: about 3,700, 9,300 or 18,700 homes. Today's ~4M sq ft pipeline is about 10% of it, so even the top level means repeating that effort five times.</dd></div>
           <div><dt>Jobs and taxes</dt>
             <dd>Per 100 new apartments: 161 local jobs and $2.2M local revenue the first year, then 44 jobs and $503K a year (2015 dollars) (<a href="https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/economic-impact/economic-impact-local-area-2015.pdf" target="_blank" rel="noopener">NAHB, 2015</a>).</dd></div>
           <div><dt>Policies that cut supply</dt>
@@ -1325,7 +1326,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
                 <li>Coach houses: pilot pace doubled when every ward allows them by right.</li>
                 <li>Half of city-owned vacant lots get a 2-flat; 10% of "other vacant" homes return under an empty-homes tax.</li>
                 <li>Project boosts: single stair +25%, prerogative reform +15%, faster permits +10% (and homes arrive about 7 months sooner: 20% of a roughly three-year approval and build), no parking minimums +10%, small lots +20%.</li>
-                <li>Social housing at Montgomery County's target pace; office conversions as a share of downtown office space.</li>
+                <li>Social housing at Montgomery County's target pace; office conversions as 10%, 25% or half of the space with conversion potential, done by 2041.</li>
                 <li>Shops only redevelop on commercial corridors or within ¼ mile of the L, and only on addressed lots with no landmark name (keeps parks and museums out).</li>
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Normal mode spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago). Hard mode asks the city to close the whole regional shortage, as if the suburbs only kept building at today's pace.</li>
@@ -1366,7 +1367,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
     <div><i class="lt"></i><span>6-flat</span><em>RM-5</em></div>
     <div><i class="lt"></i><span>Mid-rise</span><em>RM-6</em></div>
     <div><i class="lt"></i><span>High-rise</span><em>RM-6.5</em></div>
-    <div id="lgTower" hidden><i style="--c:#0a1c3c"></i><span>Tower</span><em>DX-12</em></div>
+    <div id="lgTower" hidden><i style="--c:#0f7c86"></i><span>Tower</span><em>DX-12</em></div>
     <div id="lgSuper" hidden><i style="--c:#161820"></i><span>Supertall</span><em>DX-16+</em></div>
     <div id="lgMega" hidden><i style="--c:#765caa"></i><span>Big project (illustrative)</span></div>
     <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot</span></div>
@@ -1543,7 +1544,7 @@ const TIERS = [
   {name:"6-flat", h:4, k:6, zone:"RM-5: 1 per 400 sq ft (capped at a realistic 6)", color:[65,182,230], css:"var(--t2)", bars:[9,12,9]},
   {name:"Mid-rise", h:6, k:10, zone:"RM-6: 1 per 300 sq ft", color:[43,93,160], css:"var(--t3)", bars:[12,16,12]},
   {name:"High-rise", h:12, k:20, zone:"RM-6.5: 1 per 300 sq ft, or 1 studio per 135 (mix)", color:[20,51,95], css:"var(--t4)", bars:[14,22,18]},
-  {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations and in the downtown core", color:[10,28,60], css:"var(--t5)", bars:[16,26,22]},
+  {name:"Tower", h:30, k:40, zone:"DX-12 style: floor area up to 12× the lot, about 900 sq ft per home (assumed). Only within ¼ mile of the busiest L stations and in the downtown core", color:[15,124,134], css:"var(--t5)", bars:[16,26,22]},
   {name:"Supertall", h:60, k:80, zone:"DX-16 plus a downtown floor-area bonus (DX-16 has no maximum bonus, §17-4-1003): about 23× the lot at about 900 sq ft per home (assumed). Only in the downtown core: the Loop and the Near North, Near West and Near South Sides", color:[22,24,32], css:"var(--t6)", bars:[18,30,24]},
 ];
 // Tower level: busiest L stations only; 15-year total capped at 6,500 a year on average, Integra Realty's 2021 forecast for downtown (via Connect CRE)
@@ -1598,7 +1599,10 @@ const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
 const MEGA_AFF = 0.2;                                      // 20% affordable: the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to
 const OTHER_VACANT = 60223, VAC_RETURN = 0.10;               // ACS 2024 B25004 "other vacant"; assumption
 const SOCIAL_HOMES = 6000 * 2.70 * 0.75, SOCIAL_AFF = 0.30;  // Montgomery County target 6,000 homes per $100M over 20 yrs; $270M added; 15 of 20 yrs
-const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_SHARE = [0, 0.05, 0.15, 0.27];
+const OFFICE_SQFT = 141.9e6, SQFT_PER_HOME = 1026, OFFICE_POTENTIAL = 0.27;   // downtown office stock (Cushman & Wakefield) and the share with conversion potential (CommercialCafe via WBEZ)
+const OFFICE_LEVELS = [0, 0.10, 0.25, 0.50];                // share of that convertible space turned into homes by 2041 (assumption): today's ~4M sq ft pipeline is about 10%
+const OFFICE_SHARE = OFFICE_LEVELS.map(v => v * OFFICE_POTENTIAL);   // as a share of all downtown office space
+const OFFICE_TOWER_SQFT = 280e6;                            // floor area of the older downtown towers the map can color as converted (from the building data)
 const JOBS1 = 1.61, JOBS2 = 0.44, TAX2 = 5030;
 const BUDGET_GAP = 882e6;   // City of Chicago's projected 2027 budget gap (WTTW, Sept 2026)
 // vacant-lot gap financing (Missing Middle-style): assumptions, labeled in The math
@@ -2082,7 +2086,7 @@ function showYear(A){
   for (let i = 0; i < n; i++){
     if (EX !== null && (EX[i] & 64)){ A.elev[i] = 0; A.col[i] = 8; continue; }
     const f = A.fl[i]; let c = 0;
-    if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare) c = 5;
+    if (officeShare && (f & 32) && hash01(i, A.num + 313) < officeShare * OFFICE_SQFT / OFFICE_TOWER_SQFT) c = 5;
     if (hl && (f & 64)) c = 6;
     A.elev[i] = (A.st[i] || 1) * FLOOR_M; A.col[i] = c;
   }
@@ -3486,7 +3490,7 @@ function buildTypeTools(){
     $("typeHint" + ty).textContent = TYPE_HINT[ty] + " · " + typeAreas(ty).length + " areas";
   });
 }
-["None","+5% of offices","+15%","+27% (max)"].forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = i; b.textContent = lv; b.addEventListener("click", () => setOffice(i)); $("officeSeg").appendChild(b); });
+["None","10% of it","25%","Half (max)"].forEach((lv, i) => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = i; b.textContent = lv; b.addEventListener("click", () => setOffice(i)); $("officeSeg").appendChild(b); });
 $("tierTable").innerHTML = TIERS.slice(1).map(T => '<tr><td>' + T.name + '</td><td class="n">' + T.h + '</td><td class="n">' + T.k + '</td><td>' + T.zone + '</td></tr>').join("");
 
 // ---------------- simulation ----------------
