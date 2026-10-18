@@ -14,9 +14,11 @@ concurrency: tracker
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
+      - name: Tools
+        run: sudo apt-get install -y -qq poppler-utils >/dev/null
       - name: Download
         run: python3 tools/tracker/fetch.py
       - name: Build

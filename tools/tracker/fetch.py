@@ -62,6 +62,48 @@ for m in matters[:8] + [m for m in matters if 'Planned' in (m.get('title') or ''
     full = ej('/matter/' + m['matterId']); sample.append(full); time.sleep(0.3)
 json.dump(sample, open(os.path.join(OUT, 'elms_sample.json'), 'w'), indent=1)
 
+# 2b) Zoning narratives: for zoning matters introduced 2021 on, download the narrative/exhibit PDF once and keep the text
+#     of its first pages (that's where Type 1 applications state the number of dwelling units). Cached per matter,
+#     so each daily run only fetches new matters; capped by time so a backfill spreads over a few runs.
+import subprocess, tempfile, re
+TXT = os.path.join(OUT, 'elms_text'); os.makedirs(TXT, exist_ok=True)
+t0 = time.time(); fetched = 0
+cand = [m for m in matters if (m.get('introductionDate') or '') >= '2021-01-01' and m.get('recordNumber')]
+cand.sort(key=lambda m: m.get('introductionDate') or '', reverse=True)
+for m in cand:
+    if time.time() - t0 > 25 * 60: print('narratives: time cap reached'); break
+    rec = re.sub(r'[^A-Za-z0-9-]', '_', m['recordNumber'])
+    fn = os.path.join(TXT, rec + '.json')
+    if os.path.exists(fn):
+        old = json.load(open(fn))
+        # re-check matters still in progress once a week (attachments get added at committee)
+        if old.get('final') or (time.time() - old.get('checked', 0)) < 7 * 86400: continue
+    try: full = ej('/matter/' + m['matterId'])
+    except SystemExit: continue
+    if not full: continue
+    att = full.get('attachments') or []
+    pick = [a for a in att if re.search(r'narrative|exhibit|plans', (a.get('fileName') or '') + ' ' + (a.get('attachmentType') or ''), re.I)]
+    pick += [a for a in att if a not in pick and re.search(r'ordinance|legislation', (a.get('fileName') or '') + ' ' + (a.get('attachmentType') or ''), re.I)]
+    texts = []
+    for a in pick[:3]:
+        if not a.get('path'): continue
+        try:
+            b = urllib.request.urlopen(urllib.request.Request(a['path'], headers=UA), timeout=120).read(60_000_000)
+        except Exception as e:
+            print('pdf fail', rec, e); continue
+        with tempfile.NamedTemporaryFile(suffix='.pdf') as tf:
+            tf.write(b); tf.flush()
+            try: t = subprocess.run(['pdftotext', '-l', '6', '-layout', tf.name, '-'], capture_output=True, timeout=60).stdout.decode('utf-8', 'ignore')
+            except Exception as e: t = ''
+        texts.append({'file': a.get('fileName'), 'type': a.get('attachmentType'), 'text': t[:20000]})
+    rec_out = {'recordNumber': m['recordNumber'], 'matterId': m['matterId'], 'checked': time.time(),
+               'final': (full.get('status') or '').startswith('90'), 'status': full.get('status'), 'subStatus': full.get('subStatus'),
+               'actions': [{'date': (a.get('actionDate') or '')[:10], 'name': a.get('actionName')} for a in full.get('actions') or []],
+               'attachments': [{'file': a.get('fileName'), 'type': a.get('attachmentType')} for a in att], 'texts': texts}
+    json.dump(rec_out, open(fn, 'w')); fetched += 1
+    time.sleep(0.2)
+print('narratives fetched this run', fetched, 'cached', len(os.listdir(TXT)))
+
 # 3) Census Building Permits Survey, place-level annual files (Midwest region)
 out = []
 for y in range(2006, datetime.date.today().year + 1):
