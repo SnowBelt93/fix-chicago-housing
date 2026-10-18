@@ -1,0 +1,1615 @@
+[
+ {
+  "matterId": "6681C4AC-17C7-F111-AAAE-001DD80FDAD3",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029394",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 4-F at 2125-2127 S Archer Ave - App No. 23193T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-13T15:06:41+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "E0C230B0-19C7-F111-AAAE-001DD80FDAD3",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029394 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/39b5c609-b673-41a0-acc1-ccb3381e2ab9.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029394 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/67cf5217-018d-4875-9e96-05b73a26b185.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029394 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/173dd3c6-21e1-4489-b46a-f195d998b90b.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029394 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/079e42bc-3532-40cf-b878-fc3b63035c4c.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-13T15:19:46+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-13T15:19:54+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-13T15:25:02+00:00"
+ },
+ {
+  "matterId": "CD89F170-0CC4-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029372",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 7-G at 920-928 W Diversey Pkwy - App No. 23186T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-09T18:08:37+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "4A2CFB72-0FC4-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029372 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/fa05c8a1-24a8-4ed1-a6e2-be154e767c40.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029372 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/673ec3ff-996e-4717-8807-a1adf85ee3da.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029372 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/44f32c60-77c8-4e08-a851-44f2092fa229.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029372 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/4c3a7380-6c9a-432a-a65a-11c296c98edc.pdf",
+    "attachmentType": "EDS"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-09T18:29:12+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-09T18:29:31+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-09T18:36:06+00:00"
+ },
+ {
+  "matterId": "5ED33460-E2C7-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029425",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 9-L at 5555 W Newport Ave - App No. 23202T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-14T15:17:38+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "6B49C40B-E5C7-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029425 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f231f228-05e7-4d3c-8942-a789e4528fc9.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029425 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/a61a7527-bd61-4678-b32b-b29986013438.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029425 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/b37813aa-91dc-44a9-af4e-9d5e703c6905.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029425 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/73d276d4-9d2c-4f35-9fde-7968bf0014ad.pdf",
+    "attachmentType": "EDS"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-14T15:35:39+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-14T15:35:48+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-14T15:40:02+00:00"
+ },
+ {
+  "matterId": "81E1AF6B-10C4-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029375",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 3-J at 3724 W Le Moyne St - App No. 23187T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-09T18:37:08+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "84F0E77B-12C4-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029375 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/c99039ef-2a1e-4899-9e08-60bc9aaeeeb3.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029375 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/8fadd9a4-90e8-4ea6-92e5-a5086d471a64.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029375 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/e6ac0efa-152c-4059-952a-c8b4b048d38b.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029375 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/52efd64a-8024-437c-b620-ffe497b96703.pdf",
+    "attachmentType": "Miscellaneous"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-09T18:50:50+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-09T18:50:57+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-09T18:55:10+00:00"
+ },
+ {
+  "matterId": "A87DEA3B-E5C7-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029435",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 1-L at 4901 W Ferdinand St - App No. 23203T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-14T15:38:02+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "EC7F1663-E7C7-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029435 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/dc3ad4ac-7970-4c6a-83db-06098b80eae5.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029435 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/18eb4e03-5f3e-4f13-aaf9-193cd0fcddbb.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029435 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/3faae8b6-ed39-43f1-8d5d-de69bfe550e3.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029435 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/9d80ef33-2598-436a-8124-0500287b26a1.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-14T15:52:36+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-14T15:52:43+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-14T15:55:01+00:00"
+ },
+ {
+  "matterId": "89D014C2-10C7-F111-AAAE-001DD80FDAD3",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029387",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 11-G at 4525-4531 N Clark St - App No. 23192T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-13T14:17:10+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "DFCACC7C-17C7-F111-AAAE-001DD80FDAD3",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029387 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/90143086-3099-47e5-acad-7c05e67edd1e.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029387 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/90a62981-838c-4e48-a496-968987011df2.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029387 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f19e5133-1a25-4c32-a326-f50167c31f66.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029387 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f6110791-c3f9-4a32-9132-685057cea73c.pdf",
+    "attachmentType": "Legislation"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-13T15:04:31+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-13T15:04:39+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-13T15:10:07+00:00"
+ },
+ {
+  "matterId": "E28FD3EC-FAC3-F111-AAAE-001DD80AA3CC",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029363",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "NO",
+  "title": "Zoning Reclassification Map No. 28-J at 3857 W 111th St - App No. 23183",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-09T16:03:20+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "B418DC85-FCC3-F111-AAAE-001DD80AA3CC",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029363 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/0072f592-7291-4b2e-b9ef-2c71ac41cb64.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029363 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/e97f1acb-6026-4b31-8013-99bc63476eeb.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029363 Statements and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/85abaa62-43c6-4119-90c4-a17ef6333dd4.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-09T16:13:23+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-09T16:13:34+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-09T16:20:44+00:00"
+ },
+ {
+  "matterId": "3E1386A4-FCC3-F111-AAAE-001DD80AA3CC",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029364",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 9-G at 1429 W Irving Park Rd - App No. 23184T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-09T16:15:29+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "FB626136-FEC3-F111-AAAE-001DD80AA3CC",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029364 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/d92b9fd4-76d3-4c73-b70f-094cb916b1fc.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029364 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/77680d8a-1889-49e2-8e61-aee04d3d45ef.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029364 Narrativbe and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/6729a0bf-4987-4a35-8c38-ce697ffe5a23.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029364 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/04070f2c-8290-4018-99f7-13d127b6a534.pdf",
+    "attachmentType": "EDS"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-09T16:25:45+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-09T16:25:58+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-09T16:30:40+00:00"
+ },
+ {
+  "matterId": "2A7639BA-E00D-ED11-82E3-001DD80698CB",
+  "fileYear": 2015,
+  "recordNumber": "SO2015-1419",
+  "legacyRecordNumber": null,
+  "status": "90-Final",
+  "legacyStatus": "Passed",
+  "subStatus": "Passed",
+  "statusDescription": "Favorable action of a measure or document before the City Council \r\n\r\n(Status of items that have been passed, approved, adopted, and signed as needed).",
+  "filingOffice": "Mayor",
+  "filingSponsor": "Emanuel, Rahm",
+  "filingSponsorId": "DAA1BB63-A6FD-ED11-8847-001DD8068005",
+  "introductionDate": "2015-03-18T10:00:00+00:00",
+  "finalActionDate": "2015-05-06T10:00:00+00:00",
+  "shortTitle": "Zoning Reclassification(s)",
+  "committeReferral": "Zoning",
+  "routine": "",
+  "introductionType": "Council Introduction",
+  "controllingBody": "City Council",
+  "controllingBodyId": "BAA9B630-573B-EC11-B6E5-001DD804D4DD",
+  "keyLegislation": "YES",
+  "economicDisclosure": "NO",
+  "title": "Zoning Reclassification Map No. 1-E Residential-Business Planned Development No. 368 - amend",
+  "nicknameAlias": "",
+  "recordCreateDate": "2015-04-10T17:07:02+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS | Map No.  1-E",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": "",
+  "actions": [
+   {
+    "actionDate": "2015-05-06T10:00:00+00:00",
+    "journalPage": "109079",
+    "actionByName": "City Council",
+    "actionName": "Passed as Substitute",
+    "actionText": "On motion of Alderman Solis, and unsuccessful motion to reconsider the vote by Alderman Pope, the Ordinance was Passed as Substitute by yeas and nays as follows:",
+    "meetingId": "F3DE58F9-9811-ED11-82E3-001DD80682F6",
+    "historyId": "7a57ab65-8a0f-ed11-82e3-001dd80698cb",
+    "name": null,
+    "sort": 0,
+    "votes": [
+     {
+      "voterName": "Sawyer, Roderick T.",
+      "vote": "Yea",
+      "personId": "32D285DA-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Holmes, Natashia",
+      "vote": "Yea",
+      "personId": "ED338C71-33FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Harris, Michelle A.",
+      "vote": "Yea",
+      "personId": "886B5C20-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Beale, Anthony",
+      "vote": "Absent",
+      "personId": "AC394D1C-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Pope, John",
+      "vote": "Yea",
+      "personId": "DB711C99-34FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Balcer, James",
+      "vote": "Yea",
+      "personId": "9D1A7931-35FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Cardenas, George A.",
+      "vote": "Yea",
+      "personId": "ABB0C0BB-36FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Quinn, Marty",
+      "vote": "Yea",
+      "personId": "97A2C337-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Burke, Edward M.",
+      "vote": "Yea",
+      "personId": "48C970DD-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Foulkes, Toni",
+      "vote": "Yea",
+      "personId": "8D5EBCE7-37FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Moreno, Proco Joe",
+      "vote": "Yea",
+      "personId": "643E7C2A-30FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Fioretti, Bob",
+      "vote": "Yea",
+      "personId": "098B91B2-30FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Dowell, Pat",
+      "vote": "Yea",
+      "personId": "B66788C7-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Burns, William D.",
+      "vote": "Yea",
+      "personId": "15938353-31FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Hairston, Leslie A.",
+      "vote": "Yea",
+      "personId": "D9FDE3C4-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Solis, Daniel",
+      "vote": "Yea",
+      "personId": "DD91B14F-ADFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Burnett, Jr., Walter",
+      "vote": "Yea",
+      "personId": "E6011090-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Ervin, Jason C.",
+      "vote": "Yea",
+      "personId": "C5C5987A-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Reboyras, Ariel",
+      "vote": "Yea",
+      "personId": "4741BF59-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Suarez, Regner Ray",
+      "vote": "Yea",
+      "personId": "9EB87F66-ACFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Waguespack, Scott",
+      "vote": "Yea",
+      "personId": "239D3A1D-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Mell, Deborah",
+      "vote": "Yea",
+      "personId": "4CCC3025-ACFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Austin, Carrie M.",
+      "vote": "Yea",
+      "personId": "1D16DFF9-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Col?n, Rey",
+      "vote": "Yea",
+      "personId": "00000000-0000-0000-0000-000000000000"
+     },
+     {
+      "voterName": "Sposato, Nicholas",
+      "vote": "Yea",
+      "personId": "40781120-F888-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Thomas, Latasha R.",
+      "vote": "Yea",
+      "personId": "590EE10E-39FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Lane, Lona",
+      "vote": "Absent",
+      "personId": "4CE8AAF0-39FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "O'Shea, Matthew J.",
+      "vote": "Yea",
+      "personId": "8E62E57A-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Willie B. Cochran",
+      "vote": "Yea",
+      "personId": "C8E3357C-38FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Pawar, Ameya",
+      "vote": "Absent",
+      "personId": "347C21D8-A8FD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Brookins, Jr., Howard",
+      "vote": "Yea",
+      "personId": "0F9FD80B-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Munoz, Ricardo",
+      "vote": "Yea",
+      "personId": "1475C514-38FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Osterman, Harry",
+      "vote": "Yea",
+      "personId": "209C9DBD-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Zalewski, Michael R.",
+      "vote": "Yea",
+      "personId": "D21B0DB3-37FE-ED11-8847-001DD806815C"
+     },
+     {
+      "voterName": "Moore, Joseph",
+      "vote": "Yea",
+      "personId": "1AB6222C-A8FD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Chandler, Michael D.",
+      "vote": "Absent",
+      "personId": "7E5BD60A-AEFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Silverstein, Debra L.",
+      "vote": "Yea",
+      "personId": "0F96F023-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Maldonado, Roberto",
+      "vote": "Yea",
+      "personId": "6B1FD8E6-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "16th Ward VACANCY",
+      "vote": "Not Voting",
+      "personId": "00000000-0000-0000-0000-000000000000"
+     },
+     {
+      "voterName": "Graham, Deborah L.",
+      "vote": "Yea",
+      "personId": "D2B602EE-ACFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Mitts, Emma",
+      "vote": "Yea",
+      "personId": "970B1AB5-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Cullerton, Timothy M.",
+      "vote": "Yea",
+      "personId": "47B88049-ABFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Laurino, Margaret",
+      "vote": "Yea",
+      "personId": "4FB126FF-AAFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "O'Connor, Patrick",
+      "vote": "Yea",
+      "personId": "E6C680B2-AAFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "O'Connor, Mary",
+      "vote": "Yea",
+      "personId": "D6ABE645-AAFD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Reilly, Brendan",
+      "vote": "Yea",
+      "personId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D"
+     },
+     {
+      "voterName": "Smith, Michele",
+      "vote": "Yea",
+      "personId": "024969C8-A9FD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Tunney, Thomas",
+      "vote": "Yea",
+      "personId": "F4014176-F888-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Arena, John",
+      "vote": "Yea",
+      "personId": "CF6B3072-A9FD-ED11-8847-001DD8068005"
+     },
+     {
+      "voterName": "Cappleman, James",
+      "vote": "Yea",
+      "personId": "03BB9B8E-F888-EC11-8D20-001DD804FD38"
+     }
+    ]
+   },
+   {
+    "actionDate": "2015-04-23T20:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "Committee on Zoning, Landmarks and Building Standards",
+    "actionName": "Amended in Committee",
+    "actionText": "Amended in Committee  BY VOICE VOTE",
+    "meetingId": "3CE890FB-9811-ED11-82E3-001DD8068077",
+    "historyId": "650eb35f-8a0f-ed11-82e3-001dd80698cb",
+    "name": null,
+    "sort": 0,
+    "votes": []
+   },
+   {
+    "actionDate": "2015-03-18T10:00:00+00:00",
+    "journalPage": "102829",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "",
+    "meetingId": "",
+    "historyId": "444fd741-8a0f-ed11-82e3-001dd80698cb",
+    "name": null,
+    "sort": 0,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Mayor",
+    "sponsorName": "Emanuel, Rahm",
+    "sponsorType": "Filing Sponsor",
+    "personId": "DAA1BB63-A6FD-ED11-8847-001DD8068005"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "SO2015-1419.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/lsmatterattachmentspublic/8c1d3d49-b9a5-4443-a066-389d6b12b409.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2015-1419.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/lsmatterattachmentspublic/a1f56cb7-3329-4499-90fc-f833c9da87c3.pdf",
+    "attachmentType": "Legislation"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [],
+  "lastPublicationDate": "2024-06-10T02:25:29+00:00"
+ },
+ {
+  "matterId": "9209E1CD-FD5E-EE11-BE6E-001DD8306AD0",
+  "fileYear": 2023,
+  "recordNumber": "O2023-0004818",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "02",
+  "filingSponsor": "Hopkins, Brian",
+  "filingSponsorId": "B160E94E-FB88-EC11-8D20-001DD804FD38",
+  "introductionDate": "2023-10-04T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Committees and Rules",
+  "routine": "NO",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Committees and Rules",
+  "controllingBodyId": null,
+  "keyLegislation": "YES",
+  "economicDisclosure": "NO",
+  "title": "Amendment of Municipal Code Title 17 by modifying various chapters requiring that cannabis business establishments be permitted by-right or as Planned Development Type 1 classification",
+  "nicknameAlias": "",
+  "recordCreateDate": "2023-09-29T19:24:37+00:00",
+  "matterCategory": "MUNICIPAL CODE AMENDMENTS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2023-10-04T05:00:00+00:00",
+    "journalPage": "3895",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "Two committees having been called, the Committee on Zoning, Landmarks and Building Standards and the Committee on the Budget and Government Operations. the matter was referred to the Committee on Committees and Rules (Pursuant to Council Rule 42).",
+    "meetingId": "",
+    "historyId": "95E04C4A-0863-EE11-BE6E-001DD80523DD",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "48",
+    "sponsorName": "Manaa-Hoppenworth, Leni",
+    "sponsorType": "CoSponsor",
+    "personId": "561B99CA-6CF3-ED11-A7C6-001DD804FC2B"
+   },
+   {
+    "office": "42",
+    "sponsorName": "Reilly, Brendan",
+    "sponsorType": "CoSponsor",
+    "personId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D"
+   },
+   {
+    "office": "45",
+    "sponsorName": "Gardiner, James M.",
+    "sponsorType": "CoSponsor",
+    "personId": "A29D73BA-F988-EC11-8D20-001DD804FD38"
+   },
+   {
+    "office": "02",
+    "sponsorName": "Hopkins, Brian",
+    "sponsorType": "Sponsor",
+    "personId": "B160E94E-FB88-EC11-8D20-001DD804FD38"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "W2 - CBE Zoning Approvals.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/94a6928c-435a-427d-9974-259f2bb68ca9.pdf",
+    "attachmentType": "Legislation"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [],
+  "lastPublicationDate": "2024-12-05T20:28:16+00:00"
+ },
+ {
+  "matterId": "39659CA3-1F11-EE11-8F6C-001DD8094692",
+  "fileYear": 2023,
+  "recordNumber": "SO2023-0001876",
+  "legacyRecordNumber": "O2023-1334",
+  "status": "90-Final",
+  "legacyStatus": null,
+  "subStatus": "Passed as Substitute",
+  "statusDescription": "90-Final",
+  "filingOffice": "42",
+  "filingSponsor": "Reilly, Brendan",
+  "filingSponsorId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D",
+  "introductionDate": "2023-03-15T15:00:00+00:00",
+  "finalActionDate": "2023-06-21T15:00:00+00:00",
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "NO",
+  "introductionType": "Council Introduction",
+  "controllingBody": "City Council",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "NO",
+  "title": "Amendment of Statements 5 and 12 of Planned Development 1092 at N Franklin St and W Illinois St",
+  "nicknameAlias": "",
+  "recordCreateDate": "2023-06-22T17:10:55+00:00",
+  "matterCategory": "MUNICIPAL CODE AMENDMENTS",
+  "type": "Ordinance",
+  "originalRecordNumber": "O2023-0001876",
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2023-07-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "",
+    "actionName": "Substituted",
+    "actionText": "The matter was substituted in committee.",
+    "meetingId": "",
+    "historyId": "C64AF975-F211-EE11-8F6C-001DD806D3F2",
+    "name": null,
+    "sort": 60,
+    "votes": []
+   },
+   {
+    "actionDate": "2023-03-15T05:00:00+00:00",
+    "journalPage": "61740",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was referred.",
+    "meetingId": "",
+    "historyId": "342FC48E-F211-EE11-8F6C-001DD806D3F2",
+    "name": null,
+    "sort": 50,
+    "votes": []
+   },
+   {
+    "actionDate": "2023-06-20T15:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "Committee on Zoning, Landmarks and Building Standards",
+    "actionName": "Recommended to Pass",
+    "actionText": "The matter was recommended to Pass by controlling legislative body",
+    "meetingId": "",
+    "historyId": "325BC99B-F211-EE11-8F6C-001DD806D3F2",
+    "name": null,
+    "sort": 60,
+    "votes": []
+   },
+   {
+    "actionDate": "2023-06-21T10:10:00+00:00",
+    "journalPage": "1358",
+    "actionByName": "City Council",
+    "actionName": "Passed",
+    "actionText": "On motion of Alderperson Ramirez-Rosa , and unsuccessful motion to reconsider by Alderman Mitchell, the matter was Passed.",
+    "meetingId": "3673BD4C-4F09-EE11-8F6D-001DD809B965",
+    "historyId": "EDEAC9BB-F211-EE11-8F6C-001DD806D3F2",
+    "name": null,
+    "sort": 70,
+    "votes": [
+     {
+      "voterName": "Lee, Nicole T.",
+      "vote": "Yea",
+      "personId": "E29E5122-7BB7-EC11-983E-001DD8049E83"
+     },
+     {
+      "voterName": "Burnett, Jr., Walter",
+      "vote": "Yea",
+      "personId": "E6011090-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Coleman, Stephanie D.",
+      "vote": "Yea",
+      "personId": "E019D2FB-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Dowell, Pat",
+      "vote": "Yea",
+      "personId": "B66788C7-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Lopez, Raymond A.",
+      "vote": "Yea",
+      "personId": "0AD4F54F-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Reilly, Brendan",
+      "vote": "Yea",
+      "personId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D"
+     },
+     {
+      "voterName": "Robinson, Lamont J.",
+      "vote": "Yea",
+      "personId": "80D52B16-6AF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Yancy, Desmon C.",
+      "vote": "Yea",
+      "personId": "E0AC4B85-6AF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Hall, William E.",
+      "vote": "Yea",
+      "personId": "7D95D6BB-6AF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Chico, Peter",
+      "vote": "Yea",
+      "personId": "4C168A10-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Ramirez, Julia M.",
+      "vote": "Yea",
+      "personId": "9E248041-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Gutierrez, Jeylu B.",
+      "vote": "Yea",
+      "personId": "2E2DFB80-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Mosley, Ronnie L.",
+      "vote": "Yea",
+      "personId": "8B0682AE-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Fuentes, Jessica L.",
+      "vote": "Yea",
+      "personId": "85DA45DD-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Cruz, Ruth",
+      "vote": "Yea",
+      "personId": "C7422EFD-6BF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Conway, William",
+      "vote": "Yea",
+      "personId": "4C380420-6CF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Lawson, Bennett R.",
+      "vote": "Yea",
+      "personId": "1628D550-6CF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Clay, Angela",
+      "vote": "Yea",
+      "personId": "5F4C907D-6CF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Manaa-Hoppenworth, Leni",
+      "vote": "Yea",
+      "personId": "561B99CA-6CF3-ED11-A7C6-001DD804FC2B"
+     },
+     {
+      "voterName": "Harris, Michelle A.",
+      "vote": "Yea",
+      "personId": "886B5C20-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "O'Shea, Matthew J.",
+      "vote": "Yea",
+      "personId": "8E62E57A-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Tabares, Silvana",
+      "vote": "Yea",
+      "personId": "CD474D9F-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Taylor, Jeanette B.",
+      "vote": "Yea",
+      "personId": "E3010C0E-F888-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Sposato, Nicholas",
+      "vote": "Yea",
+      "personId": "40781120-F888-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Beale, Anthony",
+      "vote": "Yea",
+      "personId": "AC394D1C-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Moore, David H.",
+      "vote": "Yea",
+      "personId": "EF6C6F46-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Sigcho-Lopez, Byron",
+      "vote": "Yea",
+      "personId": "9F0FC064-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Vasquez, Jr., Andre",
+      "vote": "Yea",
+      "personId": "9DB0248A-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Napolitano, Anthony V.",
+      "vote": "Yea",
+      "personId": "55B86EA2-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Gardiner, James M.",
+      "vote": "Yea",
+      "personId": "A29D73BA-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Martin, Matthew J.",
+      "vote": "Yea",
+      "personId": "A218F4F8-F988-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Rodriguez, Michael D.",
+      "vote": "Yea",
+      "personId": "40AA3439-736E-EC11-8F8E-001DD804FDD0"
+     },
+     {
+      "voterName": "Cardona, Jr., Felix",
+      "vote": "Yea",
+      "personId": "1C8E86C8-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Mitts, Emma",
+      "vote": "Yea",
+      "personId": "970B1AB5-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Silverstein, Debra L.",
+      "vote": "Yea",
+      "personId": "0F96F023-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Villegas, Gilbert",
+      "vote": "Yea",
+      "personId": "9E0A3436-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Hopkins, Brian",
+      "vote": "Yea",
+      "personId": "B160E94E-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Hadden, Maria E.",
+      "vote": "Yea",
+      "personId": "124700E1-FB88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Mitchell, Gregory I.",
+      "vote": "Yea",
+      "personId": "2E656B9F-C373-EC11-8F8E-001DD804F9F3"
+     },
+     {
+      "voterName": "Quinn, Marty",
+      "vote": "Yea",
+      "personId": "97A2C337-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Curtis, Derrick G.",
+      "vote": "Yea",
+      "personId": "EE27295C-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Ervin, Jason C.",
+      "vote": "Yea",
+      "personId": "C5C5987A-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Taliaferro, Chris",
+      "vote": "Yea",
+      "personId": "F113CA93-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Ramirez-Rosa, Carlos",
+      "vote": "Yea",
+      "personId": "3C5DB2AB-FC88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "La Spata, Daniel",
+      "vote": "Yea",
+      "personId": "41A0E156-F788-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Nugent, Samantha",
+      "vote": "Yea",
+      "personId": "7C82104C-F888-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Waguespack, Scott",
+      "vote": "Yea",
+      "personId": "239D3A1D-FA88-EC11-8D20-001DD804FD38"
+     },
+     {
+      "voterName": "Rodriguez Sanchez, Rossana",
+      "vote": "Yea",
+      "personId": "176937CC-9378-EC11-8940-001DD804DD33"
+     },
+     {
+      "voterName": "Scott, Monique L.",
+      "vote": "Yea",
+      "personId": "70A44C5E-5EEE-EC11-BB3B-001DD805196E"
+     },
+     {
+      "voterName": "Knudsen, Timothy R.",
+      "vote": "Yea",
+      "personId": "75B69F92-D740-ED11-9DAF-001DD8309496"
+     }
+    ]
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "42",
+    "sponsorName": "Reilly, Brendan",
+    "sponsorType": "Sponsor",
+    "personId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "June 21 Committee Letter.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/abb3c825-351e-4a3d-b7f1-e53039ed7457.pdf",
+    "attachmentType": "Committee Letter"
+   },
+   {
+    "fileName": "SO2023-0001876 Exh Final.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/3fb603e4-9f10-4323-89b9-a48c89ed7d6a.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2023-1334.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/541e90bc-ae09-46c5-b236-8cbb3791887e.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "SO2023-0001876 Ord Final.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/978f4a74-f1f6-49ed-9404-7a80f6416a7d.pdf",
+    "attachmentType": "Legislation"
+   }
+  ],
+  "relations": [
+   "SO2023-0001876"
+  ],
+  "agreedCalendar": "NO",
+  "timeline": [],
+  "lastPublicationDate": "2025-03-31T14:00:40+00:00"
+ },
+ {
+  "matterId": "CDD7FA12-4305-EE11-8F6D-001DD806E076",
+  "fileYear": 2023,
+  "recordNumber": "O2023-1334",
+  "legacyRecordNumber": null,
+  "status": "3-Council Introduction",
+  "legacyStatus": "Introduced",
+  "subStatus": "Council Introduction",
+  "statusDescription": "Proposed legislation submitted for referral to committee for consideration.\r\n\r\n Status of items being proposed",
+  "filingOffice": "42",
+  "filingSponsor": "Reilly, Brendan",
+  "filingSponsorId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D",
+  "introductionDate": "2023-03-15T10:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": "Amend Ordinance",
+  "committeReferral": "Zoning",
+  "routine": "",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": "ED9FC72B-B0D7-EC11-A7B4-001DD804F0C4",
+  "keyLegislation": "YES",
+  "economicDisclosure": "NO",
+  "title": "Amendment of Statements 5 and 12 of Planned Development 1092",
+  "nicknameAlias": "",
+  "recordCreateDate": "2023-04-13T02:07:04+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS | Miscellaneous",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": "",
+  "actions": [
+   {
+    "actionDate": "2023-06-20T20:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "Committee on Zoning, Landmarks and Building Standards",
+    "actionName": "",
+    "actionText": "",
+    "meetingId": "B65ED725-5905-EE11-8F6D-001DD806E3C0",
+    "historyId": "bddbd2f5-5405-ee11-8f6d-001dd806e3c0",
+    "name": null,
+    "sort": 0,
+    "votes": []
+   },
+   {
+    "actionDate": "2023-03-15T10:00:00+00:00",
+    "journalPage": "61740",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "",
+    "meetingId": "",
+    "historyId": "7d5457e0-5405-ee11-8f6d-001dd806ec60",
+    "name": null,
+    "sort": 0,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "42",
+    "sponsorName": "Reilly, Brendan",
+    "sponsorType": "Filing Sponsor",
+    "personId": "DE5B6D97-FC72-EC11-8F8E-001DD804F74D"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2023-1334.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/lsmatterattachmentspublic/962632f8-e524-469f-8393-9ed9127b8b0e.pdf",
+    "attachmentType": "Legislation"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [],
+  "lastPublicationDate": "2024-06-17T06:35:57+00:00"
+ }
+]

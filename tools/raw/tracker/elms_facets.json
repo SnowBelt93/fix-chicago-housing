@@ -1,0 +1,1311 @@
+{
+ "facets": [
+  {
+   "name": "controllingBody",
+   "values": [
+    {
+     "value": "City Council",
+     "count": 155417
+    },
+    {
+     "value": "Committee on Finance",
+     "count": 13728
+    },
+    {
+     "value": "Committee on Pedestrian and Traffic Safety",
+     "count": 10300
+    },
+    {
+     "value": "Committee on Zoning, Landmarks and Building Standards",
+     "count": 1027
+    },
+    {
+     "value": "Committee on Transportation and Public Way",
+     "count": 205
+    },
+    {
+     "value": "Committee on Committees and Rules",
+     "count": 144
+    },
+    {
+     "value": "Committee on Economic, Capital and Technology Development",
+     "count": 92
+    },
+    {
+     "value": "Committee on License and Consumer Protection",
+     "count": 73
+    },
+    {
+     "value": "Committee on Budget and Government Operations",
+     "count": 70
+    },
+    {
+     "value": "Committee on Public Safety",
+     "count": 51
+    },
+    {
+     "value": "Committee on Housing and Real Estate",
+     "count": 49
+    },
+    {
+     "value": "Committee on Contracting Oversight and Equity",
+     "count": 31
+    },
+    {
+     "value": "Committee on Health and Human Relations",
+     "count": 29
+    },
+    {
+     "value": "Committee on Environmental Protection and Energy",
+     "count": 21
+    },
+    {
+     "value": "Committee on Police and Fire",
+     "count": 20
+    },
+    {
+     "value": "Committee on Immigrant and Refugee Rights",
+     "count": 16
+    },
+    {
+     "value": "Committee on Ethics and Government Oversight",
+     "count": 13
+    },
+    {
+     "value": "Committee on Workforce Development",
+     "count": 13
+    },
+    {
+     "value": "Committee on Special Events, Cultural Affairs and Recreation",
+     "count": 11
+    },
+    {
+     "value": "Committee on Committees, Rules and Ethics",
+     "count": 9
+    },
+    {
+     "value": "Committee on Education and Child Development",
+     "count": 9
+    },
+    {
+     "value": "Committee on Aviation",
+     "count": 5
+    },
+    {
+     "value": "Committee on Health and Environmental Protection",
+     "count": 4
+    },
+    {
+     "value": "Joint Committee: Public Safety; Police and Fire",
+     "count": 4
+    },
+    {
+     "value": "Joint Committee: Environmental Protection and Energy; Economic, Capital and Technology Development",
+     "count": 3
+    },
+    {
+     "value": "Joint Committee:   Finance; Aviation",
+     "count": 2
+    },
+    {
+     "value": "Committee on Traffic Control and Safety",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee on Immigrant and Refugee Rights; Housing and Real Estate",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee:  Housing and Real Estate; Budget and Government Operations",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Budget and Government Operations; Finance",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Economic; Police and Fire",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Finance; Police and Fire",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Finance; Workforce Development",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: License and Consumer Protection; Workforce Development",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Pedestrian & Traffic Safety; Public Safety",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Police and Fire; Ethics and Government Oversight",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Police and Fire; Immigrant and Refugee Rights",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Public Safety; Immigrant and Refugee Rights",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Public Safety; Zoning, Landmarks and Building Standards",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Workforce Development; Police and Fire",
+     "count": 1
+    },
+    {
+     "value": "Joint Committee: Zoning, Landmark and Building Standards; Environmental Protection and Energy",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "type",
+   "values": [
+    {
+     "value": "Ordinance",
+     "count": 117934
+    },
+    {
+     "value": "Claim",
+     "count": 29532
+    },
+    {
+     "value": "Resolution",
+     "count": 20520
+    },
+    {
+     "value": "Order",
+     "count": 9253
+    },
+    {
+     "value": "Appointment",
+     "count": 2512
+    },
+    {
+     "value": "Report",
+     "count": 677
+    },
+    {
+     "value": "Communication",
+     "count": 630
+    },
+    {
+     "value": "Oath of Office",
+     "count": 291
+    },
+    {
+     "value": "Executive Order",
+     "count": 42
+    },
+    {
+     "value": "Placed on File",
+     "count": 5
+    }
+   ]
+  },
+  {
+   "name": "status",
+   "values": [
+    {
+     "value": "90-Final",
+     "count": 167320
+    },
+    {
+     "value": "3-Council Introduction",
+     "count": 12121
+    },
+    {
+     "value": "4-In Committee",
+     "count": 1752
+    },
+    {
+     "value": "5-Council Consideration",
+     "count": 190
+    },
+    {
+     "value": "2-Submitted to Clerk",
+     "count": 12
+    },
+    {
+     "value": "0-PreDraft",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "filingSponsor",
+   "values": [
+    {
+     "value": "Misc. Transmittal",
+     "count": 29824
+    },
+    {
+     "value": "Reilly, Brendan",
+     "count": 12953
+    },
+    {
+     "value": "Burnett, Jr., Walter",
+     "count": 6158
+    },
+    {
+     "value": "Burke, Edward M.",
+     "count": 5892
+    },
+    {
+     "value": "Lopez, Raymond A.",
+     "count": 5069
+    },
+    {
+     "value": "Tunney, Thomas",
+     "count": 4934
+    },
+    {
+     "value": "Emanuel, Rahm",
+     "count": 4527
+    },
+    {
+     "value": "Moreno, Proco Joe",
+     "count": 4134
+    },
+    {
+     "value": "Harris, Michelle A.",
+     "count": 3949
+    },
+    {
+     "value": "Waguespack, Scott",
+     "count": 3862
+    },
+    {
+     "value": "Quinn, Marty",
+     "count": 3327
+    },
+    {
+     "value": "Smith, Michele",
+     "count": 3099
+    },
+    {
+     "value": "Silverstein, Debra L.",
+     "count": 2723
+    },
+    {
+     "value": "Pawar, Ameya",
+     "count": 2527
+    },
+    {
+     "value": "Solis, Daniel",
+     "count": 2431
+    },
+    {
+     "value": "Maldonado, Roberto",
+     "count": 2330
+    },
+    {
+     "value": "Hopkins, Brian",
+     "count": 2309
+    },
+    {
+     "value": "Ervin, Jason C.",
+     "count": 2295
+    },
+    {
+     "value": "Fioretti, Bob",
+     "count": 2290
+    },
+    {
+     "value": "Laurino, Margaret",
+     "count": 2181
+    },
+    {
+     "value": "Dowell, Pat",
+     "count": 2173
+    },
+    {
+     "value": "Coleman, Stephanie D.",
+     "count": 2122
+    },
+    {
+     "value": "Lightfoot, Lori E.",
+     "count": 2031
+    },
+    {
+     "value": "Dept./Agency",
+     "count": 2010
+    },
+    {
+     "value": "Mitts, Emma",
+     "count": 1940
+    },
+    {
+     "value": "Osterman, Harry",
+     "count": 1827
+    },
+    {
+     "value": "Johnson, Brandon",
+     "count": 1789
+    },
+    {
+     "value": "O'Connor, Patrick",
+     "count": 1700
+    },
+    {
+     "value": "Reboyras, Ariel",
+     "count": 1678
+    },
+    {
+     "value": "Thompson, Patrick D.",
+     "count": 1675
+    },
+    {
+     "value": "O'Shea, Matthew J.",
+     "count": 1658
+    },
+    {
+     "value": "Cappleman, James",
+     "count": 1514
+    },
+    {
+     "value": "Gardiner, James M.",
+     "count": 1489
+    },
+    {
+     "value": "Cardenas, George A.",
+     "count": 1484
+    },
+    {
+     "value": "Villegas, Gilbert",
+     "count": 1470
+    },
+    {
+     "value": "Brookins, Jr., Howard",
+     "count": 1463
+    },
+    {
+     "value": "Sposato, Nicholas",
+     "count": 1385
+    },
+    {
+     "value": "Zalewski, Michael R.",
+     "count": 1376
+    },
+    {
+     "value": "Arena, John",
+     "count": 1328
+    },
+    {
+     "value": "Moore, Joseph",
+     "count": 1296
+    },
+    {
+     "value": "La Spata, Daniel",
+     "count": 1293
+    },
+    {
+     "value": "Taliaferro, Chris",
+     "count": 1264
+    },
+    {
+     "value": "Austin, Carrie M.",
+     "count": 1221
+    },
+    {
+     "value": "Hairston, Leslie A.",
+     "count": 1196
+    },
+    {
+     "value": "Ramirez-Rosa, Carlos",
+     "count": 1188
+    },
+    {
+     "value": "Tabares, Silvana",
+     "count": 1166
+    },
+    {
+     "value": "Sawyer, Roderick T.",
+     "count": 1158
+    },
+    {
+     "value": "Beale, Anthony",
+     "count": 1154
+    },
+    {
+     "value": "Balcer, James",
+     "count": 1081
+    },
+    {
+     "value": "Moore, David H.",
+     "count": 1066
+    },
+    {
+     "value": "King, Sophia D.",
+     "count": 1030
+    },
+    {
+     "value": "Curtis, Derrick G.",
+     "count": 957
+    },
+    {
+     "value": "Colon, Rey",
+     "count": 955
+    },
+    {
+     "value": "Willie B. Cochran",
+     "count": 927
+    },
+    {
+     "value": "Munoz, Ricardo",
+     "count": 907
+    },
+    {
+     "value": "Sigcho-Lopez, Byron",
+     "count": 905
+    },
+    {
+     "value": "Napolitano, Anthony V.",
+     "count": 869
+    },
+    {
+     "value": "Mitchell, Gregory I.",
+     "count": 864
+    },
+    {
+     "value": "Burns, William D.",
+     "count": 853
+    },
+    {
+     "value": "Rodriguez, Michael D.",
+     "count": 853
+    },
+    {
+     "value": "Foulkes, Toni",
+     "count": 840
+    },
+    {
+     "value": "Martin, Matthew J.",
+     "count": 808
+    },
+    {
+     "value": "Mell, Deborah",
+     "count": 792
+    },
+    {
+     "value": "Vasquez, Jr., Andre",
+     "count": 787
+    },
+    {
+     "value": "Cardona, Jr., Felix",
+     "count": 741
+    },
+    {
+     "value": "Suarez, Regner Ray",
+     "count": 675
+    },
+    {
+     "value": "Nugent, Samantha",
+     "count": 666
+    },
+    {
+     "value": "O'Connor, Mary",
+     "count": 616
+    },
+    {
+     "value": "Sadlowski Garza, Susan",
+     "count": 609
+    },
+    {
+     "value": "Cullerton, Timothy M.",
+     "count": 595
+    },
+    {
+     "value": "Lee, Nicole T.",
+     "count": 591
+    },
+    {
+     "value": "Lane, Lona",
+     "count": 577
+    },
+    {
+     "value": "Pope, John",
+     "count": 560
+    },
+    {
+     "value": "Santiago, Milagros",
+     "count": 555
+    },
+    {
+     "value": "Mosley, Ronnie L.",
+     "count": 497
+    },
+    {
+     "value": "Rodriguez Sanchez, Rossana",
+     "count": 497
+    },
+    {
+     "value": "Graham, Deborah L.",
+     "count": 455
+    },
+    {
+     "value": "Mell, Richard F.",
+     "count": 450
+    },
+    {
+     "value": "Hadden, Maria E.",
+     "count": 448
+    },
+    {
+     "value": "Scott, Jr. Michael",
+     "count": 447
+    },
+    {
+     "value": "Fuentes, Jessica L.",
+     "count": 439
+    },
+    {
+     "value": "Chandler, Michael D.",
+     "count": 396
+    },
+    {
+     "value": "Hall, William E.",
+     "count": 386
+    },
+    {
+     "value": "Thomas, Latasha R.",
+     "count": 386
+    },
+    {
+     "value": "Thompson, JoAnn",
+     "count": 322
+    },
+    {
+     "value": "Schulter, Eugene",
+     "count": 299
+    },
+    {
+     "value": "Taylor, Jeanette B.",
+     "count": 298
+    },
+    {
+     "value": "Ramirez, Julia M.",
+     "count": 265
+    },
+    {
+     "value": "Scott, Monique L.",
+     "count": 260
+    },
+    {
+     "value": "Gutierrez, Jeylu B.",
+     "count": 258
+    },
+    {
+     "value": "Daley, Richard M.",
+     "count": 243
+    },
+    {
+     "value": "Chico, Peter",
+     "count": 242
+    },
+    {
+     "value": "Daley, Vi",
+     "count": 242
+    },
+    {
+     "value": "Cruz, Ruth",
+     "count": 223
+    },
+    {
+     "value": "Smith, Mary Ann",
+     "count": 222
+    },
+    {
+     "value": "Stone, Bernard",
+     "count": 217
+    },
+    {
+     "value": "Rugai, Virginia",
+     "count": 199
+    },
+    {
+     "value": "Jackson, Sandi",
+     "count": 197
+    },
+    {
+     "value": "Clay, Angela",
+     "count": 196
+    },
+    {
+     "value": "Quezada, Anthony J.",
+     "count": 179
+    },
+    {
+     "value": "Robinson, Lamont J.",
+     "count": 171
+    },
+    {
+     "value": "Holmes, Natashia",
+     "count": 165
+    },
+    {
+     "value": "Burnett, Walter R.",
+     "count": 164
+    },
+    {
+     "value": "Conway, William",
+     "count": 149
+    },
+    {
+     "value": "Levar, Patrick",
+     "count": 145
+    },
+    {
+     "value": "Manaa-Hoppenworth, Leni",
+     "count": 144
+    },
+    {
+     "value": "Shiller, Helen",
+     "count": 142
+    },
+    {
+     "value": "Lawson, Bennett R.",
+     "count": 136
+    },
+    {
+     "value": "Knudsen, Timothy R.",
+     "count": 125
+    },
+    {
+     "value": "Olivo, Frank",
+     "count": 120
+    },
+    {
+     "value": "Rice, John",
+     "count": 111
+    },
+    {
+     "value": "Doherty, Brian",
+     "count": 108
+    },
+    {
+     "value": "Valencia, Anna M.",
+     "count": 90
+    },
+    {
+     "value": "Mendoza, Susana A.",
+     "count": 80
+    },
+    {
+     "value": "Yancy, Desmon C.",
+     "count": 77
+    },
+    {
+     "value": "Lyle, Freddrenna",
+     "count": 75
+    },
+    {
+     "value": "Newsome, Shirley",
+     "count": 69
+    },
+    {
+     "value": "Allen, Thomas",
+     "count": 47
+    },
+    {
+     "value": "Dixon, Sharon",
+     "count": 39
+    },
+    {
+     "value": "Preckwinkle, Toni",
+     "count": 22
+    },
+    {
+     "value": "Abarca, Anabel",
+     "count": 20
+    },
+    {
+     "value": "16th Ward VACANCY",
+     "count": 12
+    },
+    {
+     "value": "Smith, Ed",
+     "count": 11
+    },
+    {
+     "value": "Del Valle, Miguel",
+     "count": 8
+    },
+    {
+     "value": "No Sponsor,",
+     "count": 5
+    },
+    {
+     "value": "Sanchez, Carina E.",
+     "count": 4
+    },
+    {
+     "value": "(4th Ward) VACANCY",
+     "count": 2
+    },
+    {
+     "value": "Fuentes, Jessica",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "keyLegislation",
+   "values": [
+    {
+     "value": "NO",
+     "count": 169265
+    },
+    {
+     "value": "YES",
+     "count": 12131
+    }
+   ]
+  },
+  {
+   "name": "economicDisclosure",
+   "values": [
+    {
+     "value": "NO",
+     "count": 149275
+    },
+    {
+     "value": "YES",
+     "count": 6975
+    }
+   ]
+  },
+  {
+   "name": "fileYear",
+   "values": [
+    {
+     "value": "2014",
+     "count": 18758
+    },
+    {
+     "value": "2011",
+     "count": 15973
+    },
+    {
+     "value": "2013",
+     "count": 14003
+    },
+    {
+     "value": "2018",
+     "count": 13833
+    },
+    {
+     "value": "2019",
+     "count": 13747
+    },
+    {
+     "value": "2015",
+     "count": 12801
+    },
+    {
+     "value": "2016",
+     "count": 12667
+    },
+    {
+     "value": "2012",
+     "count": 12242
+    },
+    {
+     "value": "2017",
+     "count": 12111
+    },
+    {
+     "value": "2021",
+     "count": 8564
+    },
+    {
+     "value": "2020",
+     "count": 8463
+    },
+    {
+     "value": "2023",
+     "count": 8077
+    },
+    {
+     "value": "2024",
+     "count": 7199
+    },
+    {
+     "value": "2026",
+     "count": 7004
+    },
+    {
+     "value": "2022",
+     "count": 6985
+    },
+    {
+     "value": "2025",
+     "count": 6662
+    },
+    {
+     "value": "2010",
+     "count": 2307
+    }
+   ]
+  },
+  {
+   "name": "filingOffice",
+   "values": [
+    {
+     "value": "Misc.",
+     "count": 29842
+    },
+    {
+     "value": "42",
+     "count": 12953
+    },
+    {
+     "value": "Mayor",
+     "count": 8590
+    },
+    {
+     "value": "27",
+     "count": 6322
+    },
+    {
+     "value": "14",
+     "count": 6150
+    },
+    {
+     "value": "01",
+     "count": 5250
+    },
+    {
+     "value": "44",
+     "count": 5070
+    },
+    {
+     "value": "15",
+     "count": 5068
+    },
+    {
+     "value": "02",
+     "count": 4598
+    },
+    {
+     "value": "08",
+     "count": 3945
+    },
+    {
+     "value": "32",
+     "count": 3862
+    },
+    {
+     "value": "47",
+     "count": 3632
+    },
+    {
+     "value": "43",
+     "count": 3466
+    },
+    {
+     "value": "13",
+     "count": 3447
+    },
+    {
+     "value": "11",
+     "count": 3347
+    },
+    {
+     "value": "25",
+     "count": 3336
+    },
+    {
+     "value": "16",
+     "count": 3297
+    },
+    {
+     "value": "45",
+     "count": 2962
+    },
+    {
+     "value": "50",
+     "count": 2939
+    },
+    {
+     "value": "39",
+     "count": 2847
+    },
+    {
+     "value": "26",
+     "count": 2770
+    },
+    {
+     "value": "23",
+     "count": 2542
+    },
+    {
+     "value": "40",
+     "count": 2486
+    },
+    {
+     "value": "35",
+     "count": 2322
+    },
+    {
+     "value": "28",
+     "count": 2292
+    },
+    {
+     "value": "48",
+     "count": 2193
+    },
+    {
+     "value": "04",
+     "count": 2147
+    },
+    {
+     "value": "03",
+     "count": 2112
+    },
+    {
+     "value": "38",
+     "count": 2027
+    },
+    {
+     "value": "Dept./Agency",
+     "count": 1978
+    },
+    {
+     "value": "31",
+     "count": 1971
+    },
+    {
+     "value": "21",
+     "count": 1960
+    },
+    {
+     "value": "37",
+     "count": 1940
+    },
+    {
+     "value": "30",
+     "count": 1901
+    },
+    {
+     "value": "19",
+     "count": 1857
+    },
+    {
+     "value": "46",
+     "count": 1852
+    },
+    {
+     "value": "12",
+     "count": 1769
+    },
+    {
+     "value": "22",
+     "count": 1757
+    },
+    {
+     "value": "49",
+     "count": 1743
+    },
+    {
+     "value": "33",
+     "count": 1739
+    },
+    {
+     "value": "29",
+     "count": 1719
+    },
+    {
+     "value": "06",
+     "count": 1619
+    },
+    {
+     "value": "41",
+     "count": 1593
+    },
+    {
+     "value": "36",
+     "count": 1579
+    },
+    {
+     "value": "18",
+     "count": 1534
+    },
+    {
+     "value": "17",
+     "count": 1452
+    },
+    {
+     "value": "10",
+     "count": 1411
+    },
+    {
+     "value": "34",
+     "count": 1369
+    },
+    {
+     "value": "05",
+     "count": 1273
+    },
+    {
+     "value": "07",
+     "count": 1225
+    },
+    {
+     "value": "20",
+     "count": 1225
+    },
+    {
+     "value": "09",
+     "count": 1155
+    },
+    {
+     "value": "24",
+     "count": 1142
+    },
+    {
+     "value": "Clerk",
+     "count": 182
+    },
+    {
+     "value": "Traffic",
+     "count": 177
+    },
+    {
+     "value": "Finance",
+     "count": 62
+    },
+    {
+     "value": "Budget",
+     "count": 14
+    },
+    {
+     "value": "Placed on File",
+     "count": 14
+    },
+    {
+     "value": "No Sponsor",
+     "count": 4
+    },
+    {
+     "value": "Workforce Development",
+     "count": 4
+    },
+    {
+     "value": "Rules",
+     "count": 3
+    },
+    {
+     "value": "Economic Development",
+     "count": 2
+    },
+    {
+     "value": "Transportation",
+     "count": 2
+    },
+    {
+     "value": "Contracting Oversight",
+     "count": 1
+    },
+    {
+     "value": "Environment",
+     "count": 1
+    },
+    {
+     "value": "Immigrant and Refugee Rights",
+     "count": 1
+    },
+    {
+     "value": "License",
+     "count": 1
+    },
+    {
+     "value": "Public Safety",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "subStatus",
+   "values": [
+    {
+     "value": "Passed",
+     "count": 113435
+    },
+    {
+     "value": "Adopted",
+     "count": 19459
+    },
+    {
+     "value": "Failed to Pass",
+     "count": 17805
+    },
+    {
+     "value": "Council Introduction",
+     "count": 12121
+    },
+    {
+     "value": "Passed as Substitute",
+     "count": 7133
+    },
+    {
+     "value": "Input to Substitute",
+     "count": 4954
+    },
+    {
+     "value": "Approved",
+     "count": 2415
+    },
+    {
+     "value": "Placed on File",
+     "count": 1651
+    },
+    {
+     "value": "Referred",
+     "count": 1643
+    },
+    {
+     "value": "Published in Special Pamphlet",
+     "count": 181
+    },
+    {
+     "value": "Signed",
+     "count": 157
+    },
+    {
+     "value": "Agreed Calendar",
+     "count": 98
+    },
+    {
+     "value": "Recommended to Pass",
+     "count": 67
+    },
+    {
+     "value": "Withdrawn",
+     "count": 61
+    },
+    {
+     "value": "Held in Committee",
+     "count": 52
+    },
+    {
+     "value": "Repealed",
+     "count": 36
+    },
+    {
+     "value": "Direct Introduction",
+     "count": 33
+    },
+    {
+     "value": "Re-Referred",
+     "count": 24
+    },
+    {
+     "value": "Deferred and Published",
+     "count": 18
+    },
+    {
+     "value": "Approved as Substitute",
+     "count": 16
+    },
+    {
+     "value": "Accepted",
+     "count": 9
+    },
+    {
+     "value": "Vetoed",
+     "count": 7
+    },
+    {
+     "value": "Recommended Do Not Pass",
+     "count": 5
+    },
+    {
+     "value": "Tabled",
+     "count": 5
+    },
+    {
+     "value": "99-Withdrawn",
+     "count": 3
+    },
+    {
+     "value": "Submitted",
+     "count": 3
+    },
+    {
+     "value": "Adopted as Substitute",
+     "count": 2
+    },
+    {
+     "value": "99-Void",
+     "count": 1
+    },
+    {
+     "value": "New",
+     "count": 1
+    },
+    {
+     "value": "Recommended for Re-Referral",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "name": "agreedCalendar",
+   "values": [
+    {
+     "value": "NO",
+     "count": 163232
+    },
+    {
+     "value": "YES",
+     "count": 18162
+    }
+   ]
+  }
+ ],
+ "data": [
+  {
+   "matterId": "424F599E-B1C8-F111-AAAE-001DD80B58E5",
+   "recordNumber": "F2026-0029526",
+   "legacyRecordNumber": null,
+   "originalRecordNumber": null,
+   "supersededBy": null,
+   "title": "Notification of Sale of Sales Tax Securitization Corporation Third Lien Sales Tax Securitization Bonds, Refunding Series 2026A and Senior Lien Sales Tax Securitization Bonds, Taxable Refunding Series 2026B",
+   "controllingBodyId": "BAA9B630-573B-EC11-B6E5-001DD804D4DD",
+   "controllingBody": "City Council",
+   "type": "Communication",
+   "status": "90-Final",
+   "subStatus": "Placed on File",
+   "legacyStatus": null,
+   "introductionDate": "2026-12-08T16:00:00+00:00",
+   "finalActionDate": "2026-12-08T16:00:00+00:00",
+   "filingSponsorId": "74F5876A-1EA7-ED11-AAD0-001DD8098598",
+   "filingSponsor": "Dept./Agency",
+   "fileYear": 2026,
+   "keyLegislation": "YES",
+   "economicDisclosure": null,
+   "filingOffice": "Dept./Agency",
+   "relations": [],
+   "agreedCalendar": "NO",
+   "lastPublicationDate": "2026-10-15T16:13:10+00:00"
+  }
+ ],
+ "meta": {
+  "skip": 0,
+  "top": 1,
+  "count": 181396,
+  "pages": 181396
+ }
+}
