@@ -218,7 +218,7 @@ function render(D){
 
   ${D.zoning && D.zoning.recent && D.zoning.recent.length ? `<section id="zoning"><div class="wrap">
     <h2>Recent zoning approvals with homes</h2>
-    <p class="lede">Zoning changes City Council passed whose application states how many homes are planned, and whether a building permit has followed at that address yet.</p>
+    <p class="lede">Zoning changes City Council passed whose application states how many homes are planned, and whether a building permit has followed at that address yet. Many applications are scanned images, so the tracker reads them with text recognition${D.accuracy && D.accuracy.zoning ? `; in a hand check of ${D.accuracy.zoning.n} random approvals it matched ${D.accuracy.zoning.exact} and found ${fmt(D.accuracy.zoning.parser_homes)} of ${fmt(D.accuracy.zoning.hand_homes)} homes (that sample was also used to fix the reader)` : ''}. Applications from before 2021 aren't read yet.</p>
     <div class="scroll" id="zoneTable"></div>
   </div></section>` : ''}
 
@@ -315,7 +315,7 @@ function projects(D){
     const w = $('#wardSel').value;
     const list = D.projects.filter(p => !w || p.ward === w);
     $('#projCount').textContent = `${fmt(list.length)} buildings, ${fmt(list.reduce((a, p) => a + p.homes, 0))} homes`;
-    $('#projTable').innerHTML = `<div class="scroll" style="max-height:none;border:0"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${list.slice(0, projN).map(p => `<tr><td>${dstr(p.date)}</td><td>${esc(p.addr)}<div class="what">${esc(p.what)}</div></td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td><span class="stamp st-${p.stage}">${p.partial ? 'Foundation' : STAGE[p.stage]}</span></td></tr>`).join('')}</tbody></table></div>`;
+    $('#projTable').innerHTML = `<div class="scroll" style="max-height:none;border:0"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${list.slice(0, projN).map(p => `<tr><td style="white-space:nowrap">${dstr(p.date)}</td><td>${esc(p.addr)}<div class="what">${esc(p.what)}</div></td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td><span class="stamp st-${p.stage}">${p.partial ? 'Foundation' : STAGE[p.stage]}</span></td></tr>`).join('')}</tbody></table></div>`;
     $('#moreBtn').style.display = list.length > projN ? '' : 'none';
   };
   $('#wardSel').onchange = () => { projN = 25; draw(); };
@@ -325,7 +325,7 @@ function projects(D){
 
 function zoning(D){
   const el = $('#zoneTable'); if (!el) return;
-  el.innerHTML = `<table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th><th>Permit yet?</th></tr></thead><tbody>${D.zoning.recent.map(z => `<tr><td>${z.final ? dstr(z.final) : ''}</td><td>${esc(z.title)}<div class="what">${esc(z.rec)}</div></td><td class="num">${fmt(z.homes)}</td><td>${z.first_permit ? `<span class="stamp st-finished">Yes, ${dstr(z.first_permit)}</span>` : '<span class="stamp st-none">Not yet</span>'}</td></tr>`).join('')}</tbody></table>`;
+  el.innerHTML = `<table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th><th>Permit yet?</th></tr></thead><tbody>${D.zoning.recent.map(z => `<tr><td style="white-space:nowrap">${z.final ? dstr(z.final) : ''}</td><td>${esc(z.title)}<div class="what">${z.mid ? `<a href="https://chicityclerkelms.chicago.gov/Matter/?matterId=${encodeURIComponent(z.mid)}" target="_blank" rel="noopener">${esc(z.rec)}</a>` : esc(z.rec)}</div></td><td class="num">${fmt(z.homes)}</td><td>${z.first_permit ? `<span class="stamp st-finished">Yes, ${dstr(z.first_permit)}</span>` : '<span class="stamp st-none">Not yet</span>'}</td></tr>`).join('')}</tbody></table>`;
 }
 
 function accuracy(D){

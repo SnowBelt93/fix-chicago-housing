@@ -54,22 +54,45 @@ def zoning_addresses(title):
         out.append((lo, max(lo, hi), m.group(3).upper(), norm_street(m.group(4))))
     return out
 
-UNIT_PATTERNS = [
-    re.compile(r'(?:NUMBER|NO\.?|#|TOTAL)\s+OF\s+(?:RESIDENTIAL\s+|DWELLING\s+|PROPOSED\s+)*(?:DWELLING\s+)?UNITS?\s*[:\-–]?\s*(\d{1,4})'),
-    re.compile(r'(?:DWELLING|RESIDENTIAL)\s+UNITS?\s*[:\-–]\s*(\d{1,4})'),
-    re.compile(r'(?:MAXIMUM|MAX\.?)\s+(?:NUMBER\s+OF\s+)?(?:DWELLING\s+|RESIDENTIAL\s+)?UNITS?\s*[:\-–]?\s*(\d{1,4})'),
-    re.compile(r'\b(\d{1,4})\s+(?:NEW\s+)?(?:RESIDENTIAL\s+|DWELLING\s+)*(?:D\.?\s?U\.?S?|DWELLING UNITS?|RESIDENTIAL UNITS?|APARTMENTS|UNITS)\b'),
+W2N = {w: i for i, w in enumerate('ZERO ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT NINE TEN ELEVEN TWELVE THIRTEEN FOURTEEN FIFTEEN SIXTEEN SEVENTEEN EIGHTEEN NINETEEN'.split())}
+W2N.update({'TWENTY': 20, 'THIRTY': 30, 'FORTY': 40, 'FIFTY': 50, 'SIXTY': 60, 'SEVENTY': 70, 'EIGHTY': 80, 'NINETY': 90})
+UNITW = r'(?:NEW\s+)?(?:(?:RESIDENTIAL|DWELLING|RENTAL|APARTMENT|AFFORDABLE|MARKET[- ]RATE|SENIOR|CONDO(?:MINIUM)?|EFFICIENCY|TOWNHOUSE|TOWNHOME)\s+)*(?:DWELLING\s+UNITS?|RESIDENTIAL\s+UNITS?|UNITS|D\.\s?U\.?S?|DUS|APARTMENTS|TOWNHOMES|TOWNHOUSES)\b'
+NUMP = r'(?:[A-Z]+(?:[- ][A-Z]+)?\s+)?\(?(\d{1,4})\)?'          # "twenty-six (26)" or "26"
+TIERS = [
+    # 1. stated totals
+    re.compile(r'TOTAL\s+OF\s+' + NUMP + r'\s+' + UNITW),
+    re.compile(r'(?:A\s+)?TOTAL\s+(?:NUMBER\s+)?OF\s+(?:RESIDENTIAL\s+|DWELLING\s+)*UNITS?\s*(?:IS|WILL BE|OF|:|-)?\s*\(?(\d{1,4})'),
+    # 2. table rows: "Residential Dwelling Units: 26", "Number of Units 32", "# of Units 16 16 32" (last number = whole site)
+    re.compile(r'(?:NUMBER|NO\.?|#)\s+OF\s+(?:RESIDENTIAL\s+|DWELLING\s+|PROPOSED\s+)*(?:DWELLING\s+)?UNITS?\s*[:\-]?\s*((?:\d{1,4}\s+){0,3}\d{1,4})\b'),
+    re.compile(r'(?:RESIDENTIAL\s+)?DWELLING\s+UNITS?\s*[:\-]\s*(\d{1,4})\b'),
+    # 3. "nine (9) dwelling units", "26 residential units"
+    re.compile(NUMP + r'\s+' + UNITW),
+    # 4. "a four-unit building", "five detached single-family homes"
+    re.compile(r'\b(\d{1,3}|' + '|'.join(sorted(W2N, key=len, reverse=True)) + r')[- ](?:DWELLING[- ])?UNIT\s+(?:RESIDENTIAL\s+|APARTMENT\s+|MULTI-?FAMILY\s+|MASONRY\s+)*(?:BUILDING|DEVELOPMENT|PROJECT)'),
+    re.compile(r'\b(\d{1,3}|' + '|'.join(sorted(W2N, key=len, reverse=True)) + r')\s+(?:\(\d+\)\s+)?(?:NEW\s+)?(?:DETACHED\s+|ATTACHED\s+)?SINGLE[- ]FAMILY\s+(?:HOMES|HOUSES|RESIDENCES|DWELLINGS)'),
 ]
-NO_UNITS = re.compile(r'DWELLING UNITS?\s*[:\-–]\s*(?:N/?A|NONE|0)\b|NO (?:DWELLING|RESIDENTIAL) UNITS')
+NO_UNITS = re.compile(r'DWELLING UNITS?\s*[:\-]\s*(?:N/?A|NONE|0)\b|NO (?:DWELLING|RESIDENTIAL) UNITS')
+EXIST = re.compile(r'(?:EXISTING|CURRENTLY|PRESENTLY|IMPROVED WITH|CONTAINS)[^.]{0,80}$')
 def narrative_units(texts):
-    """Homes the zoning application proposes, read from the narrative's first pages; None if not stated."""
-    for t in texts:
-        txt = ' '.join(t.get('text', '').upper().split())
+    """Homes the zoning application proposes, read from the narrative (OCR'd if scanned); None if not stated.
+    Checks stated totals first, then table rows, then plain "N dwelling units" phrases (skipping ones about existing buildings)."""
+    for t in sorted(texts, key=lambda t: 0 if 'NARRATIVE' in (t.get('file') or '').upper() else 1):
+        txt = ' '.join(t.get('text', '').upper().replace('\u2019', "'").split())
         if not txt: continue
+        for k, pat in enumerate(TIERS):
+            ns = []
+            for m in pat.finditer(txt):
+                if k == 4 and EXIST.search(txt[max(0, m.start() - 120):m.start()]): continue
+                v = [int(x) for x in re.findall(r'\d+', m.group(1))] or ([W2N[m.group(1)]] if m.group(1) in W2N else [])
+                n = v[-1] if v else None
+                if n and 0 < n < 3000 and not 1900 <= n <= 2100: ns.append(n)
+            if ns:
+                if k == 4:   # efficiency units listed separately from dwelling units: add them
+                    eff = [int(x) for x in re.findall(r'\(?(\d{1,4})\)?\s+EFFICIENCY\s+UNITS', txt)]
+                    du = [n for n in ns if n not in eff]
+                    if eff and du and max(du) - max(eff) not in du: return max(du) + max(eff)
+                return max(ns) if k in (2, 4, 5, 6) else ns[0]
         if NO_UNITS.search(txt): return 0
-        for pat in UNIT_PATTERNS:
-            ns = [int(x) for x in pat.findall(txt) if 0 < int(x) < 3000 and not 1900 <= int(x) <= 2100]
-            if ns: return max(ns) if pat is UNIT_PATTERNS[2] else ns[0]
     return None
 
 def load_zoning():
@@ -91,7 +114,7 @@ def load_zoning():
             try: texts = json.load(open(fn)).get('texts') or []
             except Exception: texts = []
         app = re.search(r'App(?:lication)? No\.?\s*([0-9A-Z]+)', title)
-        out.append(dict(rec=m.get('recordNumber'), title=title, intro=intro, final=fin, passed=passed, status=m.get('status'), sub=sub,
+        out.append(dict(rec=m.get('recordNumber'), mid=m.get('matterId'), title=title, intro=intro, final=fin, passed=passed, status=m.get('status'), sub=sub,
                         app=app.group(1) if app else '', type1=bool(app and app.group(1).endswith('T1')), pd='Planned Development' in title,
                         addrs=zoning_addresses(title), homes=narrative_units(texts) if texts else None, have_text=bool(texts)))
     return out
@@ -168,7 +191,7 @@ def main():
                 r['permitted_homes'] += min(z['homes'], sum(j['homes'] for j in z['projects']))
     zyears = [{'year': y, **zy[y]} for y in sorted(zy) if y >= 2013]
     texted = [z for z in Z if z['have_text'] and z['passed']]
-    zrecent = [dict(rec=z['rec'], final=z['final'], title=re.sub(r'^Zoning Reclassification Map No\. [0-9A-Z-]+ at ', '', z['title'])[:110], homes=z['homes'],
+    zrecent = [dict(rec=z['rec'], mid=z['mid'], final=z['final'], title=re.sub(r'\s*-\s*App(?:lication)? No\.?.*$', '', re.sub(r'^Zoning Reclassification Map No\. [0-9A-Z-]+ at ', '', z['title']))[:110], homes=z['homes'],
                     permitted=sum(j['homes'] for j in z['projects']) or 0, first_permit=str(min(j['date'] for j in z['projects'])) if z['projects'] else None)
                for z in sorted(Z, key=lambda z: z['final'] or '', reverse=True) if z['passed'] and z['homes'] and z['final'] >= str(last.year - 2)]
     # time from zoning approval to first permit, for matched projects
@@ -181,6 +204,15 @@ def main():
     for name, fn in (('tuning', 'sample_checked.csv'), ('tuning2', 'sample2_checked.csv'), ('holdout', 'sample3_checked.csv')):
         try: acc[name] = score(fn)
         except FileNotFoundError: pass
+    try:
+        H = json.load(open(os.path.join(os.path.dirname(__file__), 'zsample_checked.json')))
+        zok = zh = zp = 0
+        for h in H:
+            fn = os.path.join(RAW, 'elms_text', re.sub(r'[^A-Za-z0-9-]', '_', h['record']) + '.json')
+            pp = narrative_units(json.load(open(fn))['texts']) if os.path.exists(fn) else None
+            zok += (h['hand_homes'] or None) == (pp or None); zh += h['hand_homes'] or 0; zp += pp or 0
+        acc['zoning'] = dict(n=len(H), exact=zok, hand_homes=zh, parser_homes=zp)
+    except FileNotFoundError: pass
     unknown = sum(1 for p in P if p['homes'] is None and p['why'] == 'housing, no count' and p['date'].year >= last.year - 3)
     data = dict(updated=str(TODAY), through=str(last), goal=dict(hold=HOLD, close=CLOSE, built_anyway=BUILT_ANYWAY, gap_now=CITY_GAP_NOW, gap_growth=CITY_GAP_GROWTH),
                 ytd=dict(year=last.year, homes=ytd_now, prev=ytd_prev, days=day_of_year, needed_so_far=round(CLOSE * day_of_year / 365)),
