@@ -14,11 +14,11 @@ concurrency: tracker
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
       - name: Tools
-        run: sudo apt-get install -y -qq poppler-utils >/dev/null
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils tesseract-ocr >/dev/null
       - name: Download
         run: python3 tools/tracker/fetch.py
       - name: Build
