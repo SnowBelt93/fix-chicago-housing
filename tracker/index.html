@@ -232,7 +232,7 @@ function render(D){
       <li><strong>Homes are gross, not net.</strong> A two-flat torn down to build a single-family house still counts as one new home here; demolitions aren't subtracted.</li>
       <li><strong>Some descriptions don't say how many homes.</strong> ${fmt(D.unknown_recent)} housing permits since ${now.year - 3} gave no count and aren't included.</li>
       <li><strong>Office-to-residential conversions and big rehabs</strong> use renovation permits, not new-construction permits, so they aren't counted yet.</li>
-      <li><strong>The goal</strong> uses the same numbers as the game's normal mode: Chicago's share (32.7%) of Up for Growth's estimate of the metro shortage, ${fmt(G.gap_now)} homes, growing ${fmt(G.gap_growth)} a year on top of the ~${fmt(G.built_anyway)} homes Chicago approved in 2025 (The Real Deal's count of approvals, which runs higher than the permits counted here). Stopping the gap from growing takes ${fmt(G.hold)} a year; closing it by 2041 takes ${fmt(G.close)}.</li>
+      <li><strong>The goal</strong> starts from the game's normal mode: Chicago's share (32.7%) of Up for Growth's estimate of the metro shortage, ${fmt(G.gap_now)} homes, which grows ${fmt(G.gap_growth)} a year if the city keeps building at its current pace. The tracker takes that pace from its own count, the ${fmt(G.built_anyway)} homes permitted in ${G.base_year}. So stopping the gap from growing takes ${fmt(G.built_anyway)} + ${fmt(G.gap_growth)} = ${fmt(G.hold)} homes a year, and closing it by 2041 adds ${fmt(G.gap_now)} ÷ 15 for ${fmt(G.close)} a year. (The game uses The Real Deal's ~4,900 approvals for 2025, which counts approvals rather than permits.)</li>
     </ul>
     <h2 style="font-size:22px;margin-top:26px">Sources</h2>
     <ul class="sources">
@@ -240,7 +240,7 @@ function render(D){
       <li><a href="https://api.chicityclerkelms.chicago.gov/swagger.json" target="_blank" rel="noopener">Office of the City Clerk, Legislation API</a> (zoning map amendments and their applications)</li>
       <li><a href="https://www.census.gov/construction/bps/" target="_blank" rel="noopener">U.S. Census Bureau, Building Permits Survey</a> (accuracy check, annual totals for Chicago)</li>
       <li><a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, Housing Underproduction in the U.S., 2024</a> (shortage)</li>
-      <li><a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">The Real Deal Data, 2026</a> (homes Chicago approved in 2025)</li>
+      <li><a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">The Real Deal Data, 2026</a> (approvals the game uses, for comparison)</li>
       <li>Code and method: <a href="https://github.com/SnowBelt93/fix-chicago-housing/tree/main/tools/tracker" target="_blank" rel="noopener">tools/tracker on GitHub</a></li>
     </ul>
   </div></section>`;

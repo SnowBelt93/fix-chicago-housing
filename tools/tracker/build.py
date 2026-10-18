@@ -17,12 +17,14 @@ OUT = os.path.join(ROOT, 'tracker'); os.makedirs(OUT, exist_ok=True)
 TODAY = datetime.date.today()
 
 # --- goal (same numbers as the game's normal mode; see index.html TARGETS / CLAUDE.md "Baseline") -------------
-BUILT_ANYWAY = 4900          # homes Chicago approved in 2025 (TRD Data); the game's "built anyway" pace
+# Baseline = homes this tracker counts as permitted in the last full year (2025: 3,916), set in main().
+# (The game uses TRD's ~4,900 approvals; Kyle chose the tracker's own permit count here, Oct 18, 2026.)
 CITY_GAP_NOW = 54141         # Chicago's share (32.7%) of Up for Growth's metro shortage
 CITY_GAP_GROWTH = 2862       # Chicago's share of the metro shortage's yearly growth
 GOAL_YEARS = 15              # 2026-2041
-HOLD = BUILT_ANYWAY + CITY_GAP_GROWTH                         # pace that stops the gap growing
-CLOSE = HOLD + round(CITY_GAP_NOW / GOAL_YEARS)               # pace that closes it by 2041
+def paces(built):
+    hold = built + CITY_GAP_GROWTH                              # pace that stops the gap growing
+    return hold, hold + round(CITY_GAP_NOW / GOAL_YEARS)        # and the pace that closes it by 2041
 
 def stage_of(j):
     ms = [p['milestone'] for p in j['permits']]
@@ -214,7 +216,9 @@ def main():
         acc['zoning'] = dict(n=len(H), exact=zok, hand_homes=zh, parser_homes=zp)
     except FileNotFoundError: pass
     unknown = sum(1 for p in P if p['homes'] is None and p['why'] == 'housing, no count' and p['date'].year >= last.year - 3)
-    data = dict(updated=str(TODAY), through=str(last), goal=dict(hold=HOLD, close=CLOSE, built_anyway=BUILT_ANYWAY, gap_now=CITY_GAP_NOW, gap_growth=CITY_GAP_GROWTH),
+    base_row = [r for r in years if r['year'] == last.year - 1][0]
+    BUILT_ANYWAY = base_row['homes']; HOLD, CLOSE = paces(BUILT_ANYWAY)
+    data = dict(updated=str(TODAY), through=str(last), goal=dict(hold=HOLD, close=CLOSE, built_anyway=BUILT_ANYWAY, base_year=base_row['year'], gap_now=CITY_GAP_NOW, gap_growth=CITY_GAP_GROWTH),
                 ytd=dict(year=last.year, homes=ytd_now, prev=ytd_prev, days=day_of_year, needed_so_far=round(CLOSE * day_of_year / 365)),
                 last12=dict(homes=sum(j['homes'] for j in recent12), projects=len(recent12), big=sum(j['homes'] for j in recent12 if j['homes'] >= 5)),
                 years=years, wards=wards, areas=areas, projects=plist, points=pts,
