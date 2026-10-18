@@ -27,5 +27,11 @@ jobs:
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add tools/raw/tracker tracker 2>/dev/null || git add tools/raw/tracker
-          git commit -m "Tracker data $(date -u +%F)" || echo "nothing to commit"
-          git pull --rebase && git push
+          git commit -m "Tracker data $(date -u +%F)" || { echo "nothing to commit"; exit 0; }
+          # If someone pushed while this ran, replay this run's data on top (its fresh data wins conflicts); retry a few times.
+          for i in 1 2 3 4 5; do
+            git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0
+            git rebase --abort 2>/dev/null || true
+            sleep $((i * 10))
+          done
+          exit 1
