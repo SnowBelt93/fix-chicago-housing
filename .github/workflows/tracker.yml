@@ -1,0 +1,29 @@
+# Housing production tracker: downloads Chicago new-construction permits, City Clerk zoning matters and
+# Census permit totals, then rebuilds tracker/data.json. Runs daily, on changes to the tracker scripts, or by hand.
+name: Tracker data
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 11 * * *'
+  push:
+    branches: [main]
+    paths: ['tools/tracker/**', '.github/workflows/tracker.yml']
+permissions:
+  contents: write
+concurrency: tracker
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: python3 tools/tracker/fetch.py
+      - name: Build
+        run: if [ -f tools/tracker/build.py ]; then python3 tools/tracker/build.py; fi
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/tracker tracker 2>/dev/null || git add tools/raw/tracker
+          git commit -m "Tracker data $(date -u +%F)" || echo "nothing to commit"
+          git pull --rebase && git push
