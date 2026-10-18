@@ -1,0 +1,222 @@
+[
+ {
+  "fieldName": "pin",
+  "name": "pin",
+  "description": "Parcel Identification Number (PIN)"
+ },
+ {
+  "fieldName": "year",
+  "name": "tax_year",
+  "description": "Tax year"
+ },
+ {
+  "fieldName": "card",
+  "name": "card_num",
+  "description": "Card number. Each card is an improvement/building on the parcel"
+ },
+ {
+  "fieldName": "class",
+  "name": "class",
+  "description": "Property class"
+ },
+ {
+  "fieldName": "township_code",
+  "name": "township_code",
+  "description": "Township code"
+ },
+ {
+  "fieldName": "tieback_key_pin",
+  "name": "proration_key_pin",
+  "description": "Tieback key PIN. Prorated properties (whose value is split across multiple PINs) have a \"main\" or key PIN"
+ },
+ {
+  "fieldName": "tieback_proration_rate",
+  "name": "pin_proration_rate",
+  "description": "Tieback proration rate. Prorated properties (whose value is split across multiple PINs) pay taxes on the proportion of value on their PIN. In other words, assessed value is multiplied by proration rate to determine taxable assessed value"
+ },
+ {
+  "fieldName": "card_proration_rate",
+  "name": "card_proration_rate",
+  "description": "Card proration rate. Prorated parcels (whose value is split across multiple cards) pay taxes on the proportion of value on their card. In other words, assessed value is multiplied by proration rate to determine taxable assessed value. Cards are divisions within parcels, such as one of multiple buildings on a single parcel. "
+ },
+ {
+  "fieldName": "cdu",
+  "name": "cdu",
+  "description": "Condition, Desirability, and Utility code. Not well maintained."
+ },
+ {
+  "fieldName": "pin_is_multicard",
+  "name": "pin_is_multicard",
+  "description": "Multicard PIN. Indicates whether the parcel contains more than one building (ADU, coach house, etc.)"
+ },
+ {
+  "fieldName": "pin_num_cards",
+  "name": "pin_num_cards",
+  "description": "Number of cards on this parcel. Each card is an improvement/building"
+ },
+ {
+  "fieldName": "pin_is_multiland",
+  "name": "pin_is_multiland",
+  "description": "Multiland PIN. Indicates whether parcel has more than one landline"
+ },
+ {
+  "fieldName": "pin_num_landlines",
+  "name": "pin_num_landlines",
+  "description": "Number of landlines on a parcel. The sum of all landline square footage should be equal to the total square footage of the parcel. Each landline can correspond to a different land price/rate"
+ },
+ {
+  "fieldName": "char_yrblt",
+  "name": "year_built",
+  "description": "Year built"
+ },
+ {
+  "fieldName": "char_bldg_sf",
+  "name": "building_sqft",
+  "description": "Building square feet. Square footage of the building, as measured from the exterior"
+ },
+ {
+  "fieldName": "char_land_sf",
+  "name": "land_sqft",
+  "description": "Land square feet. Square footage of the land (not just the building) of the property. Note that a single PIN can have multiple landlines, meaning it can be associated with more than one land price/rate"
+ },
+ {
+  "fieldName": "char_beds",
+  "name": "num_bedrooms",
+  "description": "Number of bedrooms"
+ },
+ {
+  "fieldName": "char_rooms",
+  "name": "num_rooms",
+  "description": "Rooms. Number of total rooms in the building (excluding baths). Not to be confused with bedrooms"
+ },
+ {
+  "fieldName": "char_fbath",
+  "name": "num_full_baths",
+  "description": "Full baths. Defined as having a bath or shower. If this value is missing, the default value is set to 1"
+ },
+ {
+  "fieldName": "char_hbath",
+  "name": "num_half_baths",
+  "description": "Half baths. Defined as bathrooms without a shower or bathtub"
+ },
+ {
+  "fieldName": "char_frpl",
+  "name": "num_fireplaces",
+  "description": "Fireplaces. Counted as the number of flues one can see from the outside of the building"
+ },
+ {
+  "fieldName": "char_type_resd",
+  "name": "type_of_residence",
+  "description": "Type of residence"
+ },
+ {
+  "fieldName": "char_cnst_qlty",
+  "name": "construction_quality",
+  "description": "Construction quality"
+ },
+ {
+  "fieldName": "char_apts",
+  "name": "num_apartments",
+  "description": "Apartments. Number of apartments for class 211 and 212 properties"
+ },
+ {
+  "fieldName": "char_attic_fnsh",
+  "name": "attic_finish",
+  "description": "Attic finish"
+ },
+ {
+  "fieldName": "char_gar1_att",
+  "name": "garage_attached",
+  "description": "Garage 1 attached"
+ },
+ {
+  "fieldName": "char_gar1_area",
+  "name": "garage_area_included",
+  "description": "Is Garage 1 physically included within the building area? If yes, the garage area is subtracted from the building square feet calculation by the field agent"
+ },
+ {
+  "fieldName": "char_gar1_size",
+  "name": "garage_size",
+  "description": "Garage 1 size"
+ },
+ {
+  "fieldName": "char_gar1_cnst",
+  "name": "garage_ext_wall_material",
+  "description": "Garage 1 exterior wall material"
+ },
+ {
+  "fieldName": "char_attic_type",
+  "name": "attic_type",
+  "description": "Attic type"
+ },
+ {
+  "fieldName": "char_bsmt",
+  "name": "basement_type",
+  "description": "Basement type"
+ },
+ {
+  "fieldName": "char_ext_wall",
+  "name": "ext_wall_material",
+  "description": "Exterior wall material"
+ },
+ {
+  "fieldName": "char_heat",
+  "name": "central_heating",
+  "description": "Central heating"
+ },
+ {
+  "fieldName": "char_repair_cnd",
+  "name": "repair_condition",
+  "description": "Repair condition"
+ },
+ {
+  "fieldName": "char_bsmt_fin",
+  "name": "basement_finish",
+  "description": "Basement finish"
+ },
+ {
+  "fieldName": "char_roof_cnst",
+  "name": "roof_material",
+  "description": "Roof material"
+ },
+ {
+  "fieldName": "char_use",
+  "name": "single_v_multi_family",
+  "description": "Single vs. multi-family use"
+ },
+ {
+  "fieldName": "char_site",
+  "name": "site_desirability",
+  "description": "Site desirability"
+ },
+ {
+  "fieldName": "char_ncu",
+  "name": "num_commercial_units",
+  "description": "Number of commercial units on the parcel (the vast majority are for properties with class 212)"
+ },
+ {
+  "fieldName": "char_renovation",
+  "name": "renovation",
+  "description": "Renovation"
+ },
+ {
+  "fieldName": "char_porch",
+  "name": "porch",
+  "description": "Porch"
+ },
+ {
+  "fieldName": "char_air",
+  "name": "central_air",
+  "description": "Central air conditioning"
+ },
+ {
+  "fieldName": "char_tp_plan",
+  "name": "design_plan",
+  "description": "Design plan"
+ },
+ {
+  "fieldName": "row_id",
+  "name": "row_id",
+  "description": "Unique row key for API"
+ }
+]
