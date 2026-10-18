@@ -68,35 +68,53 @@ json.dump(sample, open(os.path.join(OUT, 'elms_sample.json'), 'w'), indent=1)
 import subprocess, tempfile, re
 TXT = os.path.join(OUT, 'elms_text'); os.makedirs(TXT, exist_ok=True)
 t0 = time.time(); fetched = 0
+CAP_MIN = float(os.environ.get('NARRATIVE_MINUTES', '38'))
 cand = [m for m in matters if (m.get('introductionDate') or '') >= '2021-01-01' and m.get('recordNumber')]
-cand.sort(key=lambda m: m.get('introductionDate') or '', reverse=True)
+cand.sort(key=lambda m: ((m.get('subStatus') or '').startswith('Passed'), m.get('introductionDate') or ''), reverse=True)
+def pdf_text(b):
+    """Text of the first pages: pdftotext for typed PDFs, OCR (tesseract) for scans."""
+    with tempfile.TemporaryDirectory() as td:
+        fp = os.path.join(td, 'a.pdf'); open(fp, 'wb').write(b)
+        try: t = subprocess.run(['pdftotext', '-l', '4', '-layout', fp, '-'], capture_output=True, timeout=60).stdout.decode('utf-8', 'ignore')
+        except Exception: t = ''
+        if len(t.strip()) > 200: return t, 'text'
+        try:
+            subprocess.run(['pdftoppm', '-r', '170', '-f', '1', '-l', '3', '-gray', '-png', fp, os.path.join(td, 'p')], capture_output=True, timeout=120)
+            out = []
+            for img in sorted(f for f in os.listdir(td) if f.endswith('.png')):
+                r = subprocess.run(['tesseract', os.path.join(td, img), '-', '--psm', '4'], capture_output=True, timeout=120)
+                out.append(r.stdout.decode('utf-8', 'ignore'))
+            return '\n'.join(out), 'ocr'
+        except Exception as e:
+            return '', 'fail'
+
 for m in cand:
-    if time.time() - t0 > 25 * 60: print('narratives: time cap reached'); break
+    if time.time() - t0 > CAP_MIN * 60: print('narratives: time cap reached'); break
     rec = re.sub(r'[^A-Za-z0-9-]', '_', m['recordNumber'])
     fn = os.path.join(TXT, rec + '.json')
     if os.path.exists(fn):
         old = json.load(open(fn))
+        fresh = old.get('v') == 2
         # re-check matters still in progress once a week (attachments get added at committee)
-        if old.get('final') or (time.time() - old.get('checked', 0)) < 7 * 86400: continue
+        if fresh and (old.get('final') or (time.time() - old.get('checked', 0)) < 7 * 86400): continue
     try: full = ej('/matter/' + m['matterId'])
     except SystemExit: continue
     if not full: continue
     att = full.get('attachments') or []
-    pick = [a for a in att if re.search(r'narrative|exhibit|plans', (a.get('fileName') or '') + ' ' + (a.get('attachmentType') or ''), re.I)]
-    pick += [a for a in att if a not in pick and re.search(r'ordinance|legislation', (a.get('fileName') or '') + ' ' + (a.get('attachmentType') or ''), re.I)]
+    def score(a):
+        n = ((a.get('fileName') or '') + ' ' + (a.get('attachmentType') or '')).lower()
+        return (0 if 'final narrative' in n else 1 if 'narrative' in n else 2 if 'exhibit' in n else 3 if 'ordinance' in n or 'legislation' in n else 9)
+    pick = sorted([a for a in att if a.get('path') and score(a) < 9], key=score)[:2]
     texts = []
-    for a in pick[:3]:
-        if not a.get('path'): continue
+    for a in pick:
         try:
-            b = urllib.request.urlopen(urllib.request.Request(a['path'], headers=UA), timeout=120).read(60_000_000)
+            b = urllib.request.urlopen(urllib.request.Request(a['path'], headers=UA), timeout=120).read(80_000_000)
         except Exception as e:
             print('pdf fail', rec, e); continue
-        with tempfile.NamedTemporaryFile(suffix='.pdf') as tf:
-            tf.write(b); tf.flush()
-            try: t = subprocess.run(['pdftotext', '-l', '6', '-layout', tf.name, '-'], capture_output=True, timeout=60).stdout.decode('utf-8', 'ignore')
-            except Exception as e: t = ''
-        texts.append({'file': a.get('fileName'), 'type': a.get('attachmentType'), 'text': t[:20000]})
-    rec_out = {'recordNumber': m['recordNumber'], 'matterId': m['matterId'], 'checked': time.time(),
+        t, how = pdf_text(b)
+        texts.append({'file': a.get('fileName'), 'type': a.get('attachmentType'), 'how': how, 'text': t[:20000]})
+        if score(a) <= 1 and len(t.strip()) > 200: break      # a readable narrative is enough
+    rec_out = {'v': 2, 'recordNumber': m['recordNumber'], 'matterId': m['matterId'], 'checked': time.time(),
                'final': (full.get('status') or '').startswith('90'), 'status': full.get('status'), 'subStatus': full.get('subStatus'),
                'actions': [{'date': (a.get('actionDate') or '')[:10], 'name': a.get('actionName')} for a in full.get('actions') or []],
                'attachments': [{'file': a.get('fileName'), 'type': a.get('attachmentType')} for a in att], 'texts': texts}
