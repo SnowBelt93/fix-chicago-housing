@@ -1012,7 +1012,14 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .legend,.credit,.hoodbanner,.toast{transition:bottom .28s cubic-bezier(.2,.8,.2,1)}
   .comment{top:calc(var(--hudH, 150px) + 6px) !important;margin-top:0 !important}
   .legend .lgtoggle{font-size:14px;min-height:30px}
+  /* edge to edge (v43): the map runs under the status bar and under Safari's floating toolbar instead of white bars */
+  html,body{background:#e9edf1}
+  .hud{background:linear-gradient(transparent 0 var(--sat), #fff var(--sat)) !important}
+  .hoodbanner,.hoodcard,.sheet.min ~ .hoodbanner{bottom:calc(var(--sheetH) + 34px) !important}   /* clear of the map credit line */
+  .sheet{box-shadow:0 -8px 28px rgba(27,35,32,.14),0 8px 18px rgba(27,35,32,.18) !important;border-bottom:1px solid var(--line)}
 }
+:root{--sat:env(safe-area-inset-top,0px)}
+@supports (height:100lvh){ @media (max-width:859px){ #map,#basemap{position:fixed;top:0;left:0;right:0;bottom:auto;height:100lvh} } }
 /* motion: modals rise in and sink out, panes fade, details slide open */
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
@@ -1035,6 +1042,17 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
 .tier:active,.seg button:active,.btn:active{transform:scale(.97)}
 .bar > *{transition:width .5s cubic-bezier(.2,.8,.2,1)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* neighborhood card (v43): the picked level reads white-on-dark, and every level fits inside the card */
+.hoodcard .hbt .tier[aria-pressed="true"]{background:#fff !important;border-color:#fff !important;color:var(--nav);box-shadow:inset 0 -4px 0 #41b6e6 !important}
+.hoodcard .hbt .tier[aria-pressed="true"] small{color:var(--ink-2)}
+.hoodcard .hbt .tier[aria-pressed="true"] .sw s{background:var(--c,var(--line))}
+.hoodcard .hbt .tier em{font-size:12.5px;line-height:1.1;overflow-wrap:anywhere}
+.hoodcard .hbt .tier small{font-size:11px}
+@media (min-width:860px){
+  .hoodcard{width:min(480px, max(340px, calc(100vw - 690px)));max-width:none;box-sizing:border-box}   /* clear of the map key */
+  .hoodcard .hbt.seven .tier em{font-size:12px}
+}
+@media (min-width:860px) and (max-width:1169px){ .hoodcard .hbt.seven{grid-template-columns:repeat(4,minmax(0,1fr))} }
 </style>
 
 <div id="app">
