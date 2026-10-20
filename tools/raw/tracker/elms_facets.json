@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155417
+     "count": 155419
     },
     {
      "value": "Committee on Finance",
-     "count": 13749
+     "count": 13799
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10300
+     "count": 10306
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -29,7 +29,7 @@
     },
     {
      "value": "Committee on Economic, Capital and Technology Development",
-     "count": 92
+     "count": 91
     },
     {
      "value": "Committee on License and Consumer Protection",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117934
+     "count": 117940
     },
     {
      "value": "Claim",
-     "count": 29553
+     "count": 29603
     },
     {
      "value": "Resolution",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 630
+     "count": 631
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167320
+     "count": 167322
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1773
+     "count": 1828
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29845
+     "count": 29895
     },
     {
      "value": "Reilly, Brendan",
@@ -296,7 +296,7 @@
     },
     {
      "value": "Silverstein, Debra L.",
-     "count": 2723
+     "count": 2726
     },
     {
      "value": "Pawar, Ameya",
@@ -340,7 +340,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 2010
+     "count": 2011
     },
     {
      "value": "Mitts, Emma",
@@ -368,7 +368,7 @@
     },
     {
      "value": "O'Shea, Matthew J.",
-     "count": 1658
+     "count": 1659
     },
     {
      "value": "Cappleman, James",
@@ -412,7 +412,7 @@
     },
     {
      "value": "Taliaferro, Chris",
-     "count": 1264
+     "count": 1265
     },
     {
      "value": "Austin, Carrie M.",
@@ -476,7 +476,7 @@
     },
     {
      "value": "Mitchell, Gregory I.",
-     "count": 864
+     "count": 865
     },
     {
      "value": "Burns, William D.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169286
+     "count": 169343
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7025
+     "count": 7082
     },
     {
      "value": "2022",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29863
+     "count": 29913
     },
     {
      "value": "42",
@@ -936,7 +936,7 @@
     },
     {
      "value": "50",
-     "count": 2939
+     "count": 2942
     },
     {
      "value": "39",
@@ -980,7 +980,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 1978
+     "count": 1979
     },
     {
      "value": "31",
@@ -1000,7 +1000,7 @@
     },
     {
      "value": "19",
-     "count": 1857
+     "count": 1858
     },
     {
      "value": "46",
@@ -1024,7 +1024,7 @@
     },
     {
      "value": "29",
-     "count": 1719
+     "count": 1720
     },
     {
      "value": "06",
@@ -1060,7 +1060,7 @@
     },
     {
      "value": "07",
-     "count": 1225
+     "count": 1226
     },
     {
      "value": "20",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113435
+     "count": 113436
     },
     {
      "value": "Adopted",
@@ -1169,11 +1169,11 @@
     },
     {
      "value": "Referred",
-     "count": 1664
+     "count": 1719
     },
     {
      "value": "Placed on File",
-     "count": 1651
+     "count": 1652
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163253
+     "count": 163310
     },
     {
      "value": "YES",
@@ -1277,35 +1277,35 @@
  ],
  "data": [
   {
-   "matterId": "424F599E-B1C8-F111-AAAE-001DD80B58E5",
-   "recordNumber": "F2026-0029526",
+   "matterId": "55161A9D-EFCB-F111-A05C-001DD80AA3CC",
+   "recordNumber": "O2026-0029590",
    "legacyRecordNumber": null,
    "originalRecordNumber": null,
    "supersededBy": null,
-   "title": "Notification of Sale of Sales Tax Securitization Corporation Third Lien Sales Tax Securitization Bonds, Refunding Series 2026A and Senior Lien Sales Tax Securitization Bonds, Taxable Refunding Series 2026B",
-   "controllingBodyId": "BAA9B630-573B-EC11-B6E5-001DD804D4DD",
-   "controllingBody": "City Council",
-   "type": "Communication",
-   "status": "90-Final",
-   "subStatus": "Placed on File",
+   "title": "Disabled Parking Permit No. 139154",
+   "controllingBodyId": "E99FC72B-B0D7-EC11-A7B4-001DD804F0C4",
+   "controllingBody": "Committee on Pedestrian and Traffic Safety",
+   "type": "Ordinance",
+   "status": "4-In Committee",
+   "subStatus": "Referred",
    "legacyStatus": null,
    "introductionDate": "2026-12-08T16:00:00+00:00",
-   "finalActionDate": "2026-12-08T16:00:00+00:00",
-   "filingSponsorId": "74F5876A-1EA7-ED11-AAD0-001DD8098598",
-   "filingSponsor": "Dept./Agency",
+   "finalActionDate": null,
+   "filingSponsorId": "F113CA93-FC88-EC11-8D20-001DD804FD38",
+   "filingSponsor": "Taliaferro, Chris",
    "fileYear": 2026,
-   "keyLegislation": "YES",
+   "keyLegislation": "NO",
    "economicDisclosure": null,
-   "filingOffice": "Dept./Agency",
+   "filingOffice": "29",
    "relations": [],
    "agreedCalendar": "NO",
-   "lastPublicationDate": "2026-10-15T16:13:10+00:00"
+   "lastPublicationDate": "2026-10-20T14:05:09+00:00"
   }
  ],
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181417,
-  "pages": 181417
+  "count": 181474,
+  "pages": 181474
  }
 }
