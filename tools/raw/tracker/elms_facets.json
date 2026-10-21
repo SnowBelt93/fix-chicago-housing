@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155419
+     "count": 155421
     },
     {
      "value": "Committee on Finance",
-     "count": 13799
+     "count": 13804
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10306
+     "count": 10308
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -89,7 +89,7 @@
     },
     {
      "value": "Committee on Aviation",
-     "count": 5
+     "count": 4
     },
     {
      "value": "Committee on Health and Environmental Protection",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117940
+     "count": 117943
     },
     {
      "value": "Claim",
-     "count": 29603
+     "count": 29608
     },
     {
      "value": "Resolution",
@@ -219,15 +219,15 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167322
+     "count": 167323
     },
     {
      "value": "3-Council Introduction",
-     "count": 12121
+     "count": 12122
     },
     {
      "value": "4-In Committee",
-     "count": 1828
+     "count": 1834
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29895
+     "count": 29900
     },
     {
      "value": "Reilly, Brendan",
@@ -576,7 +576,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 386
+     "count": 387
     },
     {
      "value": "Thomas, Latasha R.",
@@ -596,7 +596,7 @@
     },
     {
      "value": "Ramirez, Julia M.",
-     "count": 265
+     "count": 266
     },
     {
      "value": "Scott, Monique L.",
@@ -696,7 +696,7 @@
     },
     {
      "value": "Valencia, Anna M.",
-     "count": 90
+     "count": 91
     },
     {
      "value": "Mendoza, Susana A.",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169343
+     "count": 169350
     },
     {
      "value": "YES",
-     "count": 12131
+     "count": 12132
     }
    ]
   },
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7082
+     "count": 7090
     },
     {
      "value": "2022",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29913
+     "count": 29918
     },
     {
      "value": "42",
@@ -1008,7 +1008,7 @@
     },
     {
      "value": "12",
-     "count": 1769
+     "count": 1770
     },
     {
      "value": "22",
@@ -1028,7 +1028,7 @@
     },
     {
      "value": "06",
-     "count": 1619
+     "count": 1620
     },
     {
      "value": "41",
@@ -1076,7 +1076,7 @@
     },
     {
      "value": "Clerk",
-     "count": 182
+     "count": 183
     },
     {
      "value": "Traffic",
@@ -1153,11 +1153,11 @@
     },
     {
      "value": "Council Introduction",
-     "count": 12121
+     "count": 12122
     },
     {
      "value": "Passed as Substitute",
-     "count": 7133
+     "count": 7134
     },
     {
      "value": "Input to Substitute",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1719
+     "count": 1725
     },
     {
      "value": "Placed on File",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163310
+     "count": 163318
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181474,
-  "pages": 181474
+  "count": 181482,
+  "pages": 181482
  }
 }
