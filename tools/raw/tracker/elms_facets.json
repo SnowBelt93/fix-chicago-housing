@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155421
+     "count": 155422
     },
     {
      "value": "Committee on Finance",
-     "count": 13804
+     "count": 13807
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10308
+     "count": 10312
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -32,12 +32,12 @@
      "count": 91
     },
     {
-     "value": "Committee on License and Consumer Protection",
-     "count": 73
+     "value": "Committee on Budget and Government Operations",
+     "count": 76
     },
     {
-     "value": "Committee on Budget and Government Operations",
-     "count": 70
+     "value": "Committee on License and Consumer Protection",
+     "count": 73
     },
     {
      "value": "Committee on Public Safety",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117943
+     "count": 117954
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20520
+     "count": 20521
     },
     {
      "value": "Order",
-     "count": 9253
+     "count": 9254
     },
     {
      "value": "Appointment",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 631
+     "count": 632
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167323
+     "count": 167326
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1834
+     "count": 1845
     },
     {
      "value": "5-Council Consideration",
@@ -296,7 +296,7 @@
     },
     {
      "value": "Silverstein, Debra L.",
-     "count": 2726
+     "count": 2727
     },
     {
      "value": "Pawar, Ameya",
@@ -328,7 +328,7 @@
     },
     {
      "value": "Dowell, Pat",
-     "count": 2173
+     "count": 2174
     },
     {
      "value": "Coleman, Stephanie D.",
@@ -340,7 +340,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 2011
+     "count": 2015
     },
     {
      "value": "Mitts, Emma",
@@ -352,7 +352,7 @@
     },
     {
      "value": "Johnson, Brandon",
-     "count": 1789
+     "count": 1795
     },
     {
      "value": "O'Connor, Patrick",
@@ -476,7 +476,7 @@
     },
     {
      "value": "Mitchell, Gregory I.",
-     "count": 865
+     "count": 866
     },
     {
      "value": "Burns, William D.",
@@ -607,12 +607,12 @@
      "count": 258
     },
     {
-     "value": "Daley, Richard M.",
+     "value": "Chico, Peter",
      "count": 243
     },
     {
-     "value": "Chico, Peter",
-     "count": 242
+     "value": "Daley, Richard M.",
+     "count": 243
     },
     {
      "value": "Daley, Vi",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169350
+     "count": 169359
     },
     {
      "value": "YES",
-     "count": 12132
+     "count": 12137
     }
    ]
   },
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7090
+     "count": 7104
     },
     {
      "value": "2022",
@@ -872,7 +872,7 @@
     },
     {
      "value": "Mayor",
-     "count": 8590
+     "count": 8599
     },
     {
      "value": "27",
@@ -936,7 +936,7 @@
     },
     {
      "value": "50",
-     "count": 2942
+     "count": 2943
     },
     {
      "value": "39",
@@ -972,7 +972,7 @@
     },
     {
      "value": "03",
-     "count": 2112
+     "count": 2113
     },
     {
      "value": "38",
@@ -980,7 +980,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 1979
+     "count": 1980
     },
     {
      "value": "31",
@@ -1048,7 +1048,7 @@
     },
     {
      "value": "10",
-     "count": 1411
+     "count": 1412
     },
     {
      "value": "34",
@@ -1060,7 +1060,7 @@
     },
     {
      "value": "07",
-     "count": 1226
+     "count": 1227
     },
     {
      "value": "20",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113436
+     "count": 113434
     },
     {
      "value": "Adopted",
@@ -1157,7 +1157,7 @@
     },
     {
      "value": "Passed as Substitute",
-     "count": 7134
+     "count": 7135
     },
     {
      "value": "Input to Substitute",
@@ -1169,11 +1169,11 @@
     },
     {
      "value": "Referred",
-     "count": 1725
+     "count": 1737
     },
     {
      "value": "Placed on File",
-     "count": 1652
+     "count": 1653
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1181,7 +1181,7 @@
     },
     {
      "value": "Signed",
-     "count": 157
+     "count": 160
     },
     {
      "value": "Agreed Calendar",
@@ -1205,7 +1205,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 33
+     "count": 32
     },
     {
      "value": "Re-Referred",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163318
+     "count": 163332
     },
     {
      "value": "YES",
@@ -1277,35 +1277,35 @@
  ],
  "data": [
   {
-   "matterId": "55161A9D-EFCB-F111-A05C-001DD80AA3CC",
-   "recordNumber": "O2026-0029590",
+   "matterId": "45BD2C40-8ECD-F111-A05C-001DD80B58E5",
+   "recordNumber": "F2026-0029658",
    "legacyRecordNumber": null,
    "originalRecordNumber": null,
    "supersededBy": null,
-   "title": "Disabled Parking Permit No. 139154",
-   "controllingBodyId": "E99FC72B-B0D7-EC11-A7B4-001DD804F0C4",
-   "controllingBody": "Committee on Pedestrian and Traffic Safety",
-   "type": "Ordinance",
-   "status": "4-In Committee",
-   "subStatus": "Referred",
+   "title": "Notification of Receipt of Funds in Connection with City of Chicago Approval of Ownership Transfer of Chicago Parking Meters LLC Membership Interests",
+   "controllingBodyId": "BAA9B630-573B-EC11-B6E5-001DD804D4DD",
+   "controllingBody": "City Council",
+   "type": "Communication",
+   "status": "90-Final",
+   "subStatus": "Placed on File",
    "legacyStatus": null,
    "introductionDate": "2026-12-08T16:00:00+00:00",
-   "finalActionDate": null,
-   "filingSponsorId": "F113CA93-FC88-EC11-8D20-001DD804FD38",
-   "filingSponsor": "Taliaferro, Chris",
+   "finalActionDate": "2026-12-08T16:00:00+00:00",
+   "filingSponsorId": "74F5876A-1EA7-ED11-AAD0-001DD8098598",
+   "filingSponsor": "Dept./Agency",
    "fileYear": 2026,
    "keyLegislation": "NO",
    "economicDisclosure": null,
-   "filingOffice": "29",
+   "filingOffice": "Dept./Agency",
    "relations": [],
    "agreedCalendar": "NO",
-   "lastPublicationDate": "2026-10-20T14:05:09+00:00"
+   "lastPublicationDate": "2026-10-21T20:40:02+00:00"
   }
  ],
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181482,
-  "pages": 181482
+  "count": 181496,
+  "pages": 181496
  }
 }
