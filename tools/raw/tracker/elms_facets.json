@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155422
+     "count": 155426
     },
     {
      "value": "Committee on Finance",
@@ -182,7 +182,7 @@
     },
     {
      "value": "Resolution",
-     "count": 20521
+     "count": 20525
     },
     {
      "value": "Order",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 12
+     "count": 16
     },
     {
      "value": "0-PreDraft",
@@ -332,7 +332,7 @@
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2122
+     "count": 2125
     },
     {
      "value": "Lightfoot, Lori E.",
@@ -512,7 +512,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 666
+     "count": 667
     },
     {
      "value": "O'Connor, Mary",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169359
+     "count": 169363
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7104
+     "count": 7108
     },
     {
      "value": "2022",
@@ -928,7 +928,7 @@
     },
     {
      "value": "16",
-     "count": 3297
+     "count": 3300
     },
     {
      "value": "45",
@@ -940,7 +940,7 @@
     },
     {
      "value": "39",
-     "count": 2847
+     "count": 2848
     },
     {
      "value": "26",
@@ -1221,7 +1221,7 @@
     },
     {
      "value": "Accepted",
-     "count": 9
+     "count": 13
     },
     {
      "value": "Vetoed",
@@ -1270,7 +1270,7 @@
     },
     {
      "value": "YES",
-     "count": 18162
+     "count": 18166
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181496,
-  "pages": 181496
+  "count": 181500,
+  "pages": 181500
  }
 }
