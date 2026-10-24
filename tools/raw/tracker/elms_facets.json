@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155426
+     "count": 155448
     },
     {
      "value": "Committee on Finance",
@@ -25,7 +25,7 @@
     },
     {
      "value": "Committee on Committees and Rules",
-     "count": 144
+     "count": 143
     },
     {
      "value": "Committee on Economic, Capital and Technology Development",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117954
+     "count": 117955
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20525
+     "count": 20541
     },
     {
      "value": "Order",
-     "count": 9254
+     "count": 9258
     },
     {
      "value": "Appointment",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1845
+     "count": 1844
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 16
+     "count": 38
     },
     {
      "value": "0-PreDraft",
@@ -252,7 +252,7 @@
     },
     {
      "value": "Reilly, Brendan",
-     "count": 12953
+     "count": 12956
     },
     {
      "value": "Burnett, Jr., Walter",
@@ -280,7 +280,7 @@
     },
     {
      "value": "Harris, Michelle A.",
-     "count": 3949
+     "count": 3950
     },
     {
      "value": "Waguespack, Scott",
@@ -312,7 +312,7 @@
     },
     {
      "value": "Hopkins, Brian",
-     "count": 2309
+     "count": 2310
     },
     {
      "value": "Ervin, Jason C.",
@@ -332,7 +332,7 @@
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2125
+     "count": 2133
     },
     {
      "value": "Lightfoot, Lori E.",
@@ -479,11 +479,11 @@
      "count": 866
     },
     {
-     "value": "Burns, William D.",
-     "count": 853
+     "value": "Rodriguez, Michael D.",
+     "count": 856
     },
     {
-     "value": "Rodriguez, Michael D.",
+     "value": "Burns, William D.",
      "count": 853
     },
     {
@@ -512,7 +512,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 667
+     "count": 670
     },
     {
      "value": "O'Connor, Mary",
@@ -592,7 +592,7 @@
     },
     {
      "value": "Taylor, Jeanette B.",
-     "count": 298
+     "count": 299
     },
     {
      "value": "Ramirez, Julia M.",
@@ -608,7 +608,7 @@
     },
     {
      "value": "Chico, Peter",
-     "count": 243
+     "count": 244
     },
     {
      "value": "Daley, Richard M.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169363
+     "count": 169384
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7108
+     "count": 7129
     },
     {
      "value": "2022",
@@ -868,7 +868,7 @@
     },
     {
      "value": "42",
-     "count": 12953
+     "count": 12956
     },
     {
      "value": "Mayor",
@@ -896,11 +896,11 @@
     },
     {
      "value": "02",
-     "count": 4598
+     "count": 4599
     },
     {
      "value": "08",
-     "count": 3945
+     "count": 3946
     },
     {
      "value": "32",
@@ -928,7 +928,7 @@
     },
     {
      "value": "16",
-     "count": 3300
+     "count": 3308
     },
     {
      "value": "45",
@@ -940,7 +940,7 @@
     },
     {
      "value": "39",
-     "count": 2848
+     "count": 2851
     },
     {
      "value": "26",
@@ -1012,7 +1012,7 @@
     },
     {
      "value": "22",
-     "count": 1757
+     "count": 1760
     },
     {
      "value": "49",
@@ -1048,7 +1048,7 @@
     },
     {
      "value": "10",
-     "count": 1412
+     "count": 1413
     },
     {
      "value": "34",
@@ -1064,7 +1064,7 @@
     },
     {
      "value": "20",
-     "count": 1225
+     "count": 1226
     },
     {
      "value": "09",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1737
+     "count": 1736
     },
     {
      "value": "Placed on File",
@@ -1204,6 +1204,10 @@
      "count": 36
     },
     {
+     "value": "Accepted",
+     "count": 35
+    },
+    {
      "value": "Direct Introduction",
      "count": 32
     },
@@ -1218,10 +1222,6 @@
     {
      "value": "Approved as Substitute",
      "count": 16
-    },
-    {
-     "value": "Accepted",
-     "count": 13
     },
     {
      "value": "Vetoed",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163332
+     "count": 163336
     },
     {
      "value": "YES",
-     "count": 18166
+     "count": 18183
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181500,
-  "pages": 181500
+  "count": 181521,
+  "pages": 181521
  }
 }
