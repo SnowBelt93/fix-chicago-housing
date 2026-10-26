@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155448
+     "count": 155449
     },
     {
      "value": "Committee on Finance",
@@ -206,7 +206,7 @@
     },
     {
      "value": "Executive Order",
-     "count": 42
+     "count": 43
     },
     {
      "value": "Placed on File",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167326
+     "count": 167327
     },
     {
      "value": "3-Council Introduction",
@@ -352,7 +352,7 @@
     },
     {
      "value": "Johnson, Brandon",
-     "count": 1795
+     "count": 1796
     },
     {
      "value": "O'Connor, Patrick",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169384
+     "count": 169385
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7129
+     "count": 7130
     },
     {
      "value": "2022",
@@ -872,7 +872,7 @@
     },
     {
      "value": "Mayor",
-     "count": 8599
+     "count": 8600
     },
     {
      "value": "27",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113434
+     "count": 113433
     },
     {
      "value": "Adopted",
@@ -1173,7 +1173,7 @@
     },
     {
      "value": "Placed on File",
-     "count": 1653
+     "count": 1654
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1181,7 +1181,7 @@
     },
     {
      "value": "Signed",
-     "count": 160
+     "count": 161
     },
     {
      "value": "Agreed Calendar",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163336
+     "count": 163337
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181521,
-  "pages": 181521
+  "count": 181522,
+  "pages": 181522
  }
 }
