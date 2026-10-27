@@ -190,6 +190,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
     </div>
     <div class="vbody">
       <div class="modes" id="modeList"></div>
+      <div class="mylines" id="presetList"></div>
       <div class="mylines" id="myLines"></div>
       <div class="cleanbox" id="cleanBox"></div>
       <p class="fan2">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</p>
@@ -271,6 +272,13 @@ const BUS_SPEED = 9.06, BUS_HR = 197.88;   // CTA bus (NTD 2024)
 // long run: total drop in driving ÷ the driving a line replaces directly, as homes and jobs grow near transit
 const LANDUSE_MULT = [1.9, 6.59];  // APTA 2009 national default (Bailey et al. 2008) to median of 28 US regions (Sabouri, Ewing & Kalantari 2024)
 const OCC = 1.5;             // people per car trip (NHTS 2022)
+/* money: today's dollars, funding, benefit-cost (USDOT BCA guidance, 2026 update) */
+let COSTIX = null;             // construction cost index by year (FHWA NHCCI), loaded from data/costindex.json
+const VTTS = 21.80, VTTS_YEAR = 2024;   // $ per person-hour of travel time saved, local personal travel (USDOT, 2024 dollars)
+const VOC = 0.56;              // $ per car mile not driven (USDOT, 2024 dollars)
+const DISCOUNT = 0.07, LIFE = 30;      // USDOT: 7% real discount rate; at most 30 years of operation
+const FARE_PER_TRIP = 1.15, CTA_COST_PER_TRIP = 6.20;   // CTA 2024: fare revenue and operating cost per trip (NTD)
+const CIG_CAP = {newStarts:0.60, smallStarts:0.80};    // federal Capital Investment Grants caps (FTA)
 /* emissions from Chicago's own fuel and power use (NTD 2024 fuel and energy data, data.transportation.gov 8ehq-7his) */
 const NTD = {ctaRailKwh:363590000, ctaRailCarMi:69571292, ctaBusGal:14740640, ctaBusMi:49576262, ctaEbusKwh:223963, ctaEbusMiKwh:0.28,
              metraGal:26236332, metraKwh:50615108, metraCarMi:44110638, meMiKwh:0.11};
@@ -304,16 +312,16 @@ const METRA_SPEED = 29.28, METRA_CAR_HR = 656.28, METRA_CARS_NEW = 4, METRA_CARS
 const ELECTRIFY_PER_MI = 47e6;  // Caltrain electrification, $2.44B / 52 mi
 const METRA_TRIP_MI = 21.7;  // Metra avg trip (NTD 2024 passenger miles ÷ trips); FTA t CO2: diesel per train-mile (read as per train: 2.67 gal/mi), electric per car-mile on the RFC West grid
 const MODES = {
-  subway:   {name:"Subway", blurb:"Under the street. Fastest to ride, slowest and priciest to build", kind:"rail", cost:[965e6,1410e6], heads:[3,5,7.5,10], head:7.5,
+  subway:   {name:"Subway", blurb:"Under the street. Fastest to ride, slowest and priciest to build", kind:"rail", cost:[965e6,1410e6], costYear:[2016,2020], buildYrs:8, heads:[3,5,7.5,10], head:7.5,
              speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:"rail", years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<path d="M2 21V12a10 10 0 0 1 20 0v9"/><rect x="8" y="9" width="8" height="9" rx="1.5"/>', color:"#1a1d21"},
-  elevated: {name:"Elevated L", blurb:"On a structure above the street, like most of the L", kind:"rail", cost:[384e6,1050e6], heads:[3,5,7.5,10], head:7.5,
+  elevated: {name:"Elevated L", blurb:"On a structure above the street, like most of the L", kind:"rail", cost:[384e6,1050e6], costYear:[2018,2025], buildYrs:6, heads:[3,5,7.5,10], head:7.5,
              speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:"rail", years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<rect x="6" y="2" width="12" height="9" rx="1.5"/><path d="M2 13h20M5 13v9M19 13v9M12 13v9"/>', color:"#1a1d21"},
-  streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], heads:[5,7.5,10,15], head:10,
+  streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], costYear:[2017,2021], buildYrs:4, heads:[5,7.5,10,15], head:10,
              speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00349, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
              icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
-  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], heads:[3,5,7.5,10,15], head:5,
+  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], costYear:[2019,2008], buildYrs:2, heads:[3,5,7.5,10,15], head:5,
              speed:13.19, cars:1, perHr:197.88, tripMi:2.47, co2:"bus", years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
              icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M3 10h18M7 20v-3M17 20v-3"/>', color:"#1a1d21"},
 };
@@ -349,6 +357,8 @@ async function load(){
     fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
   NET = net; MODEL = model;
   fetch("data/network.json").then(r => r.json()).then(buildNet).catch(e => console.warn("network", e));
+  fetch("data/presets.json").then(r => r.json()).then(p => { PRESETS = p; if (!cur && $("presetList")) renderPresets(); }).catch(() => {});
+  fetch("data/costindex.json").then(r => r.json()).then(c => { COSTIX = c; if (cur) openLine(cur); else renderMyLines(); }).catch(() => {});
   const n = new DataView(buf).getUint32(0, true);
   const xs = new Int16Array(buf, 4, n), ys = new Int16Array(buf, 4 + 2 * n, n);
   const pop = new Uint16Array(buf.slice(4 + 4 * n, 4 + 6 * n)), jobs = new Uint16Array(buf.slice(4 + 6 * n, 4 + 8 * n));
@@ -531,6 +541,13 @@ function loadGeo(){
       });
       GEO[k] = {segs, G, cell};
     }
+    if (!GEO.rail){   // OpenStreetMap rail didn't download: snap to today's L and Metra tracks
+      const segs = [], G = new Map(), cell = 300;
+      for (const l of NET.lLines.concat(NET.metraLines)) for (const path of l.paths) for (let i = 0; i < path.length - 1; i++){ const a = toXY(path[i][0], path[i][1]), b = toXY(path[i + 1][0], path[i + 1][1]); segs.push([a[0], a[1], b[0], b[1], l.name]); }
+      segs.forEach((sg, i) => { const x0 = Math.floor(Math.min(sg[0], sg[2]) / cell), x1 = Math.floor(Math.max(sg[0], sg[2]) / cell), y0 = Math.floor(Math.min(sg[1], sg[3]) / cell), y1 = Math.floor(Math.max(sg[1], sg[3]) / cell);
+        for (let a2 = x0; a2 <= x1; a2++) for (let b2 = y0; b2 <= y1; b2++){ const key = a2 + "," + b2; let l2 = G.get(key); if (!l2) G.set(key, l2 = []); l2.push(i); } });
+      GEO.rail = {segs, G, cell};
+    }
     $("snapRow").style.display = "";
     if (map && map.getSource("geo-water") && !ownDomain()) drawGeoBase();
   }).catch(() => {});
@@ -546,7 +563,7 @@ function geoNear(k, x, y, r, fn){
 function snapGeo(point, rail){
   const ll = map.unproject(point), [x, y] = toXY(ll.lng, ll.lat), r = Math.min(150, 18 * metersAt(map.getZoom()));
   let best = null, bd = r;
-  for (const k of rail ? ["rail", "arterial", "motorway"] : ["arterial"]) geoNear(k, x, y, r, sg => {
+  for (const k of rail ? ["rail", "arterial", "motorway"] : ["arterial"]) geoNear(k, x, y, r, sg => {   // "rail" = today's L and Metra tracks
     const dx = sg[2] - sg[0], dy = sg[3] - sg[1], L2 = dx * dx + dy * dy; let t = L2 ? ((x - sg[0]) * dx + (y - sg[1]) * dy) / L2 : 0; t = Math.max(0, Math.min(1, t));
     const px = sg[0] + t * dx, py = sg[1] + t * dy, d = Math.hypot(px - x, py - y);
     if (d < bd){ bd = d; best = [px, py]; }
@@ -579,6 +596,26 @@ function drawGeoBase(){   // fallback basemap: streets, expressways and rivers (
   map.getSource("geo-water").setData(fcOf("water")); map.getSource("geo-road").setData(fcOf("arterial")); map.getSource("geo-mway").setData(fcOf("motorway"));
 }
 function groupLines(k){ return GEO[k].segs.map(sg => [toLL(sg[0], sg[1]), toLL(sg[2], sg[3])]); }
+
+/* ---------- money ---------- */
+// a cost from its year's dollars to today's, with FHWA's construction cost index
+function today$(v, year){
+  if (!COSTIX || !year) return v;
+  const now = COSTIX.index[COSTIX.latest], then = COSTIX.index[year] || COSTIX.index[COSTIX.first];
+  return v * now / then;
+}
+function pvFactor(start, years){ let f = 0; for (let t = start; t < start + years; t++) f += 1 / Math.pow(1 + DISCOUNT, t); return f; }
+// benefit-cost: time saved (USDOT value) + car costs avoided, over 30 years after opening, at 7%; CO2 is not given a dollar value (USDOT 2026)
+function benefitCost(L, buildYrs){
+  if (L.hoursSaved == null) return null;
+  const cpi = COSTIX && COSTIX.cpi ? COSTIX.cpi[COSTIX.cpiLatest] / COSTIX.cpi[VTTS_YEAR] : 1;
+  const carMi = (L.carTrips[0] + L.carTrips[1]) / 2 * (L.type === "metra" ? METRA_TRIP_MI : MODES[L.mode].tripMi) * YEAR_DAYS;
+  const benYear = (L.hoursSaved * YEAR_DAYS * VTTS + carMi * VOC) * cpi;
+  const cap = (L.capitalToday[0] + L.capitalToday[1]) / 2;
+  const pvBen = benYear * pvFactor(buildYrs, LIFE);
+  const pvCost = cap / buildYrs * pvFactor(0, buildYrs) + Math.max(0, L.opYear) * pvFactor(buildYrs, LIFE) - Math.max(0, -L.opYear) * pvFactor(buildYrs, LIFE);
+  return {benYear, pvBen, pvCost, ratio: pvCost > 0 ? pvBen / pvCost : Infinity, timeShare: L.hoursSaved * YEAR_DAYS * VTTS * cpi / Math.max(benYear, 1)};
+}
 
 /* ---------- model ---------- */
 function railLogBase(f){
@@ -656,7 +693,9 @@ function evaluate(){
       L.close = 0; for (let k = 1; k < n; k++) if (Math.hypot(st[k].x - st[k - 1].x, st[k].y - st[k - 1].y) < 0.4 * MI) L.close++;
       const after = NW ? afterGraph() : null;
       for (const s of st){
-        if (s.snap && s.snap.kind === "L"){
+        if (s.snap && s.snap.kind === "L" && L.preset && PRESETS.find(q => q.id === L.preset && q.extends) && (s.i === 0 || s.i === n - 1)){
+          s.riders = 0;   // an extension's trains are the same trains: no new departures at the station it extends from
+        } else if (s.snap && s.snap.kind === "L"){
           const o = s.snap.ref, wasX = o.lines.length > 1 ? 1 : 0;
           const add = SERVICE_E * Math.log((o.deps + trips) / Math.max(o.deps, 1)) + (wasX ? 0 : c.transfer);
           s.riders = (o.rides || 0) * (Math.exp(add) - 1); gainOld += s.riders;
@@ -714,6 +753,7 @@ function evaluate(){
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
     L.capital = [M.cost[0] * L.len / MI, M.cost[1] * L.len / MI];
+    L.capitalToday = [today$(L.capital[0], M.costYear[0]), today$(L.capital[1], M.costYear[1])].sort((a, b) => a - b);
     L.cars = M.kind === "rail" ? (riders < 20000 ? 4 : riders < 50000 ? 6 : 8) : 1;   // trains sized to riders, like the CTA's 4- to 8-car trains (assumption)
     const vehHrs = trips * (L.len / MI) / M.speed * L.cars;   // revenue vehicle (car) hours a weekday
     const busMi = M.kind === "rail" ? 0 : L.baseBusMi || 0;   // buses withdrawn (bus-type lines only)
@@ -730,7 +770,7 @@ function evaluate(){
     L.co2 = vmt.map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
     L.transitCO2 = transitCO2;
     L.co2Long = [vmt[0] * LANDUSE_MULT[0], vmt[1] * LANDUSE_MULT[1]].map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
-    L.perRide = (L.capital.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
+    L.perRide = (L.capitalToday.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
   }
 }
 function xferAt(s){ // a transfer to another rail line: an L station within 250 m or a Metra station within 400 m
@@ -758,7 +798,7 @@ function cleanReport(){
   const now = fleetCO2({}), pick = fleetCO2(clean);
   const one = k => now.total - fleetCO2({[k]:true}).total;
   return {now, pick, saved:now.total - pick.total, one:{bus:one("bus"), metra:one("metra"), grid:one("grid")},
-    cost:[(clean.bus ? CLEAN.ebusCost[0] : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0), (clean.bus ? CLEAN.ebusCost[1] : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0)]};
+    cost:[0, 1].map(i => (clean.bus ? today$(CLEAN.ebusCost[i], 2022) : 0) + (clean.metra ? today$(CLEAN.metraDieselRouteMi * CLEAN.wirePerMi, 2024) : 0))};
 }
 
 function evalMetra(L){
@@ -776,6 +816,7 @@ function evalMetra(L){
   const carHrs = add * (L.len / MI) / METRA_SPEED * METRA_CARS_NEW;
   L.opYear = carHrs * METRA_CAR_HR * YEAR_DAYS;
   L.capital = L.electric ? [ELECTRIFY_PER_MI * L.len / MI, ELECTRIFY_PER_MI * L.len / MI] : [0, 0];
+  L.capitalToday = L.capital.map(v => today$(v, 2024));
   L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
   const elec = L.electric || isElectric || clean.metra;
   const perTrain = cars => cars * (elec ? elecT(KWH.me) : METRA_DIESEL_T);   // t CO2 per train-mile
@@ -788,7 +829,7 @@ function evalMetra(L){
   const walk = new Set();
   for (const s of ml.stations) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
   L.pop = 0; L.jobs = 0; for (const i of walk){ L.pop += B.pop[i]; L.jobs += B.jobs[i]; }
-  L.perRide = mid > 0 ? (L.capital[0] / 30 + L.opYear) / (mid * YEAR_DAYS) : 0;
+  L.perRide = mid > 0 ? (L.capitalToday[0] / 30 + L.opYear) / (mid * YEAR_DAYS) : 0;
 }
 
 /* ---------- map ---------- */
@@ -997,10 +1038,32 @@ function icon(mode, light){ const svg = mode === "metra" ? METRA_ICON : MODES[mo
 function openStart(){
   cur = null; renderPlan(); show("vStart");
   $("modeList").innerHTML = Object.entries(MODES).map(([k, M]) =>
-    `<button class="mode" type="button" data-mode="${k}"><span class="ico">${icon(k)}</span><span class="mt"><b>${M.name}</b><span>${M.blurb}</span></span><span class="mc">${moneyRange(M.cost[0], M.cost[1])}<br>a mile</span></button>`).join("") +
+    `<button class="mode" type="button" data-mode="${k}"><span class="ico">${icon(k)}</span><span class="mt"><b>${M.name}</b><span>${M.blurb}</span></span><span class="mc">${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))}<br>a mile</span></button>`).join("") +
     `<button class="mode metra" type="button" data-mode="metra"><span class="ico">${icon("metra", true)}</span><span class="mt"><b>Upgrade a Metra line</b><span>Trains all day in both directions</span></span></button>`;
   for (const b of $("modeList").querySelectorAll(".mode")) b.onclick = () => b.dataset.mode === "metra" ? openMetra() : startDraw(b.dataset.mode);
-  renderMyLines(); renderClean();
+  renderMyLines(); renderClean(); renderPresets();
+}
+let PRESETS = [];
+function renderPresets(){
+  const el = $("presetList"); if (!PRESETS.length){ el.innerHTML = ""; return; }
+  el.innerHTML = `<h2>Real proposals</h2>` + PRESETS.map(P => `<button class="lrow" type="button" data-p="${P.id}"><span class="ico" ${P.metra ? 'style="background:#e8ecf0"' : ""}>${icon(P.metra ? "metra" : P.mode, !!P.metra)}</span><span class="lt"><b>${esc(P.name)}</b><span>${esc(P.status)}</span></span></button>`).join("");
+  for (const b of el.querySelectorAll(".lrow")) b.onclick = () => loadPreset(PRESETS.find(p => p.id === b.dataset.p));
+}
+function loadPreset(P){
+  let L = lines.find(l => l.preset === P.id);
+  if (!L){
+    if (P.metra){ const ml = NET.metraLines.find(l => l.id === P.metra); L = {type:"metra", id:"m" + P.metra, line:P.metra, head:P.head, electric:false, name:P.name, preset:P.id}; }
+    else {
+      const pts = P.pts.map(ll => {   // join an existing L or Metra station within 150 m
+        const [x, y] = toXY(ll[0], ll[1]); let snap = null, bd = 150;
+        for (const [arr, kind] of [[LST, "L"], [MST, "M"]]) for (const s of arr){ const d = Math.hypot(s.x - x, s.y - y); if (d < bd){ bd = d; snap = {kind, ref:s}; } }
+        return snap ? {x:snap.ref.x, y:snap.ref.y, ll:snap.ref.ll, snap} : {x, y, ll, snap:null};
+      });
+      L = {type:"draw", id:"p" + P.id, mode:P.mode, pts, head:P.head, name:P.name, preset:P.id};
+    }
+    lines.push(L); save();
+  }
+  openLine(L);
 }
 function renderClean(){
   const R = cleanReport(), el = $("cleanBox"), pct = v => Math.round(v / R.now.total * 100);
@@ -1019,7 +1082,7 @@ function renderMyLines(){
   evaluate();
   const ridersOf = L => L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
   const netOf = L => L.type === "metra" ? L.riders[0] : L.newRiders;
-  const tot = lines.reduce((a, L) => a + netOf(L), 0), cap = lines.reduce((a, L) => [a[0] + L.capital[0], a[1] + L.capital[1]], [0, 0]);
+  const tot = lines.reduce((a, L) => a + netOf(L), 0), cap = lines.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
   const op = lines.reduce((a, L) => a + L.opYear, 0), cars = lines.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
   el.innerHTML = `<h2>Your plan</h2>` + lines.map((L, i) => `<button class="lrow" type="button" data-i="${i}"><span class="ico" ${L.type === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(L.type === "metra" ? "metra" : L.mode, L.type === "metra")}</span><span class="lt"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len)} mi</span></span><span class="lr">${num(ridersOf(L))}</span></button>`).join("") +
     (lines.length > 1 ? `<div class="total"><div class="stat"><div class="v">${num(tot)}</div><div class="k">more transit riders a weekday, all lines</div></div><div class="stat"><div class="v">${moneyRange(cap[0], cap[1])}</div><div class="k">to build, all lines</div></div><div class="stat"><div class="v">${money(op)}</div><div class="k">a year to run</div></div><div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div></div>` : "");
@@ -1069,7 +1132,7 @@ function openLine(L){
   h += `<div class="stats">
     <div class="stat"><div class="v">${num(L.pop)}</div><div class="k">people within a 10-min walk</div></div>
     <div class="stat"><div class="v">${num(L.jobs)}</div><div class="k">jobs within a 10-min walk</div></div>
-    <div class="stat"><div class="v">${L.capital[1] > 0 ? (isM ? money(L.capital[0]) : moneyRange(L.capital[0], L.capital[1])) : "$0"}</div><div class="k">${isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`}</div></div>
+    <div class="stat"><div class="v">${L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0"}</div><div class="k">${isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build in ${COSTIX ? COSTIX.latest + " dollars" : "past projects' dollars"}, ${M.years} years`}</div></div>
     <div class="stat"><div class="v">${money(Math.abs(L.opYear))}</div><div class="k">${L.opYear < 0 ? "a year saved on running buses" : isM ? "more a year to run" : !isM && L.baseBusMi > 0 ? "more a year to run, after the buses it replaces" : "a year to run"}</div></div>
     ${cars >= 0 ? `<div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div>` : `<div class="stat"><div class="v">${num(-cars)}</div><div class="k">more car trips a day: fewer buses than today</div></div>`}
     ${co2 >= 0 ? `<div class="stat g"><div class="v">${num(co2)} t</div><div class="k">less CO₂ a year at first</div></div>` : `<div class="stat"><div class="v">${num(-co2)} t</div><div class="k">more CO₂ a year at first: running the ${isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s"} uses more energy than the car trips they replace</div></div>`}
@@ -1079,6 +1142,8 @@ function openLine(L){
     h += `<div class="stat ${mid >= 0 ? "g" : ""}" style="display:flex;flex-direction:column;gap:2px"><div class="k" style="margin:0">In the long run, as homes and jobs grow near the ${isM ? "stations" : "line"} and people drive less overall</div><div class="v">${word(mid).replace(" less", " less CO₂ a year").replace(" more", " more CO₂ a year")}</div><div class="k" style="margin:0">likely ${word(lo)} to ${word(hi)}. That takes decades, and zoning that lets homes go up near stations.</div></div>`;
   }
   h += travelHtml(L);
+  h += moneyHtml(L);
+  h += officialHtml(L);
   if (!isM){
     const X = crossings(L.pts);
     if (X && (X.water.length || X.motorway.length || X.lake)){
@@ -1100,6 +1165,29 @@ function openLine(L){
   const coords = isM ? NET.metraLines.find(l => l.id === L.line).paths.flat() : L.pts.map(p => p.ll);
   if (!L._fitted){ fitTo(coords); L._fitted = true; }
   save();
+}
+function moneyHtml(L){
+  const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
+  const riders = isM ? L.riders[0] : L.riders, fares = riders * YEAR_DAYS * FARE_PER_TRIP;
+  const cap = (L.capitalToday[0] + L.capitalToday[1]) / 2, small = cap < 400e6;
+  const B = L.hoursSaved != null ? benefitCost(L, isM ? 2 : M.buildYrs) : null;
+  let h = `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Paying for it</span><p class="note" style="margin:0">`;
+  if (cap > 0) h += `Federal grants can cover up to ${Math.round((small ? CIG_CAP.smallStarts : CIG_CAP.newStarts) * 100)}% of the build cost (${small ? "Small Starts" : "New Starts"}); the Red Line Extension got 34%. `;
+  if (L.opYear > 0) h += `Fares would bring in about ${money(fares)} a year, ${Math.round(fares / L.opYear * 100)}% of the ${money(L.opYear)} it costs to run, at the CTA's average of $1.15 a trip. `;
+  h += `</p>`;
+  if (B) h += `<div class="stat ${B.ratio >= 1 ? "g" : ""}"><div class="v">${B.ratio === Infinity ? "Pays for itself" : B.ratio.toFixed(B.ratio < 10 ? 2 : 0) + " to 1"}</div><div class="k">benefits for each dollar of cost over 30 years. A partial count, using USDOT's values and its 7% discount rate: travel time saved and car costs avoided only. Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</div></div>`;
+  return h + `</div>`;
+}
+function officialHtml(L){
+  const P = L.preset && PRESETS.find(p => p.id === L.preset); if (!P) return "";
+  const O = P.official, c = O.cost ? money(today$(O.cost, O.costYear)) : "no estimate";
+  return `<div class="stat" style="background:#eef3fa"><div class="k" style="margin:0 0 4px;font-weight:600;color:#2b5da0">The official numbers</div>
+    <div class="k">${esc(P.status)}.</div>
+    <div class="k"><b>Cost:</b> ${c}${O.cost ? ` in ${COSTIX ? COSTIX.latest : O.costYear} dollars (${money(O.cost)} ${esc(O.costNote)})` : ` (${esc(O.costNote)})`}.</div>
+    <div class="k"><b>Riders:</b> ${num(O.riders)} ${esc(O.ridersNote)}. The tool's number above counts riders on the line itself, so the two measure different things.</div>
+    ${P.gap ? `<div class="k">${esc(P.gap)}</div>` : ""}
+    ${P.approx ? `<div class="k">${esc(P.approx)}</div>` : ""}
+    <div class="k">${P.sources.map(sv => `<a href="${sv[1]}" target="_blank" rel="noopener">${esc(sv[0])}</a>`).join(" · ")}</div></div>`;
 }
 function travelHtml(L){
   if (!NW) return `<p class="note">Loading travel times…</p>`;
@@ -1125,7 +1213,7 @@ function details(L){
     rows.push([`${M.vehicle === "bus" ? "Buses" : M.vehicle[0].toUpperCase() + M.vehicle.slice(1) + "s"} a weekday (both directions, ${HOURS} hours)`, Math.round(trips)]);
     rows.push(["Average speed with stops", M.speed + " mph"]);
     rows.push(["One-way trip end to end", Math.round(L.len / MI / M.speed * 60) + " min"]);
-    rows.push(["Build cost a mile", moneyRange(M.cost[0], M.cost[1])]);
+    rows.push(["Build cost a mile" + (COSTIX ? ` (${COSTIX.latest} dollars)` : ""), moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))]);
     if (L.popNew > 0) rows.push(["People new to rail within a 10-min walk", num(L.popNew)]);
     if (L.gainOld > 50) rows.push(["Extra riders at the L stations it connects to", num(L.gainOld)]);
     if (M.kind === "bus" && !L.fromModel && MODE_LIFT[L.mode] > 1) rows.push(["Riders added by faster BRT service", "+" + Math.round((MODE_LIFT[L.mode] - 1) * 100) + "% (5–51%)"]);
@@ -1209,7 +1297,8 @@ function decode(s){
       const pts = ptsS.split(";").map(q => { const [a, b, sn] = q.split(","); const x = parseInt(a, 36) * 10, y = parseInt(b, 36) * 10;
         let snap = null; if (sn){ const kind = sn[0], id = sn.slice(1); const ref = (kind === "L" ? LST : MST).find(z => z.id === id); if (ref) snap = {kind, ref}; }
         const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
-      if (pts.length > 1) out.push({type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name});
+      const pre = PRESETS.find(q => q.name === decodeURIComponent(nm || ""));
+      if (pts.length > 1) out.push({type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined});
     } catch (e) {}
   }
   return out;
@@ -1245,9 +1334,14 @@ function openSources(){
   <tr><td>Elevated</td><td>$384M: Seattle Lynnwood Link, part elevated, part at ground level (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/WA-Lynnwood-Link-Extension-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.05B: Chicago Red Line Extension, $5.75B for 5.5 mi, mostly elevated (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>Streetcar</td><td>$43M: Detroit QLine (<a href="https://www.masstransitmag.com/rail/article/12366313/detroits-qline-streetcar-getting-on-track-with-partnerships-innovation-and-tenacity" target="_blank" rel="noopener">Mass Transit</a>)</td><td>$100M: Kansas City Main St. (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-02/MO-Kansas-City-Streetcar-Main-St-Ext-Project-FFGA-Profile-FY22.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>BRT</td><td>$7.4M: Indianapolis Red Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/funding/grant-programs/capital-investments/116506/indygo-red-line-rapid-transit-profile.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$29M: Cleveland HealthLine (<a href="https://nacto.org/case-study/euclid-avenue-brt-cleveland-oh/" target="_blank" rel="noopener">NACTO</a>)</td></tr></table>
-  <p class="note">Costs are in the dollars of the year each project was funded, not adjusted for inflation. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City's streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.</p>
+  <p class="note">Each project\'s cost is moved from the year it was funded to ${COSTIX ? COSTIX.latestQuarter : "today"} dollars with FHWA\'s National Highway Construction Cost Index (<a href="https://data.transportation.gov/Research-and-Statistics/NHCCI/r94d-n4f9/about_data" target="_blank" rel="noopener">FHWA NHCCI</a>), which roughly doubled from 2008 to 2025. Year-of-spending figures (like the Red Line Extension\'s) are treated as their funding year. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City\'s streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.</p>
   <h3>Cost to run</h3>
   <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
+  <h3>Paying for it, and benefit-cost</h3>
+  <p>Federal Capital Investment Grants can cover up to 60% of a New Starts project and 80% of a Small Starts project (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2022-01/Fact-Sheet-Capital-Investment-Grants-Program.pdf" target="_blank" rel="noopener">FTA</a>); the tool calls a project under $400 million Small Starts. The Red Line Extension got $1.97 billion of $5.75 billion, 34% (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-11/FY26-Annual-Report-on-Funding-Recommendations.pdf" target="_blank" rel="noopener">FTA FY26 report</a>). Fares: the CTA took in $1.15 per trip in 2024 and spent $6.20 per trip to run service (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">NTD 2024</a>).</p>
+  <p>Benefit-cost follows USDOT's 2026 guidance (<a href="https://www.transportation.gov/sites/dot.gov/files/2025-12/Benefit%20Cost%20Analysis%20Guidance%202026%20Update%20%28Final%29.pdf" target="_blank" rel="noopener">USDOT, December 2025</a>): a 7% real discount rate, up to 30 years of operation after opening, and no dollar value on CO₂. Travel time saved is valued at $21.80 an hour and each car mile not driven at $0.56, in 2024 dollars, raised to today with CPI-U (BLS); both come from USDOT's February 2026 webinar citing the guidance's Appendix A (<a href="https://www.transportation.gov/sites/dot.gov/files/2026-02/BUILD%20Grants%20Preparing%20a%20Benefit-Cost%20Analysis%202-2-26.pdf" target="_blank" rel="noopener">USDOT BUILD webinar</a>). Build costs are spread evenly over the years it takes to build. It counts only these two benefits, so it understates projects whose value comes from reliability, safety or new development.</p>
+  <h3>Real proposals</h3>
+  <p>Presets use each agency's own description. Station spots are placed where the named streets cross on OpenStreetMap, or between neighboring cross streets when a small street isn't on the main-road map; the Red Line Extension's are approximate (CTA names cross streets only). Official costs and riders are shown next to the tool's, and CMAP's numbers are the extra weekday transit trips across the whole region in its 2050 model (<a href="https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf" target="_blank" rel="noopener">CMAP 2026 plan</a>), a different measure from riders on the line.</p>
   <h3>Cars and CO₂</h3>
   <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile from its tailpipe (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA, NTD 2024</a>), 21.7 on Metra (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra, NTD 2024</a>), 1.9 on streetcars (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>). The new service's own emissions are subtracted, from Chicago's own fuel and power use in 2024 (<a href="https://data.transportation.gov/d/8ehq-7his" target="_blank" rel="noopener">NTD fuel and energy data</a>): the L used 363.6 million kWh for 69.6 million car-miles (5.2 kWh a car-mile), CTA buses 14.7 million gallons of diesel for 49.6 million miles, CTA's electric buses go 0.28 miles per kWh, Metra burned 26.2 million gallons of diesel and its electric line used 50.6 million kWh. Diesel makes 10.18 kg of CO₂ a gallon (FTA). Power comes from the RFC West grid at 911.4 lb of CO₂ per MWh (<a href="https://www.epa.gov/egrid/summary-data" target="_blank" rel="noopener">EPA eGRID2023</a>). Streetcars use FTA's factor for this grid region, 3.49 kg a mile (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>, Table A-12). Cars: about 1.5% of Illinois' 10.23 million registered vehicles are electric (about 156,000, Illinois Secretary of State via the Chicago Tribune, 2025; <a href="https://www.autosinnovate.org/resources/insights/il" target="_blank" rel="noopener">Alliance for Automotive Innovation</a>), at 3.6 miles per kWh (<a href="https://afdc.energy.gov/vehicles/electric-emissions-sources" target="_blank" rel="noopener">DOE</a>), so the average car mile makes a bit less than a gas car's 400 g.</p>
   <p>Rider surveys on new lines found 10–31% of all riders used to drive: 10% on Las Vegas MAX (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA 2006</a>, p. v), 25% on LA's Orange Line BRT (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA</a>, p. xvi), about 31% on the Expo Line extension (70% new riders, 44% of them former drivers; <a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Mass Transit</a>). Among riders who were new to transit, 33–78% used to drive (the same three surveys). The tool uses the all-rider share for new rail lines, after taking out riders who switch from nearby L stations, and the new-rider share for riders a BRT or streetcar adds beyond today's buses. It shows the middle of each range.</p>
@@ -1260,6 +1354,7 @@ function openSources(){
   <li>Lines, stations and trains: <a href="${S.cta.url}" target="_blank" rel="noopener">CTA</a> and <a href="${S.metra.url}" target="_blank" rel="noopener">Metra</a> schedules for a weekday (${S.cta.service_date}).</li>
   <li>People: 2020 Census blocks (<a href="https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/" target="_blank" rel="noopener">Census TIGER</a>), ${(S.blocks.people / 1e6).toFixed(1)} million people in Cook and the five collar counties.</li>
   <li>Jobs: Census LEHD LODES ${S.blocks.jobs_year} (<a href="https://lehd.ces.census.gov/data/" target="_blank" rel="noopener">LEHD</a>), ${(S.blocks.jobs / 1e6).toFixed(1)} million jobs.</li>
+  <li>Streets, expressways and rivers: © OpenStreetMap contributors (ODbL), for snapping, crossings and the basic map.</li>
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Assumptions (not measured)</h3>

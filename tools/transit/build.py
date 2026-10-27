@@ -188,6 +188,27 @@ def main():
     meta = json.load(open(os.path.join(ROOT, 'meta.json')))
     out['lake'] = meta.get('lake'); out['cityOutline'] = meta.get('cityOutline')
     json.dump(out, open(os.path.join(OUT, 'net.json'), 'w'), separators=(',', ':'))
+    # construction cost index (FHWA NHCCI, annual average of quarters; the latest year uses its quarters so far) and CPI-U
+    p = os.path.join(RAW, 'nhcci.csv')
+    if os.path.exists(p):
+        qs = collections.defaultdict(list); lastq = None
+        for r in csv.DictReader(open(p)):
+            y = int(r['quarter'].split()[0]); qs[y].append(float(r['NHCCI'])); lastq = r['quarter']
+        ix = {y: round(sum(v) / len(v), 4) for y, v in qs.items()}
+        cpi = {}
+        pc = os.path.join(RAW, 'cpi.json')
+        if os.path.exists(pc):
+            m = collections.defaultdict(list); latest = None
+            for d in json.load(open(pc))['Results']['series'][0]['data']:
+                if d['period'].startswith('M') and d['period'] != 'M13' and d['value'] not in ('-', ''):
+                    m[int(d['year'])].append(float(d['value']))
+                    if d.get('latest') == 'true':
+                        latest = (int(d['year']), d['periodName'])
+            cpi = {y: round(sum(v) / len(v), 3) for y, v in m.items()}
+        json.dump({'index': ix, 'first': min(ix), 'latest': max(ix), 'latestQuarter': lastq, 'cpi': cpi, 'cpiLatest': max(cpi) if cpi else None,
+                   'source': 'FHWA National Highway Construction Cost Index (data.transportation.gov r94d-n4f9); BLS CPI-U (CUUR0000SA0)'},
+                  open(os.path.join(OUT, 'costindex.json'), 'w'))
+        print('cost index through', lastq, file=sys.stderr)
     # roads, rail corridors and rivers (OpenStreetMap) for snapping, crossing flags and the fallback basemap
     p = os.path.join(RAW, 'osm.json.gz')
     if os.path.exists(p):
