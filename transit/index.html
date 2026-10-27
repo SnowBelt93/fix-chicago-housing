@@ -154,6 +154,10 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   body.drawing #vDraw .vbody{padding:4px 18px 0;flex:none}
   body.drawing #vDraw .drawstat b{font-size:20px}
 }
+.cleanbox{display:flex;flex-direction:column;gap:8px;border-top:1px solid #eef0f2;padding-top:14px}
+.crow{align-items:flex-start}
+.crow b{font-weight:600;font-size:15px;display:block}
+.crow .note{font-size:12.5px}
 .fan2{display:none;font-size:12px;color:var(--faint);margin:0}
 .grab{display:none;align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 0;border:0;padding:0}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
@@ -187,6 +191,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
     <div class="vbody">
       <div class="modes" id="modeList"></div>
       <div class="mylines" id="myLines"></div>
+      <div class="cleanbox" id="cleanBox"></div>
       <p class="fan2">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</p>
     </div>
   </section>
@@ -265,6 +270,29 @@ const BUS_SPEED = 9.06, BUS_HR = 197.88, BUS_CO2 = 0.00196;   // CTA bus (NTD 20
 // long run: total drop in driving ÷ the driving a line replaces directly, as homes and jobs grow near transit
 const LANDUSE_MULT = [1.9, 6.59];  // APTA 2009 national default (Bailey et al. 2008) to median of 28 US regions (Sabouri, Ewing & Kalantari 2024)
 const OCC = 1.5;             // people per car trip (NHTS 2022)
+/* cleaner transit: whole-system switches (values sourced in the Sources dialog) */
+const CLEAN = {
+  ctaBusMi: 0,          // CTA bus miles a year (NTD 2024)  FILL
+  ebusNow: 0,           // share of CTA buses already battery-electric  FILL
+  ebusCostExtra: 0,     // extra cost to make the rest of the fleet electric (buses + chargers)  FILL
+  ctaRailCarMi: 69571292, // CTA rail car revenue miles (NTD 2024)
+  metraGal: 0,          // Metra diesel gallons a year  FILL
+  metraDieselCarMi: 0,  // Metra car miles on diesel lines  FILL
+  meCarMi: 0,           // Metra Electric car miles  FILL
+  metraDieselRouteMi: 0,// route miles of diesel lines  FILL
+  wirePerMi: 47e6,      // overhead wires per route mile (Caltrain)
+  gridLeft: 0,          // share of today's grid CO2 left with Illinois's clean-energy law fully in place  FILL
+  evShare: 0,           // share of Illinois cars that are electric  FILL
+  evKwhMi: 0.30,        // EV electricity per mile  FILL
+  gridKgKwh: 0,         // northern Illinois grid, kg CO2 per kWh  FILL
+  ebusT: 0.00103,       // t CO2 per electric bus mile, RFC grid (FTA Table A-13)
+  dieselGalT: 0.01018,  // t CO2 per gallon of diesel (FTA)
+};
+let clean = {bus:false, metra:false, grid:false};
+const gridMult = () => clean.grid ? CLEAN.gridLeft : 1;
+// grams of CO2 per car mile: gas cars at EPA's 400 g plus the electric cars already on the road
+const carG = () => CAR_G_MI * (1 - CLEAN.evShare) + CLEAN.evShare * CLEAN.evKwhMi * CLEAN.gridKgKwh * 1000 * gridMult();
+const busT = () => clean.bus ? CLEAN.ebusT * gridMult() : BUS_CO2;   // t CO2 per CTA bus mile
 const CAR_G_MI = 400;        // grams of CO2 per car mile (EPA)
 const SERVICE_E = 0.5;       // riders vs. trains run (TCRP Report 95 ch. 9 average)
 const METRA_E = {frequent:0.41, rare:0.76}; // Boston commuter rail headway elasticity by headway before: 10–50 min / over 50 min (TCRP 95 Table 9-5, p. 9-12)
@@ -507,10 +535,11 @@ function evaluate(){
     const sh = M.kind !== "rail" && !L.fromModel ? DIVERT_NEW : DIVERT;
     L.carTrips = [L.newRiders * sh[0] / OCC, L.newRiders * sh[1] / OCC];
     const vmt = L.carTrips.map(t => t * M.tripMi);
-    const transitCO2 = (trips * (L.len / MI) * L.cars * M.co2 - busMi * BUS_CO2) * YEAR_DAYS;          // t a year
-    L.co2 = vmt.map(v => v * CAR_G_MI / 1e6 * YEAR_DAYS - transitCO2);
+    const vehT = M.kind === "rail" || L.mode === "streetcar" ? M.co2 * gridMult() : busT();   // t CO2 per vehicle (car) mile
+    const transitCO2 = (trips * (L.len / MI) * L.cars * vehT - busMi * busT()) * YEAR_DAYS;          // t a year
+    L.co2 = vmt.map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
     L.transitCO2 = transitCO2;
-    L.co2Long = [vmt[0] * LANDUSE_MULT[0], vmt[1] * LANDUSE_MULT[1]].map(v => v * CAR_G_MI / 1e6 * YEAR_DAYS - transitCO2);
+    L.co2Long = [vmt[0] * LANDUSE_MULT[0], vmt[1] * LANDUSE_MULT[1]].map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
     L.perRide = (L.capital.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
   }
 }
@@ -525,6 +554,21 @@ function lineShare(L, railSt){ // split L-station losses across rail lines by th
 // BRT: Cleveland HealthLine corridor riders +31% vs. the bus it replaced (FTA before/after study); range 5% (low end FTA calls common) to 51% (LA Orange Line).
 // Streetcar: no study found showing more riders than a bus on the same street, so no boost.
 const MODE_LIFT = {brt:1.31, streetcar:1}, LIFT_RANGE = {brt:[1.05, 1.51], streetcar:[1, 1]};
+
+// CO2 from today's CTA and Metra service, and how much a set of switches saves (t a year)
+function fleetCO2(c){
+  const g = c.grid ? CLEAN.gridLeft : 1, C = CLEAN;
+  const bus = C.ctaBusMi * (c.bus ? C.ebusT * g : (1 - C.ebusNow) * BUS_CO2 + C.ebusNow * C.ebusT * g);
+  const rail = C.ctaRailCarMi * MODES.subway.co2 * g;
+  const metra = (c.metra ? C.metraDieselCarMi * ELECTRIC_CR * g : C.metraGal * C.dieselGalT) + C.meCarMi * ELECTRIC_CR * g;
+  return {bus, rail, metra, total:bus + rail + metra};
+}
+function cleanReport(){
+  const now = fleetCO2({}), pick = fleetCO2(clean);
+  const one = k => now.total - fleetCO2({[k]:true}).total;
+  return {now, pick, saved:now.total - pick.total, one:{bus:one("bus"), metra:one("metra"), grid:one("grid")},
+    cost:(clean.bus ? CLEAN.ebusCostExtra : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0)};
+}
 
 function evalMetra(L){
   const ml = NET.metraLines.find(l => l.id === L.line);
@@ -542,12 +586,13 @@ function evalMetra(L){
   L.opYear = carHrs * METRA_CAR_HR * YEAR_DAYS;
   L.capital = L.electric ? [ELECTRIFY_PER_MI * L.len / MI, ELECTRIFY_PER_MI * L.len / MI] : [0, 0];
   L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
-  const perTrain = cars => L.electric || isElectric ? cars * ELECTRIC_CR : DIESEL_CR_TRAIN;   // t CO2 per train-mile
+  const elec = L.electric || isElectric || clean.metra;
+  const perTrain = cars => elec ? cars * ELECTRIC_CR * gridMult() : DIESEL_CR_TRAIN;   // t CO2 per train-mile
   const addCO2 = add * (L.len / MI) * perTrain(METRA_CARS_NEW) * YEAR_DAYS;
-  const elecSave = L.electric ? now * (L.len / MI) * (DIESEL_CR_TRAIN - METRA_CARS_NOW * ELECTRIC_CR) * YEAR_DAYS : 0;
-  L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
+  const elecSave = L.electric && !clean.metra ? now * (L.len / MI) * (DIESEL_CR_TRAIN - METRA_CARS_NOW * ELECTRIC_CR * gridMult()) * YEAR_DAYS : 0;   // with Metra-wide electrification on, that saving is counted under Cleaner transit
+  L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   L.elecSave = elecSave;
-  L.co2Long = [L.carTrips[0] * LANDUSE_MULT[0], L.carTrips[1] * LANDUSE_MULT[1]].map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
+  L.co2Long = [L.carTrips[0] * LANDUSE_MULT[0], L.carTrips[1] * LANDUSE_MULT[1]].map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   // walk shed of the line's stations
   const walk = new Set();
   for (const s of ml.stations) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
@@ -757,7 +802,19 @@ function openStart(){
     `<button class="mode" type="button" data-mode="${k}"><span class="ico">${icon(k)}</span><span class="mt"><b>${M.name}</b><span>${M.blurb}</span></span><span class="mc">${moneyRange(M.cost[0], M.cost[1])}<br>a mile</span></button>`).join("") +
     `<button class="mode metra" type="button" data-mode="metra"><span class="ico">${icon("metra", true)}</span><span class="mt"><b>Upgrade a Metra line</b><span>Trains all day in both directions</span></span></button>`;
   for (const b of $("modeList").querySelectorAll(".mode")) b.onclick = () => b.dataset.mode === "metra" ? openMetra() : startDraw(b.dataset.mode);
-  renderMyLines();
+  renderMyLines(); renderClean();
+}
+function renderClean(){
+  if (!CLEAN.ctaBusMi || !CLEAN.metraGal){ $("cleanBox").innerHTML = ""; return; }   // hidden until the fleet figures are filled in
+  const R = cleanReport(), el = $("cleanBox"), pct = v => Math.round(v / R.now.total * 100);
+  const row = (k, title, sub) => `<label class="toggle crow"><span><b>${title}</b><span class="note">${sub} · ${num(R.one[k])} t less CO₂ a year</span></span><input type="checkbox" data-k="${k}" ${clean[k] ? "checked" : ""}></label>`;
+  el.innerHTML = `<h2 class="sec">Cleaner transit</h2>
+    <p class="note">The CTA and Metra put out about ${num(R.now.total)} t of CO₂ a year running today's buses and trains.</p>
+    ${row("bus", "Electric CTA buses", "every bus battery-powered")}
+    ${row("metra", "Electric Metra", "wires on every diesel line")}
+    ${row("grid", "Clean power grid", "Illinois law: carbon-free power")}
+    ${R.saved > 0 ? `<div class="stat g"><div class="v">${num(R.saved)} t less CO₂ a year</div><div class="k">${pct(R.saved)}% of today's transit CO₂${R.cost > 0 ? ` · ${money(R.cost)} to build` : ""}. Your lines below use the cleaner buses, trains and power too.</div></div>` : ""}`;
+  for (const i of el.querySelectorAll("input")) i.onchange = () => { clean[i.dataset.k] = i.checked; save(); renderClean(); renderMyLines(); };
 }
 function renderMyLines(){
   const el = $("myLines");
@@ -809,7 +866,7 @@ function openLine(L){
   if (isM) h += `<p class="note">${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."}</p>`;
   h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   if (isM && L.capped) h += `<p class="note">That's more than double today's trains. Studies only cover up to about double, so the estimate stops there.</p>`;
-  if (isM && !L.alreadyElectric) h += `<label class="toggle">Electric trains (overhead wires) <input type="checkbox" id="elec" ${L.electric ? "checked" : ""}></label>`;
+  if (isM && !L.alreadyElectric && !clean.metra) h += `<label class="toggle">Electric trains (overhead wires) <input type="checkbox" id="elec" ${L.electric ? "checked" : ""}></label>`;
   if (isM && L.alreadyElectric) h += `<p class="note">The Metra Electric already runs on overhead wires.</p>`;
   if (!isM && L.close > 0 && M.kind === "rail") h += `<p class="note">${L.close} station${L.close > 1 ? "s are" : " is"} less than 0.4 mile from the last one. L stations are usually ½ to 1 mile apart; more stops slow every trip, which this estimate doesn't count.</p>`;
   h += `<div class="stats">
@@ -928,6 +985,7 @@ function decode(s){
   const out = [], mk = {s:"subway", e:"elevated", b:"brt"};
   for (const part of s.split("~")){
     try {
+      if (/^C[01]{3}$/.test(part)){ clean = {bus:part[1] === "1", metra:part[2] === "1", grid:part[3] === "1"}; continue; }
       if (part[0] === "M"){ const [id, h, e] = part.slice(1).split("."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains"}); continue; }
       const mode = part.startsWith("st") ? "streetcar" : mk[part[0]]; if (!mode) continue;
       const body = mode === "streetcar" ? part.slice(2) : part.slice(1);
@@ -940,9 +998,10 @@ function decode(s){
   }
   return out;
 }
-function save(){ try { localStorage.setItem("sc-transit", encodePlan()); } catch (e) {} if (cur || lines.length) history.replaceState(null, "", "#p=" + encodePlan()); else history.replaceState(null, "", location.pathname + location.search); }
-function encodePlan(){ return lines.map(L => L.type === "metra" ? `M${L.line}.${L.head}.${L.electric ? 1 : 0}` :
-    (L.mode === "streetcar" ? "st" : L.mode[0]) + L.head + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name)).join("~"); }
+function save(){ try { localStorage.setItem("sc-transit", encodePlan()); } catch (e) {} if (encodePlan()) history.replaceState(null, "", "#p=" + encodePlan()); else history.replaceState(null, "", location.pathname + location.search); }
+function encodePlan(){ const c = (clean.bus || clean.metra || clean.grid) ? ["C" + [clean.bus, clean.metra, clean.grid].map(v => v ? 1 : 0).join("")] : [];
+  return c.concat(lines.map(L => L.type === "metra" ? `M${L.line}.${L.head}.${L.electric ? 1 : 0}` :
+    (L.mode === "streetcar" ? "st" : L.mode[0]) + L.head + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name))).join("~"); }
 function restore(){
   let s = (location.hash.match(/#p=(.+)/) || [])[1];
   if (!s){ try { s = localStorage.getItem("sc-transit"); } catch (e) {} }
