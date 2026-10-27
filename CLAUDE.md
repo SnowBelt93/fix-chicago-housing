@@ -219,6 +219,16 @@ A free, browser-based game on a real 3D model of Chicago's ~485,000 buildings. P
 7. **Copy pass** in the witty voice. Keep every number and source intact.
 8. ~~Verify the two remaining unverified figures~~ Done Oct 12, 2026 (both match).
 
+## Transit tool (Shape Chicago, started Oct 27, 2026)
+
+`transit/index.html` (fixchicagohousing.com/transit/, not linked yet): draw a subway, elevated L, streetcar or BRT line (tap to place stations; tapping an L/Metra station within 16 px and 300 m connects to it), or upgrade a Metra line (trains every 15/20/30/60 min for 18 h, optional wires). MapLibre 4.7.1; OpenFreeMap basemap only on our domains (`ownDomain()`, `?tiles=1` forces it), otherwise lake + city outline. Plans save to localStorage `sc-transit` and the URL hash `#p=` (`encodePlan`/`decode`).
+- Data: `tools/transit/fetch.py` (runs in Actions via `.github/workflows/fetch-transit.yml`; push to fetch.py triggers it) → `tools/raw/transit/`; `tools/transit/model.py` fits the models → `transit/data/model.json`; `tools/transit/build.py` → `transit/data/net.json` (lines, stations, bus stops) + `blocks.bin` (format at the top of build.py). Sources in `tools/transit/sources.md`.
+- Rail riders: station model fit to 143 L stations' 2025 weekday entries (R² 0.57, median miss ~40%); catchment = blocks nearer that station than any other L station within ¾ mi, so new stations take riders from old ones (`L.lost`); service effect fixed at +0.5 (TCRP 95 ch. 9). Range = middle 60% of residuals.
+- BRT/streetcar riders: where CTA buses run along ≥30% of the line (stops within 250 m), start from those routes' 2025 riders × share of route covered, + frequency effect if the new line runs more trips; else the bus-route model. `MODE_LIFT` (faster-bus boost) is 1 until sourced.
+- Metra: 2018 station counts × (NTD UPT 2024/2018 × 1.08) = ×0.553; headway elasticity 0.41–0.76 (Boston, TCRP 95).
+- Cars off the road count only riders new to transit (not those switching from nearby L stations or same-street buses); 15–30% would drive, 1.5 per car. CO₂ subtracts the new service's own emissions (FTA factors, US mix). Open: check FTA region factors (Table A-12) and the diesel commuter-rail factor (0.02717 t per car-mile looks ~4× Metra's actual fuel use).
+- Not modeled: development a line attracts, bus restructuring, fares, crowding.
+
 ## Constraints if republishing as a claude.ai artifact
 
 - Scripts may load only from cdnjs, jsdelivr, unpkg, cdn.tailwindcss.com or code.jquery.com, pinned to exact versions. Stylesheets only from Google Fonts.

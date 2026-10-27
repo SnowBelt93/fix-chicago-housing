@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shape Chicago Transit</title>
+<meta name="description" content="Draw a new subway, elevated line, streetcar or bus rapid transit line in Chicago, or upgrade a Metra line, and see who it reaches, how many people would ride, what it costs, and the cars it takes off the road.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+:root{
+  --ink:#1a1d21; --ink2:#3d434b; --mute:#5a6069; --faint:#6a7079; --line:#e6e9ed; --line2:#d5d9de;
+  --bg:#f5f5f2; --card:#fff; --chip:#f6f7f9; --seg:#f1f2f4; --green:#1f6b44; --greenbg:#eef7f1; --greenmute:#3f5a4b;
+  --warn:#7a4800; --warnbg:#fdf3e0; --red:#e4002b; --flag:#41b6e6; --focus:#2b5da0;
+  --shadow:0 10px 30px rgba(20,28,40,.14); --r:20px;
+  font-family:'Instrument Sans',system-ui,-apple-system,sans-serif; color:var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);overflow:hidden}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:var(--ink)}
+#map{position:fixed;inset:0}
+.maplibregl-ctrl-attrib{font-size:11px}
+header.top{position:fixed;left:0;right:0;top:0;height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;text-decoration:none;color:var(--ink)}
+.tl{display:flex;align-items:center;gap:22px}
+nav.tools{display:flex;gap:4px;padding:4px;background:var(--seg);border-radius:20px;font-size:14px}
+nav.tools a{display:flex;align-items:center;min-height:32px;padding:0 14px;border-radius:16px;color:#4a5059;text-decoration:none}
+nav.tools a[aria-current]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tr{display:flex;gap:10px}
+.btn{min-height:38px;padding:0 16px;border:1px solid var(--line2);border-radius:19px;background:#fff;font-weight:600;font-size:14px}
+.btn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.big{min-height:46px;border-radius:23px;font-size:15px;padding:0 18px}
+.btn:disabled{opacity:.45;cursor:default}
+
+aside#panel{position:fixed;left:20px;top:84px;bottom:20px;width:380px;background:#fff;border-radius:var(--r);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;z-index:4}
+.view{display:none;flex-direction:column;min-height:0;flex:1}
+.view.on{display:flex}
+.vhead{padding:22px 22px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid #eef0f2}
+.vhead h1{margin:0;font-size:24px;letter-spacing:-.02em;font-weight:600}
+.vhead p{margin:0;font-size:15px;line-height:1.45;color:var(--mute)}
+.vbody{padding:16px 22px;display:flex;flex-direction:column;gap:16px;overflow:auto;flex:1;min-height:0}
+.vfoot{padding:14px 22px 18px;border-top:1px solid #eef0f2;display:flex;gap:8px;align-items:center}
+.vfoot .btn.big{flex:none;white-space:nowrap}
+.vfoot .btn.big.dark{flex:1}
+.modes{display:flex;flex-direction:column;gap:8px}
+.mode{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;width:100%}
+.mode:hover{border-color:var(--line2);background:#fafbfc}
+.ico{flex:none;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--ink)}
+.ico svg{width:24px;height:24px}
+.mode .mt{flex:1;display:flex;flex-direction:column;gap:1px}
+.mode .mt b{font-weight:600;font-size:16px}
+.mode .mt span{font-size:13px;color:var(--faint)}
+.mode .mc{font-size:13px;text-align:right;color:var(--ink2);line-height:1.3;font-weight:600}
+.mode.metra .ico{background:#e8ecf0}
+.mylines{display:flex;flex-direction:column;gap:6px}
+.mylines h2,.sec{font-size:13px;font-weight:600;color:#4a5059;margin:0}
+.lrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--chip);border:0;width:100%;text-align:left}
+.lrow .ico{width:32px;height:32px;border-radius:9px}
+.lrow .ico svg{width:18px;height:18px}
+.lrow .lt{flex:1;display:flex;flex-direction:column}
+.lrow .lt b{font-weight:600;font-size:15px}
+.lrow .lt span{font-size:12.5px;color:var(--faint)}
+.lrow .lr{font-weight:600;font-size:14px}
+.total{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.big-num{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big-num .n{font-weight:600;font-size:44px;letter-spacing:-.03em;line-height:1}
+.big-num .l{font-size:14px;line-height:1.3;color:#4a5059}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;padding:4px;background:var(--seg);border-radius:14px}
+.seg button{min-height:36px;border:0;border-radius:10px;background:transparent;font-weight:600;font-size:14px;color:#4a5059}
+.seg button[aria-checked="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat{padding:12px 14px;border-radius:14px;background:var(--chip);min-width:0}
+.stat .v{font-weight:600;font-size:20px;letter-spacing:-.02em}
+.stat .k{font-size:12.5px;color:var(--mute);margin-top:2px;line-height:1.3}
+.stat.g{background:var(--greenbg)} .stat.g .v{color:var(--green)} .stat.g .k{color:var(--greenmute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;font-weight:600}
+.chip{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:14px;background:var(--chip)}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.note{font-size:13px;line-height:1.45;color:var(--mute);margin:0}
+.lhead{display:flex;align-items:center;gap:12px}
+.lhead .ico{width:40px;height:40px;border-radius:11px}
+.lhead .ico svg{width:22px;height:22px}
+.lname{font-weight:600;font-size:22px;letter-spacing:-.02em;border:0;border-bottom:1px dashed transparent;padding:0;width:100%;background:transparent}
+.lname:hover,.lname:focus{border-bottom-color:var(--line2);outline:none}
+.lsub{font-size:13px;color:var(--faint)}
+.back{font-size:14px;color:var(--mute);background:none;border:0;padding:0;min-height:32px;align-self:flex-start}
+.steps{margin:0;padding-left:20px;font-size:15px;line-height:1.55;color:var(--ink2)}
+.drawstat{display:flex;gap:18px;font-size:15px}
+.drawstat b{font-size:24px;font-weight:600;letter-spacing:-.02em;display:block}
+.drawstat span{font-size:13px;color:var(--mute)}
+.mlist{display:flex;flex-direction:column;gap:6px}
+.mbtn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#fff;text-align:left;font-size:15px;width:100%}
+.mbtn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.mbtn .sw{width:14px;height:14px;border-radius:4px;flex:none}
+.mbtn small{margin-left:auto;color:var(--faint);font-size:12.5px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;padding:4px 0}
+.toggle input{width:20px;height:20px;accent-color:var(--ink)}
+.more{border-top:1px solid #eef0f2;padding-top:10px}
+.more summary{font-size:14px;font-weight:600;cursor:pointer;color:var(--ink2);min-height:32px;display:flex;align-items:center}
+.more table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.more td{padding:5px 0;border-bottom:1px solid #f0f1f3;vertical-align:top}
+.more td:last-child{text-align:right;font-weight:600;padding-left:10px;white-space:nowrap}
+
+#layers{position:fixed;right:20px;top:84px;display:flex;gap:6px;padding:6px;background:#fff;border-radius:22px;box-shadow:0 4px 14px rgba(20,28,40,.12);font-size:13px;font-weight:600;z-index:3}
+#layers button{min-height:32px;padding:0 12px;border:0;border-radius:16px;background:transparent;color:var(--ink2)}
+#layers button[aria-pressed="true"]{background:var(--ink);color:#fff}
+#tip{position:fixed;pointer-events:none;background:#fff;border-radius:14px;box-shadow:0 10px 24px rgba(20,28,40,.18);padding:12px 14px;display:none;flex-direction:column;gap:5px;max-width:260px;z-index:6;font-size:13px;color:var(--ink2)}
+#tip b{font-size:15px;color:var(--ink);font-weight:600}
+#tip .row{display:flex;align-items:center;gap:6px}
+#hint{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:20px;padding:10px 16px;font-size:14px;font-weight:600;display:none;z-index:6;box-shadow:var(--shadow);max-width:calc(100vw - 32px);text-align:center}
+#legend{position:fixed;right:20px;bottom:30px;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(20,28,40,.12);padding:10px 12px;font-size:12px;color:var(--ink2);display:none;z-index:3}
+#legend .ramp{width:160px;height:8px;border-radius:4px;margin:6px 0 3px}
+#legend .rl{display:flex;justify-content:space-between}
+.fan{position:fixed;left:420px;bottom:6px;font-size:11px;color:var(--faint);z-index:2;background:rgba(255,255,255,.8);padding:2px 6px;border-radius:6px}
+#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:20;font-size:15px;color:var(--mute);transition:opacity .3s}
+dialog{border:0;border-radius:20px;box-shadow:var(--shadow);padding:0;width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 64px)}
+dialog::backdrop{background:rgba(20,28,40,.35)}
+.dlg{padding:24px 26px;overflow:auto;max-height:calc(100vh - 64px);font-size:14.5px;line-height:1.55}
+.dlg h2{margin:0 0 6px;font-size:24px;letter-spacing:-.02em;font-weight:600}
+.dlg h3{margin:22px 0 6px;font-size:16px;font-weight:600}
+.dlg ul{margin:0;padding-left:20px}
+.dlg li{margin:4px 0}
+.dlg .x{float:right}
+.dlg table{border-collapse:collapse;width:100%;font-size:13.5px}
+.dlg td,.dlg th{text-align:left;padding:6px 8px 6px 0;border-bottom:1px solid #eef0f2;vertical-align:top}
+@media (max-width:859px){
+  header.top{height:56px;padding:0 12px}
+  .brand span{display:none}
+  nav.tools{font-size:13px} nav.tools a{padding:0 11px}
+  .tr .btn{padding:0 12px;min-height:36px}
+  #share{display:none}
+  aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
+  aside#panel.tall{max-height:78vh}
+  .grab{display:block !important}
+  .vhead{padding:8px 18px 12px}
+  .vhead h1{font-size:21px}
+  .vbody{padding:12px 18px}
+  .vfoot{padding:10px 18px 14px}
+  .big-num .n{font-size:38px}
+  #layers{right:12px;left:12px;top:66px;justify-content:center;overflow-x:auto}
+  .fan{left:12px;bottom:auto;top:110px}
+  #legend{right:12px;bottom:auto;top:112px}
+  #hint{bottom:auto;top:116px}
+  .maplibregl-ctrl-bottom-right{bottom:calc(var(--sheet,52vh) + 4px)}
+  .fan{display:none}
+  .fan2{display:block !important}
+  body.drawing #vDraw .vhead p, body.drawing #vDraw .steps, body.drawing #drawSpacing{display:none}
+  body.drawing #vDraw .vhead{flex-direction:row;align-items:center;justify-content:space-between;padding:6px 18px 4px;border:0}
+  body.drawing #vDraw .vhead h1{font-size:17px}
+  body.drawing #vDraw .vbody{padding:4px 18px 0;flex:none}
+  body.drawing #vDraw .drawstat b{font-size:20px}
+}
+.fan2{display:none;font-size:12px;color:var(--faint);margin:0}
+.grab{display:none;align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 0;border:0;padding:0}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div id="loading">Loading Chicago's transit…</div>
+<header class="top">
+  <div class="tl">
+    <a class="brand" href="../" aria-label="Shape Chicago home">
+      <svg width="28" height="28" viewBox="0 0 104 104" aria-hidden="true"><rect width="104" height="104" rx="26" fill="#d9f0fa"/><polygon transform="translate(22,22) scale(2.5)" points="12,1 14.7,7.3 21.5,6.5 17.4,12 21.5,17.5 14.7,16.7 12,23 9.3,16.7 2.5,17.5 6.6,12 2.5,6.5 9.3,7.3" fill="#e4002b" stroke="#e4002b" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      <span>Shape Chicago</span>
+    </a>
+    <nav class="tools" aria-label="Tools"><a href="../">Housing</a><a href="./" aria-current="page">Transit</a></nav>
+  </div>
+  <div class="tr">
+    <button class="btn" id="srcBtn" type="button">Sources</button>
+    <button class="btn dark" id="share" type="button">Share my plan</button>
+  </div>
+</header>
+<div id="map" role="application" aria-label="Map of Chicago's L, Metra and bus lines"></div>
+
+<aside id="panel" aria-label="Transit plan">
+  <button class="grab" id="grab" type="button" aria-label="Resize panel"></button>
+  <!-- start -->
+  <section class="view on" id="vStart">
+    <div class="vhead">
+      <h1>Draw a new line</h1>
+      <p>Pick a type, then tap along a street to place stations. The numbers come from how many people ride the L and buses today.</p>
+    </div>
+    <div class="vbody">
+      <div class="modes" id="modeList"></div>
+      <div class="mylines" id="myLines"></div>
+      <p class="fan2">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</p>
+    </div>
+  </section>
+  <!-- drawing -->
+  <section class="view" id="vDraw">
+    <div class="vhead">
+      <button class="back" type="button" id="drawCancel">Cancel</button>
+      <h1 id="drawTitle">Draw a subway</h1>
+      <p id="drawHelp"></p>
+    </div>
+    <div class="vbody">
+      <ol class="steps">
+        <li>Tap the map to place each station, in order.</li>
+        <li>Tap an L or Metra station to connect to it.</li>
+        <li>Press Done when the line is finished.</li>
+      </ol>
+      <div class="drawstat"><div><b id="dsN">0</b><span>stations</span></div><div><b id="dsMi">0</b><span>miles</span></div></div>
+      <p class="note" id="drawSpacing"></p>
+    </div>
+    <div class="vfoot">
+      <button class="btn big" type="button" id="drawUndo">Undo</button>
+      <button class="btn big dark" type="button" id="drawDone" disabled>Done</button>
+    </div>
+  </section>
+  <!-- metra picker -->
+  <section class="view" id="vMetra">
+    <div class="vhead">
+      <button class="back" type="button" id="metraBack">All lines</button>
+      <h1>Upgrade a Metra line</h1>
+      <p>Run trains all day in both directions, like a subway out to the suburbs. Pick a line.</p>
+    </div>
+    <div class="vbody"><div class="mlist" id="metraList"></div></div>
+  </section>
+  <!-- line report -->
+  <section class="view" id="vLine">
+    <div class="vhead">
+      <button class="back" type="button" id="lineBack">All lines</button>
+      <div class="lhead"><span class="ico" id="lIco"></span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><input class="lname" id="lName" aria-label="Line name"><span class="lsub" id="lSub"></span></span></div>
+    </div>
+    <div class="vbody" id="lBody"></div>
+    <div class="vfoot">
+      <button class="btn big dark" type="button" id="lineAdd">Add a line</button>
+      <button class="btn big" type="button" id="lineEdit">Edit</button>
+      <button class="btn big" type="button" id="lineDel" aria-label="Delete this line">Delete</button>
+    </div>
+  </section>
+</aside>
+
+<div id="layers" role="group" aria-label="Map layers">
+  <button type="button" data-l="rail" aria-pressed="true">L and Metra</button>
+  <button type="button" data-l="bus" aria-pressed="false">Buses</button>
+  <button type="button" data-l="people" aria-pressed="false">People</button>
+  <button type="button" data-l="jobs" aria-pressed="false">Jobs</button>
+</div>
+<div id="legend"><div id="legT">People per square mile</div><div class="ramp" id="legRamp"></div><div class="rl"><span>2,000</span><span>50,000+</span></div></div>
+<div id="tip" role="status"></div>
+<div id="hint"></div>
+<div class="fan">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</div>
+
+<dialog id="srcDlg" aria-labelledby="srcH"><div class="dlg" id="srcBody"></div></dialog>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+"use strict";
+/* ---------- constants (every number sourced in SOURCES below, or listed under ASSUMPTIONS) ---------- */
+const WALK_M = 805;          // half a mile, about a 10-minute walk (assumption: 3 mph)
+const CATCH_M = 1207;        // 3/4 mile: each block counts toward its nearest L station within this distance (as in the model fit)
+const BUS_WALK_M = 402;      // quarter mile: bus transfers, and the corridor a bus-type line serves
+const L_SNAP_M = 250;        // a new station this close to an L station is a transfer at that station (assumption)
+const METRA_XFER_M = 400;
+const HOURS = 20;            // hours of service a day (assumption; most L lines run about 20 hours)
+const YEAR_DAYS = 328;       // 2025 L rides ÷ average 2025 weekday (CTA ridership data); used for riders and service
+const DIVERT = [0.15, 0.30]; // share of riders who would otherwise drive (assumption from Orange Line, Expo Line, Metro Rapid surveys)
+const OCC = 1.5;             // people per car trip (NHTS 2022)
+const CAR_G_MI = 400;        // grams of CO2 per car mile (EPA)
+const SERVICE_E = 0.5;       // riders vs. trains run (TCRP Report 95 ch. 9 average)
+const METRA_E = [0.41, 0.76];// commuter rail headway elasticity, Boston (TCRP Report 95 ch. 9)
+const METRA_SPEED = 29.28, METRA_CAR_HR = 656.28, METRA_CARS_NEW = 4, METRA_CARS_NOW = 6, METRA_HOURS = 18;
+const ELECTRIFY_PER_MI = 47e6;  // Caltrain electrification, $2.44B / 52 mi
+const METRA_TRIP_MI = 22.6, DIESEL_CR = 0.02717, ELECTRIC_CR = 0.00387;  // APTA avg trip; FTA t CO2 per car-mile
+const MODES = {
+  subway:   {name:"Subway", blurb:"Under the street. Fastest to ride, slowest and priciest to build", kind:"rail", cost:[720e6,1050e6], heads:[3,5,7.5,10], head:7.5,
+             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00205, years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             icon:'<path d="M2 21V12a10 10 0 0 1 20 0v9"/><rect x="8" y="9" width="8" height="9" rx="1.5"/>', color:"#1a1d21"},
+  elevated: {name:"Elevated L", blurb:"On a structure above the street, like most of the L", kind:"rail", cost:[384e6,1050e6], heads:[3,5,7.5,10], head:7.5,
+             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00205, years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             icon:'<rect x="6" y="2" width="12" height="9" rx="1.5"/><path d="M2 13h20M5 13v9M19 13v9M12 13v9"/>', color:"#1a1d21"},
+  streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], heads:[5,7.5,10,15], head:10,
+             speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00289, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
+             icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
+  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], heads:[5,7.5,10,15], head:7.5,
+             speed:13.19, cars:1, perHr:197.88, tripMi:3.7, co2:0.00196, years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
+             icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M3 10h18M7 20v-3M17 20v-3"/>', color:"#1a1d21"},
+};
+const METRA_ICON = '<path d="M2 3h20M12 3v4"/><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M7 22l2-4M17 22l-2-4"/>';
+const L_NAMES = {Red:"Red", Blue:"Blue", Brn:"Brown", G:"Green", Org:"Orange", P:"Purple", Pink:"Pink", Y:"Yellow"};
+const TERMINAL_BONUS = true;
+
+/* ---------- state ---------- */
+let NET, MODEL, B, BGRID, LST = [], MST = [], LGRID, MGRID, STOPS, SGRID, BASE_LOSS = null;
+let map, lines = [], cur = null, drawing = null, layerOn = {rail:true, bus:false, people:false, jobs:false};
+const $ = id => document.getElementById(id);
+const KX = 111320 * Math.cos(41.85 * Math.PI / 180), KY = 110574, O = [41.8819, -87.6278];
+const toXY = (lon, lat) => [(lon - O[1]) * KX, (lat - O[0]) * KY];
+const toLL = (x, y) => [O[1] + x / KX, O[0] + y / KY];
+const MI = 1609.34;
+
+/* ---------- formatting ---------- */
+function round2(n){ if (!isFinite(n)) return 0; const a = Math.abs(n); const p = a >= 100000 ? 1000 : a >= 10000 ? 100 : a >= 1000 ? 100 : a >= 100 ? 10 : 1; return Math.round(n / p) * p; }
+const num = n => round2(n).toLocaleString("en-US");
+function money(n){ const a = Math.abs(n);
+  if (a >= 1e9) return "$" + (n / 1e9).toFixed(a >= 1e10 ? 0 : 1).replace(/\.0$/, "") + "B";
+  if (a >= 1e6) return "$" + Math.round(n / 1e6).toLocaleString() + "M";
+  if (a >= 1e3) return "$" + Math.round(n / 1e3) + "K";
+  return "$" + Math.round(n); }
+function moneyRange(a, b){ const fa = money(a), fb = money(b);
+  if (fa.slice(-1) === fb.slice(-1) && fa.slice(-1).match(/[BMK]/)) return fa.slice(0, -1) + "–" + fb.slice(1); return fa + "–" + fb; }
+const miFmt = m => (m / MI).toFixed(m / MI < 10 ? 1 : 0);
+
+/* ---------- data ---------- */
+async function load(){
+  const [net, model, buf] = await Promise.all([
+    fetch("data/net.json").then(r => r.json()), fetch("data/model.json").then(r => r.json()),
+    fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
+  NET = net; MODEL = model;
+  const n = new DataView(buf).getUint32(0, true);
+  const xs = new Int16Array(buf, 4, n), ys = new Int16Array(buf, 4 + 2 * n, n);
+  const pop = new Uint16Array(buf.slice(4 + 4 * n, 4 + 6 * n)), jobs = new Uint16Array(buf.slice(4 + 6 * n, 4 + 8 * n));
+  B = {n, x:new Float32Array(n), y:new Float32Array(n), pop, jobs};
+  for (let i = 0; i < n; i++){ B.x[i] = xs[i] * 5; B.y[i] = ys[i] * 5; }
+  BGRID = grid(n, i => B.x[i], i => B.y[i], 400);
+  LST = NET.lStations.map(s => { const [x, y] = toXY(s.ll[0], s.ll[1]); return {...s, x, y, kind:"L"}; });
+  MST = NET.metraStations.map(s => { const [x, y] = toXY(s.ll[0], s.ll[1]); return {...s, x, y, kind:"M"}; });
+  LGRID = grid(LST.length, i => LST[i].x, i => LST[i].y, 800);
+  MGRID = grid(MST.length, i => MST[i].x, i => MST[i].y, 800);
+  for (const b of NET.bus) b.lenM = b.paths.length ? Math.max(...b.paths.map(p => pathLen(p.map(q => toXY(q[0], q[1]))))) : 1;
+  STOPS = NET.busStops; SGRID = grid(STOPS.x.length, i => STOPS.x[i], i => STOPS.y[i], 400);
+  // each L station's catchment today (blocks to the nearest L station within 3/4 mile)
+  for (const s of LST){ s.pop0 = 0; s.jobs0 = 0; }
+  for (let i = 0; i < n; i++){
+    const k = nearestL(B.x[i], B.y[i]);
+    if (k >= 0){ LST[k].pop0 += pop[i]; LST[k].jobs0 += jobs[i]; }
+  }
+  for (const l of NET.metraLines){
+    let len = 0; for (const p of l.paths) len = Math.max(len, pathLen(p.map(q => toXY(q[0], q[1]))));
+    l.lenM = len;
+    l.stations = MST.filter(s => s.lines.includes(l.id));
+    l.boards = l.stations.reduce((a, s) => a + (s.boards || 0) / s.lines.length, 0);
+  }
+}
+function grid(n, fx, fy, cell){
+  const g = new Map();
+  for (let i = 0; i < n; i++){ const k = Math.floor(fx(i) / cell) + "," + Math.floor(fy(i) / cell); let a = g.get(k); if (!a) g.set(k, a = []); a.push(i); }
+  return {g, cell};
+}
+function near(G, x, y, r, fx, fy, fn){
+  const c = G.cell, i0 = Math.floor((x - r) / c), i1 = Math.floor((x + r) / c), j0 = Math.floor((y - r) / c), j1 = Math.floor((y + r) / c), r2 = r * r;
+  for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++){
+    const a = G.g.get(i + "," + j); if (!a) continue;
+    for (const k of a){ const dx = fx(k) - x, dy = fy(k) - y; const d = dx * dx + dy * dy; if (d <= r2) fn(k, d); }
+  }
+}
+function nearestL(x, y, r = CATCH_M){
+  let best = -1, bd = Infinity;
+  near(LGRID, x, y, r, k => LST[k].x, k => LST[k].y, (k, d) => { if (d < bd){ bd = d; best = k; } });
+  return best;
+}
+function pathLen(p){ let s = 0; for (let i = 1; i < p.length; i++) s += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return s; }
+function segDist(px, py, ax, ay, bx, by){ const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy; let t = L ? ((px - ax) * dx + (py - ay) * dy) / L : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(px - ax - t * dx, py - ay - t * dy); }
+
+/* ---------- model ---------- */
+function railLogBase(f){
+  const c = MODEL.rail.coef;
+  return c.const + c.ln_pop * Math.log(f.pop + 500) + c.ln_jobs * Math.log(f.jobs + 500) + c.terminal * f.term + c.airport * 0
+    + c.transfer * f.xfer + c.ln_loop_mi * Math.log(f.loop + 1) + c.ln_bus_trips * Math.log(f.bus + 50) + c.ln_line_jobs * Math.log(f.lineJobs + 1000)
+    + SERVICE_E * Math.log(Math.max(f.deps, 1));
+}
+function busTripsNear(x, y){ // weekday trips of distinct bus routes with a stop within 1/4 mile
+  const rs = new Set();
+  near(SGRID, x, y, BUS_WALK_M, k => STOPS.x[k], k => STOPS.y[k], k => { for (const r of STOPS.r[k]) rs.add(r); });
+  return rs;
+}
+const tripsPerDay = head => 2 * HOURS * 60 / head;
+
+// Evaluate the whole plan: rail lines compete with each other and with today's L stations for nearby riders.
+function evaluate(){
+  const railSt = []; // all new (not snapped) rail stations across lines
+  for (const L of lines){
+    if (L.type !== "draw") continue;
+    L.st = L.pts.map((p, i) => ({x:p.x, y:p.y, snap:p.snap, i}));
+    if (MODES[L.mode].kind === "rail") for (const s of L.st) if (!(s.snap && s.snap.kind === "L")) railSt.push({s, L});
+  }
+  // catchments: blocks near new rail stations may switch to them from today's L stations
+  const lostPop = new Float64Array(LST.length), lostJobs = new Float64Array(LST.length);
+  for (const {s} of railSt){ s.pop = 0; s.jobs = 0; }
+  if (railSt.length){
+    const sg = grid(railSt.length, i => railSt[i].s.x, i => railSt[i].s.y, 800);
+    const seen = new Uint8Array(B.n);
+    for (const {s} of railSt){
+      near(BGRID, s.x, s.y, CATCH_M, i => B.x[i], i => B.y[i], i => {
+        if (seen[i]) return; seen[i] = 1;
+        let best = -1, bd = Infinity;
+        near(sg, B.x[i], B.y[i], CATCH_M, k => railSt[k].s.x, k => railSt[k].s.y, (k, d) => { if (d < bd){ bd = d; best = k; } });
+        const kL = nearestL(B.x[i], B.y[i]);
+        const dL = kL >= 0 ? (LST[kL].x - B.x[i]) ** 2 + (LST[kL].y - B.y[i]) ** 2 : Infinity;
+        if (best >= 0 && bd < dL){
+          const t = railSt[best].s; t.pop += B.pop[i]; t.jobs += B.jobs[i];
+          if (kL >= 0){ lostPop[kL] += B.pop[i]; lostJobs[kL] += B.jobs[i]; }
+        }
+      });
+    }
+  }
+  const c = MODEL.rail.coef;
+  for (const L of lines){
+    if (L.type === "metra"){ evalMetra(L); continue; }
+    const M = MODES[L.mode], st = L.st, n = st.length;
+    const xy = st.map(s => [s.x, s.y]);
+    L.len = pathLen(xy);
+    const trips = tripsPerDay(L.head);
+    // walk shed + transfers
+    const walk = new Set(), newRail = new Set();
+    for (const s of st) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
+    let pop = 0, jobs = 0, popNew = 0;
+    for (const i of walk){
+      pop += B.pop[i]; jobs += B.jobs[i];
+      const nearL = nearestL(B.x[i], B.y[i], WALK_M) >= 0;
+      let nearM = false; if (!nearL) near(MGRID, B.x[i], B.y[i], WALK_M, k => MST[k].x, k => MST[k].y, () => nearM = true);
+      if (!nearL && !nearM){ popNew += B.pop[i]; newRail.add(i); }
+    }
+    L.pop = pop; L.jobs = jobs; L.popNew = popNew;
+    const xferL = new Set(), xferM = new Set(), xferBus = new Set();
+    for (const s of st){
+      near(LGRID, s.x, s.y, L_SNAP_M, k => LST[k].x, k => LST[k].y, k => LST[k].lines.forEach(l => xferL.add(l)));
+      near(MGRID, s.x, s.y, METRA_XFER_M, k => MST[k].x, k => MST[k].y, k => MST[k].lines.forEach(l => xferM.add(l)));
+      s.busRoutes = busTripsNear(s.x, s.y); s.busRoutes.forEach(r => xferBus.add(r));
+    }
+    L.xferL = [...xferL]; L.xferM = [...xferM]; L.xferBus = [...xferBus];
+    // riders
+    let riders = 0, lost = 0, gainOld = 0;
+    if (M.kind === "rail"){
+      const lineJobs = st.reduce((a, s) => a + (s.snap && s.snap.kind === "L" ? s.snap.ref.jobs0 : s.jobs || 0), 0);
+      for (const s of st){
+        if (s.snap && s.snap.kind === "L"){
+          const o = s.snap.ref, wasX = o.lines.length > 1 ? 1 : 0;
+          const add = SERVICE_E * Math.log((o.deps + trips) / Math.max(o.deps, 1)) + (wasX ? 0 : c.transfer);
+          s.riders = (o.rides || 0) * (Math.exp(add) - 1); gainOld += s.riders;
+        } else {
+          const f = {pop:s.pop, jobs:s.jobs, term:(s.i === 0 || s.i === n - 1) && TERMINAL_BONUS ? 1 : 0,
+                     xfer:(xferAt(s) ? 1 : 0), loop:Math.hypot(s.x, s.y) / MI,
+                     bus:[...s.busRoutes].reduce((a, r) => a + NET.bus[r].trips, 0), lineJobs, deps:trips};
+          s.riders = Math.exp(railLogBase(f));
+        }
+        riders += s.riders;
+      }
+      L.band = MODEL.rail.band_20_80;
+    } else {
+      // bus-type: CTA bus-route model on the corridor within 1/4 mile of the line
+      const corr = new Set();
+      for (let k = 0; k < xy.length - 1; k++){
+        const [ax, ay] = xy[k], [bx, by] = xy[k + 1], segL = Math.hypot(bx - ax, by - ay), steps = Math.max(1, Math.ceil(segL / 300));
+        for (let t = 0; t <= steps; t++){
+          const px = ax + (bx - ax) * t / steps, py = ay + (by - ay) * t / steps;
+          near(BGRID, px, py, BUS_WALK_M + 150, i => B.x[i], i => B.y[i], i => { if (segDist(B.x[i], B.y[i], ax, ay, bx, by) <= BUS_WALK_M) corr.add(i); });
+        }
+      }
+      let cp = 0, cj = 0; for (const i of corr){ cp += B.pop[i]; cj += B.jobs[i]; }
+      const mi = Math.max(L.len / MI, 0.5), bc = MODEL.bus.coef;
+      const perMi = Math.exp(bc.const + bc.ln_pop_per_mi * Math.log(cp / mi + 100) + bc.ln_jobs_per_mi * Math.log(cj / mi + 100)) * Math.pow(trips, SERVICE_E);
+      const modelRiders = perMi * mi;
+      // where buses already run along most of the line, start from their real riders on this stretch
+      const {cnt, samples} = routeCover(st);
+      let base = 0, baseTrips = 0; L.onStreet = [];
+      for (const [r, k] of cnt){
+        if (k < Math.max(10, samples * 0.3) || !NET.bus[r].rides) continue;   // runs along at least 30% of the line and 2 km
+        const share = Math.min(1, k * 200 / NET.bus[r].lenM);
+        base += NET.bus[r].rides * share; baseTrips += NET.bus[r].trips; L.onStreet.push(NET.bus[r].short);
+      }
+      L.baseBus = base; L.baseTrips = baseTrips;
+      riders = (base > 0 ? base * Math.pow(Math.max(1, trips / baseTrips), SERVICE_E) : modelRiders) * (MODE_LIFT[L.mode] || 1);
+      L.fromModel = !(base > 0);
+      L.band = MODEL.bus.band_20_80;
+      const per = riders / Math.max(1, n); for (const s of st) s.riders = per;
+    }
+    // riders today's L stations would lose to this line (their nearby blocks now closer to a new station)
+    if (M.kind === "rail"){
+      for (let k = 0; k < LST.length; k++){
+        if (!lostPop[k] && !lostJobs[k]) continue;
+        const o = LST[k]; if (!o.rides) continue;
+        const r = Math.exp(c.ln_pop * (Math.log(Math.max(o.pop0 - lostPop[k], 0) + 500) - Math.log(o.pop0 + 500)) + c.ln_jobs * (Math.log(Math.max(o.jobs0 - lostJobs[k], 0) + 500) - Math.log(o.jobs0 + 500)));
+        lost += o.rides * (1 - r);
+      }
+    }
+    L.riders = riders; L.lost = M.kind === "rail" ? lost * lineShare(L, railSt) : 0; L.gainOld = gainOld;
+    if (M.kind !== "rail" && !L.fromModel) L.band = [0, 0];   // based on today's counted riders: no model range
+    // costs
+    L.capital = [M.cost[0] * L.len / MI, M.cost[1] * L.len / MI];
+    L.cars = M.kind === "rail" ? (riders < 20000 ? 4 : riders < 50000 ? 6 : 8) : 1;   // trains sized to riders, like the CTA's 4- to 8-car trains (assumption)
+    const vehHrs = trips * (L.len / MI) / M.speed * L.cars;   // revenue vehicle (car) hours a weekday
+    L.opYear = vehHrs * M.perHr * YEAR_DAYS;
+    // cars and CO2
+    // only riders new to transit can leave a car at home: not those switching from nearby L stations or from buses on the same street
+    L.newRiders = Math.max(0, riders - (M.kind === "rail" ? L.lost : L.baseBus || 0));
+    L.carTrips = [L.newRiders * DIVERT[0] / OCC, L.newRiders * DIVERT[1] / OCC];
+    const vmt = L.carTrips.map(t => t * M.tripMi);
+    // a bus-type line on a street with buses replaces their trips; only extra trips add emissions
+    const addTrips = M.kind === "rail" ? trips : Math.max(0, trips - (L.baseBus > 0 ? L.baseTrips : 0));
+    const transitCO2 = addTrips * (L.len / MI) * L.cars * M.co2 * YEAR_DAYS;          // t a year
+    L.co2 = vmt.map(v => v * CAR_G_MI / 1e6 * YEAR_DAYS - transitCO2);
+    L.transitCO2 = transitCO2;
+    L.perRide = (L.capital.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
+  }
+}
+function xferAt(s){ // a transfer to another rail line: an L station within 250 m or a Metra station within 400 m
+  if (s.snap) return true;
+  if (nearestL(s.x, s.y, L_SNAP_M) >= 0) return true;
+  let x = false; near(MGRID, s.x, s.y, METRA_XFER_M, k => MST[k].x, k => MST[k].y, () => x = true); return x; }
+function lineShare(L, railSt){ // split L-station losses across rail lines by their share of new stations
+  const mine = railSt.filter(r => r.L === L).length; return railSt.length ? mine / railSt.length : 0;
+}
+// Bus-type lines: corridor riders from the CTA bus model, times a mode factor (filled in once sourced; 1 = like a local bus)
+const MODE_LIFT = {brt:1, streetcar:1};
+
+function evalMetra(L){
+  const ml = NET.metraLines.find(l => l.id === L.line);
+  L.len = ml.lenM; L.st = ml.stations;
+  const now = ml.trips, want = 2 * METRA_HOURS * 60 / L.head, add = Math.max(0, want - now);
+  L.base = ml.boards; L.tripsNow = now; L.tripsNew = Math.max(now, want);
+  L.riders = add > 0 ? METRA_E.map(e => ml.boards * (Math.pow(L.tripsNew / now, e) - 1)) : [0, 0];
+  const mid = (L.riders[0] + L.riders[1]) / 2;
+  const carHrs = add * (L.len / MI) / METRA_SPEED * METRA_CARS_NEW;
+  L.opYear = carHrs * METRA_CAR_HR * YEAR_DAYS;
+  L.capital = L.electric ? [ELECTRIFY_PER_MI * L.len / MI, ELECTRIFY_PER_MI * L.len / MI] : [0, 0];
+  L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
+  const fuel = L.electric ? ELECTRIC_CR : DIESEL_CR;
+  const addCO2 = add * (L.len / MI) * METRA_CARS_NEW * fuel * YEAR_DAYS;
+  const elecSave = L.electric ? now * (L.len / MI) * METRA_CARS_NOW * (DIESEL_CR - ELECTRIC_CR) * YEAR_DAYS : 0;
+  L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
+  L.elecSave = elecSave;
+  // walk shed of the line's stations
+  const walk = new Set();
+  for (const s of ml.stations) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
+  L.pop = 0; L.jobs = 0; for (const i of walk){ L.pop += B.pop[i]; L.jobs += B.jobs[i]; }
+  L.perRide = mid > 0 ? (L.capital[0] / 30 + L.opYear) / (mid * YEAR_DAYS) : 0;
+}
+
+/* ---------- map ---------- */
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org))$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function fallbackStyle(){
+  const lake = {type:"FeatureCollection", features:(NET.lake || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
+  const city = {type:"FeatureCollection", features:(NET.cityOutline || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
+  return {version:8, sources:{lake:{type:"geojson", data:lake}, city:{type:"geojson", data:city}},
+    layers:[{id:"bg", type:"background", paint:{"background-color":"#eef0ea"}},
+            {id:"city", type:"fill", source:"city", paint:{"fill-color":"#f8f8f5"}},
+            {id:"cityline", type:"line", source:"city", paint:{"line-color":"#d8dbd4", "line-width":1}},
+            {id:"lake", type:"fill", source:"lake", paint:{"fill-color":"#cfe6f2"}}]};
+}
+function fc(features){ return {type:"FeatureCollection", features}; }
+function lineFeatures(arr, extra){ return arr.map(l => ({type:"Feature", properties:{id:l.id, name:l.name, color:l.color, ...(extra ? extra(l) : {})}, geometry:{type:"MultiLineString", coordinates:l.paths}})); }
+function metersAt(z){ return 156543.03 * Math.cos(41.85 * Math.PI / 180) / Math.pow(2, z); }
+function radiusExpr(m){ return ["interpolate", ["exponential", 2], ["zoom"], 6, m / metersAt(6), 18, m / metersAt(18)]; }
+
+async function initMap(){
+  let style = fallbackStyle(), credit = "City of Chicago, CTA, Metra, U.S. Census";
+  if (ownDomain()){
+    try { style = await fetch("https://tiles.openfreemap.org/styles/positron").then(r => r.json());
+          credit = '© <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · CTA, Metra, U.S. Census'; }
+    catch (e) { style = fallbackStyle(); }
+  }
+  const phone = matchMedia("(max-width:859px)").matches;
+  map = new maplibregl.Map({container:"map", style, center:phone ? [-87.68, 41.84] : [-87.68, 41.86], zoom:phone ? 9.4 : 10.3, minZoom:8, maxZoom:17,
+    maxBounds:[[-89.2, 41.1], [-86.9, 42.6]], attributionControl:{compact:true, customAttribution:credit}, dragRotate:false, pitchWithRotate:false,
+    fadeDuration:0, doubleClickZoom:false});
+  map.touchZoomRotate.disableRotation();
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}), "bottom-right");
+  await new Promise(r => map.on("load", r));
+  if (style.sources && style.sources.lake === undefined && ownDomain()){
+    // tone the vector basemap down so transit lines read first
+    for (const l of map.getStyle().layers){
+      try { if (l.type === "symbol" && /poi|housenum/.test(l.id)) map.setLayoutProperty(l.id, "visibility", "none"); } catch (e) {}
+    }
+  }
+  map.addSource("people", {type:"canvas", canvas:makeDensityCanvas("pop"), coordinates:DENS_COORDS, animate:false});
+  map.addLayer({id:"people", type:"raster", source:"people", paint:{"raster-opacity":0.85, "raster-fade-duration":0}, layout:{visibility:"none"}});
+  map.addSource("jobs", {type:"canvas", canvas:makeDensityCanvas("jobs"), coordinates:DENS_COORDS, animate:false});
+  map.addLayer({id:"jobs", type:"raster", source:"jobs", paint:{"raster-opacity":0.85, "raster-fade-duration":0}, layout:{visibility:"none"}});
+  map.addSource("bus", {type:"geojson", data:fc(NET.bus.map(b => ({type:"Feature", properties:{name:b.short + " " + b.name}, geometry:{type:"MultiLineString", coordinates:b.paths}})))});
+  map.addLayer({id:"bus", type:"line", source:"bus", layout:{visibility:"none", "line-join":"round"}, paint:{"line-color":"#7d8691", "line-width":["interpolate", ["linear"], ["zoom"], 9, 0.5, 14, 2], "line-opacity":0.55}});
+  map.addSource("metra", {type:"geojson", data:fc(lineFeatures(NET.metraLines))});
+  map.addLayer({id:"metra-case", type:"line", source:"metra", layout:{"line-join":"round"}, paint:{"line-color":"#fff", "line-width":["interpolate", ["linear"], ["zoom"], 9, 2.5, 14, 6]}});
+  map.addLayer({id:"metra", type:"line", source:"metra", layout:{"line-join":"round"}, paint:{"line-color":["get", "color"], "line-width":["interpolate", ["linear"], ["zoom"], 9, 1.2, 14, 3], "line-dasharray":[3, 1.2]}});
+  map.addSource("L", {type:"geojson", data:fc(lineFeatures(NET.lLines))});
+  map.addLayer({id:"L-case", type:"line", source:"L", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#fff", "line-width":["interpolate", ["linear"], ["zoom"], 9, 3.5, 14, 8]}});
+  map.addLayer({id:"L", type:"line", source:"L", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":["get", "color"], "line-width":["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5]}});
+  map.addSource("mst", {type:"geojson", data:fc(MST.map((s, i) => ({type:"Feature", id:i, properties:{k:"M", i}, geometry:{type:"Point", coordinates:s.ll}})))});
+  map.addLayer({id:"mst", type:"circle", source:"mst", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 1.6, 14, 5], "circle-color":"#fff", "circle-stroke-color":"#6b7480", "circle-stroke-width":["interpolate", ["linear"], ["zoom"], 9, 1, 14, 1.8]}});
+  map.addSource("lst", {type:"geojson", data:fc(LST.map((s, i) => ({type:"Feature", id:i, properties:{k:"L", i, x:s.lines.length > 1 ? 1 : 0}, geometry:{type:"Point", coordinates:s.ll}})))});
+  map.addLayer({id:"lst", type:"circle", source:"lst", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "x"], 1], 2.6, 1.8], 14, ["case", ["==", ["get", "x"], 1], 7, 5]], "circle-color":"#fff", "circle-stroke-color":"#1a1d21", "circle-stroke-width":["interpolate", ["linear"], ["zoom"], 9, 1, 14, 2]}});
+  // user plan
+  map.addSource("walk", {type:"geojson", data:fc([])});
+  map.addLayer({id:"walk", type:"circle", source:"walk", paint:{"circle-radius":radiusExpr(WALK_M), "circle-color":"#1a1d21", "circle-opacity":0.06, "circle-pitch-alignment":"map"}});
+  map.addSource("plan", {type:"geojson", data:fc([])});
+  map.addLayer({id:"plan-case", type:"line", source:"plan", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#fff", "line-width":["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "sel"], 7, 5], 14, ["case", ["get", "sel"], 13, 10]]}});
+  const planW = ["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "sel"], 4, 2.6], 14, ["case", ["get", "sel"], 8, 6]];
+  map.addLayer({id:"plan", type:"line", source:"plan", filter:["!", ["get", "metra"]], layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":["get", "color"], "line-width":planW}});
+  map.addLayer({id:"plan-metra", type:"line", source:"plan", filter:["get", "metra"], layout:{"line-join":"round"}, paint:{"line-color":["get", "color"], "line-width":planW, "line-dasharray":[2, 1]}});
+  map.addSource("preview", {type:"geojson", data:fc([])});
+  map.addLayer({id:"preview", type:"line", source:"preview", paint:{"line-color":"#1a1d21", "line-width":2, "line-dasharray":[2, 2], "line-opacity":0.6}});
+  map.addSource("pst", {type:"geojson", data:fc([])});
+  map.addLayer({id:"pst", type:"circle", source:"pst", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "x"], 4.5, 3.2], 14, ["case", ["get", "x"], 9, 7]], "circle-color":"#fff", "circle-stroke-color":"#1a1d21", "circle-stroke-width":["case", ["get", "x"], 2.4, 2]}});
+  bindMap();
+}
+
+/* density canvases: people or jobs per square mile on a 400 m grid */
+let DENS_COORDS;
+function makeDensityCanvas(field){
+  const cell = 400; let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (let i = 0; i < B.n; i++){ if (B.x[i] < x0) x0 = B.x[i]; if (B.x[i] > x1) x1 = B.x[i]; if (B.y[i] < y0) y0 = B.y[i]; if (B.y[i] > y1) y1 = B.y[i]; }
+  x0 = Math.floor(x0 / cell) * cell; y0 = Math.floor(y0 / cell) * cell;
+  const W = Math.ceil((x1 - x0) / cell) + 1, H = Math.ceil((y1 - y0) / cell) + 1;
+  const v = new Float32Array(W * H), src = field === "pop" ? B.pop : B.jobs;
+  for (let i = 0; i < B.n; i++){ const gx = Math.floor((B.x[i] - x0) / cell), gy = H - 1 - Math.floor((B.y[i] - y0) / cell); v[gy * W + gx] += src[i]; }
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const ctx = cv.getContext("2d"), img = ctx.createImageData(W, H), sqmi = (cell * cell) / (MI * MI);
+  const rgb = field === "pop" ? [43, 93, 160] : [118, 74, 160];
+  for (let k = 0; k < W * H; k++){
+    const d = v[k] / sqmi; if (d < 2000) continue;          // people (or jobs) per sq mi
+    const t = Math.min(1, Math.log(d / 2000) / Math.log(50000 / 2000));
+    img.data[4 * k] = rgb[0]; img.data[4 * k + 1] = rgb[1]; img.data[4 * k + 2] = rgb[2]; img.data[4 * k + 3] = Math.round(30 + 190 * t);
+  }
+  ctx.putImageData(img, 0, 0);
+  DENS_COORDS = [toLL(x0, y0 + H * cell), toLL(x0 + W * cell, y0 + H * cell), toLL(x0 + W * cell, y0), toLL(x0, y0)];
+  return cv;
+}
+
+/* ---------- drawing ---------- */
+function startDraw(mode, existing){
+  drawing = {mode, pts:existing ? existing.pts.slice() : [], editing:existing || null};
+  $("drawTitle").textContent = existing ? "Edit " + existing.name : "Draw a " + MODES[mode].name.toLowerCase().replace("elevated l", "new elevated line").replace("bus rapid transit", "bus rapid transit line");
+  $("drawHelp").textContent = MODES[mode].blurb + ".";
+  $("drawSpacing").textContent = MODES[mode].spacing;
+  document.body.classList.add("drawing"); show("vDraw"); map.getCanvas().style.cursor = "crosshair"; hint("Tap the map to place the first station");
+  refreshDraw();
+}
+function snapAt(lngLat, point){
+  // nearest L or Metra station within 16 px and 300 m
+  let best = null, bd = Math.min(16, 300 / metersAt(map.getZoom())) ** 2;
+  for (const [arr, kind] of [[LST, "L"], [MST, "M"]]){
+    for (const s of arr){
+      const p = map.project(s.ll), d = (p.x - point.x) ** 2 + (p.y - point.y) ** 2;
+      if (d < bd){ bd = d; best = {kind, ref:s}; }
+    }
+  }
+  return best;
+}
+function addPoint(e){
+  const sn = snapAt(e.lngLat, e.point);
+  const ll = sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat];
+  const [x, y] = toXY(ll[0], ll[1]);
+  drawing.pts.push({x, y, ll, snap:sn});
+  refreshDraw(); hint(drawing.pts.length < 2 ? "Now tap where the next station goes" : "Keep going, or press Done");
+}
+function refreshDraw(){
+  const p = drawing.pts;
+  $("dsN").textContent = p.length; $("dsMi").textContent = miFmt(pathLen(p.map(q => [q.x, q.y])));
+  $("drawDone").disabled = p.length < 2; $("drawUndo").disabled = !p.length;
+  renderPlan();
+}
+function finishDraw(){
+  if (!drawing || drawing.pts.length < 2) return;
+  const M = MODES[drawing.mode];
+  let L = drawing.editing;
+  if (L){ L.pts = drawing.pts; }
+  else {
+    L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:M.head, name:autoName(drawing.mode, drawing.pts)};
+    lines.push(L);
+  }
+  drawing = null; document.body.classList.remove("drawing"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([]));
+  openLine(L);
+}
+function cancelDraw(){ drawing = null; document.body.classList.remove("drawing"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([])); renderPlan(); cur ? openLine(cur) : openStart(); }
+function routeCover(pts){ // for each bus route, how many 200 m samples along the line have one of its stops within 250 m (major bus streets are ½ mile apart)
+  const xy = pts.map(p => [p.x, p.y]), cnt = new Map(); let samples = 0;
+  for (let k = 0; k < xy.length - 1; k++){
+    const [ax, ay] = xy[k], [bx, by] = xy[k + 1], n = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / 200));
+    for (let t = 0; t < n; t++){
+      const px = ax + (bx - ax) * t / n, py = ay + (by - ay) * t / n, rs = new Set(); samples++;
+      near(SGRID, px, py, 250, k2 => STOPS.x[k2], k2 => STOPS.y[k2], k2 => STOPS.r[k2].forEach(r => rs.add(r)));
+      for (const r of rs) cnt.set(r, (cnt.get(r) || 0) + 1);
+    }
+  }
+  return {cnt, samples};
+}
+function streetOf(pts){ // the bus route whose stops line most of the way: its name is the street
+  const {cnt, samples} = routeCover(pts);
+  let best = null, bn = 0; for (const [r, c] of cnt) if (c > bn){ bn = c; best = r; }
+  return best != null && bn >= samples * 0.5 ? NET.bus[best].name.replace(/ ?(Express|Limited|Owl)$/i, "").split("/")[0] : null;
+}
+function autoName(mode, pts){
+  const M = MODES[mode], st = streetOf(pts), short = {subway:"subway", elevated:"L", streetcar:"streetcar", brt:"BRT"}[mode];
+  if (st && !lines.some(l => l.name === st + " " + short)) return st + " " + short;
+  const named = pts.filter(p => p.snap).map(p => p.snap.ref.name.split(" (")[0]);
+  if (named.length >= 2 && named[0] !== named[named.length - 1]) return named[0] + " to " + named[named.length - 1] + " " + (mode === "brt" ? "BRT" : M.name.toLowerCase().replace("elevated l", "L"));
+  const n = lines.filter(l => l.mode === mode).length + 1;
+  return "New " + M.name.toLowerCase().replace("bus rapid transit", "BRT line").replace("elevated l", "elevated line") + (n > 1 ? " " + n : "");
+}
+
+/* ---------- render ---------- */
+function renderPlan(){
+  if (!map || !map.getSource("plan")) return;
+  const feats = [], st = [], walk = [];
+  for (const L of lines){
+    if (L.type === "metra"){
+      const ml = NET.metraLines.find(l => l.id === L.line);
+      feats.push({type:"Feature", properties:{color:ml.color, sel:L === cur, metra:true}, geometry:{type:"MultiLineString", coordinates:ml.paths}});
+      if (L === cur) for (const s of ml.stations) walk.push({type:"Feature", geometry:{type:"Point", coordinates:s.ll}});
+      continue;
+    }
+    if (drawing && drawing.editing === L) continue;
+    feats.push({type:"Feature", properties:{color:MODES[L.mode].color, sel:L === cur, metra:false}, geometry:{type:"LineString", coordinates:L.pts.map(p => p.ll)}});
+    for (const p of L.pts){ st.push({type:"Feature", properties:{x:!!p.snap}, geometry:{type:"Point", coordinates:p.ll}}); if (L === cur) walk.push({type:"Feature", geometry:{type:"Point", coordinates:p.ll}}); }
+  }
+  if (drawing){
+    const c = drawing.pts.map(p => p.ll);
+    if (c.length > 1) feats.push({type:"Feature", properties:{color:"#1a1d21", sel:true, metra:false}, geometry:{type:"LineString", coordinates:c}});
+    for (const p of drawing.pts){ st.push({type:"Feature", properties:{x:!!p.snap}, geometry:{type:"Point", coordinates:p.ll}}); walk.push({type:"Feature", geometry:{type:"Point", coordinates:p.ll}}); }
+  }
+  map.getSource("plan").setData(fc(feats)); map.getSource("pst").setData(fc(st)); map.getSource("walk").setData(fc(walk));
+}
+
+function show(id){ for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id); $("panel").scrollTop = 0; requestAnimationFrame(padMap); }
+function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
+  if (!map) return;
+  const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
+  document.documentElement.style.setProperty("--sheet", h + "px");
+  const pad = phone ? {top:110, bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:400, right:0}, key = JSON.stringify(pad);
+  if (key !== padMap.last){ padMap.last = key; map.setPadding(pad); }   // setPadding stops a camera move, so only when it changes
+}
+function hint(t){ const h = $("hint"); h.textContent = t; h.style.display = t ? "block" : "none"; }
+function icon(mode, light){ const svg = mode === "metra" ? METRA_ICON : MODES[mode].icon;
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="${light ? "#3d4855" : "#fff"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svg}</svg>`; }
+
+function openStart(){
+  cur = null; renderPlan(); show("vStart");
+  $("modeList").innerHTML = Object.entries(MODES).map(([k, M]) =>
+    `<button class="mode" type="button" data-mode="${k}"><span class="ico">${icon(k)}</span><span class="mt"><b>${M.name}</b><span>${M.blurb}</span></span><span class="mc">${moneyRange(M.cost[0], M.cost[1])}<br>a mile</span></button>`).join("") +
+    `<button class="mode metra" type="button" data-mode="metra"><span class="ico">${icon("metra", true)}</span><span class="mt"><b>Upgrade a Metra line</b><span>Trains all day in both directions</span></span></button>`;
+  for (const b of $("modeList").querySelectorAll(".mode")) b.onclick = () => b.dataset.mode === "metra" ? openMetra() : startDraw(b.dataset.mode);
+  renderMyLines();
+}
+function renderMyLines(){
+  const el = $("myLines");
+  if (!lines.length){ el.innerHTML = `<p class="note">Your lines will show up here. Try a subway under Western Avenue, or an elevated line to the Southwest Side.</p>`; return; }
+  evaluate();
+  const ridersOf = L => L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
+  const tot = lines.reduce((a, L) => a + ridersOf(L), 0), cap = lines.reduce((a, L) => [a[0] + L.capital[0], a[1] + L.capital[1]], [0, 0]);
+  const op = lines.reduce((a, L) => a + L.opYear, 0), cars = lines.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
+  el.innerHTML = `<h2>Your plan</h2>` + lines.map((L, i) => `<button class="lrow" type="button" data-i="${i}"><span class="ico" ${L.type === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(L.type === "metra" ? "metra" : L.mode, L.type === "metra")}</span><span class="lt"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len)} mi</span></span><span class="lr">${num(ridersOf(L))}</span></button>`).join("") +
+    (lines.length > 1 ? `<div class="total"><div class="stat"><div class="v">${num(tot)}</div><div class="k">new riders a weekday, all lines</div></div><div class="stat"><div class="v">${moneyRange(cap[0], cap[1])}</div><div class="k">to build, all lines</div></div><div class="stat"><div class="v">${money(op)}</div><div class="k">a year to run</div></div><div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div></div>` : "");
+  for (const b of el.querySelectorAll(".lrow")) b.onclick = () => openLine(lines[+b.dataset.i]);
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]));
+
+function openMetra(){
+  show("vMetra");
+  $("metraList").innerHTML = NET.metraLines.filter(l => l.trips > 0).map(l => `<button class="mbtn" type="button" data-id="${l.id}"><span class="sw" style="background:${l.color}"></span>${esc(l.name)}<small>${l.trips} trains a weekday</small></button>`).join("");
+  for (const b of $("metraList").querySelectorAll(".mbtn")){
+    b.onclick = () => {
+      let L = lines.find(x => x.type === "metra" && x.line === b.dataset.id);
+      if (!L){ const ml = NET.metraLines.find(l => l.id === b.dataset.id); L = {type:"metra", id:"m" + ml.id, line:ml.id, head:15, electric:false, name:ml.name + " all-day trains"}; lines.push(L); }
+      openLine(L);
+    };
+    b.onmouseenter = () => { const ml = NET.metraLines.find(l => l.id === b.dataset.id); fitTo(ml.paths.flat()); };
+  }
+}
+function fitTo(coords){
+  if (!coords.length) return;
+  const b = coords.reduce((a, c) => [[Math.min(a[0][0], c[0]), Math.min(a[0][1], c[1])], [Math.max(a[1][0], c[0]), Math.max(a[1][1], c[1])]], [[180, 90], [-180, -90]]);
+  const phone = matchMedia("(max-width:859px)").matches;
+  map.fitBounds(b, {padding:phone ? {top:30, bottom:30, left:30, right:30} : {top:80, bottom:60, left:40, right:60}, maxZoom:13.5, duration:600});
+}
+
+function openLine(L){
+  cur = L; evaluate(); renderPlan(); show("vLine");
+  const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
+  $("lIco").innerHTML = icon(isM ? "metra" : L.mode, isM); $("lIco").style.background = isM ? "#e8ecf0" : "";
+  $("lName").value = L.name; $("lName").oninput = e => { L.name = e.target.value; save(); };
+  $("lSub").textContent = isM ? `Metra · ${miFmt(L.len)} mi · ${L.st.length} stations` : `${M.name} · ${miFmt(L.len)} mi · ${L.pts.length} stations`;
+  $("lineEdit").style.display = isM ? "none" : "";
+  const riders = isM ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
+  const lo = isM ? L.riders[0] : riders * Math.exp(L.band[0]), hi = isM ? L.riders[1] : riders * Math.exp(L.band[1]);
+  const heads = isM ? [15, 20, 30, 60] : M.heads;
+  const cars = (L.carTrips[0] + L.carTrips[1]) / 2, co2 = (L.co2[0] + L.co2[1]) / 2;
+  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM ? "more riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : "from today's bus counts"}</span></div>`;
+  if (!isM && L.lost > 200) h += `<p class="note">About ${num(L.lost)} of them would switch from nearby L stations.</p>`;
+  if (!isM && L.baseBus > 0) h += `<p class="note">Includes about ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today.</p>`;
+  if (isM) h += `<p class="note">${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."}</p>`;
+  h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
+  if (isM) h += `<label class="toggle">Electric trains (overhead wires) <input type="checkbox" id="elec" ${L.electric ? "checked" : ""}></label>`;
+  h += `<div class="stats">
+    <div class="stat"><div class="v">${num(L.pop)}</div><div class="k">people within a 10-min walk</div></div>
+    <div class="stat"><div class="v">${num(L.jobs)}</div><div class="k">jobs within a 10-min walk</div></div>
+    <div class="stat"><div class="v">${L.capital[1] > 0 ? (isM ? money(L.capital[0]) : moneyRange(L.capital[0], L.capital[1])) : "$0"}</div><div class="k">${isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`}</div></div>
+    <div class="stat"><div class="v">${money(L.opYear)}</div><div class="k">${isM ? "more a year to run" : "a year to run"}</div></div>
+    <div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div>
+    ${co2 >= 0 ? `<div class="stat g"><div class="v">${num(co2)} t</div><div class="k">less CO₂ a year</div></div>` : `<div class="stat"><div class="v">${num(-co2)} t</div><div class="k">more CO₂ a year: the ${isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s"} use more energy than the car trips they replace</div></div>`}
+  </div>`;
+  if (!isM){
+    h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Transfers</span><div class="chips">` +
+      (L.xferL.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="chip"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l}</span>`; }).join("")) +
+      (L.xferM.length ? `<span class="chip"><span class="dot" style="border:2px solid #6b7480"></span>${L.xferM.length} Metra line${L.xferM.length > 1 ? "s" : ""}</span>` : "") +
+      `<span class="chip">${L.xferBus.length} bus route${L.xferBus.length === 1 ? "" : "s"}</span></div>` +
+      (L.popNew > 1000 ? `<p class="note">${num(L.popNew)} people near this line live more than a 10-minute walk from any L or Metra station today.</p>` : "") + `</div>`;
+  }
+  h += details(L);
+  $("lBody").innerHTML = h;
+  for (const b of $("lBody").querySelectorAll(".seg button")) b.onclick = () => { L.head = +b.dataset.h; save(); openLine(L); };
+  if ($("elec")) $("elec").onchange = e => { L.electric = e.target.checked; save(); openLine(L); };
+  const coords = isM ? NET.metraLines.find(l => l.id === L.line).paths.flat() : L.pts.map(p => p.ll);
+  if (!L._fitted){ fitTo(coords); L._fitted = true; }
+  save();
+}
+function details(L){
+  const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
+  const rows = [];
+  if (isM){
+    rows.push(["Trains a weekday now → with your plan", `${L.tripsNow} → ${Math.round(L.tripsNew)}`]);
+    rows.push(["Riders gain per 1% more trains", "0.41–0.76% (Boston commuter rail)"]);
+    rows.push(["Added train hours a weekday", num((L.tripsNew - L.tripsNow) * (L.len / MI) / METRA_SPEED)]);
+    if (L.electric) rows.push(["CO₂ saved by going electric", num(L.elecSave) + " t a year"]);
+  } else {
+    const trips = tripsPerDay(L.head);
+    rows.push([`${M.vehicle === "bus" ? "Buses" : M.vehicle[0].toUpperCase() + M.vehicle.slice(1) + "s"} a weekday (both directions, ${HOURS} hours)`, Math.round(trips)]);
+    rows.push(["Average speed with stops", M.speed + " mph"]);
+    rows.push(["One-way trip end to end", Math.round(L.len / MI / M.speed * 60) + " min"]);
+    rows.push(["Build cost a mile", moneyRange(M.cost[0], M.cost[1])]);
+    if (L.popNew > 0) rows.push(["People new to rail within a 10-min walk", num(L.popNew)]);
+    if (L.gainOld > 50) rows.push(["Extra riders at the L stations it connects to", num(L.gainOld)]);
+    rows.push(["Riders new to transit", num(L.newRiders)]);
+    rows.push(["CO₂ from running the " + (M.vehicle === "bus" ? "buses" : M.vehicle + "s"), num(L.transitCO2) + " t a year"]);
+  }
+  rows.push(["Cost per ride (build over 30 years + running)", L.perRide > 0 ? "$" + L.perRide.toFixed(L.perRide < 10 ? 2 : 0) : "—"]);
+  return `<details class="more"><summary>How these numbers work</summary><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>
+    <p class="note" style="margin-top:8px">${isM ? "Riders come from Metra's 2018 station counts scaled to today's ridership, and how riders responded to more trains in Boston." : M.kind === "rail" ? "Riders come from a model of how many people ride each L station today, given the people and jobs near it, its buses, and how often trains come. It's typically off by about a third at a single station." : L.fromModel ? "No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. It's typically off by about a third." : "Riders start from today's riders on the buses along this street, plus more if the new line comes more often."} <button class="back" type="button" onclick="openSources()" style="display:inline;min-height:0;text-decoration:underline">Sources</button></p></details>`;
+}
+
+/* ---------- map events ---------- */
+function bindMap(){
+  map.on("click", e => {
+    if (drawing){ addPoint(e); return; }
+    const f = map.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers:["pst", "plan"]});
+    if (f.length){
+      const c = f[0].geometry.type === "Point" ? f[0].geometry.coordinates : null;
+      const L = c ? lines.find(l => l.type === "draw" && l.pts.some(p => p.ll[0] === c[0] && p.ll[1] === c[1])) : null;
+      if (L) openLine(L);
+    }
+  });
+  map.on("dblclick", e => { if (drawing){ e.preventDefault(); finishDraw(); } });
+  map.on("mousemove", e => {
+    if (drawing && drawing.pts.length){
+      const a = drawing.pts[drawing.pts.length - 1].ll, sn = snapAt(e.lngLat, e.point);
+      map.getSource("preview").setData(fc([{type:"Feature", geometry:{type:"LineString", coordinates:[a, sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat]]}}]));
+    }
+    const f = map.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers:["pst", "lst", "mst"]});
+    tip(f[0], e.point);
+  });
+  map.on("mouseout", () => tip(null));
+}
+function tip(f, pt){
+  const t = $("tip");
+  if (!f){ t.style.display = "none"; return; }
+  let h = "";
+  if (f.layer.id === "lst"){ const s = LST[f.properties.i];
+    h = `<b>${esc(s.name.split(" (")[0])}</b>` + s.lines.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="row"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l} Line</span>`; }).join("") + (s.rides ? `<span>${num(s.rides)} riders a weekday (2025)</span>` : ""); }
+  else if (f.layer.id === "mst"){ const s = MST[f.properties.i];
+    h = `<b>${esc(s.name)}</b><span>Metra ${s.lines.join(", ")}</span>` + (s.boards ? `<span>About ${num(s.boards)} boardings a weekday</span>` : ""); }
+  else if (f.layer.id === "pst"){
+    const c = f.geometry.coordinates; let s = null, L = null;
+    for (const l of lines) if (l.type === "draw" && l.st) for (const q of l.st) if (Math.abs(toLL(q.x, q.y)[0] - c[0]) < 1e-6 && Math.abs(toLL(q.x, q.y)[1] - c[1]) < 1e-6){ s = q; L = l; }
+    if (!s) return t.style.display = "none";
+    let p = 0; near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => p += B.pop[i]);
+    h = `<b>${s.snap ? esc(s.snap.ref.name.split(" (")[0]) : "Station " + (s.i + 1)}</b>` + (s.snap ? `<span>Transfer to ${s.snap.kind === "L" ? s.snap.ref.lines.map(l => L_NAMES[l] || l).join(", ") + " Line" : "Metra " + s.snap.ref.lines.join(", ")}</span>` : "") +
+      `<span>${num(p)} people within a 10-min walk</span>` + (s.riders ? `<span>About ${num(s.riders)} riders a weekday${s.snap && s.snap.kind === "L" ? " added here" : ""}</span>` : "") +
+      (s.busRoutes && s.busRoutes.size ? `<span>${s.busRoutes.size} bus route${s.busRoutes.size > 1 ? "s" : ""} within ¼ mile</span>` : "");
+  }
+  t.innerHTML = h; t.style.display = "flex";
+  const r = t.getBoundingClientRect(), x = Math.min(innerWidth - r.width - 12, pt.x + 16), y = Math.min(innerHeight - r.height - 12, pt.y + 12);
+  t.style.left = x + "px"; t.style.top = y + "px";
+}
+
+/* ---------- layers ---------- */
+function setLayer(k, on){
+  layerOn[k] = on;
+  document.querySelector(`#layers [data-l="${k}"]`).setAttribute("aria-pressed", on);
+  const vis = v => v ? "visible" : "none";
+  if (k === "rail") for (const id of ["L", "L-case", "metra", "metra-case", "lst", "mst"]) map.setLayoutProperty(id, "visibility", vis(on));
+  if (k === "bus") map.setLayoutProperty("bus", "visibility", vis(on));
+  if (k === "people" || k === "jobs"){
+    if (on){ const other = k === "people" ? "jobs" : "people"; if (layerOn[other]) setLayer(other, false); }
+    map.setLayoutProperty(k, "visibility", vis(on));
+    const lg = $("legend"); lg.style.display = layerOn.people || layerOn.jobs ? "block" : "none";
+    $("legT").textContent = layerOn.jobs ? "Jobs per square mile" : "People per square mile";
+    const c = layerOn.jobs ? "118,74,160" : "43,93,160"; $("legRamp").style.background = `linear-gradient(90deg, rgba(${c},.15), rgba(${c},.9))`;
+  }
+}
+
+/* ---------- save + share ---------- */
+function decode(s){
+  const out = [], mk = {s:"subway", e:"elevated", b:"brt"};
+  for (const part of s.split("~")){
+    try {
+      if (part[0] === "M"){ const [id, h, e] = part.slice(1).split("."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains"}); continue; }
+      const mode = part.startsWith("st") ? "streetcar" : mk[part[0]]; if (!mode) continue;
+      const body = mode === "streetcar" ? part.slice(2) : part.slice(1);
+      const [h, ptsS, nm] = body.split(".");
+      const pts = ptsS.split(";").map(q => { const [a, b, sn] = q.split(","); const x = parseInt(a, 36) * 10, y = parseInt(b, 36) * 10;
+        let snap = null; if (sn){ const kind = sn[0], id = sn.slice(1); const ref = (kind === "L" ? LST : MST).find(z => z.id === id); if (ref) snap = {kind, ref}; }
+        const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
+      if (pts.length > 1) out.push({type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name});
+    } catch (e) {}
+  }
+  return out;
+}
+function save(){ try { localStorage.setItem("sc-transit", encodePlan()); } catch (e) {} if (cur || lines.length) history.replaceState(null, "", "#p=" + encodePlan()); else history.replaceState(null, "", location.pathname + location.search); }
+function encodePlan(){ return lines.map(L => L.type === "metra" ? `M${L.line}.${L.head}.${L.electric ? 1 : 0}` :
+    (L.mode === "streetcar" ? "st" : L.mode[0]) + L.head + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name)).join("~"); }
+function restore(){
+  let s = (location.hash.match(/#p=(.+)/) || [])[1];
+  if (!s){ try { s = localStorage.getItem("sc-transit"); } catch (e) {} }
+  if (s) lines = decode(s);
+}
+
+/* ---------- sources ---------- */
+function openSources(){
+  const S = NET.sources.files, R = MODEL.rail, Bm = MODEL.bus;
+  $("srcBody").innerHTML = `<button class="btn x" type="button" onclick="srcDlg.close()">Close</button><h2 id="srcH">How the numbers work</h2>
+  <p>Every number is either from a source linked here or listed under assumptions. It's a sketch, not a forecast: real projects get studied for years.</p>
+  <h3>Riders on a new subway or elevated line</h3>
+  <p>A statistical model fit to how many people entered each of Chicago's ${R.n} L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and the jobs along its line. It explains ${Math.round(R.r2 * 100)}% of the differences between stations; a typical station estimate is off by about ${Math.round((Math.exp(R.median_abs_log_error) - 1) * 100)}%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.</p>
+  <p>Trains: riders rise about 0.5% for each 1% more trains, the average in <a href="https://www.trb.org/publications/tcrp/tcrp_rpt_95c9.pdf" target="_blank" rel="noopener">TCRP Report 95, Chapter 9</a> (p. 9-4).</p>
+  <h3>Riders on BRT or a streetcar</h3>
+  <p>Where CTA buses already run along most of the line, the estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), and adds riders if the new line runs more often than they do together (0.5% per 1% more trips). Where no bus runs today, it uses a model fit to ${Bm.n} CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about ${Math.round((Math.exp(Bm.median_abs_log_error) - 1) * 100)}%. It doesn't yet add a boost for faster BRT buses or for streetcars.</p>
+  <h3>Metra upgrades</h3>
+  <p>Station boardings from Metra's fall 2018 counts (<a href="${S.metra_counts ? S.metra_counts.page : "#"}" target="_blank" rel="noopener">Illinois data hub</a>), scaled to today by Metra's trips in 2024 vs. 2018 (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">NTD 2024</a>: 35.1M; <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2018/50118.pdf" target="_blank" rel="noopener">NTD 2018</a>: 68.4M) and 2025's 8% growth (<a href="https://www.progressiverailroading.com/passenger_rail/news/CTA-Metra-logged-rail-ridership-growth-in-2025--76274" target="_blank" rel="noopener">Progressive Railroading</a>): ×${NET.metraScale}. Riders gain 0.41–0.76% per 1% more trains, from Boston commuter rail (TCRP Report 95 ch. 9, p. 9-12). Wires: Caltrain's electrification, $2.44B for 52 miles (<a href="https://masstransitmag.com/rail/infrastructure/article/21249277/caltrain-electrification-project-cost-increases-but-still-on-schedule-for-2024" target="_blank" rel="noopener">Mass Transit</a>).</p>
+  <h3>Cost to build, per mile</h3>
+  <table><tr><th>Type</th><th>Low</th><th>High</th></tr>
+  <tr><td>Subway</td><td>$720M: LA Purple Line Section 1 (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2022-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-1-Project-Profile-AR23.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.05B: Chicago Red Line Extension (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
+  <tr><td>Elevated</td><td>$384M: Seattle Lynnwood Link (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/WA-Lynnwood-Link-Extension-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.05B: Chicago Red Line Extension</td></tr>
+  <tr><td>Streetcar</td><td>$43M: Detroit QLine (<a href="https://www.masstransitmag.com/rail/article/12366313/detroits-qline-streetcar-getting-on-track-with-partnerships-innovation-and-tenacity" target="_blank" rel="noopener">Mass Transit</a>)</td><td>$100M: Kansas City Main St. (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-02/MO-Kansas-City-Streetcar-Main-St-Ext-Project-FFGA-Profile-FY22.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
+  <tr><td>BRT</td><td>$7.4M: Indianapolis Red Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/funding/grant-programs/capital-investments/116506/indygo-red-line-rapid-transit-profile.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$29M: Cleveland HealthLine (<a href="https://nacto.org/case-study/euclid-avenue-brt-cleveland-oh/" target="_blank" rel="noopener">NACTO</a>)</td></tr></table>
+  <p class="note">Costs are in the dollars of the year each project was funded, not adjusted for inflation.</p>
+  <h3>Cost to run</h3>
+  <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
+  <h3>Cars and CO₂</h3>
+  <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). Average trip length by mode (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>): rail 4.4 mi, streetcar 1.9, bus 3.7, commuter rail 22.6. Transit vehicles' own emissions (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA</a>) are subtracted. Surveys of riders on new lines found 17–31% used to drive or didn't make the trip (<a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Expo Line</a>, <a href="https://trid.trb.org/View/453012" target="_blank" rel="noopener">CTA Orange Line</a>, <a href="https://onlinepubs.trb.org/onlinepubs/tcrp/tcrp90v1_cs/LosAngeles.pdf" target="_blank" rel="noopener">Metro Rapid</a>).</p>
+  <h3>Data</h3>
+  <ul>
+  <li>Lines, stations and trains: <a href="${S.cta.url}" target="_blank" rel="noopener">CTA</a> and <a href="${S.metra.url}" target="_blank" rel="noopener">Metra</a> schedules for a weekday (${S.cta.service_date}).</li>
+  <li>People: 2020 Census blocks (<a href="https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/" target="_blank" rel="noopener">Census TIGER</a>), ${(S.blocks.people / 1e6).toFixed(1)} million people in Cook and the five collar counties.</li>
+  <li>Jobs: Census LEHD LODES ${S.blocks.jobs_year} (<a href="https://lehd.ces.census.gov/data/" target="_blank" rel="noopener">LEHD</a>), ${(S.blocks.jobs / 1e6).toFixed(1)} million jobs.</li>
+  <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
+  </ul>
+  <h3>Assumptions (not measured)</h3>
+  <ul>
+  <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
+  <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}). A year is ${YEAR_DAYS} average weekdays, the ratio of 2025 L rides to an average 2025 weekday, for both riders and service.</li>
+  <li>New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run ${METRA_CARS_NEW} cars, and today's Metra trains average ${METRA_CARS_NOW} for the electric-train CO₂ savings.</li>
+  <li>15–30% of riders new to transit would otherwise drive (the shown figure is the middle). Riders who switch from nearby L stations or from buses on the same street don't take cars off the road.</li>
+  <li>Cost per ride spreads the build cost evenly over 30 years with no interest.</li>
+  <li>Not modeled: riders switching from buses on the same street, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.</li>
+  </ul>`;
+  $("srcDlg").showModal();
+}
+
+/* ---------- boot ---------- */
+async function boot(){
+  try { await load(); } catch (e){ $("loading").textContent = "Couldn't load the transit data. Try reloading."; console.error(e); return; }
+  await initMap();
+  restore();
+  $("loading").style.opacity = 0; setTimeout(() => $("loading").remove(), 300);
+  openStart();
+  if (lines.length && location.hash.startsWith("#p=")) openLine(lines[lines.length - 1]);
+  $("drawCancel").onclick = cancelDraw; $("drawUndo").onclick = () => { drawing.pts.pop(); refreshDraw(); };
+  $("drawDone").onclick = finishDraw; $("metraBack").onclick = openStart; $("lineBack").onclick = openStart;
+  $("lineAdd").onclick = openStart; $("lineEdit").onclick = () => cur && cur.type === "draw" && startDraw(cur.mode, cur);
+  $("lineDel").onclick = () => { if (!cur) return; lines = lines.filter(l => l !== cur); save(); openStart(); };
+  $("srcBtn").onclick = openSources;
+  $("share").onclick = async () => { save(); const url = location.href;
+    try { if (navigator.share) await navigator.share({title:"My Chicago transit plan", url}); else { await navigator.clipboard.writeText(url); hint("Link copied"); setTimeout(() => hint(""), 1800); } } catch (e) {} };
+  for (const b of document.querySelectorAll("#layers button")) b.onclick = () => setLayer(b.dataset.l, b.getAttribute("aria-pressed") !== "true");
+  $("grab").onclick = () => { $("panel").classList.toggle("tall"); padMap(); };
+  addEventListener("resize", padMap); padMap();
+  addEventListener("keydown", e => {
+    if (!drawing) return;
+    if (e.key === "Escape") cancelDraw();
+    else if (e.key === "Enter") finishDraw();
+    else if ((e.key === "z" && (e.metaKey || e.ctrlKey)) || e.key === "Backspace"){ if (document.activeElement.tagName !== "INPUT"){ e.preventDefault(); drawing.pts.pop(); refreshDraw(); } }
+  });
+}
+boot();
+</script>
+</body>
+</html>

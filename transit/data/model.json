@@ -1,0 +1,49 @@
+{
+ "rail": {
+  "service_elasticity": 0.5,
+  "coef": {
+   "const": -1.6621,
+   "ln_pop": 0.102,
+   "ln_jobs": 0.3165,
+   "terminal": 0.1699,
+   "airport": 1.2732,
+   "transfer": 0.0893,
+   "ln_loop_mi": 0.0441,
+   "ln_bus_trips": 0.3052,
+   "ln_line_jobs": 0.0387
+  },
+  "r2": 0.566,
+  "band_20_80": [
+   -0.474,
+   0.419
+  ],
+  "median_abs_log_error": 0.335,
+  "n": 143,
+  "data": "CTA L weekday entries 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS"
+ },
+ "bus": {
+  "service_elasticity": 0.5,
+  "coef": {
+   "const": -5.2584,
+   "ln_pop_per_mi": 1.0738,
+   "ln_jobs_per_mi": -0.0964
+  },
+  "r2": 0.436,
+  "median_abs_log_error": 0.316,
+  "band_20_80": [
+   -0.352,
+   0.441
+  ],
+  "free_fit": {
+   "coef": {
+    "const": -5.3334,
+    "ln_pop_per_mi": 0.5749,
+    "ln_jobs_per_mi": 0.0285,
+    "ln_trips": 1.2112
+   },
+   "r2": 0.934
+  },
+  "n": 124,
+  "data": "CTA bus weekday boardings 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS"
+ }
+}
