@@ -155,18 +155,16 @@ def gtfs(name, url):
     json.dump(rout, open(os.path.join(OUT, f'{name}_routes.json'), 'w'), indent=0)
     shapes = {}
     if 'shapes.txt' in names:
-        best = {}
-        for (rid, d, sh), n in shape_use.items():
-            if n > best.get((rid, d), (None, -1))[1]:
-                best[(rid, d)] = (sh, n)
-        want = {sh for sh, n in best.values()}
+        # every shape used on the weekday (branches, expresses, short turns); build.py drops the duplicates
+        want = {sh for (rid, d, sh), n in shape_use.items()}
         pts = collections.defaultdict(list)
         for r in rows(z, 'shapes.txt'):
             if r['shape_id'] in want:
                 pts[r['shape_id']].append((int(r['shape_pt_sequence']), float(r['shape_pt_lon']), float(r['shape_pt_lat'])))
-        for (rid, d), (sh, n) in best.items():
+        for (rid, d, sh), n in sorted(shape_use.items(), key=lambda kv: -kv[1]):
             line = [(round(x, 6), round(y, 6)) for _, x, y in sorted(pts[sh])]
-            shapes.setdefault(rid, []).append({'dir': d, 'trips': n, 'pts': rdp(line, 4)})
+            if len(line) > 1:
+                shapes.setdefault(rid, []).append({'dir': d, 'trips': n, 'pts': rdp(line, 4)})
     with gzip.open(os.path.join(OUT, f'{name}_shapes.json.gz'), 'wt') as f:
         json.dump(shapes, f, separators=(',', ':'))
     SOURCES['files'][name] = {'url': url, 'service_date': day, 'routes': len(rout), 'stops': len(stops),
