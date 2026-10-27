@@ -6,3 +6,5 @@ block fields ['STATEFP20', 'COUNTYFP20', 'TRACTCE20', 'BLOCKCE20', 'GEOID20', 'N
 no local LODES file for 2023
 metra counts 96725
 ntd energy https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000 14543
+osm failed https://overpass-api.de/api/interpreter <HTTPError 406: 'Not Acceptable'>
+osm failed https://overpass.kumi.systems/api/interpreter <HTTPError 504: 'Gateway Timeout'>
