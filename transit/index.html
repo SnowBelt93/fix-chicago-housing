@@ -266,16 +266,16 @@ const SERVICE_E = 0.5;       // riders vs. trains run (TCRP Report 95 ch. 9 aver
 const METRA_E = [0.41, 0.76];// commuter rail headway elasticity, Boston (TCRP Report 95 ch. 9)
 const METRA_SPEED = 29.28, METRA_CAR_HR = 656.28, METRA_CARS_NEW = 4, METRA_CARS_NOW = 6, METRA_HOURS = 18;
 const ELECTRIFY_PER_MI = 47e6;  // Caltrain electrification, $2.44B / 52 mi
-const METRA_TRIP_MI = 22.6, DIESEL_CR = 0.02717, ELECTRIC_CR = 0.00387;  // APTA avg trip; FTA t CO2 per car-mile
+const METRA_TRIP_MI = 22.6, DIESEL_CR_TRAIN = 0.02717, ELECTRIC_CR = 0.00466;  // APTA avg trip; FTA t CO2: diesel per train-mile (read as per train: 2.67 gal/mi), electric per car-mile on the RFC West grid
 const MODES = {
   subway:   {name:"Subway", blurb:"Under the street. Fastest to ride, slowest and priciest to build", kind:"rail", cost:[720e6,1050e6], heads:[3,5,7.5,10], head:7.5,
-             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00205, years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00247, years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<path d="M2 21V12a10 10 0 0 1 20 0v9"/><rect x="8" y="9" width="8" height="9" rx="1.5"/>', color:"#1a1d21"},
   elevated: {name:"Elevated L", blurb:"On a structure above the street, like most of the L", kind:"rail", cost:[384e6,1050e6], heads:[3,5,7.5,10], head:7.5,
-             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00205, years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             speed:16.98, cars:8, perHr:203.81, tripMi:4.4, co2:0.00247, years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<rect x="6" y="2" width="12" height="9" rx="1.5"/><path d="M2 13h20M5 13v9M19 13v9M12 13v9"/>', color:"#1a1d21"},
   streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], heads:[5,7.5,10,15], head:10,
-             speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00289, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
+             speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00347, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
              icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
   brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], heads:[5,7.5,10,15], head:7.5,
              speed:13.19, cars:1, perHr:197.88, tripMi:3.7, co2:0.00196, years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
@@ -520,9 +520,9 @@ function evalMetra(L){
   L.opYear = carHrs * METRA_CAR_HR * YEAR_DAYS;
   L.capital = L.electric ? [ELECTRIFY_PER_MI * L.len / MI, ELECTRIFY_PER_MI * L.len / MI] : [0, 0];
   L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
-  const fuel = L.electric ? ELECTRIC_CR : DIESEL_CR;
-  const addCO2 = add * (L.len / MI) * METRA_CARS_NEW * fuel * YEAR_DAYS;
-  const elecSave = L.electric ? now * (L.len / MI) * METRA_CARS_NOW * (DIESEL_CR - ELECTRIC_CR) * YEAR_DAYS : 0;
+  const perTrain = cars => L.electric ? cars * ELECTRIC_CR : DIESEL_CR_TRAIN;   // t CO2 per train-mile
+  const addCO2 = add * (L.len / MI) * perTrain(METRA_CARS_NEW) * YEAR_DAYS;
+  const elecSave = L.electric ? now * (L.len / MI) * (DIESEL_CR_TRAIN - METRA_CARS_NOW * ELECTRIC_CR) * YEAR_DAYS : 0;
   L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   L.elecSave = elecSave;
   // walk shed of the line's stations
@@ -815,7 +815,7 @@ function details(L){
     rows.push(["Trains a weekday now → with your plan", `${L.tripsNow} → ${Math.round(L.tripsNew)}`]);
     rows.push(["Riders gain per 1% more trains", "0.41–0.76% (Boston commuter rail)"]);
     rows.push(["Added train hours a weekday", num((L.tripsNew - L.tripsNow) * (L.len / MI) / METRA_SPEED)]);
-    if (L.electric) rows.push(["CO₂ saved by going electric", num(L.elecSave) + " t a year"]);
+    if (L.electric) rows.push([L.elecSave >= 0 ? "CO₂ saved by going electric" : "Extra CO₂ from going electric (today's regional grid)", num(Math.abs(L.elecSave)) + " t a year"]);
   } else {
     const trips = tripsPerDay(L.head);
     rows.push([`${M.vehicle === "bus" ? "Buses" : M.vehicle[0].toUpperCase() + M.vehicle.slice(1) + "s"} a weekday (both directions, ${HOURS} hours)`, Math.round(trips)]);
@@ -940,7 +940,7 @@ function openSources(){
   <h3>Cost to run</h3>
   <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
   <h3>Cars and CO₂</h3>
-  <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). Average trip length by mode (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>): rail 4.4 mi, streetcar 1.9, bus 3.7, commuter rail 22.6. Transit vehicles' own emissions (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA</a>) are subtracted. Surveys of riders on new lines found 17–31% used to drive or didn't make the trip (<a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Expo Line</a>, <a href="https://trid.trb.org/View/453012" target="_blank" rel="noopener">CTA Orange Line</a>, <a href="https://onlinepubs.trb.org/onlinepubs/tcrp/tcrp90v1_cs/LosAngeles.pdf" target="_blank" rel="noopener">Metro Rapid</a>).</p>
+  <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). Average trip length by mode (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>): rail 4.4 mi, streetcar 1.9, bus 3.7, commuter rail 22.6. Transit vehicles' own emissions are subtracted, using FTA's factors (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>, Tables A-2, A-4, A-12) for Chicago's power grid region (RFC West): 2.47 kg per L car-mile, 3.47 kg per streetcar mile, 4.66 kg per electric commuter car-mile, 1.96 kg per diesel bus mile, and 27.2 kg per diesel commuter train-mile. Surveys of riders on new lines found 17–31% used to drive or didn't make the trip (<a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Expo Line</a>, <a href="https://trid.trb.org/View/453012" target="_blank" rel="noopener">CTA Orange Line</a>, <a href="https://onlinepubs.trb.org/onlinepubs/tcrp/tcrp90v1_cs/LosAngeles.pdf" target="_blank" rel="noopener">Metro Rapid</a>).</p>
   <h3>Data</h3>
   <ul>
   <li>Lines, stations and trains: <a href="${S.cta.url}" target="_blank" rel="noopener">CTA</a> and <a href="${S.metra.url}" target="_blank" rel="noopener">Metra</a> schedules for a weekday (${S.cta.service_date}).</li>
@@ -953,6 +953,7 @@ function openSources(){
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
   <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}). A year is ${YEAR_DAYS} average weekdays, the ratio of 2025 L rides to an average 2025 weekday, for both riders and service.</li>
   <li>New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run ${METRA_CARS_NEW} cars, and today's Metra trains average ${METRA_CARS_NOW} for the electric-train CO₂ savings.</li>
+  <li>FTA's diesel commuter rail factor (27.2 kg CO₂ per "vehicle-mile", 2.67 gallons) only makes sense per train, not per car, so the tool applies it per train.</li>
   <li>15–30% of riders new to transit would otherwise drive (the shown figure is the middle). Riders who switch from nearby L stations or from buses on the same street don't take cars off the road.</li>
   <li>Cost per ride spreads the build cost evenly over 30 years with no interest.</li>
   <li>Not modeled: riders switching from buses on the same street, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.</li>
