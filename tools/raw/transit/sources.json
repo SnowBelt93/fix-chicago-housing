@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T15:11Z",
+ "fetched": "2026-10-27T15:13Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -30,6 +30,11 @@
    "routes": 11,
    "stops": 241,
    "weekday_trips": 678
+  },
+  "metra_counts": {
+   "url": "https://datahub.nita.illinois.gov/sites/default/files/documents/2024-07/Metra_Ridership_by_Station_Boarding_Alighting%20Survey_1979_2018.csv",
+   "bytes": 96725,
+   "page": "https://datahub.nita.illinois.gov/media/resources/metra-ridership-station-boarding-alighting-survey-1979-2018"
   }
  }
 }

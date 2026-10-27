@@ -2,11 +2,4 @@ calendar rows 127 calendar_dates rows 85 cols ['service_id', 'monday', 'tuesday'
 calendar rows 28 calendar_dates rows 11 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
 block fields ['STATEFP20', 'COUNTYFP20', 'TRACTCE20', 'BLOCKCE20', 'GEOID20', 'NAME20', 'MTFCC20', 'UR20', 'UACE20', 'UATYPE20', 'FUNCSTAT20', 'ALAND20', 'AWATER20', 'INTPTLAT20', 'INTPTLON20', 'HOUSING20', 'POP20']
 no local LODES file for 2023
-retry https://metra.com/sites/default/files/assets/planning/ridership/2018_summary_results_report_final.pdf <HTTPError 404: 'Not Found'>
-retry https://metra.com/sites/default/files/assets/planning/ridership/2018_summary_results_report_final.pdf <HTTPError 404: 'Not Found'>
-retry https://metra.com/sites/default/files/assets/planning/ridership/2018_summary_results_report_final.pdf <HTTPError 404: 'Not Found'>
-metra counts failed 2018 <HTTPError 404: 'Not Found'>
-retry https://metra.com/sites/default/files/assets/planning/ridership/16count_smry_v01.pdf <HTTPError 404: 'Not Found'>
-retry https://metra.com/sites/default/files/assets/planning/ridership/16count_smry_v01.pdf <HTTPError 404: 'Not Found'>
-retry https://metra.com/sites/default/files/assets/planning/ridership/16count_smry_v01.pdf <HTTPError 404: 'Not Found'>
-metra counts failed 2016 <HTTPError 404: 'Not Found'>
+metra counts 96725
