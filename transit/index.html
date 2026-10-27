@@ -1423,8 +1423,10 @@ function setLayer(k, on){
   if (k === "people" || k === "jobs"){
     if (on){ const other = k === "people" ? "jobs" : "people"; if (layerOn[other]) setLayer(other, false); }
     if (on && !map.getLayer(k)){
-      map.addSource(k, {type:"canvas", canvas:makeDensityCanvas(k === "people" ? "pop" : "jobs"), coordinates:DENS_COORDS, animate:false});
-      map.addLayer({id:k, type:"raster", source:k, paint:{"raster-opacity":0.9, "raster-fade-duration":0, "raster-resampling":"linear"}}, "dens-anchor");
+      try {
+        if (!map.getSource(k)) map.addSource(k, {type:"canvas", canvas:makeDensityCanvas(k === "people" ? "pop" : "jobs"), coordinates:DENS_COORDS, animate:false});
+        map.addLayer({id:k, type:"raster", source:k, paint:{"raster-opacity":0.9, "raster-fade-duration":0, "raster-resampling":"linear"}}, "dens-anchor");
+      } catch (e){ map.once("idle", () => { if (layerOn[k]) setLayer(k, true); }); }
     }
     if (map.getLayer(k)) map.setLayoutProperty(k, "visibility", vis(on));
     const lg = $("legend"); lg.style.display = layerOn.people || layerOn.jobs ? "block" : "none";
