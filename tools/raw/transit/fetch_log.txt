@@ -1,15 +1,8 @@
 calendar rows 127 calendar_dates rows 85 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
 calendar rows 28 calendar_dates rows 11 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
 block fields ['STATEFP20', 'COUNTYFP20', 'TRACTCE20', 'BLOCKCE20', 'GEOID20', 'NAME20', 'MTFCC20', 'UR20', 'UACE20', 'UATYPE20', 'FUNCSTAT20', 'ALAND20', 'AWATER20', 'INTPTLAT20', 'INTPTLON20', 'HOUSING20', 'POP20']
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2023.csv.gz RemoteDisconnected('Remote end closed connection without response')
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2023.csv.gz RemoteDisconnected('Remote end closed connection without response')
-no LODES 2023 RemoteDisconnected('Remote end closed connection without response')
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2022.csv.gz RemoteDisconnected('Remote end closed connection without response')
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2022.csv.gz RemoteDisconnected('Remote end closed connection without response')
-no LODES 2022 RemoteDisconnected('Remote end closed connection without response')
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2021.csv.gz IncompleteRead(172325 bytes read, 1897706 more expected)
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2021.csv.gz IncompleteRead(179465 bytes read, 1890566 more expected)
-no LODES 2021 IncompleteRead(179465 bytes read, 1890566 more expected)
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2020.csv.gz RemoteDisconnected('Remote end closed connection without response')
-retry https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_2020.csv.gz RemoteDisconnected('Remote end closed connection without response')
-no LODES 2020 RemoteDisconnected('Remote end closed connection without response')
+no local LODES file for 2023
+bad local LODES 2022 EOFError('Compressed file ended before the end-of-stream marker was reached')
+no local LODES file for 2022
+no local LODES file for 2021
+no local LODES file for 2020
