@@ -146,6 +146,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   #legend{right:12px;bottom:auto;top:112px}
   #hint{bottom:auto;top:116px}
   .maplibregl-ctrl-bottom-right{bottom:calc(var(--sheet,52vh) + 4px)}
+  .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{display:none}   /* pinch to zoom on phones */
   .fan{display:none}
   .fan2{display:block !important}
   body.drawing #vDraw .vhead p, body.drawing #vDraw .steps, body.drawing #drawSpacing{display:none}
@@ -156,6 +157,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 }
 .cleanbox{display:flex;flex-direction:column;gap:8px;border-top:1px solid #eef0f2;padding-top:14px}
 .crow{align-items:flex-start}
+.crow input{flex:none;width:20px;height:20px;margin:2px 0 0}
 .pgroup summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px;font-weight:600;color:var(--ink2,#2d333b);border-bottom:1px solid #eef0f2}
 .pgroup summary::-webkit-details-marker{display:none}
 .pgroup summary span{margin-left:auto;font-weight:500;color:#6b7280;font-size:13px}
@@ -872,7 +874,7 @@ async function initMap(){
   let style = fallbackStyle(), credit = "City of Chicago, CTA, Metra, U.S. Census";
   if (ownDomain()){
     try { style = await fetch("https://tiles.openfreemap.org/styles/positron").then(r => r.json());
-          credit = '© <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> · CTA, Metra, U.S. Census'; }
+          credit = "CTA, Metra, U.S. Census"; }   // the basemap's own source credits OpenFreeMap, OpenMapTiles and OpenStreetMap
     catch (e) { style = fallbackStyle(); }
   }
   const phone = matchMedia("(max-width:859px)").matches;
@@ -882,10 +884,17 @@ async function initMap(){
   map.touchZoomRotate.disableRotation();
   map.addControl(new maplibregl.NavigationControl({showCompass:false}), "bottom-right");
   await new Promise(r => map.on("load", r));
+  // start with the credits folded into the (i) button, so they don't cover the map or the fan-made line
+  const at = document.querySelector(".maplibregl-ctrl-attrib"); if (at){ at.classList.remove("maplibregl-compact-show"); at.removeAttribute("open"); }
   if (style.sources && style.sources.lake === undefined && ownDomain()){
-    // tone the vector basemap down so transit lines read first
+    // tone the vector basemap down so transit lines read first: no city, state or country names (the "Chicago" label sat on the Loop),
+    // softer neighborhood names, no points of interest
     for (const l of map.getStyle().layers){
-      try { if (l.type === "symbol" && /poi|housenum/.test(l.id)) map.setLayoutProperty(l.id, "visibility", "none"); } catch (e) {}
+      if (l.type !== "symbol") continue;
+      try {
+        if (/poi|housenum|label_city|label_state|label_country/.test(l.id)) map.setLayoutProperty(l.id, "visibility", "none");
+        else if (/label_other|label_village|label_town/.test(l.id)) map.setPaintProperty(l.id, "text-opacity", 0.65);
+      } catch (e) {}
     }
   }
   if (!ownDomain()){
@@ -1043,7 +1052,7 @@ function renderPlan(){
   map.getSource("plan").setData(fc(feats)); map.getSource("pst").setData(fc(st)); map.getSource("walk").setData(fc(walk));
 }
 
-function show(id){ for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id); $("panel").scrollTop = 0; requestAnimationFrame(padMap); }
+function show(id){ for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
 function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
   if (!map) return;
   const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
@@ -1157,6 +1166,7 @@ function openMetra(){
 function fitTo(coords){
   if (!coords.length) return;
   const b = coords.reduce((a, c) => [[Math.min(a[0][0], c[0]), Math.min(a[0][1], c[1])], [Math.max(a[1][0], c[0]), Math.max(a[1][1], c[1])]], [[180, 90], [-180, -90]]);
+  padMap();   // set the padding for this view's sheet first: changing it later would stop the move halfway
   const phone = matchMedia("(max-width:859px)").matches;
   map.fitBounds(b, {padding:phone ? {top:30, bottom:30, left:30, right:30} : {top:80, bottom:60, left:40, right:60}, maxZoom:13.5, duration:600});
 }
