@@ -381,7 +381,7 @@ if __name__ == '__main__':
             elif s == 'amtrak':   # intercity rail (map layer only)
                 gtfs('amtrak', 'https://content.amtrak.com/content/gtfs/GTFS.zip')
             elif s == 'nictd':    # South Shore Line, commuter rail to Indiana (map layer only)
-                for u in ['https://www.mysouthshoreline.com/gtfs/google_transit.zip', 'http://www.mysouthshoreline.com/gtfs/google_transit.zip',
+                for u in ['http://www.mysouthshoreline.com/google/google_transit.zip', 'https://www.mysouthshoreline.com/google/google_transit.zip', 'https://www.mysouthshoreline.com/gtfs/google_transit.zip', 'http://www.mysouthshoreline.com/gtfs/google_transit.zip',
                           'https://www.nictd.com/gtfs/google_transit.zip']:
                     try:
                         gtfs('nictd', u); break
