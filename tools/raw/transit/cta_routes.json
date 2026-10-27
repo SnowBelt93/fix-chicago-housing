@@ -1,0 +1,1058 @@
+[
+{
+"id": "1",
+"short": "1",
+"long": "Bronzeville/Union Station",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 59
+},
+{
+"id": "2",
+"short": "2",
+"long": "Hyde Park Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 60
+},
+{
+"id": "3",
+"short": "3",
+"long": "King Drive",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 243
+},
+{
+"id": "4",
+"short": "4",
+"long": "Cottage Grove",
+"type": 3,
+"color": "414145",
+"weekday_trips": 250
+},
+{
+"id": "X4",
+"short": "X4",
+"long": "Cottage Grove Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 69
+},
+{
+"id": "N5",
+"short": "N5",
+"long": "South Shore Night Bus",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 20
+},
+{
+"id": "6",
+"short": "6",
+"long": "Jackson Park Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 189
+},
+{
+"id": "7",
+"short": "7",
+"long": "Harrison",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 132
+},
+{
+"id": "8",
+"short": "8",
+"long": "Halsted",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 257
+},
+{
+"id": "8A",
+"short": "8A",
+"long": "South Halsted",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 134
+},
+{
+"id": "9",
+"short": "9",
+"long": "Ashland",
+"type": 3,
+"color": "414145",
+"weekday_trips": 365
+},
+{
+"id": "X9",
+"short": "X9",
+"long": "Ashland Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 102
+},
+{
+"id": "10",
+"short": "10",
+"long": "Obama Presidential Center/Museum of Science & Industry Express ",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 36
+},
+{
+"id": "11",
+"short": "11",
+"long": "Lincoln",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 84
+},
+{
+"id": "12",
+"short": "12",
+"long": "Roosevelt",
+"type": 3,
+"color": "414145",
+"weekday_trips": 254
+},
+{
+"id": "J14",
+"short": "J14",
+"long": "Jeffery Jump",
+"type": 3,
+"color": "0065bd",
+"weekday_trips": 242
+},
+{
+"id": "15",
+"short": "15",
+"long": "Jeffery Local",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 159
+},
+{
+"id": "18",
+"short": "18",
+"long": "16th/18th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 130
+},
+{
+"id": "20",
+"short": "20",
+"long": "Madison",
+"type": 3,
+"color": "414145",
+"weekday_trips": 338
+},
+{
+"id": "21",
+"short": "21",
+"long": "Cermak",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 176
+},
+{
+"id": "22",
+"short": "22",
+"long": "Clark",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 239
+},
+{
+"id": "24",
+"short": "24",
+"long": "Wentworth",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 101
+},
+{
+"id": "26",
+"short": "26",
+"long": "South Shore Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 86
+},
+{
+"id": "28",
+"short": "28",
+"long": "Stony Island",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 162
+},
+{
+"id": "29",
+"short": "29",
+"long": "State",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 162
+},
+{
+"id": "31",
+"short": "31",
+"long": "31st",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 55
+},
+{
+"id": "30",
+"short": "30",
+"long": "South Chicago",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 114
+},
+{
+"id": "34",
+"short": "34",
+"long": "South Michigan",
+"type": 3,
+"color": "414145",
+"weekday_trips": 236
+},
+{
+"id": "35",
+"short": "35",
+"long": "31st/35th",
+"type": 3,
+"color": "414145",
+"weekday_trips": 221
+},
+{
+"id": "36",
+"short": "36",
+"long": "Broadway",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 166
+},
+{
+"id": "37",
+"short": "37",
+"long": "Sedgwick",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 100
+},
+{
+"id": "39",
+"short": "39",
+"long": "Pershing",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 94
+},
+{
+"id": "43",
+"short": "43",
+"long": "43rd",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 112
+},
+{
+"id": "44",
+"short": "44",
+"long": "Wallace/Racine",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 141
+},
+{
+"id": "47",
+"short": "47",
+"long": "47th",
+"type": 3,
+"color": "414145",
+"weekday_trips": 251
+},
+{
+"id": "48",
+"short": "48",
+"long": "South Damen",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 69
+},
+{
+"id": "49",
+"short": "49",
+"long": "Western",
+"type": 3,
+"color": "414145",
+"weekday_trips": 271
+},
+{
+"id": "49B",
+"short": "49B",
+"long": "North Western",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 221
+},
+{
+"id": "X49",
+"short": "X49",
+"long": "Western Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 87
+},
+{
+"id": "50",
+"short": "50",
+"long": "Damen",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 173
+},
+{
+"id": "51",
+"short": "51",
+"long": "51st",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 98
+},
+{
+"id": "52",
+"short": "52",
+"long": "Kedzie",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 190
+},
+{
+"id": "52A",
+"short": "52A",
+"long": "South Kedzie",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 142
+},
+{
+"id": "53",
+"short": "53",
+"long": "Pulaski",
+"type": 3,
+"color": "414145",
+"weekday_trips": 339
+},
+{
+"id": "53A",
+"short": "53A",
+"long": "South Pulaski",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 173
+},
+{
+"id": "54",
+"short": "54",
+"long": "Cicero",
+"type": 3,
+"color": "414145",
+"weekday_trips": 272
+},
+{
+"id": "54A",
+"short": "54A",
+"long": "North Cicero/Skokie Blvd.",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 38
+},
+{
+"id": "54B",
+"short": "54B",
+"long": "South Cicero",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 110
+},
+{
+"id": "55",
+"short": "55",
+"long": "Garfield",
+"type": 3,
+"color": "414145",
+"weekday_trips": 264
+},
+{
+"id": "55A",
+"short": "55A",
+"long": "55th/Austin",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 38
+},
+{
+"id": "55N",
+"short": "55N",
+"long": "55th/Narragansett",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 80
+},
+{
+"id": "56",
+"short": "56",
+"long": "Milwaukee",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 167
+},
+{
+"id": "57",
+"short": "57",
+"long": "Laramie",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 130
+},
+{
+"id": "59",
+"short": "59",
+"long": "59th/61st",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 114
+},
+{
+"id": "60",
+"short": "60",
+"long": "Blue Island/26th",
+"type": 3,
+"color": "414145",
+"weekday_trips": 252
+},
+{
+"id": "62",
+"short": "62",
+"long": "Archer",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 193
+},
+{
+"id": "62H",
+"short": "62H",
+"long": "Archer/Harlem",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 76
+},
+{
+"id": "63",
+"short": "63",
+"long": "63rd",
+"type": 3,
+"color": "414145",
+"weekday_trips": 304
+},
+{
+"id": "63W",
+"short": "63W",
+"long": "West 63rd",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 118
+},
+{
+"id": "65",
+"short": "65",
+"long": "Grand",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 204
+},
+{
+"id": "66",
+"short": "66",
+"long": "Chicago",
+"type": 3,
+"color": "414145",
+"weekday_trips": 450
+},
+{
+"id": "67",
+"short": "67",
+"long": "67th/69th/71st",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 227
+},
+{
+"id": "68",
+"short": "68",
+"long": "Northwest Highway",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 99
+},
+{
+"id": "70",
+"short": "70",
+"long": "Division",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 214
+},
+{
+"id": "71",
+"short": "71",
+"long": "71st/South Shore",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 199
+},
+{
+"id": "72",
+"short": "72",
+"long": "North",
+"type": 3,
+"color": "414145",
+"weekday_trips": 299
+},
+{
+"id": "73",
+"short": "73",
+"long": "Armitage",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 186
+},
+{
+"id": "74",
+"short": "74",
+"long": "Fullerton",
+"type": 3,
+"color": "414145",
+"weekday_trips": 282
+},
+{
+"id": "75",
+"short": "75",
+"long": "74th/75th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 168
+},
+{
+"id": "76",
+"short": "76",
+"long": "Diversey",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 209
+},
+{
+"id": "77",
+"short": "77",
+"long": "Belmont",
+"type": 3,
+"color": "414145",
+"weekday_trips": 328
+},
+{
+"id": "78",
+"short": "78",
+"long": "Montrose",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 167
+},
+{
+"id": "79",
+"short": "79",
+"long": "79th",
+"type": 3,
+"color": "414145",
+"weekday_trips": 450
+},
+{
+"id": "80",
+"short": "80",
+"long": "Irving Park",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 208
+},
+{
+"id": "81",
+"short": "81",
+"long": "Lawrence",
+"type": 3,
+"color": "414145",
+"weekday_trips": 262
+},
+{
+"id": "81W",
+"short": "81W",
+"long": "West Lawrence",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 88
+},
+{
+"id": "82",
+"short": "82",
+"long": "Kimball/Homan",
+"type": 3,
+"color": "414145",
+"weekday_trips": 280
+},
+{
+"id": "84",
+"short": "84",
+"long": "Peterson",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 142
+},
+{
+"id": "95",
+"short": "95",
+"long": "95th",
+"type": 3,
+"color": "414145",
+"weekday_trips": 256
+},
+{
+"id": "85",
+"short": "85",
+"long": "Central",
+"type": 3,
+"color": "414145",
+"weekday_trips": 244
+},
+{
+"id": "85A",
+"short": "85A",
+"long": "North Central",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 94
+},
+{
+"id": "86",
+"short": "86",
+"long": "Narragansett/Ridgeland",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 106
+},
+{
+"id": "87",
+"short": "87",
+"long": "87th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 263
+},
+{
+"id": "88",
+"short": "88",
+"long": "Higgins",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 100
+},
+{
+"id": "90",
+"short": "90",
+"long": "Harlem",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 132
+},
+{
+"id": "91",
+"short": "91",
+"long": "Austin",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 155
+},
+{
+"id": "92",
+"short": "92",
+"long": "Foster",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 162
+},
+{
+"id": "93",
+"short": "93",
+"long": "California/Dodge",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 125
+},
+{
+"id": "94",
+"short": "94",
+"long": "California",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 170
+},
+{
+"id": "96",
+"short": "96",
+"long": "Lunt",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 66
+},
+{
+"id": "97",
+"short": "97",
+"long": "Skokie",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 108
+},
+{
+"id": "100",
+"short": "100",
+"long": "Jeffery Manor Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 53
+},
+{
+"id": "103",
+"short": "103",
+"long": "West 103rd",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 129
+},
+{
+"id": "106",
+"short": "106",
+"long": "East 103rd",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 135
+},
+{
+"id": "108",
+"short": "108",
+"long": "Halsted/95th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 72
+},
+{
+"id": "111",
+"short": "111",
+"long": "111th/King Drive",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 140
+},
+{
+"id": "111A",
+"short": "111A",
+"long": "Pullman Shuttle",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 82
+},
+{
+"id": "112",
+"short": "112",
+"long": "Vincennes/111th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 134
+},
+{
+"id": "115",
+"short": "115",
+"long": "Pullman/115th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 143
+},
+{
+"id": "119",
+"short": "119",
+"long": "Michigan/119th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 189
+},
+{
+"id": "120",
+"short": "120",
+"long": "Ogilvie/Streeterville Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 73
+},
+{
+"id": "121",
+"short": "121",
+"long": "Union/Streeterville Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 76
+},
+{
+"id": "124",
+"short": "124",
+"long": "Navy Pier",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 75
+},
+{
+"id": "125",
+"short": "125",
+"long": "Water Tower Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 51
+},
+{
+"id": "126",
+"short": "126",
+"long": "Jackson",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 146
+},
+{
+"id": "134",
+"short": "134",
+"long": "Stockton/LaSalle Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 49
+},
+{
+"id": "135",
+"short": "135",
+"long": "Clarendon/LaSalle Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 50
+},
+{
+"id": "136",
+"short": "136",
+"long": "Sheridan/LaSalle Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 36
+},
+{
+"id": "143",
+"short": "143",
+"long": "Stockton/Michigan Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 36
+},
+{
+"id": "146",
+"short": "146",
+"long": "Inner Lake Shore/Michigan Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 222
+},
+{
+"id": "147",
+"short": "147",
+"long": "Outer DuSable Lake Shore Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 208
+},
+{
+"id": "148",
+"short": "148",
+"long": "Clarendon/Michigan Express",
+"type": 3,
+"color": "b71234",
+"weekday_trips": 45
+},
+{
+"id": "151",
+"short": "151",
+"long": "Sheridan",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 211
+},
+{
+"id": "152",
+"short": "152",
+"long": "Addison",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 212
+},
+{
+"id": "155",
+"short": "155",
+"long": "Devon",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 204
+},
+{
+"id": "156",
+"short": "156",
+"long": "LaSalle",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 136
+},
+{
+"id": "157",
+"short": "157",
+"long": "Streeterville/Taylor",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 131
+},
+{
+"id": "165",
+"short": "165",
+"long": "West 65th",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 19
+},
+{
+"id": "169",
+"short": "169",
+"long": "69th/UPS Express",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 10
+},
+{
+"id": "171",
+"short": "171",
+"long": "U. of Chicago/Hyde Park",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 83
+},
+{
+"id": "172",
+"short": "172",
+"long": "U. of Chicago/Kenwood",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 126
+},
+{
+"id": "192",
+"short": "192",
+"long": "University of Chicago Hospitals Express",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 19
+},
+{
+"id": "201",
+"short": "201",
+"long": "Central/Ridge",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 76
+},
+{
+"id": "206",
+"short": "206",
+"long": "Evanston Circulator",
+"type": 3,
+"color": "99999C",
+"weekday_trips": 25
+},
+{
+"id": "Red",
+"short": "",
+"long": "Red Line",
+"type": 1,
+"color": "C60C30",
+"weekday_trips": 424
+},
+{
+"id": "P",
+"short": "",
+"long": "Purple Line",
+"type": 1,
+"color": "522398",
+"weekday_trips": 188
+},
+{
+"id": "Y",
+"short": "",
+"long": "Yellow Line",
+"type": 1,
+"color": "F9E300",
+"weekday_trips": 160
+},
+{
+"id": "Blue",
+"short": "",
+"long": "Blue Line",
+"type": 1,
+"color": "00A1DE",
+"weekday_trips": 356
+},
+{
+"id": "Pink",
+"short": "",
+"long": "Pink Line",
+"type": 1,
+"color": "E27EA6",
+"weekday_trips": 122
+},
+{
+"id": "G",
+"short": "",
+"long": "Green Line",
+"type": 1,
+"color": "009B3A",
+"weekday_trips": 256
+},
+{
+"id": "Org",
+"short": "",
+"long": "Orange Line",
+"type": 1,
+"color": "F9461C",
+"weekday_trips": 144
+},
+{
+"id": "Brn",
+"short": "",
+"long": "Brown Line",
+"type": 1,
+"color": "62361B",
+"weekday_trips": 180
+}
+]
