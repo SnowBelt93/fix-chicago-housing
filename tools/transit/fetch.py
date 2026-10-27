@@ -32,20 +32,29 @@ def get(url, tries=3):
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=600) as r:
                 return r.read()
         except Exception as e:
-            print('retry', url, e, file=sys.stderr)
+            log('retry', url, repr(e))
             if i == tries - 1:
                 raise
 
 
 def rows(z, name):
     with z.open(name) as f:
-        yield from csv.DictReader(io.TextIOWrapper(f, encoding='utf-8-sig'))
+        for r in csv.DictReader(io.TextIOWrapper(f, encoding='utf-8-sig')):
+            yield {(k or '').strip(): (v or '').strip() for k, v in r.items()}
+
+
+LOG = []
+def log(*a):
+    msg = ' '.join(str(x) for x in a)
+    print(msg, file=sys.stderr); LOG.append(msg)
 
 
 def service_ids(z, names):
     """Service ids running on a typical weekday: the first Wednesday at least 7 days into the feed."""
     cal = list(rows(z, 'calendar.txt')) if 'calendar.txt' in names else []
+    cal = [r for r in cal if r.get('start_date') and r.get('end_date')]
     dates = list(rows(z, 'calendar_dates.txt')) if 'calendar_dates.txt' in names else []
+    log('calendar rows', len(cal), 'calendar_dates rows', len(dates), 'cols', list((cal or dates or [{}])[0].keys()))
     starts = [r['start_date'] for r in cal] or [r['date'] for r in dates]
     start = dt.datetime.strptime(min(starts), '%Y%m%d').date()
     today = dt.date.today()
@@ -175,19 +184,22 @@ def blocks():
                          shx=io.BytesIO(z.read(base + '.shx')))
     fields = [f[0] for f in r.fields[1:]]
     out = {}
-    for rec in r.iterRecords(fields=['GEOID20', 'COUNTYFP20', 'INTPTLAT20', 'INTPTLON20', 'POP20', 'HOUSING20', 'ALAND20']):
-        geoid, cty, lat, lon, pop, hu, aland = rec
+    log('block fields', fields[:20])
+    for rec in r.iterRecords():
+        d = dict(zip(fields, rec))
+        geoid, cty, lat, lon = d['GEOID20'], d['COUNTYFP20'], d['INTPTLAT20'], d['INTPTLON20']
+        pop, hu, aland = d.get('POP20') or 0, d.get('HOUSING20') or 0, d.get('ALAND20') or 0
         if cty not in COUNTIES:
             continue
         out[geoid] = [round(float(lat), 6), round(float(lon), 6), int(pop), int(hu), int(aland), 0]
     year = None
-    for y in (2023, 2022, 2021):
+    for y in (2023, 2022, 2021, 2020):
         try:
-            data = get(f'https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_{y}.csv.gz', tries=1)
+            data = get(f'https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_{y}.csv.gz', tries=2)
             year = y
             break
         except Exception as e:
-            print('no LODES', y, e, file=sys.stderr)
+            log('no LODES', y, repr(e))
     jobs_total = 0
     if year:
         for row in csv.DictReader(io.TextIOWrapper(gzip.GzipFile(fileobj=io.BytesIO(data)), encoding='utf-8')):
@@ -234,12 +246,15 @@ if __name__ == '__main__':
             elif s == 'bus':
                 bus_ridership()
         except Exception as e:
-            print('STEP FAILED', s, repr(e), file=sys.stderr)
+            import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)
     old = {}
     p = os.path.join(OUT, 'sources.json')
     if os.path.exists(p):
         old = json.load(open(p)).get('files', {})
+    for st in steps:
+        old.pop(st + '_error', None)
     old.update(SOURCES['files'])
     SOURCES['files'] = old
     json.dump(SOURCES, open(p, 'w'), indent=1)
+    open(os.path.join(OUT, 'fetch_log.txt'), 'w').write('\n'.join(LOG) + '\n')
