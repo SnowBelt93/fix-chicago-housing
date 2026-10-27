@@ -110,6 +110,9 @@ def main():
         if c['id'] in rides:
             c['rides'] = float(np.mean(rides[c['id']])); c['loop'] = math.hypot(c['x'], c['y']) / MI
             st_rows.append(c)
+    acc = json.load(open(os.path.join(RAW, 'station_access.json')))
+    for r in st_rows:
+        r['acc45'] = acc.get(r['id'], 0)
     TERM = {'Howard', '95th/Dan Ryan', "O'Hare", 'Forest Park', 'Kimball', 'Linden', 'Dempster-Skokie', 'Harlem/Lake',
             'Ashland/63rd', 'Cottage Grove', 'Midway', '54th/Cermak'}
     for r in st_rows:
@@ -121,8 +124,8 @@ def main():
     X = [np.log([r['pop'] + 500 for r in st_rows]), np.log([r['jobs'] + 500 for r in st_rows]),
          np.array([r['term'] for r in st_rows]), np.array([r['air'] for r in st_rows]),
          np.array([1.0 if r['lines'] > 1 else 0.0 for r in st_rows]), np.log([r['loop'] + 1 for r in st_rows]),
-         np.log([r['bustrips'] + 50 for r in st_rows]), np.log([r['acc'] + 1000 for r in st_rows])]
-    names = ['ln_pop', 'ln_jobs', 'terminal', 'airport', 'transfer', 'ln_loop_mi', 'ln_bus_trips', 'ln_line_jobs']
+         np.log([r['bustrips'] + 50 for r in st_rows]), np.log([r['acc45'] + 1000 for r in st_rows])]
+    names = ['ln_pop', 'ln_jobs', 'terminal', 'airport', 'transfer', 'ln_loop_mi', 'ln_bus_trips', 'ln_jobs_45min']
     rail_coef, rail_r2, rail_mad, rail_pred = fit(X, y, names)
     print('RAIL stations', len(st_rows), 'R2', rail_r2, 'median abs log error', round(rail_mad, 3), rail_coef, file=sys.stderr)
     res = np.sort(y - rail_pred)
@@ -137,6 +140,19 @@ def main():
         cf, *_ = np.linalg.lstsq(A[keep], y[keep], rcond=None)
         pr = np.exp(A[idx] @ cf + SERVICE_E * np.log([max(st_rows[i]['deps'], 1) for i in idx])).sum(); ac = sum(st_rows[i]['rides'] for i in idx)
         print(f'   line {L}: {len(idx)} own stations, actual {ac:,.0f}, predicted without it {pr:,.0f} ({pr / ac:.2f}x)', file=sys.stderr)
+    # leave-one-station-out: how often does the real number fall inside the shown range?
+    A = np.column_stack([np.ones(len(y))] + X); inside = 0; loo = {}
+    for i in range(len(y)):
+        keep = [k for k in range(len(y)) if k != i]
+        cf, *_ = np.linalg.lstsq(A[keep], y[keep], rcond=None)
+        res_i = y[i] - A[i] @ cf
+        inside += rail_band[0] <= res_i <= rail_band[1]
+        loo[st_rows[i]['name']] = (round(st_rows[i]['rides']), round(math.exp(A[i] @ cf + SERVICE_E * math.log(max(st_rows[i]['deps'], 1)))))
+    rail_cover = round(inside / len(y), 3)
+    print('   leave-one-out: actual inside the range for', inside, 'of', len(y), 'stations', file=sys.stderr)
+    for k, v in loo.items():
+        if k.startswith('Damen') or k.startswith('Washington/Wabash') or k.startswith('Morgan') or k.startswith('Cermak-McCormick'):
+            print('   LOO', k, 'actual', v[0], 'predicted', v[1], file=sys.stderr)
     worst = sorted(zip(st_rows, rail_pred + SERVICE_E * np.log([max(r['deps'], 1) for r in st_rows])), key=lambda t: abs(math.log(t[0]['rides']) - t[1]), reverse=True)[:8]
     for r, p in worst:
         print('   off:', r['name'], round(r['rides']), 'pred', round(math.exp(p)), 'pop', r['pop'], 'jobs', r['jobs'], file=sys.stderr)
@@ -179,7 +195,7 @@ def main():
     print('BUS with fixed service effect', SERVICE_E, 'R2', r2f, 'mad', round(madf, 3), bus_fixed, file=sys.stderr)
     print('BUS routes', len(bus_rows), 'R2', bus_r2, 'median abs log error', round(bus_mad, 3), bus_coef, file=sys.stderr)
 
-    out = dict(rail=dict(service_elasticity=SERVICE_E, coef=rail_coef, r2=rail_r2, band_20_80=rail_band, median_abs_log_error=round(rail_mad, 3), n=len(st_rows),
+    out = dict(rail=dict(service_elasticity=SERVICE_E, coef=rail_coef, r2=rail_r2, band_20_80=rail_band, loo_inside_band=rail_cover, median_abs_log_error=round(rail_mad, 3), n=len(st_rows),
                          data='CTA L weekday entries 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS'),
                bus=dict(service_elasticity=SERVICE_E, coef=bus_fixed, r2=r2f, median_abs_log_error=round(madf, 3),
                         band_20_80=[round(float(rb[int(len(rb) * 0.2)]), 3), round(float(rb[int(len(rb) * 0.8)]), 3)],

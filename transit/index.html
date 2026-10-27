@@ -347,6 +347,7 @@ async function load(){
     fetch("data/net.json").then(r => r.json()), fetch("data/model.json").then(r => r.json()),
     fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
   NET = net; MODEL = model;
+  fetch("data/network.json").then(r => r.json()).then(buildNet).catch(e => console.warn("network", e));
   const n = new DataView(buf).getUint32(0, true);
   const xs = new Int16Array(buf, 4, n), ys = new Int16Array(buf, 4 + 2 * n, n);
   const pop = new Uint16Array(buf.slice(4 + 4 * n, 4 + 6 * n)), jobs = new Uint16Array(buf.slice(4 + 6 * n, 4 + 8 * n));
@@ -393,11 +394,132 @@ function nearestL(x, y, r = CATCH_M){
 function pathLen(p){ let s = 0; for (let i = 1; i < p.length; i++) s += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return s; }
 function segDist(px, py, ax, ay, bx, by){ const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy; let t = L ? ((px - ax) * dx + (py - ay) * dy) / L : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(px - ax - t * dx, py - ay - t * dy); }
 
+/* ---------- travel times: midday network (same rules as tools/transit/network.py) ---------- */
+let NW = null;
+function buildNet(net){
+  const nS = net.stops.length, sx = new Float32Array(nS), sy = new Float32Array(nS);
+  net.stops.forEach((p, i) => { sx[i] = p[0]; sy[i] = p[1]; });
+  let nP = 0; for (const p of net.pats) nP += p.s.length;
+  const N = nS + nP, posStop = new Int32Array(nP), hw = new Float32Array(nP), posRoute = new Array(nP), adj = Array.from({length:N}, () => []);
+  let b = nS;
+  net.pats.forEach((p, pi) => {
+    p.base = b;
+    p.s.forEach((st, k) => {
+      const v = b + k; posStop[v - nS] = st; hw[v - nS] = p.hw[k]; posRoute[v - nS] = p.r;
+      if (k < p.s.length - 1){ adj[st].push(v, -1); adj[v].push(v + 1, Math.max(p.m[k + 1] - p.m[k], 0.2)); }
+      if (k > 0) adj[v].push(st, 0);
+    });
+    b += p.s.length;
+  });
+  const sg = grid(nS, i => sx[i], i => sy[i], 400);
+  for (let a = 0; a < nS; a++) near(sg, sx[a], sy[a], net.xferM, k => sx[k], k => sy[k], (k, d2) => { if (k !== a) adj[a].push(k, Math.sqrt(d2) / net.walk); });
+  const Z = net.zones, nz = Z.x.length, zg = grid(nz, i => Z.x[i], i => Z.y[i], 800);
+  const zStops = new Array(nz);   // stops within 1/2 mile of each zone: [stop, minutes, ...]
+  for (let z = 0; z < nz; z++){ const a = []; near(sg, Z.x[z], Z.y[z], net.accessM, k => sx[k], k => sy[k], (k, d2) => a.push(k, Math.sqrt(d2) / net.walk)); zStops[z] = a; }
+  NW = {net, nS, N, sx, sy, sg, adj, posStop, hw, posRoute, Z, nz, zg, zStops, served:[...Array(nz).keys()].filter(z => zStops[z].length)};
+  if (cur) openLine(cur);
+}
+// The plan's network: new lines as extra stops and patterns, Metra upgrades as shorter headways. Cached until the plan changes.
+let AFTER = null;
+function afterGraph(){
+  const key = encodePlan(); if (AFTER && AFTER.key === key) return AFTER;
+  const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [];   // new stops: {x, y}
+  const add = (a, b, w) => { let l = extra.get(a); if (!l) extra.set(a, l = []); l.push(b, w); };
+  let next = NW.N; const extraHw = [];
+  for (const L of lines){
+    if (L.type === "metra"){
+      const r = "metra:" + L.line;
+      for (let i = 0; i < hw.length; i++) if (NW.posRoute[i] === r) hw[i] = Math.min(hw[i], L.head);
+      continue;
+    }
+    if (L.type !== "draw" || L.pts.length < 2) continue;
+    const M = MODES[L.mode], mpm = M.speed * MI / 60;    // meters a minute, with stops
+    const sid = L.pts.map(p => { const id = next++; ns.push({id, x:p.x, y:p.y}); return id; });
+    for (const order of [sid, sid.slice().reverse()]){
+      const pos = order.map(() => next++);
+      order.forEach((st, k) => {
+        if (k < order.length - 1){
+          const a = ns.find(q => q.id === st), b2 = ns.find(q => q.id === order[k + 1]);
+          add(st, pos[k], L.head / 2); extraHw[pos[k]] = L.head;
+          add(pos[k], pos[k + 1], Math.hypot(b2.x - a.x, b2.y - a.y) / mpm);
+        }
+        if (k > 0) add(pos[k], st, 0);
+      });
+    }
+  }
+  // transfers between new stops and everything within 400 m; zones that can walk to new stops
+  const zExtra = new Map();
+  for (const q of ns){
+    near(NW.sg, q.x, q.y, NW.net.xferM, k => NW.sx[k], k => NW.sy[k], (k, d2) => { const w = Math.sqrt(d2) / W; add(q.id, k, w); add(k, q.id, w); });
+    for (const o of ns) if (o !== q){ const d = Math.hypot(o.x - q.x, o.y - q.y); if (d <= NW.net.xferM) add(q.id, o.id, d / W); }
+    near(NW.zg, q.x, q.y, NW.net.accessM, z => NW.Z.x[z], z => NW.Z.y[z], (z, d2) => { let l = zExtra.get(z); if (!l) zExtra.set(z, l = []); l.push(q.id, Math.sqrt(d2) / W); });
+  }
+  return AFTER = {key, extra, hw, ns, next, zExtra};
+}
+// Dijkstra from a point. g = null (today) or afterGraph(). Returns minutes to every node (Infinity if past the cutoff).
+function search(x, y, g, cutoff){
+  const n = g ? g.next : NW.N, dist = new Float64Array(n).fill(Infinity), heap = [];   // Float64: float32 rounding re-queued zero-cost loops forever
+  const push = (v, d) => { if (d < dist[v] && d <= cutoff){ dist[v] = d; heap.push([d, v]); let i = heap.length - 1; while (i > 0){ const pI = (i - 1) >> 1; if (heap[pI][0] <= heap[i][0]) break; [heap[pI], heap[i]] = [heap[i], heap[pI]]; i = pI; } } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length){ heap[0] = last; let i = 0; for (;;){ const l = 2 * i + 1, r = l + 1; let m = i; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+  const W = NW.net.walk, A = NW.net.accessM;
+  near(NW.sg, x, y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => push(k, Math.sqrt(d2) / W));
+  if (g) for (const q of g.ns){ const d = Math.hypot(q.x - x, q.y - y); if (d <= A) push(q.id, d / W); }
+  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N;
+  while (heap.length){
+    const [d, v] = pop(); if (d > dist[v]) continue;
+    if (v < N){
+      const a = NW.adj[v];
+      for (let i = 0; i < a.length; i += 2){ const to = a[i]; let w = a[i + 1]; if (w < 0) w = hw[to - nS] / 2; push(to, d + w); }
+    }
+    const e = g && g.extra.get(v);
+    if (e) for (let i = 0; i < e.length; i += 2) push(e[i], d + e[i + 1]);
+  }
+  return dist;
+}
+// minutes from a point to every zone (Infinity past the cutoff), walking alone included
+function zoneTimes(x, y, g, cutoff){
+  const dist = search(x, y, g, cutoff), Z = NW.Z, out = new Float32Array(NW.nz).fill(Infinity), W = NW.net.walk;
+  for (const z of NW.served){ const a = NW.zStops[z]; let best = out[z]; for (let i = 0; i < a.length; i += 2){ const t = dist[a[i]] + a[i + 1]; if (t < best) best = t; } out[z] = best; }
+  if (g) for (const [z, a] of g.zExtra){ let best = out[z]; for (let i = 0; i < a.length; i += 2){ const t = dist[a[i]] + a[i + 1]; if (t < best) best = t; } out[z] = best; }
+  near(NW.zg, x, y, NW.net.accessM, z => Z.x[z], z => Z.y[z], (z, d2) => { const t = Math.sqrt(d2) / W; if (t < out[z]) out[z] = t; });
+  for (let z = 0; z < NW.nz; z++) if (out[z] > cutoff) out[z] = Infinity;
+  return out;
+}
+function accessFrom(x, y, g){ const t = zoneTimes(x, y, g, NW.net.cutoff); let j = 0; for (let z = 0; z < NW.nz; z++) if (t[z] <= NW.net.cutoff) j += NW.Z.jobs[z]; return j; }
+// For one line: jobs within 45 min for people near it, before and after, and minutes saved per rider (async, cached)
+const TT = new Map();
+function travelReport(L, done){
+  const g = afterGraph(), key = g.key + "|" + L.id; if (TT.has(key)) return TT.get(key);
+  const pts = L.type === "metra" ? NET.metraLines.find(l => l.id === L.line).stations.map(s => [s.x, s.y]) : L.pts.map(p => [p.x, p.y]);
+  const origins = []; for (const [x, y] of pts) near(NW.zg, x, y, WALK_M, z => NW.Z.x[z], z => NW.Z.y[z], z => { if (!origins.includes(z)) origins.push(z); });
+  const CUT = 75, res = {pending:true}; TT.set(key, res);
+  let i = 0, popSum = 0, accB = 0, accA = 0, saveW = 0, saveN = 0;
+  (function step(){
+    const t0 = performance.now();
+    while (i < origins.length && performance.now() - t0 < 30){
+      const z = origins[i++], x = NW.Z.x[z], y = NW.Z.y[z], p = NW.Z.pop[z];
+      const b = zoneTimes(x, y, null, CUT), a = zoneTimes(x, y, g, CUT);
+      let jb = 0, ja = 0, sj = 0, ss = 0;
+      for (let k = 0; k < NW.nz; k++){
+        const J = NW.Z.jobs[k]; if (!J) continue;
+        if (b[k] <= 45) jb += J; if (a[k] <= 45) ja += J;
+        const before = Math.min(b[k], CUT), save = before - a[k];
+        if (a[k] < CUT && save > 0.5){ sj += J; ss += J * save; }
+      }
+      popSum += p; accB += p * jb; accA += p * ja; if (sj){ saveW += p * ss / sj; saveN += p; }
+    }
+    if (i < origins.length) return setTimeout(step, 0);
+    Object.assign(res, {pending:false, people:popSum, before:popSum ? accB / popSum : 0, after:popSum ? accA / popSum : 0, minSaved:saveN ? saveW / saveN : 0});
+    done && done();
+  })();
+  return res;
+}
+
 /* ---------- model ---------- */
 function railLogBase(f){
   const c = MODEL.rail.coef;
   return c.const + c.ln_pop * Math.log(f.pop + 500) + c.ln_jobs * Math.log(f.jobs + 500) + c.terminal * f.term + c.airport * 0
-    + c.transfer * f.xfer + c.ln_loop_mi * Math.log(f.loop + 1) + c.ln_bus_trips * Math.log(f.bus + 50) + c.ln_line_jobs * Math.log(f.lineJobs + 1000)
+    + c.transfer * f.xfer + c.ln_loop_mi * Math.log(f.loop + 1) + c.ln_bus_trips * Math.log(f.bus + 50) + c.ln_jobs_45min * Math.log(f.acc45 + 1000)
     + SERVICE_E * Math.log(Math.max(f.deps, 1));
 }
 function busTripsNear(x, y){ // weekday trips of distinct bus routes with a stop within 1/4 mile
@@ -467,7 +589,7 @@ function evaluate(){
       const cov = routeCover(st), par = new Set();
       for (const [r, k] of cov.cnt) if (k >= Math.max(10, cov.samples * 0.3)) par.add(r);
       L.close = 0; for (let k = 1; k < n; k++) if (Math.hypot(st[k].x - st[k - 1].x, st[k].y - st[k - 1].y) < 0.4 * MI) L.close++;
-      const lineJobs = st.reduce((a, s) => a + (s.snap && s.snap.kind === "L" ? s.snap.ref.jobs0 : s.jobs || 0), 0);
+      const after = NW ? afterGraph() : null;
       for (const s of st){
         if (s.snap && s.snap.kind === "L"){
           const o = s.snap.ref, wasX = o.lines.length > 1 ? 1 : 0;
@@ -476,7 +598,8 @@ function evaluate(){
         } else {
           const f = {pop:s.pop, jobs:s.jobs, term:(s.i === 0 || s.i === n - 1) && TERMINAL_BONUS ? 1 : 0,
                      xfer:(xferAt(s) ? 1 : 0), loop:Math.hypot(s.x, s.y) / MI,
-                     bus:[...s.busRoutes].filter(r => !par.has(r)).reduce((a, r) => a + NET.bus[r].trips, 0), lineJobs, deps:trips};
+                     bus:[...s.busRoutes].filter(r => !par.has(r)).reduce((a, r) => a + NET.bus[r].trips, 0),
+                     acc45:after ? accessFrom(s.x, s.y, after) : 0, deps:trips};
           let wp = 0; near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => wp += B.pop[i] + B.jobs[i]);
           s.riders = wp + s.pop + s.jobs < 50 ? 0 : Math.exp(railLogBase(f));   // nobody nearby (the lake, a rail yard): no riders
         }
@@ -883,6 +1006,7 @@ function openLine(L){
     const lo = L.co2Long[0], hi = L.co2Long[1], mid = (lo + hi) / 2, word = v => v >= 0 ? num(v) + " t less" : num(-v) + " t more";
     h += `<div class="stat ${mid >= 0 ? "g" : ""}" style="display:flex;flex-direction:column;gap:2px"><div class="k" style="margin:0">In the long run, as homes and jobs grow near the ${isM ? "stations" : "line"} and people drive less overall</div><div class="v">${word(mid).replace(" less", " less CO₂ a year").replace(" more", " more CO₂ a year")}</div><div class="k" style="margin:0">likely ${word(lo)} to ${word(hi)}. That takes decades, and zoning that lets homes go up near stations.</div></div>`;
   }
+  h += travelHtml(L);
   if (!isM){
     h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Transfers</span><div class="chips">` +
       (L.xferL.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="chip"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l}</span>`; }).join("")) +
@@ -897,6 +1021,17 @@ function openLine(L){
   const coords = isM ? NET.metraLines.find(l => l.id === L.line).paths.flat() : L.pts.map(p => p.ll);
   if (!L._fitted){ fitTo(coords); L._fitted = true; }
   save();
+}
+function travelHtml(L){
+  if (!NW) return `<p class="note">Loading travel times…</p>`;
+  const T = travelReport(L, () => { if (cur === L) openLine(L); });
+  if (T.pending) return `<p class="note">Working out travel times…</p>`;
+  const users = L.type === "metra" ? L.base + L.riders[0] : L.riders;
+  L.hoursSaved = users * T.minSaved / 60; L.travel = T;
+  return `<div class="stats">
+    <div class="stat"><div class="v">${num(T.before)} → ${num(T.after)}</div><div class="k">jobs within 45 minutes by transit for people near the ${L.type === "metra" ? "stations" : "line"}</div></div>
+    <div class="stat"><div class="v">${num(L.hoursSaved)}</div><div class="k">hours of travel saved a weekday, about ${Math.round(T.minSaved)} min a trip</div></div>
+  </div>`;
 }
 function details(L){
   const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
@@ -1016,8 +1151,11 @@ function openSources(){
   $("srcBody").innerHTML = `<button class="btn x" type="button" onclick="srcDlg.close()">Close</button><h2 id="srcH">How the numbers work</h2>
   <p>Every number is either from a source linked here or listed under assumptions. It's a sketch, not a forecast: real projects get studied for years.</p>
   <h3>Riders on a new subway or elevated line</h3>
-  <p>A statistical model fit to how many people entered each of Chicago's ${R.n} L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and the jobs along its line. It explains ${Math.round(R.r2 * 100)}% of the differences between stations; a typical station estimate is off by about ${Math.round((Math.exp(R.median_abs_log_error) - 1) * 100)}%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.</p>
+  <p>A statistical model fit to how many people entered each of Chicago's ${R.n} L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and how many jobs you can reach from it within 45 minutes by transit. It explains ${Math.round(R.r2 * 100)}% of the differences between stations; a typical station estimate is off by about ${Math.round((Math.exp(R.median_abs_log_error) - 1) * 100)}%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.</p>
   <p>Trains: riders rise about 0.5% for each 1% more trains, the average in <a href="https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf" target="_blank" rel="noopener">TCRP Report 95, Chapter 9</a> (p. 9-4).</p>
+  <p>Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all ${R.n} stations, the real number falls inside the shown range for ${Math.round((R.loo_inside_band || 0) * 100)}% of them.</p>
+  <h3>Travel times and jobs within 45 minutes</h3>
+  <p>The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between ${"buses or trains"}, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. "Hours saved" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less.</p>
   <h3>Riders on BRT or a streetcar</h3>
   <p>Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to ${Bm.n} CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about ${Math.round((Math.exp(Bm.median_abs_log_error) - 1) * 100)}%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf" target="_blank" rel="noopener">FTA before-and-after studies, 2012</a>, p. 5). The range runs from 5%, the low end of what FTA says is common (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf" target="_blank" rel="noopener">FTA, Characteristics of BRT</a>, p. E-6: gains "of between 5 and 25 percent are common"), to 51% on LA's Orange Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA Report 0004</a>, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA</a>, <a href="https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership" target="_blank" rel="noopener">FTA</a>). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">Kansas City</a>, <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50213.pdf" target="_blank" rel="noopener">Detroit</a>, NTD 2024).</p>
   <h3>Metra upgrades</h3>
