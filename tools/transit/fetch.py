@@ -193,19 +193,26 @@ def blocks():
             continue
         out[geoid] = [round(float(lat), 6), round(float(lon), 6), int(pop), int(hu), int(aland), 0]
     year = None
+    lodes_text, partial = None, False
     for y in (2023, 2022, 2021, 2020):
         local = os.path.join(OUT, f'il_wac_S000_JT00_{y}.csv.gz')   # downloaded by curl in the workflow (resumable)
         if os.path.exists(local) and os.path.getsize(local) > 100000:
+            raw = open(local, 'rb').read()
             try:
-                data = open(local, 'rb').read(); gzip.decompress(data)
-                year = y
-                break
-            except Exception as e:
-                log('bad local LODES', y, repr(e))
+                lodes_text = gzip.decompress(raw).decode('utf-8')
+            except Exception:  # the server often cuts the file short: keep every complete row we got
+                import zlib
+                lodes_text = zlib.decompressobj(16 + zlib.MAX_WBITS).decompress(raw).decode('utf-8', 'ignore')
+                lodes_text = lodes_text[:lodes_text.rfind('\n') + 1]
+                partial = True
+            year = y
+            break
         log('no local LODES file for', y)
     jobs_total = 0
+    last_geocode = None
     if year:
-        for row in csv.DictReader(io.TextIOWrapper(gzip.GzipFile(fileobj=io.BytesIO(data)), encoding='utf-8')):
+        for row in csv.DictReader(io.StringIO(lodes_text)):
+            last_geocode = row['w_geocode']
             g = row['w_geocode']
             if g in out:
                 out[g][5] = int(row['C000']); jobs_total += int(row['C000'])
@@ -218,7 +225,8 @@ def blocks():
     SOURCES['files']['blocks'] = {'url': url, 'jobs_url': f'LODES8 il_wac_S000_JT00_{year}', 'jobs_year': year,
                                   'blocks': len(out), 'people': sum(v[2] for v in out.values()),
                                   'people_city_county': sum(v[2] for g, v in out.items() if g[2:5] == '031'),
-                                  'jobs': jobs_total}
+                                  'jobs': jobs_total, 'jobs_file_partial': partial,
+                                  'jobs_last_block': last_geocode}
     print(SOURCES['files']['blocks'], file=sys.stderr)
 
 
