@@ -159,6 +159,27 @@ def main():
                                      'boards2018': round(b18) if b18 is not None else None,
                                      'boards': round(b18 * METRA_SCALE) if b18 is not None else None})
     out['metraScale'] = round(METRA_SCALE, 4)
+    # route miles (shared track counted once): sample every 100 m, skip points within 60 m of one already counted
+    def route_mi(ids):
+        seen, n = set(), 0
+        for l in out['metraLines']:
+            if l['id'] not in ids:
+                continue
+            for path in l['paths']:
+                pxy, mine = [xy(p[1], p[0]) for p in path], set()
+                for (ax, ay), (bx, by) in zip(pxy, pxy[1:]):
+                    k = max(1, int(math.hypot(bx - ax, by - ay) // 100))
+                    for t in range(k):
+                        x, y = ax + (bx - ax) * t / k, ay + (by - ay) * t / k
+                        cx, cy = int(x // 60), int(y // 60)
+                        mine.add((cx, cy))
+                        if not any((cx + i, cy + j) in seen for i in (-1, 0, 1) for j in (-1, 0, 1)):
+                            n += 1   # this 100 m isn't on track already counted for another path
+                seen |= mine
+        return round(n * 100 / 1609.34, 1)
+    ids = [l['id'] for l in out['metraLines']]
+    out['metraRouteMi'] = {'diesel': route_mi([i for i in ids if i != 'ME']), 'electric': route_mi(['ME'])}
+    print('metra route miles', out['metraRouteMi'], file=sys.stderr)
     print('metra stations', len(out['metraStations']), 'with 2018 counts', matched, 'of', len(counts), 'count names', file=sys.stderr)
     if counts:
         miss = [s['name'] for s in out['metraStations'] if s['boards2018'] is None]
