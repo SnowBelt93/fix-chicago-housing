@@ -1,0 +1,18 @@
+[
+{
+"id": "so_shore",
+"short": "Lakeshore",
+"long": "Lakeshore Corridor",
+"type": 2,
+"color": "F6931C",
+"weekday_trips": 58
+},
+{
+"id": "mo_co",
+"short": "Monon",
+"long": "Monon Corridor",
+"type": 2,
+"color": "ED1B24",
+"weekday_trips": 34
+}
+]

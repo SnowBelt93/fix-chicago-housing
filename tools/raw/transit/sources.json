@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T23:43Z",
+ "fetched": "2026-10-27T23:48Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -65,6 +65,13 @@
    "routes": 62,
    "stops": 645,
    "weekday_trips": 594
+  },
+  "nictd": {
+   "url": "http://www.mysouthshoreline.com/google/google_transit.zip",
+   "service_date": "2026-11-04",
+   "routes": 2,
+   "stops": 21,
+   "weekday_trips": 92
   }
  }
 }
