@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T06:02Z",
+ "fetched": "2026-10-27T06:24Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -8,20 +8,26 @@
    "stops": 11138,
    "weekday_trips": 21127
   },
-  "metra_error": "KeyError('start_date')",
   "blocks": {
    "url": "https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/tl_2020_17_tabblock20.zip",
    "jobs_url": "LODES8 il_wac_S000_JT00_None",
    "jobs_year": null,
-   "blocks": 0,
-   "people": 0,
-   "people_city_county": 0,
+   "blocks": 141168,
+   "people": 8445866,
+   "people_city_county": 5275541,
    "jobs": 0
   },
   "bus_ridership": {
    "url": "https://data.cityofchicago.org/d/jyb9-n7fm",
    "year": 2025,
    "daytype": "weekday"
+  },
+  "metra": {
+   "url": "https://schedules.metrarail.com/gtfs/schedule.zip",
+   "service_date": "2026-11-04",
+   "routes": 11,
+   "stops": 241,
+   "weekday_trips": 678
   }
  }
 }
