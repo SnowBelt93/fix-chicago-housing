@@ -210,6 +210,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
       </ol>
       <div class="drawstat"><div><b id="dsN">0</b><span>stations</span></div><div><b id="dsMi">0</b><span>miles</span></div></div>
       <p class="note" id="drawSpacing"></p>
+      <label class="toggle" id="snapRow" style="display:none">Snap stations to streets and rail lines <input type="checkbox" id="snapChk" checked></label>
     </div>
     <div class="vfoot">
       <button class="btn big" type="button" id="drawUndo">Undo</button>
@@ -515,6 +516,70 @@ function travelReport(L, done){
   return res;
 }
 
+/* ---------- roads, rail corridors and rivers (OpenStreetMap) ---------- */
+let GEO = null;
+function loadGeo(){
+  fetch("data/geo.json").then(r => r.json()).then(g => {
+    GEO = {};
+    for (const k of Object.keys(g)){
+      const segs = [];   // [ax, ay, bx, by, name]
+      for (const [nm, c] of g[k]) for (let i = 0; i + 3 < c.length; i += 2) segs.push([c[i], c[i + 1], c[i + 2], c[i + 3], nm]);
+      const G = new Map(), cell = 300;
+      segs.forEach((sg, i) => {
+        const x0 = Math.floor(Math.min(sg[0], sg[2]) / cell), x1 = Math.floor(Math.max(sg[0], sg[2]) / cell), y0 = Math.floor(Math.min(sg[1], sg[3]) / cell), y1 = Math.floor(Math.max(sg[1], sg[3]) / cell);
+        for (let a = x0; a <= x1; a++) for (let b = y0; b <= y1; b++){ const key = a + "," + b; let l = G.get(key); if (!l) G.set(key, l = []); l.push(i); }
+      });
+      GEO[k] = {segs, G, cell};
+    }
+    $("snapRow").style.display = "";
+    if (map && map.getSource("geo-water") && !ownDomain()) drawGeoBase();
+  }).catch(() => {});
+}
+function geoNear(k, x, y, r, fn){
+  const g = GEO[k]; if (!g) return;
+  const c = g.cell, seen = new Set();
+  for (let a = Math.floor((x - r) / c); a <= Math.floor((x + r) / c); a++) for (let b = Math.floor((y - r) / c); b <= Math.floor((y + r) / c); b++){
+    const l = g.G.get(a + "," + b); if (l) for (const i of l) if (!seen.has(i)){ seen.add(i); fn(g.segs[i]); }
+  }
+}
+// nearest point on a street (or, for rail lines, a rail corridor) within 18 px and 150 m
+function snapGeo(point, rail){
+  const ll = map.unproject(point), [x, y] = toXY(ll.lng, ll.lat), r = Math.min(150, 18 * metersAt(map.getZoom()));
+  let best = null, bd = r;
+  for (const k of rail ? ["rail", "arterial", "motorway"] : ["arterial"]) geoNear(k, x, y, r, sg => {
+    const dx = sg[2] - sg[0], dy = sg[3] - sg[1], L2 = dx * dx + dy * dy; let t = L2 ? ((x - sg[0]) * dx + (y - sg[1]) * dy) / L2 : 0; t = Math.max(0, Math.min(1, t));
+    const px = sg[0] + t * dx, py = sg[1] + t * dy, d = Math.hypot(px - x, py - y);
+    if (d < bd){ bd = d; best = [px, py]; }
+  });
+  return best && toLL(best[0], best[1]);
+}
+// where a line crosses rivers, expressways and the lake
+function crossings(pts){
+  if (!GEO) return null;
+  const hit = {water:new Map(), motorway:new Map()}, inter = (a, b, c, d) => {
+    const r = [b[0] - a[0], b[1] - a[1]], q = [d[0] - c[0], d[1] - c[1]], den = r[0] * q[1] - r[1] * q[0]; if (!den) return null;
+    const t = ((c[0] - a[0]) * q[1] - (c[1] - a[1]) * q[0]) / den, u = ((c[0] - a[0]) * r[1] - (c[1] - a[1]) * r[0]) / den;
+    return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [a[0] + t * r[0], a[1] + t * r[1]] : null; };
+  for (let i = 0; i < pts.length - 1; i++){
+    const a = [pts[i].x, pts[i].y], b = [pts[i + 1].x, pts[i + 1].y], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, r = Math.hypot(b[0] - a[0], b[1] - a[1]) / 2 + 10;
+    for (const k of ["water", "motorway"]) geoNear(k, mx, my, r, sg => {
+      const p = inter(a, b, [sg[0], sg[1]], [sg[2], sg[3]]); if (!p) return;
+      const nm = (sg[4] || (k === "water" ? "a river or canal" : "an expressway")).replace(/;/g, "/").replace(/\b(I|IL|US) (\d)/g, "$1-$2").replace(/\/I-/g, "/");
+      // one crossing per name per ~400 m (divided roads and river banks count once)
+      const l = hit[k].get(nm) || []; if (!l.some(q => Math.hypot(q[0] - p[0], q[1] - p[1]) < 400)) l.push(p); hit[k].set(nm, l);
+    });
+  }
+  let lake = 0; if (NET.lake) for (const p of pts){ for (const ring of NET.lake){ if (inRing(p.ll, ring)){ lake++; break; } } }
+  const list = m => [...m].map(([nm, l]) => ({nm, n:l.length}));
+  return {water:list(hit.water), motorway:list(hit.motorway), lake};
+}
+function inRing(pt, ring){ let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++){ const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) c = !c; } return c; }
+function drawGeoBase(){   // fallback basemap: streets, expressways and rivers (OpenStreetMap)
+  const fcOf = k => fc(GEO[k] ? [{type:"Feature", geometry:{type:"MultiLineString", coordinates:groupLines(k)}}] : []);
+  map.getSource("geo-water").setData(fcOf("water")); map.getSource("geo-road").setData(fcOf("arterial")); map.getSource("geo-mway").setData(fcOf("motorway"));
+}
+function groupLines(k){ return GEO[k].segs.map(sg => [toLL(sg[0], sg[1]), toLL(sg[2], sg[3])]); }
+
 /* ---------- model ---------- */
 function railLogBase(f){
   const c = MODEL.rail.coef;
@@ -762,6 +827,12 @@ async function initMap(){
       try { if (l.type === "symbol" && /poi|housenum/.test(l.id)) map.setLayoutProperty(l.id, "visibility", "none"); } catch (e) {}
     }
   }
+  if (!ownDomain()){
+    for (const [id, color, w] of [["geo-road", "#e2e4de", 0.8], ["geo-mway", "#d3d6cf", 1.6], ["geo-water", "#b9d9ea", 1.4]]){
+      map.addSource(id, {type:"geojson", data:fc([])});
+      map.addLayer({id, type:"line", source:id, paint:{"line-color":color, "line-width":["interpolate", ["linear"], ["zoom"], 9, w * 0.6, 14, w * 2.5]}});
+    }
+  }
   map.addSource("people", {type:"canvas", canvas:makeDensityCanvas("pop"), coordinates:DENS_COORDS, animate:false});
   map.addLayer({id:"people", type:"raster", source:"people", paint:{"raster-opacity":0.85, "raster-fade-duration":0}, layout:{visibility:"none"}});
   map.addSource("jobs", {type:"canvas", canvas:makeDensityCanvas("jobs"), coordinates:DENS_COORDS, animate:false});
@@ -837,7 +908,8 @@ function snapAt(lngLat, point){
 }
 function addPoint(e){
   const sn = snapAt(e.lngLat, e.point);
-  const ll = sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat];
+  let ll = sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat];
+  if (!sn && GEO && $("snapChk").checked){ const q = snapGeo(e.point, MODES[drawing.mode].kind === "rail"); if (q) ll = q; }
   const [x, y] = toXY(ll[0], ll[1]);
   drawing.pts.push({x, y, ll, snap:sn});
   refreshDraw(); hint(drawing.pts.length < 2 ? "Now tap where the next station goes" : "Keep going, or press Done");
@@ -1007,6 +1079,13 @@ function openLine(L){
     h += `<div class="stat ${mid >= 0 ? "g" : ""}" style="display:flex;flex-direction:column;gap:2px"><div class="k" style="margin:0">In the long run, as homes and jobs grow near the ${isM ? "stations" : "line"} and people drive less overall</div><div class="v">${word(mid).replace(" less", " less CO₂ a year").replace(" more", " more CO₂ a year")}</div><div class="k" style="margin:0">likely ${word(lo)} to ${word(hi)}. That takes decades, and zoning that lets homes go up near stations.</div></div>`;
   }
   h += travelHtml(L);
+  if (!isM){
+    const X = crossings(L.pts);
+    if (X && (X.water.length || X.motorway.length || X.lake)){
+      const parts = X.water.map(w => `${esc(w.nm)}${w.n > 1 ? " (" + w.n + " times)" : ""}`).concat(X.motorway.map(w => `${esc(w.nm)}${w.n > 1 ? " (" + w.n + " times)" : ""}`));
+      h += `<p class="note"><b>Hard spots:</b> ${parts.length ? "crosses " + parts.join(", ") + ". Each needs a bridge, a tunnel or a rebuilt overpass. " : ""}${X.lake ? X.lake + " station" + (X.lake > 1 ? "s are" : " is") + " in the lake. " : ""}Cost ranges come from whole projects and don't add these separately.</p>`;
+    }
+  }
   if (!isM){
     h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Transfers</span><div class="chips">` +
       (L.xferL.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="chip"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l}</span>`; }).join("")) +
@@ -1202,6 +1281,7 @@ function openSources(){
 async function boot(){
   try { await load(); } catch (e){ $("loading").textContent = "Couldn't load the transit data. Try reloading."; console.error(e); return; }
   await initMap();
+  loadGeo();
   restore();
   $("loading").style.opacity = 0; setTimeout(() => $("loading").remove(), 300);
   openStart();

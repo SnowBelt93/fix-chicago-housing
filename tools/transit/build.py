@@ -188,6 +188,15 @@ def main():
     meta = json.load(open(os.path.join(ROOT, 'meta.json')))
     out['lake'] = meta.get('lake'); out['cityOutline'] = meta.get('cityOutline')
     json.dump(out, open(os.path.join(OUT, 'net.json'), 'w'), separators=(',', ':'))
+    # roads, rail corridors and rivers (OpenStreetMap) for snapping, crossing flags and the fallback basemap
+    p = os.path.join(RAW, 'osm.json.gz')
+    if os.path.exists(p):
+        osm = json.load(gzip.open(p, 'rt'))
+        geo = {}
+        for k, items in osm.items():
+            geo[k] = [[nm[:40], [c for q in pts for c in (round(xy(q[1], q[0])[0]), round(xy(q[1], q[0])[1]))]] for nm, pts in items]
+        json.dump(geo, open(os.path.join(OUT, 'geo.json'), 'w'), separators=(',', ':'))
+        print('geo.json', os.path.getsize(os.path.join(OUT, 'geo.json')), {k: len(v) for k, v in geo.items()}, file=sys.stderr)
     print('net.json', os.path.getsize(os.path.join(OUT, 'net.json')), 'bytes;', 'L', len(out['lStations']), 'bus', len(out['bus']),
           'stops', len(sx), file=sys.stderr)
 
