@@ -7,6 +7,8 @@ no local LODES file for 2023
 metra counts 96725
 ntd energy https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000 14543
 osm failed rail https://overpass-api.de/api/interpreter <HTTPError 502: 'Bad Gateway'>
-osm failed rail https://overpass.private.coffee/api/interpreter <HTTPError 502: 'Bad Gateway'>
-osm rail from https://maps.mail.ru/osm/tools/overpass/api/interpreter
-osm {'motorway': 6462, 'arterial': 55715, 'water': 1121, 'rail': 7736}
+osm failed rail https://overpass.private.coffee/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+osm failed rail https://maps.mail.ru/osm/tools/overpass/api/interpreter <HTTPError 504: 'Gateway Time-out'>
+osm {'motorway': 6462, 'arterial': 55715, 'water': 1121}
+nhcci 57533
+cpi 3290
