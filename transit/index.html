@@ -275,7 +275,6 @@ const OCC = 1.5;             // people per car trip (NHTS 2022)
 /* money: today's dollars, funding, benefit-cost (USDOT BCA guidance, 2026 update) */
 let COSTIX = null;             // construction cost index by year (FHWA NHCCI), loaded from data/costindex.json
 const VTTS = 21.80, VTTS_YEAR = 2024;   // $ per person-hour of travel time saved, local personal travel (USDOT, 2024 dollars)
-const VOC = 0.56;              // $ per car mile not driven (USDOT, 2024 dollars)
 const DISCOUNT = 0.07, LIFE = 30;      // USDOT: 7% real discount rate; at most 30 years of operation
 const FARE_PER_TRIP = 1.15, CTA_COST_PER_TRIP = 6.20;   // CTA 2024: fare revenue and operating cost per trip (NTD)
 const CIG_CAP = {newStarts:0.60, smallStarts:0.80};    // federal Capital Investment Grants caps (FTA)
@@ -321,7 +320,7 @@ const MODES = {
   streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], costYear:[2017,2021], buildYrs:4, heads:[5,7.5,10,15], head:10,
              speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00349, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
              icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
-  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], costYear:[2019,2008], buildYrs:2, heads:[3,5,7.5,10,15], head:5,
+  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], costYear:[2018,2004], buildYrs:2, heads:[3,5,7.5,10,15], head:5,
              speed:13.19, cars:1, perHr:197.88, tripMi:2.47, co2:"bus", years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
              icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M3 10h18M7 20v-3M17 20v-3"/>', color:"#1a1d21"},
 };
@@ -428,7 +427,7 @@ function buildNet(net){
   const zStops = new Array(nz);   // stops within 1/2 mile of each zone: [stop, minutes, ...]
   for (let z = 0; z < nz; z++){ const a = []; near(sg, Z.x[z], Z.y[z], net.accessM, k => sx[k], k => sy[k], (k, d2) => a.push(k, Math.sqrt(d2) / net.walk)); zStops[z] = a; }
   NW = {net, nS, N, sx, sy, sg, adj, posStop, hw, posRoute, Z, nz, zg, zStops, served:[...Array(nz).keys()].filter(z => zStops[z].length)};
-  if (cur) openLine(cur);
+  if (cur) openLine(cur); else if ($("vStart").classList.contains("on")) renderMyLines();
 }
 // The plan's network: new lines as extra stops and patterns, Metra upgrades as shorter headways. Cached until the plan changes.
 let AFTER = null;
@@ -581,7 +580,8 @@ function crossings(pts){
     const a = [pts[i].x, pts[i].y], b = [pts[i + 1].x, pts[i + 1].y], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, r = Math.hypot(b[0] - a[0], b[1] - a[1]) / 2 + 10;
     for (const k of ["water", "motorway"]) geoNear(k, mx, my, r, sg => {
       const p = inter(a, b, [sg[0], sg[1]], [sg[2], sg[3]]); if (!p) return;
-      const nm = (sg[4] || (k === "water" ? "a river or canal" : "an expressway")).replace(/;/g, "/").replace(/\b(I|IL|US) (\d)/g, "$1-$2").replace(/\/I-/g, "/");
+      if (k === "motorway" && !/\bI[ -]?\d|Tollway|Expressway|Skyway/i.test(sg[4] || "")) return;   // OpenStreetMap "trunk" roads like Stony Island aren't expressways
+      const nm = (sg[4] || "a waterway").replace(/;/g, "/").replace(/\b(I|IL|US) (\d)/g, "$1-$2").replace(/\/I-/g, "/");
       // one crossing per name per ~400 m (divided roads and river banks count once)
       const l = hit[k].get(nm) || []; if (!l.some(q => Math.hypot(q[0] - p[0], q[1] - p[1]) < 400)) l.push(p); hit[k].set(nm, l);
     });
@@ -609,12 +609,15 @@ function pvFactor(start, years){ let f = 0; for (let t = start; t < start + year
 function benefitCost(L, buildYrs){
   if (L.hoursSaved == null) return null;
   const cpi = COSTIX && COSTIX.cpi ? COSTIX.cpi[COSTIX.cpiLatest] / COSTIX.cpi[VTTS_YEAR] : 1;
-  const carMi = (L.carTrips[0] + L.carTrips[1]) / 2 * (L.type === "metra" ? METRA_TRIP_MI : MODES[L.mode].tripMi) * YEAR_DAYS;
-  const benYear = (L.hoursSaved * YEAR_DAYS * VTTS + carMi * VOC) * cpi;
-  const cap = (L.capitalToday[0] + L.capitalToday[1]) / 2;
-  const pvBen = benYear * pvFactor(buildYrs, LIFE);
-  const pvCost = cap / buildYrs * pvFactor(0, buildYrs) + Math.max(0, L.opYear) * pvFactor(buildYrs, LIFE) - Math.max(0, -L.opYear) * pvFactor(buildYrs, LIFE);
-  return {benYear, pvBen, pvCost, ratio: pvCost > 0 ? pvBen / pvCost : Infinity, timeShare: L.hoursSaved * YEAR_DAYS * VTTS * cpi / Math.max(benYear, 1)};
+  const P = L.preset && PRESETS.find(p => p.id === L.preset);
+  let cap = (L.capitalToday[0] + L.capitalToday[1]) / 2;
+  if (L.type === "metra" && P && P.official.cost) cap = today$(P.official.cost, P.official.costYear);   // Metra presets: the agency's capital cost
+  if (!(cap > 0)) return {noCapital:true};
+  const benYear = L.hoursSaved * YEAR_DAYS * VTTS * cpi;
+  // USDOT: net operating and maintenance costs go in the numerator with the benefits; capital is the denominator
+  const pvNet = (benYear - L.opYear) * pvFactor(buildYrs, LIFE);
+  const pvCap = cap / buildYrs * pvFactor(0, buildYrs);
+  return {benYear, pvNet, pvCap, ratio: pvNet / pvCap};
 }
 
 /* ---------- model ---------- */
@@ -750,6 +753,7 @@ function evaluate(){
       }
     }
     L.riders = riders; L.lost = M.kind === "rail" ? lost * lineShare(L, railSt) : 0; L.gainOld = gainOld;
+    L.waiting = M.kind === "rail" && !NW;   // rail riders need travel times; shown once the network loads
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
     L.capital = [M.cost[0] * L.len / MI, M.cost[1] * L.len / MI];
@@ -773,10 +777,8 @@ function evaluate(){
     L.perRide = (L.capitalToday.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
   }
 }
-function xferAt(s){ // a transfer to another rail line: an L station within 250 m or a Metra station within 400 m
-  if (s.snap) return true;
-  if (nearestL(s.x, s.y, L_SNAP_M) >= 0) return true;
-  let x = false; near(MGRID, s.x, s.y, METRA_XFER_M, k => MST[k].x, k => MST[k].y, () => x = true); return x; }
+function xferAt(s){ // the model's transfer bonus means another L line, so only an L station within 250 m counts
+  return (s.snap && s.snap.kind === "L") || nearestL(s.x, s.y, L_SNAP_M) >= 0; }
 function lineShare(L, railSt){ // split L-station losses across rail lines by their share of new stations
   const mine = railSt.filter(r => r.L === L).length; return railSt.length ? mine / railSt.length : 0;
 }
@@ -1084,7 +1086,7 @@ function renderMyLines(){
   const netOf = L => L.type === "metra" ? L.riders[0] : L.newRiders;
   const tot = lines.reduce((a, L) => a + netOf(L), 0), cap = lines.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
   const op = lines.reduce((a, L) => a + L.opYear, 0), cars = lines.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
-  el.innerHTML = `<h2>Your plan</h2>` + lines.map((L, i) => `<button class="lrow" type="button" data-i="${i}"><span class="ico" ${L.type === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(L.type === "metra" ? "metra" : L.mode, L.type === "metra")}</span><span class="lt"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len)} mi</span></span><span class="lr">${num(ridersOf(L))}</span></button>`).join("") +
+  el.innerHTML = `<h2>Your plan</h2>` + lines.map((L, i) => `<button class="lrow" type="button" data-i="${i}"><span class="ico" ${L.type === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(L.type === "metra" ? "metra" : L.mode, L.type === "metra")}</span><span class="lt"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len)} mi</span></span><span class="lr">${L.waiting ? "…" : num(ridersOf(L))}</span></button>`).join("") +
     (lines.length > 1 ? `<div class="total"><div class="stat"><div class="v">${num(tot)}</div><div class="k">more transit riders a weekday, all lines</div></div><div class="stat"><div class="v">${moneyRange(cap[0], cap[1])}</div><div class="k">to build, all lines</div></div><div class="stat"><div class="v">${money(op)}</div><div class="k">a year to run</div></div><div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div></div>` : "");
   for (const b of el.querySelectorAll(".lrow")) b.onclick = () => openLine(lines[+b.dataset.i]);
 }
@@ -1120,6 +1122,7 @@ function openLine(L){
   const lo = isM ? L.riders[0] : riders * Math.exp(L.band[0]), hi = isM ? L.riders[1] : riders * Math.exp(L.band[1]);
   const heads = isM ? [15, 20, 30, 60] : M.heads;
   const cars = (L.carTrips[0] + L.carTrips[1]) / 2, co2 = (L.co2[0] + L.co2[1]) / 2;
+  if (L.waiting){ $("lBody").innerHTML = `<p class="note">Loading the transit network…</p>`; return; }
   let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM ? "more riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span></div>`;
   if (!isM && L.lost > 200) h += `<p class="note">About ${num(L.lost)} of them would switch from nearby L stations.</p>`;
   if (!isM && L.baseBus > 0) h += `<p class="note">${L.mode === "brt" ? "Faster buses draw more riders: corridors in Cleveland and Los Angeles gained 26–51%. " : ""}Includes about ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today.</p>`;
@@ -1168,22 +1171,24 @@ function openLine(L){
 }
 function moneyHtml(L){
   const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
-  const riders = isM ? L.riders[0] : L.riders, fares = riders * YEAR_DAYS * FARE_PER_TRIP;
+  const riders = isM ? L.riders[0] : Math.max(0, L.newRiders), fares = riders * YEAR_DAYS * FARE_PER_TRIP;   // new fares come from new riders
   const cap = (L.capitalToday[0] + L.capitalToday[1]) / 2, small = cap < 400e6;
   const B = L.hoursSaved != null ? benefitCost(L, isM ? 2 : M.buildYrs) : null;
   let h = `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Paying for it</span><p class="note" style="margin:0">`;
-  if (cap > 0) h += `Federal grants can cover up to ${Math.round((small ? CIG_CAP.smallStarts : CIG_CAP.newStarts) * 100)}% of the build cost (${small ? "Small Starts" : "New Starts"}); the Red Line Extension got 34%. `;
-  if (L.opYear > 0) h += `Fares would bring in about ${money(fares)} a year, ${Math.round(fares / L.opYear * 100)}% of the ${money(L.opYear)} it costs to run, at the CTA's average of $1.15 a trip. `;
+  const share = small ? Math.min(CIG_CAP.smallStarts, 150e6 / cap) : CIG_CAP.newStarts;
+  if (cap > 0) h += `Federal grants can cover up to ${Math.round(share * 100)}% of the build cost (${small ? "Small Starts: projects under $400 million, with at most $150 million in grants" : "New Starts"}); the Red Line Extension got 34%. `;
+  if (L.opYear > 0) h += `Fares from new riders would bring in about ${money(fares)} a year, ${Math.round(fares / L.opYear * 100)}% of the ${money(L.opYear)} it costs to run, at the CTA's average of $1.15 a trip. `;
   h += `</p>`;
-  if (B) h += `<div class="stat ${B.ratio >= 1 ? "g" : ""}"><div class="v">${B.ratio === Infinity ? "Pays for itself" : B.ratio.toFixed(B.ratio < 10 ? 2 : 0) + " to 1"}</div><div class="k">benefits for each dollar of cost over 30 years. A partial count, using USDOT's values and its 7% discount rate: travel time saved and car costs avoided only. Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</div></div>`;
+  if (B && B.noCapital) h += `<p class="note" style="margin:0">No build cost, so there's no benefit-cost ratio. Added trains may need more cars and yard space, which this doesn't price.</p>`;
+  else if (B) h += `<div class="stat ${B.ratio >= 1 ? "g" : ""}"><div class="v">${B.ratio < 0 ? "Below 0" : B.ratio.toFixed(B.ratio < 10 ? 2 : 0) + " to 1"}</div><div class="k">benefits, less running costs, for each dollar of build cost over 30 years. A partial count, using USDOT's method and 7% discount rate: travel time saved only (new riders get half, as USDOT directs). Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</div></div>`;
   return h + `</div>`;
 }
 function officialHtml(L){
   const P = L.preset && PRESETS.find(p => p.id === L.preset); if (!P) return "";
-  const O = P.official, c = O.cost ? money(today$(O.cost, O.costYear)) : "no estimate";
+  const O = P.official, c = O.cost ? money(O.yoe ? O.cost : today$(O.cost, O.costYear)) : "no estimate";
   return `<div class="stat" style="background:#eef3fa"><div class="k" style="margin:0 0 4px;font-weight:600;color:#2b5da0">The official numbers</div>
     <div class="k">${esc(P.status)}.</div>
-    <div class="k"><b>Cost:</b> ${c}${O.cost ? ` in ${COSTIX ? COSTIX.latest : O.costYear} dollars (${money(O.cost)} ${esc(O.costNote)})` : ` (${esc(O.costNote)})`}.</div>
+    <div class="k"><b>Cost:</b> ${c}${O.cost ? (O.yoe ? ` (${esc(O.costNote)})` : ` in ${COSTIX ? COSTIX.latest : O.costYear} dollars (${money(O.cost)} ${esc(O.costNote)})`) : ` (${esc(O.costNote)})`}.${O.opYear ? ` Running it: ${money(O.opYear)} a year.` : ""}</div>
     <div class="k"><b>Riders:</b> ${num(O.riders)} ${esc(O.ridersNote)}. The tool's number above counts riders on the line itself, so the two measure different things.</div>
     ${P.gap ? `<div class="k">${esc(P.gap)}</div>` : ""}
     ${P.approx ? `<div class="k">${esc(P.approx)}</div>` : ""}
@@ -1193,8 +1198,10 @@ function travelHtml(L){
   if (!NW) return `<p class="note">Loading travel times…</p>`;
   const T = travelReport(L, () => { if (cur === L) openLine(L); });
   if (T.pending) return `<p class="note">Working out travel times…</p>`;
-  const users = L.type === "metra" ? L.base + L.riders[0] : L.riders;
-  L.hoursSaved = users * T.minSaved / 60; L.travel = T;
+  // time saved: riders already on transit get the full saving, riders new to transit half (USDOT rule of half);
+  // Metra upgrades count only their added riders, since the saving is in midday waits and most of today's riders ride at peak
+  const isM = L.type === "metra", newR = isM ? L.riders[0] : Math.max(0, L.newRiders), oldR = isM ? 0 : Math.max(0, L.riders - newR);
+  L.hoursSaved = (oldR + (isM ? newR : newR / 2)) * T.minSaved / 60; L.travel = T;
   return `<div class="stats">
     <div class="stat"><div class="v">${num(T.before)} → ${num(T.after)}</div><div class="k">jobs within 45 minutes by transit for people near the ${L.type === "metra" ? "stations" : "line"}</div></div>
     <div class="stat"><div class="v">${num(L.hoursSaved)}</div><div class="k">hours of travel saved a weekday, about ${Math.round(T.minSaved)} min a trip</div></div>
@@ -1221,7 +1228,7 @@ function details(L){
   }
   rows.push(["Cost per ride (build over 30 years + running)", L.perRide > 0 ? "$" + L.perRide.toFixed(L.perRide < 10 ? 2 : 0) : "—"]);
   return `<details class="more"><summary>How these numbers work</summary><table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>
-    <p class="note" style="margin-top:8px">${isM ? "Riders come from Metra's 2018 station counts scaled to today's ridership, and how riders responded to more trains in Boston. Running costs use Metra's average cost per car-hour, which likely overstates the cost of extra midday trains." : M.kind === "rail" ? "Riders come from a model of how many people ride each L station today, given the people and jobs near it, its buses, and how often trains come. Riders here means entries at its stations; people transferring from another L line aren't counted. It's typically off by about 40% at a single station." : L.fromModel ? "No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. It's typically off by about 37%." : "Riders start from today's riders on the buses along this street, which the new line replaces. They rise or fall with how often it comes compared with those buses" + (L.mode === "brt" ? ", plus 31% for faster BRT service." : ".")} <button class="back" type="button" onclick="openSources()" style="display:inline;min-height:0;text-decoration:underline">Sources</button></p></details>`;
+    <p class="note" style="margin-top:8px">${isM ? "Riders come from Metra's 2018 station counts scaled to today's ridership, and how riders responded to more trains in Boston. Running costs use Metra's average cost per car-hour, which likely overstates the cost of extra midday trains." : M.kind === "rail" ? "Riders come from a model of how many people ride each L station today, given the people and jobs near it, its buses, and how often trains come. Riders here means entries at its stations; people transferring from another L line aren't counted. It's typically off by about 37% at a single station." : L.fromModel ? "No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. It's typically off by about 37%." : "Riders start from today's riders on the buses along this street, which the new line replaces. They rise or fall with how often it comes compared with those buses" + (L.mode === "brt" ? ", plus 31% for faster BRT service." : ".")} <button class="back" type="button" onclick="openSources()" style="display:inline;min-height:0;text-decoration:underline">Sources</button></p></details>`;
 }
 
 /* ---------- map events ---------- */
@@ -1290,10 +1297,10 @@ function decode(s){
   for (const part of s.split("~")){
     try {
       if (/^C[01]{3}$/.test(part)){ clean = {bus:part[1] === "1", metra:part[2] === "1", grid:part[3] === "1"}; continue; }
-      if (part[0] === "M"){ const [id, h, e] = part.slice(1).split("."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains"}); continue; }
+      if (part[0] === "M"){ const [id, h0, e] = part.slice(1).split("."), h = h0.replace("_", "."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains"}); continue; }
       const mode = part.startsWith("st") ? "streetcar" : mk[part[0]]; if (!mode) continue;
       const body = mode === "streetcar" ? part.slice(2) : part.slice(1);
-      const [h, ptsS, nm] = body.split(".");
+      const [h0, ptsS, nm] = body.split("."), h = h0.replace("_", ".");
       const pts = ptsS.split(";").map(q => { const [a, b, sn] = q.split(","); const x = parseInt(a, 36) * 10, y = parseInt(b, 36) * 10;
         let snap = null; if (sn){ const kind = sn[0], id = sn.slice(1); const ref = (kind === "L" ? LST : MST).find(z => z.id === id); if (ref) snap = {kind, ref}; }
         const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
@@ -1305,8 +1312,8 @@ function decode(s){
 }
 function save(){ try { localStorage.setItem("sc-transit", encodePlan()); } catch (e) {} if (encodePlan()) history.replaceState(null, "", "#p=" + encodePlan()); else history.replaceState(null, "", location.pathname + location.search); }
 function encodePlan(){ const c = (clean.bus || clean.metra || clean.grid) ? ["C" + [clean.bus, clean.metra, clean.grid].map(v => v ? 1 : 0).join("")] : [];
-  return c.concat(lines.map(L => L.type === "metra" ? `M${L.line}.${L.head}.${L.electric ? 1 : 0}` :
-    (L.mode === "streetcar" ? "st" : L.mode[0]) + L.head + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name))).join("~"); }
+  return c.concat(lines.map(L => L.type === "metra" ? `M${L.line}.${String(L.head).replace(".", "_")}.${L.electric ? 1 : 0}` :
+    (L.mode === "streetcar" ? "st" : L.mode[0]) + String(L.head).replace(".", "_") + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name))).join("~"); }
 function restore(){
   let s = (location.hash.match(/#p=(.+)/) || [])[1];
   if (!s){ try { s = localStorage.getItem("sc-transit"); } catch (e) {} }
@@ -1321,9 +1328,9 @@ function openSources(){
   <h3>Riders on a new subway or elevated line</h3>
   <p>A statistical model fit to how many people entered each of Chicago's ${R.n} L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and how many jobs you can reach from it within 45 minutes by transit. It explains ${Math.round(R.r2 * 100)}% of the differences between stations; a typical station estimate is off by about ${Math.round((Math.exp(R.median_abs_log_error) - 1) * 100)}%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.</p>
   <p>Trains: riders rise about 0.5% for each 1% more trains, the average in <a href="https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf" target="_blank" rel="noopener">TCRP Report 95, Chapter 9</a> (p. 9-4).</p>
-  <p>Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all ${R.n} stations, the real number falls inside the shown range for ${Math.round((R.loo_inside_band || 0) * 100)}% of them.</p>
+  <p>Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all ${R.n} stations, the real number falls inside the shown range for ${Math.round((R.loo_inside_band || 0) * 100)}% of them. Whole lines miss by more, because a line's stations share its quirks: predicting each L line from the others gives 0.6× (Red) to 2.4× (Orange, which the airport skews) its real riders.</p>
   <h3>Travel times and jobs within 45 minutes</h3>
-  <p>The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between ${"buses or trains"}, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. "Hours saved" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less.</p>
+  <p>The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between ${"buses or trains"}, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. "Hours saved" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less. Check: the average resident of the region can reach about 196,000 jobs within 45 minutes by transit in the tool; the University of Minnesota\'s Access Across America (2018, 7–9am, <a href="https://cts-d10resmod-prd.oit.umn.edu/pdf/cts-20-01.pdf" target="_blank" rel="noopener">Table 2</a>) gives Chicago 125,826 within 40 minutes and 228,599 within 50, about 177,000 at 45. Not included: Pace buses, and services with no midday trips (they come back when a Metra upgrade adds them). New rail stations don't count bus routes that run along the line itself, only ones that cross it, so adding stations doesn't keep adding the same buses.</p>
   <h3>Riders on BRT or a streetcar</h3>
   <p>Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to ${Bm.n} CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about ${Math.round((Math.exp(Bm.median_abs_log_error) - 1) * 100)}%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf" target="_blank" rel="noopener">FTA before-and-after studies, 2012</a>, p. 5). The range runs from 5%, the low end of what FTA says is common (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf" target="_blank" rel="noopener">FTA, Characteristics of BRT</a>, p. E-6: gains "of between 5 and 25 percent are common"), to 51% on LA's Orange Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA Report 0004</a>, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA</a>, <a href="https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership" target="_blank" rel="noopener">FTA</a>). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">Kansas City</a>, <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50213.pdf" target="_blank" rel="noopener">Detroit</a>, NTD 2024).</p>
   <h3>Metra upgrades</h3>
@@ -1334,12 +1341,12 @@ function openSources(){
   <tr><td>Elevated</td><td>$384M: Seattle Lynnwood Link, part elevated, part at ground level (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/WA-Lynnwood-Link-Extension-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.05B: Chicago Red Line Extension, $5.75B for 5.5 mi, mostly elevated (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>Streetcar</td><td>$43M: Detroit QLine (<a href="https://www.masstransitmag.com/rail/article/12366313/detroits-qline-streetcar-getting-on-track-with-partnerships-innovation-and-tenacity" target="_blank" rel="noopener">Mass Transit</a>)</td><td>$100M: Kansas City Main St. (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-02/MO-Kansas-City-Streetcar-Main-St-Ext-Project-FFGA-Profile-FY22.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>BRT</td><td>$7.4M: Indianapolis Red Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/funding/grant-programs/capital-investments/116506/indygo-red-line-rapid-transit-profile.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$29M: Cleveland HealthLine (<a href="https://nacto.org/case-study/euclid-avenue-brt-cleveland-oh/" target="_blank" rel="noopener">NACTO</a>)</td></tr></table>
-  <p class="note">Each project\'s cost is moved from the year it was funded to ${COSTIX ? COSTIX.latestQuarter : "today"} dollars with FHWA\'s National Highway Construction Cost Index (<a href="https://data.transportation.gov/Research-and-Statistics/NHCCI/r94d-n4f9/about_data" target="_blank" rel="noopener">FHWA NHCCI</a>), which roughly doubled from 2008 to 2025. Year-of-spending figures (like the Red Line Extension\'s) are treated as their funding year. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City\'s streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.</p>
+  <p class="note">Each project\'s cost is moved from the year it was funded (or opened, where that's the year the source gives) to ${COSTIX ? COSTIX.latestQuarter : "today"} dollars with FHWA\'s National Highway Construction Cost Index (<a href="https://data.transportation.gov/Research-and-Statistics/NHCCI/r94d-n4f9/about_data" target="_blank" rel="noopener">FHWA NHCCI</a>), which roughly doubled from 2008 to 2025. It's a highway-construction index, so it's only a rough guide for tunnels, rail systems and vehicles. Official year-of-spending totals (like the Red Line Extension\'s $5.75 billion, spent through 2031) are shown as published. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City\'s streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.</p>
   <h3>Cost to run</h3>
   <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
   <h3>Paying for it, and benefit-cost</h3>
   <p>Federal Capital Investment Grants can cover up to 60% of a New Starts project and 80% of a Small Starts project (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2022-01/Fact-Sheet-Capital-Investment-Grants-Program.pdf" target="_blank" rel="noopener">FTA</a>); the tool calls a project under $400 million Small Starts. The Red Line Extension got $1.97 billion of $5.75 billion, 34% (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-11/FY26-Annual-Report-on-Funding-Recommendations.pdf" target="_blank" rel="noopener">FTA FY26 report</a>). Fares: the CTA took in $1.15 per trip in 2024 and spent $6.20 per trip to run service (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">NTD 2024</a>).</p>
-  <p>Benefit-cost follows USDOT's 2026 guidance (<a href="https://www.transportation.gov/sites/dot.gov/files/2025-12/Benefit%20Cost%20Analysis%20Guidance%202026%20Update%20%28Final%29.pdf" target="_blank" rel="noopener">USDOT, December 2025</a>): a 7% real discount rate, up to 30 years of operation after opening, and no dollar value on CO₂. Travel time saved is valued at $21.80 an hour and each car mile not driven at $0.56, in 2024 dollars, raised to today with CPI-U (BLS); both come from USDOT's February 2026 webinar citing the guidance's Appendix A (<a href="https://www.transportation.gov/sites/dot.gov/files/2026-02/BUILD%20Grants%20Preparing%20a%20Benefit-Cost%20Analysis%202-2-26.pdf" target="_blank" rel="noopener">USDOT BUILD webinar</a>). Build costs are spread evenly over the years it takes to build. It counts only these two benefits, so it understates projects whose value comes from reliability, safety or new development.</p>
+  <p>Benefit-cost follows USDOT's 2026 guidance (<a href="https://www.transportation.gov/sites/dot.gov/files/2025-12/Benefit%20Cost%20Analysis%20Guidance%202026%20Update%20%28Final%29.pdf" target="_blank" rel="noopener">USDOT, December 2025</a>): a 7% real discount rate, up to 30 years of operation after opening, and no dollar value on CO₂. Travel time saved is valued at $21.80 an hour in 2024 dollars, raised to today with CPI-U (BLS), from USDOT's February 2026 webinar citing the guidance's Appendix A (<a href="https://www.transportation.gov/sites/dot.gov/files/2026-02/BUILD%20Grants%20Preparing%20a%20Benefit-Cost%20Analysis%202-2-26.pdf" target="_blank" rel="noopener">USDOT BUILD webinar</a>). As the guidance directs, riders new to transit get half the time saving (the "rule of half"), and net running costs are subtracted from benefits, while build costs, spread evenly over the years it takes to build, are the cost side. Metra presets use CMAP's capital cost; a Metra upgrade with no build cost shows no ratio. It counts only travel time, so it understates projects whose value comes from reliability, safety or new development.</p>
   <h3>Real proposals</h3>
   <p>Presets use each agency's own description. Station spots are placed where the named streets cross on OpenStreetMap, or between neighboring cross streets when a small street isn't on the main-road map; the Red Line Extension's are approximate (CTA names cross streets only). Official costs and riders are shown next to the tool's, and CMAP's numbers are the extra weekday transit trips across the whole region in its 2050 model (<a href="https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf" target="_blank" rel="noopener">CMAP 2026 plan</a>), a different measure from riders on the line.</p>
   <h3>Cars and CO₂</h3>
