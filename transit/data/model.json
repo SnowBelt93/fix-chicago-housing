@@ -2,22 +2,23 @@
  "rail": {
   "service_elasticity": 0.5,
   "coef": {
-   "const": -1.6621,
-   "ln_pop": 0.102,
-   "ln_jobs": 0.3165,
-   "terminal": 0.1699,
-   "airport": 1.2732,
-   "transfer": 0.0893,
-   "ln_loop_mi": 0.0441,
-   "ln_bus_trips": 0.3052,
-   "ln_line_jobs": 0.0387
+   "const": -3.5895,
+   "ln_pop": 0.0732,
+   "ln_jobs": 0.3315,
+   "terminal": 0.2699,
+   "airport": 1.2567,
+   "transfer": 0.1391,
+   "ln_loop_mi": 0.0881,
+   "ln_bus_trips": 0.2768,
+   "ln_jobs_45min": 0.1931
   },
-  "r2": 0.566,
+  "r2": 0.571,
   "band_20_80": [
-   -0.474,
-   0.419
+   -0.443,
+   0.411
   ],
-  "median_abs_log_error": 0.335,
+  "loo_inside_band": 0.587,
+  "median_abs_log_error": 0.316,
   "n": 143,
   "data": "CTA L weekday entries 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS"
  },
