@@ -1,0 +1,26 @@
+# Downloads and compacts the transit tool's data (CTA + Metra schedules, Census blocks, jobs, bus ridership)
+# into tools/raw/transit/. The cloud workspace can't reach these hosts, so this runs here. Trigger: push to tools/transit/** or by hand.
+name: Fetch transit data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/transit/fetch.py', '.github/workflows/fetch-transit.yml']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: pip install pyshp
+      - name: Download
+        run: python3 tools/transit/fetch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/transit
+          git commit -m "Fetch transit data" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
