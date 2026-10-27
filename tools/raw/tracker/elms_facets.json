@@ -13,7 +13,7 @@
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10312
+     "count": 10316
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117955
+     "count": 117958
     },
     {
      "value": "Claim",
@@ -186,7 +186,7 @@
     },
     {
      "value": "Order",
-     "count": 9258
+     "count": 9259
     },
     {
      "value": "Appointment",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167327
+     "count": 167328
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1844
+     "count": 1848
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 38
+     "count": 37
     },
     {
      "value": "0-PreDraft",
@@ -492,7 +492,7 @@
     },
     {
      "value": "Martin, Matthew J.",
-     "count": 808
+     "count": 809
     },
     {
      "value": "Mell, Deborah",
@@ -504,7 +504,7 @@
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 741
+     "count": 743
     },
     {
      "value": "Suarez, Regner Ray",
@@ -660,7 +660,7 @@
     },
     {
      "value": "Conway, William",
-     "count": 149
+     "count": 150
     },
     {
      "value": "Levar, Patrick",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169385
+     "count": 169389
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7130
+     "count": 7134
     },
     {
      "value": "2022",
@@ -908,7 +908,7 @@
     },
     {
      "value": "47",
-     "count": 3632
+     "count": 3633
     },
     {
      "value": "43",
@@ -984,7 +984,7 @@
     },
     {
      "value": "31",
-     "count": 1971
+     "count": 1973
     },
     {
      "value": "21",
@@ -1052,7 +1052,7 @@
     },
     {
      "value": "34",
-     "count": 1369
+     "count": 1370
     },
     {
      "value": "05",
@@ -1169,11 +1169,11 @@
     },
     {
      "value": "Referred",
-     "count": 1736
+     "count": 1740
     },
     {
      "value": "Placed on File",
-     "count": 1654
+     "count": 1655
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1205,7 +1205,7 @@
     },
     {
      "value": "Accepted",
-     "count": 35
+     "count": 34
     },
     {
      "value": "Direct Introduction",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163337
+     "count": 163341
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181522,
-  "pages": 181522
+  "count": 181526,
+  "pages": 181526
  }
 }
