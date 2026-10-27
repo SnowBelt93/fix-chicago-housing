@@ -266,52 +266,54 @@ const HOURS = 20;            // hours of service a day (assumption; most L lines
 const YEAR_DAYS = 328;       // 2025 L rides ÷ average 2025 weekday (CTA ridership data); used for riders and service
 const DIVERT = [0.10, 0.31]; // share of ALL riders on a new line who used to drive: Las Vegas MAX 10%, LA Orange Line BRT 25%, Expo Line ~31% (rider surveys)
 const DIVERT_NEW = [0.33, 0.78]; // share of riders NEW to transit who used to drive: MAX 10/30, Expo 44%, Orange Line 25/32 (same surveys)
-const BUS_SPEED = 9.06, BUS_HR = 197.88, BUS_CO2 = 0.00196;   // CTA bus (NTD 2024), diesel bus t CO2 per mile (FTA)
+const BUS_SPEED = 9.06, BUS_HR = 197.88;   // CTA bus (NTD 2024)
 // long run: total drop in driving ÷ the driving a line replaces directly, as homes and jobs grow near transit
 const LANDUSE_MULT = [1.9, 6.59];  // APTA 2009 national default (Bailey et al. 2008) to median of 28 US regions (Sabouri, Ewing & Kalantari 2024)
 const OCC = 1.5;             // people per car trip (NHTS 2022)
-/* cleaner transit: whole-system switches (values sourced in the Sources dialog) */
+/* emissions from Chicago's own fuel and power use (NTD 2024 fuel and energy data, data.transportation.gov 8ehq-7his) */
+const NTD = {ctaRailKwh:363590000, ctaRailCarMi:69571292, ctaBusGal:14740640, ctaBusMi:49576262, ctaEbusKwh:223963, ctaEbusMiKwh:0.28,
+             metraGal:26236332, metraKwh:50615108, metraCarMi:44110638, meMiKwh:0.11};
+const DIESEL_KG_GAL = 10.18;                      // kg CO2 per gallon of diesel (FTA)
+const GRID_KG_KWH = 911.4 * 0.45359 / 1000;       // RFC West grid, 911.4 lb CO2 per MWh (EPA eGRID2023): ~0.413 kg per kWh
+const ME_CAR_MI = NTD.metraKwh * NTD.meMiKwh, METRA_DIESEL_CAR_MI = NTD.metraCarMi - ME_CAR_MI;
+const KWH = {rail:NTD.ctaRailKwh / NTD.ctaRailCarMi, ebus:1 / NTD.ctaEbusMiKwh, me:NTD.metraKwh / ME_CAR_MI};   // kWh per car (or bus) mile
+const DIESEL_GAL = {bus:NTD.ctaBusGal / NTD.ctaBusMi, metra:NTD.metraGal / METRA_DIESEL_CAR_MI};             // gallons per bus / car mile
 const CLEAN = {
-  ctaBusMi: 0,          // CTA bus miles a year (NTD 2024)  FILL
-  ebusNow: 0,           // share of CTA buses already battery-electric  FILL
-  ebusCostExtra: 0,     // extra cost to make the rest of the fleet electric (buses + chargers)  FILL
-  ctaRailCarMi: 69571292, // CTA rail car revenue miles (NTD 2024)
-  metraGal: 0,          // Metra diesel gallons a year  FILL
-  metraDieselCarMi: 0,  // Metra car miles on diesel lines  FILL
-  meCarMi: 0,           // Metra Electric car miles  FILL
-  metraDieselRouteMi: 0,// route miles of diesel lines  FILL
-  wirePerMi: 47e6,      // overhead wires per route mile (Caltrain)
-  gridLeft: 0,          // share of today's grid CO2 left with Illinois's clean-energy law fully in place  FILL
-  evShare: 0,           // share of Illinois cars that are electric  FILL
-  evKwhMi: 0.30,        // EV electricity per mile  FILL
-  gridKgKwh: 0,         // northern Illinois grid, kg CO2 per kWh  FILL
-  ebusT: 0.00103,       // t CO2 per electric bus mile, RFC grid (FTA Table A-13)
-  dieselGalT: 0.01018,  // t CO2 per gallon of diesel (FTA)
+  ebusNow: 25 / 1900,   // 25 battery buses of about 1,900 (Sun-Times, 2025)
+  ebusCost: [1.8e9, 3.1e9],   // CTA Charging Forward: added capital to go all-electric by 2040 (2022 plan)
+  metraDieselRouteMi: 419,     // diesel route miles, measured from Metra's schedule maps (shared track once)
+  wirePerMi: 47e6,      // overhead wires per route mile (Caltrain; Metra hasn't priced it)
+  gridLeft: 0,          // Illinois law: fossil plants at zero emissions by 2045, 100% clean energy by 2050 (CEJA)
+  evShare: 156000 / 10230000,  // ~156,000 electric cars (Illinois SOS, 2025) of 10.23M registered vehicles
+  evKwhMi: 1 / 3.6,     // 3.6 miles per kWh (DOE AFDC)
 };
 let clean = {bus:false, metra:false, grid:false};
 const gridMult = () => clean.grid ? CLEAN.gridLeft : 1;
 // grams of CO2 per car mile: gas cars at EPA's 400 g plus the electric cars already on the road
-const carG = () => CAR_G_MI * (1 - CLEAN.evShare) + CLEAN.evShare * CLEAN.evKwhMi * CLEAN.gridKgKwh * 1000 * gridMult();
-const busT = () => clean.bus ? CLEAN.ebusT * gridMult() : BUS_CO2;   // t CO2 per CTA bus mile
+const carG = () => CAR_G_MI * (1 - CLEAN.evShare) + CLEAN.evShare * CLEAN.evKwhMi * GRID_KG_KWH * 1000 * gridMult();
+const elecT = kwh => kwh * GRID_KG_KWH * gridMult() / 1000;     // t CO2 per mile for a vehicle using kwh per mile
+const dieselBusT = DIESEL_GAL.bus * DIESEL_KG_GAL / 1000;          // CTA diesel bus, t CO2 per mile (~3.0 kg)
+const busT = () => clean.bus ? elecT(KWH.ebus) : dieselBusT;       // t CO2 per CTA bus mile
+const METRA_DIESEL_T = DIESEL_GAL.metra * DIESEL_KG_GAL / 1000;    // Metra diesel, t CO2 per car mile (~6.9 kg)
 const CAR_G_MI = 400;        // grams of CO2 per car mile (EPA)
 const SERVICE_E = 0.5;       // riders vs. trains run (TCRP Report 95 ch. 9 average)
 const METRA_E = {frequent:0.41, rare:0.76}; // Boston commuter rail headway elasticity by headway before: 10–50 min / over 50 min (TCRP 95 Table 9-5, p. 9-12)
 const METRA_MAX_RATIO = 2;   // evidence covers up to about doubling service (Tri-Rail +60%, Boston & Maine +77%); beyond that the tool does not extrapolate
 const METRA_SPEED = 29.28, METRA_CAR_HR = 656.28, METRA_CARS_NEW = 4, METRA_CARS_NOW = 6, METRA_HOURS = 18;
 const ELECTRIFY_PER_MI = 47e6;  // Caltrain electrification, $2.44B / 52 mi
-const METRA_TRIP_MI = 21.7, DIESEL_CR_TRAIN = 0.02717, ELECTRIC_CR = 0.00466;  // Metra avg trip (NTD 2024 passenger miles ÷ trips); FTA t CO2: diesel per train-mile (read as per train: 2.67 gal/mi), electric per car-mile on the RFC West grid
+const METRA_TRIP_MI = 21.7;  // Metra avg trip (NTD 2024 passenger miles ÷ trips); FTA t CO2: diesel per train-mile (read as per train: 2.67 gal/mi), electric per car-mile on the RFC West grid
 const MODES = {
   subway:   {name:"Subway", blurb:"Under the street. Fastest to ride, slowest and priciest to build", kind:"rail", cost:[965e6,1410e6], heads:[3,5,7.5,10], head:7.5,
-             speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:0.00247, years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:"rail", years:"7 to 10", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<path d="M2 21V12a10 10 0 0 1 20 0v9"/><rect x="8" y="9" width="8" height="9" rx="1.5"/>', color:"#1a1d21"},
   elevated: {name:"Elevated L", blurb:"On a structure above the street, like most of the L", kind:"rail", cost:[384e6,1050e6], heads:[3,5,7.5,10], head:7.5,
-             speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:0.00247, years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
+             speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:"rail", years:"5 to 7", spacing:"Most L stations are ½ to 1 mile apart.", unit:"A train every", vehicle:"train",
              icon:'<rect x="6" y="2" width="12" height="9" rx="1.5"/><path d="M2 13h20M5 13v9M19 13v9M12 13v9"/>', color:"#1a1d21"},
   streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], heads:[5,7.5,10,15], head:10,
              speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00349, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
              icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
   brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], heads:[3,5,7.5,10,15], head:5,
-             speed:13.19, cars:1, perHr:197.88, tripMi:2.47, co2:0.00196, years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
+             speed:13.19, cars:1, perHr:197.88, tripMi:2.47, co2:"bus", years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
              icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M3 10h18M7 20v-3M17 20v-3"/>', color:"#1a1d21"},
 };
 const METRA_ICON = '<path d="M2 3h20M12 3v4"/><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M7 22l2-4M17 22l-2-4"/>';
@@ -535,7 +537,7 @@ function evaluate(){
     const sh = M.kind !== "rail" && !L.fromModel ? DIVERT_NEW : DIVERT;
     L.carTrips = [L.newRiders * sh[0] / OCC, L.newRiders * sh[1] / OCC];
     const vmt = L.carTrips.map(t => t * M.tripMi);
-    const vehT = M.kind === "rail" || L.mode === "streetcar" ? M.co2 * gridMult() : busT();   // t CO2 per vehicle (car) mile
+    const vehT = M.co2 === "rail" ? elecT(KWH.rail) : M.co2 === "bus" ? busT() : M.co2 * gridMult();   // t CO2 per vehicle (car) mile; streetcar: FTA RFC West factor
     const transitCO2 = (trips * (L.len / MI) * L.cars * vehT - busMi * busT()) * YEAR_DAYS;          // t a year
     L.co2 = vmt.map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
     L.transitCO2 = transitCO2;
@@ -557,17 +559,18 @@ const MODE_LIFT = {brt:1.31, streetcar:1}, LIFT_RANGE = {brt:[1.05, 1.51], stree
 
 // CO2 from today's CTA and Metra service, and how much a set of switches saves (t a year)
 function fleetCO2(c){
-  const g = c.grid ? CLEAN.gridLeft : 1, C = CLEAN;
-  const bus = C.ctaBusMi * (c.bus ? C.ebusT * g : (1 - C.ebusNow) * BUS_CO2 + C.ebusNow * C.ebusT * g);
-  const rail = C.ctaRailCarMi * MODES.subway.co2 * g;
-  const metra = (c.metra ? C.metraDieselCarMi * ELECTRIC_CR * g : C.metraGal * C.dieselGalT) + C.meCarMi * ELECTRIC_CR * g;
+  const g = c.grid ? CLEAN.gridLeft : 1, e = kwh => kwh * GRID_KG_KWH * g / 1000;
+  const busDiesel = NTD.ctaBusGal * DIESEL_KG_GAL / 1000, busElecMi = NTD.ctaEbusKwh * NTD.ctaEbusMiKwh;
+  const bus = c.bus ? e((NTD.ctaBusMi + busElecMi) * KWH.ebus) : busDiesel + e(NTD.ctaEbusKwh);
+  const rail = e(NTD.ctaRailKwh);
+  const metra = (c.metra ? e(METRA_DIESEL_CAR_MI * KWH.me) : NTD.metraGal * DIESEL_KG_GAL / 1000) + e(NTD.metraKwh);
   return {bus, rail, metra, total:bus + rail + metra};
 }
 function cleanReport(){
   const now = fleetCO2({}), pick = fleetCO2(clean);
   const one = k => now.total - fleetCO2({[k]:true}).total;
   return {now, pick, saved:now.total - pick.total, one:{bus:one("bus"), metra:one("metra"), grid:one("grid")},
-    cost:(clean.bus ? CLEAN.ebusCostExtra : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0)};
+    cost:[(clean.bus ? CLEAN.ebusCost[0] : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0), (clean.bus ? CLEAN.ebusCost[1] : 0) + (clean.metra ? CLEAN.metraDieselRouteMi * CLEAN.wirePerMi : 0)]};
 }
 
 function evalMetra(L){
@@ -587,9 +590,9 @@ function evalMetra(L){
   L.capital = L.electric ? [ELECTRIFY_PER_MI * L.len / MI, ELECTRIFY_PER_MI * L.len / MI] : [0, 0];
   L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
   const elec = L.electric || isElectric || clean.metra;
-  const perTrain = cars => elec ? cars * ELECTRIC_CR * gridMult() : DIESEL_CR_TRAIN;   // t CO2 per train-mile
+  const perTrain = cars => cars * (elec ? elecT(KWH.me) : METRA_DIESEL_T);   // t CO2 per train-mile
   const addCO2 = add * (L.len / MI) * perTrain(METRA_CARS_NEW) * YEAR_DAYS;
-  const elecSave = L.electric && !clean.metra ? now * (L.len / MI) * (DIESEL_CR_TRAIN - METRA_CARS_NOW * ELECTRIC_CR * gridMult()) * YEAR_DAYS : 0;   // with Metra-wide electrification on, that saving is counted under Cleaner transit
+  const elecSave = L.electric && !clean.metra ? now * (L.len / MI) * METRA_CARS_NOW * (METRA_DIESEL_T - elecT(KWH.me)) * YEAR_DAYS : 0;   // with Metra-wide electrification on, that saving is counted under Cleaner transit
   L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   L.elecSave = elecSave;
   L.co2Long = [L.carTrips[0] * LANDUSE_MULT[0], L.carTrips[1] * LANDUSE_MULT[1]].map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
@@ -805,15 +808,14 @@ function openStart(){
   renderMyLines(); renderClean();
 }
 function renderClean(){
-  if (!CLEAN.ctaBusMi || !CLEAN.metraGal){ $("cleanBox").innerHTML = ""; return; }   // hidden until the fleet figures are filled in
   const R = cleanReport(), el = $("cleanBox"), pct = v => Math.round(v / R.now.total * 100);
   const row = (k, title, sub) => `<label class="toggle crow"><span><b>${title}</b><span class="note">${sub} · ${num(R.one[k])} t less CO₂ a year</span></span><input type="checkbox" data-k="${k}" ${clean[k] ? "checked" : ""}></label>`;
   el.innerHTML = `<h2 class="sec">Cleaner transit</h2>
     <p class="note">The CTA and Metra put out about ${num(R.now.total)} t of CO₂ a year running today's buses and trains.</p>
     ${row("bus", "Electric CTA buses", "every bus battery-powered")}
     ${row("metra", "Electric Metra", "wires on every diesel line")}
-    ${row("grid", "Clean power grid", "Illinois law: carbon-free power")}
-    ${R.saved > 0 ? `<div class="stat g"><div class="v">${num(R.saved)} t less CO₂ a year</div><div class="k">${pct(R.saved)}% of today's transit CO₂${R.cost > 0 ? ` · ${money(R.cost)} to build` : ""}. Your lines below use the cleaner buses, trains and power too.</div></div>` : ""}`;
+    ${row("grid", "Clean power grid", "Illinois law: clean power by 2045–2050")}
+    ${R.saved > 0 ? `<div class="stat g"><div class="v">${num(R.saved)} t less CO₂ a year</div><div class="k">${pct(R.saved)}% of today's transit CO₂${R.cost[1] > 0 ? ` · ${R.cost[0] === R.cost[1] ? money(R.cost[0]) : moneyRange(R.cost[0], R.cost[1])} to build` : ""}. Lines you draw use the cleaner buses, trains and power too.</div></div>` : ""}`;
   for (const i of el.querySelectorAll("input")) i.onchange = () => { clean[i.dataset.k] = i.checked; save(); renderClean(); renderMyLines(); };
 }
 function renderMyLines(){
@@ -1030,8 +1032,10 @@ function openSources(){
   <h3>Cost to run</h3>
   <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
   <h3>Cars and CO₂</h3>
-  <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile from its tailpipe (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA, NTD 2024</a>), 21.7 on Metra (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra, NTD 2024</a>), 1.9 on streetcars (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>). The new service's own emissions are subtracted, using FTA's factors for Chicago's power grid region, RFC West (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>, Tables A-2, A-4, A-12): 2.47 kg per L car-mile, 3.49 kg per streetcar mile, 4.66 kg per electric commuter car-mile, 1.96 kg per diesel bus mile. For diesel commuter rail FTA lists 27.2 kg per vehicle-mile (2.67 gallons); that only fits a whole train, so the tool applies it per train.</p>
+  <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile from its tailpipe (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA, NTD 2024</a>), 21.7 on Metra (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra, NTD 2024</a>), 1.9 on streetcars (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>). The new service's own emissions are subtracted, from Chicago's own fuel and power use in 2024 (<a href="https://data.transportation.gov/d/8ehq-7his" target="_blank" rel="noopener">NTD fuel and energy data</a>): the L used 363.6 million kWh for 69.6 million car-miles (5.2 kWh a car-mile), CTA buses 14.7 million gallons of diesel for 49.6 million miles, CTA's electric buses go 0.28 miles per kWh, Metra burned 26.2 million gallons of diesel and its electric line used 50.6 million kWh. Diesel makes 10.18 kg of CO₂ a gallon (FTA). Power comes from the RFC West grid at 911.4 lb of CO₂ per MWh (<a href="https://www.epa.gov/egrid/summary-data" target="_blank" rel="noopener">EPA eGRID2023</a>). Streetcars use FTA's factor for this grid region, 3.49 kg a mile (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>, Table A-12). Cars: about 1.5% of Illinois' 10.23 million registered vehicles are electric (about 156,000, Illinois Secretary of State via the Chicago Tribune, 2025; <a href="https://www.autosinnovate.org/resources/insights/il" target="_blank" rel="noopener">Alliance for Automotive Innovation</a>), at 3.6 miles per kWh (<a href="https://afdc.energy.gov/vehicles/electric-emissions-sources" target="_blank" rel="noopener">DOE</a>), so the average car mile makes a bit less than a gas car's 400 g.</p>
   <p>Rider surveys on new lines found 10–31% of all riders used to drive: 10% on Las Vegas MAX (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA 2006</a>, p. v), 25% on LA's Orange Line BRT (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA</a>, p. xvi), about 31% on the Expo Line extension (70% new riders, 44% of them former drivers; <a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Mass Transit</a>). Among riders who were new to transit, 33–78% used to drive (the same three surveys). The tool uses the all-rider share for new rail lines, after taking out riders who switch from nearby L stations, and the new-rider share for riders a BRT or streetcar adds beyond today's buses. It shows the middle of each range.</p>
+  <h3>Cleaner transit</h3>
+  <p>Today's CTA and Metra emissions come from the fuel and power use above. <b>Electric CTA buses</b>: every bus battery-powered, using CTA's electric buses' 0.28 miles per kWh; the CTA plans an all-electric fleet by 2040 for $1.8–3.1 billion in added capital (<a href="https://www.transitchicago.com/assets/1/6/Charging_Forward_Report_2-10-22_(FINAL).pdf" target="_blank" rel="noopener">CTA Charging Forward, 2022</a>, pp. 4, 13). It has about 25 electric buses of about 1,900 today (<a href="https://chicago.suntimes.com/transportation/2025/11/21/cta-hybrid-bus-federal-grant" target="_blank" rel="noopener">Sun-Times, 2025</a>). The CTA's own estimate is a 73% cut in bus CO₂; the tool's is smaller because it uses today's grid. <b>Electric Metra</b>: overhead wires on the ${CLEAN.metraDieselRouteMi} diesel route miles (measured from Metra's schedule maps), using Metra Electric's energy per car-mile, at Caltrain's $47 million a mile; Metra hasn't priced it. Metra is buying 8 two-car battery trains for $154 million for the Rock Island's Beverly branch (<a href="https://wbez.org/environment-public-health/2024/02/22/metra-to-buy-first-battery-powered-trains-as-part-of-effort-to-provide-more-frequent-all-day-service" target="_blank" rel="noopener">WBEZ, 2024</a>). <b>Clean power grid</b>: Illinois' Climate and Equitable Jobs Act requires fossil power plants to reach zero emissions by 2045 and sets a goal of 100% clean energy by 2050 (<a href="https://www.illinois.gov/content/dam/soi/en/web/illinois/iisnewsattachments/23893-climate-and-equitable-jobs-act.pdf" target="_blank" rel="noopener">State of Illinois</a>); the switch shows that end state, with electric trains, buses and cars at zero CO₂ from power.</p>
   <h3>CO₂ in the long run</h3>
   <p>Over time, transit changes where people live and work: more homes and jobs near stations, shorter trips, fewer cars. Studies measure this as a multiplier on the driving a line replaces directly. APTA's national default is 1.9 (<a href="https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf" target="_blank" rel="noopener">Bailey et al. 2008, for TCRP</a>); a 2024 study of household travel surveys in 28 US regions found 6.1–9.5, median 6.59, higher where transit systems are bigger (<a href="https://link.springer.com/article/10.1007/s11116-024-10542-0" target="_blank" rel="noopener">Sabouri, Ewing &amp; Kalantari, Transportation, 2024</a>). The long-run figure uses 1.9 at the low end and 6.59 at the high end. It describes regions decades after building transit, and only happens if zoning allows homes near stations.</p>
   <h3>Data</h3>
@@ -1048,7 +1052,7 @@ function openSources(){
   <li>A new station within ${METRA_XFER_M} m of a Metra station counts as a transfer.</li>
   <li>BRT and streetcar lines replace the CTA buses that run along them; the buses' riders, hours and emissions move to the new line.</li>
   <li>New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run ${METRA_CARS_NEW} cars, and today's Metra trains average ${METRA_CARS_NOW} for the electric-train CO₂ savings.</li>
-  <li>FTA's diesel commuter rail factor (27.2 kg CO₂ per "vehicle-mile", 2.67 gallons) only makes sense per train, not per car, so the tool applies it per train.</li>
+  <li>Metra's diesel and electric fuel per car-mile apply to new or added trains too; revenue miles stand in for all miles.</li>
   <li>The surveyed shares of riders who used to drive apply to Chicago lines too.</li>
   <li>Cost per ride spreads the build cost evenly over 30 years with no interest.</li>
   <li>Not modeled: riders on buses that cross a new rail line switching to it, slower trips from closely spaced stations, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.</li>

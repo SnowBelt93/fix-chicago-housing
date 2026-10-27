@@ -76,3 +76,13 @@ Subway: RLE ~6.5 yr; Second Ave Ph 2 ~9 yr; Purple Line Sec. 1 ~10 yr. Elevated/
 ## Long-run CO₂ (land-use multiplier)
 
 - Multiplier = total VMT reduction ÷ direct substitution. APTA 2009 default 1.9 (Bailey et al. 2008, ICF for TCRP J-11: https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf). Sabouri, Ewing & Kalantari 2024 (Transportation, https://link.springer.com/article/10.1007/s11116-024-10542-0): 28 regions, 6.1–9.5, median 6.59, defined as (direct + indirect) / direct; Chicago not in the sample. Earlier estimates (their Table 1): 1.29–9. Tool: 1.9 low, 6.59 high.
+
+## Electrification and fuel use (Oct 27, 2026)
+
+- NTD fuel and energy, report year 2024 (data.transportation.gov 8ehq-7his, saved as tools/raw/transit/ntd_energy.csv): CTA heavy rail 363,590,000 kWh; CTA bus 14,740,640 gal diesel, 223,963 kWh battery, 0.28 mi/kWh; Metra 26,236,332 gal diesel (8.67M directly operated + 17.57M purchased), 50,615,108 kWh electric propulsion, 0.11 mi/kWh. Car/bus miles from the NTD 2024 profiles (CTA rail 69,571,292 car rev mi; bus 49,576,262; Metra 44,110,638).
+- Diesel 0.01018 t CO2e/gal (FTA 2024 GHG report). Grid: eGRID2023 RFCW 911.4 lb CO2/MWh (https://www.epa.gov/egrid/summary-data); Illinois 471.7 lb/MWh (not used: Chicago is in PJM / RFC West).
+- CTA: 25 battery buses of ~1,900 (Sun-Times Feb + Nov 2025); Charging Forward (2022): all-electric by 2040, $1.8–3.1B added capital (pp. 4, 13), CTA's own estimate −73% bus CO2e (pp. 15, 62). NREL 2020: BEB $887,308 vs diesel $480,000.
+- Metra: 419 diesel route miles + 38 electric, measured from GTFS shapes in build.py (Metra says "nearly 500" total). No published cost to wire Metra; tool uses Caltrain $47M/mi. Battery trains: $154M for 8 two-car sets, Beverly branch (WBEZ 2024).
+- CEJA (2021): private gas plants zero emissions by 2045, coal/oil by 2030, policy 100% clean energy by 2050 (State of Illinois summary).
+- EVs: ~156,000 BEVs registered in Illinois (SOS via Chicago Tribune, ~Nov 2025) of 10.23M vehicles (Alliance for Automotive Innovation, Dec 2024) ≈ 1.5%. DOE AFDC: 3.6 mi/kWh.
+- Results: CTA + Metra ≈ 588,000 t CO2/yr today (buses 150k, L 150k, Metra 288k). Electric buses −77k; electric Metra −122k; clean grid −171k; all three −588k. Western subway flips from ~13–14k t more to ~0.8–2.5k t less with all three.
