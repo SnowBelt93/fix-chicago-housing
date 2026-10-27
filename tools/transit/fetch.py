@@ -202,12 +202,7 @@ def blocks():
                 break
             except Exception as e:
                 log('bad local LODES', y, repr(e))
-        try:
-            data = get(f'https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_{y}.csv.gz', tries=2)
-            year = y
-            break
-        except Exception as e:
-            log('no LODES', y, repr(e))
+        log('no local LODES file for', y)
     jobs_total = 0
     if year:
         for row in csv.DictReader(io.TextIOWrapper(gzip.GzipFile(fileobj=io.BytesIO(data)), encoding='utf-8')):
