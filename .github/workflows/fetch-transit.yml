@@ -22,11 +22,19 @@ jobs:
       - name: Install
         run: pip install pyshp
       - name: Download jobs (LODES, resumable)
+        timeout-minutes: 25
+        continue-on-error: true
         run: |
           mkdir -p tools/raw/transit
-          for y in 2023 2022 2021; do
+          for y in 2022 2021 2023; do
             f=tools/raw/transit/il_wac_S000_JT00_$y.csv.gz
-            curl -sS -L --retry 15 --retry-all-errors --retry-delay 5 -C - -A "Mozilla/5.0" -o "$f" "https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_$y.csv.gz" && gzip -t "$f" && { echo "got $y"; break; } || { echo "failed $y"; rm -f "$f"; }
+            u="https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_$y.csv.gz"
+            for i in $(seq 1 60); do
+              curl -sS -L --http1.1 -4 --connect-timeout 15 --max-time 90 -C - -A "Mozilla/5.0" -o "$f" "$u" || true
+              if gzip -t "$f" 2>/dev/null; then echo "got $y after $i tries ($(stat -c %s "$f") bytes)"; break 2; fi
+              echo "try $i: $(stat -c %s "$f" 2>/dev/null || echo 0) bytes"; sleep 3
+            done
+            rm -f "$f"
           done
           ls -la tools/raw/transit || true
       - name: Download
