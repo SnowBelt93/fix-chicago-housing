@@ -76,34 +76,70 @@ def main():
         if r['daytype'] == 'W':
             rides[r['station_id']].append(float(r['rides']))
     st_rows = []
+    cand = []
     for s in stops:
         if s['location_type'] != '1':
             continue
         rs = set(s['routes'].split()) & rail_ids
-        if not rs or s['stop_id'] not in rides:
+        if not rs:
             continue
         x, y = xy(float(s['lat']), float(s['lon']))
-        near = grid.near(x, y, 0.5 * MI)
-        st_rows.append(dict(id=s['stop_id'], name=s['name'], x=x, y=y, lines=len(rs),
-                            pop=sum(b[2] for b in near), jobs=sum(b[3] for b in near),
-                            deps=int(s['weekday_departures']), rides=float(np.mean(rides[s['stop_id']])),
-                            loop=math.hypot(x, y) / MI))
-    # terminal = a station at the end of a line: few other stations of the same line nearby on one side; approximate by
-    # departures well below the line's median isn't reliable, so mark known terminals by name
+        cand.append(dict(id=s['stop_id'], name=s['name'], x=x, y=y, lines=len(rs), lineset=rs, deps=int(s['weekday_departures'])))
+    # catchments: each block goes to its nearest station within 3/4 mile, so close-together stations split demand
+    sgrid = Grid([(c['x'], c['y'], i) for i, c in enumerate(cand)], cell=400)
+    for c in cand:
+        c['pop'] = c['jobs'] = 0
+    for b in blocks:
+        near = sgrid.near(b[0], b[1], 0.75 * MI)
+        if near:
+            k = min(near, key=lambda p: (p[0] - b[0]) ** 2 + (p[1] - b[1]) ** 2)[2]
+            cand[k]['pop'] += b[2]; cand[k]['jobs'] += b[3]
+    busstops = [xy(float(s['lat']), float(s['lon'])) + (s['routes'],) for s in stops if s['location_type'] == '0']
+    bgrid = Grid([(p[0], p[1], p[2]) for p in busstops], cell=200)
+    line_jobs = collections.Counter()
+    for c in cand:
+        for l in c['lineset']:
+            line_jobs[l] += c['jobs']
+    for c in cand:
+        rset = set()
+        for p in bgrid.near(c['x'], c['y'], 0.25 * MI):
+            rset |= set(p[2].split()) - rail_ids
+        c['bus'] = len(rset)
+        c['bustrips'] = sum(routes[r]['weekday_trips'] for r in rset if r in routes)
+        c['acc'] = sum(line_jobs[l] for l in c['lineset'])
+        if c['id'] in rides:
+            c['rides'] = float(np.mean(rides[c['id']])); c['loop'] = math.hypot(c['x'], c['y']) / MI
+            st_rows.append(c)
     TERM = {'Howard', '95th/Dan Ryan', "O'Hare", 'Forest Park', 'Kimball', 'Linden', 'Dempster-Skokie', 'Harlem/Lake',
             'Ashland/63rd', 'Cottage Grove', 'Midway', '54th/Cermak'}
     for r in st_rows:
-        r['term'] = 1.0 if r['name'].split(' (')[0] in TERM else 0.0
-    y = np.log([r['rides'] for r in st_rows])
-    X = [np.log([r['pop'] + 100 for r in st_rows]), np.log([r['jobs'] + 100 for r in st_rows]),
-         np.log([max(r['deps'], 1) for r in st_rows]), np.array([r['term'] for r in st_rows]),
-         np.array([1.0 if r['lines'] > 1 else 0.0 for r in st_rows]), np.log([r['loop'] + 0.5 for r in st_rows])]
-    names = ['ln_pop', 'ln_jobs', 'ln_deps', 'terminal', 'transfer', 'ln_loop_mi']
+        base = r['name'].split(' (')[0]
+        r['term'] = 1.0 if base in TERM else 0.0
+        r['air'] = 1.0 if base in ("O'Hare", 'Midway') else 0.0
+    SERVICE_E = float(os.environ.get('SERVICE_E', '0.5'))   # ridership change per 1% more trains (assumption; see sources.md)
+    y = np.log([r['rides'] for r in st_rows]) - SERVICE_E * np.log([max(r['deps'], 1) for r in st_rows])
+    X = [np.log([r['pop'] + 500 for r in st_rows]), np.log([r['jobs'] + 500 for r in st_rows]),
+         np.array([r['term'] for r in st_rows]), np.array([r['air'] for r in st_rows]),
+         np.array([1.0 if r['lines'] > 1 else 0.0 for r in st_rows]), np.log([r['loop'] + 1 for r in st_rows]),
+         np.log([r['bustrips'] + 50 for r in st_rows]), np.log([r['acc'] + 1000 for r in st_rows])]
+    names = ['ln_pop', 'ln_jobs', 'terminal', 'airport', 'transfer', 'ln_loop_mi', 'ln_bus_trips', 'ln_line_jobs']
     rail_coef, rail_r2, rail_mad, rail_pred = fit(X, y, names)
     print('RAIL stations', len(st_rows), 'R2', rail_r2, 'median abs log error', round(rail_mad, 3), rail_coef, file=sys.stderr)
-    worst = sorted(zip(st_rows, rail_pred), key=lambda t: abs(math.log(t[0]['rides']) - t[1]), reverse=True)[:8]
+    res = np.sort(y - rail_pred)
+    rail_band = [round(float(res[int(len(res) * 0.2)]), 3), round(float(res[int(len(res) * 0.8)]), 3)]
+    # leave-one-line-out: refit without each line's stations, predict that line's total
+    for L in sorted(rail_ids):
+        idx = [i for i, r in enumerate(st_rows) if L in r['lineset'] and len(r['lineset']) == 1]
+        if len(idx) < 5:
+            continue
+        keep = [i for i in range(len(st_rows)) if i not in set(idx)]
+        A = np.column_stack([np.ones(len(y))] + X)
+        cf, *_ = np.linalg.lstsq(A[keep], y[keep], rcond=None)
+        pr = np.exp(A[idx] @ cf + SERVICE_E * np.log([max(st_rows[i]['deps'], 1) for i in idx])).sum(); ac = sum(st_rows[i]['rides'] for i in idx)
+        print(f'   line {L}: {len(idx)} own stations, actual {ac:,.0f}, predicted without it {pr:,.0f} ({pr / ac:.2f}x)', file=sys.stderr)
+    worst = sorted(zip(st_rows, rail_pred + SERVICE_E * np.log([max(r['deps'], 1) for r in st_rows])), key=lambda t: abs(math.log(t[0]['rides']) - t[1]), reverse=True)[:8]
     for r, p in worst:
-        print('   off:', r['name'], round(r['rides']), 'pred', round(math.exp(p)), file=sys.stderr)
+        print('   off:', r['name'], round(r['rides']), 'pred', round(math.exp(p)), 'pop', r['pop'], 'jobs', r['jobs'], file=sys.stderr)
 
     # bus routes: stops served, weekday boardings 2025
     brides = {}
@@ -137,11 +173,17 @@ def main():
     Xb = [np.log([b['pop'] / b['len'] + 100 for b in bus_rows]), np.log([b['jobs'] / b['len'] + 100 for b in bus_rows]),
           np.log([b['trips'] for b in bus_rows])]
     bus_coef, bus_r2, bus_mad, _ = fit(Xb, yb, ['ln_pop_per_mi', 'ln_jobs_per_mi', 'ln_trips'])
+    ybs = yb - SERVICE_E * np.log([b['trips'] for b in bus_rows])
+    bus_fixed, r2f, madf, predf = fit(Xb[:2], ybs, ['ln_pop_per_mi', 'ln_jobs_per_mi'])
+    rb = np.sort(ybs - predf)
+    print('BUS with fixed service effect', SERVICE_E, 'R2', r2f, 'mad', round(madf, 3), bus_fixed, file=sys.stderr)
     print('BUS routes', len(bus_rows), 'R2', bus_r2, 'median abs log error', round(bus_mad, 3), bus_coef, file=sys.stderr)
 
-    out = dict(rail=dict(coef=rail_coef, r2=rail_r2, median_abs_log_error=round(rail_mad, 3), n=len(st_rows),
+    out = dict(rail=dict(service_elasticity=SERVICE_E, coef=rail_coef, r2=rail_r2, band_20_80=rail_band, median_abs_log_error=round(rail_mad, 3), n=len(st_rows),
                          data='CTA L weekday entries 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS'),
-               bus=dict(coef=bus_coef, r2=bus_r2, median_abs_log_error=round(bus_mad, 3), n=len(bus_rows),
+               bus=dict(service_elasticity=SERVICE_E, coef=bus_fixed, r2=r2f, median_abs_log_error=round(madf, 3),
+                        band_20_80=[round(float(rb[int(len(rb) * 0.2)]), 3), round(float(rb[int(len(rb) * 0.8)]), 3)],
+                        free_fit=dict(coef=bus_coef, r2=bus_r2), n=len(bus_rows),
                         data='CTA bus weekday boardings 2025 (Chicago Data Portal), Census 2020 blocks, LODES jobs, CTA GTFS'))
     os.makedirs(os.path.join(ROOT, 'transit', 'data'), exist_ok=True)
     json.dump(out, open(os.path.join(ROOT, 'transit', 'data', 'model.json'), 'w'), indent=1)
