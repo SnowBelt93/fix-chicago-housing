@@ -102,6 +102,36 @@ def rdp(pts, eps):
     return [a, b]
 
 
+def write_patterns(name, trips, trip_st):
+    # Each route's weekday stop patterns: stop order, average scheduled minutes from the first stop,
+    # trips a weekday and trips leaving the first stop 10am-3pm (midday headway). Patterns under 5% of a route's trips are dropped.
+    pats = collections.defaultdict(lambda: {'n': 0, 'mid': 0, 'peak': 0, 'sum': None})
+    for tid, sts in trip_st.items():
+        sts.sort()
+        rid, d = trips[tid][0], trips[tid][1]
+        key = (rid, d, tuple(x[1] for x in sts))
+        p = pats[key]
+        t0 = sts[0][2]; rel = [x[2] - t0 for x in sts]
+        p['sum'] = rel if p['sum'] is None else [a + b for a, b in zip(p['sum'], rel)]
+        p['n'] += 1
+        if 10 * 3600 <= t0 < 15 * 3600:
+            p['mid'] += 1
+        if 7 * 3600 <= t0 < 9 * 3600:
+            p['peak'] += 1
+    by_route = collections.Counter()
+    for (rid, d, _), p in pats.items():
+        by_route[rid] += p['n']
+    out = collections.defaultdict(list)
+    for (rid, d, seq), p in sorted(pats.items(), key=lambda kv: -kv[1]['n']):
+        if p['n'] < 0.05 * by_route[rid] or len(seq) < 2:
+            continue
+        out[rid].append({'dir': d, 'stops': list(seq), 'min': [round(v / p['n'] / 60, 1) for v in p['sum']],
+                         'trips': p['n'], 'mid': p['mid'], 'peak': p['peak']})
+    with gzip.open(os.path.join(OUT, f'{name}_patterns.json.gz'), 'wt') as f:
+        json.dump(out, f, separators=(',', ':'))
+    log(name, 'patterns', sum(len(v) for v in out.values()), 'routes', len(out))
+
+
 def gtfs(name, url):
     print('downloading', name, file=sys.stderr)
     blob = get(url)
@@ -113,6 +143,7 @@ def gtfs(name, url):
     for t in rows(z, 'trips.txt'):
         trips[t['trip_id']] = (t['route_id'], t.get('direction_id', ''), t.get('shape_id', ''), t['service_id'] in sids)
     deps = collections.Counter()
+    trip_st = collections.defaultdict(list)
     stop_routes = collections.defaultdict(set)
     shape_use = collections.Counter()
     route_trips = collections.Counter()
@@ -128,6 +159,11 @@ def gtfs(name, url):
         stop_routes[st['stop_id']].add(t[0])
         if t[3]:
             deps[st['stop_id']] += 1
+            tm = st.get('departure_time') or st.get('arrival_time') or ''
+            if tm:
+                h, m, sec = (int(x) for x in tm.split(':'))
+                trip_st[st['trip_id']].append((int(st['stop_sequence']), st['stop_id'], h * 3600 + m * 60 + sec))
+    write_patterns(name, trips, trip_st)
     stops = list(rows(z, 'stops.txt'))
     # roll child platforms up to their parent station too
     parent_routes = collections.defaultdict(set); parent_deps = collections.Counter()
