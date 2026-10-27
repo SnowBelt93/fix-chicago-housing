@@ -194,6 +194,14 @@ def blocks():
         out[geoid] = [round(float(lat), 6), round(float(lon), 6), int(pop), int(hu), int(aland), 0]
     year = None
     for y in (2023, 2022, 2021, 2020):
+        local = os.path.join(OUT, f'il_wac_S000_JT00_{y}.csv.gz')   # downloaded by curl in the workflow (resumable)
+        if os.path.exists(local) and os.path.getsize(local) > 100000:
+            try:
+                data = open(local, 'rb').read(); gzip.decompress(data)
+                year = y
+                break
+            except Exception as e:
+                log('bad local LODES', y, repr(e))
         try:
             data = get(f'https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_{y}.csv.gz', tries=2)
             year = y
