@@ -244,8 +244,21 @@ def bus_ridership():
     SOURCES['files']['bus_ridership'] = {'url': 'https://data.cityofchicago.org/d/jyb9-n7fm', 'year': year, 'daytype': 'weekday'}
 
 
+def metra_counts():
+    # Metra's newest station-level weekday boarding counts (fall 2018; earlier 2016) are PDFs; build.py reads the text.
+    for name, url in [('2018', 'https://metra.com/sites/default/files/assets/planning/ridership/2018_summary_results_report_final.pdf'),
+                      ('2016', 'https://metra.com/sites/default/files/assets/planning/ridership/16count_smry_v01.pdf')]:
+        try:
+            data = get(url)
+            open(os.path.join(OUT, f'metra_counts_{name}.pdf'), 'wb').write(data)
+            SOURCES['files'][f'metra_counts_{name}'] = {'url': url, 'bytes': len(data)}
+            log('metra counts', name, len(data))
+        except Exception as e:
+            log('metra counts failed', name, repr(e))
+
+
 if __name__ == '__main__':
-    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus']
+    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts']
     for s in steps:
         try:
             if s == 'cta':
@@ -256,6 +269,8 @@ if __name__ == '__main__':
                 blocks()
             elif s == 'bus':
                 bus_ridership()
+            elif s == 'metracounts':
+                metra_counts()
         except Exception as e:
             import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)
