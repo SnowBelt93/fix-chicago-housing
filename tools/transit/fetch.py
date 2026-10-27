@@ -317,37 +317,35 @@ def ntd_energy():
 def osm():
     # Region roads, rail corridors, rivers and canals from OpenStreetMap (Overpass API), for snapping and crossing flags.
     bbox = '41.15,-88.75,42.50,-87.20'   # Cook + the five collar counties, roughly
-    q = f'''[out:json][timeout:900][maxsize:1073741824];
-(way["highway"~"^(motorway|trunk|primary|secondary)$"]({bbox});
- way["railway"="rail"][!"service"]({bbox});
- way["waterway"~"^(river|canal)$"]({bbox}););
-out geom;'''
-    data = None
-    for host in ('https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'):
-        try:
-            req = urllib.request.Request(host, data=urllib.parse.urlencode({'data': q}).encode(), headers=UA)
-            with urllib.request.urlopen(req, timeout=1200) as r:
-                data = json.load(r)
-            log('osm from', host); break
-        except Exception as e:
-            log('osm failed', host, repr(e))
-    if not data:
-        return
-    out = {'motorway': [], 'arterial': [], 'rail': [], 'water': []}
-    for el in data.get('elements', []):
-        t, g = el.get('tags', {}), el.get('geometry')
-        if not g or len(g) < 2:
+    parts = {'motorway': 'way["highway"~"^(motorway|trunk)$"]', 'arterial': 'way["highway"~"^(primary|secondary)$"]',
+             'rail': 'way["railway"="rail"][!"service"]', 'water': 'way["waterway"~"^(river|canal)$"]'}
+    hdr = {'User-Agent': 'fix-chicago-housing transit sketch tool (github.com/SnowBelt93/fix-chicago-housing)', 'Accept': '*/*'}
+    out = {}
+    for k, sel in parts.items():
+        q = f'[out:json][timeout:600];{sel}({bbox});out geom;'
+        data = None
+        for host in ('https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
+                     'https://maps.mail.ru/osm/tools/overpass/api/interpreter'):
+            try:
+                req = urllib.request.Request(host, data=urllib.parse.urlencode({'data': q}).encode(), headers=hdr)
+                with urllib.request.urlopen(req, timeout=900) as r:
+                    data = json.load(r)
+                log('osm', k, 'from', host); break
+            except Exception as e:
+                log('osm failed', k, host, repr(e))
+        if not data:
             continue
-        pts = rdp([(round(p['lon'], 6), round(p['lat'], 6)) for p in g], 8)
-        pts = [[round(x, 5), round(y, 5)] for x, y in pts]
-        if 'waterway' in t:
-            out['water'].append([t.get('name', ''), pts])
-        elif 'railway' in t:
-            out['rail'].append([t.get('operator', '') or t.get('name', ''), pts])
-        elif t.get('highway') in ('motorway', 'trunk'):
-            out['motorway'].append([t.get('ref', '') or t.get('name', ''), pts])
-        else:
-            out['arterial'].append([t.get('name', ''), pts])
+        rows = []
+        for el in data.get('elements', []):
+            t, g = el.get('tags', {}), el.get('geometry')
+            if not g or len(g) < 2:
+                continue
+            pts = rdp([(round(p['lon'], 6), round(p['lat'], 6)) for p in g], 8)
+            nm = t.get('ref', '') if k == 'motorway' else t.get('operator', '') if k == 'rail' else t.get('name', '')
+            rows.append([nm or t.get('name', ''), [[round(x, 5), round(y, 5)] for x, y in pts]])
+        out[k] = rows
+    if not out:
+        return
     with gzip.open(os.path.join(OUT, 'osm.json.gz'), 'wt') as f:
         json.dump(out, f, separators=(',', ':'))
     SOURCES['files']['osm'] = {'url': 'https://www.openstreetmap.org (Overpass API)', 'license': 'ODbL',
