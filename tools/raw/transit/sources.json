@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T19:02Z",
+ "fetched": "2026-10-27T19:09Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -40,6 +40,15 @@
    "url": "https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000",
    "page": "https://data.transportation.gov/d/8ehq-7his",
    "bytes": 14543
+  },
+  "osm": {
+   "url": "https://www.openstreetmap.org (Overpass API)",
+   "license": "ODbL",
+   "counts": {
+    "motorway": 6462,
+    "arterial": 55715,
+    "water": 1121
+   }
   }
  }
 }

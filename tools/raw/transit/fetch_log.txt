@@ -6,5 +6,13 @@ block fields ['STATEFP20', 'COUNTYFP20', 'TRACTCE20', 'BLOCKCE20', 'GEOID20', 'N
 no local LODES file for 2023
 metra counts 96725
 ntd energy https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000 14543
-osm failed https://overpass-api.de/api/interpreter <HTTPError 406: 'Not Acceptable'>
-osm failed https://overpass.kumi.systems/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+osm failed motorway https://overpass-api.de/api/interpreter <HTTPError 502: 'Bad Gateway'>
+osm failed motorway https://overpass.private.coffee/api/interpreter RemoteDisconnected('Remote end closed connection without response')
+osm motorway from https://maps.mail.ru/osm/tools/overpass/api/interpreter
+osm failed arterial https://overpass-api.de/api/interpreter <HTTPError 502: 'Bad Gateway'>
+osm arterial from https://overpass.private.coffee/api/interpreter
+osm failed rail https://overpass-api.de/api/interpreter <HTTPError 502: 'Bad Gateway'>
+osm failed rail https://overpass.private.coffee/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+osm failed rail https://maps.mail.ru/osm/tools/overpass/api/interpreter <HTTPError 504: 'Gateway Time-out'>
+osm water from https://overpass-api.de/api/interpreter
+osm {'motorway': 6462, 'arterial': 55715, 'water': 1121}
