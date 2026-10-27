@@ -184,6 +184,38 @@ def main():
     if counts:
         miss = [s['name'] for s in out['metraStations'] if s['boards2018'] is None]
         print('  unmatched:', miss[:40], file=sys.stderr)
+    # other rail for the map only: Amtrak (intercity) and the South Shore Line (commuter rail to Indiana), clipped to the map's area
+    BOX = (-89.2, 41.1, -86.9, 42.6)
+    inbox = lambda p: BOX[0] <= p[0] <= BOX[2] and BOX[1] <= p[1] <= BOX[3]
+    def other_rail(name):
+        if not os.path.exists(os.path.join(RAW, f'{name}_routes.json')):
+            return None
+        routes = [r for r in json.load(open(os.path.join(RAW, f'{name}_routes.json'))) if r['type'] == 2]
+        shp = json.load(gzip.open(os.path.join(RAW, f'{name}_shapes.json.gz'), 'rt'))
+        stops = list(csv.DictReader(gzip.open(os.path.join(RAW, f'{name}_stops.csv.gz'), 'rt')))
+        lines = []
+        for r in routes:
+            clipped = []
+            for d in shp.get(r['id'], []):
+                run = []
+                for p in d['pts']:
+                    if inbox(p): run.append(p)
+                    elif run:
+                        if len(run) > 1: clipped.append({'dir': d['dir'], 'trips': d['trips'], 'pts': run})
+                        run = []
+                if len(run) > 1: clipped.append({'dir': d['dir'], 'trips': d['trips'], 'pts': run})
+            paths = distinct_paths(clipped)
+            if paths:
+                lines.append({'id': r['id'], 'name': r['long'] or r['short'], 'trips': r['weekday_trips'], 'color': ('#' + r['color']) if r.get('color') else '', 'paths': paths})
+        ids = {r['id'] for r in routes}
+        st = [{'name': s['name'], 'll': ll((float(s['lon']), float(s['lat']))), 'lines': [x for x in s['routes'].split() if x in ids]}
+              for s in stops if s['location_type'] in ('', '0', '1') and not s['parent'] and inbox((float(s['lon']), float(s['lat'])))]
+        st = [x for x in st if x['lines']]
+        print(name, len(lines), 'lines', len(st), 'stations in the map area', file=sys.stderr)
+        return {'lines': lines, 'stations': st}
+    for name, key in (('amtrak', 'amtrak'), ('nictd', 'southShore')):
+        r = other_rail(name)
+        if r: out[key] = r
     # Chicago outline + lake for the fallback basemap (from the housing game's meta.json)
     meta = json.load(open(os.path.join(ROOT, 'meta.json')))
     out['lake'] = meta.get('lake'); out['cityOutline'] = meta.get('cityOutline')
