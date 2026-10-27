@@ -54,6 +54,11 @@ Rail hours are car-hours: multiply by cars per train.
 - EPA: typical car ~400 g CO2 per mile. https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle
 - FTA GHG factors (t CO2e per vehicle-mile): heavy rail car 0.00205, light rail/streetcar 0.00289, electric commuter rail 0.00387, diesel commuter rail 0.02717, diesel bus 0.00196, electric bus 0.00104. https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf
 
+## Riders vs. how often service runs
+
+- TCRP Report 95, Ch. 9 (Transit Scheduling and Frequency, 2004): average response "approximates an elasticity of +0.5" in service quantity (p. 9-4); recent observations group near +0.3 or +1.0 (p. 9-5). Headway elasticity by prior headway (Table 9-2, p. 9-8): −0.22 under 10 min, −0.46 for 10–50 min, −0.58 over 50 min; less response where service was already frequent (p. 9-11). https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf (also https://www.trb.org/publications/tcrp/tcrp_rpt_95c9.pdf)
+- Tool: the model removes service with a fixed +0.5 (TCRP average). For a new line's frequency slider use the Table 9-2 headway values by headway band.
+
 ## Time to build (approval to opening)
 
 Subway: RLE ~6.5 yr; Second Ave Ph 2 ~9 yr; Purple Line Sec. 1 ~10 yr. Elevated/LRT: Lynnwood ~5.5 yr. Streetcar: KC Main St ~3.5 yr of construction. BRT: Indy Red Line ~1.5 yr.
