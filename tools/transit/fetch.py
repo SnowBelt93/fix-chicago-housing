@@ -243,16 +243,14 @@ def bus_ridership():
 
 
 def metra_counts():
-    # Metra's newest station-level weekday boarding counts (fall 2018; earlier 2016) are PDFs; build.py reads the text.
-    for name, url in [('2018', 'https://metra.com/sites/default/files/assets/planning/ridership/2018_summary_results_report_final.pdf'),
-                      ('2016', 'https://metra.com/sites/default/files/assets/planning/ridership/16count_smry_v01.pdf')]:
-        try:
-            data = get(url)
-            open(os.path.join(OUT, f'metra_counts_{name}.pdf'), 'wb').write(data)
-            SOURCES['files'][f'metra_counts_{name}'] = {'url': url, 'bytes': len(data)}
-            log('metra counts', name, len(data))
-        except Exception as e:
-            log('metra counts failed', name, repr(e))
+    # Metra's newest station-level weekday boarding counts are the fall 2018 survey (RTAMS / Illinois data hub).
+    url = ('https://datahub.nita.illinois.gov/sites/default/files/documents/2024-07/'
+           'Metra_Ridership_by_Station_Boarding_Alighting%20Survey_1979_2018.csv')
+    data = get(url)
+    open(os.path.join(OUT, 'metra_station_counts.csv'), 'wb').write(data)
+    SOURCES['files']['metra_counts'] = {'url': url, 'bytes': len(data),
+                                        'page': 'https://datahub.nita.illinois.gov/media/resources/metra-ridership-station-boarding-alighting-survey-1979-2018'}
+    log('metra counts', len(data))
 
 
 if __name__ == '__main__':
