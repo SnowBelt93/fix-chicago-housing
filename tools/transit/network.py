@@ -27,6 +27,7 @@ KX, KY = 111320 * math.cos(math.radians(41.85)), 110574
 WALK = 80.5            # meters a minute (3 mph)
 ACCESS_M, XFER_M, ZONE_M, CUTOFF = 805, 400, 800, 45
 MID_MIN = 300          # 10am-3pm
+CUT = 0.4              # NITA page: service cut warned of in 2025 without new state money
 
 
 def xy(lat, lon):
@@ -168,8 +169,20 @@ def main():
     st_acc = access(G, list(range(eo, eo + len(sxy))), zi, len(Z), jobs)
     json.dump({r['stop_id']: int(a) for r, a in zip(lst, st_acc)}, open(os.path.join(RAW, 'station_access.json'), 'w'))
     tot = jobs.sum(); pop = np.array([z[2] for z in Z], dtype=float)
-    print('people-weighted jobs within 45 min:', int((acc * pop).sum() / pop.sum()), 'of', int(tot), file=sys.stderr)
-    net = {'walk': WALK, 'accessM': ACCESS_M, 'xferM': XFER_M, 'cutoff': CUTOFF, 'zoneM': ZONE_M,
+    pw = lambda a: int((a * pop).sum() / pop.sum())
+    print('people-weighted jobs within 45 min:', pw(acc), 'of', int(tot), file=sys.stderr)
+    # the 2025 warning if no state money came: about 40% less service across the region (RTA, March 2025).
+    # Modeled as every route running 60% as often (headways / 0.6); the real plans cut whole routes and branches.
+    for p in pats:
+        p['hw0'] = p['hw']; p['hw'] = [h if h >= 9999 else round(h / (1 - CUT), 2) for h in p['hw']]
+    Gc, _, _, _ = build_graph(stops, pats, Z, sxy)
+    accc = np.zeros(len(Z)); accc[served] = access(Gc, [zo + k for k in served], zi, len(Z), jobs)
+    for p in pats:
+        p['hw'] = p['hw0']
+    print('with a', CUT, 'cut:', pw(accc), file=sys.stderr)
+    net = {'cut': {'share': CUT, 'acc': pw(acc), 'accCut': pw(accc), 'pop': int(pop.sum()),
+                   'lose100k': int(pop[(acc >= 100000) & (accc < 100000)].sum())},
+           'walk': WALK, 'accessM': ACCESS_M, 'xferM': XFER_M, 'cutoff': CUTOFF, 'zoneM': ZONE_M,
            'stops': [[round(x), round(y)] for x, y in stops],
            'pats': [{'r': p['r'], 'k': p['kind'], 's': p['s'], 'm': p['m'], 'hw': p['hw']} for p in pats],
            'zones': {'x': [round(z[0]) for z in Z], 'y': [round(z[1]) for z in Z], 'pop': [z[2] for z in Z],
