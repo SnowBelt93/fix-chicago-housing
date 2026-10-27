@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T19:22Z",
+ "fetched": "2026-10-27T23:43Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -58,6 +58,13 @@
   "cpi": {
    "url": "https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SA0?startyear=2006&endyear=2026",
    "bytes": 3290
+  },
+  "amtrak": {
+   "url": "https://content.amtrak.com/content/gtfs/GTFS.zip",
+   "service_date": "2026-11-04",
+   "routes": 62,
+   "stops": 645,
+   "weekday_trips": 594
   }
  }
 }
