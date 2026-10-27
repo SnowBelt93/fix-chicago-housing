@@ -318,10 +318,15 @@ def osm():
     # Region roads, rail corridors, rivers and canals from OpenStreetMap (Overpass API), for snapping and crossing flags.
     bbox = '41.15,-88.75,42.50,-87.20'   # Cook + the five collar counties, roughly
     parts = {'motorway': 'way["highway"~"^(motorway|trunk)$"]', 'arterial': 'way["highway"~"^(primary|secondary)$"]',
-             'rail': 'way["railway"="rail"][!"service"]', 'water': 'way["waterway"~"^(river|canal)$"]'}
+             'rail': 'way["railway"="rail"]["usage"~"^(main|branch|industrial)$"]', 'water': 'way["waterway"~"^(river|canal)$"]'}
     hdr = {'User-Agent': 'fix-chicago-housing transit sketch tool (github.com/SnowBelt93/fix-chicago-housing)', 'Accept': '*/*'}
     out = {}
+    old = os.path.join(OUT, 'osm.json.gz')
+    if os.path.exists(old):
+        out = json.load(gzip.open(old, 'rt'))   # keep what earlier runs got; fetch only what's missing
     for k, sel in parts.items():
+        if out.get(k):
+            continue
         q = f'[out:json][timeout:600];{sel}({bbox});out geom;'
         data = None
         for host in ('https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter',
