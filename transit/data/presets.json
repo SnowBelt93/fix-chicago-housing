@@ -1,0 +1,633 @@
+[
+{
+"id": "rle",
+"name": "Red Line Extension",
+"mode": "elevated",
+"head": 5,
+"pts": [
+[
+-87.62434,
+41.72238
+],
+[
+-87.6372,
+41.70694
+],
+[
+-87.6372,
+41.692359
+],
+[
+-87.6213,
+41.6833
+],
+[
+-87.6094,
+41.6595
+]
+],
+"extends": true,
+"gap": "CTA\u2019s forecast counts every trip that uses the extension, including bus riders whose routes would be moved to the new stations, park-and-ride at 130th, and the return trip that starts downtown. This tool counts people entering the four new stations with today\u2019s buses, so it comes out much lower.",
+"status": "Under construction, opening 2030\u201331",
+"approx": "Station spots are approximate (CTA gives cross streets only).",
+"official": {
+"cost": 5750000000.0,
+"costYear": 2025,
+"costNote": "year-of-spending dollars, full funding agreement (FTA)",
+"riders": 36400,
+"ridersNote": "daily linked trips, 2019 forecast year (41,500 in 2040)",
+"federal": 0.343,
+"opens": "2030\u201331"
+},
+"sources": [
+[
+"FTA funding agreement profile, 2025",
+"https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf"
+],
+[
+"FTA engineering profile, 2023 (ridership)",
+"https://www.transit.dot.gov/sites/fta.dot.gov/files/2023-08/IL-Chicago-Red-Line-Extension-Project-Engineering-Profile.pdf"
+],
+[
+"CTA station boards, 2026",
+"https://lapi.transitchicago.com/assets/1/6/REF_20260116_RLE-Fall-Station-Meeting-Boards_Rev01.pdf"
+]
+]
+},
+{
+"id": "ashland",
+"name": "Ashland Avenue BRT",
+"mode": "brt",
+"head": 5,
+"pts": [
+[
+-87.669045,
+41.9543
+],
+[
+-87.66892,
+41.949433
+],
+[
+-87.668795,
+41.944567
+],
+[
+-87.66867,
+41.9397
+],
+[
+-87.66839,
+41.9324
+],
+[
+-87.66815,
+41.92515
+],
+[
+-87.66782,
+41.91613
+],
+[
+-87.6677,
+41.91063
+],
+[
+-87.667505,
+41.90335
+],
+[
+-87.667295,
+41.89607
+],
+[
+-87.667145,
+41.89097
+],
+[
+-87.666958,
+41.88534
+],
+[
+-87.666805,
+41.88146
+],
+[
+-87.666702,
+41.877831
+],
+[
+-87.6666,
+41.874203
+],
+[
+-87.666504,
+41.870526
+],
+[
+-87.666408,
+41.86685
+],
+[
+-87.666249,
+41.85959
+],
+[
+-87.66609,
+41.85233
+],
+[
+-87.665828,
+41.841413
+],
+[
+-87.665565,
+41.830495
+],
+[
+-87.665405,
+41.823145
+],
+[
+-87.665188,
+41.815877
+],
+[
+-87.66497,
+41.80861
+],
+[
+-87.664777,
+41.801227
+],
+[
+-87.664585,
+41.793845
+],
+[
+-87.664402,
+41.786653
+],
+[
+-87.66422,
+41.77946
+],
+[
+-87.663924,
+41.768547
+],
+[
+-87.663677,
+41.759453
+],
+[
+-87.66343,
+41.75036
+],
+[
+-87.663242,
+41.743075
+],
+[
+-87.663055,
+41.73579
+],
+[
+-87.662869,
+41.728503
+],
+[
+-87.662683,
+41.721215
+]
+],
+"status": "Shelved by CTA; in CMAP\u2019s 2026 regional plan",
+"official": {
+"cost": 166000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan (CTA\u2019s 2013 estimate: $160M)",
+"riders": 13600,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); CTA 2013: up to 29% more riders on the corridor"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Ashland BRT handout (stops)",
+"https://lapi.transitchicago.com/assets/1/6/Ashland_BRT_EA_Handout_-_text_document.pdf"
+],
+[
+"Streetsblog, 2013",
+"https://chi.streetsblog.org/2013/04/19/cta-officials-share-details-of-the-plan-for-gold-standard-brt-on-ashland/"
+]
+]
+},
+{
+"id": "western",
+"name": "Western Avenue bus priority",
+"mode": "brt",
+"head": 5,
+"pts": [
+[
+-87.69018,
+42.01953
+],
+[
+-87.69024,
+42.01229
+],
+[
+-87.68989,
+41.99774
+],
+[
+-87.68967,
+41.990505
+],
+[
+-87.68941,
+41.983203
+],
+[
+-87.68915,
+41.9759
+],
+[
+-87.68889,
+41.96861
+],
+[
+-87.68869,
+41.96132
+],
+[
+-87.688469,
+41.954057
+],
+[
+-87.68824,
+41.94674
+],
+[
+-87.68807,
+41.93947
+],
+[
+-87.68791,
+41.93218
+],
+[
+-87.68765,
+41.9249
+],
+[
+-87.68741,
+41.91759
+],
+[
+-87.68721,
+41.91032
+],
+[
+-87.68702,
+41.90302
+],
+[
+-87.68684,
+41.89575
+],
+[
+-87.68668,
+41.89065
+],
+[
+-87.68653,
+41.88463
+],
+[
+-87.68643,
+41.88117
+],
+[
+-87.686235,
+41.873895
+],
+[
+-87.68604,
+41.86662
+],
+[
+-87.68563,
+41.85204
+],
+[
+-87.68523,
+41.83908
+],
+[
+-87.68503,
+41.83029
+],
+[
+-87.684826,
+41.82299
+],
+[
+-87.68444,
+41.80842
+],
+[
+-87.68407,
+41.79388
+],
+[
+-87.68366,
+41.77923
+],
+[
+-87.68325,
+41.7647
+],
+[
+-87.68285,
+41.75011
+]
+],
+"status": "In CMAP\u2019s 2026 regional plan",
+"approx": "Extent follows today\u2019s #49 bus; CMAP doesn\u2019t give stop locations.",
+"official": {
+"cost": 339000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 22700,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model), the most of any project"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+]
+]
+},
+{
+"id": "pulaski",
+"name": "Pulaski Road bus priority",
+"mode": "brt",
+"head": 5,
+"pts": [
+[
+-87.72863,
+41.99015
+],
+[
+-87.72823,
+41.97553
+],
+[
+-87.72803,
+41.96825
+],
+[
+-87.72781,
+41.96096
+],
+[
+-87.72761,
+41.95365
+],
+[
+-87.7274,
+41.946375
+],
+[
+-87.72719,
+41.9391
+],
+[
+-87.72699,
+41.9318
+],
+[
+-87.72676,
+41.92449
+],
+[
+-87.72656,
+41.91717
+],
+[
+-87.726373,
+41.909887
+],
+[
+-87.72629,
+41.90268
+],
+[
+-87.72608,
+41.89537
+],
+[
+-87.7258,
+41.885482
+],
+[
+-87.72566,
+41.88073
+],
+[
+-87.72518,
+41.86618
+],
+[
+-87.72476,
+41.851565
+],
+[
+-87.72436,
+41.83689
+],
+[
+-87.72342,
+41.80234
+],
+[
+-87.72359,
+41.80789
+],
+[
+-87.72317,
+41.79321
+]
+],
+"status": "In CMAP\u2019s 2026 regional plan",
+"approx": "Extent follows today\u2019s #53 bus; CMAP doesn\u2019t give stop locations.",
+"official": {
+"cost": 323000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 17700,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+]
+]
+},
+{
+"id": "midcity",
+"name": "Mid-City Transitway",
+"mode": "elevated",
+"head": 7.5,
+"pts": [
+[
+-87.742716,
+41.96072
+],
+[
+-87.742476,
+41.95342
+],
+[
+-87.742056,
+41.93884
+],
+[
+-87.741496,
+41.92425
+],
+[
+-87.741306,
+41.90963
+],
+[
+-87.740986,
+41.89501
+],
+[
+-87.740679,
+41.886637
+],
+[
+-87.739926,
+41.8659
+],
+[
+-87.739456,
+41.851285
+],
+[
+-87.738906,
+41.83667
+],
+[
+-87.738351,
+41.80763
+],
+[
+-87.737162,
+41.793084
+],
+[
+-87.737466,
+41.77844
+],
+[
+-87.736996,
+41.7638
+],
+[
+-87.736526,
+41.74916
+],
+[
+-87.7045,
+41.7363
+],
+[
+-87.6838,
+41.7363
+],
+[
+-87.6644,
+41.7363
+],
+[
+-87.6449,
+41.7363
+],
+[
+-87.6267,
+41.7363
+]
+],
+"status": "Idea only: a \"visionary\" project in CMAP\u2019s 2026 plan",
+"approx": "Alignment and stations are approximate, from a 2002 description; no current plan exists.",
+"official": {
+"cost": null,
+"costNote": "no current estimate (\"at least $1 billion\" in 2002)",
+"riders": 11000,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); 2002 claim: 94,000 riders a day"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Chicago Tribune, 2002 (via chicago-l.org)",
+"https://chicago-l.org/articles/mid-city02.html"
+]
+]
+},
+{
+"id": "ri",
+"name": "Rock Island all-day trains",
+"metra": "RI",
+"head": 20,
+"status": "CMAP\u2019s plan funds track and yard work on the Rock Island",
+"approx": "CMAP\u2019s project adds a third track, new signals and a bigger 47th Street yard; the preset shows trains every 20 minutes.",
+"official": {
+"cost": 810000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan (Rock Island improvements)",
+"riders": 8500,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+]
+]
+},
+{
+"id": "me",
+"name": "Metra Electric improvements",
+"metra": "ME",
+"head": 15,
+"status": "In CMAP\u2019s 2026 regional plan; trains every 20 minutes midday since June 2026",
+"approx": "The preset shows trains every 15 minutes.",
+"official": {
+"cost": 1140000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 7000,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"NBC Chicago, June 2026",
+"https://www.nbcchicago.com/traffic/transit/new-metra-electric-line-schedule-with-increased-service-going-into-effect/3948484/"
+]
+]
+}
+]
