@@ -72,3 +72,7 @@ Subway: RLE ~6.5 yr; Second Ave Ph 2 ~9 yr; Purple Line Sec. 1 ~10 yr. Elevated/
 - Subway high end: LA Purple Section 3, $3,599.27M / 2.56 mi = $1.41B/mi (FFGA 2020); Section 2, $2,499.24M / 2.59 mi = $965M/mi (https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-3-Profile-AR25.pdf).
 - Riders who used to drive (share of all riders): Las Vegas MAX 10% (30% new to transit); LA Orange BRT 25% (16% drove alone + 9% carpool); Expo Phase 2 ~31% (70% new to the line × 44% former drivers); CTA Orange Line ~25% new to transit. Tool: 10–31% of all riders.
 - FTA GHG Table A-12 RFCW (Chicago grid): HR 0.00247, CR 0.00466, LR/SR 0.00347 t per car-mile. Diesel CR 0.02717 = NTD gallons × 0.01018 ÷ VMT (2017–21); applied per train in the tool.
+
+## Long-run CO₂ (land-use multiplier)
+
+- Multiplier = total VMT reduction ÷ direct substitution. APTA 2009 default 1.9 (Bailey et al. 2008, ICF for TCRP J-11: https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf). Sabouri, Ewing & Kalantari 2024 (Transportation, https://link.springer.com/article/10.1007/s11116-024-10542-0): 28 regions, 6.1–9.5, median 6.59, defined as (direct + indirect) / direct; Chicago not in the sample. Earlier estimates (their Table 1): 1.29–9. Tool: 1.9 low, 6.59 high.

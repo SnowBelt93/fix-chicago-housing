@@ -262,6 +262,8 @@ const YEAR_DAYS = 328;       // 2025 L rides ÷ average 2025 weekday (CTA riders
 const DIVERT = [0.10, 0.31]; // share of ALL riders on a new line who used to drive: Las Vegas MAX 10%, LA Orange Line BRT 25%, Expo Line ~31% (rider surveys)
 const DIVERT_NEW = [0.33, 0.78]; // share of riders NEW to transit who used to drive: MAX 10/30, Expo 44%, Orange Line 25/32 (same surveys)
 const BUS_SPEED = 9.06, BUS_HR = 197.88, BUS_CO2 = 0.00196;   // CTA bus (NTD 2024), diesel bus t CO2 per mile (FTA)
+// long run: total drop in driving ÷ the driving a line replaces directly, as homes and jobs grow near transit
+const LANDUSE_MULT = [1.9, 6.59];  // APTA 2009 national default (Bailey et al. 2008) to median of 28 US regions (Sabouri, Ewing & Kalantari 2024)
 const OCC = 1.5;             // people per car trip (NHTS 2022)
 const CAR_G_MI = 400;        // grams of CO2 per car mile (EPA)
 const SERVICE_E = 0.5;       // riders vs. trains run (TCRP Report 95 ch. 9 average)
@@ -508,6 +510,7 @@ function evaluate(){
     const transitCO2 = (trips * (L.len / MI) * L.cars * M.co2 - busMi * BUS_CO2) * YEAR_DAYS;          // t a year
     L.co2 = vmt.map(v => v * CAR_G_MI / 1e6 * YEAR_DAYS - transitCO2);
     L.transitCO2 = transitCO2;
+    L.co2Long = [vmt[0] * LANDUSE_MULT[0], vmt[1] * LANDUSE_MULT[1]].map(v => v * CAR_G_MI / 1e6 * YEAR_DAYS - transitCO2);
     L.perRide = (L.capital.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, riders * YEAR_DAYS);
   }
 }
@@ -544,6 +547,7 @@ function evalMetra(L){
   const elecSave = L.electric ? now * (L.len / MI) * (DIESEL_CR_TRAIN - METRA_CARS_NOW * ELECTRIC_CR) * YEAR_DAYS : 0;
   L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   L.elecSave = elecSave;
+  L.co2Long = [L.carTrips[0] * LANDUSE_MULT[0], L.carTrips[1] * LANDUSE_MULT[1]].map(t => t * METRA_TRIP_MI * CAR_G_MI / 1e6 * YEAR_DAYS - addCO2 + elecSave);
   // walk shed of the line's stations
   const walk = new Set();
   for (const s of ml.stations) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
@@ -814,8 +818,12 @@ function openLine(L){
     <div class="stat"><div class="v">${L.capital[1] > 0 ? (isM ? money(L.capital[0]) : moneyRange(L.capital[0], L.capital[1])) : "$0"}</div><div class="k">${isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`}</div></div>
     <div class="stat"><div class="v">${money(Math.abs(L.opYear))}</div><div class="k">${L.opYear < 0 ? "a year saved on running buses" : isM ? "more a year to run" : !isM && L.baseBusMi > 0 ? "more a year to run, after the buses it replaces" : "a year to run"}</div></div>
     ${cars >= 0 ? `<div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div>` : `<div class="stat"><div class="v">${num(-cars)}</div><div class="k">more car trips a day: fewer buses than today</div></div>`}
-    ${co2 >= 0 ? `<div class="stat g"><div class="v">${num(co2)} t</div><div class="k">less CO₂ a year</div></div>` : `<div class="stat"><div class="v">${num(-co2)} t</div><div class="k">more CO₂ a year: the ${isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s"} use more energy than the car trips they replace</div></div>`}
+    ${co2 >= 0 ? `<div class="stat g"><div class="v">${num(co2)} t</div><div class="k">less CO₂ a year at first</div></div>` : `<div class="stat"><div class="v">${num(-co2)} t</div><div class="k">more CO₂ a year at first: running the ${isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s"} uses more energy than the car trips they replace</div></div>`}
   </div>`;
+  {
+    const lo = L.co2Long[0], hi = L.co2Long[1], mid = (lo + hi) / 2, word = v => v >= 0 ? num(v) + " t less" : num(-v) + " t more";
+    h += `<div class="stat ${mid >= 0 ? "g" : ""}" style="display:flex;flex-direction:column;gap:2px"><div class="k" style="margin:0">In the long run, as homes and jobs grow near the ${isM ? "stations" : "line"} and people drive less overall</div><div class="v">${word(mid).replace(" less", " less CO₂ a year").replace(" more", " more CO₂ a year")}</div><div class="k" style="margin:0">likely ${word(lo)} to ${word(hi)}. That takes decades, and zoning that lets homes go up near stations.</div></div>`;
+  }
   if (!isM){
     h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">Transfers</span><div class="chips">` +
       (L.xferL.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="chip"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l}</span>`; }).join("")) +
@@ -965,6 +973,8 @@ function openSources(){
   <h3>Cars and CO₂</h3>
   <p>People per car trip: 1.5 (<a href="https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household" target="_blank" rel="noopener">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile from its tailpipe (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA, NTD 2024</a>), 21.7 on Metra (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra, NTD 2024</a>), 1.9 on streetcars (<a href="https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf" target="_blank" rel="noopener">APTA 2025 Fact Book</a>). The new service's own emissions are subtracted, using FTA's factors for Chicago's power grid region, RFC West (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>, Tables A-2, A-4, A-12): 2.47 kg per L car-mile, 3.49 kg per streetcar mile, 4.66 kg per electric commuter car-mile, 1.96 kg per diesel bus mile. For diesel commuter rail FTA lists 27.2 kg per vehicle-mile (2.67 gallons); that only fits a whole train, so the tool applies it per train.</p>
   <p>Rider surveys on new lines found 10–31% of all riders used to drive: 10% on Las Vegas MAX (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA 2006</a>, p. v), 25% on LA's Orange Line BRT (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA</a>, p. xvi), about 31% on the Expo Line extension (70% new riders, 44% of them former drivers; <a href="https://www.masstransitmag.com/rail/press-release/12257690/" target="_blank" rel="noopener">Mass Transit</a>). Among riders who were new to transit, 33–78% used to drive (the same three surveys). The tool uses the all-rider share for new rail lines, after taking out riders who switch from nearby L stations, and the new-rider share for riders a BRT or streetcar adds beyond today's buses. It shows the middle of each range.</p>
+  <h3>CO₂ in the long run</h3>
+  <p>Over time, transit changes where people live and work: more homes and jobs near stations, shorter trips, fewer cars. Studies measure this as a multiplier on the driving a line replaces directly. APTA's national default is 1.9 (<a href="https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf" target="_blank" rel="noopener">Bailey et al. 2008, for TCRP</a>); a 2024 study of household travel surveys in 28 US regions found 6.1–9.5, median 6.59, higher where transit systems are bigger (<a href="https://link.springer.com/article/10.1007/s11116-024-10542-0" target="_blank" rel="noopener">Sabouri, Ewing &amp; Kalantari, Transportation, 2024</a>). The long-run figure uses 1.9 at the low end and 6.59 at the high end. It describes regions decades after building transit, and only happens if zoning allows homes near stations.</p>
   <h3>Data</h3>
   <ul>
   <li>Lines, stations and trains: <a href="${S.cta.url}" target="_blank" rel="noopener">CTA</a> and <a href="${S.metra.url}" target="_blank" rel="noopener">Metra</a> schedules for a weekday (${S.cta.service_date}).</li>
