@@ -62,3 +62,13 @@ Rail hours are car-hours: multiply by cars per train.
 ## Time to build (approval to opening)
 
 Subway: RLE ~6.5 yr; Second Ave Ph 2 ~9 yr; Purple Line Sec. 1 ~10 yr. Elevated/LRT: Lynnwood ~5.5 yr. Streetcar: KC Main St ~3.5 yr of construction. BRT: Indy Red Line ~1.5 yr.
+
+## BRT boost, driver share, subway high end (research of Oct 27, 2026)
+
+- BRT corridor riders vs. the bus before: Cleveland HealthLine 16,200 → 21,200 (+31%), run time 46 → 36 min (FTA Before-and-After Studies 2012, pp. 4–5, https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf); LA Orange Line 41,580 → 62,597 (+51%) (FTA Report 0004, p. xvi, https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf); Las Vegas MAX 7,000 → 9,800 (+40%) (https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf p. 30); LA Metro Rapid +26–33% (https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership). FTA CBRT 2009 p. E-6: "5 and 25 percent are common" (https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf). Tool: ×1.31, range 1.05–1.51.
+- In-vehicle time elasticity: bus −0.4 to −0.6, rail −0.4 to −0.9 (Paulley et al. 2006, https://eprints.whiterose.ac.uk/id/eprint/2034/1/ITS23_The_demand_for_public_transport_UPLOADABLE.pdf). Not used yet.
+- Streetcars, weekday riders per route mile (NTD 2023–24): KC ~2,180, Detroit ~960, Cincinnati ~730, Milwaukee ~640, Portland ~1,060, Tucson ~1,170, Seattle ~1,080. No study shows streetcars beating a same-street bus; tool gives no boost.
+- Commuter rail upgrades: Tri-Rail +60% trains, boardings +56% 2005–08 (gas prices too) (FTA 2011 before/after p. 12–13); GO Lakeshore 30-min all-day → +30% off-peak riders (Metrolinx 2014–15 Business Plan p. 25); Caltrain electrification FY25 +47% (pandemic recovery mixed in).
+- Subway high end: LA Purple Section 3, $3,599.27M / 2.56 mi = $1.41B/mi (FFGA 2020); Section 2, $2,499.24M / 2.59 mi = $965M/mi (https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-3-Profile-AR25.pdf).
+- Riders who used to drive (share of all riders): Las Vegas MAX 10% (30% new to transit); LA Orange BRT 25% (16% drove alone + 9% carpool); Expo Phase 2 ~31% (70% new to the line × 44% former drivers); CTA Orange Line ~25% new to transit. Tool: 10–31% of all riders.
+- FTA GHG Table A-12 RFCW (Chicago grid): HR 0.00247, CR 0.00466, LR/SR 0.00347 t per car-mile. Diesel CR 0.02717 = NTD gallons × 0.01018 ÷ VMT (2017–21); applied per train in the tool.
