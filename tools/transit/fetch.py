@@ -358,8 +358,20 @@ def osm():
     log('osm', {k: len(v) for k, v in out.items()})
 
 
+def cost_index():
+    # FHWA National Highway Construction Cost Index (quarterly) and BLS CPI-U (annual), to put project costs in today's dollars
+    for name, url in [('nhcci', 'https://data.transportation.gov/api/views/r94d-n4f9/rows.csv?accessType=DOWNLOAD'),
+                      ('cpi', 'https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SA0?startyear=2006&endyear=2026')]:
+        try:
+            data = get(url)
+            open(os.path.join(OUT, name + ('.csv' if name == 'nhcci' else '.json')), 'wb').write(data)
+            SOURCES['files'][name] = {'url': url, 'bytes': len(data)}; log(name, len(data))
+        except Exception as e:
+            log(name, 'failed', repr(e))
+
+
 if __name__ == '__main__':
-    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy', 'osm']
+    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy', 'osm', 'costs']
     for s in steps:
         try:
             if s == 'cta':
@@ -376,6 +388,8 @@ if __name__ == '__main__':
                 ntd_energy()
             elif s == 'osm':
                 osm()
+            elif s == 'costs':
+                cost_index()
         except Exception as e:
             import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)
