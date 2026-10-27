@@ -378,6 +378,15 @@ if __name__ == '__main__':
                 gtfs('cta', 'https://www.transitchicago.com/downloads/sch_data/google_transit.zip')
             elif s == 'metra':
                 gtfs('metra', 'https://schedules.metrarail.com/gtfs/schedule.zip')
+            elif s == 'amtrak':   # intercity rail (map layer only)
+                gtfs('amtrak', 'https://content.amtrak.com/content/gtfs/GTFS.zip')
+            elif s == 'nictd':    # South Shore Line, commuter rail to Indiana (map layer only)
+                for u in ['https://www.mysouthshoreline.com/gtfs/google_transit.zip', 'http://www.mysouthshoreline.com/gtfs/google_transit.zip',
+                          'https://www.nictd.com/gtfs/google_transit.zip']:
+                    try:
+                        gtfs('nictd', u); break
+                    except Exception as e:
+                        log('nictd', u, 'failed', repr(e))
             elif s == 'blocks':
                 blocks()
             elif s == 'bus':

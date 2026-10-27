@@ -24,7 +24,10 @@ jobs:
       - name: Download jobs (LODES, resumable)
         timeout-minutes: 25
         continue-on-error: true
+        env:
+          MSG: ${{ github.event.head_commit.message }}
         run: |
+          case "$MSG" in *"[steps:"*) case "$MSG" in *blocks*) ;; *) echo "jobs not needed for these steps"; exit 0;; esac;; esac
           mkdir -p tools/raw/transit
           for y in 2022 2021 2023; do
             f=tools/raw/transit/il_wac_S000_JT00_$y.csv.gz
@@ -38,7 +41,14 @@ jobs:
           done
           ls -la tools/raw/transit || true
       - name: Download
-        run: python3 tools/transit/fetch.py ${{ github.event.inputs.steps }}
+        # a push can name its steps in the commit message, e.g. "[steps: amtrak nictd]"; otherwise all steps run
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          STEPS="${{ github.event.inputs.steps }}"
+          if [ -z "$STEPS" ]; then STEPS=$(printf '%s' "$MSG" | sed -n 's/.*\[steps: *\([a-z ]*\)\].*/\1/p' | head -1); fi
+          echo "steps: ${STEPS:-all}"
+          python3 tools/transit/fetch.py $STEPS
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
