@@ -1,14 +1,2 @@
-calendar rows 339 calendar_dates rows 0 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
-amtrak patterns 179 routes 58
-retry https://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-retry https://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-retry https://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-nictd https://www.mysouthshoreline.com/gtfs/google_transit.zip failed <HTTPError 404: 'Not Found'>
-retry http://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-retry http://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-retry http://www.mysouthshoreline.com/gtfs/google_transit.zip <HTTPError 404: 'Not Found'>
-nictd http://www.mysouthshoreline.com/gtfs/google_transit.zip failed <HTTPError 404: 'Not Found'>
-retry https://www.nictd.com/gtfs/google_transit.zip URLError(gaierror(-2, 'Name or service not known'))
-retry https://www.nictd.com/gtfs/google_transit.zip URLError(gaierror(-2, 'Name or service not known'))
-retry https://www.nictd.com/gtfs/google_transit.zip URLError(gaierror(-2, 'Name or service not known'))
-nictd https://www.nictd.com/gtfs/google_transit.zip failed URLError(gaierror(-2, 'Name or service not known'))
+calendar rows 2 calendar_dates rows 64 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
+nictd patterns 11 routes 2
