@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T15:13Z",
+ "fetched": "2026-10-27T17:57Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -35,6 +35,11 @@
    "url": "https://datahub.nita.illinois.gov/sites/default/files/documents/2024-07/Metra_Ridership_by_Station_Boarding_Alighting%20Survey_1979_2018.csv",
    "bytes": 96725,
    "page": "https://datahub.nita.illinois.gov/media/resources/metra-ridership-station-boarding-alighting-survey-1979-2018"
+  },
+  "ntd_energy": {
+   "url": "https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000",
+   "page": "https://data.transportation.gov/d/8ehq-7his",
+   "bytes": 14543
   }
  }
 }
