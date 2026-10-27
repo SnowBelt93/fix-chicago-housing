@@ -1003,7 +1003,7 @@ function makeDensityCanvas(field){
   for (let k = 0; k < W * H; k++){
     const d = v[k] / sqmi; if (d < 1000) continue;          // people (or jobs) per sq mi
     const t = Math.min(1, Math.log(d / 1000) / Math.log(50000 / 1000)), c = rampAt(ramp, t);
-    img.data[4 * k] = c[0]; img.data[4 * k + 1] = c[1]; img.data[4 * k + 2] = c[2]; img.data[4 * k + 3] = Math.round(255 * Math.min(1, t * 4) * (0.45 + 0.4 * t));
+    img.data[4 * k] = c[0]; img.data[4 * k + 1] = c[1]; img.data[4 * k + 2] = c[2]; img.data[4 * k + 3] = Math.round(255 * Math.min(1, t * 4) * (0.3 + 0.4 * t));
   }
   ctx.putImageData(img, 0, 0);
   DENS_COORDS = [toLL(x0, y0 + H * cell), toLL(x0 + W * cell, y0 + H * cell), toLL(x0 + W * cell, y0), toLL(x0, y0)];
