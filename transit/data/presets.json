@@ -1,6 +1,7 @@
 [
 {
 "id": "rle",
+"group": "rail",
 "name": "Red Line Extension",
 "mode": "elevated",
 "head": 5,
@@ -57,6 +58,7 @@
 },
 {
 "id": "ashland",
+"group": "bus",
 "name": "Ashland Avenue BRT",
 "mode": "brt",
 "head": 5,
@@ -227,6 +229,7 @@
 },
 {
 "id": "western",
+"group": "bus",
 "name": "Western Avenue bus priority",
 "mode": "brt",
 "head": 5,
@@ -374,6 +377,7 @@
 },
 {
 "id": "pulaski",
+"group": "bus",
 "name": "Pulaski Road bus priority",
 "mode": "brt",
 "head": 5,
@@ -481,6 +485,7 @@
 },
 {
 "id": "midcity",
+"group": "rail",
 "name": "Mid-City Transitway",
 "mode": "elevated",
 "head": 7.5,
@@ -588,6 +593,7 @@
 },
 {
 "id": "ri",
+"group": "metra",
 "name": "Rock Island all-day trains",
 "metra": "RI",
 "head": 20,
@@ -609,6 +615,7 @@
 },
 {
 "id": "me",
+"group": "metra",
 "name": "Metra Electric improvements",
 "metra": "ME",
 "head": 15,
@@ -629,6 +636,640 @@
 [
 "NBC Chicago, June 2026",
 "https://www.nbcchicago.com/traffic/transit/new-metra-electric-line-schedule-with-increased-service-going-into-effect/3948484/"
+]
+]
+},
+{
+"id": "orange",
+"group": "rail",
+"name": "Orange Line to Ford City",
+"mode": "elevated",
+"head": 7.5,
+"extends": true,
+"pts": [
+[
+-87.73788,
+41.78661
+],
+[
+-87.7417,
+41.7555
+]
+],
+"status": "Studied 2009 (elevated on Cicero, one station at Ford City); CTA isn\u2019t studying it now",
+"approx": "Station at 76th and Cicero, as in CTA\u2019s 2009 preferred route.",
+"official": {
+"cost": 445000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan (\u201cvisionary\u201d list)",
+"riders": 700,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Orange Line extension study",
+"https://transitchicago.com/orangeeis"
+]
+]
+},
+{
+"id": "yellow",
+"group": "rail",
+"name": "Yellow Line to Old Orchard",
+"mode": "elevated",
+"head": 10,
+"extends": true,
+"pts": [
+[
+-87.75192,
+42.03895
+],
+[
+-87.74664,
+42.06248
+]
+],
+"status": "Studied 2009\u201312 (one station at Old Orchard); CTA isn\u2019t studying it now",
+"approx": "Station near Old Orchard Road and Skokie Boulevard.",
+"official": {
+"cost": 263000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan (\u201cvisionary\u201d list)",
+"riders": 2300,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Yellow Line extension study",
+"https://transitchicago.com/YellowEIS"
+]
+]
+},
+{
+"id": "greenjp",
+"group": "rail",
+"name": "Green Line back to Jackson Park",
+"mode": "elevated",
+"head": 10,
+"extends": true,
+"pts": [
+[
+-87.60586,
+41.78031
+],
+[
+-87.5978,
+41.7802
+],
+[
+-87.5917,
+41.7802
+],
+[
+-87.5866,
+41.7803
+]
+],
+"status": "Idea only: a \u201cvisionary\u201d project in CMAP\u2019s 2026 plan (the old branch east of Cottage Grove closed in 1982)",
+"approx": "Stations at University, Dorchester and Stony Island, where the old line stopped.",
+"official": {
+"cost": null,
+"costNote": "no estimate",
+"riders": 3400,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"chicago-l.org: Jackson Park branch",
+"https://www.chicago-l.org/operations/lines/southside.html"
+]
+]
+},
+{
+"id": "circle",
+"group": "rail",
+"name": "Circle Line",
+"mode": "elevated",
+"head": 7.5,
+"pts": [
+[
+-87.64918,
+41.91065
+],
+[
+-87.6677,
+41.91063
+],
+[
+-87.667505,
+41.90335
+],
+[
+-87.667295,
+41.89607
+],
+[
+-87.66697,
+41.88527
+],
+[
+-87.67393,
+41.87571
+],
+[
+-87.666408,
+41.86685
+],
+[
+-87.66609,
+41.85233
+],
+[
+-87.66532,
+41.83923
+]
+],
+"status": "Studied 2006\u201309; CTA isn\u2019t studying it now. CMAP: \u201ccostly for the level of benefits\u201d",
+"approx": "Stations are approximate: CMAP describes a line along Ashland from North/Clybourn to the Orange Line; CTA\u2019s study mixed new subway, elevated and the Pink Line\u2019s tracks.",
+"official": {
+"cost": 1100000000.0,
+"costYear": 2009,
+"yoe": true,
+"costNote": "year-of-spending dollars, CTA 2009, for the southern phases only; CMAP gives no cost",
+"opYear": 22000000.0,
+"riders": 8800,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); CTA 2009: 10 million rides a year in 2030"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Circle Line study boards",
+"https://lapi.transitchicago.com/assets/1/6/Circle_Line_Screen_3_Boards_text_Format.txt"
+],
+[
+"CMAP unconstrained projects",
+"https://cmap.illinois.gov/recommendation/unconstrained-project/"
+]
+]
+},
+{
+"id": "garfield",
+"group": "bus",
+"name": "55th/Garfield bus priority",
+"mode": "brt",
+"head": 6,
+"pts": [
+[
+-87.741986,
+41.793084
+],
+[
+-87.72317,
+41.79321
+],
+[
+-87.70357,
+41.79353
+],
+[
+-87.69382,
+41.793705
+],
+[
+-87.68407,
+41.79388
+],
+[
+-87.674328,
+41.793863
+],
+[
+-87.664585,
+41.793845
+],
+[
+-87.654867,
+41.793892
+],
+[
+-87.64515,
+41.79394
+],
+[
+-87.634187,
+41.794205
+],
+[
+-87.623225,
+41.79447
+],
+[
+-87.612262,
+41.794735
+],
+[
+-87.6013,
+41.795
+],
+[
+-87.5966,
+41.7951
+],
+[
+-87.5875,
+41.795194
+]
+],
+"status": "Studied by CTA and CDOT (Better Streets for Buses); in CMAP\u2019s 2026 plan",
+"approx": "Cicero to Hyde Park, as studied; CMAP doesn\u2019t give stop locations.",
+"official": {
+"cost": 150000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 3200,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Better Streets for Buses",
+"https://transitchicago.com/betterstreetsforbuses/"
+]
+]
+},
+{
+"id": "fullerton",
+"group": "bus",
+"name": "Fullerton bus priority",
+"mode": "brt",
+"head": 8,
+"pts": [
+[
+-87.785135,
+41.92425
+],
+[
+-87.765727,
+41.92425
+],
+[
+-87.756024,
+41.92425
+],
+[
+-87.74632,
+41.92425
+],
+[
+-87.73654,
+41.92437
+],
+[
+-87.72676,
+41.92449
+],
+[
+-87.713723,
+41.924627
+],
+[
+-87.700687,
+41.924763
+],
+[
+-87.68765,
+41.9249
+],
+[
+-87.67789,
+41.92503
+],
+[
+-87.66815,
+41.92515
+],
+[
+-87.65846,
+41.9253
+],
+[
+-87.64877,
+41.92545
+]
+],
+"status": "Studied by CTA and CDOT (Better Streets for Buses); in CMAP\u2019s 2026 plan",
+"approx": "Near Grand Avenue to Halsted, as studied; CMAP doesn\u2019t give stop locations.",
+"official": {
+"cost": 145000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 4600,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Better Streets for Buses",
+"https://transitchicago.com/betterstreetsforbuses/"
+]
+]
+},
+{
+"id": "cottage",
+"group": "bus",
+"name": "Cottage Grove bus priority",
+"mode": "brt",
+"head": 8,
+"pts": [
+[
+-87.61061,
+41.83118
+],
+[
+-87.606925,
+41.823935
+],
+[
+-87.606748,
+41.816733
+],
+[
+-87.60657,
+41.80953
+],
+[
+-87.60641,
+41.80226
+],
+[
+-87.606247,
+41.794977
+],
+[
+-87.60592,
+41.78041
+],
+[
+-87.60575,
+41.773145
+],
+[
+-87.60558,
+41.76588
+],
+[
+-87.60539,
+41.758585
+],
+[
+-87.6052,
+41.75129
+],
+[
+-87.605005,
+41.74397
+],
+[
+-87.60481,
+41.73665
+],
+[
+-87.60449,
+41.72205
+],
+[
+-87.60417,
+41.70745
+],
+[
+-87.60385,
+41.69285
+],
+[
+-87.60369,
+41.68555
+]
+],
+"status": "Studied by CTA and CDOT (Better Streets for Buses); in CMAP\u2019s 2026 plan",
+"approx": "35th to 115th, as studied; CMAP doesn\u2019t give stop locations.",
+"official": {
+"cost": 181000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 2600,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"CTA Better Streets for Buses",
+"https://transitchicago.com/betterstreetsforbuses/"
+]
+]
+},
+{
+"id": "m-bnsf",
+"group": "metra",
+"name": "BNSF all-day trains",
+"metra": "BNSF",
+"head": 20,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s BNSF project (including a new Eola Road station) adds track, signals or stations; the preset shows trains every 20 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 328000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 9000,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-up-n",
+"group": "metra",
+"name": "UP North all-day trains",
+"metra": "UP-N",
+"head": 20,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s UP North project (including a Peterson/Ridge station) adds track, signals or stations; the preset shows trains every 20 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 1174000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 7400,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-up-w",
+"group": "metra",
+"name": "UP West all-day trains",
+"metra": "UP-W",
+"head": 20,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s UP West project adds track, signals or stations; the preset shows trains every 20 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 471000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 7500,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-up-nw",
+"group": "metra",
+"name": "UP Northwest all-day trains",
+"metra": "UP-NW",
+"head": 20,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s UP Northwest project, which also extends the line 1.6 miles to Johnsburg (not drawn) adds track, signals or stations; the preset shows trains every 20 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 859000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 9600,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-md-w",
+"group": "metra",
+"name": "Milwaukee West all-day trains",
+"metra": "MD-W",
+"head": 30,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s Milwaukee West project adds track, signals or stations; the preset shows trains every 30 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 769000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 5100,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-md-n",
+"group": "metra",
+"name": "Milwaukee North all-day trains",
+"metra": "MD-N",
+"head": 30,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s Milwaukee North project adds track, signals or stations; the preset shows trains every 30 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 832000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 2100,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
+]
+]
+},
+{
+"id": "m-sws",
+"group": "metra",
+"name": "SouthWest Service all-day trains",
+"metra": "SWS",
+"head": 30,
+"status": "Line upgrades in CMAP\u2019s 2026 regional plan",
+"approx": "CMAP\u2019s SouthWest Service project adds track, signals or stations; the preset shows trains every 30 minutes all day. Metra\u2019s October 2026 draft network plan aims for trains every 15\u201330 minutes on every line, for about $9 billion.",
+"official": {
+"cost": 776000000.0,
+"costYear": 2025,
+"costNote": "2025 dollars, CMAP 2026 plan",
+"riders": 2900,
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model)"
+},
+"sources": [
+[
+"CMAP 2026 plan benefits report",
+"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf"
+],
+[
+"Sun-Times: Metra\u2019s draft network plan, Oct. 2026",
+"https://chicago.suntimes.com/transportation/2026/10/16/metra-shares-dream-plan-to-offer-trains-every-15-30-minutes"
 ]
 ]
 }
