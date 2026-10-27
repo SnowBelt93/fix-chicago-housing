@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T19:09Z",
+ "fetched": "2026-10-27T19:20Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -47,7 +47,8 @@
    "counts": {
     "motorway": 6462,
     "arterial": 55715,
-    "water": 1121
+    "water": 1121,
+    "rail": 7736
    }
   }
  }
