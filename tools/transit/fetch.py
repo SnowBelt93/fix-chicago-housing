@@ -253,8 +253,33 @@ def metra_counts():
     log('metra counts', len(data))
 
 
+def ntd_energy():
+    # NTD fuel and energy use by agency and mode (Metra 50118, CTA 50066): diesel gallons, propulsion kWh
+    found = False
+    for url in ["https://data.transportation.gov/resource/8ehq-7his.csv?$where=ntd_id%20in('50118','50066','10118','10066')&$limit=5000",
+                "https://data.transportation.gov/api/views/8ehq-7his/rows.csv?accessType=DOWNLOAD"]:
+        try:
+            data = get(url)
+        except Exception as e:
+            log('ntd energy failed', url, repr(e)); continue
+        if b'50118' not in data:
+            log('ntd energy: no Metra rows in', url, len(data)); continue
+        if len(data) > 5_000_000:   # whole dataset: keep only our agencies' rows plus the header
+            lines = data.splitlines(); data = b'\n'.join([lines[0]] + [l for l in lines[1:] if b'50118' in l or b'50066' in l])
+        open(os.path.join(OUT, 'ntd_energy.csv'), 'wb').write(data)
+        SOURCES['files']['ntd_energy'] = {'url': url, 'page': 'https://data.transportation.gov/d/8ehq-7his', 'bytes': len(data)}
+        log('ntd energy', url, len(data)); found = True; break
+    if not found:
+        try:
+            u = 'https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-10/2024%20Energy%20Consumption_250812.xlsx'
+            data = get(u); open(os.path.join(OUT, 'ntd_energy_2024.xlsx'), 'wb').write(data)
+            SOURCES['files']['ntd_energy'] = {'url': u, 'bytes': len(data)}; log('ntd energy xlsx', len(data))
+        except Exception as e:
+            log('ntd energy xlsx failed', repr(e))
+
+
 if __name__ == '__main__':
-    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts']
+    steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy']
     for s in steps:
         try:
             if s == 'cta':
@@ -267,6 +292,8 @@ if __name__ == '__main__':
                 bus_ridership()
             elif s == 'metracounts':
                 metra_counts()
+            elif s == 'energy':
+                ntd_energy()
         except Exception as e:
             import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)
