@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T09:09Z",
+ "fetched": "2026-10-27T09:23Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -10,12 +10,14 @@
   },
   "blocks": {
    "url": "https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/tl_2020_17_tabblock20.zip",
-   "jobs_url": "LODES8 il_wac_S000_JT00_None",
-   "jobs_year": null,
+   "jobs_url": "LODES8 il_wac_S000_JT00_2022",
+   "jobs_year": 2022,
    "blocks": 141168,
    "people": 8445866,
    "people_city_county": 5275541,
-   "jobs": 0
+   "jobs": 4142973,
+   "jobs_file_partial": false,
+   "jobs_last_block": "172030307003217"
   },
   "bus_ridership": {
    "url": "https://data.cityofchicago.org/d/jyb9-n7fm",
