@@ -10,11 +10,11 @@
 41.72238
 ],
 [
--87.6372,
+-87.634,
 41.70694
 ],
 [
--87.6372,
+-87.634,
 41.692359
 ],
 [
@@ -33,7 +33,8 @@
 "official": {
 "cost": 5750000000.0,
 "costYear": 2025,
-"costNote": "year-of-spending dollars, full funding agreement (FTA)",
+"yoe": true,
+"costNote": "year-of-spending dollars through 2031, full funding agreement (FTA)",
 "riders": 36400,
 "ridersNote": "daily linked trips, 2019 forecast year (41,500 in 2040)",
 "federal": 0.343,
@@ -207,7 +208,7 @@
 "costYear": 2025,
 "costNote": "2025 dollars, CMAP 2026 plan (CTA\u2019s 2013 estimate: $160M)",
 "riders": 13600,
-"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); CTA 2013: up to 29% more riders on the corridor"
+"ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); CTA 2013: up to 29% more riders on the corridor (29\u201341% in its modeling)"
 },
 "sources": [
 [
@@ -450,12 +451,12 @@
 41.83689
 ],
 [
--87.72342,
-41.80234
-],
-[
 -87.72359,
 41.80789
+],
+[
+-87.72342,
+41.80234
 ],
 [
 -87.72317,
@@ -541,28 +542,28 @@
 41.7638
 ],
 [
--87.736526,
-41.74916
+-87.7215,
+41.7575
 ],
 [
--87.7045,
-41.7363
+-87.7025,
+41.7565
 ],
 [
 -87.6838,
-41.7363
+41.755
 ],
 [
--87.6644,
-41.7363
+-87.664,
+41.7495
 ],
 [
--87.6449,
-41.7363
+-87.644,
+41.74
 ],
 [
--87.6267,
-41.7363
+-87.6262,
+41.7357
 ]
 ],
 "status": "Idea only: a \"visionary\" project in CMAP\u2019s 2026 plan",
@@ -570,6 +571,7 @@
 "official": {
 "cost": null,
 "costNote": "no current estimate (\"at least $1 billion\" in 2002)",
+"opYear": 21900000.0,
 "riders": 11000,
 "ridersNote": "more weekday transit trips across the region in 2050 (CMAP model); 2002 claim: 94,000 riders a day"
 },

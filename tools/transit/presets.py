@@ -96,23 +96,23 @@ WESTERN_X = ['Howard Street', 'Touhy Avenue', 'Devon Avenue', 'Peterson Avenue',
              '35th Street', 'Pershing Road', '47th Street', '55th Street', '63rd Street', '71st Street', '79th Street']
 PULASKI_X = ['Peterson Avenue', 'Foster Avenue', 'Lawrence Avenue', 'Montrose Avenue', 'Irving Park Road', 'Addison Street', 'Belmont Avenue',
              'Diversey Avenue', 'Fullerton Avenue', 'Armitage Avenue', 'North Avenue', 'Division Street', 'Chicago Avenue', 'Lake Street', 'Madison Street',
-             'Roosevelt Road', 'Cermak Road', '31st Street', 'Archer Avenue', '47th Street', '55th Street']
+             'Roosevelt Road', 'Cermak Road', '31st Street', '47th Street', 'Archer Avenue', '55th Street']
 
 
 def main():
     P = []
     # CTA Red Line Extension: stations near Eggleston at 103rd and 111th, Michigan near 116th, 130th near Altgeld Gardens (CTA 2026 boards)
     rle = [[-87.62434, 41.72238]]   # 95th/Dan Ryan (the Red Line's end today)
-    for cross, nearpt in [('103rd Street', (41.7068, -87.6372)), ('111th Street', (41.6922, -87.6378))]:
+    for cross, nearpt in [('103rd Street', (41.7068, -87.6340)), ('111th Street', (41.6922, -87.6340))]:
         p = crossing('Halsted Street', cross, nearpt)   # cross street located, then moved to Eggleston (about 400 W)
-        rle.append([-87.6372, p[1]] if p else [nearpt[1], nearpt[0]])
+        rle.append([-87.6340, p[1]] if p else [-87.6340, nearpt[0]])   # Eggleston Ave, about 430 W
     p = crossing('Michigan Avenue', '115th Street', (41.6851, -87.6213))
     rle.append([p[0], round(p[1] - 0.0018, 6)] if p else [-87.6213, 41.6833])   # near 116th
     rle.append([-87.6094, 41.6595])   # 130th near Altgeld Gardens
     P.append({'id': 'rle', 'name': 'Red Line Extension', 'mode': 'elevated', 'head': 5, 'pts': rle, 'extends': True,
               'gap': 'CTA\u2019s forecast counts every trip that uses the extension, including bus riders whose routes would be moved to the new stations, park-and-ride at 130th, and the return trip that starts downtown. This tool counts people entering the four new stations with today\u2019s buses, so it comes out much lower.', 'status': 'Under construction, opening 2030–31',
               'approx': 'Station spots are approximate (CTA gives cross streets only).',
-              'official': {'cost': 5.75e9, 'costYear': 2025, 'costNote': 'year-of-spending dollars, full funding agreement (FTA)',
+              'official': {'cost': 5.75e9, 'costYear': 2025, 'yoe': True, 'costNote': 'year-of-spending dollars through 2031, full funding agreement (FTA)',
                            'riders': 36400, 'ridersNote': 'daily linked trips, 2019 forecast year (41,500 in 2040)',
                            'federal': 0.343, 'opens': '2030–31'},
               'sources': [['FTA funding agreement profile, 2025', 'https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf'],
@@ -121,7 +121,7 @@ def main():
     P.append({'id': 'ashland', 'name': 'Ashland Avenue BRT', 'mode': 'brt', 'head': 5, 'pts': along('Ashland Avenue', ASHLAND_X, (41.85, -87.6667)),
               'status': 'Shelved by CTA; in CMAP’s 2026 regional plan',
               'official': {'cost': 166e6, 'costYear': 2025, 'costNote': '2025 dollars, CMAP 2026 plan (CTA’s 2013 estimate: $160M)',
-                           'riders': 13600, 'ridersNote': 'more weekday transit trips across the region in 2050 (CMAP model); CTA 2013: up to 29% more riders on the corridor'},
+                           'riders': 13600, 'ridersNote': 'more weekday transit trips across the region in 2050 (CMAP model); CTA 2013: up to 29% more riders on the corridor (29–41% in its modeling)'},
               'sources': [['CMAP 2026 plan benefits report', CMAP_RTP], ['CTA Ashland BRT handout (stops)', 'https://lapi.transitchicago.com/assets/1/6/Ashland_BRT_EA_Handout_-_text_document.pdf'],
                           ['Streetsblog, 2013', 'https://chi.streetsblog.org/2013/04/19/cta-officials-share-details-of-the-plan-for-gold-standard-brt-on-ashland/']]})
     P.append({'id': 'western', 'name': 'Western Avenue bus priority', 'mode': 'brt', 'head': 5, 'pts': along('Western Avenue', WESTERN_X, (41.87, -87.6866)),
@@ -138,10 +138,11 @@ def main():
     mc = along('Cicero Avenue', ['Montrose Avenue', 'Irving Park Road', 'Belmont Avenue', 'Fullerton Avenue', 'North Avenue', 'Chicago Avenue', 'Lake Street',
                                   'Roosevelt Road', 'Cermak Road', '31st Street', '47th Street', '55th Street', '63rd Street', '71st Street', '79th Street'], (41.85, -87.7454))
     mc = [[round(p[0] + 400 / KX, 6), p[1]] for p in mc]   # a quarter mile east of Cicero
-    mc += [[-87.7045, 41.7363], [-87.6838, 41.7363], [-87.6644, 41.7363], [-87.6449, 41.7363], [-87.6267, 41.7363]]   # east along ~87th/Belt Railway to the Dan Ryan
+    mc = mc[:-1]   # drop 79th: the line turns east near 75th
+    mc += [[-87.7215, 41.7575], [-87.7025, 41.7565], [-87.6838, 41.7550], [-87.6640, 41.7495], [-87.6440, 41.7400], [-87.6262, 41.7357]]   # east along the Belt Railway near 75th, meeting the Red Line between 87th and 91st
     P.append({'id': 'midcity', 'name': 'Mid-City Transitway', 'mode': 'elevated', 'head': 7.5, 'pts': mc, 'status': 'Idea only: a "visionary" project in CMAP’s 2026 plan',
               'approx': 'Alignment and stations are approximate, from a 2002 description; no current plan exists.',
-              'official': {'cost': None, 'costNote': 'no current estimate ("at least $1 billion" in 2002)', 'riders': 11000,
+              'official': {'cost': None, 'costNote': 'no current estimate ("at least $1 billion" in 2002)', 'opYear': 21.9e6, 'riders': 11000,
                            'ridersNote': 'more weekday transit trips across the region in 2050 (CMAP model); 2002 claim: 94,000 riders a day'},
               'sources': [['CMAP 2026 plan benefits report', CMAP_RTP], ['Chicago Tribune, 2002 (via chicago-l.org)', 'https://chicago-l.org/articles/mid-city02.html']]})
     P.append({'id': 'ri', 'name': 'Rock Island all-day trains', 'metra': 'RI', 'head': 20, 'status': 'CMAP’s plan funds track and yard work on the Rock Island',

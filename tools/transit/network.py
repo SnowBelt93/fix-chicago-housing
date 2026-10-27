@@ -68,8 +68,6 @@ def load_network():
     for name in ('cta', 'metra'):
         for rid, plist in json.load(gzip.open(os.path.join(RAW, f'{name}_patterns.json.gz'), 'rt')).items():
             for p in plist:
-                if p['mid'] <= 0:
-                    continue
                 s = [sid.get(name + ':' + x) for x in p['stops']]
                 keep = [i for i, v in enumerate(s) if v is not None]
                 if len(keep) < 2:
@@ -82,7 +80,8 @@ def load_network():
         for s in p['s'][:-1]:
             freq[(p['r'], p['dir'], s)] += p['mid']
     for p in pats:
-        p['hw'] = [round(MID_MIN / max(freq[(p['r'], p['dir'], s)], p['mid']), 2) for s in p['s']]   # last stop: no boarding
+        # no midday trips: kept with a 9,999-minute headway (unusable today) so a Metra upgrade can bring it back
+        p['hw'] = [9999] * len(p['s']) if p['mid'] <= 0 else [round(MID_MIN / max(freq[(p['r'], p['dir'], s)], p['mid']), 2) for s in p['s']]
     return stops, pats
 
 
