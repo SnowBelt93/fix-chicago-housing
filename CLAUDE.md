@@ -229,7 +229,8 @@ A free, browser-based game on a real 3D model of Chicago's ~485,000 buildings. P
 - Metra: line riders = 2 × boardings outside downtown (2018 counts × 0.553); headway elasticity 0.41 (trains every 10–50 min before) or 0.76 (50+), ratio capped at 2× (evidence limit); ME is already electric (no wires toggle, electric factor).
 - Cars: rail (riders − lost) × 10–31% (all-rider survey share); BRT/streetcar (riders − today's bus riders) × 33–78% (new-rider share); ÷1.5. Trip lengths CTA NTD (L 6.07, bus 2.47, Metra 21.7). CO₂ uses FTA RFC West factors; diesel commuter 0.02717 applied per train. New L lines and diesel Metra upgrades show MORE CO₂ in the short run (train energy > car trips replaced).
 - Audit Oct 27 (independent agent): fixes above, plus walk circles were half size (metersAt now 78271.52 for 512-px tiles), plan totals now net new riders, TCRP link → libraryarchives.metro.net copy. Benchmarks: CTA 2013 Ashland BRT modeling +29–41%; RLE forecast 36,400 linked trips/day; Metra 2025 rides: HC 342k, NCS 669k, BNSF 7.58M, RI 3.375M.
-- Not modeled: development a line attracts, bus restructuring, fares, crowding.
+- Long-run CO₂ (Kyle, Oct 27): direct car VMT avoided × land-use multiplier 1.9 (APTA/Bailey 2008) to 6.59 (Sabouri, Ewing & Kalantari 2024 median), minus the service's emissions; shown under the short-run figure. Western subway still nets more CO₂ even long run (−15.9k to −1k t); BNSF/Ashland BRT can net less at the high end.
+- Not modeled: development a line attracts (except the long-run CO₂ multiplier), bus restructuring, fares, crowding.
 
 ## Constraints if republishing as a claude.ai artifact
 
