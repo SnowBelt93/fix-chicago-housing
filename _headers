@@ -4,3 +4,5 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
   Content-Security-Policy: frame-ancestors *
   Strict-Transport-Security: max-age=31536000
+  # preview only: keep search engines off the workers.dev copy until launch (remove at launch)
+  X-Robots-Tag: noindex

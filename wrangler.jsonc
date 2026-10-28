@@ -1,6 +1,8 @@
 {
-  // Fix Chicago Housing: static game files + a small community API (worker/index.js)
-  "name": "fix-chicago-housing",
+  // Shape Chicago (branch shape-v1): static pages + a small API (worker/index.js).
+  // Its own Worker, separate from fix-chicago-housing (which keeps serving fixchicagohousing.com until launch).
+  // Preview at the workers.dev address; at launch, attach the new domain here and point fixchicagohousing.com at it.
+  "name": "shape-chicago",
   "main": "worker/index.js",
   "compatibility_date": "2025-09-01",
   "assets": {
@@ -11,9 +13,6 @@
     "bindings": [{ "name": "COMMUNITY", "class_name": "Community" }]
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Community"] }],
-  "routes": [
-    { "pattern": "fixchicagohousing.com", "custom_domain": true },
-    { "pattern": "www.fixchicagohousing.com", "custom_domain": true }
-  ],
+  "workers_dev": true,
   "observability": { "enabled": true }
 }
