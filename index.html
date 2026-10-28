@@ -1090,7 +1090,8 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .hbar .tline .yr{font:600 11px var(--sc-font)}
 .hbar .tline input{flex:1;min-width:0;height:14px}
 #hardBtn{display:inline-flex !important;margin:0 4px 0 -2px}
-@media (max-width:1380px){ .hpace{display:none} }
+@media (max-width:1560px){ .hpace{display:none} }
+.hrent span{max-width:230px;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:1180px){ .hbar #affLine{display:none !important} .hscore{flex-basis:340px;min-width:260px} }
 @media (min-width:860px) and (max-width:1060px){ .hbar .hstat{display:none} .hsep{display:none} }
 
@@ -1183,7 +1184,8 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 .hbar h1.sr{position:absolute !important;margin:0}
 .intro .card{font-family:var(--sc-font);border-radius:20px}
 .intro .card :is(h2,p,span,b,button,div,li,a){font-family:var(--sc-font)}
-#intro .card h2{font:600 24px/1.2 var(--sc-font) !important;letter-spacing:-.02em;margin:0}
+#intro .card h2,#myth .card h2{font:600 24px/1.2 var(--sc-font) !important;letter-spacing:-.02em;margin:0;text-transform:none !important}
+#myth .card :is(p,b,span,a,div,button){font-family:var(--sc-font) !important}
 #intro .gp .n{font-weight:600 !important;letter-spacing:-.02em}
 #intro .goalmath b{font-weight:600 !important}
 #intro .gp,#intro .goalmath,#intro .clip{border-radius:14px}
@@ -1233,7 +1235,7 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
       <div class="keys" id="keys" hidden></div>
     </div>
     <span class="sc-sep hsep"></span>
-    <div class="sc-m hstat hrent"><span id="rentLbl">median rent in 2041</span><b id="rent">–</b></div>
+    <div class="sc-m hstat hrent"><span id="rentLbl">rent in 2041</span><b id="rent">–</b></div>
     <div class="sc-m hstat" id="affLine" hidden><span>affordable</span><b id="affNum">0</b></div>
     <div class="sc-m hstat hpace"><span id="paceLbl">built anyway at today's pace</span><b id="pace">–</b></div>
     <div class="sc-push hacts">
@@ -3467,7 +3469,7 @@ function render(){
   $("homesLbl").textContent = "new homes by " + yrLabel;
   const rn = rentNoChange(year), rp = rentWithPlan(year, tv.total), rs = rentStrong(year, tv.total), rr = lessRange(rn, rp, rs);
   $("rent").textContent = "$" + fmt(rp); $("rentMini").textContent = "$" + fmt(rp);
-  $("rentLbl").textContent = "median rent in " + yrLabel + (rr ? ", " + rr + " no change" : "");
+  $("rentLbl").textContent = "rent in " + yrLabel + (rr ? ", " + rr + " no change" : "");
   const cut = baseCut();
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
   $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
