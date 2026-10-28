@@ -1,6 +1,7 @@
-// Fix Chicago Housing community API: anonymous plan gallery, "what other players chose", and neighborhood stats.
+// Shape Chicago API: anonymous plan gallery, "what other people chose", neighborhood stats, and private feedback.
 // Static files are served by Workers Assets; only /api/* reaches this script.
-// No free text is stored (titles are generated from the plan), so nothing needs moderation.
+// Nothing people type is ever shown on the site: plan titles are generated from the plan, and feedback is
+// stored privately (read with GET /api/feedback?key=<FEEDBACK_KEY>, a secret set in the Worker's settings).
 
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
@@ -13,6 +14,7 @@ export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
+    if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || url.searchParams.get("key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
     const ip = req.headers.get("cf-connecting-ip") || "0";
     const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip}, body: req.method === "POST" ? await req.text() : undefined});
@@ -48,6 +50,7 @@ export class Community {
       hood INTEGER NOT NULL DEFAULT 0, gallery INTEGER NOT NULL DEFAULT 0, likes INTEGER NOT NULL DEFAULT 0, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS likes (plan INTEGER NOT NULL, who TEXT NOT NULL, PRIMARY KEY (plan, who))`);
     this.sql.exec(`CREATE INDEX IF NOT EXISTS plans_ts ON plans(ts)`);
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, page TEXT NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.cache = null;
   }
 
@@ -57,6 +60,8 @@ export class Community {
     const who = await hash((req.headers.get("x-ip") || "0") + "|" + day + "|fch");
     try {
       if (path === "/api/plan" && req.method === "POST") return this.addPlan(await req.json(), who);
+      if (path === "/api/feedback" && req.method === "POST") return this.addFeedback(await req.json(), who);
+      if (path === "/api/feedback" && req.method === "GET") return json({feedback: this.sql.exec("SELECT id, text, page, ts FROM feedback ORDER BY ts DESC LIMIT 500").toArray()});
       if (path === "/api/stats" && req.method === "GET") return this.stats(+url.searchParams.get("hood") || 0);
       if (path === "/api/gallery" && req.method === "GET") return this.gallery(url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("hood") || 0);
       const m = path.match(/^\/api\/like\/(\d+)$/);
@@ -77,6 +82,14 @@ export class Community {
     else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, who, Date.now()).one().id;
     this.cache = null;
     return json({ok: true, id});
+  }
+
+  addFeedback(b, who){
+    const text = String(b.text || "").trim().slice(0, 2000), page = String(b.page || "").replace(/[^a-z/-]/g, "").slice(0, 40);
+    if (text.length < 3) return json({error: "empty"}, 400);
+    if (this.sql.exec("SELECT COUNT(*) AS n FROM feedback WHERE who = ?", who).one().n >= 10) return json({error: "slow down"}, 429);
+    this.sql.exec("INSERT INTO feedback (text, page, who, ts) VALUES (?, ?, ?, ?)", text, page, who, Date.now());
+    return json({ok: true});
   }
 
   like(id, who){

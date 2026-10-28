@@ -32,9 +32,10 @@
 @media (max-width:859px){
   .sc-head{padding:4px 12px 0}
   .sc-brand span{display:none}
-  .sc-nav{font-size:13px} .sc-nav a{padding:7px 11px}
+  .sc-nav{font-size:13px} .sc-nav a{padding:7px 9px}
   .sc-btn{min-height:36px;padding:0 12px}
-  .sc-head .sc-share{display:none}
+  .sc-head .sc-share,.sc-head .sc-fan{display:none}
+  .sc-head .sc-l{gap:10px}
 }
 
 /* metrics bar */

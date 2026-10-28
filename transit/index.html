@@ -249,7 +249,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   #layers{top:calc(var(--topH) + 8px)}
   #legend{top:calc(var(--topH) + 56px)}
   #hint{top:calc(var(--topH) + 60px)}
-  .sc-head .sc-share{display:inline-block}
   .sc-head .sc-btn{padding:0 11px}
 }
 </style>
@@ -258,7 +257,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 <div id="loading">Loading Chicago's transit…</div>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="../" aria-label="Shape Chicago home"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../">Housing</a><a href="./" aria-current="page">Transit</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../housing/">Housing</a><a href="./" aria-current="page">Transit</a><a href="../tracker/">Tracker</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago, CTA or Metra.</span><button class="sc-btn" id="srcBtn" type="button">Sources</button><button class="sc-btn sc-share" id="share" type="button">Share</button></div>
 </header>
 <section class="sc-bar" id="tbar" aria-live="polite"></section>
@@ -1017,7 +1016,7 @@ function evalMetra(L){
 }
 
 /* ---------- map ---------- */
-function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org))$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
 function fallbackStyle(){
   const lake = {type:"FeatureCollection", features:(NET.lake || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
   const city = {type:"FeatureCollection", features:(NET.cityOutline || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};

@@ -9,16 +9,17 @@
 <meta property="og:description" content="New homes permitted in Chicago vs. the pace needed to close the shortage. Updated daily from public data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
 <style>
 :root{
   --ink:#1c2430; --ink-2:#3d4654; --ink-3:#6b7280;
   --paper:#ffffff; --paper-2:#eef3f8; --line:#d9dde3; --table:#e3e9ef;
   --nav:#2b5da0; --nav-2:#1d4377; --flag:#41b6e6; --star:#e4002b;
   --good:#1f7a45; --warn:#a8641b; --bad:#b4232c;
-  --f-display:"Big Shoulders Display","Arial Narrow",sans-serif;
-  --f-body:"Public Sans","Helvetica Neue",Arial,sans-serif;
-  --f-serif:"Source Serif 4",Georgia,serif;
+  --f-display:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  --f-serif:"Instrument Sans",system-ui,-apple-system,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -122,18 +123,27 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
   td .what{display:none}
 }
 @media (prefers-reduced-motion:no-preference){ .meter .fill{transition:width .8s ease-out} }
+
+/* Shape Chicago shared header (shape/shape.css); this page scrolls, so the header sits in the flow */
+.sc-head{position:relative !important}
+@media (max-width:640px){ .sc-head .sc-r{display:none} }
+.mast .t b,.hero h1,h2,.step .n,.fact b{font-weight:600 !important;letter-spacing:-.02em !important}
+.fan{background:none;color:var(--ink-3)}
 </style>
 </head>
 <body>
-<div class="stripes" aria-hidden="true"></div>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/" aria-current="page">Tracker</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span><a class="sc-btn" href="#method" style="display:inline-flex;align-items:center;text-decoration:none">How we count</a></div>
+</header>
 <header class="mast">
   <div class="wrap">
-    <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
-    <div class="t"><b>Chicago Housing Tracker</b><span>From Fix Chicago Housing</span></div>
-    <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a><a href="/">Fix Chicago Housing</a></nav>
+    <div class="t"><b>Chicago Housing Tracker</b></div>
+    <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a></nav>
   </div>
 </header>
-<div class="fan"><div class="wrap">Not affiliated with the City of Chicago. Built from the city's public permit and legislation data.</div></div>
+<div class="fan"><div class="wrap">Built from the city's public permit and legislation data.</div></div>
 
 <main id="app">
   <div class="hero"><div class="wrap"><h1>Loading the city's permits…</h1></div></div>
@@ -141,7 +151,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 <div class="tip" id="tip"></div>
 
 <footer><div class="wrap">
-  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/">Try Fix Chicago Housing</a>.</p>
+  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>.</p>
 </div></footer>
 
 <script>
