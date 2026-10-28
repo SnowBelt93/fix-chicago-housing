@@ -130,7 +130,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
   <div class="wrap">
     <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
     <div class="t"><b>Chicago Housing Tracker</b><span>From Fix Chicago Housing</span></div>
-    <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a><a href="/">Play the game</a></nav>
+    <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a><a href="/">Fix Chicago Housing</a></nav>
   </div>
 </header>
 <div class="fan"><div class="wrap">Not affiliated with the City of Chicago. Built from the city's public permit and legislation data.</div></div>
@@ -141,7 +141,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 <div class="tip" id="tip"></div>
 
 <footer><div class="wrap">
-  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/">Play Fix Chicago Housing</a>.</p>
+  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/">Try Fix Chicago Housing</a>.</p>
 </div></footer>
 
 <script>
@@ -232,7 +232,7 @@ function render(D){
       <li><strong>Homes are gross, not net.</strong> A two-flat torn down to build a single-family house still counts as one new home here; demolitions aren't subtracted.</li>
       <li><strong>Some descriptions don't say how many homes.</strong> ${fmt(D.unknown_recent)} housing permits since ${now.year - 3} gave no count and aren't included.</li>
       <li><strong>Office-to-residential conversions and big rehabs</strong> use renovation permits, not new-construction permits, so they aren't counted yet.</li>
-      <li><strong>The goal</strong> starts from the game's normal mode: Chicago's share (32.7%) of Up for Growth's estimate of the metro shortage, ${fmt(G.gap_now)} homes, which grows ${fmt(G.gap_growth)} a year if the city keeps building at its current pace. The tracker takes that pace from its own count, the ${fmt(G.built_anyway)} homes permitted in ${G.base_year}. So stopping the gap from growing takes ${fmt(G.built_anyway)} + ${fmt(G.gap_growth)} = ${fmt(G.hold)} homes a year, and closing it by 2041 adds ${fmt(G.gap_now)} ÷ 15 for ${fmt(G.close)} a year. (The game uses The Real Deal's ~4,900 approvals for 2025, which counts approvals rather than permits.)</li>
+      <li><strong>The goal</strong> starts from Fix Chicago Housing's normal mode: Chicago's share (32.7%) of Up for Growth's estimate of the metro shortage, ${fmt(G.gap_now)} homes, which grows ${fmt(G.gap_growth)} a year if the city keeps building at its current pace. The tracker takes that pace from its own count, the ${fmt(G.built_anyway)} homes permitted in ${G.base_year}. So stopping the gap from growing takes ${fmt(G.built_anyway)} + ${fmt(G.gap_growth)} = ${fmt(G.hold)} homes a year, and closing it by 2041 adds ${fmt(G.gap_now)} ÷ 15 for ${fmt(G.close)} a year.</li>
     </ul>
     <h2 style="font-size:22px;margin-top:26px">Sources</h2>
     <ul class="sources">
@@ -240,7 +240,7 @@ function render(D){
       <li><a href="https://api.chicityclerkelms.chicago.gov/swagger.json" target="_blank" rel="noopener">Office of the City Clerk, Legislation API</a> (zoning map amendments and their applications)</li>
       <li><a href="https://www.census.gov/construction/bps/" target="_blank" rel="noopener">U.S. Census Bureau, Building Permits Survey</a> (accuracy check, annual totals for Chicago)</li>
       <li><a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, Housing Underproduction in the U.S., 2024</a> (shortage)</li>
-      <li><a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">The Real Deal Data, 2026</a> (approvals the game uses, for comparison)</li>
+      <li><a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">The Real Deal Data, 2026</a> (approvals, for comparison)</li>
       <li>Code and method: <a href="https://github.com/SnowBelt93/fix-chicago-housing/tree/main/tools/tracker" target="_blank" rel="noopener">tools/tracker on GitHub</a></li>
     </ul>
   </div></section>`;
