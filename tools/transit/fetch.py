@@ -358,6 +358,24 @@ def osm():
     log('osm', {k: len(v) for k, v in out.items()})
 
 
+def future():
+    # projections for CO2 in later years: EIA Annual Energy Outlook (grid by region, light-duty fleet) and NREL Cambium marginal rates
+    want = [('aeo_suptab_54_12.xlsx', ['https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_54.12.xlsx', 'https://www.eia.gov/Outlooks/Aeo/supplement/excel/suptab_54.12.xlsx']),
+            ('aeo_suptab_39.xlsx', ['https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_39.xlsx']),
+            ('aeo_suptab_40.xlsx', ['https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_40.xlsx']),
+            ('aeo_tab7.xlsx', ['https://www.eia.gov/outlooks/aeo/excel/aeotab7.xlsx', 'https://www.eia.gov/outlooks/aeo/excel/aeotab_7.xlsx']),
+            ('cambium23_lrmer_gea.xlsx', ['https://data.nlr.gov/system/files/230/1707947178-Cambium23_LRMER_GEAregions_0.xlsx',
+                                          'https://data.nrel.gov/system/files/230/1707947178-Cambium23_LRMER_GEAregions_0.xlsx'])]
+    for name, urls in want:
+        for url in urls:
+            try:
+                data = get(url)
+                open(os.path.join(OUT, name), 'wb').write(data)
+                SOURCES['files'][name] = {'url': url, 'bytes': len(data)}; log(name, len(data)); break
+            except Exception as e:
+                log(name, url, 'failed', repr(e))
+
+
 def cost_index():
     # FHWA National Highway Construction Cost Index (quarterly) and BLS CPI-U (annual), to put project costs in today's dollars
     for name, url in [('nhcci', 'https://data.transportation.gov/api/views/r94d-n4f9/rows.csv?accessType=DOWNLOAD'),
@@ -397,6 +415,8 @@ if __name__ == '__main__':
                 ntd_energy()
             elif s == 'osm':
                 osm()
+            elif s == 'future':
+                future()
             elif s == 'costs':
                 cost_index()
         except Exception as e:
