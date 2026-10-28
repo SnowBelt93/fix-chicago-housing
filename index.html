@@ -1181,6 +1181,13 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
   .hacts #reset{order:5;min-height:32px;padding:0 12px;font-size:13px}
   .hsep,.hrent,.hpace,.hbar #affLine,.hbar .load{display:none !important}
 .hbar h1.sr{position:absolute !important;margin:0}
+.intro .card{font-family:var(--sc-font);border-radius:20px}
+.intro .card :is(h2,p,span,b,button,div,li,a){font-family:var(--sc-font)}
+#intro .card h2{font:600 24px/1.2 var(--sc-font) !important;letter-spacing:-.02em;margin:0}
+#intro .gp .n{font-weight:600 !important;letter-spacing:-.02em}
+#intro .goalmath b{font-weight:600 !important}
+#intro .gp,#intro .goalmath,#intro .clip{border-radius:14px}
+
   .sc-head .sc-share{display:inline-block}
   .sc-head .sc-btn{padding:0 11px}
   .sheet{border-radius:22px 22px 0 0 !important;border:0 !important;box-shadow:0 -6px 24px rgba(20,28,40,.12) !important}
@@ -1564,12 +1571,13 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 
   <div class="intro" id="intro" hidden>
     <div class="card" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+      <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <a class="clip" href="https://www.axios.com/local/chicago/2025/10/22/chicago-rent-35-percent-increase-post-pandemic" target="_blank" rel="noopener">
         <span class="src">Axios Chicago · Oct 22, 2025</span>
         <b>Rent in Chicago is rising faster than in other major cities</b>
         <span class="sub">Up 35% since before the pandemic, per Zillow. Your job: build enough homes to stop it.</span>
       </a>
-      <div class="eyebrow">Pick your goal for 2041</div>
+      <div class="thead"><div class="eyebrow">Pick your goal for 2041</div><button type="button" class="ib" id="introInfo" aria-label="Why these goals, and why hard mode">i</button></div>
       <div class="goalpick" role="radiogroup" aria-label="Goal">
         <button type="button" class="gp" id="introNormal" role="radio" aria-checked="true"><b>Normal</b><span class="n">97,078 homes</span><span>Chicago builds its share of the region's shortage</span></button>
         <button type="button" class="gp hard" id="introHard" role="radio" aria-checked="false"><b>Hard mode</b><span class="n">297,087 homes</span><span>Chicago builds the whole region's shortage</span></button>
@@ -1584,14 +1592,10 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
         <div class="op">+</div>
         <div><b>131,400</b><span>more as the gap grows ~8,760 a year for 15 years (Zillow), while the suburbs just keep today's pace</span></div>
       </div>
+      <div class="tinfo" id="introWhy">
       <p class="small whyhard"><b>Why hard mode?</b> Chicago had 3,620,962 people in 1950 (<a href="https://www.census.gov/programs-surveys/decennial-census/decade/decennial-facts.1950.html" target="_blank" rel="noopener">Census</a>) and 2,746,388 in 2020 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/POP010220" target="_blank" rel="noopener">Census</a>): about 875,000 fewer people paying for streets, pipes, schools and L lines built for a bigger city. Growing back spreads those costs over more taxpayers, helps close an $882 million budget gap (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>) and fills trains and buses. Hard mode puts Chicago back at the center of the region's growth.</p>
-      <p class="small" style="margin:0">Either way, that's on top of the ~3,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family homes or two-flats only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
-      <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
-      <ol>
-        <li>Start by letting taller buildings go up near the L. More tools unlock as you go.</li>
-        <li>Flip on real policies Chicago is fighting about, from Airbnb limits to coach houses.</li>
-        <li>Hit "Simulate 15 years," then share your plan and brag.</li>
-      </ol>
+      <p class="small">Either way, that's on top of the ~3,900 homes a year Chicago already builds. Rents climb 3.4% a year (CoStar), and 41% of the city is zoned for single-family homes or two-flats only (Metropolitan Planning Council). Sources are one tap away the whole game.</p>
+      </div>
       <div class="row"><button class="btn quiet" id="introAll" type="button">I know this stuff, unlock everything</button><button class="btn primary" id="introGo" type="button">Start building</button></div>
     </div>
   </div>
@@ -4300,6 +4304,7 @@ setLook("model");
   $("introNormal").addEventListener("click", () => introGoal(false));
   $("introHard").addEventListener("click", () => introGoal(true));
   syncIntroGoal();
+  $("introInfo").addEventListener("click", () => openInfo("Why these goals", $("introWhy")));
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
 })();
 // ---------------- Shape Chicago: info pop-ups, mode switch, header buttons ----------------
