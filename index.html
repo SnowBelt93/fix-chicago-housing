@@ -13,7 +13,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e4002b' d='M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
 <style>
 /* Layout: full-bleed 3D model of the city; civic goal meter on top, tool sheet at the bottom on phones / left rail on desktop.
    Default look "City Hall": Chicago flag blue + red six-point stars, city-website blue bands, condensed Big Shoulders headlines, square corners.
@@ -1053,6 +1054,152 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .hoodcard .hbt.seven .tier em{font-size:12px}
 }
 @media (min-width:860px) and (max-width:1169px){ .hoodcard .hbt.seven{grid-template-columns:repeat(4,minmax(0,1fr))} }
+
+/* ---------- Shape Chicago layout (shared with /transit/; tokens and header in /shape/shape.css) ----------
+   Header + metrics bar across the top, a floating options panel on the left, the map everywhere else.
+   Explanations live behind (i) buttons (infoize() moves them into hidden .tinfo blocks). */
+html,body{background:var(--sc-map,#eef0ec) !important}
+.fanline{margin:0;padding:0;border:0}
+.hbar{gap:20px;padding:0 20px 0 18px}
+.hbar .load{position:absolute;right:20px;bottom:3px;font:500 10.5px var(--sc-font);color:var(--sc-faint)}
+.hbar .load[hidden]{display:none}
+.hbar .grade{margin:0;flex:0 0 46px;width:46px;height:46px;font:700 18px/1 var(--sc-font);transform:none}
+.hbar .grade[data-g="A+"]{font-size:15px}
+.hscore{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 14px;flex:0 1 430px;min-width:300px}
+.hl1{display:flex;align-items:baseline;gap:8px;grid-column:1 / 3;min-width:0}
+.hbar .big{font:600 26px/1 var(--sc-font);letter-spacing:-.02em;color:var(--sc-ink);font-variant-numeric:tabular-nums}
+.hlbl{font-size:13px;color:var(--sc-mute);white-space:nowrap}
+#goalBtn{display:inline;margin:0;font:400 13px var(--sc-font);color:var(--sc-mute);text-decoration:none;white-space:nowrap}
+#goalBtn b{color:var(--sc-ink)}
+body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
+.hl1 .ib{align-self:center;margin-left:-2px}
+.hbar .scale{margin:0;height:auto;grid-column:1}
+.hbar .scale .bar{height:8px;border-radius:4px;background:#e9ecef;overflow:hidden}
+.hbar .scale .bar .z{background:var(--sc-navy)}
+.hbar .scale .ticks i{top:-2px;height:12px;background:var(--sc-ink2);opacity:.55}
+.hbar .scale .tlbls{display:none}
+.hgo{grid-column:2;font-size:12.5px;color:var(--sc-mute);white-space:nowrap}
+.hgo b{color:var(--sc-ink);font-weight:600}
+.hstat b{font-size:20px}
+.hacts{display:flex;align-items:center;gap:8px}
+.hbar .play{flex-direction:column;align-items:stretch;gap:4px;margin:0 !important;padding:0 !important;flex:none;width:208px}
+.hbar .play button{height:40px;border-radius:20px;background:var(--sc-navy);font:600 14.5px var(--sc-font);letter-spacing:0;gap:8px;padding:0 16px}
+.hbar .play button:hover{background:var(--sc-navy2)}
+.hbar .play button svg{width:14px;height:14px}
+.hbar .tline{gap:6px;font:500 11px var(--sc-font);color:var(--sc-mute)}
+.hbar .tline .yr{font:600 11px var(--sc-font)}
+.hbar .tline input{flex:1;min-width:0;height:14px}
+#hardBtn{display:inline-flex !important;margin:0 4px 0 -2px}
+@media (max-width:1380px){ .hpace{display:none} }
+@media (max-width:1180px){ .hbar #affLine{display:none !important} .hscore{flex-basis:340px;min-width:260px} }
+@media (min-width:860px) and (max-width:1060px){ .hbar .hstat{display:none} .hsep{display:none} }
+
+/* options panel */
+.sheet,.sheet.min{font-family:var(--sc-font)}
+.sheet :is(h1,h2,h3,h4,p,span,b,em,small,button,select,label,div,summary,a,input,li,strong){font-family:var(--sc-font) !important}
+.widebtn,#expandAll{display:none !important}
+.tab[data-pane="share"],.tab[data-pane="math"]{display:none !important}
+.tabs{border:0 !important;gap:4px !important;padding:14px 14px 10px !important;justify-content:flex-start !important;overflow-x:auto}
+.tab{border:0 !important;margin:0 !important;padding:8px 12px !important;border-radius:16px;font:600 14.5px var(--sc-font) !important;color:var(--sc-ink2) !important;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--sc-ink);color:#fff !important}
+.tab[aria-selected="true"] .n{color:rgba(255,255,255,.7) !important}
+.tab .n{font:500 13px var(--sc-font) !important}
+.pane{padding:4px 14px 20px !important;gap:10px !important}
+.pane p{color:var(--sc-ink2)}
+.tool{border:1px solid var(--sc-line);border-radius:16px;padding:12px 14px 14px !important;gap:10px !important;background:#fff}
+.tool[hidden]{display:none !important}
+.thead{display:flex;align-items:center;gap:8px;min-width:0}
+.thead > :first-child{flex:1;min-width:0}
+.tool h3,.pane h2,.dockh{font:600 16.5px/1.3 var(--sc-font) !important;letter-spacing:-.01em;color:var(--sc-ink)}
+.pane h2.dockh,.pane h2{font-size:18px !important}
+.tool > p:not(.small),.dockh + p{font:400 14px/1.5 var(--sc-font) !important}
+.pane .small,.pane p.small{font-size:13px;line-height:1.45}
+.tinfo{display:none !important}
+.eyebrow{font:600 13px var(--sc-font) !important;color:var(--sc-mute) !important}
+.tier{border-radius:10px !important;border:0 !important;background:var(--sc-seg) !important;padding:9px 2px 8px !important;gap:3px !important;box-shadow:none !important;color:var(--sc-ink)}
+.tier em{font:600 12.5px/1.15 var(--sc-font) !important}
+.tier small{font:500 11px var(--sc-font) !important;color:var(--sc-mute) !important}
+.tier .sw{height:16px}
+.tier[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
+.tier[aria-pressed="true"] small{color:#d6e3f5 !important}
+.tiers{gap:5px !important}
+.seg{border-radius:12px !important;border:0 !important;background:var(--sc-seg);padding:3px;gap:2px}
+.seg button{border:0 !important;border-radius:10px;min-height:34px;font:600 13px var(--sc-font) !important;background:transparent}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--sc-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.seg::before{display:none !important}
+.btn{border-radius:18px !important;font:600 13.5px var(--sc-font) !important}
+.btn.primary{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important}
+.policy{border:1px solid var(--sc-line) !important;border-radius:16px !important;padding:12px 14px !important;background:#fff !important;margin-bottom:8px}
+.policy .rank{font:600 15px/1.3 var(--sc-font) !important;color:var(--sc-faint) !important}
+.policy .t{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.policy h3{font:600 15px/1.3 var(--sc-font) !important}
+.policy .hnum b{font:600 19px/1.1 var(--sc-font) !important;letter-spacing:-.01em}
+.policy.neg .hnum b{color:var(--sc-hard)}
+.policy .status{font:600 11.5px var(--sc-font) !important;border-radius:10px;padding:2px 8px;transform:none !important}
+.policy .gain{font-size:12.5px;color:var(--sc-mute)}
+.policy .more{display:none !important}
+.policy .gain.dup{display:none}
+.pgroup{border:0 !important}
+.pgroup > summary .eyebrow{font:600 15px/1.3 var(--sc-font) !important;color:var(--sc-ink) !important}
+.pgroup > summary .ib{margin-left:6px}
+.hardmode{border-radius:16px}
+.hardmode h3{font:600 15px/1.3 var(--sc-font) !important}
+.target{border-radius:14px !important}
+.fact b{font-family:var(--sc-font) !important;font-weight:600 !important;letter-spacing:-.01em}
+.mapctl,.legend{border-radius:16px !important;border:0 !important;box-shadow:var(--sc-shadow2) !important;overflow:hidden}
+.legend{font-family:var(--sc-font)}
+.legend :is(b,span,label,button,div){font-family:var(--sc-font)}
+
+/* info pop-up content copied from .tinfo */
+dialog.sc-info .small{font-size:13.5px;color:var(--sc-mute)}
+dialog.sc-info .src{display:block;margin-top:8px;font-size:13.5px;color:var(--sc-mute)}
+dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
+
+@media (min-width:860px){
+  .sheet,.sheet.min{left:20px !important;top:calc(var(--hudH, 137px) + 16px) !important;bottom:20px !important;width:380px !important;height:auto !important;border:0 !important;border-radius:20px !important;box-shadow:var(--sc-shadow) !important;overflow:hidden;padding:0 !important}
+  body.wide .sheet{left:20px !important;width:380px !important}
+  .legend,.sheet.min ~ .legend{top:calc(var(--hudH, 137px) + 16px);bottom:auto !important;right:20px !important;max-height:calc(100% - var(--hudH, 137px) - 56px);overflow:auto}
+  .mapctl{top:auto !important;bottom:44px;right:20px !important}
+  .credit,.sheet.min ~ .credit{left:416px !important;bottom:8px !important}
+  .hoodbanner,.sheet.min ~ .hoodbanner{left:416px !important;bottom:30px !important}
+  .comment,.ticker{left:calc(400px + (100% - 400px) / 2) !important;top:calc(var(--hudH, 137px) + 16px) !important}
+  .grab,.sheetdown,.secbtns{display:none !important}
+}
+
+/* phones: header, a two-row metrics strip, the bottom sheet with Simulate pinned */
+@media (max-width:859px){
+  .hbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px 9px;min-height:0}
+  .hbar #grade{order:1;flex:0 0 40px !important;width:40px !important;height:40px !important;font-size:15px !important}
+  .hscore{order:2;flex:1 1 calc(100% - 52px);min-width:0;gap:4px 10px}
+  .hbar .big{font-size:20px}
+  .hlbl{font-size:12px}
+  #goalBtn{font-size:12px}
+  .hgo{font-size:12px}
+  .hacts{display:contents}
+  .hacts .sc-seg{order:3;font-size:12.5px} .hacts .sc-seg button{padding:6px 10px}
+  #hardBtn{order:4;margin:0 auto 0 0}
+  .hacts #reset{order:5;min-height:32px;padding:0 12px;font-size:13px}
+  .hsep,.hrent,.hpace,.hbar #affLine,.hbar .load{display:none !important}
+.hbar h1.sr{position:absolute !important;margin:0}
+  .sc-head .sc-share{display:inline-block}
+  .sc-head .sc-btn{padding:0 11px}
+  .sheet{border-radius:22px 22px 0 0 !important;border:0 !important;box-shadow:0 -6px 24px rgba(20,28,40,.12) !important}
+  .sheetfoot .play button{background:var(--sc-navy) !important;border-radius:25px !important;font:600 16px var(--sc-font) !important;letter-spacing:0 !important}
+  .tabs{padding:6px 12px 8px !important}
+  .secbtns button{font-family:var(--sc-font) !important;border-radius:14px}
+}
+@media (max-width:400px){ .hlbl{display:none} }
+.hbar .load{display:none !important}
+.policy .t{display:block}
+.policy .t h3{display:inline}
+.policy .t .ib{margin:-2px 0 0 6px;width:20px;height:20px;font-size:11px}
+.policy .t .status{display:table;margin-top:5px}
+.tool.locked{display:flex;flex-direction:column;gap:4px !important;padding:12px 14px !important}
+.tool.locked > :not(.lockmsg):not(.thead){display:none !important}
+.tool.locked .thead .ib{display:none}
+.tool.locked .lockmsg{order:2;background:none !important;border:0 !important;padding:0 !important;margin:0 !important;font:500 12.5px var(--sc-font) !important;color:var(--sc-mute) !important}
+#policyWrap.locked > :not(.lockmsg):not(.group){display:none !important}
+
 </style>
 
 <div id="app">
@@ -1060,32 +1207,32 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   <div id="map" aria-label="3D map of Chicago buildings"></div>
   <div class="loading" id="loading">Loading 485,000 Chicago buildings…</div>
 
-  <section class="hud" id="hud" aria-live="polite">
-    <div class="stripes" aria-hidden="true"><i></i><i></i></div>
-    <div class="brand">
-      <svg class="mark" viewBox="0 0 46 30" aria-hidden="true"><rect x="0.5" y="0.5" width="45" height="29" fill="#fff" stroke="#c9d0d8"/><rect x="1" y="5" width="44" height="5" fill="#41b6e6"/><rect x="1" y="20" width="44" height="5" fill="#41b6e6"/><g fill="#e4002b"><path transform="translate(4.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(14.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(24.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/><path transform="translate(34.5 11) scale(0.33)" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></g></svg>
-      <h1>Fix Chicago Housing</h1><span class="load" id="loadTxt">0 / 77 neighborhoods</span><button class="look" id="lookBtn" type="button">Sources</button>
-    </div>
-    <p class="fanline">Not affiliated with the City of Chicago.</p>
-    <div class="scoreband">
-      <div class="score">
-        <span class="big" id="homes">0</span>
-        <div class="smeta"><span id="homesLbl">new homes by 2041</span><span class="sgo"><b id="short">–</b> <span id="shortLbl">to go</span></span></div>
-        <span class="grade" id="grade" role="img" aria-label="Grade" data-g="–">–</span>
-      </div>
+  <header class="sc-head">
+    <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+      <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/" aria-current="page">Housing</a><a href="/transit/">Transit</a></nav></div>
+    <div class="sc-r"><span class="sc-fan fanline">Not affiliated with the City of Chicago.</span><button class="sc-btn" id="lookBtn" type="button">Sources</button><button class="sc-btn sc-share" id="shareTop" type="button">Share</button></div>
+  </header>
+  <section class="sc-bar hbar" id="hud" aria-live="polite">
+    <h1 class="sr">Fix Chicago Housing</h1><span class="load" id="loadTxt">0 / 77 neighborhoods</span>
+    <span class="grade" id="grade" role="img" aria-label="Grade" data-g="–">–</span>
+    <div class="hscore">
+      <div class="hl1"><span class="big" id="homes">0</span><span class="hlbl" id="homesLbl">new homes by 2041</span><button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap to change the goal."><span id="goalLbl">Goal:</span> <b id="goalNum">97,078</b></button><button type="button" class="ib" id="goalInfo" aria-label="About the goal">i</button></div>
       <div class="scale" id="scale">
         <div class="bar" id="bar"><i class="z"></i><i class="o"></i><i class="a"></i><i class="s"></i><i class="l"></i><i class="v"></i><i class="h"></i><i class="m"></i><i class="i"></i></div>
         <div class="ticks" aria-hidden="true"><i style="--at:.25"></i><i style="--at:.5"></i><i style="--at:.7"></i><i style="--at:.85"></i><i style="--at:1"></i></div>
         <div class="tlbls" aria-hidden="true"><span style="--at:.25">D</span><span style="--at:.5">C</span><span style="--at:.7">B</span><span style="--at:.85">A</span><span style="--at:1">A+</span></div>
       </div>
-      <div class="goalrow"><button class="of" id="goalBtn" type="button" title="Today&#39;s shortage plus 15 years of growth. Tap to change the goal.">
-        <span id="goalLbl">Goal:</span> <b id="goalNum">97,078</b> homes by 2041</button><button type="button" class="hardbtn" id="hardBtn">Try hard mode</button></div>
-      <div class="keys" id="keys"></div>
+      <span class="hgo"><b id="short">–</b> <span id="shortLbl">to go</span></span>
+      <div class="keys" id="keys" hidden></div>
     </div>
-    <div class="stats">
-      <div class="stat"><b id="rent">–</b><span id="rentLbl">median rent in 2041</span></div>
-      <div class="stat" id="affLine" hidden><b id="affNum">0</b><span>of them affordable (rent-restricted)</span></div>
-      <div class="stat"><b id="pace">–</b><span id="paceLbl">built anyway at today's pace</span></div>
+    <span class="sc-sep hsep"></span>
+    <div class="sc-m hstat hrent"><span id="rentLbl">median rent in 2041</span><b id="rent">–</b></div>
+    <div class="sc-m hstat" id="affLine" hidden><span>affordable</span><b id="affNum">0</b></div>
+    <div class="sc-m hstat hpace"><span id="paceLbl">built anyway at today's pace</span><b id="pace">–</b></div>
+    <div class="sc-push hacts">
+      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard mode</button></div>
+      <button type="button" class="ib" id="hardBtn" aria-label="What's hard mode?">i</button>
+      <button class="sc-btn" id="reset" type="button">Start over</button>
     </div>
     <div class="play" id="playRow">
       <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate 15 years</span></button>
@@ -1161,7 +1308,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
           <p class="small">Today's pipeline is about 4M sq ft, roughly 10% of the convertible space, and it took city subsidies (LaSalle Street) and several years. Half is a stretch: conversions cost about as much as building new.</p>
           <div class="seg" id="officeSeg"></div>
         </div>
-        <div class="row"><button class="btn quiet" id="reset" type="button">Start over</button><button class="btn quiet" id="unlockAll" type="button">Unlock all tools</button></div>
+        <div class="row"><button class="btn quiet" id="unlockAll" type="button">Unlock all tools</button></div>
       </div>
 
       <!-- Policies -->
@@ -1412,6 +1559,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   <div class="tip" id="tip" role="dialog" aria-live="polite" hidden><span class="step" id="tipStep"></span><b id="tipT"></b><p id="tipB"></p><div class="row"><button type="button" class="btn quiet" id="tipSkip">Skip</button><button type="button" class="btn primary" id="tipNext">Next</button></div></div>
   <div class="comment" id="comment" aria-live="polite" hidden></div>
   <div class="toast" id="toast" role="status"></div>
+  <dialog class="sc-info" id="infoDlg"><div class="sc-ibody" id="infoBody"></div></dialog>
   <canvas id="fx" aria-hidden="true"></canvas>
 
   <div class="intro" id="intro" hidden>
@@ -2273,6 +2421,7 @@ function renderTargets(){
   { const a = document.createElement("a"); a.href = "https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "TRD Data"; const c = document.createElement("a"); c.href = "https://www.census.gov/construction/bps/"; c.target = "_blank"; c.rel = "noopener"; c.textContent = "Census"; hard.querySelector("p").append(a, ", ", c, ")."); }
   [0, 1, 2].forEach(i => btn(i, hard));
   el.appendChild(hard);
+  infoizeBox(hard, hard.querySelector("h3"), hard.querySelectorAll(":scope > p:not(.pickest)"), "Hard mode");
   const eq = $("goalEq"); if (eq) eq.textContent = "Your goal: " + fmt(target()) + " missing today + " + fmt(gapGrowth() * YEARS) + " more by 2041 (" + fmt(gapGrowth()) + " a year × 15) = " + fmt(needed()) + " new homes, on top of today's building pace.";
 }
 
@@ -2376,13 +2525,11 @@ function buildPolicies(){
   POLICIES.forEach(P => {
     const el = P.group === "else" ? $("policiesElse") : P.group === "worse" ? $("policiesWorse") : $("policies");
     const d = document.createElement("div"); d.className = "policy" + (P.group === "worse" ? " worse" : ""); d.id = "pol-" + P.key;
-    d.innerHTML = '<span class="rank" title="Ranked by homes added with your current map"></span><div class="top"><div class="t"><h3></h3><span class="status"></span></div></div><div class="hnum"><b></b><small>homes</small></div><div class="vote"><span class="ptally" hidden></span></div><span class="gain"></span><button type="button" class="more-btn" aria-expanded="false">What happened and sources</button><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
+    d.innerHTML = '<span class="rank" title="Ranked by homes added with your current map"></span><div class="top"><div class="t"><h3></h3><button type="button" class="ib" aria-label="What happened and sources">i</button><span class="status"></span></div></div><div class="hnum"><b></b><small>homes</small></div><div class="vote"><span class="ptally" hidden></span></div><span class="gain"></span><div class="more" hidden><p class="what"></p><p class="model small"></p><span class="src"></span></div>';
     { const gn = d.querySelector(".gain"), hn = d.querySelector(".hnum b");   // the big number repeats the homes figure from the line below it
-      const sync = () => { const t = gn.textContent, m = t.match(/([+−-])\s?([\d,]+)/), cost = /cost/i.test(t); hn.textContent = m ? (cost ? "−" : m[1] === "-" ? "−" : m[1]) + m[2] : (/nothing|today's setting/i.test(t) ? "0" : "…"); d.classList.toggle("neg", !!m && (cost || m[1] !== "+")); };
+      const sync = () => { const t = gn.textContent, m = t.match(/([+−-])\s?([\d,]+)/), cost = /cost/i.test(t); hn.textContent = m ? (cost ? "−" : m[1] === "-" ? "−" : m[1]) + m[2] : (/nothing|today's setting/i.test(t) ? "0" : "…"); gn.classList.toggle("dup", !!m && !/,|\(|because/.test(t.replace(/[\d,]+/g, ""))); d.classList.toggle("neg", !!m && (cost || m[1] !== "+")); };
       new MutationObserver(sync).observe(gn, {childList: true, characterData: true, subtree: true}); }
-    const mb = d.querySelector(".more-btn"), more = d.querySelector(".more");
-    mb.setAttribute("aria-controls", (more.id = "more-" + P.key));
-    mb.addEventListener("click", () => { const o = more.hidden; more.hidden = !o; mb.setAttribute("aria-expanded", String(o)); });
+    { const more = d.querySelector(".more"); more.id = "more-" + P.key; d.querySelector(".t .ib").addEventListener("click", () => openInfo(P.title, more)); }
     d.querySelector("h3").textContent = P.title;
     const s = d.querySelector(".status"); s.textContent = P.status[1]; s.classList.add(P.status[0]);
     d.querySelector(".what").textContent = P.what;
@@ -2785,7 +2932,7 @@ let commentNo = 411;   // public comments are numbered like a clerk's record
 function showCommentNow(line, by, town){
   const box = $("comment");
   if (liveCards().some(c => c.dataset.line === line)) return;
-  box.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+  box.style.setProperty("--hud-h", ($("hud").getBoundingClientRect().bottom + 10) + "px");
   const card = document.createElement("div"); card.className = "cbox"; card.dataset.line = line;
   card.innerHTML = '<div class="cmeta"><b></b><span></span></div><q></q><button type="button" class="ans" hidden>How to answer this</button><button type="button" class="cx" aria-label="Close comment"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12"/></svg></button>';
   const now = new Date(), hh = now.getHours() % 12 || 12, mm = String(now.getMinutes()).padStart(2, "0");
@@ -2976,7 +3123,7 @@ $("lgIllChk").addEventListener("change", () => { if ($("lgIllChk").checked !== s
 { const mq = matchMedia("(max-width:859px)"), place = () => (mq.matches ? $("sheetFoot") : $("hud")).appendChild($("playRow"));
   place(); mq.addEventListener ? mq.addEventListener("change", place) : mq.addListener(place); }
 // ---------------- map ----------------
-{ const hud = $("hud"), setH = () => document.documentElement.style.setProperty("--hudH", hud.offsetHeight + "px");
+{ const hud = $("hud"), setH = () => document.documentElement.style.setProperty("--hudH", Math.round(hud.getBoundingClientRect().bottom) + "px");
   setH(); if (window.ResizeObserver) new ResizeObserver(setH).observe(hud); else addEventListener("resize", setH); }
 const zoomBand = (z) => z >= 13.2 ? 2 : z >= 11.8 ? 1 : 0;
 let zoomBandNow = 0;
@@ -3017,6 +3164,7 @@ const deckgl = new deck.Deck({
   },
   onClick: (info) => { if (info.layer && info.layer.id === "areas" && info.object && isOpen("hoods")) selectArea(info.object.properties.num, true); },
 });
+if (/[?&]qa/.test(location.search)) window.__deck = deckgl;
 // ---------- basemap: OpenFreeMap vector tiles (rivers, parks, suburbs, roads) drawn under the deck.gl city ----------
 const BASEMAP_OK = location.protocol.startsWith("http") && !/claude|anthropic|usercontent/.test(location.hostname) && !/[?&]basemap=0/.test(location.search);
 let bmap = null, USING_BASEMAP = false;
@@ -3307,7 +3455,7 @@ function render(){
   const tv = totals(true), tf = totals(false), goal = needed();
   if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
   $("goalNum").textContent = fmt(goal);
-  { const hard = plan.g !== 3; $("goalLbl").textContent = hard ? "Hard mode:" : "Goal:"; document.body.classList.toggle("hard", hard); $("hardBtn").textContent = hard ? "What's hard mode?" : "Try hard mode"; }
+  { const hard = plan.g !== 3; $("goalLbl").textContent = hard ? "Hard mode:" : "Goal:"; document.body.classList.toggle("hard", hard); $("modeNormal").setAttribute("aria-checked", String(!hard)); $("modeHard").setAttribute("aria-checked", String(hard)); }
   const yrLabel = START + year;
   const short = target() + gapGrowth() * year - tv.total;
   $("short").textContent = short > 0 ? fmt(short) : "";
@@ -3472,7 +3620,7 @@ new MutationObserver(ms => { const done = new Set(); ms.forEach(m => { const seg
   .observe(document.body, {subtree: true, attributes: true, attributeFilter: ["aria-pressed"]});
 function setWide(on){ document.body.classList.toggle("wide", on); $("wideBtn").setAttribute("aria-pressed", String(on)); $("wideBtn").textContent = on ? "⤡ Collapse" : "⤢"; $("wideBtn").title = on ? "Back to the sidebar" : "Expand the panel"; lsSet("fch-wide", on); }
 $("wideBtn").addEventListener("click", () => setWide(!document.body.classList.contains("wide")));
-setWide(!!lsGet("fch-wide", false));
+setWide(false);   // the shared Shape Chicago layout has one panel width
 // phones: the tool sheet has three heights: "open" (a tab's tools), "menu" (section buttons + Simulate) and "peek" (Simulate only)
 function syncSheet(){ const sh = $("sheet"); document.body.classList.toggle("sheetmin", sh.classList.contains("min")); document.body.classList.toggle("sheetpeek", sh.classList.contains("peek")); }
 const sheetNow = () => { const sh = $("sheet"); return sh.classList.contains("peek") ? "peek" : sh.classList.contains("min") ? "menu" : "open"; };
@@ -3493,7 +3641,7 @@ document.querySelectorAll("#secBtns button").forEach(b => b.addEventListener("cl
 if (!isWide()) sheetState("menu");   // phones start with the map in view
 $("lgToggle").addEventListener("click", () => { const o = $("legend").classList.toggle("open"); $("lgToggle").setAttribute("aria-expanded", String(o)); });
 $("goalBtn").addEventListener("click", () => { showTab("missions"); openSheet(); $("targetGroup").scrollIntoView({behavior: reduceMotion ? "auto" : "smooth"}); });
-$("hardBtn").addEventListener("click", () => { showTab("missions"); openSheet(); setTimeout(() => { const h = document.querySelector("#targets .hardmode"); if (h){ h.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block: "start"}); h.classList.remove("flash"); void h.offsetWidth; h.classList.add("flash"); } }, 60); });
+$("hardBtn").addEventListener("click", () => { const h = document.querySelector("#targets .hardmode"); openInfo("Hard mode", h ? h.querySelector(".tinfo") : null); });
 $("hbClose").addEventListener("click", () => { selected = null; $("hoodPick").value = ""; render(); });
 $("hoodPick").addEventListener("change", e => { if (e.target.value) selectArea(e.target.value); else { selected = null; render(); } });
 $("reset").addEventListener("click", () => { const g = plan.g; plan = blankPlan(); plan.g = g; recompute(); toast("Fresh start"); });
@@ -3673,7 +3821,7 @@ function planHeadlines(){
 }
 function showHeadline(h){
   const el = $("ticker");
-  el.style.setProperty("--hud-h", ($("hud").offsetHeight + 10) + "px");
+  el.style.setProperty("--hud-h", ($("hud").getBoundingClientRect().bottom + 10) + "px");
   $("tkYear").textContent = (START + h.y) + " · Chicago"; $("tkText").textContent = h.t;
   el.hidden = false;
   const tx = isWide() ? "translateX(-50%) " : "";
@@ -4154,6 +4302,43 @@ setLook("model");
   syncIntroGoal();
   $("introAll").addEventListener("click", () => { unlockAll(true); closeIntro(); render(); });
 })();
+// ---------------- Shape Chicago: info pop-ups, mode switch, header buttons ----------------
+function openInfo(title, src){
+  const dlg = $("infoDlg"), body = $("infoBody"); body.innerHTML = "";
+  const x = document.createElement("button"); x.type = "button"; x.className = "sc-btn sc-x"; x.textContent = "Close"; x.addEventListener("click", () => dlg.close());
+  const h = document.createElement("h2"); h.textContent = title; body.append(x, h);
+  if (src){ const c = src.cloneNode(true); c.hidden = false; c.classList.remove("tinfo", "more"); c.removeAttribute("style"); c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); c.removeAttribute("id"); body.append(c); }
+  if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute("open", "");
+  x.focus();
+}
+$("infoDlg").addEventListener("click", e => { if (e.target === $("infoDlg")) $("infoDlg").close(); });
+function infoizeBox(box, head, nodes, title){   // move explanation paragraphs into a hidden block, opened by an (i) beside the heading
+  nodes = [...nodes]; if (!head || !nodes.length || box.querySelector(":scope > .tinfo")) return;
+  const info = document.createElement("div"); info.className = "tinfo"; nodes.forEach(n => info.appendChild(n)); box.appendChild(info);
+  const ib = document.createElement("button"); ib.type = "button"; ib.className = "ib"; ib.textContent = "i";
+  const t = title || head.textContent.trim(); ib.setAttribute("aria-label", "About: " + t);
+  ib.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); openInfo(t, info); });
+  if (head.tagName === "SUMMARY"){ head.appendChild(ib); return; }
+  const row = document.createElement("div"); row.className = "thead"; head.replaceWith(row); row.append(head, ib);
+}
+document.querySelectorAll("#pane-zoning .tool").forEach(t => infoizeBox(t, t.querySelector(":scope > h3"), t.querySelectorAll(":scope > p")));
+{ const g = $("policyWrap").querySelector(":scope > .group"); infoizeBox(g, g.querySelector(".dockh"), g.querySelectorAll(":scope > p")); }
+document.querySelectorAll("#pane-policies .pgroup").forEach(d => { const inner = d.querySelector(":scope > .group"); if (inner) infoizeBox(d, d.querySelector("summary"), inner.querySelectorAll(":scope > p.small"), d.querySelector("summary .eyebrow").textContent); });
+document.querySelectorAll("#pane-missions > .group, #pane-impact > .group").forEach(g => { const h = g.querySelector(":scope > .eyebrow"); if (h) infoizeBox(g, h, g.querySelectorAll(":scope > p.small:not(.goaleq):not(#impBudget)"), h.textContent.replace(/·.*$/, "").trim()); });
+{ const g = $("impBudget").closest(".group"), h = g.querySelector(".thead .ib"); if (h) g.querySelector(".tinfo").prepend($("impBudget")); }
+$("goalInfo").addEventListener("click", () => { const box = document.createElement("div"); const tp = $("targetGroup").querySelector(".tinfo"); if (tp) box.append(...[...tp.children].map(n => n.cloneNode(true))); const eq = document.createElement("p"); eq.className = "goaleq"; eq.textContent = $("goalEq").textContent; box.append(eq); openInfo("Your goal", box); });
+let lastHard = +lsGet("fch-hardg", 0) || 0;
+function setMode(hard){
+  const g = hard ? lastHard : 3; if (plan.g === g) return;
+  if (!hard && plan.g !== 3) lastHard = plan.g;
+  plan.g = g; renderTargets(); render();
+}
+$("modeNormal").addEventListener("click", () => setMode(false));
+$("modeHard").addEventListener("click", () => setMode(true));
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#targets .target"); if (b && plan.g !== 3) { lastHard = plan.g; lsSet("fch-hardg", plan.g); } });
+$("shareTop").addEventListener("click", () => { showTab("share"); openSheet(); });
+
 boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load the map data. Reload to try again."; });
 })();
+
 </script>
