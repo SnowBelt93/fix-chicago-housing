@@ -57,6 +57,51 @@ aside#panel{position:fixed;left:20px;top:84px;bottom:20px;width:380px;background
 .mode .mc{font-size:13px;text-align:right;color:var(--ink2);line-height:1.3;font-weight:600}
 .mode.metra .ico{background:#e8ecf0}
 .mylines{display:flex;flex-direction:column;gap:6px}
+.drawcard{background:var(--ink);color:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.drawcard b{font-size:18px;font-weight:600}
+.drawcard .dmodes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.drawcard .dmodes button{display:flex;align-items:center;gap:8px;border:0;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-size:14px;font-weight:600;padding:9px 10px;text-align:left;min-height:44px}
+.drawcard .dmodes button:hover{background:rgba(255,255,255,.2)}
+.drawcard .dmodes svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8}
+.drawcard .dmodes small{display:block;font-weight:500;font-size:11.5px;opacity:.75}
+.gcards{display:flex;flex-direction:column;gap:8px}
+.gcard{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;width:100%}
+.gcard:hover{border-color:var(--line2);background:#fafbfc}
+.gcard .ico{width:40px;height:40px;border-radius:12px}
+.gcard .gt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.gcard .gt b{font-size:16px;font-weight:600}
+.gcard .gt span{font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gcard .gn{font-size:13px;color:var(--faint);white-space:nowrap}
+.gcard .gn em{font-style:normal;color:var(--green);font-weight:600}
+.minicards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.minicard{display:flex;flex-direction:column;gap:2px;text-align:left;border:0;border-radius:14px;background:var(--chip);padding:12px 14px;min-height:44px}
+.minicard b{font-size:15px;font-weight:600}
+.minicard span{font-size:12.5px;color:var(--mute)}
+.plist{display:flex;flex-direction:column}
+.prow{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef0f2}
+.prow:last-child{border-bottom:0}
+.prow .pt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left;background:none;border:0;padding:0}
+.prow .pt b{font-size:15.5px;font-weight:600}
+.prow .pt span{font-size:12.5px;color:var(--mute)}
+.prow .pt:hover b{text-decoration:underline}
+.sw{flex:none;width:46px;height:28px;border-radius:14px;border:0;background:var(--line2);position:relative;padding:0;transition:background .15s}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
+.sw[aria-checked="true"]{background:var(--ink)}
+.sw[aria-checked="true"]::after{transform:translateX(18px)}
+#planBar{position:fixed;left:420px;right:64px;bottom:20px;background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:12px 18px;display:flex;align-items:center;gap:22px;z-index:3;overflow-x:auto}
+body.drawing #planBar{display:none}
+#planBar .pb0{display:flex;flex-direction:column;gap:1px;padding-right:20px;border-right:1px solid var(--line);flex:none}
+#planBar .pb0 span{font-size:12.5px;color:var(--mute)}
+#planBar .pb0 b{font-size:15px;font-weight:600;white-space:nowrap}
+#planBar .pb0 button{font-size:12.5px;color:var(--focus);background:none;border:0;padding:0;text-align:left;text-decoration:underline}
+#planBar .pbs{display:flex;flex-direction:column;gap:1px;flex:none}
+#planBar .pbs b{font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
+#planBar .pbs span{font-size:12px;color:var(--mute);white-space:nowrap}
+#planBar .pbs.g b{color:var(--green)} #planBar .pbs.g span{color:var(--greenmute)}
+#planBar .pbe{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute)}
+#planBar .pbe b{color:var(--ink);font-weight:600;display:block}
+#planBar .pbe i{width:34px;height:34px;border-radius:50%;background:var(--seg);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px;flex:none}
+#planMini{display:none}
 .mylines h2,.sec{font-size:13px;font-weight:600;color:#4a5059;margin:0}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--chip);border:0;width:100%;text-align:left}
 .lrow .ico{width:32px;height:32px;border-radius:9px}
@@ -166,6 +211,14 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   #legend{right:12px;bottom:auto;top:112px}
   #hint{bottom:auto;top:116px}
   .maplibregl-ctrl-bottom-right{bottom:calc(var(--sheet,52vh) + 4px)}
+  #planBar{display:none}
+  #planMini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 14px 0;padding:10px 12px;border-radius:14px;background:var(--chip);flex:none}
+  #planMini.empty{display:flex;align-items:center;font-size:13px;color:var(--mute);gap:8px}
+  #planMini.hide{display:none}
+  #planMini div{display:flex;flex-direction:column}
+  #planMini b{font-size:17px;font-weight:600;white-space:nowrap}
+  #planMini span{font-size:11.5px;color:var(--mute);white-space:nowrap}
+  #planMini .g b{color:var(--green)}
   .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{display:none}   /* pinch to zoom on phones */
   .fan{display:none}
   .fan2{display:block !important}
@@ -219,19 +272,47 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 <aside id="panel" aria-label="Transit plan">
   <button class="grab" id="grab" type="button" aria-label="Resize panel"></button>
   <!-- start -->
+  <div id="planMini" aria-live="polite"></div>
   <section class="view on" id="vStart">
     <div class="vhead">
-      <h1>Draw a new line</h1>
-      <p>Pick a type, then tap the map to place stations.</p>
+      <h1>Plan Chicago's transit</h1>
+      <p>Switch on real proposals or draw your own line. Your plan's effects add up on the map.</p>
     </div>
     <div class="vbody">
-      <div class="modes" id="modeList"></div>
-      <div class="mylines" id="presetList"></div>
+      <div class="drawcard" id="drawCard"></div>
       <div class="mylines" id="myLines"></div>
-      <div class="cleanbox" id="cleanBox"></div>
-      <details class="cleanbox nita" id="nitaBox"></details>
+      <div class="mylines"><span class="sec">Real proposals</span><div class="gcards" id="groupCards"></div></div>
+      <div class="minicards">
+        <button type="button" class="minicard" id="cleanCard"><b>Cleaner transit</b><span>Electric buses and trains</span></button>
+        <button type="button" class="minicard" id="nitaCard"><b>NITA</b><span>The cuts it stopped</span></button>
+      </div>
       <p class="fan2">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</p>
     </div>
+  </section>
+  <!-- a group of proposals -->
+  <section class="view" id="vGroup">
+    <div class="vhead">
+      <button class="navback" type="button" id="groupBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1 id="gTitle"></h1>
+      <p id="gSub"></p>
+    </div>
+    <div class="vbody"><div class="plist" id="gList"></div></div>
+  </section>
+  <section class="view" id="vClean">
+    <div class="vhead">
+      <button class="navback" type="button" id="cleanBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>Cleaner transit</h1>
+      <p>Electric buses and trains, and a cleaner power grid. Lines in your plan use them too.</p>
+    </div>
+    <div class="vbody"><div class="cleanbox" id="cleanBox"></div></div>
+  </section>
+  <section class="view" id="vNita">
+    <div class="vhead">
+      <button class="navback" type="button" id="nitaBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>NITA</h1>
+      <p>The new regional transit agency, and the cuts it stopped.</p>
+    </div>
+    <div class="vbody"><div class="cleanbox nita" id="nitaBox"></div></div>
   </section>
   <!-- drawing -->
   <section class="view" id="vDraw">
@@ -272,7 +353,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
     </div>
     <div class="vbody" id="lBody"></div>
     <div class="vfoot">
-      <button class="btn big dark" type="button" id="lineAdd">Add a line</button>
+      <button class="btn big dark" type="button" id="lineAdd">Done</button>
       <button class="btn big" type="button" id="lineEdit">Edit</button>
       <button class="btn big" type="button" id="lineDel" aria-label="Delete this line">Delete</button>
     </div>
@@ -286,6 +367,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   <button type="button" data-l="people" aria-pressed="false">People</button>
   <button type="button" data-l="jobs" aria-pressed="false">Jobs</button>
 </div>
+<div id="planBar" aria-live="polite"></div>
 <div id="legend"><div id="legT">People per square mile</div><div class="ramp" id="legRamp"></div><div class="rl"><span>1,000</span><span>50,000+</span></div></div>
 <div id="tip" role="status"></div>
 <div id="hint"></div>
@@ -340,9 +422,29 @@ const CLEAN = {
   evKwhMi: 1 / 3.6,     // 3.6 miles per kWh (DOE AFDC)
 };
 let clean = {bus:false, metra:false, grid:false};
-const gridMult = () => clean.grid ? CLEAN.gridLeft : 1;
-// grams of CO2 per car mile: gas cars at EPA's 400 g plus the electric cars already on the road
-const carG = () => CAR_G_MI * (1 - CLEAN.evShare) + CLEAN.evShare * CLEAN.evKwhMi * GRID_KG_KWH * 1000 * gridMult();
+// CO2 in a future year: the grid's CO2 per kWh and the cars on the road both change. CO2_YEAR = null means today.
+let CO2_YEAR = null;
+const NOW_YEAR = 2026;
+// EIA Annual Energy Outlook 2026 (Counterfactual Baseline), supplemental table 54.12, PJM / Commonwealth Edison region:
+// CO2 per kWh generated, relative to 2025 (coal leaves the region by 2032). Applied to today's RFC West rate (eGRID2023).
+const GRID_PATH = {2025:1, 2026:0.985, 2027:0.847, 2028:0.724, 2029:0.698, 2030:0.945, 2031:0.805, 2032:0.537, 2033:0.449, 2034:0.428, 2035:0.423, 2036:0.435, 2037:0.434, 2038:0.424, 2039:0.471, 2040:0.469, 2041:0.473, 2042:0.5, 2043:0.511, 2044:0.516, 2045:0.534, 2046:0.559, 2047:0.568, 2048:0.593, 2049:0.604, 2050:0.609};
+// EIA AEO2026 tables 39 and 40: battery-electric share of US cars and light trucks on the road, scaled to Illinois' share today (1.5% vs 2.1%)
+const EV_PATH_US = {2025:0.0208, 2026:0.0264, 2027:0.0343, 2028:0.0466, 2029:0.0622, 2030:0.0818, 2031:0.1046, 2032:0.1303, 2033:0.1563, 2034:0.1818, 2035:0.2067, 2036:0.2306, 2037:0.2539, 2038:0.2763, 2039:0.2978, 2040:0.3182, 2041:0.3376, 2042:0.356, 2043:0.3732, 2044:0.3894, 2045:0.4043, 2046:0.418, 2047:0.4305, 2048:0.4419, 2049:0.4522, 2050:0.4613};
+// gas cars' CO2 per mile relative to 2025: the on-road fleet's mpg (table 40) with the electric cars taken out (at 130 mpg-equivalent)
+const GAS_PATH = {2025:1, 2026:0.991, 2027:0.981, 2028:0.973, 2029:0.961, 2030:0.949, 2031:0.937, 2032:0.927, 2033:0.917, 2034:0.911, 2035:0.905, 2036:0.895, 2037:0.885, 2038:0.877, 2039:0.869, 2040:0.865, 2041:0.862, 2042:0.856, 2043:0.856, 2044:0.855, 2045:0.855, 2046:0.854, 2047:0.855, 2048:0.853, 2049:0.851, 2050:0.851};
+const lerpYear = (T, y) => { const ks = Object.keys(T).map(Number).sort((a, b) => a - b); if (y <= ks[0]) return T[ks[0]]; if (y >= ks[ks.length - 1]) return T[ks[ks.length - 1]];
+  for (let i = 1; i < ks.length; i++) if (y <= ks[i]){ const a = ks[i - 1], b = ks[i]; return T[a] + (T[b] - T[a]) * (y - a) / (b - a); } };
+const gridMult = () => clean.grid ? CLEAN.gridLeft : CO2_YEAR == null ? 1 : lerpYear(GRID_PATH, CO2_YEAR);
+const evShareAt = () => CO2_YEAR == null ? CLEAN.evShare : lerpYear(EV_PATH_US, CO2_YEAR) * CLEAN.evShare / EV_PATH_US[2025];
+const gasGAt = () => CO2_YEAR == null ? CAR_G_MI : CAR_G_MI * lerpYear(GAS_PATH, CO2_YEAR);
+// grams of CO2 per car mile: gas cars plus the electric cars on the road (today: EPA's 400 g and Illinois' 1.5% electric)
+const carG = () => gasGAt() * (1 - evShareAt()) + evShareAt() * CLEAN.evKwhMi * GRID_KG_KWH * 1000 * gridMult();
+// average over years 5 to 10 after a line opens (it opens after building); f returns [low, high] t CO2 a year
+function co2Years(buildYrs, f, from = 5, to = 10){
+  const y0 = NOW_YEAR + buildYrs, out = [0, 0]; let n = 0;
+  for (let y = y0 + from; y <= y0 + to; y++){ CO2_YEAR = y; const v = f(); out[0] += v[0]; out[1] += v[1]; n++; }
+  CO2_YEAR = null; return out.map(v => v / n);
+}
 const elecT = kwh => kwh * GRID_KG_KWH * gridMult() / 1000;     // t CO2 per mile for a vehicle using kwh per mile
 const dieselBusT = DIESEL_GAL.bus * DIESEL_KG_GAL / 1000;          // CTA diesel bus, t CO2 per mile (~3.0 kg)
 const busT = () => clean.bus ? elecT(KWH.ebus) : dieselBusT;       // t CO2 per CTA bus mile
@@ -400,8 +502,8 @@ async function load(){
     fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
   NET = net; MODEL = model;
   fetch("data/network.json").then(r => r.json()).then(buildNet).catch(e => console.warn("network", e));
-  fetch("data/presets.json").then(r => r.json()).then(p => { PRESETS = p; if (!cur && $("presetList")) renderPresets(); }).catch(() => {});
-  fetch("data/costindex.json").then(r => r.json()).then(c => { COSTIX = c; if (cur) openLine(cur); else renderMyLines(); }).catch(() => {});
+  fetch("data/presets.json").then(r => r.json()).then(p => { PRESETS = p; if ($("vStart").classList.contains("on")) openStart(); }).catch(() => {});
+  fetch("data/costindex.json").then(r => r.json()).then(c => { COSTIX = c; if (cur) openLine(cur); else renderBar(); }).catch(() => {});
   const n = new DataView(buf).getUint32(0, true);
   const xs = new Int16Array(buf, 4, n), ys = new Int16Array(buf, 4 + 2 * n, n);
   const pop = new Uint16Array(buf.slice(4 + 4 * n, 4 + 6 * n)), jobs = new Uint16Array(buf.slice(4 + 6 * n, 4 + 8 * n));
@@ -471,7 +573,9 @@ function buildNet(net){
   const zStops = new Array(nz);   // stops within 1/2 mile of each zone: [stop, minutes, ...]
   for (let z = 0; z < nz; z++){ const a = []; near(sg, Z.x[z], Z.y[z], net.accessM, k => sx[k], k => sy[k], (k, d2) => a.push(k, Math.sqrt(d2) / net.walk)); zStops[z] = a; }
   NW = {net, nS, N, sx, sy, sg, adj, posStop, hw, posRoute, Z, nz, zg, zStops, served:[...Array(nz).keys()].filter(z => zStops[z].length)};
-  if (cur) openLine(cur); else if ($("vStart").classList.contains("on")){ renderMyLines(); renderNITA(); }
+  for (const k in SOLO) delete SOLO[k];
+  if (cur) openLine(cur); else if ($("vStart").classList.contains("on")) openStart(); else if ($("vGroup").classList.contains("on")) openGroup(nav.g); else if ($("vNita").classList.contains("on")) renderNITA();
+  renderBar();
 }
 // The plan's network: new lines as extra stops and patterns, Metra upgrades as shorter headways. Cached until the plan changes.
 let AFTER = null;
@@ -480,7 +584,7 @@ function afterGraph(){
   const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [];   // new stops: {x, y}
   const add = (a, b, w) => { let l = extra.get(a); if (!l) extra.set(a, l = []); l.push(b, w); };
   let next = NW.N; const extraHw = [];
-  for (const L of lines){
+  for (const L of active()){
     if (L.type === "metra"){
       const r = "metra:" + L.line;
       for (let i = 0; i < hw.length; i++) if (NW.posRoute[i] === r) hw[i] = Math.min(hw[i], L.head);
@@ -676,12 +780,35 @@ function busTripsNear(x, y){ // weekday trips of distinct bus routes with a stop
   near(SGRID, x, y, BUS_WALK_M, k => STOPS.x[k], k => STOPS.y[k], k => { for (const r of STOPS.r[k]) rs.add(r); });
   return rs;
 }
-const tripsPerDay = head => 2 * HOURS * 60 / head;
+// trains or buses at the chosen frequency for all but the last LATE_HOURS of the day, then half as often (assumption, like the CTA's late evenings)
+const LATE_HOURS = 5;
+const tripsPerDay = head => 2 * 60 * ((HOURS - LATE_HOURS) / head + LATE_HOURS / (2 * head));
+// today's L terminals: an extension past one takes over the buses that end there and head its way
+const TERMINALS = /^(95th\/Dan Ryan|Midway|Dempster-Skokie|Cottage Grove|Ashland\/63rd|Harlem\/Lake|Forest Park|O'Hare|Kimball|54th\/Cermak|Linden|Howard)$/;
+const FEEDER_OLD_M = 400, FEEDER_NEW_M = 1609;   // a bus with a stop within 400 m of the old end and within a mile of the new end gets moved to the new end (assumption)
+function feederTrips(L){
+  // returns {stationIndex: added bus trips}, for buses that end at the old terminal and pass within a mile of a new station
+  const st = L.st, n = st.length; if (n < 2) return null;
+  for (const a of [0, n - 1]){
+    const o = st[a]; if (!(o.snap && o.snap.kind === "L" && TERMINALS.test(o.snap.ref.name.split(" (")[0]))) continue;
+    const atOld = busTripsNear(o.x, o.y), add = {}, routes = [];
+    for (const r of atOld){
+      let best = -1, bd = FEEDER_NEW_M;
+      for (const e of st){
+        if (e === o || (e.snap && e.snap.kind === "L") || e.busRoutes.has(r)) continue;
+        near(SGRID, e.x, e.y, bd, k => STOPS.x[k], k => STOPS.y[k], (k, d2) => { const d = Math.sqrt(d2); if (STOPS.r[k].includes(r) && d < bd){ bd = d; best = e.i; } });
+      }
+      if (best >= 0){ add[best] = (add[best] || 0) + NET.bus[r].trips; routes.push(r); }
+    }
+    return routes.length ? {add, routes} : null;
+  }
+  return null;
+}
 
 // Evaluate the whole plan: rail lines compete with each other and with today's L stations for nearby riders.
 function evaluate(){
   const railSt = []; // all new (not snapped) rail stations across lines
-  for (const L of lines){
+  for (const L of active()){
     if (L.type !== "draw") continue;
     L.st = L.pts.map((p, i) => ({x:p.x, y:p.y, snap:p.snap, i}));
     if (MODES[L.mode].kind === "rail") for (const s of L.st) if (!(s.snap && s.snap.kind === "L")) railSt.push({s, L});
@@ -707,7 +834,7 @@ function evaluate(){
     }
   }
   const c = MODEL.rail.coef;
-  for (const L of lines){
+  for (const L of active()){
     if (L.type === "metra"){ evalMetra(L); continue; }
     const M = MODES[L.mode], st = L.st, n = st.length;
     const xy = st.map(s => [s.x, s.y]);
@@ -739,6 +866,7 @@ function evaluate(){
       for (const [r, k] of cov.cnt) if (k >= Math.max(10, cov.samples * 0.3)) par.add(r);
       L.close = 0; for (let k = 1; k < n; k++) if (Math.hypot(st[k].x - st[k - 1].x, st[k].y - st[k - 1].y) < 0.4 * MI) L.close++;
       const after = NW ? afterGraph() : null;
+      const feed = feederTrips(L); L.feeder = feed; L.shifted = 0;
       for (const s of st){
         if (s.snap && s.snap.kind === "L" && L.preset && PRESETS.find(q => q.id === L.preset && q.extends) && (s.i === 0 || s.i === n - 1)){
           s.riders = 0;   // an extension's trains are the same trains: no new departures at the station it extends from
@@ -753,6 +881,11 @@ function evaluate(){
                      acc45:after ? accessFrom(s.x, s.y, after) : 0, deps:trips};
           let wp = 0; near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => wp += B.pop[i] + B.jobs[i]);
           s.riders = wp + s.pop + s.jobs < 50 ? 0 : Math.exp(railLogBase(f));   // nobody nearby (the lake, a rail yard): no riders
+          if (feed && feed.add[s.i] && s.riders > 0){
+            // buses moved here from the old end bring their riders with them: more people board here, the same number fewer at the old end
+            const withFeed = Math.exp(railLogBase({...f, bus:f.bus + feed.add[s.i]}));
+            L.shifted += withFeed - s.riders; s.riders = withFeed;
+          }
         }
         riders += s.riders;
       }
@@ -796,7 +929,7 @@ function evaluate(){
         lost += o.rides * (1 - r);
       }
     }
-    L.riders = riders; L.lost = M.kind === "rail" ? lost * lineShare(L, railSt) : 0; L.gainOld = gainOld;
+    L.riders = riders; L.lost = M.kind === "rail" ? lost * lineShare(L, railSt) + (L.shifted || 0) : 0; L.gainOld = gainOld;
     L.waiting = M.kind === "rail" && !NW;   // rail riders need travel times; shown once the network loads
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
@@ -821,11 +954,13 @@ function evaluate(){
     if (M.kind === "rail"){ let w = 0, d = 0; for (const st of L.st) if (st.riders > 0){ w += st.riders; d += st.riders * Math.max(M.tripMi, CIRCUITY * Math.hypot(st.x, st.y) / MI); } if (w > 0) tripMi = d / w; }
     L.tripMi = tripMi;
     const vmt = L.carTrips.map(t => t * tripMi);
-    const vehT = M.co2 === "rail" ? elecT(KWH.rail) : M.co2 === "bus" ? busT() : M.co2 * gridMult();   // t CO2 per vehicle (car) mile; streetcar: FTA RFC West factor
-    const transitCO2 = (trips * (L.len / MI) * L.cars * vehT - busMi * busT()) * YEAR_DAYS;          // t a year
-    L.co2 = vmt.map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
-    L.transitCO2 = transitCO2;
-    L.co2Long = [vmt[0] * LANDUSE_MULT[0], vmt[1] * LANDUSE_MULT[1]].map(v => v * carG() / 1e6 * YEAR_DAYS - transitCO2);
+    const tCO2 = () => { const vehT = M.co2 === "rail" ? elecT(KWH.rail) : M.co2 === "bus" ? busT() : M.co2 * gridMult();   // t CO2 per vehicle (car) mile; streetcar: FTA RFC West factor
+      return (trips * (L.len / MI) * L.cars * vehT - busMi * busT()) * YEAR_DAYS; };                     // t a year
+    const co2For = mult => () => { const t = tCO2(); return [vmt[0] * mult[0], vmt[1] * mult[1]].map(v => v * carG() / 1e6 * YEAR_DAYS - t); };
+    L.co2Now = co2For([1, 1])(); L.transitCO2 = tCO2();
+    L.co2 = co2Years(M.buildYrs, co2For([1, 1]));                       // 5–10 years after opening
+    L.transitCO2Fut = co2Years(M.buildYrs, () => [tCO2(), tCO2()])[0];
+    L.co2Long = co2Years(M.buildYrs, co2For(LANDUSE_MULT), 20, 20);     // decades on: land-use effect, at the grid and cars of year 20
     L.perRide = (L.capitalToday.reduce((a, b) => a + b) / 2 / 30 + L.opYear) / Math.max(1, ways * riders * YEAR_DAYS);
   }
 }
@@ -874,11 +1009,14 @@ function evalMetra(L){
   L.carTrips = [L.riders[0] * DIVERT[0] / OCC, L.riders[1] * DIVERT[1] / OCC];
   const elec = L.electric || isElectric || clean.metra;
   const perTrain = cars => cars * (elec ? elecT(KWH.me) : METRA_DIESEL_T);   // t CO2 per train-mile
-  const addCO2 = add * (L.len / MI) * perTrain(METRA_CARS_NEW) * YEAR_DAYS;
-  const elecSave = L.electric && !clean.metra ? now * (L.len / MI) * METRA_CARS_NOW * (METRA_DIESEL_T - elecT(KWH.me)) * YEAR_DAYS : 0;   // with Metra-wide electrification on, that saving is counted under Cleaner transit
-  L.co2 = L.carTrips.map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
-  L.elecSave = elecSave;
-  L.co2Long = [L.carTrips[0] * LANDUSE_MULT[0], L.carTrips[1] * LANDUSE_MULT[1]].map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - addCO2 + elecSave);
+  const parts = () => ({add:add * (L.len / MI) * perTrain(METRA_CARS_NEW) * YEAR_DAYS,
+    save:L.electric && !clean.metra ? now * (L.len / MI) * METRA_CARS_NOW * (METRA_DIESEL_T - elecT(KWH.me)) * YEAR_DAYS : 0});   // with Metra-wide electrification on, that saving is counted under Cleaner transit
+  const co2For = mult => () => { const P = parts(); return [L.carTrips[0] * mult[0], L.carTrips[1] * mult[1]].map(t => t * METRA_TRIP_MI * carG() / 1e6 * YEAR_DAYS - P.add + P.save); };
+  const by = L.electric ? 7 : 2;   // years until the added trains run: 2 (assumption); with wires 7, like Caltrain (contract 2017, electric service 2024)
+  L.co2Now = co2For([1, 1])();
+  L.co2 = co2Years(by, co2For([1, 1]));
+  L.elecSave = parts().save;
+  L.co2Long = co2Years(by, co2For(LANDUSE_MULT), 20, 20);
   // walk shed of the line's stations
   const walk = new Set();
   for (const s of ml.stations) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
@@ -1088,7 +1226,7 @@ function autoName(mode, pts){
 function renderPlan(){
   if (!map || !map.getSource("plan")) return;
   const feats = [], st = [], walk = [];
-  for (const L of lines){
+  for (const L of active()){
     if (L.type === "metra"){
       const ml = NET.metraLines.find(l => l.id === L.line);
       feats.push({type:"Feature", properties:{color:ml.color, sel:L === cur, metra:true}, geometry:{type:"MultiLineString", coordinates:ml.paths}});
@@ -1108,7 +1246,8 @@ function renderPlan(){
 }
 
 function show(id){ if (map && map.getLayer("metra-hi") && id !== "vMetra") map.setFilter("metra-hi", ["==", ["get", "id"], ""]);
-  for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
+  for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id);
+  const pm = $("planMini"); if (pm && !pm.classList.contains("empty")) pm.classList.toggle("hide", !(id === "vStart" || id === "vGroup")); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
 function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
   if (!map) return;
   const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
@@ -1120,39 +1259,70 @@ function hint(t){ const h = $("hint"); h.textContent = t; h.style.display = t ? 
 function icon(mode, light){ const svg = mode === "metra" ? METRA_ICON : MODES[mode].icon;
   return `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="${light ? "#3d4855" : "#fff"}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${svg}</svg>`; }
 
+const active = () => lines.filter(L => !L.off);
+let nav = {view:"start"};   // where the line view's back button goes
+const GROUPS = [
+  {id:"rail", title:"New L lines and extensions", sub:"From CTA studies and the regional plan (CMAP 2026). Switch on as many as you like.", mode:"elevated"},
+  {id:"bus", title:"Bus rapid transit", sub:"Corridors CTA, CDOT and the regional plan have studied. Switch on as many as you like.", mode:"brt"},
+  {id:"metra", title:"Metra all-day trains", sub:"Trains in both directions all day, from the regional plan's Metra projects.", mode:"metra"}];
 function openStart(){
-  cur = null; renderPlan(); show("vStart");
-  $("modeList").innerHTML = Object.entries(MODES).map(([k, M]) =>
-    `<button class="mode" type="button" data-mode="${k}"><span class="ico">${icon(k)}</span><span class="mt"><b>${M.name}</b><span>${M.blurb}</span></span><span class="mc">${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))}<br>a mile</span></button>`).join("") +
-    `<button class="mode metra" type="button" data-mode="metra"><span class="ico">${icon("metra", true)}</span><span class="mt"><b>Upgrade a Metra line</b><span>Trains all day in both directions</span></span></button>`;
-  for (const b of $("modeList").querySelectorAll(".mode")) b.onclick = () => b.dataset.mode === "metra" ? openMetra() : startDraw(b.dataset.mode);
-  renderMyLines(); renderClean(); renderPresets(); renderNITA();
+  cur = null; nav = {view:"start"}; renderPlan(); show("vStart");
+  const modes = Object.entries(MODES).map(([k, M]) => `<button type="button" data-mode="${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${M.icon}</svg><span>${M.name === "Bus rapid transit" ? "BRT" : M.name}<small>${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))} a mile</small></span></button>`).join("");
+  $("drawCard").innerHTML = `<b>Draw your own line</b><div class="dmodes">${modes}</div>`;
+  for (const b of $("drawCard").querySelectorAll("button")) b.onclick = () => startDraw(b.dataset.mode);
+  renderMyLines(); renderGroups(); renderBar();
+}
+function renderGroups(){
+  const el = $("groupCards"); if (!PRESETS.length){ el.innerHTML = ""; return; }
+  el.innerHTML = GROUPS.map(G => {
+    const ps = PRESETS.filter(P => (P.group || "rail") === G.id), on = ps.filter(presetOn).length;
+    const names = ps.slice(0, 3).map(P => P.name.replace(/ (all-day trains|bus priority|BRT)$/, "")).join(", ") + (ps.length > 3 ? "…" : "");
+    return `<button type="button" class="gcard" data-g="${G.id}"><span class="ico" ${G.mode === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(G.mode, G.mode === "metra")}</span><span class="gt"><b>${G.title}</b><span>${esc(names)}</span></span><span class="gn">${on ? `<em>${on} on</em> · ` : ""}${ps.length} ›</span></button>`;
+  }).join("");
+  for (const b of el.querySelectorAll(".gcard")) b.onclick = () => openGroup(b.dataset.g);
 }
 let PRESETS = [];
-function renderPresets(){
-  const el = $("presetList"); if (!PRESETS.length){ el.innerHTML = ""; return; }
-  const was = new Set([...el.querySelectorAll("details[open]")].map(d => d.dataset.g));
-  const G = [["rail", "New L lines and extensions"], ["bus", "Bus rapid transit and bus priority"], ["metra", "Metra upgrades"]];
-  const row = P => `<button class="lrow" type="button" data-p="${P.id}"><span class="ico" ${P.metra ? 'style="background:#e8ecf0"' : ""}>${icon(P.metra ? "metra" : P.mode, !!P.metra)}</span><span class="lt"><b>${esc(P.name)}</b><span>${esc(P.status)}</span></span></button>`;
-  el.innerHTML = `<h2>Real proposals</h2>` + G.map(([g, t]) => { const ps = PRESETS.filter(P => (P.group || "rail") === g); return ps.length ? `<details class="pgroup" data-g="${g}" ${was.has(g) ? "open" : ""}><summary>${t}<span>${ps.length}</span></summary>${ps.map(row).join("")}</details>` : ""; }).join("");
-  for (const b of el.querySelectorAll(".lrow")) b.onclick = () => loadPreset(PRESETS.find(p => p.id === b.dataset.p));
+const presetLine = P => P.metra ? lines.find(l => l.type === "metra" && l.line === P.metra) : lines.find(l => l.preset === P.id);
+const presetOn = P => { const L = presetLine(P); return !!L && !L.off; };
+function presetToLine(P){
+  if (P.metra) return {type:"metra", id:"m" + P.metra, line:P.metra, head:P.head, electric:false, name:P.name, preset:P.id};
+  const pts = P.pts.map(ll => {   // join an existing L or Metra station within 150 m
+    const [x, y] = toXY(ll[0], ll[1]); let snap = null, bd = 150;
+    for (const [arr, kind] of [[LST, "L"], [MST, "M"]]) for (const s of arr){ const d = Math.hypot(s.x - x, s.y - y); if (d < bd){ bd = d; snap = {kind, ref:s}; } }
+    return snap ? {x:snap.ref.x, y:snap.ref.y, ll:snap.ref.ll, snap} : {x, y, ll, snap:null};
+  });
+  return {type:"draw", id:"p" + P.id, mode:P.mode, pts, head:P.head, name:P.name, preset:P.id};
 }
-function loadPreset(P){
-  let L = lines.find(l => l.preset === P.id);
-  if (!L){
-    if (P.metra){ const ml = NET.metraLines.find(l => l.id === P.metra); L = {type:"metra", id:"m" + P.metra, line:P.metra, head:P.head, electric:false, name:P.name, preset:P.id}; }
-    else {
-      const pts = P.pts.map(ll => {   // join an existing L or Metra station within 150 m
-        const [x, y] = toXY(ll[0], ll[1]); let snap = null, bd = 150;
-        for (const [arr, kind] of [[LST, "L"], [MST, "M"]]) for (const s of arr){ const d = Math.hypot(s.x - x, s.y - y); if (d < bd){ bd = d; snap = {kind, ref:s}; } }
-        return snap ? {x:snap.ref.x, y:snap.ref.y, ll:snap.ref.ll, snap} : {x, y, ll, snap:null};
-      });
-      L = {type:"draw", id:"p" + P.id, mode:P.mode, pts, head:P.head, name:P.name, preset:P.id};
-    }
-    lines.push(L); save();
-  }
-  openLine(L);
+function setPreset(P, on){
+  const L = presetLine(P);
+  if (on && !L) lines.push(presetToLine(P));
+  if (!on && L) lines = lines.filter(l => l !== L);
+  save(); renderPlan(); renderBar();
 }
+function loadPreset(P){ let L = presetLine(P); if (!L){ L = presetToLine(P); lines.push(L); save(); } openLine(L); }   // open its full numbers
+// riders for a proposal on its own, for the list (cached; computed off the main path)
+const SOLO = {};
+function soloRiders(P){
+  if (SOLO[P.id] != null || !NW) return SOLO[P.id];
+  const keep = lines, L = presetToLine(P); lines = [L];
+  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders; } catch (e) { SOLO[P.id] = 0; }
+  lines = keep; return SOLO[P.id];
+}
+function openGroup(g){
+  const G = GROUPS.find(x => x.id === g); cur = null; nav = {view:"group", g}; renderPlan(); show("vGroup");
+  $("gTitle").textContent = G.title; $("gSub").textContent = G.sub;
+  const ps = PRESETS.filter(P => (P.group || "rail") === g);
+  const draw = () => {
+    $("gList").innerHTML = ps.map(P => { const r = soloRiders(P); return `<div class="prow"><button type="button" class="pt" data-p="${P.id}"><b>${esc(P.name)}</b><span>${r != null ? num(r) + (P.metra ? " more riders a weekday" : " riders a weekday") + " · " : ""}${esc(P.status.split(";")[0].split(" (")[0])}</span></button><button type="button" class="sw" role="switch" aria-checked="${presetOn(P)}" aria-label="${esc(P.name)}" data-p="${P.id}"></button></div>`; }).join("") +
+      (g === "metra" ? `<div class="prow"><button type="button" class="pt" id="anyMetra"><b>Any Metra line</b><span>Pick a line and how often trains run</span></button></div>` : "");
+    for (const b of $("gList").querySelectorAll(".pt[data-p]")) b.onclick = () => loadPreset(PRESETS.find(p => p.id === b.dataset.p));
+    for (const b of $("gList").querySelectorAll(".sw")) b.onclick = () => { const on = b.getAttribute("aria-checked") !== "true"; b.setAttribute("aria-checked", on); setPreset(PRESETS.find(p => p.id === b.dataset.p), on); };
+    if ($("anyMetra")) $("anyMetra").onclick = () => openMetra();
+  };
+  draw();
+  if (ps.some(P => SOLO[P.id] == null)) setTimeout(() => { if ($("vGroup").classList.contains("on")) draw(); }, 30);   // riders fill in a moment later
+}
+function goBack(){ if (nav.view === "group") openGroup(nav.g); else openStart(); }
 function renderClean(){
   const R = cleanReport(), el = $("cleanBox"), pct = v => Math.round(v / R.now.total * 100);
   const row = (k, title) => `<label class="toggle crow"><span><b>${title}</b><span class="note">${num(R.one[k])} t less CO₂ a year</span></span><input type="checkbox" data-k="${k}" ${clean[k] ? "checked" : ""}></label>`;
@@ -1161,7 +1331,7 @@ function renderClean(){
     ${row("metra", "Electric Metra")}
     ${row("grid", "Clean power grid")}
     ${R.saved > 0 ? `<div class="stat g"><div class="v">${num(R.saved)} t less CO₂ a year</div><div class="k">${pct(R.saved)}% of today's transit CO₂${R.cost[1] > 0 ? ` · ${R.cost[0] === R.cost[1] ? money(R.cost[0]) : moneyRange(R.cost[0], R.cost[1])} to build` : ""}</div></div>` : ""}`;
-  for (const i of el.querySelectorAll("input")) i.onchange = () => { clean[i.dataset.k] = i.checked; save(); renderClean(); renderMyLines(); };
+  for (const i of el.querySelectorAll("input")) i.onchange = () => { clean[i.dataset.k] = i.checked; save(); renderClean(); renderBar(); };
   bindInfo(el);
 }
 function nitaCut(){   // the 2025 warning: about 40% less service. Every route running 60% as often (headways ÷ 0.6).
@@ -1173,13 +1343,12 @@ function nitaCut(){   // the 2025 warning: about 40% less service. Every route r
   return {C, today, L, B, M, lost, cars:[lost * DIVERT[0] / OCC, lost * DIVERT[1] / OCC]};
 }
 function renderNITA(){
-  const el = $("nitaBox"), open = el.open, X = nitaCut();
+  const el = $("nitaBox"), X = nitaCut();
   const a = (t, u) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
   const cutsH = `<p>Without new state money, the agencies warned in March 2025 of about 40% less service in 2026: more than half of CTA bus routes and buses 25% less often on the rest, four L branches and 50 stations closed, 40% fewer Metra trains, no Pace buses after 8 p.m. or on weekends (${a("CBS Chicago", "https://www.cbsnews.com/amp/chicago/news/service-cuts-cta-metra-pace-without-bailout")}, ${a("WTTW", "https://news.wttw.com/2025/03/21/transit-agencies-release-dire-warning-looming-service-cuts-bus-and-train-lines-overnight")}).</p><p>The tool shows a simple version: every CTA and Metra route running 60% as often. The real plans cut whole routes and branches, which is worse for the people on them and spares others. Riders drop 0.5% for each 1% fewer trips (TCRP 95); Pace isn't counted. Less service would also cut transit's own CO₂, so the climate cost shows up over decades, as the region drives more.</p>`;
   const moneyH = `<p>About $1.5 billion a year in new money (WBEZ), mostly from the state sales tax on fuel (about $860 million) and Road Fund interest ($200 million) (${a("ENR", "https://www.enr.com/articles/61795-illinois-legislature-approves-15b-plan-to-overhaul-transit-governance")}), plus a 0.25% regional sales tax from August 2026. NITA counts about $1.2 billion in new operating money for 2027; its proposed 2027 budget is $4.12 billion, 28% more than 2026, and its 2027–2031 capital plan is $9.4 billion (${a("NITA board, Aug. 20, 2026", "https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/August/August-20-2026-RTA-Board-Slide-Deck.pdf")}). Fares must cover 25% of running costs across the system, 20% from 2029 (${a("MPC guide to the law", "https://metroplanning.org/wp-content/uploads/2026/04/NITA-Report_CompanionGuide_APR2026-1.pdf")}).</p>`;
   const fareH = `<p>One fare product for all three agencies is due in July 2027, and fare capping and income-based fares in July 2028; fares are frozen until mid-2027 (${a("NITA transition plan", "https://nita.illinois.gov/uploads/files/meeting-materials/Ad-Hoc-Transition-Committee/072226-Ad-Hoc-Committee-meeting/Ad-Hoc-Committee-Meeting-7.22.26.pdf")}). Chicago has tested cheaper Metra fares: in 2021 Cook County cut Metra Electric and Rock Island fares about in half, so some trips in the city cost less than the L. Those two lines won back riders faster than the rest of Metra, their recovery rate going from 12% to 20% above the system average in the first year, during the pandemic rebound (${a("Cook County", "https://www.cookcountyil.gov/sites/g/files/ywwepo161/files/documents/2022-05/Fair%20Transit%20South%20Cook%20First%20Year%20Report_0.pdf")}, ${a("Streetsblog", "https://chi.streetsblog.org/2022/05/17/report-fair-transit-south-cook-pilot-led-to-faster-ridership-recovery/")}). Toronto made transfers between its regional trains and city transit free in 2024: 5 million free transfers in its first seven weeks (${a("Metrolinx", "https://www.metrolinx.com/en/news/ontario-s-one-fare-program-hits-5-million-transfers")}). No one has published how many riders one fare would add here, so the tool doesn't add any.</p>`;
-  el.innerHTML = `<summary><span><b>NITA, the new regional transit agency</b><span class="note">The cuts it stopped, and what changed in 2026</span></span></summary>
-    <p class="note">Since September 2026 NITA sets fares, splits the money and plans service for the CTA, Metra and Pace.</p>
+  el.innerHTML = `<p class="note">Since September 2026 NITA sets fares, splits the money and plans service for the CTA, Metra and Pace.</p>
     ${X ? `<span class="sec" style="display:flex;align-items:center;justify-content:space-between">Without it: about 40% less service ${ib("nitacut", "The cuts it stopped", cutsH)}</span>
     <div class="total">
       <div class="stat"><div class="v">${num(X.lost)}</div><div class="k">fewer trips a weekday (${Math.round(X.lost / X.today * 100)}%)</div></div>
@@ -1188,20 +1357,40 @@ function renderNITA(){
       <div class="stat"><div class="v">${num(X.cars[0])}–${num(X.cars[1])}</div><div class="k">more car trips a day</div></div>
     </div>` : `<p class="note">Loading travel times…</p>`}
     <div class="links"><button type="button" class="back" data-info="${regInfo("nitamoney", "The money", moneyH)}">The money</button><button type="button" class="back" data-info="${regInfo("nitafare", "One fare", fareH)}">One fare</button></div>`;
-  el.open = open;
   bindInfo(el);
 }
 function renderMyLines(){
-  const el = $("myLines");
-  if (!lines.length){ el.innerHTML = `<p class="note">Your lines will show up here. Try a subway under Western Avenue, or an elevated line to the Southwest Side.</p>`; return; }
+  const el = $("myLines"), mine = lines.filter(L => !L.preset && !(L.type === "metra" && PRESETS.some(P => P.metra === L.line)));
+  if (!mine.length){ el.innerHTML = ""; return; }
   evaluate();
-  const ridersOf = L => L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
-  const netOf = L => L.type === "metra" ? L.riders[0] : L.newRiders;
-  const tot = lines.reduce((a, L) => a + netOf(L), 0), cap = lines.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
-  const op = lines.reduce((a, L) => a + L.opYear, 0), cars = lines.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
-  el.innerHTML = `<h2>Your plan</h2>` + lines.map((L, i) => `<button class="lrow" type="button" data-i="${i}"><span class="ico" ${L.type === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(L.type === "metra" ? "metra" : L.mode, L.type === "metra")}</span><span class="lt"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len)} mi</span></span><span class="lr">${L.waiting ? "…" : num(ridersOf(L))}</span></button>`).join("") +
-    (lines.length > 1 ? `<div class="total"><div class="stat"><div class="v">${num(tot)}</div><div class="k">more transit riders a weekday, all lines</div></div><div class="stat"><div class="v">${moneyRange(cap[0], cap[1])}</div><div class="k">to build, all lines</div></div><div class="stat"><div class="v">${money(op)}</div><div class="k">a year to run</div></div><div class="stat g"><div class="v">${num(cars)}</div><div class="k">fewer car trips a day</div></div></div>` : "");
-  for (const b of el.querySelectorAll(".lrow")) b.onclick = () => openLine(lines[+b.dataset.i]);
+  el.innerHTML = `<span class="sec">Your lines</span><div class="plist">` + mine.map(L => `<div class="prow"><button type="button" class="pt" data-id="${L.id}"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len || 0)} mi${!L.off && !L.waiting && L.riders != null ? " · " + num(L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders) + " riders" : ""}</span></button><button type="button" class="sw" role="switch" aria-checked="${!L.off}" aria-label="${esc(L.name)}" data-id="${L.id}"></button></div>`).join("") + `</div>`;
+  for (const b of el.querySelectorAll(".pt")) b.onclick = () => openLine(lines.find(L => L.id === b.dataset.id));
+  for (const b of el.querySelectorAll(".sw")) b.onclick = () => { const L = lines.find(x => x.id === b.dataset.id); L.off = !L.off; save(); renderPlan(); renderMyLines(); renderBar(); };
+}
+// the plan's combined effects: a bar along the map (desktop), a strip at the top of the sheet (phones)
+function renderBar(){
+  const A = active(), bar = $("planBar"), mini = $("planMini");
+  if (!A.length || !NET){
+    bar.innerHTML = `<div class="pbe"><i aria-hidden="true">+</i><span><b>Your plan is empty</b>Switch on a proposal or draw a line, and riders, cost, cars and CO₂ add up here.</span></div>`;
+    mini.className = "empty"; mini.innerHTML = `Your plan's riders, cost, cars and CO₂ add up here.`; return;
+  }
+  evaluate();
+  const wait = A.some(L => L.waiting);
+  const net = A.reduce((a, L) => a + (L.type === "metra" ? L.riders[0] : Math.max(0, L.newRiders || 0)), 0);
+  const cap = A.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
+  const op = A.reduce((a, L) => a + L.opYear, 0), cars = A.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
+  const co2 = A.reduce((a, L) => a + co2Mid(L), 0);
+  const capS = cap[1] > 0 ? (cap[0] === cap[1] ? money(cap[0]) : moneyRange(cap[0], cap[1])) : "$0";
+  const co2S = `${num(Math.abs(co2))} t`, co2K = `${co2 >= 0 ? "less" : "more"} CO₂ a year, ${CO2_LABEL}`;
+  bar.innerHTML = `<div class="pb0"><span>Your plan</span><b>${A.length} line${A.length > 1 ? "s" : ""}</b><button type="button" id="planClear">Clear</button></div>
+    <div class="pbs"><b>${wait ? "…" : num(net)}</b><span>more transit riders a weekday</span></div>
+    <div class="pbs"><b>${capS}</b><span>to build</span></div>
+    <div class="pbs"><b>${money(Math.abs(op))}</b><span>${op < 0 ? "a year saved" : "a year to run"}</span></div>
+    <div class="pbs ${cars >= 0 ? "g" : ""}"><b>${num(Math.abs(cars))}</b><span>${cars >= 0 ? "fewer" : "more"} car trips a day</span></div>
+    <div class="pbs ${co2 >= 0 ? "g" : ""}"><b>${co2S}</b><span>${co2K}</span></div>`;
+  $("planClear").onclick = () => { lines = []; save(); renderPlan(); if (nav.view === "group") openGroup(nav.g); else openStart(); };
+  mini.className = $("vStart").classList.contains("on") || $("vGroup").classList.contains("on") ? "" : "hide";
+  mini.innerHTML = `<div><b>${wait ? "…" : num(net)}</b><span>more riders a day</span></div><div><b>${capS}</b><span>to build</span></div><div class="${co2 >= 0 ? "g" : ""}"><b>${co2S}</b><span>${co2 >= 0 ? "less" : "more"} CO₂ a year</span></div>`;
 }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]));
 
@@ -1227,7 +1416,9 @@ function fitTo(coords){
 }
 
 function openLine(L){
-  cur = L; evaluate(); renderPlan(); show("vLine");
+  if (L.off){ L.off = false; save(); }
+  cur = L; evaluate(); renderPlan(); show("vLine"); renderBar();
+  $("lineDel").textContent = L.preset ? "Remove" : "Delete";
   const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
   $("lIco").innerHTML = icon(isM ? "metra" : L.mode, isM); $("lIco").style.background = isM ? "#e8ecf0" : "";
   $("lName").value = L.name; $("lName").oninput = e => { L.name = e.target.value; save(); };
@@ -1244,7 +1435,8 @@ function openLine(L){
   else if (M.kind === "rail") why += `<p>People entering its stations on a weekday, from a model of how many people use each L station today, given the people and jobs near it, its buses, and how often trains come. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
   else why += `<p>Starts from the ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today, which the new line replaces. Riders rise or fall with how often it comes compared with those buses${L.mode === "brt" ? ", plus 31% for faster BRT service (Cleveland and Los Angeles gained 26–51%)" : ""}.</p>`;
-  if (!isM && L.lost > 200) why += `<p>About ${num(L.lost)} of them would switch from nearby L stations.</p>`;
+  if (!isM && L.shifted > 50) why += `<p>The ${L.feeder.routes.map(r => NET.bus[r].short).join(", ")} bus${L.feeder.routes.length > 1 ? "es" : ""} that end at today's last stop would run to the new one instead, bringing about ${num(L.shifted)} riders who now board there.</p>`;
+  if (!isM && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
   if (!isM && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders.</p>`;
   let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM ? "more riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
   h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
@@ -1265,8 +1457,9 @@ function openLine(L){
   if (isM && !L.alreadyElectric && !clean.metra) h += `<label class="toggle">Electric trains (overhead wires) <input type="checkbox" id="elec" ${L.electric ? "checked" : ""}></label>`;
   // the numbers
   const veh = isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s";
-  const co2Why = `<p>Car trips replaced: ${num(L.carTrips[0])}–${num(L.carTrips[1])} a day. Surveys of new rail and BRT lines find 10–31% of riders used to drive (more on BRT lines where most riders already took the bus), and riders' car trips would have been ${isM ? METRA_TRIP_MI : (L.tripMi || M.tripMi).toFixed(1)} miles${!isM && M.kind === "rail" ? " (at least each station's distance to the Loop by road)" : ""}. That's weighed against the power or fuel to run the ${veh}${isM ? "" : `: ${num(L.transitCO2)} t a year on the region's grid (half coal and gas)`}.</p><p>A new rail line runs full trains all day, and at first most of its riders come from buses or other trains rather than cars, so in the first years it can use more energy than the driving it replaces. The US Federal Transit Administration found the same for many new heavy rail and commuter rail projects (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>). Cleaner power (turn it on under Cleaner transit) or more riders flip it.</p>`;
-  const longWhy = `<p>Over decades, homes and jobs grow near stations and people drive less overall, not just on trips they'd take by train. Studies measure that as 1.9 to 6.6 times the driving a line replaces directly (APTA; Sabouri, Ewing &amp; Kalantari 2024). Range: ${co2LongWord(L.co2Long[0])} to ${co2LongWord(L.co2Long[1])}. It only happens if zoning lets homes go up near the stations.</p>`;
+  const openY = NOW_YEAR + (isM ? (L.electric ? 7 : 2) : M.buildYrs);
+  const co2Why = `<p>Averaged over ${openY + 5}–${openY + 10}, 5 to 10 years after it would open in ${openY}. By then the region's power is cleaner (EIA projects about half the CO₂ per kWh of today once coal plants close in the early 2030s) and more cars are electric (about ${Math.round(lerpYear(EV_PATH_US, openY + 7) * CLEAN.evShare / EV_PATH_US[2025] * 100)}% of cars here, from 1.5% today).</p><p>Car trips replaced: ${num(L.carTrips[0])}–${num(L.carTrips[1])} a day. Surveys of new rail and BRT lines find 10–31% of riders used to drive (more on BRT lines, where most riders already took the bus), and their car trips would have been ${isM ? METRA_TRIP_MI : (L.tripMi || M.tripMi).toFixed(1)} miles${!isM && M.kind === "rail" ? " (at least each station's distance to the Loop by road)" : ""}. That's weighed against the power or fuel to run the ${veh}${isM ? "" : `: ${num(L.transitCO2Fut)} t a year then (${num(L.transitCO2)} t on today's grid)`}.</p><p>Today: ${co2Word((L.co2Now[0] + L.co2Now[1]) / 2)}. A new line runs trains all day and at first most riders come from buses, so on today's grid it can use more energy than the driving it replaces; the US Federal Transit Administration found the same for many new rail projects (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf" target="_blank" rel="noopener">FTA 2024</a>).</p>`;
+  const longWhy = `<p>Over decades, homes and jobs grow near stations and people drive less overall, not just on trips they'd take by train. Studies measure that as 1.9 to 6.6 times the driving a line replaces directly (APTA; Sabouri, Ewing &amp; Kalantari 2024). Shown at the power grid and cars of 20 years after opening. Range: ${co2LongWord(L.co2Long[0])} to ${co2LongWord(L.co2Long[1])}. It only happens if zoning lets homes go up near the stations.</p>`;
   const B = L.hoursSaved != null ? benefitCost(L, isM ? 2 : M.buildYrs) : null;
   const pay = payInfo(L);
   h += `<div class="stats">
@@ -1275,7 +1468,7 @@ function openLine(L){
     ${tile(L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0", isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`, "build", "Cost to build", `<p>From the cost per mile of recent US projects of this kind, in ${COSTIX ? COSTIX.latest : "today's"} dollars (FHWA's highway construction cost index). ${pay.grants}</p>`)}
     ${tile(money(Math.abs(L.opYear)), L.opYear < 0 ? "a year saved on buses" : "a year to run", "run", "Cost to run", `<p>${!isM && L.baseBusMi > 0 ? "After the buses it replaces. " : ""}${pay.fares}</p>`)}
     ${cars >= 0 ? tile(num(cars), "fewer car trips a day", "", "", "", "g") : tile(num(-cars), "more car trips a day (fewer buses than today)")}
-    ${tile(co2Word(co2), "CO₂ a year at first", "co2", "CO₂ in the first years", co2Why, co2 >= 0 ? "g" : "")}
+    ${tile(co2Word(co2), "CO₂ a year, 5–10 years after opening", "co2", "CO₂ 5–10 years after opening", co2Why, co2 >= 0 ? "g" : "")}
     ${tile(co2Word((L.co2Long[0] + L.co2Long[1]) / 2), "CO₂ a year in the long run", "co2l", "CO₂ in the long run", longWhy, (L.co2Long[0] + L.co2Long[1]) / 2 >= 0 ? "g" : "")}
     ${travelTiles(L)}
     ${B && !B.noCapital ? tile(B.ratio < 0 ? "Below 0" : B.ratio.toFixed(B.ratio < 10 ? 1 : 0) + " to 1", "benefit-cost (partial)", "bca", "Benefit-cost", "<p>Benefits, less running costs, for each dollar of build cost over 30 years, using USDOT's method and 7% discount rate. Counts travel time saved only (new riders get half, as USDOT directs). Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</p>", B.ratio >= 1 ? "g" : "") : ""}
@@ -1296,6 +1489,8 @@ function openLine(L){
   if (!L._fitted){ fitTo(coords); L._fitted = true; }
   save();
 }
+const CO2_LABEL = "5–10 years after opening";
+const co2Mid = L => (L.co2[0] + L.co2[1]) / 2;
 const co2Word = v => `${num(Math.abs(v))} t ${v >= 0 ? "less" : "more"}`;
 const co2LongWord = co2Word;
 // (i) pop-ups: explanations live behind a small button so the panel stays short
@@ -1436,10 +1631,12 @@ function setLayer(k, on){
 /* ---------- save + share ---------- */
 function decode(s){
   const out = [], mk = {s:"subway", e:"elevated", b:"brt"};
-  for (const part of s.split("~")){
+  for (let part of s.split("~")){
     try {
+      const off = part[0] === "x"; if (off) part = part.slice(1);
+      const n0 = out.length;
       if (/^C[01]{3}$/.test(part)){ clean = {bus:part[1] === "1", metra:part[2] === "1", grid:part[3] === "1"}; continue; }
-      if (part[0] === "M"){ const [id, h0, e] = part.slice(1).split("."), h = h0.replace("_", "."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains"}); continue; }
+      if (part[0] === "M"){ const [id, h0, e] = part.slice(1).split("."), h = h0.replace("_", "."); const ml = NET.metraLines.find(l => l.id === id); if (ml) out.push({type:"metra", id:"m" + id, line:id, head:+h, electric:e === "1", name:ml.name + " all-day trains", ...(off ? {off:true} : {})}); continue; }
       const mode = part.startsWith("st") ? "streetcar" : mk[part[0]]; if (!mode) continue;
       const body = mode === "streetcar" ? part.slice(2) : part.slice(1);
       const [h0, ptsS, nm] = body.split("."), h = h0.replace("_", ".");
@@ -1448,14 +1645,15 @@ function decode(s){
         const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
       const pre = PRESETS.find(q => q.name === decodeURIComponent(nm || ""));
       if (pts.length > 1) out.push({type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined});
+      if (off && out.length > n0) out[out.length - 1].off = true;
     } catch (e) {}
   }
   return out;
 }
 function save(){ try { localStorage.setItem("sc-transit", encodePlan()); } catch (e) {} if (encodePlan()) history.replaceState(null, "", "#p=" + encodePlan()); else history.replaceState(null, "", location.pathname + location.search); }
 function encodePlan(){ const c = (clean.bus || clean.metra || clean.grid) ? ["C" + [clean.bus, clean.metra, clean.grid].map(v => v ? 1 : 0).join("")] : [];
-  return c.concat(lines.map(L => L.type === "metra" ? `M${L.line}.${String(L.head).replace(".", "_")}.${L.electric ? 1 : 0}` :
-    (L.mode === "streetcar" ? "st" : L.mode[0]) + String(L.head).replace(".", "_") + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name))).join("~"); }
+  return c.concat(lines.map(L => (L.off ? "x" : "") + (L.type === "metra" ? `M${L.line}.${String(L.head).replace(".", "_")}.${L.electric ? 1 : 0}` :
+    (L.mode === "streetcar" ? "st" : L.mode[0]) + String(L.head).replace(".", "_") + "." + L.pts.map(p => Math.round(p.x / 10).toString(36) + "," + Math.round(p.y / 10).toString(36) + (p.snap ? "," + p.snap.kind + p.snap.ref.id : "")).join(";") + "." + encodeURIComponent(L.name)))).join("~"); }
 function restore(){
   let s = (location.hash.match(/#p=(.+)/) || [])[1];
   if (!s){ try { s = localStorage.getItem("sc-transit"); } catch (e) {} }
@@ -1498,6 +1696,8 @@ function openSources(){
   <p>Today's CTA and Metra emissions come from the fuel and power use above. <b>Electric CTA buses</b>: every bus battery-powered, using CTA's electric buses' 0.28 miles per kWh; the CTA plans an all-electric fleet by 2040 for $1.8–3.1 billion in added capital (<a href="https://www.transitchicago.com/assets/1/6/Charging_Forward_Report_2-10-22_(FINAL).pdf" target="_blank" rel="noopener">CTA Charging Forward, 2022</a>, pp. 4, 13). It has about 25 electric buses of about 1,900 today (<a href="https://chicago.suntimes.com/transportation/2025/11/21/cta-hybrid-bus-federal-grant" target="_blank" rel="noopener">Sun-Times, 2025</a>). The CTA's own estimate is a 73% cut in bus CO₂; the tool's is smaller because it uses today's grid. <b>Electric Metra</b>: overhead wires on the ${CLEAN.metraDieselRouteMi} diesel route miles (measured from Metra's schedule maps), using Metra Electric's energy per car-mile, at Caltrain's $47 million a mile; Metra hasn't priced it. Metra is buying 8 two-car battery trains for $154 million for the Rock Island's Beverly branch (<a href="https://wbez.org/environment-public-health/2024/02/22/metra-to-buy-first-battery-powered-trains-as-part-of-effort-to-provide-more-frequent-all-day-service" target="_blank" rel="noopener">WBEZ, 2024</a>). <b>Clean power grid</b>: Illinois' Climate and Equitable Jobs Act requires fossil power plants to reach zero emissions by 2045 and sets a goal of 100% clean energy by 2050 (<a href="https://www.illinois.gov/content/dam/soi/en/web/illinois/iisnewsattachments/23893-climate-and-equitable-jobs-act.pdf" target="_blank" rel="noopener">State of Illinois</a>); the switch shows that end state, with electric trains, buses and cars at zero CO₂ from power.</p>
   <h3>NITA and the cuts it stopped</h3>
   <p>The Northern Illinois Transit Authority Act (<a href="https://legiscan.com/IL/bill/SB2111/" target="_blank" rel="noopener">SB 2111, Public Act 104-0457</a>) passed Oct. 31, 2025, was signed Dec. 16, 2025, and NITA took over from the RTA on Sept. 1, 2026. In March 2025 the agencies warned that without new state money 2026 service would fall about 40% (<a href="https://www.cbsnews.com/amp/chicago/news/service-cuts-cta-metra-pace-without-bailout" target="_blank" rel="noopener">CBS Chicago</a>, <a href="https://news.wttw.com/2025/03/21/transit-agencies-release-dire-warning-looming-service-cuts-bus-and-train-lines-overnight" target="_blank" rel="noopener">WTTW</a>). The tool shows a simple version of that: every CTA and Metra route running 60% as often (each wait 1/0.6 as long) in the midday travel-time network, with jobs within 45 minutes recomputed for every zone in the region. Riders today: 2025 weekday L entries and bus riders, plus Metra boardings at every station (2018 counts scaled to 2025); riders fall 0.5% for each 1% fewer trips (TCRP Report 95, ch. 9), and car trips use the same 10–31% driver share as new lines. Pace isn't in the travel-time network yet. New yearly operating money: about $1.2 billion in 2027 (NITA), $1.5 billion a year (WBEZ). Each plan's running cost after its fares is shown as a share of the $1.2 billion. No published estimate exists for how many riders one fare would add in Chicago, so the tool adds none; the Cook County fare pilot and Toronto's One Fare are described for context only.</p>
+  <h3>CO₂ 5 to 10 years after opening</h3>
+  <p>Each line's CO₂ is averaged over years 5 to 10 after it would open (today + its build years: subway 8, elevated 6, streetcar 4, BRT 2, added Metra trains 2, Metra wires 7, like Caltrain). Two things change by then. The grid: CO₂ per kWh follows the EIA's projection for the PJM / Commonwealth Edison region relative to 2025, which falls to about 42–47% of today's in 2035–2040 as coal plants close (<a href="https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_54.12.xlsx" target="_blank" rel="noopener">EIA Annual Energy Outlook 2026, table 54.12</a>, Counterfactual Baseline), applied to today's RFC West rate. Cars: the share of electric cars on the road and gas cars' mileage follow the EIA's national projection (<a href="https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_39.xlsx" target="_blank" rel="noopener">table 39</a>, <a href="https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_40.xlsx" target="_blank" rel="noopener">table 40</a>: 2% of US cars and light trucks electric in 2025, 21% in 2035, 32% in 2040), scaled to Illinois' 1.5% today. Diesel buses and trains don't get cleaner unless you turn on electric buses or Metra under Cleaner transit. Riders are the tool's estimate for a line that has settled in: new lines in the US reached about 92% of their forecasts about two years after opening, on average (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-08/Predicted-vs-Actual-Impacts-of-CIG-Projects-2020.pdf" target="_blank" rel="noopener">FTA 2020</a>, Table 3.3-2).</p>
   <h3>CO₂ in the long run</h3>
   <p>Over time, transit changes where people live and work: more homes and jobs near stations, shorter trips, fewer cars. Studies measure this as a multiplier on the driving a line replaces directly. APTA's national default is 1.9 (<a href="https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf" target="_blank" rel="noopener">Bailey et al. 2008, for TCRP</a>); a 2024 study of household travel surveys in 28 US regions found 6.1–9.5, median 6.59, higher where transit systems are bigger (<a href="https://link.springer.com/article/10.1007/s11116-024-10542-0" target="_blank" rel="noopener">Sabouri, Ewing &amp; Kalantari, Transportation, 2024</a>). The long-run figure uses 1.9 at the low end and 6.59 at the high end. It describes regions decades after building transit, and only happens if zoning allows homes near stations.</p>
   <h3>Data</h3>
@@ -1513,7 +1713,9 @@ function openSources(){
   <h3>Assumptions (not measured)</h3>
   <ul>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
-  <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}). A year is ${YEAR_DAYS} average weekdays, the ratio of 2025 L rides to an average 2025 weekday, used for riders and service on every mode, Metra included.</li>
+  <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}), at the chosen frequency except the last ${LATE_HOURS} hours, when trains and buses come half as often.</li>
+  <li>When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.</li>
+  <li> A year is ${YEAR_DAYS} average weekdays, the ratio of 2025 L rides to an average 2025 weekday, used for riders and service on every mode, Metra included.</li>
   <li>A new station within ${METRA_XFER_M} m of a Metra station counts as a transfer.</li>
   <li>BRT and streetcar lines replace the CTA buses that run along them; the buses' riders, hours and emissions move to the new line.</li>
   <li>New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run ${METRA_CARS_NEW} cars, and today's Metra trains average ${METRA_CARS_NOW} for the electric-train CO₂ savings.</li>
@@ -1536,9 +1738,11 @@ async function boot(){
   openStart();
   if (lines.length && location.hash.startsWith("#p=")) openLine(lines[lines.length - 1]);
   $("drawCancel").onclick = cancelDraw; $("drawUndo").onclick = () => { drawing.pts.pop(); refreshDraw(); };
-  $("drawDone").onclick = finishDraw; $("metraBack").onclick = openStart; $("lineBack").onclick = openStart;
-  $("lineAdd").onclick = openStart; $("lineEdit").onclick = () => cur && cur.type === "draw" && startDraw(cur.mode, cur);
-  $("lineDel").onclick = () => { if (!cur) return; lines = lines.filter(l => l !== cur); save(); openStart(); };
+  $("drawDone").onclick = finishDraw; $("metraBack").onclick = goBack; $("lineBack").onclick = goBack;
+  $("lineAdd").onclick = goBack; $("groupBack").onclick = openStart; $("cleanBack").onclick = openStart; $("nitaBack").onclick = openStart;
+  $("cleanCard").onclick = () => { show("vClean"); renderClean(); renderBar(); };
+  $("nitaCard").onclick = () => { show("vNita"); renderNITA(); renderBar(); }; $("lineEdit").onclick = () => cur && cur.type === "draw" && startDraw(cur.mode, cur);
+  $("lineDel").onclick = () => { if (!cur) return; lines = lines.filter(l => l !== cur); save(); goBack(); };
   $("srcBtn").onclick = openSources;
   $("share").onclick = async () => { save(); const url = location.href;
     try { if (navigator.share) await navigator.share({title:"My Chicago transit plan", url}); else { await navigator.clipboard.writeText(url); hint("Link copied"); setTimeout(() => hint(""), 1800); } } catch (e) {} };
