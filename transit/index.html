@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="/shape/shape.css">
 <style>
 :root{
   --ink:#1a1d21; --ink2:#3d434b; --mute:#5a6069; --faint:#6a7079; --line:#e6e9ed; --line2:#d5d9de;
@@ -24,13 +25,6 @@ button{cursor:pointer}
 a{color:var(--ink)}
 #map{position:fixed;inset:0}
 .maplibregl-ctrl-attrib{font-size:11px}
-header.top{position:fixed;left:0;right:0;top:0;height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:5}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;text-decoration:none;color:var(--ink)}
-.tl{display:flex;align-items:center;gap:22px}
-nav.tools{display:flex;gap:4px;padding:4px;background:var(--seg);border-radius:20px;font-size:14px}
-nav.tools a{display:flex;align-items:center;min-height:32px;padding:0 14px;border-radius:16px;color:#4a5059;text-decoration:none}
-nav.tools a[aria-current]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.tr{display:flex;gap:10px}
 .btn{min-height:38px;padding:0 16px;border:1px solid var(--line2);border-radius:19px;background:#fff;font-weight:600;font-size:14px}
 .btn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
 .btn.big{min-height:46px;border-radius:23px;font-size:15px;padding:0 18px}
@@ -88,20 +82,6 @@ aside#panel{position:fixed;left:20px;top:84px;bottom:20px;width:380px;background
 .sw::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .15s}
 .sw[aria-checked="true"]{background:var(--ink)}
 .sw[aria-checked="true"]::after{transform:translateX(18px)}
-#planBar{position:fixed;left:420px;right:64px;bottom:20px;background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:12px 18px;display:flex;align-items:center;gap:22px;z-index:3;overflow-x:auto}
-body.drawing #planBar{display:none}
-#planBar .pb0{display:flex;flex-direction:column;gap:1px;padding-right:20px;border-right:1px solid var(--line);flex:none}
-#planBar .pb0 span{font-size:12.5px;color:var(--mute)}
-#planBar .pb0 b{font-size:15px;font-weight:600;white-space:nowrap}
-#planBar .pb0 button{font-size:12.5px;color:var(--focus);background:none;border:0;padding:0;text-align:left;text-decoration:underline}
-#planBar .pbs{display:flex;flex-direction:column;gap:1px;flex:none}
-#planBar .pbs b{font-size:22px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
-#planBar .pbs span{font-size:12px;color:var(--mute);white-space:nowrap}
-#planBar .pbs.g b{color:var(--green)} #planBar .pbs.g span{color:var(--greenmute)}
-#planBar .pbe{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute)}
-#planBar .pbe b{color:var(--ink);font-weight:600;display:block}
-#planBar .pbe i{width:34px;height:34px;border-radius:50%;background:var(--seg);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:18px;flex:none}
-#planMini{display:none}
 .mylines h2,.sec{font-size:13px;font-weight:600;color:#4a5059;margin:0}
 .lrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--chip);border:0;width:100%;text-align:left}
 .lrow .ico{width:32px;height:32px;border-radius:9px}
@@ -178,7 +158,6 @@ dialog.info p{font-size:14px;line-height:1.5;color:var(--ink2);margin:0 0 10px}
 #legend{position:fixed;right:20px;top:140px;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(20,28,40,.12);padding:10px 12px;font-size:12px;color:var(--ink2);display:none;z-index:3}
 #legend .ramp{width:160px;height:8px;border-radius:4px;margin:6px 0 3px}
 #legend .rl{display:flex;justify-content:space-between}
-.fan{position:fixed;left:420px;bottom:6px;font-size:11px;color:var(--faint);z-index:2;background:rgba(255,255,255,.8);padding:2px 6px;border-radius:6px}
 #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:20;font-size:15px;color:var(--mute);transition:opacity .3s}
 dialog{border:0;border-radius:20px;box-shadow:var(--shadow);padding:0;width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 64px)}
 dialog::backdrop{background:rgba(20,28,40,.35)}
@@ -191,11 +170,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .dlg table{border-collapse:collapse;width:100%;font-size:13.5px}
 .dlg td,.dlg th{text-align:left;padding:6px 8px 6px 0;border-bottom:1px solid #eef0f2;vertical-align:top}
 @media (max-width:859px){
-  header.top{height:56px;padding:0 12px}
-  .brand span{display:none}
-  nav.tools{font-size:13px} nav.tools a{padding:0 11px}
-  .tr .btn{padding:0 12px;min-height:36px}
-  #share{display:none}
   aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
   aside#panel.tall{max-height:78vh}
   .grab{display:block !important}
@@ -204,14 +178,12 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   .vbody{padding:12px 18px}
   .vfoot{padding:10px 18px 14px}
   .big-num .n{font-size:38px}
-  #layers{right:12px;left:12px;top:66px;justify-content:center;overflow-x:auto;gap:2px}
+  #layers{right:12px;left:12px;justify-content:center;overflow-x:auto;gap:2px}
   #layers button{padding:0 9px;min-width:36px}
   #layers .lf{display:none} #layers .ls{display:inline}
-  .fan{left:12px;bottom:auto;top:110px}
-  #legend{right:12px;bottom:auto;top:112px}
-  #hint{bottom:auto;top:116px}
+  #legend{right:12px;bottom:auto}
+  #hint{bottom:auto}
   .maplibregl-ctrl-bottom-right{bottom:calc(var(--sheet,52vh) + 4px)}
-  #planBar{display:none}
   #planMini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 14px 0;padding:10px 12px;border-radius:14px;background:var(--chip);flex:none}
   #planMini.empty{display:flex;align-items:center;font-size:13px;color:var(--mute);gap:8px}
   #planMini.hide{display:none}
@@ -220,7 +192,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   #planMini span{font-size:11.5px;color:var(--mute);white-space:nowrap}
   #planMini .g b{color:var(--green)}
   .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group{display:none}   /* pinch to zoom on phones */
-  .fan{display:none}
   .fan2{display:block !important}
   body.drawing #vDraw .vhead p, body.drawing #vDraw .steps, body.drawing #drawSpacing{display:none}
   body.drawing #vDraw .vhead{flex-direction:row;align-items:center;justify-content:space-between;padding:6px 18px 4px;border:0}
@@ -250,23 +221,47 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .fan2{display:none;font-size:12px;color:var(--faint);margin:0}
 .grab{display:none;align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 0;border:0;padding:0}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+
+/* ---------- Shape Chicago layout: shared header + metrics bar (/shape/shape.css) ---------- */
+:root{--topH:137px}
+#tbar{gap:26px}
+#tbar .sc-m b{display:flex;align-items:center;gap:6px}
+#tbar .sc-m b .ib{font-size:12px;letter-spacing:0}
+#tbar .tplan{width:110px} #tbar .tplan b{font-size:18px}
+#tbar .tempty{font-size:14px;color:var(--mute)}
+#tbar .tsum{display:none}
+#tbar .sc-btn:disabled{opacity:.45;cursor:default}
+@media (min-width:860px){
+  aside#panel{top:calc(var(--topH) + 16px)}
+  #layers{top:calc(var(--topH) + 16px)}
+  #legend{top:calc(var(--topH) + 72px)}
+}
+@media (max-width:1240px){ #tbar .top{display:none} }
+@media (max-width:1060px){ #tbar{gap:18px} #tbar .tplan,#tbar .sc-sep{display:none} }
+@media (max-width:859px){
+  #tbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) ;gap:8px;padding:10px 12px;min-height:0}
+  #tbar .tplan,#tbar .sc-sep,#tbar .top,#tbar .tco2{display:none}
+  #tbar .sc-m b{font-size:18px} #tbar .sc-m span{font-size:11.5px;white-space:normal}
+  #tbar .tsum{display:block;grid-column:1 / 3;align-self:center;font-size:12.5px;color:var(--mute)}
+  #tbar .sc-push{grid-column:3;justify-self:end}
+  #tbar .sc-btn{min-height:34px;font-size:13px;padding:0 12px}
+  #tbar .tempty{grid-column:1 / 3;font-size:13px}
+  #layers{top:calc(var(--topH) + 8px)}
+  #legend{top:calc(var(--topH) + 56px)}
+  #hint{top:calc(var(--topH) + 60px)}
+  .sc-head .sc-share{display:inline-block}
+  .sc-head .sc-btn{padding:0 11px}
+}
 </style>
 </head>
 <body>
 <div id="loading">Loading Chicago's transit…</div>
-<header class="top">
-  <div class="tl">
-    <a class="brand" href="../" aria-label="Shape Chicago home">
-      <svg width="28" height="28" viewBox="0 0 104 104" aria-hidden="true"><rect width="104" height="104" rx="26" fill="#d9f0fa"/><polygon transform="translate(22,22) scale(2.5)" points="12,1 14.7,7.3 21.5,6.5 17.4,12 21.5,17.5 14.7,16.7 12,23 9.3,16.7 2.5,17.5 6.6,12 2.5,6.5 9.3,7.3" fill="#e4002b" stroke="#e4002b" stroke-width="1.6" stroke-linejoin="round"/></svg>
-      <span>Shape Chicago</span>
-    </a>
-    <nav class="tools" aria-label="Tools"><a href="../">Housing</a><a href="./" aria-current="page">Transit</a></nav>
-  </div>
-  <div class="tr">
-    <button class="btn" id="srcBtn" type="button">Sources</button>
-    <button class="btn dark" id="share" type="button">Share my plan</button>
-  </div>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="../" aria-label="Shape Chicago home"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../">Housing</a><a href="./" aria-current="page">Transit</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago, CTA or Metra.</span><button class="sc-btn" id="srcBtn" type="button">Sources</button><button class="sc-btn sc-share" id="share" type="button">Share</button></div>
 </header>
+<section class="sc-bar" id="tbar" aria-live="polite"></section>
 <div id="map" role="application" aria-label="Map of Chicago's L, Metra and bus lines"></div>
 
 <aside id="panel" aria-label="Transit plan">
@@ -276,7 +271,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   <section class="view on" id="vStart">
     <div class="vhead">
       <h1>Plan Chicago's transit</h1>
-      <p>Switch on real proposals or draw your own line. Your plan's effects add up on the map.</p>
     </div>
     <div class="vbody">
       <div class="drawcard" id="drawCard"></div>
@@ -367,11 +361,9 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   <button type="button" data-l="people" aria-pressed="false">People</button>
   <button type="button" data-l="jobs" aria-pressed="false">Jobs</button>
 </div>
-<div id="planBar" aria-live="polite"></div>
 <div id="legend"><div id="legT">People per square mile</div><div class="ramp" id="legRamp"></div><div class="rl"><span>1,000</span><span>50,000+</span></div></div>
 <div id="tip" role="status"></div>
 <div id="hint"></div>
-<div class="fan">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</div>
 
 <dialog id="srcDlg" aria-labelledby="srcH"><div class="dlg" id="srcBody"></div></dialog>
 <dialog id="infoDlg" class="info"><div class="dlg" id="infoBody"></div></dialog>
@@ -1368,11 +1360,14 @@ function renderMyLines(){
   for (const b of el.querySelectorAll(".sw")) b.onclick = () => { const L = lines.find(x => x.id === b.dataset.id); L.off = !L.off; save(); renderPlan(); renderMyLines(); renderBar(); };
 }
 // the plan's combined effects: a bar along the map (desktop), a strip at the top of the sheet (phones)
-function renderBar(){
-  const A = active(), bar = $("planBar"), mini = $("planMini");
+{ const bar = document.getElementById("tbar"), setTop = () => document.documentElement.style.setProperty("--topH", Math.round(bar.getBoundingClientRect().bottom) + "px");
+  setTop(); if (window.ResizeObserver) new ResizeObserver(setTop).observe(bar); addEventListener("resize", setTop); }
+function renderBar(){   // the plan's effects, in the shared Shape Chicago metrics bar
+  const A = active(), bar = $("tbar"), mini = $("planMini");
+  mini.className = "hide"; mini.innerHTML = "";
   if (!A.length || !NET){
-    bar.innerHTML = `<div class="pbe"><i aria-hidden="true">+</i><span><b>Your plan is empty</b>Switch on a proposal or draw a line, and riders, cost, cars and CO₂ add up here.</span></div>`;
-    mini.className = "empty"; mini.innerHTML = `Your plan's riders, cost, cars and CO₂ add up here.`; return;
+    bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>No lines yet</b></div><span class="sc-sep"></span><span class="tempty">Your plan's riders, cost, cars and CO₂ add up here.</span><div class="sc-push"><button class="sc-btn" type="button" disabled>Start over</button></div>`;
+    return;
   }
   evaluate();
   const wait = A.some(L => L.waiting);
@@ -1382,15 +1377,18 @@ function renderBar(){
   const co2 = A.reduce((a, L) => a + co2Mid(L), 0);
   const capS = cap[1] > 0 ? (cap[0] === cap[1] ? money(cap[0]) : moneyRange(cap[0], cap[1])) : "$0";
   const co2S = `${num(Math.abs(co2))} t`, co2K = `${co2 >= 0 ? "less" : "more"} CO₂ a year, ${CO2_LABEL}`;
-  bar.innerHTML = `<div class="pb0"><span>Your plan</span><b>${A.length} line${A.length > 1 ? "s" : ""}</b><button type="button" id="planClear">Clear</button></div>
-    <div class="pbs"><b>${wait ? "…" : num(net)}</b><span>more transit riders a weekday</span></div>
-    <div class="pbs"><b>${capS}</b><span>to build</span></div>
-    <div class="pbs"><b>${money(Math.abs(op))}</b><span>${op < 0 ? "a year saved" : "a year to run"}</span></div>
-    <div class="pbs ${cars >= 0 ? "g" : ""}"><b>${num(Math.abs(cars))}</b><span>${cars >= 0 ? "fewer" : "more"} car trips a day</span></div>
-    <div class="pbs ${co2 >= 0 ? "g" : ""}"><b>${co2S}</b><span>${co2K}</span></div>`;
+  const n = `${A.length} line${A.length > 1 ? "s" : ""}`;
+  const co2Html = `<p>Your lines added together, ${CO2_LABEL}: car trips people stop making, minus the power and fuel the new service uses. The grid and the car fleet both get cleaner over those years.</p><p>Open any line for its own breakdown, its long-run figure and the sources.</p>`;
+  bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>${n}</b></div><span class="sc-sep"></span>
+    <div class="sc-m"><b>${wait ? "…" : num(net)}</b><span>more riders a weekday</span></div>
+    <div class="sc-m"><b>${capS}</b><span>to build</span></div>
+    <div class="sc-m top"><b>${money(Math.abs(op))}</b><span>${op < 0 ? "a year saved" : "a year to run"}</span></div>
+    <div class="sc-m ${cars >= 0 ? "g" : ""}"><b>${num(Math.abs(cars))}</b><span>${cars >= 0 ? "fewer" : "more"} car trips a day</span></div>
+    <div class="sc-m tco2 ${co2 >= 0 ? "g" : ""}"><b>${co2S} ${ib("planco2", "CO₂ for your plan", co2Html)}</b><span>${co2K}</span></div>
+    <span class="tsum">${n} · ${co2S} ${co2 >= 0 ? "less" : "more"} CO₂ a year, 5–10 yrs out</span>
+    <div class="sc-push"><button class="sc-btn" type="button" id="planClear">Start over</button></div>`;
+  bindInfo(bar);
   $("planClear").onclick = () => { lines = []; save(); renderPlan(); if (nav.view === "group") openGroup(nav.g); else openStart(); };
-  mini.className = $("vStart").classList.contains("on") || $("vGroup").classList.contains("on") ? "" : "hide";
-  mini.innerHTML = `<div><b>${wait ? "…" : num(net)}</b><span>more riders a day</span></div><div><b>${capS}</b><span>to build</span></div><div class="${co2 >= 0 ? "g" : ""}"><b>${co2S}</b><span>${co2 >= 0 ? "less" : "more"} CO₂ a year</span></div>`;
 }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]));
 
