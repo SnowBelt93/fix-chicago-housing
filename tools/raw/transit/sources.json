@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-27T23:48Z",
+ "fetched": "2026-10-28T00:35Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -72,6 +72,26 @@
    "routes": 2,
    "stops": 21,
    "weekday_trips": 92
+  },
+  "aeo_suptab_54_12.xlsx": {
+   "url": "https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_54.12.xlsx",
+   "bytes": 42638
+  },
+  "aeo_suptab_39.xlsx": {
+   "url": "https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_39.xlsx",
+   "bytes": 23698
+  },
+  "aeo_suptab_40.xlsx": {
+   "url": "https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_40.xlsx",
+   "bytes": 17393
+  },
+  "aeo_tab7.xlsx": {
+   "url": "https://www.eia.gov/outlooks/aeo/excel/aeotab7.xlsx",
+   "bytes": 39596
+  },
+  "cambium23_lrmer_gea.xlsx": {
+   "url": "https://data.nlr.gov/system/files/230/1707947178-Cambium23_LRMER_GEAregions_0.xlsx",
+   "bytes": 17363130
   }
  }
 }

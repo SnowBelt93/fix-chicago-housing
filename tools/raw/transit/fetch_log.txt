@@ -1,2 +1,5 @@
-calendar rows 2 calendar_dates rows 64 cols ['service_id', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'start_date', 'end_date']
-nictd patterns 11 routes 2
+aeo_suptab_54_12.xlsx 42638
+aeo_suptab_39.xlsx 23698
+aeo_suptab_40.xlsx 17393
+aeo_tab7.xlsx 39596
+cambium23_lrmer_gea.xlsx 17363130
