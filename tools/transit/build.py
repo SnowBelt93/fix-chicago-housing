@@ -213,7 +213,7 @@ def main():
         st = [x for x in st if x['lines']]
         print(name, len(lines), 'lines', len(st), 'stations in the map area', file=sys.stderr)
         return {'lines': lines, 'stations': st}
-    for name, key in (('amtrak', 'amtrak'), ('nictd', 'southShore')):
+    for name, key in (('nictd', 'southShore'),):   # Amtrak was tried as an intercity layer and dropped (Kyle, Oct 27)
         r = other_rail(name)
         if r: out[key] = r
     # Chicago outline + lake for the fallback basemap (from the housing game's meta.json)

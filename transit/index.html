@@ -282,7 +282,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 <div id="layers" role="group" aria-label="Map layers">
   <button type="button" data-l="L" aria-pressed="true">L</button>
   <button type="button" data-l="commuter" aria-pressed="true" title="Metra and the South Shore Line"><span class="lf">Commuter rail</span><span class="ls">Metra</span></button>
-  <button type="button" data-l="intercity" aria-pressed="false" title="Amtrak"><span class="lf">Intercity rail</span><span class="ls">Amtrak</span></button>
   <button type="button" data-l="bus" aria-pressed="false">Buses</button>
   <button type="button" data-l="people" aria-pressed="false">People</button>
   <button type="button" data-l="jobs" aria-pressed="false">Jobs</button>
@@ -375,7 +374,7 @@ const TERMINAL_BONUS = true;
 
 /* ---------- state ---------- */
 let NET, MODEL, B, BGRID, LST = [], MST = [], LGRID, MGRID, STOPS, SGRID, BASE_LOSS = null;
-let map, lines = [], cur = null, drawing = null, layerOn = {L:true, commuter:true, intercity:false, bus:false, people:false, jobs:false};
+let map, lines = [], cur = null, drawing = null, layerOn = {L:true, commuter:true, bus:false, people:false, jobs:false};
 const $ = id => document.getElementById(id);
 const KX = 111320 * Math.cos(41.85 * Math.PI / 180), KY = 110574, O = [41.8819, -87.6278];
 const toXY = (lon, lat) => [(lon - O[1]) * KX, (lat - O[0]) * KY];
@@ -955,7 +954,6 @@ async function initMap(){
     map.addLayer({id:sid, type:"circle", source:sid, layout:{visibility:vis}, paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 1.8, 14, 5], "circle-color":"#fff", "circle-stroke-color":color, "circle-stroke-width":["interpolate", ["linear"], ["zoom"], 9, 1, 14, 1.8]}});
   };
   other("southShore", "ssl", "#8b2332", [3, 1.2], "visible");
-  other("amtrak", "amtrak", "#2f4a73", null, "none");
   map.addSource("L", {type:"geojson", data:fc(lineFeatures(NET.lLines))});
   map.addLayer({id:"L-case", type:"line", source:"L", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#fff", "line-width":["interpolate", ["linear"], ["zoom"], 9, 3.5, 14, 8]}});
   map.addLayer({id:"L", type:"line", source:"L", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":["get", "color"], "line-width":["interpolate", ["linear"], ["zoom"], 9, 2, 14, 5]}});
@@ -1417,7 +1415,7 @@ function setLayer(k, on){
   layerOn[k] = on;
   document.querySelector(`#layers [data-l="${k}"]`).setAttribute("aria-pressed", on);
   const vis = v => v ? "visible" : "none";
-  const ids = {L:["L", "L-case", "lst"], commuter:["metra", "metra-case", "mst", "ssl", "ssl-case", "sslst"], intercity:["amtrak", "amtrak-case", "amst"]}[k];
+  const ids = {L:["L", "L-case", "lst"], commuter:["metra", "metra-case", "mst", "ssl", "ssl-case", "sslst"]}[k];
   if (ids) for (const id of ids) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis(on));
   if (k === "bus") map.setLayoutProperty("bus", "visibility", vis(on));
   if (k === "people" || k === "jobs"){
@@ -1511,7 +1509,7 @@ function openSources(){
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Map layers</h3>
-  <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). Intercity rail: Amtrak's published schedule (<a href="https://content.amtrak.com/content/gtfs/GTFS.zip" target="_blank" rel="noopener">GTFS</a>). Both are shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
+  <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
