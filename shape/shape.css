@@ -67,3 +67,20 @@ dialog.sc-info .sc-x{float:right;margin:-4px -6px 0 12px}
   dialog.sc-info .sc-ibody{max-height:85vh;padding:18px 20px calc(24px + env(safe-area-inset-bottom))}
 }
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* motion: things respond when you point at them, and open smoothly */
+:where(.sc-head, .sc-bar) :where(button, a){transition:background-color .15s, border-color .15s, color .15s, box-shadow .15s, transform .15s}
+.sc-btn:active{transform:translateY(1px)}
+.sc-btn.primary:hover{box-shadow:0 2px 10px rgba(43,93,160,.28)}
+.sc-nav a:not([aria-current]):hover{color:var(--sc-ink);background:rgba(255,255,255,.65)}
+.sc-seg button{transition:background-color .15s, color .15s, box-shadow .15s}
+.sc-seg button:not([aria-checked="true"]):hover{background:rgba(255,255,255,.7)}
+.sc-seg button.hard:not([aria-checked="true"]):hover{background:#fbe9ec}
+.ib{transition:color .15s, border-color .15s, background-color .15s, transform .15s}
+.ib:hover{transform:scale(1.08);background:var(--sc-seg)}
+dialog.sc-info[open]{animation:scPop .24s cubic-bezier(.2,.8,.2,1)}
+dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
+@keyframes scPop{from{opacity:0;transform:translateY(10px) scale(.98)}}
+@keyframes scFade{from{opacity:0}}
+@media (max-width:859px){ dialog.sc-info[open]{animation:scSheet .28s cubic-bezier(.2,.8,.2,1)} @keyframes scSheet{from{transform:translateY(40px);opacity:.4}} }
+@media (prefers-reduced-motion:reduce){ dialog.sc-info[open], dialog.sc-info[open]::backdrop{animation:none} .ib:hover{transform:none} }

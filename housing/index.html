@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
 <style>
 /* Layout: full-bleed 3D model of the city; civic goal meter on top, tool sheet at the bottom on phones / left rail on desktop.
    Default look "City Hall": Chicago flag blue + red six-point stars, city-website blue bands, condensed Big Shoulders headlines, square corners.
@@ -1101,11 +1102,11 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .widebtn,#expandAll{display:none !important}
 .tab[data-pane="math"]{display:none !important}
 @media (min-width:860px){ .tab[data-pane="share"]{display:none !important} }
-.tabs{border:0 !important;gap:4px !important;padding:14px 14px 10px !important;justify-content:flex-start !important;overflow-x:auto}
-.tab{border:0 !important;margin:0 !important;padding:8px 12px !important;border-radius:16px;font:600 14.5px var(--sc-font) !important;color:var(--sc-ink2) !important;white-space:nowrap}
+.tabs{border:0 !important;gap:2px !important;padding:14px 12px 10px !important;justify-content:flex-start !important;overflow-x:auto}
+.tab{border:0 !important;margin:0 !important;padding:8px 10px !important;border-radius:16px;font:600 14.5px var(--sc-font) !important;color:var(--sc-ink2) !important;white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--sc-ink);color:#fff !important}
 .tab[aria-selected="true"] .n{color:rgba(255,255,255,.7) !important}
-.tab .n{font:500 13px var(--sc-font) !important}
+.tab .n{font:500 12px var(--sc-font) !important}
 .pane{padding:4px 14px 20px !important;gap:10px !important}
 .pane p{color:var(--sc-ink2)}
 .tool{border:1px solid var(--sc-line);border-radius:16px;padding:12px 14px 14px !important;gap:10px !important;background:#fff}
@@ -1127,7 +1128,7 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .tiers{gap:5px !important}
 .seg{border-radius:12px !important;border:0 !important;background:var(--sc-seg);padding:3px;gap:2px}
 .seg button{border:0 !important;border-radius:10px;min-height:34px;font:600 13px var(--sc-font) !important;background:transparent}
-.seg button[aria-pressed="true"]{background:#fff;color:var(--sc-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.seg button[aria-pressed="true"]{background:#fff !important;color:var(--sc-ink) !important;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .seg::before{display:none !important}
 .btn{border-radius:18px !important;font:600 13.5px var(--sc-font) !important}
 .btn.primary{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important}
@@ -1182,7 +1183,7 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
   #hardBtn{order:4;margin:0 auto 0 0}
   .hacts #reset{order:5;min-height:32px;padding:0 12px;font-size:13px}
   .hsep,.hrent,.hpace,.hbar #affLine,.hbar .load{display:none !important}
-.hbar h1.sr{position:absolute !important;margin:0}
+
 .intro .card{font-family:var(--sc-font);border-radius:20px}
 .intro .card :is(h2,p,span,b,button,div,li,a){font-family:var(--sc-font)}
 #intro .card h2,#myth .card h2{font:600 24px/1.2 var(--sc-font) !important;letter-spacing:-.02em;margin:0;text-transform:none !important}
@@ -1197,6 +1198,45 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
   .tabs{padding:6px 12px 8px !important}
   .secbtns button{font-family:var(--sc-font) !important;border-radius:14px}
 }
+.hbar h1.sr{position:absolute !important;margin:0}
+/* Oct 28 feedback: collapsible map key and sections, clear Aye/Nay, controls that answer the pointer */
+.legend .lghead{display:none !important}
+.legend .lgtoggle{display:flex !important;align-items:center;justify-content:space-between;gap:16px;width:100%;min-height:22px;font:600 14px var(--sc-font) !important;color:var(--sc-ink) !important}
+.legend .lgtoggle::after{content:"" !important;width:7px;height:7px;border-right:2px solid var(--sc-mute);border-bottom:2px solid var(--sc-mute);transform:rotate(45deg);margin:-4px 2px 0 0;transition:transform .2s}
+.legend:not(.open) .lgtoggle::after{transform:rotate(-45deg);margin:0 4px 0 0}
+.legend:not(.open) > div{display:none !important}
+.legend:not(.open){min-width:0 !important;padding-block:10px !important}
+.legend.open > div{animation:paneIn .22s ease-out}
+.pgroup > summary::after{content:"" !important;flex:none;width:7px;height:7px;border-right:2px solid var(--sc-mute);border-bottom:2px solid var(--sc-mute);transform:rotate(-45deg);margin:0 4px;transition:transform .22s}
+.pgroup[open] > summary::after{transform:rotate(45deg);margin:-4px 4px 0}
+.pgroup > summary{padding:12px 2px 10px !important;border-bottom:1px solid var(--sc-line) !important;border-radius:8px}
+.pgroup > summary:hover .eyebrow{color:var(--sc-navy) !important}
+.pane > .pgroup.cgroup{margin:0}
+.pane > .pgroup.cgroup > .group{padding-top:10px}
+/* Aye / Nay: the chosen vote is filled, green for aye */
+.ayenay{background:var(--sc-seg) !important;padding:3px !important;border-radius:12px !important}
+.ayenay button{min-width:76px;border-radius:10px !important;font-weight:600 !important;color:var(--sc-mute) !important}
+.ayenay button[data-vote="1"][aria-pressed="true"]{background:var(--sc-green) !important;color:#fff !important;box-shadow:0 1px 3px rgba(31,107,68,.35) !important}
+.ayenay button[data-vote="1"][aria-pressed="true"]::before{content:"✓ "}
+.ayenay button[data-vote="0"][aria-pressed="true"]{background:#fff !important;color:var(--sc-ink) !important;box-shadow:0 1px 2px rgba(0,0,0,.12) !important}
+.policy.worse .ayenay button[data-vote="1"][aria-pressed="true"]{background:var(--sc-hard) !important;box-shadow:0 1px 3px rgba(179,0,30,.35) !important}
+.policy.on{border-color:#b8dcc6 !important;background:var(--sc-greenbg) !important}
+.policy.worse.on{border-color:#f0c2ca !important;background:#fdf1f3 !important}
+.policy{transition:background-color .2s,border-color .2s}
+/* hover */
+.tier,.tab,.seg button,.target,.btn,#secBtns button,.mapctl button,.policy,.list > *,select.pick,.lgtoggle{transition:background-color .15s,border-color .15s,color .15s,box-shadow .15s,transform .15s}
+.tier:not([aria-pressed="true"]):hover{background:#e3e7eb !important;transform:translateY(-1px)}
+.tier:active{transform:none}
+.tab:not([aria-selected="true"]):hover{background:var(--sc-seg)}
+.seg button:not([aria-pressed="true"]):hover,.ayenay button:not([aria-pressed="true"]):hover{background:rgba(255,255,255,.8) !important;color:var(--sc-ink) !important}
+.target:hover{border-color:var(--sc-navy) !important}
+.btn:hover{background:var(--sc-seg) !important} .btn.primary:hover{background:var(--sc-navy2) !important}
+#secBtns button:hover{background:var(--sc-seg)}
+.mapctl button:hover{background:var(--sc-seg)}
+.policy:hover{border-color:var(--sc-line2) !important}
+.hbar .play button:active{transform:translateY(1px)}
+@media (prefers-reduced-motion:reduce){ .tier:hover{transform:none} .legend.open > div{animation:none} }
+
 @media (max-width:400px){ .hlbl{display:none} }
 .hbar .load{display:none !important}
 .policy .t{display:block}
@@ -1276,20 +1316,6 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
           <div class="tiers" id="todTiers"></div>
           <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Supertall: about 60 stories at the busiest stations inside the downtown core, towers at the other busy stations. Both together are capped at downtown's forecast leasing pace.</p>
         </div>
-        <div class="tool" id="tool-metra" data-unlock="metra">
-          <h3>Near Metra stations in the city</h3>
-          <p>The same idea for the 74 Metra stops inside Chicago.</p>
-          <div class="tiers" id="metraTiers"></div>
-        </div>
-        <div class="tool" id="tool-types" data-unlock="hoods">
-          <h3>Zone by neighborhood type</h3>
-          <p>Set the rules for a whole kind of neighborhood at once.</p>
-          <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" id="typeTiers0"></div></div>
-          <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
-          <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
-          <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
-          <p class="small trafficnote">Traffic: new neighbors far from jobs and transit drive more, so homes there add more car trips than homes near jobs and the L (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
-        </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <h3>One neighborhood at a time</h3>
           <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick one…</option></select>
@@ -1305,6 +1331,20 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
           <p class="small trafficnote">Rezoning far from jobs and transit adds homes, and more traffic: households there drive more (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
           <div class="sub">Rezoned so far: <span id="touched">0%</span> of the city's buildings</div>
           <div class="list" id="hoodList"></div>
+        </div>
+        <div class="tool" id="tool-metra" data-unlock="metra">
+          <h3>Near Metra stations in the city</h3>
+          <p>The same idea for the 74 Metra stops inside Chicago.</p>
+          <div class="tiers" id="metraTiers"></div>
+        </div>
+        <div class="tool" id="tool-types" data-unlock="hoods">
+          <h3>Zone by neighborhood type</h3>
+          <p>Set the rules for a whole kind of neighborhood at once.</p>
+          <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" id="typeTiers0"></div></div>
+          <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
+          <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
+          <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
+          <p class="small trafficnote">Traffic: new neighbors far from jobs and transit drive more, so homes there add more car trips than homes near jobs and the L (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
         </div>
         <div class="tool" id="tool-corr" data-unlock="corr">
           <h3>Apartments over shops on 38 main streets</h3>
@@ -2736,6 +2776,7 @@ function maybeMyth(id){
 }
 function showMyth(id){
   const m = MYTHS[id];
+  closeAllComments();
   $("mythEyebrow").textContent = "Myth check"; $("mythFix").hidden = true;
   $("mythTitle").textContent = m.t;
   $("mythVerdict").hidden = !m.a; $("mythVerdict").textContent = m.a || ""; $("mythBody").textContent = m.b;
@@ -2932,7 +2973,8 @@ function closeAllComments(){ commentEpoch++; liveCards().forEach(closeCard); }
 function showComment(line, by, town){
   // wait until the map has finished redrawing after the change, so the card animates on an idle frame instead of stuttering
   const ep = commentEpoch;
-  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (ep === commentEpoch) showCommentNow(line, by, town); }, 40)));
+  if (!$("myth").hidden) return;   // one pop-up at a time: no comment slips over a myth card
+  requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (ep === commentEpoch && $("myth").hidden) showCommentNow(line, by, town); }, 40)));
 }
 let commentNo = 411;   // public comments are numbered like a clerk's record
 function showCommentNow(line, by, town){
@@ -3155,7 +3197,7 @@ const deckgl = new deck.Deck({
   initialViewState: viewState,
   controller: {touchRotate:true, dragRotate:true},
   effects: [lighting],
-  onInteractionStateChange: (st) => { if (playing && camRaf && (st.isDragging || st.isZooming || st.isRotating)){ cancelAnimationFrame(camRaf); camRaf = 0; $("cineCap").hidden = true; } },
+  onInteractionStateChange: (st) => { if (playing && camRaf && (st.isDragging || st.isZooming || st.isRotating)){ cancelAnimationFrame(camRaf); camRaf = 0; fadeTo($("cineCap"), false); } },
   onViewStateChange: ({viewState: v}) => { v = clampView(v); const b = zoomBand(v.zoom); viewState = v; if (b !== zoomBandNow){ zoomBandNow = b; scheduleRender(); } return v; },
   getTooltip: ({object, layer}) => {
     if (!object || !layer) return null;
@@ -3733,7 +3775,7 @@ function cinema(){
   keys.push({t:total, v:{...endV, ...centerAt(-87.68, 41.84, endV, pos)}, fly:true, end:true});
   const lerp = (a, b, k) => a + (b - a) * k, smooth = k => k * k * (3 - 2 * k);
   const wrap = d => ((d + 540) % 360) - 180;
-  const cap = $("cineCap"); let capFor = null;
+  const cap = $("cineCap"); let capFor = null, capVal = 0;
   const t0 = performance.now();
   const frame = (now) => {
     if (!playing) return;
@@ -3749,9 +3791,11 @@ function cinema(){
     const here = B.stop || (!B.fly && A.stop) || null;
     if (here && (B.stop ? k0 > 0.55 : true)){
       const Ar = AREAS[here.num];
-      if (capFor !== here.num){ capFor = here.num; cap.hidden = false; cap.style.animation = "none"; void cap.offsetWidth; cap.style.animation = ""; $("ccName").textContent = here.name; }
-      $("ccLine").textContent = "+" + fmt(Ar ? Ar.addedNow : 0) + " new homes by " + (START + year);
-    } else if (!here && capFor !== null){ capFor = null; cap.hidden = true; }
+      const target = Ar ? Ar.addedNow : 0;
+      if (capFor !== here.num){ capFor = here.num; capVal = 0; cap.style.animation = "none"; $("ccName").textContent = here.name; fadeTo(cap, true); }
+      capVal += (target - capVal) * 0.12; if (Math.abs(target - capVal) < 1) capVal = target;
+      $("ccLine").textContent = "+" + fmt(Math.round(capVal)) + " new homes by " + (START + year);
+    } else if (!here && capFor !== null){ capFor = null; fadeTo(cap, false); }
     camRaf = requestAnimationFrame(frame);
   };
   camRaf = requestAnimationFrame(frame);
@@ -3825,17 +3869,35 @@ function planHeadlines(){
   });
   return out;
 }
+let headTok = 0;
 function showHeadline(h){
-  const el = $("ticker");
+  const el = $("ticker"), tok = ++headTok;
   el.style.setProperty("--hud-h", ($("hud").getBoundingClientRect().bottom + 10) + "px");
-  $("tkYear").textContent = (START + h.y) + " · Chicago"; $("tkText").textContent = h.t;
-  el.hidden = false;
-  const tx = isWide() ? "translateX(-50%) " : "";
-  if (el.animate) el.animate([{opacity:0, transform:tx + "translateY(10px)"}, {opacity:1, transform:tx ? "translateX(-50%)" : "none"}], {duration:420, easing:"cubic-bezier(.16,1,.3,1)"});
+  const tx = isWide() ? "translateX(-50%) " : "", rest = tx ? "translateX(-50%)" : "none";
+  const swapIn = () => {
+    if (tok !== headTok) return;
+    $("tkYear").textContent = (START + h.y) + " · Chicago"; $("tkText").textContent = h.t;
+    el.hidden = false;
+    if (el.animate && !reduceMotion) el.animate([{opacity:0, transform:tx + "translateY(8px)"}, {opacity:1, transform:rest}], {duration:520, easing:"cubic-bezier(.16,1,.3,1)", fill:"both"});
+  };
+  if (!el.hidden && el.animate && !reduceMotion) el.animate([{opacity:1, transform:rest}, {opacity:0, transform:tx + "translateY(-6px)"}], {duration:260, easing:"ease-in", fill:"both"}).onfinish = swapIn;
+  else swapIn();
 }
-function hideHeadline(){ $("ticker").hidden = true; headlines = []; }
+function hideHeadline(){
+  const el = $("ticker"), tok = ++headTok; headlines = [];
+  if (el.hidden || !el.animate || reduceMotion){ el.hidden = true; return; }
+  const tx = isWide() ? "translateX(-50%) " : "";
+  el.animate([{opacity:1}, {opacity:0, transform:tx + "translateY(-6px)"}], {duration:260, easing:"ease-in", fill:"both"}).onfinish = () => { if (tok === headTok) el.hidden = true; };
+}
+// fade a small overlay in or out instead of popping it
+function fadeTo(el, show){
+  if (!el) return;
+  if (reduceMotion || !el.animate){ el.hidden = !show; return; }
+  if (show){ if (!el.hidden && !el._fading) return; el._fading = false; el.hidden = false; el.animate([{opacity:0, transform:"translateY(6px)"}, {opacity:1, transform:"none"}], {duration:380, easing:"cubic-bezier(.16,1,.3,1)", fill:"both"}); }
+  else { if (el.hidden || el._fading) return; el._fading = true; el.animate([{opacity:1}, {opacity:0, transform:"translateY(4px)"}], {duration:260, easing:"ease-in", fill:"both"}).onfinish = () => { if (el._fading){ el.hidden = true; el._fading = false; } }; }
+}
 function stopPlay(finished){
-  clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); $("cineCap").hidden = true;
+  clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); fadeTo($("cineCap"), false);
   if (cineSheet){ sheetState(cineSheet === "peek" ? "peek" : "menu"); cineSheet = false; }
   $("playBtn").querySelector("span").textContent = "Simulate 15 years";
   if (year !== YEARS){ year = YEARS; recompute(); }
@@ -4344,6 +4406,24 @@ $("modeNormal").addEventListener("click", () => setMode(false));
 $("modeHard").addEventListener("click", () => setMode(true));
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#targets .target"); if (b && plan.g !== 3) { lastHard = plan.g; lsSet("fch-hardg", plan.g); } });
 $("shareTop").addEventListener("click", () => { showTab("share"); openSheet(); });
+// map key: collapsible everywhere; open by default on desktop, remembered per browser
+{ const lg = $("legend"), saved = lsGet("fch-key", null);
+  if (isWide() ? saved !== false : saved === true) lg.classList.add("open");
+  $("lgToggle").setAttribute("aria-expanded", String(lg.classList.contains("open")));
+  $("lgToggle").addEventListener("click", () => lsSet("fch-key", lg.classList.contains("open"))); }
+// Missions and Impact: each section folds open and shut, like the policy groups
+function collapsify(g){
+  const head = g.querySelector(":scope > .thead, :scope > .eyebrow"); if (!head) return;
+  const d = document.createElement("details"); d.className = "pgroup cgroup"; d.open = true;
+  const sum = document.createElement("summary"); const body = document.createElement("div"); body.className = "group";
+  g.replaceWith(d); d.append(sum, body);
+  if (head.classList.contains("thead")){ const ib = head.querySelector(".ib"); const eb = head.querySelector(".eyebrow") || head.firstElementChild; sum.append(eb); if (ib) sum.append(ib); }
+  else sum.append(head);
+  [...g.childNodes].forEach(n => { if (n !== head) body.appendChild(n); });
+  if (g.id) body.id = g.id;
+}
+document.querySelectorAll("#pane-missions > .group, #pane-impact > .group").forEach(collapsify);
+
 
 boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load the map data. Reload to try again."; });
 })();
