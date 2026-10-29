@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
 <style>
-/* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted, what's next, feedback. */
+/* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted. */
 *{box-sizing:border-box}
 html,body{margin:0;background:#fff}
 body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
@@ -64,20 +64,6 @@ a{color:var(--sc-navy)}
 .plan .row{display:flex;justify-content:space-between;font-size:13px;color:var(--sc-mute)}
 .empty{grid-column:1 / -1;border:1px dashed var(--sc-line2);border-radius:16px;padding:22px;font-size:15px;color:var(--sc-mute);background:#fff}
 .empty a{font-weight:600}
-.next{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:40px;align-items:start}
-.road{list-style:none;margin:0;padding:0}
-.road li{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--sc-line)}
-.road li:first-child{border-top:1px solid var(--sc-line)}
-.road li div{flex:1;min-width:0}
-.road h3{margin:0 0 3px;font-size:17px;font-weight:600}
-.road p{margin:0;font-size:14px;color:var(--sc-mute);line-height:1.45}
-.fb{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
-.fb h3{margin:0;font-size:18px;font-weight:600}
-.fb p{margin:0;font-size:14px;color:var(--sc-mute);line-height:1.5}
-.fb textarea{font:inherit;font-size:15px;min-height:110px;resize:vertical;border:1px solid var(--sc-line2);border-radius:14px;padding:12px;color:var(--sc-ink)}
-.fb .row{display:flex;align-items:center;gap:12px}
-.fb .msg{font-size:14px;color:var(--sc-mute)}
-.fb .msg.ok{color:var(--sc-green)}
 footer{border-top:1px solid var(--sc-line)}
 footer .wrap{padding-block:28px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
 footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
@@ -86,7 +72,6 @@ footer nav{display:flex;gap:18px}
   .hero{grid-template-columns:1fr;gap:28px;padding-block:36px 40px}
   .tools{grid-template-columns:1fr}
   .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .next{grid-template-columns:1fr}
 }
 @media (max-width:640px){
   .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
@@ -99,7 +84,6 @@ footer nav{display:flex;gap:18px}
   .thumb{height:140px}
   .plans{grid-template-columns:1fr}
   footer .wrap{flex-direction:column;align-items:flex-start}
-  .sc-head a.sc-fb{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
@@ -108,7 +92,7 @@ footer nav{display:flex;gap:18px}
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
     <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Tracker</a></nav></div>
-  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span><a class="sc-btn sc-fb" href="#feedback">Send feedback</a></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
   <section class="wrap hero">
@@ -131,16 +115,6 @@ footer nav{display:flex;gap:18px}
   <section class="band" aria-labelledby="plansH"><div class="wrap">
     <div class="sh"><h2 id="plansH">What neighbors built</h2><span>Plans people posted from Fix Chicago Housing</span></div>
     <div class="plans" id="plans"><div class="empty">Loading plans…</div></div>
-  </div></section>
-  <section class="band alt" aria-labelledby="nextH"><div class="wrap next">
-    <div><div class="sh"><h2 id="nextH">What's next</h2></div><ul class="road"><li><div><h3>One plan across every tool</h3><p>Your housing and transit choices saved together, so new homes and new lines work off each other.</p></div><span class="chip">In design</span></li><li><div><h3>Balance the Chicago Budget</h3><p>Close the city's budget gap your way, and see who pays and what gets cut.</p></div><span class="chip">Later</span></li><li><div><h3>Property taxes</h3><p>How the city's tax rules shape what gets built, and who pays.</p></div><span class="chip">Idea</span></li></ul></div>
-    <form class="fb" id="feedback">
-      <h3>What should Shape Chicago build next?</h3>
-      <p>Ideas, corrections and numbers we got wrong all help. No account needed, and nothing you write is shown on the site.</p>
-      <label class="sr" for="fbText">Your idea</label>
-      <textarea id="fbText" maxlength="2000" placeholder="Type your idea…" required></textarea>
-      <div class="row"><button class="sc-btn primary" type="submit" id="fbSend">Send</button><span class="msg" id="fbMsg" role="status"></span></div>
-    </form>
   </div></section>
 </main>
 <footer><div class="wrap">
@@ -173,19 +147,6 @@ async function loadPlans(){
   } catch (e) { el.innerHTML = '<div class="empty">Plans people post show up here.</div>'; }
 }
 loadPlans();
-document.getElementById("feedback").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const t = document.getElementById("fbText"), msg = document.getElementById("fbMsg"), btn = document.getElementById("fbSend");
-  if (t.value.trim().length < 3){ msg.className = "msg"; msg.textContent = "Write a few words first."; return; }
-  btn.disabled = true; msg.className = "msg"; msg.textContent = "Sending…";
-  try {
-    const r = await fetch("/api/feedback", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({text: t.value, page: "home"})});
-    if (r.status === 429) throw new Error("That's a lot of ideas for one day. Try again tomorrow.");
-    if (!r.ok) throw new Error("Couldn't send that. Try again in a minute.");
-    t.value = ""; msg.className = "msg ok"; msg.textContent = "Sent. Thanks.";
-  } catch (err) { msg.textContent = err.message && !/fetch/i.test(err.message) ? err.message : "Couldn't send that. Try again in a minute."; }
-  btn.disabled = false;
-});
 </script>
 </body>
 </html>

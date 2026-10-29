@@ -814,6 +814,83 @@ function drawGeoBase(){   // fallback basemap: streets, expressways and rivers (
 }
 function groupLines(k){ return GEO[k].segs.map(sg => [toLL(sg[0], sg[1]), toLL(sg[2], sg[3])]); }
 
+
+/* ---------- homes in the way of an elevated line (the housing tool's building footprints) ---------- */
+const PER_HH = 2.3;            // persons per household, Chicago (ACS 2024 1-year, via Census Reporter)
+const EL_HALF_M = 7;           // half-width of a two-track elevated structure plus room to build it (assumption)
+let BLD_META = null; const BLD_AREAS = new Map(), DISPLACE = new Map();
+async function bldArea(num){
+  if (BLD_AREAS.has(num)) return BLD_AREAS.get(num);
+  const pr = fetch("../b/" + num + ".wasm").then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(buf => {
+    const dv = new DataView(buf), N = dv.getUint32(0, true), V = dv.getUint32(4, true), lon0 = dv.getFloat64(8, true), lat0 = dv.getFloat64(16, true);
+    const vx = new Int16Array(buf, 24, 2 * V); let o = 24 + 4 * V;
+    const nv = new Uint8Array(buf, o, N); o += N; o += N; o += N; if ((3 * N) % 2) o += 1;   // nverts, stories, flags (+ pad)
+    const units = new Uint16Array(buf.slice(o, o + 2 * N));
+    const kx = 111319.49 * Math.cos(lat0 * Math.PI / 180), ky = 111319.49;
+    const blds = []; let k = 0;
+    for (let i = 0; i < N; i++){
+      const n = nv[i], pts = new Float64Array(2 * n); let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      for (let j = 0; j < n; j++, k++){ const [x, y] = toXY(lon0 + vx[2 * k] * 0.5 / kx, lat0 + vx[2 * k + 1] * 0.5 / ky); pts[2 * j] = x; pts[2 * j + 1] = y; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+      blds.push({pts, units:units[i], x0, x1, y0, y1});
+    }
+    return blds;
+  }).catch(() => []);
+  BLD_AREAS.set(num, pr); return pr;
+}
+function segSegDist(ax, ay, bx, by, cx, cy, dx, dy){
+  const cross = (px, py, qx, qy, rx, ry) => (qx - px) * (ry - py) - (qy - py) * (rx - px);
+  const d1 = cross(ax, ay, bx, by, cx, cy), d2 = cross(ax, ay, bx, by, dx, dy), d3 = cross(cx, cy, dx, dy, ax, ay), d4 = cross(cx, cy, dx, dy, bx, by);
+  if (((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0))) return 0;
+  return Math.min(segDist(ax, ay, cx, cy, dx, dy), segDist(bx, by, cx, cy, dx, dy), segDist(cx, cy, ax, ay, bx, by), segDist(dx, dy, ax, ay, bx, by));
+}
+// buildings within EL_HALF_M of the line's center: {n, homes, people}; null while loading
+function displaced(L){
+  if (L.type === "metra" || L.mode !== "elevated") return null;
+  const src = L.buildShape || L.shape;
+  const shape = src ? src.map(q => toXY(q[0], q[1])) : L.pts.map(p => [p.x, p.y]);
+  const key = shape.map(q => Math.round(q[0]) + "," + Math.round(q[1])).join(";");
+  if (DISPLACE.has(key)){ const v = DISPLACE.get(key); return v.done ? v : null; }
+  const rec = {done:false}; DISPLACE.set(key, rec);
+  (async () => {
+    if (!BLD_META) BLD_META = await fetch("../meta.json").then(r => r.json()).catch(() => null);
+    if (!BLD_META){ Object.assign(rec, {done:true, n:0, homes:0, people:0, unavailable:true}); return; }
+    let lx0 = Infinity, lx1 = -Infinity, ly0 = Infinity, ly1 = -Infinity;
+    for (const [x, y] of shape){ lx0 = Math.min(lx0, x); lx1 = Math.max(lx1, x); ly0 = Math.min(ly0, y); ly1 = Math.max(ly1, y); }
+    const pad = EL_HALF_M + 5, areas = [];
+    for (const f of BLD_META.outlines.features){
+      let ax0 = Infinity, ax1 = -Infinity, ay0 = Infinity, ay1 = -Infinity;
+      const rings = f.geometry.type === "Polygon" ? [f.geometry.coordinates[0]] : f.geometry.coordinates.map(p => p[0]);
+      for (const r of rings) for (const [lon, lat] of r){ const [x, y] = toXY(lon, lat); ax0 = Math.min(ax0, x); ax1 = Math.max(ax1, x); ay0 = Math.min(ay0, y); ay1 = Math.max(ay1, y); }
+      if (ax1 >= lx0 - pad && ax0 <= lx1 + pad && ay1 >= ly0 - pad && ay0 <= ly1 + pad) areas.push(f.properties.num);
+    }
+    let n = 0, homes = 0;
+    for (const num of areas){
+      for (const b of await bldArea(num)){
+        if (b.x1 < lx0 - pad || b.x0 > lx1 + pad || b.y1 < ly0 - pad || b.y0 > ly1 + pad) continue;
+        let hit = false;
+        for (let s2 = 0; s2 < shape.length - 1 && !hit; s2++){
+          const [ax, ay] = shape[s2], [bx, by] = shape[s2 + 1];
+          if (Math.max(ax, bx) < b.x0 - pad || Math.min(ax, bx) > b.x1 + pad || Math.max(ay, by) < b.y0 - pad || Math.min(ay, by) > b.y1 + pad) continue;
+          const P = b.pts, m = P.length / 2;
+          if (inRing([ax, ay], Array.from({length:m}, (_, j) => [P[2 * j], P[2 * j + 1]]))) { hit = true; break; }
+          for (let j = 0; j < m && !hit; j++){ const j2 = (j + 1) % m; if (segSegDist(ax, ay, bx, by, P[2 * j], P[2 * j + 1], P[2 * j2], P[2 * j2 + 1]) <= EL_HALF_M) hit = true; }
+        }
+        if (hit){ n++; homes += b.units; }
+      }
+    }
+    Object.assign(rec, {done:true, n, homes, people:Math.round(homes * PER_HH)});
+    if (cur === L) openLine(L);
+  })();
+  return null;
+}
+
+function dispTile(L){
+  const d = displaced(L);
+  if (!d) return tile("…", "homes in the way (checking the buildings)");
+  if (d.unavailable) return "";
+  const why = `<p>Buildings within about ${EL_HALF_M} m (${Math.round(EL_HALF_M * 3.28)} ft) of the line's center, the room a two-track elevated structure needs (assumption). A line over a street, an expressway or a railroad usually hits none; one cutting across blocks takes homes.</p><p>${num(d.n)} building${d.n === 1 ? "" : "s"} with ${num(d.homes)} home${d.homes === 1 ? "" : "s"}, about ${num(d.people)} people at ${PER_HH} people per household (<a href="https://censusreporter.org/profiles/16000US1714000" target="_blank" rel="noopener">ACS 2024</a>). Homes come from the city's building footprints (2013) used by Fix Chicago Housing; stations, which need more room, and buildings without a home count aren't included.</p>`;
+  return tile(num(d.homes), d.homes ? `homes in the way, about ${num(d.people)} people` : "homes in the way", "disp", "Homes in the way", why, d.homes ? "" : "g");
+}
 /* ---------- money ---------- */
 // a cost from its year's dollars to today's, with FHWA's construction cost index
 function today$(v, year){
@@ -906,9 +983,9 @@ function evaluate(){
   for (const L of active()){
     if (L.type === "metra"){ evalMetra(L); continue; }
     const M = MODES[L.mode], st = L.st, n = st.length;
-    const xy = onStreets(L.mode) && ROADS ? routeXY(st) : st.map(s => [s.x, s.y]);
+    const xy = L.shape ? L.shape.map(q => toXY(q[0], q[1])) : onStreets(L.mode) && ROADS ? routeXY(st) : st.map(s => [s.x, s.y]);
     L.len = pathLen(xy);
-    const trips = tripsPerDay(L.head);
+    let trips = tripsPerDay(L.head);
     // walk shed + transfers
     const walk = new Set(), newRail = new Set();
     for (const s of st) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
@@ -983,6 +1060,9 @@ function evaluate(){
         baseMi += NET.bus[r].trips * share * NET.bus[r].lenM / MI;   // bus miles a weekday on this stretch, withdrawn when the new line opens
       }
       L.baseBus = base; L.baseTrips = baseTrips; L.baseBusMi = baseMi;
+      // a new line never runs less often than the buses it replaces (otherwise riders would drop and some would drive)
+      L.matchBus = base > 0 && baseTrips > trips ? baseTrips : 0;
+      if (L.matchBus) trips = baseTrips;
       // the new line replaces those buses: riders follow its frequency compared with theirs, up or down
       riders = (base > 0 ? base * Math.pow(trips / baseTrips, SERVICE_E) : modelRiders) * (MODE_LIFT[L.mode] || 1);
       L.fromModel = !(base > 0);
@@ -1002,7 +1082,8 @@ function evaluate(){
     L.waiting = M.kind === "rail" && !NW;   // rail riders need travel times; shown once the network loads
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
-    L.capital = [M.cost[0] * L.len / MI, M.cost[1] * L.len / MI];
+    const buildM = L.buildMi != null ? L.buildMi * MI : L.len;   // proposals that reuse today's tracks only pay for the new part
+    L.capital = [M.cost[0] * buildM / MI, M.cost[1] * buildM / MI];
     L.capitalToday = [today$(L.capital[0], M.costYear[0]), today$(L.capital[1], M.costYear[1])].sort((a, b) => a - b);
     L.cars = M.kind === "rail" ? (riders < 20000 ? 4 : riders < 50000 ? 6 : 8) : 1;   // trains sized to riders, like the CTA's 4- to 8-car trains (assumption)
     const vehHrs = trips * (L.len / MI) / M.speed * L.cars;   // revenue vehicle (car) hours a weekday
@@ -1257,7 +1338,7 @@ function finishDraw(){
   if (!drawing || drawing.pts.length < 2) return;
   const M = MODES[drawing.mode];
   let L = drawing.editing;
-  if (L){ L.pts = drawing.pts; }
+  if (L){ L.pts = drawing.pts; delete L.shape; delete L.buildShape; delete L.buildMi; }   // edited stations: the line goes straight (or along streets) again
   else {
     L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:M.head, name:autoName(drawing.mode, drawing.pts)};
     lines.push(L);
@@ -1304,7 +1385,7 @@ function renderPlan(){
       continue;
     }
     if (drawing && drawing.editing === L) continue;
-    const shape = shapeLL(L.mode, L.pts), grown = L._grow != null ? sliceLL(shape, L._grow) : shape;
+    const shape = L.shape || shapeLL(L.mode, L.pts), grown = L._grow != null ? sliceLL(shape, L._grow) : shape;
     feats.push({type:"Feature", properties:{color:MODES[L.mode].color, sel:L === cur, metra:false}, geometry:{type:"LineString", coordinates:grown}});
     for (const p of L._grow != null ? L.pts.filter((p, i) => i === 0 || stationReached(shape, grown, p)) : L.pts){ st.push({type:"Feature", properties:{x:!!p.snap}, geometry:{type:"Point", coordinates:p.ll}}); if (L === cur) walk.push({type:"Feature", geometry:{type:"Point", coordinates:p.ll}}); }
   }
@@ -1362,7 +1443,15 @@ function presetToLine(P){
     for (const [arr, kind] of [[LST, "L"], [MST, "M"]]) for (const s of arr){ const d = Math.hypot(s.x - x, s.y - y); if (d < bd){ bd = d; snap = {kind, ref:s}; } }
     return snap ? {x:snap.ref.x, y:snap.ref.y, ll:snap.ref.ll, snap} : {x, y, ll, snap:null};
   });
-  return {type:"draw", id:"p" + P.id, mode:P.mode, pts, head:P.head, name:P.name, preset:P.id};
+  const L = {type:"draw", id:"p" + P.id, mode:P.mode, pts, head:P.head, name:P.name, preset:P.id};
+  attachShape(L, P);
+  return L;
+}
+// a proposal's real alignment (along railroad rights-of-way, medians or streets), and the part that's new construction
+function attachShape(L, P){
+  if (!P || !P.shape) return;
+  if (P.pts.length !== L.pts.length || P.pts.some((q, i) => { const [x, y] = toXY(q[0], q[1]); return Math.hypot(x - L.pts[i].x, y - L.pts[i].y) > 200; })) return;
+  L.shape = P.shape; if (P.buildShape) L.buildShape = P.buildShape; if (P.buildMi != null) L.buildMi = P.buildMi;
 }
 function setPreset(P, on){
   const L = presetLine(P);
@@ -1375,7 +1464,7 @@ function setPreset(P, on){
 // switching a proposal on: fly to it and lay the line down quickly
 function lineCoords(L){
   if (L.type === "metra"){ const ml = NET.metraLines.find(l => l.id === L.line); return ml ? ml.paths : []; }
-  return [shapeLL(L.mode, L.pts)];
+  return [L.shape || shapeLL(L.mode, L.pts)];
 }
 function stationReached(shape, grown, p){   // a station shows once the growing line has passed it
   const last = grown[grown.length - 1]; let best = Infinity, bi = 0;
@@ -1561,6 +1650,7 @@ function openLine(L){
   h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
   const warns = [];
+  if (!isM && L.matchBus) warns.push([`Runs as often as today's ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""}`, `The buses on this street already come more often than every ${L.head} minutes. A new line that replaces them keeps at least their ${num(L.baseTrips)} trips a weekday, so nobody loses service; riders, cost and travel times use that.`]);
   if (isM && L.capped) warns.push(["More than double today's trains", "Studies only cover up to about double today's service, so the rider estimate stops there."]);
   if (!isM && L.close > 0 && M.kind === "rail") warns.push([`${L.close} station${L.close > 1 ? "s" : ""} closer than 0.4 mi`, "L stations are usually ½ to 1 mile apart. More stops slow every trip, which this estimate doesn't count."]);
   if (!isM && M.kind === "rail"){   // streetcars and BRT use today's bridges
@@ -1589,6 +1679,7 @@ function openLine(L){
     ${cars >= 0 ? tile(num(cars), "fewer car trips a day", "", "", "", "g") : tile(num(-cars), "more car trips a day (fewer buses than today)")}
     ${tile(co2Word(co2), "CO₂ a year from fewer car trips", "co2", "Lower CO₂ from fewer car trips", co2Why, co2 >= 0 ? "g" : "")}
     ${tile(co2Word((L.co2Long[0] + L.co2Long[1]) / 2), "CO₂ a year in the long run, as neighborhoods grow", "co2l", "CO₂ in the long run", longWhy, (L.co2Long[0] + L.co2Long[1]) / 2 >= 0 ? "g" : "")}
+    ${!isM && L.mode === "elevated" ? dispTile(L) : ""}
     ${travelTiles(L)}
     ${B && !B.noCapital ? tile(B.ratio < 0 ? "Below 0" : B.ratio.toFixed(B.ratio < 10 ? 1 : 0) + " to 1", "benefit-cost (partial)", "bca", "Benefit-cost", "<p>Benefits, less running costs, for each dollar of build cost over 30 years, using USDOT's method and 7% discount rate. Counts travel time saved only (new riders get half, as USDOT directs). Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</p>", B.ratio >= 1 ? "g" : "") : ""}
   </div>`;
@@ -1763,7 +1854,7 @@ function decode(s){
         let snap = null; if (sn){ const kind = sn[0], id = sn.slice(1); const ref = (kind === "L" ? LST : MST).find(z => z.id === id); if (ref) snap = {kind, ref}; }
         const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
       const pre = PRESETS.find(q => q.name === decodeURIComponent(nm || ""));
-      if (pts.length > 1) out.push({type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined});
+      if (pts.length > 1){ const L = {type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined}; attachShape(L, pre); out.push(L); }
       if (off && out.length > n0) out[out.length - 1].off = true;
     } catch (e) {}
   }
