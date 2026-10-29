@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-28T00:35Z",
+ "fetched": "2026-10-29T04:32Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -92,6 +92,13 @@
   "cambium23_lrmer_gea.xlsx": {
    "url": "https://data.nlr.gov/system/files/230/1707947178-Cambium23_LRMER_GEAregions_0.xlsx",
    "bytes": 17363130
+  },
+  "osm_rail": {
+   "url": "https://www.openstreetmap.org (Overpass API)",
+   "license": "ODbL",
+   "tiles": 49,
+   "of": 49,
+   "ways": 16121
   }
  }
 }
