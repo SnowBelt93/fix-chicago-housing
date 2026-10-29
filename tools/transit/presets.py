@@ -95,6 +95,312 @@ def along(main, crosses, near=None, extra=None):
     return [p for p in got if p]
 
 
+
+# ---- real alignments: routes along railroad rights-of-way (OpenStreetMap, tools/raw/transit/osm_rail.json.gz) and roads ----
+import heapq
+RAIL_WAYS = None
+def rail_ways():
+    global RAIL_WAYS
+    if RAIL_WAYS is None:
+        p = os.path.join(RAW, 'osm_rail.json.gz')
+        g = json.load(gzip.open(p, 'rt')) if os.path.exists(p) else {'ways': {}}
+        RAIL_WAYS = [(v[0], v[1], v[2], [xy(q[1], q[0]) for q in v[3]]) for v in g['ways'].values()]
+    return RAIL_WAYS
+
+
+RAIL_COST = {'construction': 0.8, 'rail': 1.0, 'subway': 1.0, 'light_rail': 1.0, 'abandoned': 1.0, 'disused': 1.0, 'razed': 1.1}
+USE_COST = {'yard': 2.5, 'siding': 2.0, 'spur': 1.3, 'industrial': 1.2, 'crossover': 1.5}
+
+
+def make_graph(lines, bridge=60, far=None):
+    # lines: (points x/y, cost factor). Shared vertices (within 3 m) join; a line's loose end also joins the nearest
+    # vertex of another line within `bridge` m (OpenStreetMap leaves gaps where abandoned track was pulled up), at 3x cost.
+    ids, X, Y, adj = {}, [], [], []
+    def node(p):
+        k = (round(p[0] / 3), round(p[1] / 3))
+        if k not in ids:
+            ids[k] = len(X); X.append(p[0]); Y.append(p[1]); adj.append([])
+        return ids[k]
+    ends, owner = [], {}
+    far = far or set()   # lines whose loose ends may join another line up to 150 m away (abandoned track with pieces missing)
+    for li, (pts, f) in enumerate(lines):
+        dense = []   # vertices every 25 m or closer, so a loose end can join the middle of a long straight piece
+        for a, b in zip(pts, pts[1:]):
+            k = max(1, int(math.hypot(b[0] - a[0], b[1] - a[1]) // 25))
+            dense += [(a[0] + (b[0] - a[0]) * j / k, a[1] + (b[1] - a[1]) * j / k) for j in range(k)]
+        pts = dense + list(pts[-1:])
+        prev = None
+        for p in pts:
+            n = node(p); owner.setdefault(n, li)
+            if prev is not None and prev != n:
+                d = math.hypot(X[n] - X[prev], Y[n] - Y[prev]) * f; adj[n].append((prev, d)); adj[prev].append((n, d))
+            prev = n
+        if len(pts) > 1:
+            ends += [(node(pts[0]), li), (node(pts[-1]), li)]
+    G = {'X': X, 'Y': Y, 'adj': adj, 'cell': 100, 'grid': {}}
+    for i, (x, y) in enumerate(zip(X, Y)):
+        G['grid'].setdefault((int(x // 100), int(y // 100)), []).append(i)
+    for n, li in ends:
+        if len(adj[n]) > 1:
+            continue
+        r = 150 if li in far else bridge
+        best, bd = None, r
+        for j in g_near_all(G, (X[n], Y[n]), r):
+            if owner.get(j) != li:
+                d = math.hypot(X[j] - X[n], Y[j] - Y[n])
+                if d < bd:
+                    best, bd = j, d
+        if best is not None:
+            adj[n].append((best, bd * 3)); adj[best].append((n, bd * 3))
+    return G
+
+
+def g_near_all(G, p, r):
+    c = G['cell']
+    for a in range(int((p[0] - r) // c), int((p[0] + r) // c) + 1):
+        for b in range(int((p[1] - r) // c), int((p[1] + r) // c) + 1):
+            yield from G['grid'].get((a, b), [])
+
+
+def g_nearest(G, p, r=400):
+    best, bd = None, r
+    for i in g_near_all(G, p, r):
+        d = math.hypot(G['X'][i] - p[0], G['Y'][i] - p[1])
+        if d < bd:
+            best, bd = i, d
+    return best
+
+
+def g_route(G, a, b):
+    # cheapest path between the network points nearest a and b (x/y), or None
+    s, t = g_nearest(G, a), g_nearest(G, b)
+    if s is None or t is None:
+        return None
+    X, Y, adj = G['X'], G['Y'], G['adj']
+    h = lambda i: 0.8 * math.hypot(X[i] - X[t], Y[i] - Y[t])
+    dist, prev, pq = {s: 0}, {}, [(h(s), s)]
+    while pq:
+        f, u = heapq.heappop(pq)
+        if u == t:
+            break
+        if f - h(u) > dist[u] + 1e-6:
+            continue
+        for v, w in adj[u]:
+            nd = dist[u] + w
+            if nd < dist.get(v, 1e18):
+                dist[v] = nd; prev[v] = u; heapq.heappush(pq, (nd + h(v), v))
+    if t not in dist:
+        return None
+    path, u = [], t
+    while True:
+        path.append((X[u], Y[u]))
+        if u == s:
+            break
+        u = prev[u]
+    return path[::-1]
+
+
+RAIL_G = {}
+def rail_graph(cta=True):
+    # cta=False leaves out CTA tracks, so a new line can't borrow the Red Line's tracks to reach a far station
+    if cta not in RAIL_G:
+        W = [w for w in rail_ways() if cta or w[0] not in ('subway', 'light_rail')]
+        RAIL_G[cta] = make_graph([(pts, RAIL_COST.get(k, 1.2) * USE_COST.get(u, 1.0)) for k, u, nm, pts in W],
+                                 far={i for i, w in enumerate(W) if w[0] in ('abandoned', 'disused', 'razed')})
+    return RAIL_G[cta]
+
+
+def route_ll(G, pts):
+    # route through a list of [lon, lat] waypoints; a waypoint given as ('straight', [lon, lat]) is reached in a straight line
+    out = []
+    for i in range(1, len(pts)):
+        a, b = pts[i - 1], pts[i]
+        if isinstance(a, tuple): a = a[1]
+        if isinstance(b, tuple):
+            leg = [xy(a[1], a[0]), xy(b[1][1], b[1][0])]
+        else:
+            leg = g_route(G, xy(a[1], a[0]), xy(b[1], b[0]))
+            if leg is None:
+                raise SystemExit(f'no route {a} -> {b}')
+        out = chain(out, leg)
+    return despur(out)
+
+
+def despur(path, near=60, loop=150):
+    # cut out-and-back detours (a route that runs down a siding to turn around): where the path comes back within
+    # `near` m of an earlier point after more than `loop` m, drop the part in between
+    out, i = [], 0
+    while i < len(path):
+        out.append(path[i]); run, cut = 0, None
+        for j in range(i + 1, len(path)):
+            run += math.hypot(path[j][0] - path[j - 1][0], path[j][1] - path[j - 1][1])
+            if run > loop and math.hypot(path[j][0] - path[i][0], path[j][1] - path[i][1]) < near:
+                cut = j
+        i = cut if cut else i + 1
+    return out
+
+
+def rail_lines(test):
+    return [pts for kind, use, nm, pts in rail_ways() if test(kind, use, nm)]
+
+
+def road_lines(name):
+    c = core(name)
+    return [pts for nm, pts in roads if core(nm) == c]
+
+
+def thin(pts, tol=4):
+    # Ramer-Douglas-Peucker in meters
+    if len(pts) < 3:
+        return list(pts)
+    a, b = pts[0], pts[-1]; dx, dy = b[0] - a[0], b[1] - a[1]; L = math.hypot(dx, dy) or 1e-9
+    i, dm = max(((i, abs(dy * (p[0] - a[0]) - dx * (p[1] - a[1])) / L) for i, p in enumerate(pts[1:-1], 1)), key=lambda t: t[1])
+    if dm > tol:
+        return thin(pts[:i + 1], tol)[:-1] + thin(pts[i:], tol)
+    return [a, b]
+
+
+def shape_ll(path):
+    return [ll(*p) for p in thin(path)]
+
+
+def on_shape(path, p):
+    # nearest point on a path to p (x/y)
+    best, bd = path[0], 1e18
+    for a, b in zip(path, path[1:]):
+        dx, dy = b[0] - a[0], b[1] - a[1]; L2 = dx * dx + dy * dy
+        t = 0 if not L2 else max(0, min(1, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2))
+        q = (a[0] + t * dx, a[1] + t * dy); d = math.hypot(q[0] - p[0], q[1] - p[1])
+        if d < bd:
+            best, bd = q, d
+    return best, bd
+
+
+def chain(*legs):
+    # legs: lists of x/y points; joins them, dropping repeated joints
+    out = []
+    for leg in legs:
+        if not leg:
+            continue
+        if out and math.hypot(out[-1][0] - leg[0][0], out[-1][1] - leg[0][1]) < 1:
+            leg = leg[1:]
+        out += list(leg)
+    return out
+
+
+def street_on(path, street, near=None):
+    # where a route crosses a named street (nearest to `near`, lat/lon), as [lon, lat]
+    hits = [q for a, b in zip(path, path[1:]) for c, d in segs(street) for q in [inter(a, b, c, d)] if q]
+    if not hits:
+        return None
+    if near:
+        nx, ny = xy(*near); hits.sort(key=lambda q: math.hypot(q[0] - nx, q[1] - ny))
+    return ll(*hits[0])
+
+
+def snap(path, lonlat):
+    q, d = on_shape(path, xy(lonlat[1], lonlat[0]))
+    return ll(*q)
+
+
+def path_len(path):
+    return sum(math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(path, path[1:]))
+
+
+def sub_path(path, a, b):
+    # the part of a path between the points nearest a and b (x/y)
+    def where(p):
+        best, bd, bi, bq = 0, 1e18, 0, path[0]
+        for i, (u, v) in enumerate(zip(path, path[1:])):
+            dx, dy = v[0] - u[0], v[1] - u[1]; L2 = dx * dx + dy * dy
+            t = 0 if not L2 else max(0, min(1, ((p[0] - u[0]) * dx + (p[1] - u[1]) * dy) / L2))
+            q = (u[0] + t * dx, u[1] + t * dy); d = math.hypot(q[0] - p[0], q[1] - p[1])
+            if d < bd:
+                bd, bi, bq = d, i, q
+        return bi, bq
+    (i, qa), (j, qb) = where(a), where(b)
+    if (i, path_len([path[i], qa])) > (j, path_len([path[j], qb])):
+        (i, qa), (j, qb) = (j, qb), (i, qa)
+    return [qa] + list(path[i + 1:j + 1]) + [qb]
+
+
+def road_route(name_test, a, b):
+    G = make_graph([(pts, 1.0) for nm, pts in roads if name_test(nm)], bridge=40)
+    r = g_route(G, a, b)
+    straight = math.hypot(b[0] - a[0], b[1] - a[1])
+    return r if r and path_len(r) < 1.3 * straight + 200 else None   # a detour means the street map has a gap: go straight
+
+
+def align(P):
+    """Each rail proposal follows its real right-of-way: shape = the whole path drawn, buildShape = the part that is new
+    structure (when the line reuses existing CTA track), buildMi = its length in miles. Stations sit on the path."""
+    byid = {p['id']: p for p in P}
+    mi = lambda path: round(path_len(path) / 1609.34, 2)
+    # Red Line Extension: the alignment under construction (OpenStreetMap "construction" track), from 95th to the 130th terminal
+    G = rail_graph(True)
+    r = route_ll(G, [[-87.62434, 41.72238], [-87.5935, 41.6560]])
+    st = [[-87.62434, 41.72238], street_on(r, '103rd Street', (41.7068, -87.636)), street_on(r, '111th Street', (41.6922, -87.636)),
+          snap(r, byid['rle']['pts'][3]), street_on(r, '130th Street', (41.6595, -87.598))]
+    st[4] = st[4] or snap(r, [-87.5975, 41.6585])
+    r = sub_path(r, xy(st[0][1], st[0][0]), xy(st[-1][1], st[-1][0]))
+    byid['rle'].update(pts=st, shape=shape_ll(r))
+    byid['rle']['approx'] = 'Follows the route under construction. Station spots: 103rd, 111th, Michigan near 116th and 130th, as CTA gives them.'
+    # Orange Line to Ford City: CTA's 2009 preferred route, south from Midway along the Belt Railway (Kenton Line), across the
+    # Clearing Yard, then down the east side of Cicero to 76th
+    r = route_ll(G, [[-87.73788, 41.78661], [-87.7371, 41.7709], ('straight', [-87.7402, 41.7650]), ('straight', [-87.7417, 41.7555])])
+    byid['orange'].update(pts=[[-87.73788, 41.78661], ll(*r[-1])], shape=shape_ll(r))
+    byid['orange']['approx'] = 'Follows CTA’s 2009 preferred route: along the Belt Railway south of Midway, over the Clearing Yard, to a station at 76th and Cicero.'
+    byid['orange']['status'] = 'Studied 2009 (elevated along the Belt Railway, one station at Ford City); CTA isn’t studying it now'
+    # Yellow Line to Old Orchard: CTA's preferred route, north on the old Union Pacific right-of-way, then along the Edens to a
+    # station south of Old Orchard Road
+    r1 = route_ll(G, [[-87.75192, 42.03895], ('straight', [-87.7525, 42.0410]), [-87.7579, 42.0561]])
+    ed = xy(42.0610, -87.7552)   # on the Edens, about 150 m south of Old Orchard Road
+    r2 = road_route(lambda nm: 'I 94' in nm, r1[-1], ed) or [r1[-1], ed]
+    r = chain(r1, r2)
+    byid['yellow'].update(pts=[[-87.75192, 42.03895], ll(*r[-1])], shape=shape_ll(r))
+    byid['yellow']['approx'] = 'Follows CTA’s preferred route: the old Union Pacific right-of-way north of Dempster, then along the Edens to a station south of Old Orchard Road.'
+    # Green Line to Jackson Park: over 63rd Street, where the old line ran
+    j = byid['greenjp']; r = road_route(lambda nm: core(nm) == core('63rd Street'), xy(j['pts'][0][1], j['pts'][0][0]), xy(j['pts'][-1][1], j['pts'][-1][0]))
+    if r:
+        j.update(pts=[j['pts'][0]] + [snap(r, q) for q in j['pts'][1:]], shape=shape_ll(r))
+    # Mid-City Transitway: the rail corridor a quarter mile east of Cicero from Jefferson Park, the Belt Railway east near 75th,
+    # then southeast to the Dan Ryan, meeting the Red Line between 87th and 91st (Tribune 2002)
+    G2 = rail_graph(False)
+    r = route_ll(G2, [[-87.7613, 41.9708], [-87.7436, 41.9576], [-87.743, 41.93], [-87.741, 41.88], [-87.739, 41.80], [-87.70, 41.757], [-87.66, 41.757], [-87.6280, 41.7320]])
+    mc = byid['midcity']; old = mc['pts']
+    st = [[-87.7613, 41.9708]] + [snap(r, q) for q in old] + [ll(*r[-1])]
+    keep = [st[0]]
+    for q in st[1:]:   # stations at least 600 m apart
+        if math.hypot(*(a - b for a, b in zip(xy(q[1], q[0]), xy(keep[-1][1], keep[-1][0])))) > 600:
+            keep.append(q)
+    mc.update(pts=keep, shape=shape_ll(r))
+    mc['approx'] = 'Route follows the rail corridors the 2002 plan named (old Crosstown corridor, Belt Railway); stations are approximate. No current plan exists.'
+    # Circle Line, southern half (CTA's 2009 preferred route): the Pink Line's tracks from Ashland/Lake to 18th, then about a mile
+    # of new track to the Orange Line at Ashland (drawn over Paulina, Cermak and Ashland; CTA didn't publish the exact path)
+    pink = route_ll(G, [[-87.66697, 41.88532], [-87.6691, 41.8579]])
+    turn = min(pink, key=lambda q: q[1])   # the Pink Line's tracks turn west a little south of 18th; leave them there
+    pink = sub_path(pink, pink[0], turn)
+    cer = crossing('Paulina Street', 'Cermak Road', (41.8524, -87.6690))
+    cer = xy(cer[1], cer[0]) if cer else (turn[0], xy(41.8524, -87.669)[1])
+    ash = crossing('Ashland Avenue', 'Cermak Road', (41.8524, -87.6664)); ash = xy(ash[1], ash[0])
+    orng = xy(41.83923, -87.66532)
+    tail = road_route(lambda nm: core(nm) == core('Ashland Avenue'), ash, orng) or [ash, (ash[0], orng[1] + 60), orng]
+    new = chain([turn, (turn[0], cer[1]), ash], tail)
+    r = chain(pink, new)
+    def on_lat(lat):
+        for a, b in zip(r, r[1:]):
+            y = xy(lat, 0)[1]
+            if (a[1] - y) * (b[1] - y) <= 0 and a[1] != b[1]:
+                t = (y - a[1]) / (b[1] - a[1]); return ll(a[0] + t * (b[0] - a[0]), y)
+    st = [[-87.66697, 41.88532], on_lat(41.8753), on_lat(41.8670), on_lat(41.8579), ll(*ash), ll(*orng)]
+    c = byid['circle']
+    c.update(name='Circle Line (southern half)', pts=st, shape=shape_ll(r), buildShape=shape_ll(new), buildMi=mi(new))
+    c['approx'] = 'CTA’s 2009 preferred route: the Pink Line’s tracks from Ashland/Lake to 18th, with new stations at Congress (Blue Line) and Roosevelt, then about a mile of new elevated track to Cermak/Blue Island and the Orange Line at Ashland. CTA didn’t publish the new track’s exact path; it’s drawn over streets. Trains would continue on the Orange Line’s tracks into the Loop.'
+    c['status'] = 'Studied 2006–09 (this is the first phase); CTA isn’t studying it now. CMAP: “costly for the level of benefits”'
+    for k in ('rle', 'orange', 'yellow', 'greenjp', 'midcity', 'circle'):
+        p = byid[k]; print(f"  {k}: {len(p['pts'])} stations, {mi([xy(q[1], q[0]) for q in p['shape']])} mi drawn"
+                           + (f", {p['buildMi']} mi new" if 'buildMi' in p else ''), file=sys.stderr)
+
 ASHLAND_X = ['Irving Park Road', 'Addison Street', 'Roscoe Street', 'Belmont Avenue', 'Diversey Parkway', 'Fullerton Avenue', 'Cortland Street',
              'North Avenue', 'Division Street', 'Chicago Avenue', 'Grand Avenue', 'Lake Street', 'Madison Street', 'Jackson Boulevard', 'Harrison Street',
              'Polk Street', 'Roosevelt Road', '18th Street', 'Blue Island Avenue', '31st Street', '35th Street', 'Pershing Road', '43rd Street',
@@ -193,7 +499,7 @@ def main():
               'status': 'Studied 2006–09; CTA isn’t studying it now. CMAP: “costly for the level of benefits”',
               'approx': 'Stations are approximate: CMAP describes a line along Ashland from North/Clybourn to the Orange Line; CTA’s study mixed new subway, elevated and the Pink Line’s tracks.',
               'official': {'cost': 1.1e9, 'costYear': 2009, 'yoe': True, 'costNote': 'year-of-spending dollars, CTA 2009, for the southern phases only; CMAP gives no cost',
-                           'opYear': 22e6, 'riders': 8800, 'ridersNote': 'more weekday transit trips across the region in 2050 (CMAP model); CTA 2009: 10 million rides a year in 2030'},
+                           'opYear': 22e6, 'riders': 8800, 'ridersNote': 'more weekday transit trips across the region in 2050 for CMAP’s full line up Ashland to North/Clybourn (CMAP model); CTA 2009: 10 million rides a year in 2030'},
               'sources': [['CMAP 2026 plan benefits report', CMAP_RTP], ['CTA Circle Line study boards', 'https://lapi.transitchicago.com/assets/1/6/Circle_Line_Screen_3_Boards_text_Format.txt'],
                           ['CMAP unconstrained projects', 'https://cmap.illinois.gov/recommendation/unconstrained-project/']]})
     # ---- more bus priority corridors (CTA/CDOT Better Streets for Buses extents) ----
@@ -238,6 +544,7 @@ def main():
     for p in P:
         if 'pts' in p:
             print(p['id'], len(p['pts']), 'stations', file=sys.stderr)
+    align(P)
     json.dump(P, open(os.path.join(OUT, 'presets.json'), 'w'), indent=0)
 
 

@@ -248,6 +248,13 @@ def main():
         geo = {}
         for k, items in osm.items():
             geo[k] = [[nm[:40], [c for q in pts for c in (round(xy(q[1], q[0])[0]), round(xy(q[1], q[0])[1]))]] for nm, pts in items]
+        # railroad rights-of-way (active main lines and abandoned ones), so stations snap to real corridors
+        pr = os.path.join(RAW, 'osm_rail.json.gz')
+        if os.path.exists(pr):
+            rw = json.load(gzip.open(pr, 'rt'))['ways'].values()
+            keep = [v for v in rw if v[0] in ('rail', 'abandoned', 'disused', 'razed', 'construction', 'subway', 'light_rail')
+                    and v[1] not in ('yard', 'siding', 'spur', 'crossover', 'industrial')]
+            geo['rail'] = [[(v[2] or v[0])[:40], [c for q in v[3] for c in (round(xy(q[1], q[0])[0]), round(xy(q[1], q[0])[1]))]] for v in keep]
         json.dump(geo, open(os.path.join(OUT, 'geo.json'), 'w'), separators=(',', ':'))
         print('geo.json', os.path.getsize(os.path.join(OUT, 'geo.json')), {k: len(v) for k, v in geo.items()}, file=sys.stderr)
     print('net.json', os.path.getsize(os.path.join(OUT, 'net.json')), 'bytes;', 'L', len(out['lStations']), 'bus', len(out['bus']),

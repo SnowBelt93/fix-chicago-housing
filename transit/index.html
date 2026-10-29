@@ -878,7 +878,10 @@ function displaced(L){
         if (hit){ n++; homes += b.units; }
       }
     }
-    Object.assign(rec, {done:true, n, homes, people:Math.round(homes * PER_HH)});
+    // the building data covers Chicago only: flag a line that leaves the city
+    const rings = (NET.cityOutline || []).map(r => r.map(q => toXY(q[0], q[1])));
+    const outside = rings.length > 0 && shape.some(q => !rings.some(r => inRing(q, r)));
+    Object.assign(rec, {done:true, n, homes, people:Math.round(homes * PER_HH), outside});
     if (cur === L) openLine(L);
   })();
   return null;
@@ -889,7 +892,9 @@ function dispTile(L){
   if (!d) return tile("…", "homes in the way (checking the buildings)");
   if (d.unavailable) return "";
   const why = `<p>Buildings within about ${EL_HALF_M} m (${Math.round(EL_HALF_M * 3.28)} ft) of the line's center, the room a two-track elevated structure needs (assumption). A line over a street, an expressway or a railroad usually hits none; one cutting across blocks takes homes.</p><p>${num(d.n)} building${d.n === 1 ? "" : "s"} with ${num(d.homes)} home${d.homes === 1 ? "" : "s"}, about ${num(d.people)} people at ${PER_HH} people per household (<a href="https://censusreporter.org/profiles/16000US1714000" target="_blank" rel="noopener">ACS 2024</a>). Homes come from the city's building footprints (2013) used by Fix Chicago Housing; stations, which need more room, and buildings without a home count aren't included.</p>`;
-  return tile(num(d.homes), d.homes ? `homes in the way, about ${num(d.people)} people` : "homes in the way", "disp", "Homes in the way", why, d.homes ? "" : "g");
+  const out = d.outside ? `<p>Part of this line is outside Chicago, where the tool has no building data, so homes there aren't counted.</p>` : "";
+  if (d.outside && !d.homes) return tile("–", "homes in the way (no building data outside Chicago)", "disp", "Homes in the way", why + out);
+  return tile(num(d.homes), (d.homes ? `homes in the way, about ${num(d.people)} people` : "homes in the way") + (d.outside ? " in Chicago" : ""), "disp", "Homes in the way", why + out, d.homes ? "" : "g");
 }
 /* ---------- money ---------- */
 // a cost from its year's dollars to today's, with FHWA's construction cost index
