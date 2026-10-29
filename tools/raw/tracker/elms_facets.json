@@ -13,7 +13,7 @@
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10316
+     "count": 10318
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117962
+     "count": 117964
     },
     {
      "value": "Claim",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167329
+     "count": 167330
     },
     {
      "value": "3-Council Introduction",
@@ -227,11 +227,11 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1849
+     "count": 1851
     },
     {
      "value": "5-Council Consideration",
-     "count": 190
+     "count": 189
     },
     {
      "value": "2-Submitted to Clerk",
@@ -368,7 +368,7 @@
     },
     {
      "value": "O'Shea, Matthew J.",
-     "count": 1659
+     "count": 1661
     },
     {
      "value": "Cappleman, James",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169394
+     "count": 169396
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7141
+     "count": 7143
     },
     {
      "value": "2022",
@@ -1000,7 +1000,7 @@
     },
     {
      "value": "19",
-     "count": 1858
+     "count": 1860
     },
     {
      "value": "46",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113433
+     "count": 113434
     },
     {
      "value": "Adopted",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1740
+     "count": 1742
     },
     {
      "value": "Placed on File",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Recommended to Pass",
-     "count": 67
+     "count": 66
     },
     {
      "value": "Withdrawn",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163347
+     "count": 163349
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181533,
-  "pages": 181533
+  "count": 181535,
+  "pages": 181535
  }
 }
