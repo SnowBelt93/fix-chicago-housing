@@ -274,6 +274,84 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
   #hint{top:calc(var(--topH) + 60px)}
   .sc-head .sc-btn{padding:0 11px}
 }
+
+body.infill #vDraw .steps,body.infill #vDraw .drawstat,body.infill #drawDone,body.infill #drawUndo,body.infill #snapRow,body.infill #drawSpacing{display:none !important}
+/* plan tools (v47): trip times, funding, compare, summary, new stations */
+.tripin{display:flex;flex-direction:column;gap:8px}
+.tf{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.tf.on{border-color:var(--sc-navy,#2b5da0);box-shadow:0 0 0 2px rgba(43,93,160,.15)}
+.tf input{flex:1;min-width:0;border:0;outline:0;font:inherit;font-size:15px;background:transparent;color:var(--ink)}
+.pin{flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;color:#fff;background:var(--ink)}
+.pin.b{background:#e4002b}
+.tripact{display:flex;gap:14px;flex-wrap:wrap}
+.linkbtn{border:0;background:none;padding:2px 0;font:inherit;font-size:13.5px;color:var(--sc-navy,#2b5da0);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.trippin{width:26px;height:26px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font:700 12.5px/1 var(--sc-font,system-ui);color:#fff;background:#1a1d21}
+.trippin.b{background:#e4002b}
+#tripOut{display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.tcmp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tcmp > div{border-radius:12px;background:var(--chip,#f2f3f5);padding:10px 12px}
+.tcmp b{display:block;font-size:24px;font-weight:650;letter-spacing:-.01em}
+.tcmp span{font-size:12.5px;color:var(--mute)}
+.tcmp .g{background:#e8f4ec}.tcmp .g b{color:#1f7a3f}
+.legs{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:10px;padding-left:14px}
+.leg{position:relative;padding:5px 0;font-size:13.5px;line-height:1.35}
+.leg::before{content:"";position:absolute;left:-20px;top:9px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--mute)}
+.leg.ride::before{background:var(--lc,#1a1d21);border-color:var(--lc,#1a1d21)}
+.leg small{display:block;color:var(--mute);font-size:12px}
+.legh{font-size:13px;font-weight:650;margin:6px 0 2px}
+.tmins{display:flex;gap:6px}
+.tmins button{flex:1}
+.tkey{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--mute)}
+.tkey i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px}
+.ftable,.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ftable th,.ftable td,.ctable th,.ctable td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.ftable th:first-child,.ftable td:first-child,.ctable th:first-child,.ctable td:first-child{text-align:left}
+.ftable th,.ctable th{font-size:12px;font-weight:600;color:var(--mute)}
+.ftable tfoot td{font-weight:650;border-bottom:0}
+.ctable td.win{color:#1f7a3f;font-weight:650}
+.tl{display:flex;flex-direction:column;gap:6px}
+.tlrow{display:grid;grid-template-columns:minmax(0,38%) 1fr;gap:8px;align-items:center;font-size:12.5px}
+.tlrow .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tlbar{position:relative;height:16px;background:repeating-linear-gradient(90deg,transparent 0 calc(100%/var(--n) - 1px),var(--line) calc(100%/var(--n) - 1px) calc(100%/var(--n)))}
+.tlbar i{position:absolute;top:2px;bottom:2px;border-radius:4px;background:var(--sc-navy,#2b5da0)}
+.tlbar i.m{background:#6b7480}
+.tlaxis{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-left:calc(38% + 8px)}
+.fnote{font-size:12.5px;color:var(--mute);margin:0}
+.fsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.fsum > div{border-radius:12px;background:var(--chip,#f2f3f5);padding:10px 12px}
+.fsum b{display:block;font-size:19px;font-weight:650}
+.fsum span{font-size:12px;color:var(--mute)}
+.saverow{display:flex;gap:8px}
+.saverow input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:14px}
+.slist{display:flex;flex-direction:column;gap:6px}
+.slist .srow{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13.5px}
+.slist .srow b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.slist .srow small{color:var(--mute)}
+.cpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cpick select{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:13.5px;background:#fff}
+dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-radius:16px;overflow:auto}
+.sumpage{padding:28px 32px;display:flex;flex-direction:column;gap:14px;color:var(--ink)}
+.sumtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.sumtop input{font:650 26px/1.15 var(--sc-font,system-ui);border:0;border-bottom:1px dashed var(--line);width:100%;padding:2px 0;color:var(--ink);background:transparent}
+.sumtop .sbtns{display:flex;gap:8px;flex:none}
+.summeta{font-size:12.5px;color:var(--mute)}
+.sumimg{width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:10px;background:#eef1f4;border:1px solid var(--line)}
+.sumnums{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.sumnums > div{border-top:2px solid var(--ink);padding-top:6px}
+.sumnums b{display:block;font-size:20px;font-weight:650}
+.sumnums span{font-size:12px;color:var(--mute)}
+.sumpage h3{margin:6px 0 0;font-size:15px}
+.sumpage p{margin:0;font-size:13px;line-height:1.5}
+.sumfoot{font-size:11.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:8px}
+@media (max-width:700px){ .sumtop{flex-direction:column;align-items:stretch} .sumtop .sbtns{flex-wrap:wrap} .sumnums{grid-template-columns:repeat(2,minmax(0,1fr))} .sumpage{padding:18px} .fsum{grid-template-columns:1fr 1fr} }
+@media print{
+  @page{margin:12mm}
+  body > *:not(#sumDlg){display:none !important}
+  dialog.sumdlg{position:static;display:block;width:auto;max-height:none;overflow:visible;box-shadow:none;border-radius:0}
+  dialog.sumdlg::backdrop{display:none}
+  .sumtop .sbtns{display:none}
+  .sumtop input{border:0}
+}
 </style>
 </head>
 <body>
@@ -298,10 +376,15 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
       <div class="drawcard" id="drawCard"></div>
       <div class="mylines" id="myLines"></div>
       <div class="mylines"><span class="sec">Real proposals</span><div class="gcards" id="groupCards"></div></div>
+      <div class="mylines"><span class="sec">Plan tools</span>
       <div class="minicards">
+        <button type="button" class="minicard" id="tripCard"><b>Trip times</b><span>How long to get around</span></button>
+        <button type="button" class="minicard" id="fundCard"><b>Who pays, and when</b><span>Funding and opening years</span></button>
+        <button type="button" class="minicard" id="cmpCard"><b>Compare plans</b><span>Save plans side by side</span></button>
+        <button type="button" class="minicard" id="sumCard"><b>One-page summary</b><span>To share or print</span></button>
         <button type="button" class="minicard" id="cleanCard"><b>Cleaner transit</b><span>Electric buses and trains</span></button>
         <button type="button" class="minicard" id="nitaCard"><b>NITA</b><span>The cuts it stopped</span></button>
-      </div>
+      </div></div>
       <p class="fan2">A fan-made planning tool. Not affiliated with the City of Chicago, CTA or Metra.</p>
     </div>
   </section>
@@ -329,6 +412,41 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
       <p>The new regional transit agency, and the cuts it stopped.</p>
     </div>
     <div class="vbody"><div class="cleanbox nita" id="nitaBox"></div></div>
+  </section>
+  <!-- trip times -->
+  <section class="view" id="vTrip">
+    <div class="vhead">
+      <button class="navback" type="button" id="tripBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>Trip times</h1>
+      <p>How long it takes to get around by transit at midday, today and with your plan.</p>
+    </div>
+    <div class="vbody">
+      <div class="tripin">
+        <label class="tf on" id="tfA"><span class="pin a">A</span><input id="tripA" list="tripPlaces" autocomplete="off" placeholder="Start: tap the map or type a station"></label>
+        <label class="tf" id="tfB"><span class="pin b">B</span><input id="tripB" list="tripPlaces" autocomplete="off" placeholder="End (optional)"></label>
+        <div class="tripact"><button type="button" class="linkbtn" id="tripMe">Use my location</button><button type="button" class="linkbtn" id="tripSwap">Swap</button><button type="button" class="linkbtn" id="tripClear">Clear</button></div>
+        <datalist id="tripPlaces"></datalist>
+      </div>
+      <div id="tripOut"></div>
+    </div>
+  </section>
+  <!-- funding and timeline -->
+  <section class="view" id="vFund">
+    <div class="vhead">
+      <button class="navback" type="button" id="fundBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>Who pays, and when</h1>
+      <p>What your plan would cost each level of government, and when each line could open.</p>
+    </div>
+    <div class="vbody" id="fundBody"></div>
+  </section>
+  <!-- compare plans -->
+  <section class="view" id="vCompare">
+    <div class="vhead">
+      <button class="navback" type="button" id="cmpBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>Compare plans</h1>
+      <p>Save versions of your plan, then put any two side by side.</p>
+    </div>
+    <div class="vbody" id="cmpBody"></div>
   </section>
   <!-- drawing -->
   <section class="view" id="vDraw">
@@ -389,6 +507,7 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
 
 <dialog id="srcDlg" aria-labelledby="srcH"><div class="dlg" id="srcBody"></div></dialog>
 <dialog id="infoDlg" class="info"><div class="dlg" id="infoBody"></div></dialog>
+<dialog id="sumDlg" class="sumdlg" aria-labelledby="sumTitle"><div class="sumpage" id="sumBody"></div></dialog>
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
@@ -480,9 +599,13 @@ const MODES = {
   streetcar:{name:"Streetcar", blurb:"Rails in the street, sharing lanes with traffic", kind:"bus", cost:[43e6,100e6], costYear:[2017,2021], buildYrs:4, heads:[5,7.5,10,15], head:10,
              speed:7.10, cars:1, perHr:453.94, tripMi:1.9, co2:0.00349, years:"3 to 4", spacing:"Streetcar stops are usually ¼ to ½ mile apart.", unit:"A streetcar every", vehicle:"streetcar",
              icon:'<path d="M9 2l3 4 3-4M4 6h16"/><rect x="5" y="8" width="14" height="10" rx="2"/><path d="M8 22l1.5-4M16 22l-1.5-4"/>', color:"#1a1d21"},
-  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[7.4e6,29e6], costYear:[2018,2004], buildYrs:2, heads:[3,5,7.5,10,15], head:5,
+  brt:      {name:"Bus rapid transit", blurb:"Buses in their own lanes, with real stations", kind:"bus", cost:[10.4e6,23.9e6], costYear:[2025,2025], buildYrs:2, heads:[3,5,7.5,10,15], head:5,
              speed:13.19, cars:1, perHr:197.88, tripMi:2.47, co2:"bus", years:"1 to 2", spacing:"BRT stations are usually about ½ mile apart.", unit:"A bus every", vehicle:"bus",
              icon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M3 10h18M7 20v-3M17 20v-3"/>', color:"#1a1d21"},
+  // a new stop on an L line that's already there; cost per station: Morgan (Green/Pink) $38M (2012) to Damen (Green) $80M (2024)
+  infill:   {name:"New station", blurb:"A new stop on an L line that's already there", kind:"rail", cost:[38e6,80e6], costYear:[2012,2024], buildYrs:3, heads:[], head:0, perStation:true,
+             speed:16.98, cars:8, perHr:203.81, tripMi:6.07, co2:"rail", years:"2 to 3", spacing:"Tap on an L line where the new station goes.", unit:"", vehicle:"train",
+             icon:'<circle cx="12" cy="12" r="4"/><path d="M2 12h6M16 12h6"/>', color:"#1a1d21"},
 };
 const METRA_ICON = '<path d="M2 3h20M12 3v4"/><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M7 22l2-4M17 22l-2-4"/>';
 const L_NAMES = {Red:"Red", Blue:"Blue", Brn:"Brown", G:"Green", Org:"Orange", P:"Purple", Pink:"Pink", Y:"Yellow"};
@@ -595,7 +718,7 @@ function buildNet(net){
 let AFTER = null;
 function afterGraph(){
   const key = encodePlan(); if (AFTER && AFTER.key === key) return AFTER;
-  const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [];   // new stops: {x, y}
+  const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [], posName = new Map();   // new stops: {x, y}; posName: a new line's ride nodes → its name
   const add = (a, b, w) => { let l = extra.get(a); if (!l) extra.set(a, l = []); l.push(b, w); };
   let next = NW.N; const extraHw = [];
   for (const L of active()){
@@ -604,11 +727,31 @@ function afterGraph(){
       for (let i = 0; i < hw.length; i++) if (NW.posRoute[i] === r) hw[i] = Math.min(hw[i], L.head);
       continue;
     }
+    if (L.type === "draw" && L.mode === "infill"){
+      // a new stop on an existing L line: riders board that line's trains here (trains passing through aren't slowed, a simplification)
+      const I = infillOf(L), p = L.pts[0]; if (!I.line) continue;
+      const id = next++; ns.push({id, x:p.x, y:p.y});
+      for (const pat of NW.net.pats){
+        if (pat.r !== "cta:" + I.line) continue;
+        let bk = -1, bd = 450, bt = 0;
+        for (let k = 0; k < pat.s.length - 1; k++){
+          const a = pat.s[k], b2 = pat.s[k + 1], ax = NW.sx[a], ay = NW.sy[a], bx = NW.sx[b2], by = NW.sy[b2];
+          const d = segDist(p.x, p.y, ax, ay, bx, by);
+          if (d < bd){ const L2 = (bx - ax) ** 2 + (by - ay) ** 2; bd = d; bk = k; bt = L2 ? Math.max(0, Math.min(1, ((p.x - ax) * (bx - ax) + (p.y - ay) * (by - ay)) / L2)) : 0; }
+        }
+        if (bk < 0) continue;
+        const run = Math.max(pat.m[bk + 1] - pat.m[bk], 0.2), pv = next++, base = pat.base;
+        posName.set(pv, (L_NAMES[I.line] || I.line) + " Line");
+        add(id, pv, hw[base + bk - NW.nS] / 2); add(pv, id, 0);
+        add(base + bk, pv, run * bt + 0.3); add(pv, base + bk + 1, run * (1 - bt) + 0.3);
+      }
+      continue;
+    }
     if (L.type !== "draw" || L.pts.length < 2) continue;
     const M = MODES[L.mode], mpm = M.speed * MI / 60;    // meters a minute, with stops
     const sid = L.pts.map(p => { const id = next++; ns.push({id, x:p.x, y:p.y}); return id; });
     for (const order of [sid, sid.slice().reverse()]){
-      const pos = order.map(() => next++);
+      const pos = order.map(() => next++); pos.forEach(v => posName.set(v, L.name));
       order.forEach((st, k) => {
         if (k < order.length - 1){
           const a = ns.find(q => q.id === st), b2 = ns.find(q => q.id === order[k + 1]);
@@ -626,7 +769,7 @@ function afterGraph(){
     for (const o of ns) if (o !== q){ const d = Math.hypot(o.x - q.x, o.y - q.y); if (d <= NW.net.xferM) add(q.id, o.id, d / W); }
     near(NW.zg, q.x, q.y, NW.net.accessM, z => NW.Z.x[z], z => NW.Z.y[z], (z, d2) => { let l = zExtra.get(z); if (!l) zExtra.set(z, l = []); l.push(q.id, Math.sqrt(d2) / W); });
   }
-  return AFTER = {key, extra, hw, ns, next, zExtra};
+  return AFTER = {key, extra, hw, ns, next, zExtra, posName};
 }
 // Dijkstra from a point. g = null (today) or afterGraph(). Returns minutes to every node (Infinity if past the cutoff).
 function search(x, y, g, cutoff){
@@ -991,6 +1134,7 @@ function evaluate(){
     const xy = L.shape ? L.shape.map(q => toXY(q[0], q[1])) : onStreets(L.mode) && ROADS ? routeXY(st) : st.map(s => [s.x, s.y]);
     L.len = pathLen(xy);
     let trips = tripsPerDay(L.head);
+    if (L.mode === "infill"){ const I = infillOf(L); L.onLine = I.line; L.near = I.near; L.nearD = I.nearD; trips = I.trips; L.head = I.head; }   // a new stop gets the line's trains
     // walk shed + transfers
     const walk = new Set(), newRail = new Set();
     for (const s of st) near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => walk.add(i));
@@ -1017,7 +1161,7 @@ function evaluate(){
       for (const [r, k] of cov.cnt) if (k >= Math.max(10, cov.samples * 0.3)) par.add(r);
       L.close = 0; for (let k = 1; k < n; k++) if (Math.hypot(st[k].x - st[k - 1].x, st[k].y - st[k - 1].y) < 0.4 * MI) L.close++;
       const after = NW ? afterGraph() : null;
-      const feed = feederTrips(L); L.feeder = feed; L.shifted = 0;
+      const feed = L.mode === "infill" ? null : feederTrips(L); L.feeder = feed; L.shifted = 0;
       for (const s of st){
         if (s.snap && s.snap.kind === "L" && L.preset && PRESETS.find(q => q.id === L.preset && q.extends) && (s.i === 0 || s.i === n - 1)){
           s.riders = 0;   // an extension's trains are the same trains: no new departures at the station it extends from
@@ -1026,7 +1170,7 @@ function evaluate(){
           const add = SERVICE_E * Math.log((o.deps + trips) / Math.max(o.deps, 1)) + (wasX ? 0 : c.transfer);
           s.riders = (o.rides || 0) * (Math.exp(add) - 1); gainOld += s.riders;
         } else {
-          const f = {pop:s.pop, jobs:s.jobs, term:(s.i === 0 || s.i === n - 1) && TERMINAL_BONUS ? 1 : 0,
+          const f = {pop:s.pop, jobs:s.jobs, term:(s.i === 0 || s.i === n - 1) && TERMINAL_BONUS && L.mode !== "infill" ? 1 : 0,
                      xfer:(xferAt(s) ? 1 : 0), loop:Math.hypot(s.x, s.y) / MI,
                      bus:[...s.busRoutes].filter(r => !par.has(r)).reduce((a, r) => a + NET.bus[r].trips, 0),
                      acc45:after ? accessFrom(s.x, s.y, after) : 0, deps:trips};
@@ -1088,8 +1232,11 @@ function evaluate(){
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
     const buildM = L.buildMi != null ? L.buildMi * MI : L.len;   // proposals that reuse today's tracks only pay for the new part
-    L.capital = [M.cost[0] * buildM / MI, M.cost[1] * buildM / MI];
+    L.capital = M.perStation ? M.cost.slice() : [M.cost[0] * buildM / MI, M.cost[1] * buildM / MI];
     L.capitalToday = [today$(L.capital[0], M.costYear[0]), today$(L.capital[1], M.costYear[1])].sort((a, b) => a - b);
+    // a proposal the agency (or CMAP) has priced, left as proposed: use that estimate in today's dollars, not the per-mile range
+    const OP = officialCost(L); L.costOfficial = !!OP;
+    if (OP) L.capitalToday = [OP, OP];
     L.cars = M.kind === "rail" ? (riders < 20000 ? 4 : riders < 50000 ? 6 : 8) : 1;   // trains sized to riders, like the CTA's 4- to 8-car trains (assumption)
     const vehHrs = trips * (L.len / MI) / M.speed * L.cars;   // revenue vehicle (car) hours a weekday
     const busMi = M.kind === "rail" ? 0 : L.baseBusMi || 0;   // buses withdrawn (bus-type lines only)
@@ -1308,10 +1455,11 @@ function rampAt(r, t){ const f = t * (r.length - 1), i = Math.min(r.length - 2, 
 /* ---------- drawing ---------- */
 function startDraw(mode, existing){
   drawing = {mode, pts:existing ? existing.pts.slice() : [], editing:existing || null};
-  $("drawTitle").textContent = existing ? "Edit " + existing.name : "Draw a " + MODES[mode].name.toLowerCase().replace("elevated l", "new elevated line").replace("bus rapid transit", "bus rapid transit line");
+  $("drawTitle").textContent = existing ? "Edit " + existing.name : mode === "infill" ? "Add a station to an L line" : "Draw a " + MODES[mode].name.toLowerCase().replace("elevated l", "new elevated line").replace("bus rapid transit", "bus rapid transit line");
+  if (mode === "infill") drawing.pts = [];
   $("drawHelp").textContent = MODES[mode].blurb + ".";
   $("drawSpacing").textContent = MODES[mode].spacing;
-  document.body.classList.add("drawing"); show("vDraw"); map.getCanvas().style.cursor = "crosshair"; hint("Tap the map to place the first station");
+  document.body.classList.add("drawing"); document.body.classList.toggle("infill", mode === "infill"); show("vDraw"); map.getCanvas().style.cursor = "crosshair"; hint(mode === "infill" ? "Tap an L line where the new station goes" : "Tap the map to place the first station");
   refreshDraw();
 }
 function snapAt(lngLat, point){
@@ -1326,6 +1474,15 @@ function snapAt(lngLat, point){
   return best;
 }
 function addPoint(e){
+  if (drawing.mode === "infill"){   // one station, on an existing L line
+    const [x0, y0] = toXY(e.lngLat.lng, e.lngLat.lat), r = Math.max(120, 14 * metersAt(map.getZoom()));
+    const nl = nearestLine(x0, y0, r);
+    if (!nl){ hint("Tap right on an L line"); return; }
+    const k = nearestL(nl.x, nl.y, 300);
+    if (k >= 0 && LST[k].lines.includes(nl.line) && Math.hypot(LST[k].x - nl.x, LST[k].y - nl.y) < 150){ hint(LST[k].name.split(" (")[0] + " is already a station there"); return; }
+    drawing.pts = [{x:nl.x, y:nl.y, ll:toLL(nl.x, nl.y), snap:null}];
+    finishDraw(); return;
+  }
   const sn = snapAt(e.lngLat, e.point);
   let ll = sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat];
   if (!sn && GEO && $("snapChk").checked){ const q = snapGeo(e.point, MODES[drawing.mode].kind === "rail"); if (q) ll = q; }
@@ -1340,18 +1497,18 @@ function refreshDraw(){
   renderPlan();
 }
 function finishDraw(){
-  if (!drawing || drawing.pts.length < 2) return;
+  if (!drawing || drawing.pts.length < (drawing.mode === "infill" ? 1 : 2)) return;
   const M = MODES[drawing.mode];
   let L = drawing.editing;
   if (L){ L.pts = drawing.pts; delete L.shape; delete L.buildShape; delete L.buildMi; }   // edited stations: the line goes straight (or along streets) again
   else {
-    L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:M.head, name:autoName(drawing.mode, drawing.pts)};
+    L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:M.head, name:drawing.mode === "infill" ? infillName(drawing.pts[0]) : autoName(drawing.mode, drawing.pts)};
     lines.push(L);
   }
-  drawing = null; document.body.classList.remove("drawing"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([]));
+  drawing = null; document.body.classList.remove("drawing", "infill"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([]));
   openLine(L);
 }
-function cancelDraw(){ drawing = null; document.body.classList.remove("drawing"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([])); renderPlan(); cur ? openLine(cur) : openStart(); }
+function cancelDraw(){ drawing = null; document.body.classList.remove("drawing", "infill"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([])); renderPlan(); cur ? openLine(cur) : openStart(); }
 function routeCover(pts){ // for each bus route, how many 200 m samples along the line have one of its stops within 250 m (major bus streets are ½ mile apart)
   const xy = pts.map(p => [p.x, p.y]), cnt = new Map(); let samples = 0;
   for (let k = 0; k < xy.length - 1; k++){
@@ -1391,7 +1548,7 @@ function renderPlan(){
     }
     if (drawing && drawing.editing === L) continue;
     const shape = L.shape || shapeLL(L.mode, L.pts), grown = L._grow != null ? sliceLL(shape, L._grow) : shape;
-    feats.push({type:"Feature", properties:{color:MODES[L.mode].color, sel:L === cur, metra:false}, geometry:{type:"LineString", coordinates:grown}});
+    if (L.pts.length > 1) feats.push({type:"Feature", properties:{color:MODES[L.mode].color, sel:L === cur, metra:false}, geometry:{type:"LineString", coordinates:grown}});
     for (const p of L._grow != null ? L.pts.filter((p, i) => i === 0 || stationReached(shape, grown, p)) : L.pts){ st.push({type:"Feature", properties:{x:!!p.snap}, geometry:{type:"Point", coordinates:p.ll}}); if (L === cur) walk.push({type:"Feature", geometry:{type:"Point", coordinates:p.ll}}); }
   }
   if (drawing){
@@ -1403,6 +1560,7 @@ function renderPlan(){
 }
 
 function show(id){ if (map && map.getLayer("metra-hi") && id !== "vMetra") map.setFilter("metra-hi", ["==", ["get", "id"], ""]);
+  if (map && id !== "vTrip" && map.getLayer("tripz")) setTripLayer(false);
   for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id);
   const pm = $("planMini"); if (pm && !pm.classList.contains("empty")) pm.classList.toggle("hide", !(id === "vStart" || id === "vGroup")); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
 function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
@@ -1424,7 +1582,7 @@ const GROUPS = [
   {id:"metra", title:"Metra all-day trains", sub:"Trains in both directions all day, from the regional plan's Metra projects.", mode:"metra"}];
 function openStart(){
   cur = null; nav = {view:"start"}; renderPlan(); show("vStart");
-  const modes = Object.entries(MODES).map(([k, M]) => `<button type="button" data-mode="${k}"><span class="di"><svg viewBox="0 0 24 24" aria-hidden="true">${M.icon}</svg></span><span>${M.name === "Bus rapid transit" ? "BRT" : M.name}<small>${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))} a mile</small></span></button>`).join("");
+  const modes = Object.entries(MODES).map(([k, M]) => `<button type="button" data-mode="${k}"><span class="di"><svg viewBox="0 0 24 24" aria-hidden="true">${M.icon}</svg></span><span>${M.name === "Bus rapid transit" ? "BRT" : M.name}<small>${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))} ${M.perStation ? "each" : "a mile"}</small></span></button>`).join("");
   $("drawCard").innerHTML = `<span class="sec">Draw your own line</span><div class="dmodes">${modes}</div>`;
   for (const b of $("drawCard").querySelectorAll("button")) b.onclick = () => startDraw(b.dataset.mode);
   renderMyLines(); renderGroups(); renderBar();
@@ -1453,6 +1611,13 @@ function presetToLine(P){
   return L;
 }
 // a proposal's real alignment (along railroad rights-of-way, medians or streets), and the part that's new construction
+// the official build cost of an unedited proposal, in today's dollars (year-of-spending totals stay as published), or null
+function officialCost(L){
+  const P = L.preset && PRESETS.find(q => q.id === L.preset);
+  if (!P || P.metra || !P.official || !P.official.cost) return null;
+  if (P.pts.length !== L.pts.length || P.pts.some((q, i) => { const [x, y] = toXY(q[0], q[1]); return Math.hypot(x - L.pts[i].x, y - L.pts[i].y) > 200; })) return null;
+  return P.official.yoe ? P.official.cost : today$(P.official.cost, P.official.costYear);
+}
 function attachShape(L, P){
   if (!P || !P.shape) return;
   if (P.pts.length !== L.pts.length || P.pts.some((q, i) => { const [x, y] = toXY(q[0], q[1]); return Math.hypot(x - L.pts[i].x, y - L.pts[i].y) > 200; })) return;
@@ -1635,7 +1800,8 @@ function openLine(L){
   const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
   $("lIco").innerHTML = icon(isM ? "metra" : L.mode, isM); $("lIco").style.background = isM ? "#e8ecf0" : "";
   $("lName").value = L.name; $("lName").oninput = e => { L.name = e.target.value; save(); };
-  $("lSub").textContent = isM ? `Metra · ${miFmt(L.len)} mi · ${L.st.length} stations` : `${M.name} · ${miFmt(L.len)} mi · ${L.pts.length} stations`;
+  const isI = !isM && L.mode === "infill";
+  $("lSub").textContent = isM ? `Metra · ${miFmt(L.len)} mi · ${L.st.length} stations` : isI ? `New station · ${L.onLine ? (L_NAMES[L.onLine] || L.onLine) + " Line" : "not on an L line"}` : `${M.name} · ${miFmt(L.len)} mi · ${L.pts.length} stations`;
   $("lineEdit").style.display = isM ? "none" : "";
   const riders = isM ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
   const lo = isM ? L.riders[0] : riders * Math.exp(L.band[0]), hi = isM ? L.riders[1] : riders * Math.exp(L.band[1]);
@@ -1645,6 +1811,7 @@ function openLine(L){
   // riders, with what goes into them behind (i)
   let why = "";
   if (isM) why += `<p>${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."} Riders come from Metra's 2018 station counts scaled to today, and how riders responded to more trains in Boston.</p>`;
+  else if (isI) why += `<p>People entering the new station on a weekday, from the same model of today's L stations, with the trains that already pass by (${L.near ? "as many as stop at " + esc(L.near.name.split(" (")[0]) : "the line's service"}). Some would switch from the stations on either side; the rest are new riders. A single station's estimate is typically off by about 37%.</p>`;
   else if (M.kind === "rail") why += `<p>People entering its stations on a weekday, from a model of how many people use each L station today, given the people and jobs near it, its buses, and how often trains come. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
   else why += `<p>Starts from the ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today, which the new line replaces. Riders rise or fall with how often it comes compared with those buses${L.mode === "brt" ? ", plus 31% for faster BRT service (Cleveland and Los Angeles gained 26–51%)" : ""}.</p>`;
@@ -1652,13 +1819,16 @@ function openLine(L){
   if (!isM && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
   if (!isM && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders.</p>`;
   let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM ? "more riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
-  h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
+  if (isI) h += `<p class="note">Trains stop as often as they do at ${L.near ? esc(L.near.name.split(" (")[0]) : "the next station"}: about every ${L.head} minutes.</p>`;
+  else h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
   const warns = [];
   if (!isM && L.matchBus) warns.push([`Runs as often as today's ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""}`, `The buses on this street already come more often than every ${L.head} minutes. A new line that replaces them keeps at least their ${num(L.baseTrips)} trips a weekday, so nobody loses service; riders, cost and travel times use that.`]);
   if (isM && L.capped) warns.push(["More than double today's trains", "Studies only cover up to about double today's service, so the rider estimate stops there."]);
   if (!isM && L.close > 0 && M.kind === "rail") warns.push([`${L.close} station${L.close > 1 ? "s" : ""} closer than 0.4 mi`, "L stations are usually ½ to 1 mile apart. More stops slow every trip, which this estimate doesn't count."]);
-  if (!isM && M.kind === "rail"){   // streetcars and BRT use today's bridges
+  if (isI && L.near && L.nearD < 0.4 * MI) warns.push([`${(L.nearD / MI).toFixed(1)} mi from ${esc(L.near.name.split(" (")[0])}`, "L stations are usually ½ to 1 mile apart. A stop this close adds about a minute for everyone riding through, which this estimate doesn't count, and takes many of its riders from that station."]);
+  if (isI) warns.push(["Riders passing through aren't slowed here", "Each new stop adds roughly a minute for people already on the train. The tool doesn't subtract that from travel times."]);
+  if (!isM && M.kind === "rail" && !isI){   // streetcars and BRT use today's bridges
     const X = crossings(L.pts);
     if (X && (X.water.length || X.motorway.length || X.lake)){
       const parts = X.water.map(w => `${esc(w.nm)}${w.n > 1 ? " (" + w.n + " times)" : ""}`).concat(X.motorway.map(w => `${esc(w.nm)}${w.n > 1 ? " (" + w.n + " times)" : ""}`));
@@ -1679,8 +1849,8 @@ function openLine(L){
   h += `<div class="stats">
     ${tile(num(L.pop), "people within a 10-min walk")}
     ${tile(num(L.jobs), "jobs within a 10-min walk")}
-    ${tile(L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0", isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`, "build", "Cost to build", `<p>From the cost per mile of recent US projects of this kind, in ${COSTIX ? COSTIX.latest : "today's"} dollars (FHWA's highway construction cost index). ${pay.grants}</p>`)}
-    ${tile(money(Math.abs(L.opYear)), L.opYear < 0 ? "a year saved on buses" : "a year to run", "run", "Cost to run", `<p>${!isM && L.baseBusMi > 0 ? "After the buses it replaces. " : ""}${pay.fares}</p>`)}
+    ${tile(L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0", isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`, "build", "Cost to build", `<p>${isI ? `From Chicago's recent new stations: Morgan on the Green and Pink Lines, $38 million (opened 2012; <a href="https://ggwash.org/view/39328" target="_blank" rel="noopener">GGWash</a>), to Damen on the Green Line, $80 million (opened 2024; <a href="https://abc7chicago.com/post/new-cta-damen-station-opens/15145575/" target="_blank" rel="noopener">ABC7</a>), in ${COSTIX ? COSTIX.latest : "today's"} dollars.` : L.costOfficial ? "The official estimate for this proposal (see below), in today's dollars. Edit its stations and it switches to the per-mile range." : `From the cost per mile of recent projects of this kind, in ${COSTIX ? COSTIX.latest : "today's"} dollars (FHWA's highway construction cost index).`} ${pay.grants}</p>`)}
+    ${isI ? tile("Same trains", "no new service to run", "run", "Cost to run", "<p>The trains already run past; the station's own upkeep and staffing aren't counted.</p>") : tile(money(Math.abs(L.opYear)), L.opYear < 0 ? "a year saved on buses" : "a year to run", "run", "Cost to run", `<p>${!isM && L.baseBusMi > 0 ? "After the buses it replaces. " : ""}${pay.fares}</p>`)}
     ${cars >= 0 ? tile(num(cars), "fewer car trips a day", "", "", "", "g") : tile(num(-cars), "more car trips a day (fewer buses than today)")}
     ${tile(co2Word(co2), "CO₂ a year from fewer car trips", "co2", "Lower CO₂ from fewer car trips", co2Why, co2 >= 0 ? "g" : "")}
     ${tile(co2Word((L.co2Long[0] + L.co2Long[1]) / 2), "CO₂ a year in the long run, as neighborhoods grow", "co2l", "CO₂ in the long run", longWhy, (L.co2Long[0] + L.co2Long[1]) / 2 >= 0 ? "g" : "")}
@@ -1701,7 +1871,7 @@ function openLine(L){
   for (const b of $("lBody").querySelectorAll(".seg button")) b.onclick = () => { L.head = +b.dataset.h; save(); openLine(L); };
   if ($("elec")) $("elec").onchange = e => { L.electric = e.target.checked; save(); openLine(L); };
   const coords = isM ? NET.metraLines.find(l => l.id === L.line).paths.flat() : L.pts.map(p => p.ll);
-  if (!L._fitted){ fitTo(coords); L._fitted = true; }
+  if (!L._fitted){ if (coords.length === 1) map.flyTo({center:coords[0], zoom:Math.max(map.getZoom(), 13.5)}); else fitTo(coords); L._fitted = true; }
   save();
 }
 const CO2_LABEL = "5–10 years after opening";
@@ -1774,10 +1944,277 @@ function detailsHtml(L){
   return `<table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>`;
 }
 
+/* ---------- new stations on existing L lines ---------- */
+let LSEG = null;
+function lineSegs(){
+  if (LSEG) return LSEG; LSEG = [];
+  for (const l of NET.lLines) for (const path of l.paths) for (let i = 0; i < path.length - 1; i++){ const a = toXY(path[i][0], path[i][1]), b = toXY(path[i + 1][0], path[i + 1][1]); LSEG.push([a[0], a[1], b[0], b[1], l.id]); }
+  return LSEG;
+}
+// the nearest point on an L line within r meters: {line, x, y, d}, or null
+function nearestLine(x, y, r){
+  let best = null, bd = r;
+  for (const sg of lineSegs()){ const d = segDist(x, y, sg[0], sg[1], sg[2], sg[3]); if (d < bd){ bd = d; best = sg; } }
+  if (!best) return null;
+  const [ax, ay, bx, by] = best, L2 = (bx - ax) ** 2 + (by - ay) ** 2, t = L2 ? Math.max(0, Math.min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / L2)) : 0;
+  return {line:best[4], x:ax + t * (bx - ax), y:ay + t * (by - ay), d:bd};
+}
+function infillOf(L){
+  const p = L.pts[0], nl = nearestLine(p.x, p.y, 400), line = nl ? nl.line : null;
+  let near = null, nd = Infinity;
+  if (line) for (const s of LST) if (s.lines.includes(line)){ const d = Math.hypot(s.x - p.x, s.y - p.y); if (d < nd){ nd = d; near = s; } }
+  const trips = near ? near.deps / near.lines.length : tripsPerDay(7.5);   // departures a weekday at the nearest station on that line, split among its lines
+  return {line, near, nearD:nd, trips, head:Math.max(2, Math.round(2 * 60 * HOURS / Math.max(trips, 1) * 2) / 2)};
+}
+function infillName(p){
+  const nl = nearestLine(p.x, p.y, 400), ln = nl ? (L_NAMES[nl.line] || nl.line) : "L";
+  // the main street it sits nearest, from the bus stops nearby
+  let r = null, rd = 300; near(SGRID, p.x, p.y, 300, k => STOPS.x[k], k => STOPS.y[k], (k, d2) => { if (Math.sqrt(d2) < rd){ rd = Math.sqrt(d2); r = STOPS.r[k][0]; } });
+  const st = r != null && NET.bus[r] ? NET.bus[r].name.replace(/ ?(Express|Limited|Owl)$/i, "").split("/")[0] : null;
+  return `New ${ln} Line station` + (st ? ` at ${st}` : "");
+}
+
+/* ---------- trip times ---------- */
+// Dijkstra like search(), keeping where each node was reached from, to list the steps of a trip
+function searchPath(x, y, g, cutoff){
+  const n = g ? g.next : NW.N, dist = new Float64Array(n).fill(Infinity), prev = new Int32Array(n).fill(-1), heap = [];
+  const push = (v, d, from) => { if (d < dist[v] && d <= cutoff){ dist[v] = d; prev[v] = from; heap.push([d, v]); let i = heap.length - 1; while (i > 0){ const pI = (i - 1) >> 1; if (heap[pI][0] <= heap[i][0]) break; [heap[pI], heap[i]] = [heap[i], heap[pI]]; i = pI; } } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length){ heap[0] = last; let i = 0; for (;;){ const l = 2 * i + 1, r = l + 1; let m = i; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+  const W = NW.net.walk, A = NW.net.accessM;
+  near(NW.sg, x, y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => push(k, Math.sqrt(d2) / W, -1));
+  if (g) for (const q of g.ns){ const d = Math.hypot(q.x - x, q.y - y); if (d <= A) push(q.id, d / W, -1); }
+  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N;
+  while (heap.length){
+    const [d, v] = pop(); if (d > dist[v]) continue;
+    if (v < N){ const a = NW.adj[v]; for (let i = 0; i < a.length; i += 2){ const to = a[i]; let w = a[i + 1]; if (w < 0) w = hw[to - nS] / 2; push(to, d + w, v); } }
+    const e = g && g.extra.get(v);
+    if (e) for (let i = 0; i < e.length; i += 2) push(e[i], d + e[i + 1], v);
+  }
+  return {dist, prev};
+}
+const ROUTE_NAME = r => {
+  if (r.startsWith("metra:")) return {name:"Metra " + r.slice(6), color:"#6b7480"};
+  const id = r.replace(/^cta:/, "");
+  if (L_NAMES[id]){ const ll = NET.lLines.find(l => l.id === id); return {name:L_NAMES[id] + " Line", color:ll ? ll.color : "#1a1d21"}; }
+  const b = NET.bus.find(x => x.id === id); return {name:"#" + id + " bus" + (b ? " (" + b.name.split("/")[0] + ")" : ""), color:"#5a6069"};
+};
+function placeName(x, y){
+  const k = nearestL(x, y, 220); if (k >= 0) return LST[k].name.split(" (")[0];
+  let m = null, md = 220; for (const s of MST){ const d = Math.hypot(s.x - x, s.y - y); if (d < md){ md = d; m = s; } }
+  return m ? m.name : "";
+}
+// fastest trip from a to b ({x, y}) today (g = null) or with the plan: total minutes and the steps
+function tripPlan(a, b, g){
+  const W = NW.net.walk, A = NW.net.accessM, {dist, prev} = searchPath(a.x, a.y, g, 180);
+  let best = Math.hypot(b.x - a.x, b.y - a.y) / W, end = -1, endWalk = best;
+  near(NW.sg, b.x, b.y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => { const w = Math.sqrt(d2) / W, t = dist[k] + w; if (t < best){ best = t; end = k; endWalk = w; } });
+  if (g) for (const q of g.ns){ const d = Math.hypot(q.x - b.x, q.y - b.y); if (d <= A){ const t = dist[q.id] + d / W; if (t < best){ best = t; end = q.id; endWalk = d / W; } } }
+  if (end < 0) return {total:best, legs:[{kind:"walk", min:best}], walkOnly:true};
+  const path = []; for (let v = end; v >= 0; v = prev[v]) path.push(v); path.reverse();
+  const isPos = v => (v >= NW.nS && v < NW.N) || (g && g.posName.has(v));
+  const routeOf = v => v < NW.N ? ROUTE_NAME(NW.posRoute[v - NW.nS]) : {name:g.posName.get(v), color:"#1a1d21", mine:true};
+  const xyOf = v => v < NW.nS ? [NW.sx[v], NW.sy[v]] : null;
+  const nameOf = v => { const p = xyOf(v); if (p) return placeName(p[0], p[1]); const q = g.ns.find(o => o.id === v); return (q && placeName(q.x, q.y)) || "new station"; };
+  const legs = [{kind:"walk", min:dist[path[0]]}]; let ride = null;
+  for (let i = 1; i < path.length; i++){
+    const u = path[i - 1], v = path[i], dt = dist[v] - dist[u];
+    if (!isPos(u) && isPos(v)){ const R = routeOf(v); ride = {kind:"ride", ...R, wait:dt, ride:0, from:nameOf(u)}; }
+    else if (isPos(u) && isPos(v)){ if (ride) ride.ride += dt; }
+    else if (isPos(u) && !isPos(v)){ if (ride){ ride.to = nameOf(v); legs.push(ride); ride = null; } }
+    else { const last = legs[legs.length - 1]; if (last.kind === "walk") last.min += dt; else legs.push({kind:"walk", min:dt}); }
+  }
+  const last = legs[legs.length - 1]; if (last.kind === "walk") last.min += endWalk; else legs.push({kind:"walk", min:endWalk});
+  return {total:best, legs:legs.filter(l => l.kind !== "walk" || l.min >= 0.5)};
+}
+const TRIP = {a:null, b:null, field:"a", mins:45, mk:{}};
+function openTrip(){
+  show("vTrip"); renderBar(); setTripLayer(true);
+  if (!$("tripPlaces").children.length){
+    const names = new Set(); for (const s of LST) names.add(s.name.split(" (")[0] + " (L)"); for (const s of MST) names.add(s.name + " (Metra)");
+    $("tripPlaces").innerHTML = [...names].sort().map(n => `<option value="${esc(n)}">`).join("");
+  }
+  renderTrip();
+}
+function tripPlace(v){   // a typed station name → a point
+  const m = v.match(/^(.*) \((L|Metra)\)$/); if (!m) return null;
+  const s = m[2] === "L" ? LST.find(q => q.name.split(" (")[0] === m[1]) : MST.find(q => q.name === m[1]);
+  return s ? {x:s.x, y:s.y, ll:s.ll, name:m[1]} : null;
+}
+function setTripPoint(which, pt){
+  TRIP[which] = pt;
+  $(which === "a" ? "tripA" : "tripB").value = pt ? pt.name : "";
+  if (TRIP.mk[which]){ TRIP.mk[which].remove(); delete TRIP.mk[which]; }
+  if (pt){ const el = document.createElement("div"); el.className = "trippin" + (which === "b" ? " b" : ""); el.textContent = which.toUpperCase();
+    TRIP.mk[which] = new maplibregl.Marker({element:el}).setLngLat(pt.ll).addTo(map); }
+  if (which === "a" && pt && !TRIP.b) setTripField("b");
+  renderTrip();
+}
+function setTripField(f){ TRIP.field = f; $("tfA").classList.toggle("on", f === "a"); $("tfB").classList.toggle("on", f === "b"); }
+function tripClick(e){
+  const [x, y] = toXY(e.lngLat.lng, e.lngLat.lat), nm = placeName(x, y);
+  setTripPoint(TRIP.field, {x, y, ll:[e.lngLat.lng, e.lngLat.lat], name:nm ? "Near " + nm : "Point on the map"});
+}
+function setTripLayer(on){
+  if (!map.getSource("tripz")){ map.addSource("tripz", {type:"geojson", data:fc([])});
+    map.addLayer({id:"tripz", type:"fill", source:"tripz", paint:{"fill-antialias":false, "fill-color":["match", ["get", "c"], "plan", "#2e9d57", "#6f93c4"], "fill-opacity":["match", ["get", "c"], "plan", 0.55, 0.28]}}, "dens-anchor"); }
+  map.setLayoutProperty("tripz", "visibility", on ? "visible" : "none");
+  for (const k of ["a", "b"]) if (TRIP.mk[k]) TRIP.mk[k].getElement().style.display = on ? "" : "none";
+}
+function minFmt(m){ m = Math.round(m); return m >= 60 ? Math.floor(m / 60) + " hr " + (m % 60 ? m % 60 + " min" : "") : m + " min"; }
+function legsHtml(T){
+  return `<div class="legs">${T.legs.map(l => l.kind === "walk" ? `<div class="leg">Walk ${minFmt(l.min)}</div>` :
+    `<div class="leg ride" style="--lc:${l.color}"><b>${esc(l.name)}</b>${l.mine ? " (your plan)" : ""}<small>Wait about ${minFmt(l.wait)}, ride ${minFmt(l.ride)}${l.from && l.to ? ` · ${esc(l.from)} → ${esc(l.to)}` : l.to ? ` · to ${esc(l.to)}` : l.from ? ` · from ${esc(l.from)}` : ""}</small></div>`).join("")}</div>`;
+}
+function renderTrip(){
+  const out = $("tripOut");
+  if (!NW){ out.innerHTML = `<p class="note">Loading the transit network…</p>`; return; }
+  const A = TRIP.a, Bp = TRIP.b, has = active().length > 0, g = has ? afterGraph() : null;
+  if (!A){ map.getSource("tripz") && map.getSource("tripz").setData(fc([])); out.innerHTML = `<p class="note">Tap the map to set where you start, or type a station. Then set where you're going to see the trip, or leave it empty to see how far you can get.</p>${has ? "" : `<p class="note">Your plan has no lines yet, so this shows today's transit. Add a line to compare.</p>`}`; return; }
+  // how far you can get: 800 m squares reached within the time, today and with the plan
+  const cut = TRIP.mins, tb = zoneTimes(A.x, A.y, null, cut), ta = g ? zoneTimes(A.x, A.y, g, cut) : tb, Z = NW.Z, h = NW.net.zoneM / 2;
+  const feats = []; let jb = 0, ja = 0, pb = 0, pa = 0;
+  for (let z = 0; z < NW.nz; z++){
+    const inB = tb[z] <= cut, inA = ta[z] <= cut; if (!inA && !inB) continue;
+    if (inB){ jb += Z.jobs[z]; pb += Z.pop[z]; } if (inA){ ja += Z.jobs[z]; pa += Z.pop[z]; }
+    const x = Z.x[z], y = Z.y[z];
+    feats.push({type:"Feature", properties:{c:inB ? "today" : "plan"}, geometry:{type:"Polygon", coordinates:[[toLL(x - h, y - h), toLL(x + h, y - h), toLL(x + h, y + h), toLL(x - h, y + h), toLL(x - h, y - h)]]}});
+  }
+  map.getSource("tripz").setData(fc(feats));
+  let h1 = "";
+  if (Bp){
+    const T0 = tripPlan(A, Bp, null), T1 = g ? tripPlan(A, Bp, g) : null, faster = T1 ? T0.total - T1.total : 0;
+    h1 += `<div class="tcmp"><div><b>${minFmt(T0.total)}</b><span>today</span></div>${T1 ? `<div class="${faster >= 1 ? "g" : ""}"><b>${minFmt(T1.total)}</b><span>${faster >= 1 ? `with your plan, ${minFmt(faster)} faster` : "with your plan (no faster)"}</span></div>` : `<div><b>–</b><span>add a line to compare</span></div>`}</div>`;
+    h1 += `<div class="legh">Today</div>${legsHtml(T0)}`;
+    if (T1 && faster >= 1) h1 += `<div class="legh">With your plan</div>${legsHtml(T1)}`;
+  }
+  h1 += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">How far you can get from A in</span><div class="seg tmins" role="radiogroup">${[30, 45, 60].map(m => `<button type="button" role="radio" aria-checked="${m === cut}" data-m="${m}">${m} min</button>`).join("")}</div></div>`;
+  h1 += `<div class="tcmp"><div><b>${num(jb)}</b><span>jobs you can reach today</span></div><div class="${ja > jb * 1.01 ? "g" : ""}"><b>${num(ja)}</b><span>${g ? (ja > jb * 1.01 ? `with your plan, ${Math.round((ja / Math.max(jb, 1) - 1) * 100)}% more` : "with your plan (about the same)") : "add a line to compare"}</span></div></div>`;
+  h1 += `<div class="tkey"><span><i style="background:rgba(111,147,196,.45)"></i>Within ${cut} min today</span>${g ? `<span><i style="background:rgba(46,157,87,.7)"></i>Only with your plan</span>` : ""}</div>`;
+  h1 += `<p class="fnote">Midday weekday schedules: walk up to ½ mile to a stop, wait half the time between trains or buses, transfer within 400 m. Waits are averages; people who time their trips wait less. Pace buses aren't included. ${ib("tripwhy", "How trip times work", "<p>The tool rebuilds the CTA and Metra network from their weekday schedules (10am–3pm): each route's stops, minutes between them and how often it comes. A trip is a walk at 3 mph to a stop within ½ mile, a wait of half the time between departures, the ride, walking transfers up to 400 m, and the walk at the end. New lines are added with their stations, speed and frequency. Squares are 800 m across; jobs are Census LEHD 2022.</p>")}</p>`;
+  out.innerHTML = h1; bindInfo(out);
+  for (const b of out.querySelectorAll(".tmins button")) b.onclick = () => { TRIP.mins = +b.dataset.m; renderTrip(); };
+}
+
+/* ---------- who pays, and when ---------- */
+const START_YEAR = NOW_YEAR + 1;   // assumption: work is approved next year
+const NITA_CAPITAL_5YR = 9.4e9;    // NITA's proposed 2027–2031 capital plan (NITA board, Aug. 20, 2026)
+function fundOf(L){   // call evaluate() first
+  const isM = L.type === "metra", M = isM ? null : MODES[L.mode];
+  const cap = (L.capitalToday[0] + L.capitalToday[1]) / 2, small = cap < 400e6;
+  const P = L.preset && PRESETS.find(q => q.id === L.preset), intact = !!officialCost(L);
+  const actual = intact && P.official.federal != null;   // a funded project: the share it actually got
+  const share = actual ? P.official.federal : cap > 0 ? (small ? Math.min(CIG_CAP.smallStarts, 150e6 / cap) : CIG_CAP.newStarts) : 0;
+  const riders = isM ? L.riders[0] : Math.max(0, L.newRiders), fares = tripsPer(L) * riders * YEAR_DAYS * FARE_PER_TRIP;
+  let years = isM ? (L.electric ? 7 : 2) : M.buildYrs, opens = START_YEAR + years;
+  const official = intact && P.official.opens ? P.official.opens : null;
+  if (official){ const m = official.match(/(\d{4})(?:–(\d{2}))?/); if (m){ opens = m[2] ? +(m[1].slice(0, 2) + m[2]) : +m[1]; years = Math.max(1, opens - START_YEAR); } }
+  return {cap, fedMax:cap * share, share, actual, local:cap * (1 - share), fares, netOp:Math.max(0, L.opYear - fares), saveOp:L.opYear < 0 ? -L.opYear : 0, years, opens, official, small};
+}
+function openFund(){ show("vFund"); renderBar(); renderFund(); }
+function renderFund(){
+  const A = active(), el = $("fundBody"); evaluate();
+  if (!A.length){ el.innerHTML = `<p class="note">Add a line or switch on a proposal first.</p>`; return; }
+  const F = A.map(L => ({L, f:fundOf(L)}));
+  const t = F.reduce((a, {f}) => ({cap:a.cap + f.cap, fed:a.fed + f.fedMax, local:a.local + f.local, newLocal:a.newLocal + (f.actual ? 0 : f.local), netOp:a.netOp + f.netOp - f.saveOp}), {cap:0, fed:0, local:0, newLocal:0, netOp:0});
+  const funded = F.filter(({f}) => f.actual).map(({L}) => L.name);
+  const y0 = START_YEAR, y1 = Math.max(...F.map(({f}) => f.opens)) + 1, n = y1 - y0;
+  let h = `<div class="fsum"><div><b>${money(t.fed)}</b><span>federal grants${F.some(({f}) => f.actual) ? "" : ", at most"}</span></div><div><b>${money(t.local)}</b><span>state and local share</span></div><div><b>${money(Math.abs(t.netOp))}</b><span>${t.netOp >= 0 ? "a year to run, after fares" : "a year saved"}</span></div></div>`;
+  const pct = v => v < 1 ? "less than 1%" : Math.round(v) + "%", pct1 = v => v < 0.1 ? "less than 0.1%" : v.toFixed(1) + "%";
+  h += `<p class="fnote">${t.newLocal > 0 ? `The state and local share${funded.length ? " of the projects not yet funded" : ""} is ${pct(t.newLocal / NITA_CAPITAL_5YR * 100)} of NITA's whole proposed capital plan for 2027–2031 ($9.4 billion, for every project in the region).` : ""}${funded.length ? ` ${funded.map(esc).join(", ")} ${funded.length > 1 ? "are" : "is"} already funded and under way.` : ""} The yearly cost after fares is ${pct1(Math.max(0, t.netOp) / NITA_NEW_OP * 100)} of the new operating money the 2025 state law brought (about $1.2 billion in 2027). ${ib("fundwhy", "How funding is split", `<p>Federal Capital Investment Grants can pay up to 60% of a big project (New Starts) and up to 80% of one under $400 million, capped at $150 million (Small Starts) (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2022-01/Fact-Sheet-Capital-Investment-Grants-Program.pdf" target="_blank" rel="noopener">FTA</a>). These are ceilings: the Red Line Extension got 34% (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-11/FY26-Annual-Report-on-Funding-Recommendations.pdf" target="_blank" rel="noopener">FTA FY26 report</a>), and Congress decides each year how much the program gets. The rest comes from the state, NITA, the CTA or Metra, the city and sometimes tax increment districts (the Red Line Extension uses a transit TIF). NITA's capital plan and operating money: <a href="https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/August/August-20-2026-RTA-Board-Slide-Deck.pdf" target="_blank" rel="noopener">NITA board, Aug. 20, 2026</a>. Fares: the CTA's $1.15 average per trip (NTD 2024) from new riders.</p>`)}</p>`;
+  h += `<table class="ftable"><thead><tr><th>Line</th><th>Build</th><th>Federal${F.every(({f}) => f.actual) ? "" : ", at most"}</th><th>State and local</th><th>Opens</th></tr></thead><tbody>${F.map(({L, f}) => `<tr><td>${esc(L.name)}</td><td>${f.cap ? money(f.cap) : "$0"}</td><td>${f.fedMax ? money(f.fedMax) + ` <small>(${Math.round(f.share * 100)}%${f.actual ? ", awarded" : ""})</small>` : "–"}</td><td>${money(f.local)}</td><td>${f.official ? esc(f.official) + "*" : f.opens}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td>Total</td><td>${money(t.cap)}</td><td>${money(t.fed)}</td><td>${money(t.local)}</td><td></td></tr></tfoot></table>`;
+  h += `<span class="sec">When each line could open</span><div class="tl">${F.map(({L, f}) => `<div class="tlrow"><span class="nm">${esc(L.name)}</span><div class="tlbar" style="--n:${n}"><i class="${L.type === "metra" ? "m" : ""}" style="left:0;width:${f.years / n * 100}%" title="${START_YEAR}–${f.opens}"></i></div></div>`).join("")}</div>
+    <div class="tlaxis"><span>${y0}</span><span>${Math.round((y0 + y1) / 2)}</span><span>${y1}</span></div>`;
+  h += `<p class="fnote">Bars run from approval to opening, if work were approved in ${START_YEAR} (an assumption), using how long similar projects took: subway 8 years, elevated 6, streetcar 4, BRT 2, a new station 3, more Metra trains 2, Metra wires 7. Real projects usually spend years in study and design before that.${F.some(({f}) => f.official) ? " * The agency's own opening date." : ""}${F.some(({f}) => f.actual) ? " “Awarded” is the federal share a funded project actually got." : ""}</p>`;
+  el.innerHTML = h; bindInfo(el);
+}
+
+/* ---------- compare plans ---------- */
+const SAVES_KEY = "sc-transit-saves";
+function getSaves(){ try { return JSON.parse(localStorage.getItem(SAVES_KEY) || "[]"); } catch (e){ return []; } }
+function putSaves(v){ try { localStorage.setItem(SAVES_KEY, JSON.stringify(v)); } catch (e){} }
+// a plan's totals, from its plan code, without changing the plan on screen
+function planStats(code){
+  const keepL = lines, keepC = {...clean}, keepCur = cur;
+  try {
+    lines = code === null ? keepL : decode(code); AFTER = null; evaluate();
+    const A = active(), F = A.map(fundOf);
+    const r = {n:A.length, riders:A.reduce((a, L) => a + (L.type === "metra" ? L.riders[0] : Math.max(0, L.newRiders || 0)), 0),
+      capLo:A.reduce((a, L) => a + L.capitalToday[0], 0), capHi:A.reduce((a, L) => a + L.capitalToday[1], 0),
+      op:A.reduce((a, L) => a + L.opYear, 0), cars:A.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0), co2:A.reduce((a, L) => a + co2Mid(L), 0),
+      fed:F.reduce((a, f) => a + f.fedMax, 0), local:F.reduce((a, f) => a + f.local, 0), last:F.length ? Math.max(...F.map(f => f.opens)) : null,
+      names:A.map(L => L.name)};
+    r.perRide = r.riders > 0 ? ((r.capLo + r.capHi) / 2 / 30 + Math.max(0, r.op)) / (r.riders * 2 * YEAR_DAYS) : null;
+    return r;
+  } finally { lines = keepL; clean = keepC; cur = keepCur; AFTER = null; evaluate(); }
+}
+let CMP = {a:"now", b:null};
+function openCompare(){ show("vCompare"); renderBar(); renderCompare(); }
+function renderCompare(){
+  const el = $("cmpBody"), S = getSaves();
+  const opt = (v, sel) => `<option value="now" ${sel === "now" ? "selected" : ""}>Your plan now</option>` + S.map((p, i) => `<option value="${i}" ${String(sel) === String(i) ? "selected" : ""}>${esc(p.name)}</option>`).join("");
+  if (CMP.b == null && S.length) CMP.b = S.length - 1;
+  let h = `<span class="sec">Save this plan</span><div class="saverow"><input id="saveName" placeholder="Name it, e.g. 'Rail first'" maxlength="40"><button class="btn" type="button" id="saveBtn" ${active().length ? "" : "disabled"}>Save</button></div>`;
+  if (S.length) h += `<div class="slist">${S.map((p, i) => `<div class="srow"><b>${esc(p.name)}</b><small>${p.n} line${p.n === 1 ? "" : "s"}</small><button class="linkbtn" type="button" data-open="${i}">Open</button><button class="linkbtn" type="button" data-del="${i}">Delete</button></div>`).join("")}</div>`;
+  else h += `<p class="note">Saved plans stay in this browser. Save a version, change your plan, then compare the two.</p>`;
+  if (S.length){
+    h += `<span class="sec">Side by side</span><div class="cpick"><select id="cmpA" aria-label="First plan">${opt("a", CMP.a)}</select><select id="cmpB" aria-label="Second plan">${opt("b", CMP.b)}</select></div>`;
+    const sa = planStats(CMP.a === "now" ? null : S[CMP.a].code), sb = planStats(CMP.b === "now" ? null : S[CMP.b].code);
+    const rows = [["Lines", sa.n, sb.n, v => v, 0], ["More riders a weekday", sa.riders, sb.riders, num, 1], ["To build", (sa.capLo + sa.capHi) / 2, (sb.capLo + sb.capHi) / 2, money, -1],
+      ["Federal grants, at most", sa.fed, sb.fed, money, 0], ["State and local share", sa.local, sb.local, money, -1], ["A year to run", sa.op, sb.op, v => (v < 0 ? "−" : "") + money(Math.abs(v)), -1],
+      ["Fewer car trips a day", sa.cars, sb.cars, num, 1], ["Less CO₂ a year (t)", sa.co2, sb.co2, num, 1], ["Cost per new trip", sa.perRide, sb.perRide, v => v == null ? "–" : "$" + v.toFixed(v < 10 ? 2 : 0), -1], ["Last line opens", sa.last, sb.last, v => v || "–", -1]];
+    h += `<table class="ctable"><thead><tr><th></th><th>${esc(CMP.a === "now" ? "Your plan now" : S[CMP.a].name)}</th><th>${esc(CMP.b === "now" ? "Your plan now" : S[CMP.b].name)}</th></tr></thead><tbody>${rows.map(([k, a, b, f, better]) => {
+      const wa = better && a != null && b != null && a !== b && (better > 0 ? a > b : a < b), wb = better && a != null && b != null && a !== b && !wa;
+      return `<tr><td>${k}</td><td class="${wa ? "win" : ""}">${f(a)}</td><td class="${wb ? "win" : ""}">${f(b)}</td></tr>`; }).join("")}</tbody></table>
+      <p class="fnote">Green marks the better of the two on each row. Build costs are the middle of each line's range. Cost per new trip spreads the build cost over 30 years, plus running costs, over new riders' trips.</p>`;
+  }
+  h += `<button class="btn big" type="button" id="sumBtn2" ${active().length ? "" : "disabled"}>One-page summary of your plan</button>`;
+  el.innerHTML = h;
+  $("saveBtn").onclick = () => { const nm = $("saveName").value.trim() || "Plan " + (S.length + 1); const v = getSaves(); v.push({name:nm, code:encodePlan(), n:active().length, at:Date.now()}); putSaves(v); CMP.b = v.length - 1; renderCompare(); };
+  for (const b of el.querySelectorAll("[data-open]")) b.onclick = () => { const p = getSaves()[+b.dataset.open]; lines = decode(p.code); save(); renderPlan(); openStart(); };
+  for (const b of el.querySelectorAll("[data-del]")) b.onclick = () => { const v = getSaves(); v.splice(+b.dataset.del, 1); putSaves(v); CMP = {a:"now", b:null}; renderCompare(); };
+  if ($("cmpA")) $("cmpA").onchange = e => { CMP.a = e.target.value === "now" ? "now" : +e.target.value; renderCompare(); };
+  if ($("cmpB")) $("cmpB").onchange = e => { CMP.b = e.target.value === "now" ? "now" : +e.target.value; renderCompare(); };
+  $("sumBtn2").onclick = openSummary;
+}
+
+/* ---------- one-page summary ---------- */
+function snapMap(done){
+  const A = active(); const coords = [];
+  for (const L of A) coords.push(...(L.type === "metra" ? NET.metraLines.find(l => l.id === L.line).paths.flat() : (L.shape || L.pts.map(p => p.ll))));
+  const grab = () => { map.once("render", () => { let url = ""; try { url = map.getCanvas().toDataURL("image/jpeg", 0.85); } catch (e){} done(url); }); map.triggerRepaint(); };
+  if (coords.length){ fitTo(coords); map.once("idle", grab); } else grab();
+}
+function openSummary(){
+  const A = active(); if (!A.length) return;
+  save(); evaluate();
+  const st = planStats(null), F = A.map(L => ({L, f:fundOf(L)}));
+  const title = (() => { try { return localStorage.getItem("sc-sum-title") || "My Chicago transit plan"; } catch (e){ return "My Chicago transit plan"; } })();
+  const today = new Date().toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"});
+  const rows = F.map(({L, f}) => { const isM = L.type === "metra", r = isM ? L.riders[0] : L.riders;
+    return `<tr><td>${esc(L.name)}</td><td>${isM ? "Metra all-day trains" : MODES[L.mode].name}</td><td>${num(r)}</td><td>${f.cap ? money(f.cap) : "$0"}</td><td>${f.official ? esc(f.official) : f.opens}</td></tr>`; }).join("");
+  $("sumBody").innerHTML = `<div class="sumtop"><input id="sumTitle" value="${esc(title)}" aria-label="Plan title" maxlength="70"><div class="sbtns"><button class="btn" type="button" id="sumCopy">Copy link</button><button class="btn dark" type="button" id="sumPrint">Print or save as PDF</button><button class="btn" type="button" id="sumClose">Close</button></div></div>
+    <div class="summeta">Expand Chicago Transit · ${today} · ${A.length} line${A.length > 1 ? "s" : ""}</div>
+    <img class="sumimg" id="sumImg" alt="Map of the plan">
+    <div class="sumnums"><div><b>${num(st.riders)}</b><span>more riders a weekday</span></div><div><b>${st.capLo === st.capHi ? money(st.capLo) : moneyRange(st.capLo, st.capHi)}</b><span>to build</span></div><div><b>${money(Math.abs(st.op))}</b><span>${st.op < 0 ? "a year saved" : "a year to run"}</span></div><div><b>${num(Math.abs(st.cars))}</b><span>${st.cars >= 0 ? "fewer" : "more"} car trips a day</span></div><div><b>${num(Math.abs(st.co2))} t</b><span>${st.co2 >= 0 ? "less" : "more"} CO₂ a year from car trips</span></div></div>
+    <h3>The lines</h3><table class="ftable"><thead><tr><th>Line</th><th>Type</th><th>Riders a weekday</th><th>Build</th><th>Could open</th></tr></thead><tbody>${rows}</tbody></table>
+    <h3>Paying for it</h3><p>Federal grants could cover up to ${money(st.fed)}; the state and local share would be about ${money(st.local)}, ${st.local / NITA_CAPITAL_5YR * 100 < 1 ? "less than 1%" : Math.round(st.local / NITA_CAPITAL_5YR * 100) + "%"} of NITA's proposed 2027–2031 capital plan for the whole region. ${st.op > 0 ? `Running it costs about ${money(st.op)} a year before fares.` : ""} Opening years assume approval in ${START_YEAR}.</p>
+    <p class="sumfoot">A sketch from Expand Chicago Transit, a fan-made planning tool (not affiliated with the City of Chicago, CTA or Metra). Riders and costs are estimates from public data; every source is listed in the tool under Sources. Plan link: ${esc(location.href)}</p>`;
+  $("sumTitle").oninput = e => { try { localStorage.setItem("sc-sum-title", e.target.value); } catch (er){} };
+  $("sumClose").onclick = () => $("sumDlg").close();
+  $("sumPrint").onclick = () => window.print();
+  $("sumCopy").onclick = async () => { try { await navigator.clipboard.writeText(location.href); $("sumCopy").textContent = "Copied"; setTimeout(() => $("sumCopy").textContent = "Copy link", 1600); } catch (e){} };
+  $("sumDlg").showModal();
+  const tripOn = map.getLayer("tripz") && map.getLayoutProperty("tripz", "visibility") === "visible";
+  if (tripOn) setTripLayer(false);
+  snapMap(url => { if (url) $("sumImg").src = url; else $("sumImg").remove(); if (tripOn) setTripLayer(true); });
+}
+
 /* ---------- map events ---------- */
 function bindMap(){
   map.on("click", e => {
     if (drawing){ addPoint(e); return; }
+    if ($("vTrip").classList.contains("on")){ tripClick(e); return; }
     const f = map.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers:["pst", "plan"]});
     if (f.length){
       const c = f[0].geometry.type === "Point" ? f[0].geometry.coordinates : null;
@@ -1787,7 +2224,7 @@ function bindMap(){
   });
   map.on("dblclick", e => { if (drawing){ e.preventDefault(); finishDraw(); } });
   map.on("mousemove", e => {
-    if (drawing && drawing.pts.length){
+    if (drawing && drawing.pts.length && drawing.mode !== "infill"){
       const a = drawing.pts[drawing.pts.length - 1].ll, sn = snapAt(e.lngLat, e.point);
       map.getSource("preview").setData(fc([{type:"Feature", geometry:{type:"LineString", coordinates:[a, sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat]]}}]));
     }
@@ -1845,7 +2282,7 @@ function setLayer(k, on){
 
 /* ---------- save + share ---------- */
 function decode(s){
-  const out = [], mk = {s:"subway", e:"elevated", b:"brt"};
+  const out = [], mk = {s:"subway", e:"elevated", b:"brt", i:"infill"};
   for (let part of s.split("~")){
     try {
       const off = part[0] === "x"; if (off) part = part.slice(1);
@@ -1859,7 +2296,7 @@ function decode(s){
         let snap = null; if (sn){ const kind = sn[0], id = sn.slice(1); const ref = (kind === "L" ? LST : MST).find(z => z.id === id); if (ref) snap = {kind, ref}; }
         const ll = snap ? snap.ref.ll : toLL(x, y); const [sx, sy] = snap ? [snap.ref.x, snap.ref.y] : [x, y]; return {x:sx, y:sy, ll, snap}; });
       const pre = PRESETS.find(q => q.name === decodeURIComponent(nm || ""));
-      if (pts.length > 1){ const L = {type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined}; attachShape(L, pre); out.push(L); }
+      if (pts.length > 1 || (mode === "infill" && pts.length === 1)){ const L = {type:"draw", id:Math.random().toString(36).slice(2), mode, head:+h, pts, name:decodeURIComponent(nm || "") || MODES[mode].name, preset:pre ? pre.id : undefined}; attachShape(L, pre); out.push(L); }
       if (off && out.length > n0) out[out.length - 1].off = true;
     } catch (e) {}
   }
@@ -1895,8 +2332,13 @@ function openSources(){
   <tr><td>Subway</td><td>$965M: LA Purple Line Section 2, $2.5B for 2.59 mi (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-2-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.41B: LA Purple Line Section 3, $3.6B for 2.56 mi (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-3-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>Elevated</td><td>$384M: Seattle Lynnwood Link, part elevated, part at ground level (<a href="https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/WA-Lynnwood-Link-Extension-Profile-AR25.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$1.05B: Chicago Red Line Extension, $5.75B for 5.5 mi, mostly elevated (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
   <tr><td>Streetcar</td><td>$43M: Detroit QLine (<a href="https://www.masstransitmag.com/rail/article/12366313/detroits-qline-streetcar-getting-on-track-with-partnerships-innovation-and-tenacity" target="_blank" rel="noopener">Mass Transit</a>)</td><td>$100M: Kansas City Main St. (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-02/MO-Kansas-City-Streetcar-Main-St-Ext-Project-FFGA-Profile-FY22.pdf" target="_blank" rel="noopener">FTA</a>)</td></tr>
-  <tr><td>BRT</td><td>$7.4M: Indianapolis Red Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/funding/grant-programs/capital-investments/116506/indygo-red-line-rapid-transit-profile.pdf" target="_blank" rel="noopener">FTA</a>)</td><td>$29M: Cleveland HealthLine (<a href="https://nacto.org/case-study/euclid-avenue-brt-cleveland-oh/" target="_blank" rel="noopener">NACTO</a>)</td></tr></table>
+  <tr><td>BRT</td><td>$10.4M: Ashland Avenue BRT, $166M for about 16 mi (<a href="https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf" target="_blank" rel="noopener">CMAP 2026 plan</a>, 2025 dollars)</td><td>$23.9M: Pulaski Road bus priority, $323M for about 13.5 mi (same source); Chicago's other four studied corridors run $18–21M</td></tr></table>
+  <p class="note">A proposal left as proposed uses its own official estimate (CTA, FTA or CMAP) instead of the per-mile range, in today's dollars; year-of-spending totals stay as published. Edit its stations and it goes back to the range.</p>
   <p class="note">Each project\'s cost is moved from the year it was funded (or opened, where that's the year the source gives) to ${COSTIX ? COSTIX.latestQuarter : "today"} dollars with FHWA\'s National Highway Construction Cost Index (<a href="https://data.transportation.gov/Research-and-Statistics/NHCCI/r94d-n4f9/about_data" target="_blank" rel="noopener">FHWA NHCCI</a>), which roughly doubled from 2008 to 2025. It's a highway-construction index, so it's only a rough guide for tunnels, rail systems and vehicles. Official year-of-spending totals (like the Red Line Extension\'s $5.75 billion, spent through 2031) are shown as published. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City\'s streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.</p>
+  <h3>New stations on existing lines</h3>
+  <p>A new stop gets the trains that already pass (as many as stop at the nearest station on that line), and its riders come from the same L station model, including riders it takes from the stations on either side. Cost per station: Morgan on the Green and Pink Lines, $38 million, opened 2012 (<a href="https://ggwash.org/view/39328" target="_blank" rel="noopener">Greater Greater Washington</a>), to Damen on the Green Line, $80 million, opened 2024 (<a href="https://abc7chicago.com/post/new-cta-damen-station-opens/15145575/" target="_blank" rel="noopener">ABC7</a>); Cermak-McCormick Place cost about $50 million (2015). Riders already on the train lose about a minute at each new stop; the tool doesn't count that.</p>
+  <h3>Trip times, funding and timelines</h3>
+  <p>Trip times use the same midday network as jobs within 45 minutes: the fastest combination of walking, waiting and riding between two points, today and with your plan. Funding splits each line's build cost into the most federal Capital Investment Grants could pay (or the share a funded project actually got, like the Red Line Extension's 34%) and the rest, compared with NITA's proposed $9.4 billion 2027–2031 capital plan for the whole region (<a href="https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/August/August-20-2026-RTA-Board-Slide-Deck.pdf" target="_blank" rel="noopener">NITA board, Aug. 20, 2026</a>). Saved plans for Compare plans stay in your browser only.</p>
   <h3>Cost to run</h3>
   <p>Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf" target="_blank" rel="noopener">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">Metra</a>), BRT speed 13.19 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf" target="_blank" rel="noopener">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">KC Streetcar</a>).</p>
   <h3>Paying for it, and benefit-cost</h3>
@@ -1939,6 +2381,8 @@ function openSources(){
   <li>The surveyed shares of riders who used to drive apply to Chicago lines too.</li>
   <li>Riders on a new L line are people entering its stations, one way; the trip back enters at another station, so cars, fares and time saved count 2 trips per rider. A rail rider's car trip would have been at least the station's straight-line distance to the Loop × ${CIRCUITY} (road miles), or the L average of 6.07 miles if longer.</li>
   <li>Cost per ride spreads the build cost evenly over 30 years with no interest.</li>
+  <li>Opening years assume work is approved in ${START_YEAR}; years from approval to opening come from similar projects (a new station: 3, from Morgan and Damen's construction).</li>
+  <li>A trip that rides a line extension and then the line it extends counts a wait at the old end of the line, though in practice it would be the same train.</li>
   <li>Not modeled: riders on buses that cross a new rail line switching to it, slower trips from closely spaced stations, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.</li>
   </ul>`;
   $("srcDlg").showModal();
@@ -1957,6 +2401,17 @@ async function boot(){
   $("drawDone").onclick = finishDraw; $("metraBack").onclick = goBack; $("lineBack").onclick = goBack;
   $("lineAdd").onclick = goBack; $("groupBack").onclick = openStart; $("cleanBack").onclick = openStart; $("nitaBack").onclick = openStart;
   $("cleanCard").onclick = () => { show("vClean"); renderClean(); renderBar(); };
+  $("tripCard").onclick = openTrip; $("fundCard").onclick = openFund; $("cmpCard").onclick = openCompare; $("sumCard").onclick = () => active().length ? openSummary() : openCompare();
+  $("tripBack").onclick = () => { setTripLayer(false); openStart(); }; $("fundBack").onclick = openStart; $("cmpBack").onclick = openStart;
+  for (const [f, id] of [["a", "tripA"], ["b", "tripB"]]){
+    $(id).onfocus = () => setTripField(f);
+    $(id).onchange = () => { const v = $(id).value.trim(); if (!v) setTripPoint(f, null); else { const pt = tripPlace(v); if (pt) setTripPoint(f, pt); } };
+  }
+  $("tripSwap").onclick = () => { const a = TRIP.a, b = TRIP.b; setTripPoint("a", b); setTripPoint("b", a); };
+  $("tripClear").onclick = () => { setTripPoint("a", null); setTripPoint("b", null); setTripField("a"); };
+  $("tripMe").onclick = () => { if (!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(pos => { const ll = [pos.coords.longitude, pos.coords.latitude], [x, y] = toXY(ll[0], ll[1]);
+    if (Math.abs(x) > 80000 || Math.abs(y) > 80000){ hint("You're outside the Chicago area"); setTimeout(() => hint(""), 2000); return; }
+    setTripPoint("a", {x, y, ll, name:"My location"}); map.flyTo({center:ll, zoom:Math.max(map.getZoom(), 12)}); }, () => { hint("Couldn't get your location"); setTimeout(() => hint(""), 2000); }, {timeout:8000}); };
   $("nitaCard").onclick = () => { show("vNita"); renderNITA(); renderBar(); }; $("lineEdit").onclick = () => cur && cur.type === "draw" && startDraw(cur.mode, cur);
   $("lineDel").onclick = () => { if (!cur) return; lines = lines.filter(l => l !== cur); save(); goBack(); };
   $("srcBtn").onclick = openSources;

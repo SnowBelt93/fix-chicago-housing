@@ -367,14 +367,26 @@ def align(P):
     # then southeast to the Dan Ryan, meeting the Red Line between 87th and 91st (Tribune 2002)
     G2 = rail_graph(False)
     r = route_ll(G2, [[-87.7613, 41.9708], [-87.7436, 41.9576], [-87.743, 41.93], [-87.741, 41.88], [-87.739, 41.80], [-87.70, 41.757], [-87.66, 41.757], [-87.6280, 41.7320]])
+    # last stretch: leave the railroad where it crosses 87th Street and run over 87th to the Red Line's 87th Street station
+    # in the Dan Ryan, where riders transfer
+    red = xy(41.73537, -87.62472)
+    x87 = street_on(r, '87th Street', (41.736, -87.635))
+    if x87:
+        p87 = xy(x87[1], x87[0])
+        r = sub_path(r, r[0], p87)
+        r = chain(r, road_route(lambda nm: core(nm) == core('87th Street'), p87, (red[0], p87[1])) or [p87, (red[0], p87[1])], [red])
     mc = byid['midcity']; old = mc['pts']
     st = [[-87.7613, 41.9708]] + [snap(r, q) for q in old] + [ll(*r[-1])]
+    gap = lambda a, b: math.hypot(*(u - v for u, v in zip(xy(a[1], a[0]), xy(b[1], b[0]))))
     keep = [st[0]]
-    for q in st[1:]:   # stations at least 600 m apart
-        if math.hypot(*(a - b for a, b in zip(xy(q[1], q[0]), xy(keep[-1][1], keep[-1][0])))) > 600:
+    for q in st[1:-1]:   # stations at least 600 m apart; the Red Line transfer always stays
+        if gap(q, keep[-1]) > 600:
             keep.append(q)
+    if len(keep) > 1 and gap(keep[-1], st[-1]) < 600:
+        keep.pop()
+    keep.append(st[-1])
     mc.update(pts=keep, shape=shape_ll(r))
-    mc['approx'] = 'Route follows the rail corridors the 2002 plan named (old Crosstown corridor, Belt Railway); stations are approximate. No current plan exists.'
+    mc['approx'] = 'Route follows the rail corridors the 2002 plan named (old Crosstown corridor, Belt Railway) and ends at the Red Line’s 87th Street station (the 2002 plan said between 87th and 91st); stations are approximate. No current plan exists.'
     # Circle Line, southern half (CTA's 2009 preferred route): the Pink Line's tracks from Ashland/Lake to 18th, then about a mile
     # of new track to the Orange Line at Ashland (drawn over Paulina, Cermak and Ashland; CTA didn't publish the exact path)
     pink = route_ll(G, [[-87.66697, 41.88532], [-87.6691, 41.8579]])
