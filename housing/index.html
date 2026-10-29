@@ -1122,7 +1122,7 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .tier{border-radius:10px !important;border:0 !important;background:var(--sc-seg) !important;padding:9px 2px 8px !important;gap:3px !important;box-shadow:none !important;color:var(--sc-ink)}
 .tier em{font:600 12.5px/1.15 var(--sc-font) !important}
 .tier small{font:500 11px var(--sc-font) !important;color:var(--sc-mute) !important}
-.tier .sw{height:16px}
+.tier .sw{height:22px}
 .tier[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
 .tier[aria-pressed="true"] small{color:#d6e3f5 !important}
 .tiers{gap:5px !important}
@@ -1249,6 +1249,37 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 .tool.locked .lockmsg{order:2;background:none !important;border:0 !important;padding:0 !important;margin:0 !important;font:500 12.5px var(--sc-font) !important;color:var(--sc-mute) !important}
 #policyWrap.locked > :not(.lockmsg):not(.group){display:none !important}
 
+
+/* results page, below the box score: compact (v47) */
+.result .rsec{display:flex;flex-direction:column;gap:8px}
+.result .rhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.result .rkey{font-size:12px;color:var(--ink-3)}
+.result .rkey i{font-style:normal;font-weight:650}.result .rkey .ok{color:#1f7a3f}.result .rkey .no{color:#b4001f}
+.pgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pgrid .persona{display:grid;grid-template-columns:1fr;grid-template-areas:"n" "j" "b";gap:1px;padding:10px 12px;border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:2px;background:#fff;align-items:start}
+.pgrid .persona:last-child{border-bottom:1px solid var(--line)}
+.pgrid .persona b{grid-area:n;font-size:14px}
+.pgrid .persona .job{grid-area:j;font-size:12px}
+.pgrid .persona .burden{grid-area:b;grid-row:auto;text-align:left;white-space:normal;margin-top:6px;display:flex;flex-direction:column-reverse;gap:1px}
+.pgrid .persona .burden br{display:none}
+.pgrid .persona .burden .ok,.pgrid .persona .burden .no{font-size:15px}
+.pgrid .persona .burden .was{font-size:11.5px;color:var(--ink-3)}
+.result .rc2{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:10px 14px}
+.result .rc2 .rct{display:flex;flex-direction:column;gap:2px}
+.result .rc2 .rct p{margin:0}
+.doit2{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.doit2 a,.doit2 button.dobtn{display:flex;flex-direction:column;justify-content:flex-start;padding:10px 12px;min-height:0;transition:border-color .15s,background-color .15s}
+.doit2 a:hover,.doit2 button.dobtn:hover{border-color:var(--nav);background:#f4f8fd}
+.doit2 b{font-size:13.5px;line-height:1.25}
+.doit2 span{font-size:12px;line-height:1.35}
+.doit2 a::after{content:"↗";margin-top:auto;padding-top:4px}
+.result .rcomm .crow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.result .rcomm .crow select{flex:1 1 220px;max-width:340px;margin:0}
+.result .rcomm .ptally{margin:0}
+.result .rcomm .crow select{height:40px;border:1px solid var(--line);border-radius:2px;padding:0 10px;background:#fff;font:inherit;font-size:14px}
+.result .rfoot{align-items:center}.result .rfoot p{margin:0 auto 0 0;flex:1 1 300px;font-size:11.5px;color:var(--ink-3)}
+@media (max-width:1000px){ .doit2{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(190px,1fr);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px} .doit2 > *{scroll-snap-align:start} }
+@media (max-width:760px){ .pgrid{grid-template-columns:repeat(2,minmax(0,1fr))} .pgrid .persona{padding:9px 10px} .pgrid .persona .burden .ok,.pgrid .persona .burden .no{font-size:13.5px} }
 </style>
 
 <div id="app">
@@ -1305,17 +1336,6 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
     <div class="panes">
       <!-- Build -->
       <div class="pane" id="pane-zoning">
-        <div class="tool" id="tool-illegal" hidden>
-          <h3>They don't build them like they used to</h3>
-          <button class="btn" id="illegalBtn" type="button" aria-pressed="false">Show buildings that would be illegal to build today</button>
-          <p class="small" id="illegalTxt"></p>
-        </div>
-        <div class="tool" id="tool-tod">
-          <h3>What can go up near the L?</h3>
-          <p>The shaded zones reach a half mile from each station, about a ten-minute walk.</p>
-          <div class="tiers" id="todTiers"></div>
-          <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Supertall: about 60 stories at the busiest stations inside the downtown core, towers at the other busy stations. Both together are capped at downtown's forecast leasing pace.</p>
-        </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <h3>One neighborhood at a time</h3>
           <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick one…</option></select>
@@ -1331,6 +1351,17 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
           <p class="small trafficnote">Rezoning far from jobs and transit adds homes, and more traffic: households there drive more (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
           <div class="sub">Rezoned so far: <span id="touched">0%</span> of the city's buildings</div>
           <div class="list" id="hoodList"></div>
+        </div>
+        <div class="tool" id="tool-illegal" hidden>
+          <h3>They don't build them like they used to</h3>
+          <button class="btn" id="illegalBtn" type="button" aria-pressed="false">Show buildings that would be illegal to build today</button>
+          <p class="small" id="illegalTxt"></p>
+        </div>
+        <div class="tool" id="tool-tod">
+          <h3>What can go up near the L?</h3>
+          <p>The shaded zones reach a half mile from each station, about a ten-minute walk.</p>
+          <div class="tiers" id="todTiers"></div>
+          <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Supertall: about 60 stories at the busiest stations inside the downtown core, towers at the other busy stations. Both together are capped at downtown's forecast leasing pace.</p>
         </div>
         <div class="tool" id="tool-metra" data-unlock="metra">
           <h3>Near Metra stations in the city</h3>
@@ -1698,32 +1729,36 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
           <div class="row pbtns"><button class="btn primary" id="resImage" type="button">Share this front page</button><button class="btn" id="resCompare" type="button">See 2026 vs. 2041</button></div>
         </div>
       </div>
-      <div class="group"><div class="eyebrow">Can they afford a 1-bedroom in 2041?</div><div id="resPersonas"></div></div>
-      <div class="ratecard">
-        <b>One thing zoning can't fix: interest rates</b>
-        <p>Construction loans went from about 5% in 2019 to over 8.5% in 2023 (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2023/12/Making-It-Pencil-December-2023.pdf" target="_blank" rel="noopener">Terner Center</a>). US apartment starts fell about 36% from 2022 to 2024 (<a href="https://fred.stlouisfed.org/data/HOUST5F" target="_blank" rel="noopener">Census via FRED</a>), and Chicago's approvals dropped from about 9,500 in 2023 to about 4,300 in 2024, implied by the reported rise (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data</a>).</p>
-        <p>A new high-rise apartment costs about $480,000 per home to build (<a href="https://www.bisnow.com/news/chicago/multifamily/why-doesnt-chicago-build-more-apartments-133834" target="_blank" rel="noopener">Bisnow, 2026</a>). By our rough math (an estimate, not measured), that takes about $4,800 a month in rent to pay off, against about $3,000 average downtown rents (<a href="https://therealdeal.com/chicago/2025/03/11/downtown-chicago-apartment-rents-reach-new-peak/" target="_blank" rel="noopener">TRD, 2025</a>, 2024 data). Your zoning makes buildings legal; rates decide whether anyone can afford to build them.</p>
-      </div>
-      <div class="group">
-        <div class="eyebrow">Do something about it</div>
-        <div class="doit">
-          <button class="dobtn" type="button" id="doAlder"><b>Send your plan to your alderperson</b><span>Copies a short note with your plan link, then opens the city's ward lookup so you can find who to send it to.</span></button>
-          <a href="https://www.ilga.gov" target="_blank" rel="noopener"><b>Find your state legislators</b><span>Statewide bills like the BUILD Act are decided in Springfield. Look up your senator and representative under "Members".</span></a>
-          <a href="https://abundanthousingillinois.org/" target="_blank" rel="noopener"><b>Join a pro-housing group</b><span>Abundant Housing Illinois pushes for more homes of every kind.</span></a>
-          <a href="https://housingactionil.org/" target="_blank" rel="noopener"><b>Join an affordable-housing coalition</b><span>Housing Action Illinois works on affordability and tenant protections statewide.</span></a>
-          <a href="../tracker/" target="_blank" rel="noopener"><b>See how Chicago is actually doing</b><span>The Chicago Housing Tracker counts the homes the city permits every day, by ward, against the pace Fix Chicago Housing's goal needs.</span></a>
+      <section class="rsec">
+        <div class="rhead"><div class="eyebrow">Can they afford a 1-bedroom in 2041?</div><span class="rkey">Share of pay going to rent · <i class="ok">under 30%</i> · <i class="no">30% or more</i></span></div>
+        <div id="resPersonas" class="pgrid"></div>
+      </section>
+      <div class="ratecard rc2">
+        <div class="rct"><b>One thing zoning can't fix: interest rates</b><p>Your zoning makes buildings legal; rates decide whether anyone can afford to build them.</p></div>
+        <button type="button" class="ib" id="rateInfo" aria-label="About: interest rates">i</button>
+        <div class="tinfo" id="rateTxt" hidden>
+          <p>Construction loans went from about 5% in 2019 to over 8.5% in 2023 (<a href="https://ternercenter.berkeley.edu/wp-content/uploads/2023/12/Making-It-Pencil-December-2023.pdf" target="_blank" rel="noopener">Terner Center</a>). US apartment starts fell about 36% from 2022 to 2024 (<a href="https://fred.stlouisfed.org/data/HOUST5F" target="_blank" rel="noopener">Census via FRED</a>), and Chicago's approvals dropped from about 9,500 in 2023 to about 4,300 in 2024, implied by the reported rise (<a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">TRD Data</a>).</p>
+          <p>A new high-rise apartment costs about $480,000 per home to build (<a href="https://www.bisnow.com/news/chicago/multifamily/why-doesnt-chicago-build-more-apartments-133834" target="_blank" rel="noopener">Bisnow, 2026</a>). By our rough math (an estimate, not measured), that takes about $4,800 a month in rent to pay off, against about $3,000 average downtown rents (<a href="https://therealdeal.com/chicago/2025/03/11/downtown-chicago-apartment-rents-reach-new-peak/" target="_blank" rel="noopener">TRD, 2025</a>, 2024 data).</p>
         </div>
       </div>
-      <div class="group">
+      <section class="rsec">
+        <div class="eyebrow">Do something about it</div>
+        <div class="doit doit2">
+          <button class="dobtn" type="button" id="doAlder"><b>Send it to your alderperson</b><span>Copies a note with your plan link and opens the ward lookup.</span></button>
+          <a href="https://www.ilga.gov" target="_blank" rel="noopener"><b>Find your state legislators</b><span>Springfield decides bills like the BUILD Act. Look under "Members".</span></a>
+          <a href="https://abundanthousingillinois.org/" target="_blank" rel="noopener"><b>Join a pro-housing group</b><span>Abundant Housing Illinois pushes for more homes of every kind.</span></a>
+          <a href="https://housingactionil.org/" target="_blank" rel="noopener"><b>Join an affordability coalition</b><span>Housing Action Illinois works on affordability and tenants statewide.</span></a>
+          <a href="../tracker/" target="_blank" rel="noopener"><b>See how Chicago is doing</b><span>The Housing Tracker counts the homes the city permits, every day.</span></a>
+        </div>
+      </section>
+      <section class="rsec rcomm">
         <div class="eyebrow">Add it to the community</div>
-        <label class="small" for="homeHoodRes">Where do you live? (optional, shows what your neighbors chose)</label>
-        <select class="txt homeHood" id="homeHoodRes"><option value="0">Prefer not to say</option></select>
-        <div class="row"><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
-        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Posting adds yours to the public gallery.</p>
-      </div>
-      <p class="small" style="margin:0">Shortage growth: Zillow. Pace: TRD Data. Rent growth: CoStar. Rent effect: a range from Mense 2025 to stock-based estimates. Details in the Math tab.</p>
+        <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
+        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Posting adds yours to the public gallery; your neighborhood shows what neighbors chose.</p>
+      </section>
+
       <p class="small whyhard" id="resHard" hidden><b>Too easy?</b> That beat Chicago's share of the region's shortage. <button type="button" class="linkbtn" id="resHardBtn">Try hard mode</button>: the city builds the whole region's 297,087 homes, the way it would if Chicago grew back toward its 1950 size.</p>
-      <div class="row"><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
+      <div class="row rfoot"><p class="small">Shortage growth: Zillow. Pace: Census Building Permits Survey. Rent growth: CoStar. Rent effect: a range from Mense 2025 to stock-based estimates. Details under Sources.</p><button class="btn" id="resShare" type="button">Copy share link</button><button class="btn primary" id="resClose" type="button">Keep building</button></div>
     </div>
   </div>
 </div>
@@ -1735,7 +1770,7 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 const SHARE_BASE = (location.protocol.startsWith("http") && !/claude|anthropic|usercontent|localhost/.test(location.hostname))
   ? location.origin + location.pathname   // hosted on its own site
   : "https://claude.ai/artifact/XHPMwjqFSW9C4Rbmg8Xe81";
-const YEAR_MS = 700;   // one simulated year; buildings rise continuously across it
+const YEAR_MS = 1100;   // one simulated year; buildings rise continuously across it
 // Rent effect, shown as a range: the cautious end is 0.19% lower rent per 1% more homes (Mense 2025, measured on the yearly flow of new homes);
 // the strong end is 2% per 1% (stock-based estimates: demand elasticity around −0.5, Lauster & von Bergmann 2024). Constant-elasticity form, so big plans don't go below zero.
 const ELASTICITY_HI = 2.0;
@@ -3435,7 +3470,7 @@ function tierButtons(el, getT, setT, max = 4){
     const b = document.createElement("button");
     b.className = "tier"; b.type = "button"; b.dataset.t = t; b.setAttribute("aria-pressed", "false");
     b.style.setProperty("--c", T.css || "var(--line)");
-    b.innerHTML = '<span class="sw">' + T.bars.map(h => '<s style="height:' + Math.max(h,3) + 'px"></s>').join("") + '</span><em></em><small></small>';
+    b.innerHTML = '<span class="sw">' + T.bars.map(h => '<s style="height:' + Math.round(Math.max(h,3) / 30 * 100) + '%"></s>').join("") + '</span><em></em><small></small>';
     b.querySelector("em").textContent = T.name;
     b.querySelector("small").textContent = t ? T.h + " fl" : "no change";
     b.addEventListener("click", () => { el.querySelectorAll(".tier").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setT(t)); });
@@ -3596,7 +3631,7 @@ function personaRows(el, homes){
     const bur = d.querySelector(".burden");
     const line = (lbl, v, v2) => { const s = document.createElement("span"); s.className = Math.min(v, v2) <= 30 ? "ok" : "no"; const a = Math.round(v), b = Math.round(v2); s.textContent = lbl + (a === b ? a : Math.min(a, b) + "–" + Math.max(a, b)) + "% of pay"; return s; };
     const a = document.createElement("span"); a.className = "was"; a.textContent = "today " + Math.round(today) + "% · no change " + Math.round(bNo) + "%";
-    bur.append(a, document.createElement("br"), line("your plan: ", bPlan, bHi));
+    bur.append(a, document.createElement("br"), line("Your plan: ", bPlan, bHi));
     el.appendChild(d);
   });
 }
@@ -4357,7 +4392,7 @@ setLook("model");
   if (!lsGet("upzone-intro", false) && !fromHash) $("intro").hidden = false;
   { const at = (new URLSearchParams(location.search).get("at") || "").split(",").map(Number);   // test hook: ?at=lon,lat,zoom[,bearing] points the camera there once loaded
     if (at.length >= 3 && at.every(isFinite)){ const go = () => loaded === 77 ? setTimeout(() => deckgl.setProps({initialViewState:{...viewState, longitude:at[0], latitude:at[1], zoom:at[2], bearing:at[3] || 0}}), 800) : setTimeout(go, 500); go(); } }
-  if (/[?&]qa=results/.test(location.search)){ const go = () => loaded === 77 && hasExtra ? setTimeout(showResult, 1500) : setTimeout(go, 500); go(); }   // test hook: open the front page without waiting for a 15-year simulation
+  if (/[?&]qa=results/.test(location.search)){ const go = () => (loaded === 77 || /[?&]qafast/.test(location.search) && loaded >= 3) && hasExtra ? setTimeout(showResult, 1500) : setTimeout(go, 500); go(); }   // test hook (qafast: don't wait for every neighborhood): open the front page without waiting for a 15-year simulation
   const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(startTour, 250)); };   // the "illegal today" myth waits until the player turns on that overlay
   $("introGo").addEventListener("click", closeIntro);
   $("resHardBtn").addEventListener("click", () => { plan.g = 0; renderTargets(); hideModal("result"); render(); setTimeout(() => toast("Hard mode: " + fmt(needed()) + " homes by 2041. Good luck."), 400); });
@@ -4390,6 +4425,7 @@ function infoizeBox(box, head, nodes, title){   // move explanation paragraphs i
   if (head.tagName === "SUMMARY"){ head.appendChild(ib); return; }
   const row = document.createElement("div"); row.className = "thead"; head.replaceWith(row); row.append(head, ib);
 }
+$("rateInfo").addEventListener("click", () => openInfo("One thing zoning can't fix: interest rates", $("rateTxt")));
 document.querySelectorAll("#pane-zoning .tool").forEach(t => infoizeBox(t, t.querySelector(":scope > h3"), t.querySelectorAll(":scope > p")));
 { const g = $("policyWrap").querySelector(":scope > .group"); infoizeBox(g, g.querySelector(".dockh"), g.querySelectorAll(":scope > p")); }
 document.querySelectorAll("#pane-policies .pgroup").forEach(d => { const inner = d.querySelector(":scope > .group"); if (inner) infoizeBox(d, d.querySelector("summary"), inner.querySelectorAll(":scope > p.small"), d.querySelector("summary .eyebrow").textContent); });

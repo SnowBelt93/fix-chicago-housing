@@ -721,12 +721,12 @@
 41.741298
 ],
 [
--87.629669,
-41.733594
+-87.62472,
+41.73537
 ]
 ],
 "status": "Idea only: a \"visionary\" project in CMAP\u2019s 2026 plan",
-"approx": "Route follows the rail corridors the 2002 plan named (old Crosstown corridor, Belt Railway); stations are approximate. No current plan exists.",
+"approx": "Route follows the rail corridors the 2002 plan named (old Crosstown corridor, Belt Railway) and ends at the Red Line\u2019s 87th Street station (the 2002 plan said between 87th and 91st); stations are approximate. No current plan exists.",
 "official": {
 "cost": null,
 "costNote": "no current estimate (\"at least $1 billion\" in 2002)",
@@ -978,8 +978,12 @@
 41.756794
 ],
 [
--87.639554,
-41.756196
+-87.639589,
+41.756326
+],
+[
+-87.639514,
+41.755832
 ],
 [
 -87.639493,
@@ -990,24 +994,52 @@
 41.74821
 ],
 [
--87.637209,
-41.74167
+-87.63715,
+41.741465
 ],
 [
 -87.636806,
 41.740637
 ],
 [
--87.636297,
-41.739874
+-87.636412,
+41.740019
 ],
 [
 -87.635664,
 41.739207
 ],
 [
--87.62795,
-41.732023
+-87.632284,
+41.736023
+],
+[
+-87.63242,
+41.73602
+],
+[
+-87.62978,
+41.73604
+],
+[
+-87.62836,
+41.73626
+],
+[
+-87.62728,
+41.73629
+],
+[
+-87.62663,
+41.73619
+],
+[
+-87.62478,
+41.73623
+],
+[
+-87.62472,
+41.73537
 ]
 ]
 },
