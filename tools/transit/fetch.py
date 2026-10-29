@@ -16,7 +16,7 @@ Sources:
   LEHD LODES 8 jobs   https://lehd.ces.census.gov/data/lodes/LODES8/il/wac/il_wac_S000_JT00_<year>.csv.gz
   CTA bus ridership   https://data.cityofchicago.org/resource/jyb9-n7fm.csv (daily boardings by route)
 """
-import urllib.parse, collections, csv, datetime as dt, gzip, io, json, math, os, sys, urllib.request, zipfile
+import urllib.parse, collections, csv, datetime as dt, gzip, io, json, math, os, sys, time, urllib.request, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, 'tools', 'raw', 'transit')
@@ -358,6 +358,56 @@ def osm():
     log('osm', {k: len(v) for k, v in out.items()})
 
 
+
+def osmrail():
+    # Every railway in and around Chicago from OpenStreetMap, in small tiles (one big query times out): active, abandoned,
+    # disused and razed lines, so proposed rail lines can follow real rights-of-way. -> osm_rail.json.gz
+    hdr = {'User-Agent': 'fix-chicago-housing transit sketch tool (github.com/SnowBelt93/fix-chicago-housing)', 'Accept': '*/*'}
+    path = os.path.join(OUT, 'osm_rail.json.gz')
+    got = json.load(gzip.open(path, 'rt')) if os.path.exists(path) else {'tiles': {}, 'ways': {}}
+    lat0, lat1, lon0, lon1, st = 41.60, 42.12, -88.00, -87.50, 0.08
+    tiles = []
+    y = lat0
+    while y < lat1:
+        x = lon0
+        while x < lon1:
+            tiles.append((round(y, 2), round(x, 2), round(min(y + st, lat1), 2), round(min(x + st, lon1), 2))); x += st
+        y += st
+    hosts = ('https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter')
+    t0 = time.time()
+    for tb in tiles:
+        key = ','.join(map(str, tb))
+        if key in got['tiles'] or time.time() - t0 > 40 * 60:
+            continue
+        q = f'[out:json][timeout:180];way["railway"~"^(rail|abandoned|disused|razed|subway|light_rail|construction)$"]({key});out tags geom;'
+        data = None
+        for host in hosts:
+            for attempt in range(2):
+                try:
+                    req = urllib.request.Request(host, data=urllib.parse.urlencode({'data': q}).encode(), headers=hdr)
+                    with urllib.request.urlopen(req, timeout=240) as r:
+                        data = json.load(r)
+                    break
+                except Exception as e:
+                    log('osmrail failed', key, host, repr(e)); time.sleep(5)
+            if data:
+                break
+        if not data:
+            continue
+        for el in data.get('elements', []):
+            g, t = el.get('geometry'), el.get('tags', {})
+            if not g or len(g) < 2 or str(el['id']) in got['ways']:
+                continue
+            got['ways'][str(el['id'])] = [t.get('railway', ''), t.get('usage', '') or t.get('service', ''), t.get('name', '') or t.get('operator', ''),
+                                          [[round(p['lon'], 6), round(p['lat'], 6)] for p in g]]
+        got['tiles'][key] = 1
+        log('osmrail', key, len(got['ways']))
+        time.sleep(2)
+    with gzip.open(path, 'wt') as f:
+        json.dump(got, f, separators=(',', ':'))
+    SOURCES['files']['osm_rail'] = {'url': 'https://www.openstreetmap.org (Overpass API)', 'license': 'ODbL', 'tiles': len(got['tiles']), 'of': len(tiles), 'ways': len(got['ways'])}
+    log('osmrail done', len(got['tiles']), 'of', len(tiles), 'tiles', len(got['ways']), 'ways')
+
 def future():
     # projections for CO2 in later years: EIA Annual Energy Outlook (grid by region, light-duty fleet) and NREL Cambium marginal rates
     want = [('aeo_suptab_54_12.xlsx', ['https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_54.12.xlsx', 'https://www.eia.gov/Outlooks/Aeo/supplement/excel/suptab_54.12.xlsx']),
@@ -415,6 +465,8 @@ if __name__ == '__main__':
                 ntd_energy()
             elif s == 'osm':
                 osm()
+            elif s == 'osmrail':   # every railway incl. abandoned, in tiles, for rail presets that follow real rights-of-way
+                osmrail()
             elif s == 'future':
                 future()
             elif s == 'costs':
