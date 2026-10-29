@@ -94,100 +94,6 @@
   "lastPublicationDate": "2026-10-13T15:25:02+00:00"
  },
  {
-  "matterId": "5ED33460-E2C7-F111-AAAE-001DD80FDA55",
-  "fileYear": 2026,
-  "recordNumber": "O2026-0029425",
-  "legacyRecordNumber": "",
-  "status": "4-In Committee",
-  "legacyStatus": null,
-  "subStatus": "Referred",
-  "statusDescription": "4-In Committee",
-  "filingOffice": "Misc.",
-  "filingSponsor": "Misc. Transmittal",
-  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
-  "introductionDate": "2026-10-14T15:00:00+00:00",
-  "finalActionDate": null,
-  "shortTitle": null,
-  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
-  "routine": "YES",
-  "introductionType": "Council Introduction",
-  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
-  "controllingBodyId": null,
-  "keyLegislation": "NO",
-  "economicDisclosure": "YES",
-  "title": "Zoning Reclassification Map No. 9-L at 5555 W Newport Ave - App No. 23202T1",
-  "nicknameAlias": "",
-  "recordCreateDate": "2026-10-14T15:17:38+00:00",
-  "matterCategory": "ZONING RECLASSIFICATIONS",
-  "type": "Ordinance",
-  "originalRecordNumber": null,
-  "supersededBy": null,
-  "actions": [
-   {
-    "actionDate": "2026-10-14T05:00:00+00:00",
-    "journalPage": "",
-    "actionByName": "City Council",
-    "actionName": "Referred",
-    "actionText": "The matter was Referred to Committee.",
-    "meetingId": "",
-    "historyId": "6B49C40B-E5C7-F111-AAAE-001DD80FDA55",
-    "name": null,
-    "sort": 70,
-    "votes": []
-   }
-  ],
-  "sponsors": [
-   {
-    "office": "Misc.",
-    "sponsorName": "Misc. Transmittal",
-    "sponsorType": "Sponsor",
-    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
-   }
-  ],
-  "attachments": [
-   {
-    "fileName": "O2026-0029425 Ordinance.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f231f228-05e7-4d3c-8942-a789e4528fc9.pdf",
-    "attachmentType": "Legislation"
-   },
-   {
-    "fileName": "O2026-0029425 Narrative and Plans.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/a61a7527-bd61-4678-b32b-b29986013438.pdf",
-    "attachmentType": "Exhibits"
-   },
-   {
-    "fileName": "O2026-0029425 Application.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/b37813aa-91dc-44a9-af4e-9d5e703c6905.pdf",
-    "attachmentType": "Miscellaneous"
-   },
-   {
-    "fileName": "O2026-0029425 EDS.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/73d276d4-9d2c-4f35-9fde-7968bf0014ad.pdf",
-    "attachmentType": "EDS"
-   }
-  ],
-  "relations": [],
-  "agreedCalendar": "NO",
-  "timeline": [
-   {
-    "eventName": "AcceptedOn",
-    "timestamp": "2026-10-14T15:35:39+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "PostedOn",
-    "timestamp": "2026-10-14T15:35:48+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "SubmittedOn",
-    "timestamp": "1900-01-01T00:00:00+00:00",
-    "eventText": ""
-   }
-  ],
-  "lastPublicationDate": "2026-10-14T15:40:02+00:00"
- },
- {
   "matterId": "CD89F170-0CC4-F111-AAAE-001DD80FDA55",
   "fileYear": 2026,
   "recordNumber": "O2026-0029372",
@@ -280,6 +186,100 @@
    }
   ],
   "lastPublicationDate": "2026-10-23T20:10:01+00:00"
+ },
+ {
+  "matterId": "5ED33460-E2C7-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029425",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 9-L at 5555 W Newport Ave - App No. 23202T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-14T15:17:38+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "6B49C40B-E5C7-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029425 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f231f228-05e7-4d3c-8942-a789e4528fc9.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029425 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/a61a7527-bd61-4678-b32b-b29986013438.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029425 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/b37813aa-91dc-44a9-af4e-9d5e703c6905.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029425 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/73d276d4-9d2c-4f35-9fde-7968bf0014ad.pdf",
+    "attachmentType": "EDS"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-14T15:35:39+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-14T15:35:48+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-10-14T15:40:02+00:00"
  },
  {
   "matterId": "81E1AF6B-10C4-F111-AAAE-001DD80FDA55",
