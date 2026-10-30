@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155455
+     "count": 155459
     },
     {
      "value": "Committee on Finance",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117964
+     "count": 117966
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20542
+     "count": 20543
     },
     {
      "value": "Order",
-     "count": 9260
+     "count": 9261
     },
     {
      "value": "Appointment",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167330
+     "count": 167351
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1851
+     "count": 1830
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 42
+     "count": 46
     },
     {
      "value": "0-PreDraft",
@@ -312,7 +312,7 @@
     },
     {
      "value": "Hopkins, Brian",
-     "count": 2310
+     "count": 2311
     },
     {
      "value": "Ervin, Jason C.",
@@ -500,7 +500,7 @@
     },
     {
      "value": "Vasquez, Jr., Andre",
-     "count": 787
+     "count": 789
     },
     {
      "value": "Cardona, Jr., Felix",
@@ -608,7 +608,7 @@
     },
     {
      "value": "Chico, Peter",
-     "count": 244
+     "count": 245
     },
     {
      "value": "Daley, Richard M.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169396
+     "count": 169400
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7143
+     "count": 7147
     },
     {
      "value": "2022",
@@ -896,7 +896,7 @@
     },
     {
      "value": "02",
-     "count": 4599
+     "count": 4600
     },
     {
      "value": "08",
@@ -952,7 +952,7 @@
     },
     {
      "value": "40",
-     "count": 2486
+     "count": 2488
     },
     {
      "value": "35",
@@ -1048,7 +1048,7 @@
     },
     {
      "value": "10",
-     "count": 1413
+     "count": 1414
     },
     {
      "value": "34",
@@ -1157,7 +1157,7 @@
     },
     {
      "value": "Passed as Substitute",
-     "count": 7135
+     "count": 7156
     },
     {
      "value": "Input to Substitute",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1742
+     "count": 1722
     },
     {
      "value": "Placed on File",
@@ -1201,7 +1201,7 @@
     },
     {
      "value": "Accepted",
-     "count": 39
+     "count": 43
     },
     {
      "value": "Repealed",
@@ -1209,7 +1209,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 33
+     "count": 32
     },
     {
      "value": "Re-Referred",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163349
+     "count": 163352
     },
     {
      "value": "YES",
-     "count": 18184
+     "count": 18185
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181535,
-  "pages": 181535
+  "count": 181539,
+  "pages": 181539
  }
 }
