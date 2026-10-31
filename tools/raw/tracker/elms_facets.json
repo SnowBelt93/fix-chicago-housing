@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155459
+     "count": 155462
     },
     {
      "value": "Committee on Finance",
@@ -13,7 +13,7 @@
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10318
+     "count": 10319
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117966
+     "count": 117969
     },
     {
      "value": "Claim",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 633
+     "count": 634
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167351
+     "count": 167352
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1830
+     "count": 1831
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 46
+     "count": 48
     },
     {
      "value": "0-PreDraft",
@@ -284,7 +284,7 @@
     },
     {
      "value": "Waguespack, Scott",
-     "count": 3862
+     "count": 3864
     },
     {
      "value": "Quinn, Marty",
@@ -340,7 +340,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 2015
+     "count": 2016
     },
     {
      "value": "Mitts, Emma",
@@ -587,11 +587,11 @@
      "count": 322
     },
     {
-     "value": "Schulter, Eugene",
-     "count": 299
+     "value": "Taylor, Jeanette B.",
+     "count": 300
     },
     {
-     "value": "Taylor, Jeanette B.",
+     "value": "Schulter, Eugene",
      "count": 299
     },
     {
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169400
+     "count": 169403
     },
     {
      "value": "YES",
-     "count": 12139
+     "count": 12140
     }
    ]
   },
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7147
+     "count": 7151
     },
     {
      "value": "2022",
@@ -904,7 +904,7 @@
     },
     {
      "value": "32",
-     "count": 3862
+     "count": 3864
     },
     {
      "value": "47",
@@ -980,7 +980,7 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 1980
+     "count": 1981
     },
     {
      "value": "31",
@@ -1064,7 +1064,7 @@
     },
     {
      "value": "20",
-     "count": 1226
+     "count": 1227
     },
     {
      "value": "09",
@@ -1169,11 +1169,11 @@
     },
     {
      "value": "Referred",
-     "count": 1722
+     "count": 1723
     },
     {
      "value": "Placed on File",
-     "count": 1656
+     "count": 1657
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1201,7 +1201,7 @@
     },
     {
      "value": "Accepted",
-     "count": 43
+     "count": 45
     },
     {
      "value": "Repealed",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163352
+     "count": 163356
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181539,
-  "pages": 181539
+  "count": 181543,
+  "pages": 181543
  }
 }
