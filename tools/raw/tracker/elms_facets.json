@@ -5,11 +5,11 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155462
+     "count": 155463
     },
     {
      "value": "Committee on Finance",
-     "count": 13808
+     "count": 13822
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
@@ -178,7 +178,7 @@
     },
     {
      "value": "Claim",
-     "count": 29608
+     "count": 29623
     },
     {
      "value": "Resolution",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167352
+     "count": 167353
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1831
+     "count": 1845
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29900
+     "count": 29915
     },
     {
      "value": "Reilly, Brendan",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169403
+     "count": 169418
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7151
+     "count": 7166
     },
     {
      "value": "2022",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29918
+     "count": 29933
     },
     {
      "value": "42",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113434
+     "count": 113435
     },
     {
      "value": "Adopted",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1723
+     "count": 1738
     },
     {
      "value": "Placed on File",
@@ -1209,7 +1209,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 32
+     "count": 31
     },
     {
      "value": "Re-Referred",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163356
+     "count": 163371
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181543,
-  "pages": 181543
+  "count": 181558,
+  "pages": 181558
  }
 }
