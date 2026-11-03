@@ -9,7 +9,7 @@
     },
     {
      "value": "Committee on Finance",
-     "count": 13822
+     "count": 13838
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
@@ -178,7 +178,7 @@
     },
     {
      "value": "Claim",
-     "count": 29623
+     "count": 29639
     },
     {
      "value": "Resolution",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1845
+     "count": 1861
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29915
+     "count": 29931
     },
     {
      "value": "Reilly, Brendan",
@@ -288,7 +288,7 @@
     },
     {
      "value": "Quinn, Marty",
-     "count": 3327
+     "count": 3326
     },
     {
      "value": "Smith, Michele",
@@ -528,7 +528,7 @@
     },
     {
      "value": "Lee, Nicole T.",
-     "count": 591
+     "count": 592
     },
     {
      "value": "Lane, Lona",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169418
+     "count": 169434
     },
     {
      "value": "YES",
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7166
+     "count": 7182
     },
     {
      "value": "2022",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29933
+     "count": 29949
     },
     {
      "value": "42",
@@ -916,11 +916,11 @@
     },
     {
      "value": "13",
-     "count": 3447
+     "count": 3446
     },
     {
      "value": "11",
-     "count": 3347
+     "count": 3348
     },
     {
      "value": "25",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1738
+     "count": 1754
     },
     {
      "value": "Placed on File",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163371
+     "count": 163387
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181558,
-  "pages": 181558
+  "count": 181574,
+  "pages": 181574
  }
 }
