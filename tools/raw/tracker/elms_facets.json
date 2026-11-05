@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155467
+     "count": 155466
     },
     {
      "value": "Committee on Finance",
-     "count": 13843
+     "count": 13847
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10341
+     "count": 10382
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -61,7 +61,7 @@
     },
     {
      "value": "Committee on Police and Fire",
-     "count": 20
+     "count": 21
     },
     {
      "value": "Committee on Immigrant and Refugee Rights",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117991
+     "count": 118032
     },
     {
      "value": "Claim",
-     "count": 29644
+     "count": 29648
     },
     {
      "value": "Resolution",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1888
+     "count": 1934
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 52
+     "count": 51
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29936
+     "count": 29940
     },
     {
      "value": "Reilly, Brendan",
@@ -264,7 +264,7 @@
     },
     {
      "value": "Lopez, Raymond A.",
-     "count": 5069
+     "count": 5078
     },
     {
      "value": "Tunney, Thomas",
@@ -280,7 +280,7 @@
     },
     {
      "value": "Harris, Michelle A.",
-     "count": 3950
+     "count": 3954
     },
     {
      "value": "Waguespack, Scott",
@@ -328,11 +328,11 @@
     },
     {
      "value": "Dowell, Pat",
-     "count": 2179
+     "count": 2180
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2133
+     "count": 2138
     },
     {
      "value": "Lightfoot, Lori E.",
@@ -436,7 +436,7 @@
     },
     {
      "value": "Beale, Anthony",
-     "count": 1154
+     "count": 1155
     },
     {
      "value": "Balcer, James",
@@ -476,7 +476,7 @@
     },
     {
      "value": "Mitchell, Gregory I.",
-     "count": 866
+     "count": 867
     },
     {
      "value": "Rodriguez, Michael D.",
@@ -576,7 +576,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 387
+     "count": 393
     },
     {
      "value": "Thomas, Latasha R.",
@@ -596,19 +596,19 @@
     },
     {
      "value": "Ramirez, Julia M.",
-     "count": 267
+     "count": 269
+    },
+    {
+     "value": "Gutierrez, Jeylu B.",
+     "count": 261
     },
     {
      "value": "Scott, Monique L.",
      "count": 260
     },
     {
-     "value": "Gutierrez, Jeylu B.",
-     "count": 258
-    },
-    {
      "value": "Chico, Peter",
-     "count": 245
+     "count": 249
     },
     {
      "value": "Daley, Richard M.",
@@ -648,7 +648,7 @@
     },
     {
      "value": "Robinson, Lamont J.",
-     "count": 171
+     "count": 175
     },
     {
      "value": "Holmes, Natashia",
@@ -704,7 +704,7 @@
     },
     {
      "value": "Yancy, Desmon C.",
-     "count": 77
+     "count": 78
     },
     {
      "value": "Lyle, Freddrenna",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169465
+     "count": 169510
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7213
+     "count": 7258
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29954
+     "count": 29958
     },
     {
      "value": "42",
@@ -880,19 +880,19 @@
     },
     {
      "value": "14",
-     "count": 6150
+     "count": 6153
     },
     {
      "value": "01",
      "count": 5253
     },
     {
-     "value": "44",
-     "count": 5070
+     "value": "15",
+     "count": 5077
     },
     {
-     "value": "15",
-     "count": 5068
+     "value": "44",
+     "count": 5070
     },
     {
      "value": "02",
@@ -900,7 +900,7 @@
     },
     {
      "value": "08",
-     "count": 3946
+     "count": 3950
     },
     {
      "value": "32",
@@ -928,7 +928,7 @@
     },
     {
      "value": "16",
-     "count": 3308
+     "count": 3313
     },
     {
      "value": "45",
@@ -968,11 +968,11 @@
     },
     {
      "value": "04",
-     "count": 2147
+     "count": 2151
     },
     {
      "value": "03",
-     "count": 2118
+     "count": 2119
     },
     {
      "value": "38",
@@ -1008,7 +1008,7 @@
     },
     {
      "value": "12",
-     "count": 1771
+     "count": 1773
     },
     {
      "value": "22",
@@ -1028,7 +1028,7 @@
     },
     {
      "value": "06",
-     "count": 1620
+     "count": 1626
     },
     {
      "value": "41",
@@ -1048,7 +1048,7 @@
     },
     {
      "value": "10",
-     "count": 1414
+     "count": 1418
     },
     {
      "value": "34",
@@ -1056,11 +1056,11 @@
     },
     {
      "value": "05",
-     "count": 1273
+     "count": 1274
     },
     {
      "value": "07",
-     "count": 1227
+     "count": 1228
     },
     {
      "value": "20",
@@ -1068,7 +1068,7 @@
     },
     {
      "value": "09",
-     "count": 1155
+     "count": 1156
     },
     {
      "value": "24",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1759
+     "count": 1764
     },
     {
      "value": "Placed on File",
@@ -1188,6 +1188,10 @@
      "count": 98
     },
     {
+     "value": "Direct Introduction",
+     "count": 94
+    },
+    {
      "value": "Recommended to Pass",
      "count": 66
     },
@@ -1196,16 +1200,12 @@
      "count": 61
     },
     {
-     "value": "Direct Introduction",
-     "count": 53
-    },
-    {
      "value": "Held in Committee",
      "count": 52
     },
     {
      "value": "Accepted",
-     "count": 49
+     "count": 48
     },
     {
      "value": "Repealed",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163418
+     "count": 163463
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181605,
-  "pages": 181605
+  "count": 181650,
+  "pages": 181650
  }
 }
