@@ -173,8 +173,13 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .dlg td,.dlg th{text-align:left;padding:6px 8px 6px 0;border-bottom:1px solid #eef0f2;vertical-align:top}
 @media (max-width:859px){
   aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
+  aside#panel{transition:max-height .3s cubic-bezier(.2,.8,.2,1)}
   aside#panel.tall{max-height:78vh}
-  .grab{display:block !important}
+  aside#panel.peek{max-height:calc(84px + env(safe-area-inset-bottom))}
+  aside#panel.peek > :not(.grab):not(#peekBar){display:none !important}
+  aside#panel.peek #peekBar{display:flex}
+  .grab{display:block !important;position:relative;width:100%;height:22px;margin:0;background:none;touch-action:none;cursor:grab;flex:none}
+  .grab::before{content:"";position:absolute;left:50%;top:8px;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--line2)}
   .vhead{padding:8px 18px 12px}
   .vhead h1{font-size:21px}
   .vbody{padding:12px 18px}
@@ -222,6 +227,9 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .crow .note{font-size:12.5px}
 .fan2{display:none;font-size:12px;color:var(--faint);margin:0}
 .grab{display:none;align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 0;border:0;padding:0}
+#peekBar{display:none;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;background:none;padding:10px 18px 14px;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;touch-action:none;text-align:left}
+#peekBar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#peekBar small{font-size:13px;font-weight:500;color:var(--sc-navy,#2b5da0);white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 
 
@@ -365,7 +373,8 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 <div id="map" role="application" aria-label="Map of Chicago's L, Metra and bus lines"></div>
 
 <aside id="panel" aria-label="Transit plan">
-  <button class="grab" id="grab" type="button" aria-label="Resize panel"></button>
+  <button class="grab" id="grab" type="button" aria-label="Hide or show the panel"></button>
+  <button id="peekBar" type="button" aria-label="Show the panel"><span id="peekTitle">Your plan</span><small>Show ▴</small></button>
   <!-- start -->
   <div id="planMini" aria-live="polite"></div>
   <section class="view on" id="vStart">
@@ -1562,13 +1571,38 @@ function renderPlan(){
 function show(id){ if (map && map.getLayer("metra-hi") && id !== "vMetra") map.setFilter("metra-hi", ["==", ["get", "id"], ""]);
   if (map && id !== "vTrip" && map.getLayer("tripz")) setTripLayer(false);
   for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id);
+  if (SHEET === "peek") setSheet("half");
   const pm = $("planMini"); if (pm && !pm.classList.contains("empty")) pm.classList.toggle("hide", !(id === "vStart" || id === "vGroup")); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
+var SHEET = "half";
+function setSheet(s){
+  const P = $("panel"); SHEET = s;
+  P.classList.toggle("peek", s === "peek"); P.classList.toggle("tall", s === "tall");
+  const h = document.querySelector("#panel .view.on h1"); $("peekTitle").textContent = h ? h.textContent : "Your plan";
+  padMap(); setTimeout(padMap, 320);   // again once the height has finished moving
+}
+function sheetSwipe(el){
+  let y0 = null;
+  el.addEventListener("pointerdown", e => { if (!matchMedia("(max-width:859px)").matches || e.target.closest("button:not(.grab):not(#peekBar),a,input,select")) return; y0 = e.clientY; });
+  el.addEventListener("pointerup", e => {
+    if (y0 == null) return; const dy = e.clientY - y0; y0 = null;
+    if (Math.abs(dy) < 30) return;
+    sheetSwipe.at = Date.now();
+    const order = ["peek", "half", "tall"], i = order.indexOf(SHEET);
+    setSheet(order[Math.max(0, Math.min(2, i + (dy < 0 ? 1 : -1)))]);
+  });
+  el.addEventListener("pointercancel", () => { y0 = null; });
+}
 function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
   if (!map) return;
   const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
   document.documentElement.style.setProperty("--sheet", h + "px");
-  const pad = phone ? {top:110, bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:400, right:0}, key = JSON.stringify(pad);
-  if (key !== padMap.last){ padMap.last = key; map.setPadding(pad); }   // setPadding stops a camera move, so only when it changes
+  // the layer pills sit 8 px under the metrics bar (they move a frame later, so measure the bar, not the pills)
+  const topH = ($("tbar").getBoundingClientRect().bottom || 110) + 8 + ($("layers") ? $("layers").offsetHeight : 0);
+  const pad = phone ? {top:Math.round(topH + 8), bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:400, right:0}, key = JSON.stringify(pad);
+  if (key === padMap.last) return;
+  // setPadding stops a camera move: while the map is flying somewhere, wait until it lands
+  if (map.isMoving()){ if (!padMap.waiting){ padMap.waiting = true; map.once("moveend", () => { padMap.waiting = false; padMap(); }); } return; }
+  padMap.last = key; map.setPadding(pad);
 }
 function hint(t){ const h = $("hint"); h.textContent = t; h.style.display = t ? "block" : "none"; }
 function icon(mode, light){ const svg = mode === "metra" ? METRA_ICON : MODES[mode].icon;
@@ -1656,8 +1690,9 @@ function showOff(L){
   const paths = lineCoords(L); if (!map || !paths.length) return;
   let w = 180, e = -180, so = 90, n = -90;
   for (const p of paths) for (const [x, y] of p){ w = Math.min(w, x); e = Math.max(e, x); so = Math.min(so, y); n = Math.max(n, y); }
-  const phone = matchMedia("(max-width:859px)").matches, top = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topH")) || 137) + 70;
-  const pad = phone ? {top, bottom:Math.round(innerHeight * 0.55), left:30, right:30} : {top, bottom:50, left:440, right:60};
+  const phone = matchMedia("(max-width:859px)").matches;
+  padMap();   // the map's padding keeps the panel or sheet and the bars clear; fitBounds adds this margin on top
+  const pad = phone ? {top:24, bottom:24, left:24, right:24} : {top:50, bottom:50, left:40, right:60};
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   try { map.fitBounds([[w, so], [e, n]], {padding:pad, duration:reduce ? 0 : 900, maxZoom:14}); } catch (err) {}
   if (reduce) return;
@@ -1742,6 +1777,8 @@ function renderMyLines(){
 // the plan's combined effects: a bar along the map (desktop), a strip at the top of the sheet (phones)
 { const bar = document.getElementById("tbar"), setTop = () => document.documentElement.style.setProperty("--topH", Math.round(bar.getBoundingClientRect().bottom) + "px");
   setTop(); if (window.ResizeObserver) new ResizeObserver(setTop).observe(bar); addEventListener("resize", setTop); }
+// the metrics bar grows a row once the plan has lines; keep the map's top padding clear of it
+{ const rb = renderBar; renderBar = function(){ rb.apply(this, arguments); requestAnimationFrame(padMap); }; }
 function renderBar(){   // the plan's effects, in the shared Shape Chicago metrics bar
   const A = active(), bar = $("tbar"), mini = $("planMini");
   mini.className = "hide"; mini.innerHTML = "";
@@ -2418,7 +2455,12 @@ async function boot(){
   $("share").onclick = async () => { save(); const url = location.href;
     try { if (navigator.share) await navigator.share({title:"My Chicago transit plan", url}); else { await navigator.clipboard.writeText(url); hint("Link copied"); setTimeout(() => hint(""), 1800); } } catch (e) {} };
   for (const b of document.querySelectorAll("#layers button")) b.onclick = () => setLayer(b.dataset.l, b.getAttribute("aria-pressed") !== "true");
-  $("grab").onclick = () => { $("panel").classList.toggle("tall"); padMap(); };
+  // phones: the sheet has three heights. Tap the handle to tuck it away or bring it back; swipe the handle, the
+  // tucked bar or a view's header up or down to step between heights.
+  $("grab").onclick = () => { if (Date.now() - (sheetSwipe.at || 0) < 350) return; setSheet(SHEET === "peek" ? "half" : "peek"); };
+  $("peekBar").onclick = () => { if (Date.now() - (sheetSwipe.at || 0) < 350) return; setSheet("half"); };
+  for (const el of [$("grab"), $("peekBar")]) sheetSwipe(el);
+  for (const el of document.querySelectorAll("#panel .vhead")) sheetSwipe(el);
   addEventListener("resize", padMap); padMap();
   addEventListener("keydown", e => {
     if (!drawing) return;
