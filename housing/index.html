@@ -1396,6 +1396,16 @@ body.playing #sky{opacity:1}
 .tool.folded > :not(.thead){display:none !important}
 .tool.folded{padding-bottom:12px !important}
 .tool.locked .foldbtn{display:none}
+
+/* v51 narrow desktops and iPads in landscape (860–1180px): the metrics bar keeps Simulate in view */
+@media (min-width:860px) and (max-width:1180px){
+  .sc-bar .ml{display:none}
+  .sc-bar .hpace,.sc-bar #affLine,.sc-bar .hsep{display:none !important}
+  .sc-bar{gap:14px !important;padding:0 14px !important}
+  .sc-bar .hscore{min-width:0;flex:1 1 auto}
+  .sc-bar #playRow{flex:none}
+}
+@media (min-width:860px) and (max-width:1000px){ .sc-bar .hrent{display:none !important} }
 </style>
 
 <div id="app">
@@ -1427,7 +1437,7 @@ body.playing #sky{opacity:1}
     <div class="sc-m hstat" id="affLine" hidden><span>affordable</span><b id="affNum">0</b></div>
     <div class="sc-m hstat hpace"><span id="paceLbl">built anyway at today's pace</span><b id="pace">–</b></div>
     <div class="sc-push hacts">
-      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Ward mode</button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard mode</button></div>
+      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Ward<span class="ml"> mode</span></button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard<span class="ml"> mode</span></button></div>
       <button type="button" class="ib" id="hardBtn" aria-label="What's hard mode?">i</button>
       <button class="sc-btn" id="reset" type="button">Start over</button>
     </div>
