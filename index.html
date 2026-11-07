@@ -72,6 +72,13 @@ a{color:var(--sc-navy)}
 .plan .row{display:flex;justify-content:space-between;font-size:13px;color:var(--sc-mute)}
 .empty{grid-column:1 / -1;border:1px dashed var(--sc-line2);border-radius:16px;padding:22px;font-size:15px;color:var(--sc-mute);background:#fff}
 .empty a{font-weight:600}
+.learn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.learn a{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:1px solid var(--sc-line);border-radius:16px;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+.learn a:hover{border-color:var(--sc-line2);box-shadow:var(--sc-shadow2)}
+.learn b{font-size:16px;font-weight:600;color:var(--sc-ink)} .learn span{font-size:14px;color:var(--sc-mute)}
+.sh a{font-size:14px;font-weight:600;text-decoration:none}
+@media (max-width:1000px){ .learn{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:640px){ .learn{grid-template-columns:1fr} }
 footer{border-top:1px solid var(--sc-line)}
 footer .wrap{padding-block:28px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
 footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
@@ -117,7 +124,16 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
     <div class="sh"><h2 id="toolsH">Pick a tool</h2></div>
     <div class="tools"><a class="tool" href="/housing/"><div class="thumb"><img src="/shape/art/housing.webp" width="800" height="380" alt="Lots stepping up from a bungalow to a three-flat, six-flat, mid-rise and high-rise, with a crane on the tallest." loading="lazy"></div><div class="tb"><div class="tn"><h3>Fix Chicago Housing</h3><span class="chip ">Simulation</span></div><p>Let more homes go up near the L, vote on real policies, then watch 15 years of building. See what happens to the shortage and to rent.</p><span class="see">Shortage · rent · jobs and taxes</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/transit/"><div class="thumb"><img src="/shape/art/transit.webp" width="800" height="380" alt="The L with a Red Line train and a station, and a new line in blue curving off with its own train." loading="lazy"></div><div class="tb"><div class="tn"><h3>Expand Chicago Transit</h3><span class="chip ">New</span></div><p>Switch on real proposals like the Red Line Extension, or draw your own subway, streetcar or BRT line. See riders, cost, car trips and CO₂.</p><span class="see">Riders · cost · cars · CO₂</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/tracker/"><div class="thumb"><img src="/shape/art/tracker.webp" width="800" height="380" alt="A bar chart of homes Chicago permitted each year since 2016, each bar a stack of floors, the newest under a crane." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago Permit Tracker</h3><span class="chip live">Updated daily</span></div><p>Every new-home permit since 2006 and every zoning change since 2013, so you can see what Chicago is actually building.</p><span class="see">Permits · zoning changes · pace</span><span class="sc-btn primary go">See the tracker</span></div></a></div>
   </div></section>
-  <section class="band" aria-labelledby="plansH"><div class="wrap">
+  <section class="band" aria-labelledby="learnH"><div class="wrap">
+    <div class="sh"><h2 id="learnH">New to this? Start with the basics</h2><a href="/learn/">All topics</a></div>
+    <div class="learn">
+      <a href="/learn/#zoning"><b>Zoning, in plain English</b><span>What can go on a lot, and who decides</span></a>
+      <a href="/learn/#shortage"><b>How big is the shortage?</b><span>The region's gap, and Chicago's share</span></a>
+      <a href="/learn/#rents"><b>Do new apartments lower rents?</b><span>What the studies find</span></a>
+      <a href="/learn/#funding"><b>Who pays for a new line?</b><span>Federal grants, the state and NITA</span></a>
+    </div>
+  </div></section>
+  <section class="band alt" aria-labelledby="plansH"><div class="wrap">
     <div class="sh"><h2 id="plansH">What neighbors built</h2><span>Plans people posted from Fix Chicago Housing</span></div>
     <div class="plans" id="plans"><div class="empty">Loading plans…</div></div>
   </div></section>
@@ -125,7 +141,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <footer><div class="wrap">
   <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
   <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra. Every number links to its source.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit tracker</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit tracker</a><a href="/learn/">Learn</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
 </div></footer>
 <script>
 const AREAS = ["", "Rogers Park", "West Ridge", "Uptown", "Lincoln Square", "North Center", "Lake View", "Lincoln Park", "Near North Side", "Edison Park", "Norwood Park", "Jefferson Park", "Forest Glen", "North Park", "Albany Park", "Portage Park", "Irving Park", "Dunning", "Montclare", "Belmont Cragin", "Hermosa", "Avondale", "Logan Square", "Humboldt Park", "West Town", "Austin", "West Garfield Park", "East Garfield Park", "Near West Side", "North Lawndale", "South Lawndale", "Lower West Side", "Loop", "Near South Side", "Armour Square", "Douglas", "Oakland", "Fuller Park", "Grand Boulevard", "Kenwood", "Washington Park", "Hyde Park", "Woodlawn", "South Shore", "Chatham", "Avalon Park", "South Chicago", "Burnside", "Calumet Heights", "Roseland", "Pullman", "South Deering", "East Side", "West Pullman", "Riverdale", "Hegewisch", "Garfield Ridge", "Archer Heights", "Brighton Park", "Mckinley Park", "Bridgeport", "New City", "West Elsdon", "Gage Park", "Clearing", "West Lawn", "Chicago Lawn", "West Englewood", "Englewood", "Greater Grand Crossing", "Ashburn", "Auburn Gresham", "Beverly", "Washington Heights", "Mount Greenwood", "Morgan Park", "Ohare", "Edgewater"];

@@ -134,6 +134,53 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 @media (max-width:640px){ .sc-head .sc-r{display:none} }
 .mast .t b,.hero h1,h2,.step .n,.fact b{font-weight:600 !important;letter-spacing:-.02em !important}
 .fan{background:none;color:var(--ink-3)}
+
+/* ---- preview: the tracker in the Shape Chicago look (open with ?look=new; becomes the default once approved) ---- */
+body.next{background:#fff}
+body.next .mast{border-bottom:1px solid var(--sc-line)}
+body.next .mast .t b{font-size:20px}
+body.next .mast nav a{color:var(--sc-ink2);font-weight:500;padding:6px 10px;border-radius:14px}
+body.next .mast nav a:hover{background:var(--sc-seg);text-decoration:none}
+body.next .fan{display:none}
+body.next .hero{background:linear-gradient(180deg,#f6f8fb,#fff);color:var(--sc-ink);padding:40px 0 30px;border-bottom:1px solid var(--sc-line)}
+body.next .hero h1{color:var(--sc-ink);font-size:clamp(32px,5.4vw,54px);line-height:1.05;max-width:16em}
+body.next .hero h1 em{background:none;color:var(--sc-navy);padding:0}
+body.next .hero p{color:var(--sc-ink2)}
+body.next .hero p strong{color:var(--sc-ink)}
+body.next .meter{height:14px;border:0;border-radius:7px;background:var(--sc-seg);overflow:visible}
+body.next .meter .fill{border-radius:7px;background:var(--sc-navy)}
+body.next .meter .tick{background:var(--sc-ink);top:-5px;bottom:-5px;width:2px;border-radius:1px}
+body.next .meter .tick.prev{background:var(--sc-flag)}
+body.next .meterlbl{color:var(--sc-mute)} body.next .meterlbl span b{color:var(--sc-ink)}
+body.next .asof{color:var(--sc-mute)}
+body.next section{padding:44px 0 8px}
+body.next h2{font-size:28px}
+body.next .lede{color:var(--sc-ink2)}
+body.next .card{border:1px solid var(--sc-line);border-radius:18px;padding:20px;box-shadow:0 1px 2px rgba(20,28,40,.04)}
+body.next .pipe{border:1px solid var(--sc-line);border-radius:18px;overflow:hidden}
+body.next .step{border-color:var(--sc-line)}
+body.next .step h3{color:var(--sc-mute);font-weight:600}
+body.next .step::after{display:none}
+body.next .split{border-radius:5px;overflow:hidden}
+body.next #map{border:1px solid var(--sc-line);border-radius:18px;background:#f3f5f7}
+body.next .scroll{border:1px solid var(--sc-line);border-radius:14px}
+body.next th{border-bottom:1px solid var(--sc-line2);color:var(--sc-mute);font-weight:600;font-size:12.5px}
+body.next td{border-bottom:1px solid var(--sc-line)}
+body.next .bar{border-radius:4px;background:var(--sc-navy)}
+body.next select{border:1px solid var(--sc-line2);border-radius:10px;padding:6px 10px}
+body.next .seg{border:0;background:var(--sc-seg);border-radius:16px;padding:3px;gap:2px}
+body.next .seg button{background:transparent;color:var(--sc-ink2);border-radius:13px;padding:6px 12px}
+body.next .seg button[aria-pressed=true]{background:#fff;color:var(--sc-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+body.next .stamp{border:0;border-radius:10px;padding:2px 8px;font-weight:600}
+body.next .st-finished{background:var(--sc-greenbg)} body.next .st-building{background:#eaf1fa} body.next .st-expired{background:var(--sc-seg)} body.next .st-none{background:var(--sc-warnbg)}
+body.next .more{border:1px solid var(--sc-line2);border-radius:20px;color:var(--sc-ink);padding:8px 16px}
+body.next .more:hover{background:var(--sc-seg)}
+body.next .fact{border-top:0;background:var(--sc-chip);border-radius:16px;padding:16px 18px}
+body.next .tip{border-radius:10px}
+body.next footer{border-top:1px solid var(--sc-line)}
+body.next .previewnote{display:block}
+.previewnote{display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;background:var(--sc-ink);color:#fff;font:500 13px var(--sc-font);padding:8px 14px;border-radius:18px;box-shadow:var(--sc-shadow2)}
+.previewnote a{color:#9fd3f0}
 </style>
 </head>
 <body>
@@ -154,12 +201,14 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
   <div class="hero"><div class="wrap"><h1>Loading the city's permits…</h1></div></div>
 </main>
 <div class="tip" id="tip"></div>
+<div class="previewnote">Preview of the new look · <a href="/tracker/">see the current one</a></div>
 
 <footer><div class="wrap">
-  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>. <a href="/learn/">Learn the basics</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 </div></footer>
 
 <script>
+if (/[?&]look=new/.test(location.search)) document.body.classList.add("next");
 (function(){
 const fmt = n => n == null ? '–' : Math.round(n).toLocaleString('en-US');
 const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
