@@ -1337,6 +1337,21 @@ body{--f-display:var(--sc-font)}
 .cinecap{background:#fff !important;color:var(--sc-ink) !important;border-radius:14px !important;box-shadow:var(--sc-shadow);padding:10px 14px 11px !important}
 .cinecap b{font:600 21px/1.1 var(--sc-font) !important;letter-spacing:-.01em}
 .cinecap span{font:500 13px/1.3 var(--sc-font) !important;color:var(--sc-ink2)}
+
+/* v50 ward mode */
+#tool-wards .wsum{margin:2px 0 8px;font-size:13.5px;color:var(--sc-ink2)}
+#tool-wards .wsum b{color:var(--sc-ink)}
+.wlist{display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto;margin:0 -4px;padding:0 4px}
+.wrow{display:grid;grid-template-columns:62px 1fr auto;align-items:center;gap:10px;border:0;background:none;padding:6px 6px;border-radius:8px;font:500 13px var(--sc-font);color:var(--sc-ink);cursor:pointer;text-align:left}
+.wrow:hover,.wrow.on{background:var(--sc-seg)}
+.wrow .wb{height:6px;border-radius:3px;background:#f3d6da;overflow:hidden}
+.wrow .wb i{display:block;height:100%;background:var(--sc-star);border-radius:3px;transition:width .3s}
+.wrow.ok .wb{background:#d6ecdd} .wrow.ok .wb i{background:var(--sc-green)}
+.wrow .wv{font-variant-numeric:tabular-nums;font-size:12.5px;white-space:nowrap}
+.wrow .wv small{color:var(--sc-mute);font-size:12px}
+body.wardmode #goalLbl{color:var(--sc-navy)}
+.sc-seg #modeWard[aria-checked="true"]{background:var(--sc-navy);color:#fff}
+@media (max-width:859px){ .hacts .sc-seg button{padding:7px 9px} }
 </style>
 
 <div id="app">
@@ -1367,7 +1382,7 @@ body{--f-display:var(--sc-font)}
     <div class="sc-m hstat" id="affLine" hidden><span>affordable</span><b id="affNum">0</b></div>
     <div class="sc-m hstat hpace"><span id="paceLbl">built anyway at today's pace</span><b id="pace">–</b></div>
     <div class="sc-push hacts">
-      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard mode</button></div>
+      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Ward mode</button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard mode</button></div>
       <button type="button" class="ib" id="hardBtn" aria-label="What's hard mode?">i</button>
       <button class="sc-btn" id="reset" type="button">Start over</button>
     </div>
@@ -1393,6 +1408,16 @@ body{--f-display:var(--sc-font)}
     <div class="panes">
       <!-- Build -->
       <div class="pane" id="pane-zoning">
+        <div class="tool" id="tool-wards" hidden>
+          <div class="thead"><h3>Every ward's fair share</h3><button type="button" class="ib" id="wardsInfo" aria-label="About ward mode">i</button></div>
+          <p class="wsum" id="wardsSum"></p>
+          <div class="wlist" id="wardsList"></div>
+          <div class="tinfo" id="wardsWhy">
+            <p>Ward mode splits the city's goal into 50 floors, one per ward. Half of each floor follows the ward's share of the city's homes today, and half follows its share of the land within a 10-minute walk (½ mile) of an L or Metra station, so wards on the train lines carry more (our assumption; homes and lots from the city's building data).</p>
+            <p>A ward meets its floor when your zoning allows at least that many new homes there, beyond what today's zoning already allows. That's how fair-share housing laws work: <a href="https://www.hcd.ca.gov/planning-and-community-development/regional-housing-needs-allocation" target="_blank" rel="noopener">California</a> gives every city a number and makes it zone for it, and <a href="https://fairsharehousing.org/mount-laurel-doctrine/" target="_blank" rel="noopener">New Jersey's Mount Laurel rules</a> do the same for affordable homes.</p>
+            <p>Zoning isn't building. Tap a ward to see how many of its allowed homes are likely to go up by 2041; in soft markets it's a small share.</p>
+          </div>
+        </div>
         <div class="tool" id="tool-hoods" data-unlock="hoods">
           <h3>One neighborhood at a time</h3>
           <select class="pick" id="hoodPick" aria-label="Choose a neighborhood"><option value="">Tap the map or pick one…</option></select>
@@ -1779,6 +1804,7 @@ body{--f-display:var(--sc-font)}
                 <tr><td>Affordable homes added</td><td>none counted</td><td class="plan" id="resAff">–</td></tr>
                 <tr><td id="bxPayLbl">Pay going to rent</td><td id="bxPayNo">–</td><td class="plan" id="bxPay">–</td></tr>
                 <tr><td>Local taxes and fees a year</td><td>none counted</td><td class="plan" id="resTax">–</td></tr>
+                <tr id="bxWardRow" hidden><td>Wards that zoned their share</td><td>–</td><td class="plan" id="bxWards">–</td></tr>
               </tbody>
             </table>
             <p class="small" id="resTaxLbl"></p>
@@ -1885,6 +1911,7 @@ const TARGETS = [
   {n:224445, title:"Affordable homes missing for extremely low-income renters", what:"Housing Action Illinois & NLIHC, 2026. New market-rate homes help this indirectly, not one-for-one."},
   {n:Math.round(165687 * CITY_SHARE), title:"Chicago's share of the region's shortage", what:"Up for Growth's metro shortage × the city's 32.7% of the region's homes (Census, 2024). The suburbs would build the rest.", growth:GAP_GROWTH * CITY_SHARE},
 ];
+TARGETS.push({...TARGETS[3], ward:true, title:"Every ward's fair share of Chicago's shortage"});   // g = 4: ward mode, the same city goal split into 50 ward floors
 const gapGrowth = () => TARGETS[plan.g].growth || GAP_GROWTH;   // how fast the chosen shortage grows each year
 // Sourced facts and labeled assumptions
 const STR_LISTINGS = 11236, ENTIRE_SHARE = 0.802, STR_RETURN = [0, 0.10, 0.50];
@@ -2395,6 +2422,15 @@ function compute(A, statsOnly){
     const b = baseAt(i);
     if (TIERS[t].k * VAC_LOT / STD_LOT - b >= 1) tryAt(i, t, VF[i - n], VAC_LOT, 0, true, b);
   }
+  // ward mode: homes newly allowed on lots that can be rebuilt (the new level's homes minus what the lot has or already allows)
+  const wardCap = new Float64Array(51);
+  if (plan.g === 4) for (let i = 0; i < NK; i++){
+    const e = EL[i]; if (e === 0 || e === 255) continue;
+    const t = LUT[TK[i]]; if (t <= 0) continue;
+    const c = Math.floor(TIERS[t].k * LOTS[i] / STD_LOT) - baseAt(i); if (c < 1) continue;
+    wardCap[i >= n ? A.vw[i - n] : (EX !== null ? EX[i] & 63 : 0)] += c;
+  }
+  A.wardCap = wardCap;
   A.statSig = sig;
   A.vacUsed = vacUsed; A.tower = tower; A.wardHomes = wardHomes; A.added = added; A.addedNow = addedNow; A.replaced = replaced; A.touched = touched; A.byYear = byYear; A.walk = walk; A.aff = aff;
   if (!statsOnly){ A.sig = sig; A.projects = projects; showYear(A); }
@@ -2522,7 +2558,7 @@ const MISSIONS = [
     prog:t => t.total / 60000, ok:t => t.touchedPct < 15, why:"Rezoned too much (keep it under 15%)"},
   {id:"m6", title:"Affordable push", desc:"15,000 affordable homes through the affordable requirement. A higher requirement means more affordable homes in each building, but fewer buildings.", prog:t => t.affReq / 15000},
   {id:"m7", title:"Close the gap by 2041", desc:"Cover today's shortage plus 15 years of growth.", prog:t => t.total / needed()},
-  {id:"m8", title:"Hard mode: carry the region", desc:"Close the whole region's shortage inside city limits. Switch to hard mode under Your goal below.", prog:t => plan.g !== 3 ? t.total / needed() : 0, ok:() => plan.g !== 3, why:"Switch to hard mode under Your goal below"},
+  {id:"m8", title:"Hard mode: carry the region", desc:"Close the whole region's shortage inside city limits. Switch to hard mode under Your goal below.", prog:t => plan.g < 3 ? t.total / needed() : 0, ok:() => plan.g < 3, why:"Switch to hard mode under Your goal below"},
 ];
 let won = new Set(lsGet("upzone-medals", []));
 function renderMissions(t){
@@ -3515,6 +3551,7 @@ function layers(){
     getPosition:d => [d[0], d[1], 2], getText:d => d[3], getAngle:d => d[2], getSize:zoomBandNow === 2 ? 14 : 11.5, sizeUnits:"pixels",
     getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
     billboard:false, updateTriggers:{getSize:zoomBandNow}}));
+  wardLayers(L);
   if (wardShown && WARDS){ const W = WARDS.find(w => w.ward === wardSel); if (W) L.push(new deck.PathLayer({id:"ward", data:W.polys.flatMap(p => p.map(r => ({path:r}))), parameters:FLAT, getPath:d => d.path, getWidth:4, widthUnits:"pixels", getColor:[228,0,43,230]})); }
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
@@ -3608,7 +3645,8 @@ function render(){
   const tv = totals(true), tf = totals(false), goal = needed();
   if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
   $("goalNum").textContent = fmt(goal);
-  { const hard = plan.g !== 3; $("goalLbl").textContent = hard ? "Hard mode:" : "Goal:"; document.body.classList.toggle("hard", hard); $("modeNormal").setAttribute("aria-checked", String(!hard)); $("modeHard").setAttribute("aria-checked", String(hard)); }
+  { const hard = plan.g < 3, wm = plan.g === 4; $("goalLbl").textContent = hard ? "Hard mode:" : wm ? "Ward mode:" : "Goal:"; document.body.classList.toggle("hard", hard); document.body.classList.toggle("wardmode", wm);
+    $("modeNormal").setAttribute("aria-checked", String(!hard && !wm)); $("modeWard").setAttribute("aria-checked", String(wm)); $("modeHard").setAttribute("aria-checked", String(hard)); }
   const yrLabel = START + year;
   const short = target() + gapGrowth() * year - tv.total;
   $("short").textContent = short > 0 ? fmt(short) : "";
@@ -3731,7 +3769,7 @@ function renderImpact(t){
   { const near = Math.max(0, t.walk), riders = near * TRANSIT_SHARE, rides = riders * RIDES_PER_COMMUTER, fares = rides * FARE_PER_RIDE;
     $("trRiders").textContent = fmt(riders); $("trRides").textContent = rides >= 1e6 ? (rides / 1e6).toFixed(1) + "M" : fmt(rides);
     $("trFares").textContent = money(fares); $("trFaresLbl").textContent = "a year in fares" + (fares >= 1 ? " (" + (fares / CTA_FARES * 100).toFixed(1) + "% of what CTA collects)" : ""); }
-  renderWard();
+  renderWard(); renderWards();
 }
 let WARDS = null, wardSel = +(lsGet("fch-ward", 0)) || 0, wardShown = false;
 function renderWard(){
@@ -3747,6 +3785,53 @@ function renderWard(){
   $("wdHomes").textContent = fmt(tot[wardSel]);
   const rank = 1 + [...tot.slice(1)].filter(v => v > tot[wardSel]).length;
   $("wdRank").textContent = tot[wardSel] >= 1 ? "#" + rank : "–";
+}
+// ---------------- ward mode: every ward zones for its share ----------------
+async function loadWards(){ if (!WARDS){ try { WARDS = await (await fetch("../wards.json")).json(); WARD_POLYS = null; } catch (err) { return false; } } return true; }
+let WARD_POLYS = null, wardFocus = 0, wardS = null;
+function wardFloors(){
+  const F = META && META.wardFloor; if (!F) return null;
+  let H = 0, T = 0; for (let w = 1; w <= 50; w++){ const f = F[w]; if (f){ H += f[0]; T += f[1]; } }
+  const goal = needed(), out = new Float64Array(51);
+  for (let w = 1; w <= 50; w++){ const f = F[w] || [0, 0]; out[w] = Math.round(goal * (0.5 * f[0] / H + 0.5 * f[1] / T)); }
+  return out;
+}
+function wardState(){
+  const fl = wardFloors(); if (!fl) return null;
+  const cap = new Float64Array(51), built = new Float64Array(51);
+  for (const k in AREAS){ const A = AREAS[k]; if (A.wardCap) for (let w = 1; w <= 50; w++) cap[w] += A.wardCap[w]; if (A.wardHomes) for (let w = 1; w <= 50; w++) built[w] += A.wardHomes[w]; }
+  let met = 0; for (let w = 1; w <= 50; w++) if (cap[w] >= fl[w]) met++;
+  return {fl, cap, built, met};
+}
+function renderWards(){
+  const box = $("tool-wards"); box.hidden = plan.g !== 4;
+  if (box.hidden){ wardS = null; return; }
+  if (!WARDS) loadWards().then(scheduleRender);
+  if (loaded < 77 || !dataReady){ $("wardsSum").textContent = "Counting every ward…"; return; }
+  const S = wardS = wardState(); if (!S) return;
+  $("wardsSum").innerHTML = "<b>" + S.met + " of 50</b> wards have zoned for their share. All 50 need theirs before you can simulate.";
+  const rows = []; for (let w = 1; w <= 50; w++) rows.push(w);
+  rows.sort((a, b) => S.cap[a] / Math.max(1, S.fl[a]) - S.cap[b] / Math.max(1, S.fl[b]) || a - b);
+  $("wardsList").innerHTML = rows.map(w => { const r = Math.min(1, S.cap[w] / Math.max(1, S.fl[w])), ok = S.cap[w] >= S.fl[w];
+    return '<button type="button" class="wrow' + (ok ? " ok" : "") + (w === wardFocus ? " on" : "") + '" data-w="' + w + '"><span class="wn">Ward ' + w + '</span><span class="wb"><i style="width:' + (r * 100).toFixed(1) + '%"></i></span><span class="wv">' + fmt(S.cap[w]) + ' <small>/ ' + fmt(S.fl[w]) + '</small></span></button>'; }).join("");
+}
+$("wardsList").addEventListener("click", async e => {
+  const b = e.target.closest(".wrow"); if (!b) return;
+  wardFocus = +b.dataset.w; renderWards();
+  const S = wardS; if (S) toast("Ward " + wardFocus + ": " + fmt(S.cap[wardFocus]) + " of " + fmt(S.fl[wardFocus]) + " new homes allowed. About " + fmt(S.built[wardFocus]) + " likely built by 2041.");
+  if (await loadWards()){ const W = WARDS.find(x => x.ward === wardFocus); if (W) flyTo(W.lon, W.lat, isWide() ? 13 : 12.4); }
+  scheduleRender();
+});
+$("wardsInfo").addEventListener("click", () => openInfo("Ward mode", $("wardsWhy")));
+document.addEventListener("click", e => { const a = e.target.closest && e.target.closest("[data-act=wards]"); if (!a) return; e.preventDefault(); $("infoDlg").close(); showTab("zoning"); openSheet(); setTimeout(() => $("tool-wards").scrollIntoView({block:"start", behavior:reduceMotion ? "auto" : "smooth"}), 60); });
+function wardLayers(L){
+  if (plan.g !== 4 || !WARDS || !wardS) return;
+  if (!WARD_POLYS) WARD_POLYS = WARDS.flatMap(W => W.polys.map(p => ({w:W.ward, p})));
+  const S = wardS, key = S.met + ":" + wardFocus + ":" + Array.from(S.cap).join(",").length;
+  L.push(new deck.SolidPolygonLayer({id:"wardFill", data:WARD_POLYS, parameters:FLAT, getPolygon:d => d.p,
+    getFillColor:d => S.cap[d.w] >= S.fl[d.w] ? [46,157,87,40] : [228,0,43,30], updateTriggers:{getFillColor:[S.met, Array.from(S.cap).join(",")]}}));
+  L.push(new deck.PathLayer({id:"wardLine", data:WARD_POLYS.flatMap(d => d.p.map(r => ({w:d.w, path:r}))), parameters:FLAT, getPath:d => d.path, widthUnits:"pixels",
+    getWidth:d => d.w === wardFocus ? 4 : 1.2, getColor:d => d.w === wardFocus ? [26,29,33,235] : [26,29,33,90], updateTriggers:{getWidth:wardFocus, getColor:wardFocus}}));
 }
 $("wardPick").addEventListener("change", (e) => { wardSel = +e.target.value || 0; lsSet("fch-ward", wardSel); wardShown = false; renderWard(); scheduleRender(); });
 $("wdShow").addEventListener("click", async (e) => {
@@ -3922,6 +4007,12 @@ function orbit(){
 $("playBtn").addEventListener("click", () => {
   if (playing){ stopPlay(); return; }
   if (loaded < 77){ toast("Still loading the city…"); return; }
+  if (plan.g === 4){ const S = wardState(); if (S && S.met < 50){
+    const short = []; for (let w = 1; w <= 50; w++) if (S.cap[w] < S.fl[w]) short.push(w);
+    short.sort((a, b) => S.cap[a] / S.fl[a] - S.cap[b] / S.fl[b]);
+    const box = document.createElement("div");
+    box.innerHTML = "<p>" + short.length + " ward" + (short.length > 1 ? "s haven't" : " hasn't") + " zoned for their share yet. In ward mode every ward carries its share, so the plan isn't finished until all 50 do.</p><p>Furthest behind: " + short.slice(0, 3).map(w => "Ward " + w + " (" + fmt(S.cap[w]) + " of " + fmt(S.fl[w]) + ")").join(", ") + ".</p><p><a href=\"#\" data-act=\"wards\">Show me the wards</a></p>";
+    openInfo("Not every ward is in yet", box); return; } }
   playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
   cineSheet = !isWide() && !reduceMotion ? sheetNow() : false;   // phones: tuck the tool sheet away so the flyover has room
   if (cineSheet) sheetState("peek");
@@ -4027,7 +4118,7 @@ function showResult(){
   const base = "With no changes, Chicago still builds about " + fmt(CITY_PACE * YEARS) + " homes by 2041, but demand outruns it: the shortage grows from " + fmt(noShort[0]) + " to " + fmt(noShort[end]) + " and median rent climbs from $" + fmt(rNo[0]) + " to $" + fmt(rNo[end]) + ".";
   $("resText").textContent = homes[end] > 0 ? base + " Your plan adds " + fmt(homes[end]) + " homes on top of that." : homes[end] <= -1 ? base + " Your plan means " + fmt(-homes[end]) + " fewer homes than doing nothing, so rent climbs even faster." : base + " Change some zoning or flip on a policy and run it again.";
   $("resGrade").textContent = gradeFor(homes[end] / needed() * 100);
-  $("resHard").hidden = plan.g !== 3 || homes[end] < needed() * 0.85;   // an A in normal mode: point to hard mode
+  $("resHard").hidden = plan.g < 3 || homes[end] < needed() * 0.85;   // an A in normal mode: point to hard mode
   $("resAff").textContent = fmt(totals(false).aff);
   { const rev = homes[end] * TAX2; $("resTax").textContent = money(rev);
     $("resTaxLbl").textContent = (rev < 0 ? "Fewer homes than doing nothing means less local revenue, " : "Local taxes and fees from the new homes (NAHB estimate), ") + "equal to " + Math.round(Math.abs(rev) / BUDGET_GAP * 100) + "% of the city's 2027 budget gap."; }
@@ -4041,13 +4132,14 @@ function showResult(){
     const g = gradeFor(homes[end] / needed() * 100);
     $("resGradeCap").textContent = {"A+":"Shortage closed", A:"Almost there", B:"Most of the way", C:"Halfway there", D:"A start", F: homes[end] < 0 ? "Going backwards" : "Barely moved"}[g] || "";
   }
+  { const S = plan.g === 4 ? wardState() : null; $("bxWardRow").hidden = !S; if (S) $("bxWards").textContent = S.met + " of 50"; }
   $("resShort").textContent = planShort[end] > 0 ? fmt(planShort[end]) : "Closed";
   { const rr = lessRange(rNo[end], rPlan[end], rHi[end]); $("resRent").textContent = rr ? "$" + fmt(Math.min(rPlan[end], rHi[end])) + "–$" + fmt(Math.max(rPlan[end], rHi[end])) : "$" + fmt(rPlan[end]); }
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
   lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false, rHi);
   personaRows($("resPersonas"), homes[end]);
-  $("resEd").textContent = plan.g !== 3 ? "Hard mode edition" : "Final edition";
-  lastResult = {hard: plan.g !== 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
+  $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Ward mode edition" : "Final edition";
+  lastResult = {hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
   $("result").hidden = false;
 }
 $("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
@@ -4265,7 +4357,7 @@ function decodeAreas(str, p){
 }
 function decodePlan(code){
   const s = String(code || "");
-  let m = s.match(/u6([0-6]{77})([0-6])([0-4])([0-4])([0-3])([0-2])([0-3])([0-9a-v]{4})([0-3])([0-4])([0-3]{10})/);
+  let m = s.match(/u6([0-6]{77})([0-6])([0-4])([0-4])([0-3])([0-2])([0-3])([0-9a-v]{4})([0-4])([0-4])([0-3]{10})/);
   if (m){
     const p = blankPlan();
     for (let i = 0; i < 77; i++){ const v = +m[1][i]; if (v) p.areas[i + 1] = v; }
@@ -4468,10 +4560,10 @@ setLook("model");
   const closeIntro = () => { lsSet("upzone-intro", true); if (introHook){ introHook = false; recompute(); } tourPending = true; hideModal("intro", () => setTimeout(startTour, 250)); };   // the "illegal today" myth waits until the player turns on that overlay
   $("introGo").addEventListener("click", closeIntro);
   $("resHardBtn").addEventListener("click", () => { plan.g = 0; renderTargets(); hideModal("result"); render(); setTimeout(() => toast("Hard mode: " + fmt(needed()) + " homes by 2041. Good luck."), 400); });
-  const syncIntroGoal = () => { const hard = plan.g !== 3;
+  const syncIntroGoal = () => { const hard = plan.g < 3;
     $("introNormal").setAttribute("aria-checked", String(!hard)); $("introHard").setAttribute("aria-checked", String(hard));
     $("introMath0").hidden = hard; $("introMath1").hidden = !hard; };
-  const introGoal = (hard) => { plan.g = hard ? (plan.g !== 3 ? plan.g : 0) : 3; renderTargets(); render(); syncIntroGoal(); };
+  const introGoal = (hard) => { plan.g = hard ? (plan.g < 3 ? plan.g : 0) : 3; renderTargets(); render(); syncIntroGoal(); };
   $("introNormal").addEventListener("click", () => introGoal(false));
   $("introHard").addEventListener("click", () => introGoal(true));
   syncIntroGoal();
@@ -4505,14 +4597,18 @@ document.querySelectorAll("#pane-missions > .group, #pane-impact > .group").forE
 { const g = $("impBudget").closest(".group"), h = g.querySelector(".thead .ib"); if (h) g.querySelector(".tinfo").prepend($("impBudget")); }
 $("goalInfo").addEventListener("click", () => { const box = document.createElement("div"); const tp = $("targetGroup").querySelector(".tinfo"); if (tp) box.append(...[...tp.children].map(n => n.cloneNode(true))); const eq = document.createElement("p"); eq.className = "goaleq"; eq.textContent = $("goalEq").textContent; box.append(eq); openInfo("Your goal", box); });
 let lastHard = +lsGet("fch-hardg", 0) || 0;
-function setMode(hard){
-  const g = hard ? lastHard : 3; if (plan.g === g) return;
-  if (!hard && plan.g !== 3) lastHard = plan.g;
-  plan.g = g; renderTargets(); render();
+function setMode(mode){   // "normal" | "ward" | "hard" (or true/false from older callers)
+  if (mode === true) mode = "hard"; if (mode === false) mode = "normal";
+  const g = mode === "hard" ? lastHard : mode === "ward" ? 4 : 3; if (plan.g === g) return;
+  if (plan.g < 3) lastHard = plan.g;
+  const wardFlip = g === 4 || plan.g === 4;
+  plan.g = g; renderTargets(); if (wardFlip) recompute(); else render();   // ward capacity is counted inside compute()
+  if (g === 4){ showTab("zoning"); openSheet(); const t = $("tool-wards"); if (t) setTimeout(() => t.scrollIntoView({block:"start", behavior:reduceMotion ? "auto" : "smooth"}), 60); }
 }
-$("modeNormal").addEventListener("click", () => setMode(false));
-$("modeHard").addEventListener("click", () => setMode(true));
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#targets .target"); if (b && plan.g !== 3) { lastHard = plan.g; lsSet("fch-hardg", plan.g); } });
+$("modeNormal").addEventListener("click", () => setMode("normal"));
+$("modeWard").addEventListener("click", () => setMode("ward"));
+$("modeHard").addEventListener("click", () => setMode("hard"));
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#targets .target"); if (b && plan.g < 3) { lastHard = plan.g; lsSet("fch-hardg", plan.g); } });
 $("shareTop").addEventListener("click", () => { showTab("share"); openSheet(); });
 // map key: collapsible everywhere; open by default on desktop, remembered per browser
 { const lg = $("legend"), saved = lsGet("fch-key", null);
