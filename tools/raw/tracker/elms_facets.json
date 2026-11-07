@@ -9,15 +9,15 @@
     },
     {
      "value": "Committee on Finance",
-     "count": 13875
+     "count": 13884
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10451
+     "count": 10484
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
-     "count": 1027
+     "count": 1030
     },
     {
      "value": "Committee on Transportation and Public Way",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118103
+     "count": 118136
     },
     {
      "value": "Claim",
-     "count": 29676
+     "count": 29685
     },
     {
      "value": "Resolution",
@@ -186,7 +186,7 @@
     },
     {
      "value": "Order",
-     "count": 9264
+     "count": 9267
     },
     {
      "value": "Appointment",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2031
+     "count": 2076
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29968
+     "count": 29977
     },
     {
      "value": "Reilly, Brendan",
@@ -344,7 +344,7 @@
     },
     {
      "value": "Mitts, Emma",
-     "count": 1941
+     "count": 1948
     },
     {
      "value": "Osterman, Harry",
@@ -371,12 +371,12 @@
      "count": 1661
     },
     {
-     "value": "Cappleman, James",
-     "count": 1514
+     "value": "Gardiner, James M.",
+     "count": 1517
     },
     {
-     "value": "Gardiner, James M.",
-     "count": 1509
+     "value": "Cappleman, James",
+     "count": 1514
     },
     {
      "value": "Cardenas, George A.",
@@ -384,7 +384,7 @@
     },
     {
      "value": "Villegas, Gilbert",
-     "count": 1470
+     "count": 1476
     },
     {
      "value": "Brookins, Jr., Howard",
@@ -392,7 +392,7 @@
     },
     {
      "value": "Sposato, Nicholas",
-     "count": 1385
+     "count": 1388
     },
     {
      "value": "Zalewski, Michael R.",
@@ -472,7 +472,7 @@
     },
     {
      "value": "Napolitano, Anthony V.",
-     "count": 869
+     "count": 870
     },
     {
      "value": "Mitchell, Gregory I.",
@@ -500,11 +500,11 @@
     },
     {
      "value": "Vasquez, Jr., Andre",
-     "count": 790
+     "count": 792
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 744
+     "count": 746
     },
     {
      "value": "Suarez, Regner Ray",
@@ -512,7 +512,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 671
+     "count": 672
     },
     {
      "value": "O'Connor, Mary",
@@ -548,7 +548,7 @@
     },
     {
      "value": "Rodriguez Sanchez, Rossana",
-     "count": 500
+     "count": 502
     },
     {
      "value": "Graham, Deborah L.",
@@ -644,7 +644,7 @@
     },
     {
      "value": "Quezada, Anthony J.",
-     "count": 179
+     "count": 183
     },
     {
      "value": "Robinson, Lamont J.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169632
+     "count": 169677
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7380
+     "count": 7425
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29986
+     "count": 29995
     },
     {
      "value": "42",
@@ -932,7 +932,7 @@
     },
     {
      "value": "45",
-     "count": 2982
+     "count": 2990
     },
     {
      "value": "50",
@@ -940,7 +940,7 @@
     },
     {
      "value": "39",
-     "count": 2852
+     "count": 2853
     },
     {
      "value": "26",
@@ -952,11 +952,11 @@
     },
     {
      "value": "40",
-     "count": 2489
+     "count": 2491
     },
     {
      "value": "35",
-     "count": 2322
+     "count": 2326
     },
     {
      "value": "28",
@@ -976,7 +976,7 @@
     },
     {
      "value": "38",
-     "count": 2027
+     "count": 2030
     },
     {
      "value": "Dept./Agency",
@@ -984,7 +984,7 @@
     },
     {
      "value": "31",
-     "count": 1974
+     "count": 1976
     },
     {
      "value": "21",
@@ -992,7 +992,7 @@
     },
     {
      "value": "37",
-     "count": 1941
+     "count": 1948
     },
     {
      "value": "30",
@@ -1015,12 +1015,12 @@
      "count": 1762
     },
     {
-     "value": "49",
-     "count": 1743
+     "value": "33",
+     "count": 1744
     },
     {
-     "value": "33",
-     "count": 1742
+     "value": "49",
+     "count": 1743
     },
     {
      "value": "29",
@@ -1032,11 +1032,11 @@
     },
     {
      "value": "41",
-     "count": 1593
+     "count": 1594
     },
     {
      "value": "36",
-     "count": 1579
+     "count": 1585
     },
     {
      "value": "18",
@@ -1169,11 +1169,15 @@
     },
     {
      "value": "Referred",
-     "count": 1806
+     "count": 1816
     },
     {
      "value": "Placed on File",
      "count": 1657
+    },
+    {
+     "value": "Direct Introduction",
+     "count": 184
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1182,10 +1186,6 @@
     {
      "value": "Signed",
      "count": 161
-    },
-    {
-     "value": "Direct Introduction",
-     "count": 149
     },
     {
      "value": "Agreed Calendar",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163562
+     "count": 163607
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181772,
-  "pages": 181772
+  "count": 181817,
+  "pages": 181817
  }
 }
