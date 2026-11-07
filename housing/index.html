@@ -1379,6 +1379,23 @@ body.playing #sky{opacity:1}
 .resphoto.cmp #resCmp{display:block;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
 .resphoto.cmp .ctag{display:block;position:absolute;top:8px;padding:2px 8px;border-radius:10px;background:rgba(26,29,33,.78);color:#fff;font:600 12px var(--sc-font);pointer-events:none}
 .resphoto .ctag.c0{left:8px} .resphoto .ctag.c1{right:8px}
+
+/* v51 phones: one control per sheet height. The handle tucks or opens the sheet; when it's tucked, "Tools" brings it back */
+@media (max-width:859px){
+  .sheetdown{display:none !important}
+  .sheet .grab{height:30px !important;cursor:pointer}
+  .sheet.peek .grab{display:none !important}
+}
+
+/* v51 every Build tool folds: tap its title (or the chevron) to tuck it away; remembered per browser */
+.tool .foldbtn{flex:none;width:28px;height:28px;border:0;background:none;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--sc-mute);margin-left:4px}
+.tool .foldbtn:hover{background:var(--sc-seg);color:var(--sc-ink)}
+.tool .foldbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.tool.folded .foldbtn svg{transform:rotate(-90deg)}
+.tool > .thead h3{cursor:pointer;flex:1}
+.tool.folded > :not(.thead){display:none !important}
+.tool.folded{padding-bottom:12px !important}
+.tool.locked .foldbtn{display:none}
 </style>
 
 <div id="app">
@@ -2602,8 +2619,9 @@ function renderMissions(t){
     el._built = true;
   }
   let count = 0;
+  const cuts = ["down", "pmin", "mora", "rentc", "xfer"].some(k => plan.p[k]);   // no medals for a plan that cuts supply (downzoning can sneak a plan under "Light touch")
   MISSIONS.forEach((m, i) => {
-    const d = $("mis-" + m.id), pr = Math.max(0, Math.min(1, m.prog(t))), ok = m.ok ? m.ok(t) : true;
+    const d = $("mis-" + m.id), pr = Math.max(0, Math.min(1, m.prog(t))), ok = (m.ok ? m.ok(t) : true) && !cuts;
     const done = pr >= 1 && ok && loaded === 77 && dataReady;   // wait for the zoning-capacity data, or early totals run high
     if (done){ count++; if (!won.has(m.id)){ won.add(m.id); lsSet("upzone-medals", [...won]); celebrate("Mission complete: " + m.title); } }
     d.classList.toggle("done", done);
@@ -2611,7 +2629,7 @@ function renderMissions(t){
     d.querySelector(".mprog i").style.width = (pr * 100) + "%";
     const s = d.querySelector(".mstat");
     s.classList.toggle("bad", !ok);
-    s.textContent = !ok ? m.why : done ? "Done" : Math.round(pr * 100) + "%" + (won.has(m.id) ? " · earned before" : "");
+    s.textContent = !ok ? (cuts ? "Turn off the supply cuts first" : m.why) : done ? "Done" : Math.round(pr * 100) + "%" + (won.has(m.id) ? " · earned before" : "");
   });
   $("mCount").textContent = count + "/" + MISSIONS.length;
 }
@@ -3716,8 +3734,12 @@ function render(){
   const g = gradeFor(tf.total / goal * 100), ge = $("grade");
   ge.textContent = g; ge.dataset.g = g; ge.setAttribute("aria-label", "Grade " + g); ge.classList.toggle("top", g === "A+" || g === "A");
   // confetti only when the plan itself closes the gap: not when switching modes or goals, and once per goal per visit
-  if (loaded === 77 && dataReady && g === "A+" && lastGrade && lastGrade !== "A+" && year === YEARS && goal === lastGoal && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); }
-  if (loaded === 77) lastGoal = goal;
+  // confetti only the first time your own changes close the gap for a goal: a plan that already closed it when it loaded,
+  // or when you switched modes, doesn't count, and dipping below and back (say, toggling downzoning) doesn't cheer again
+  if (loaded === 77 && dataReady && year === YEARS){
+    if (goal !== lastGoal){ if (g === "A+") cheered.add(goal); lastGoal = goal; }
+    else if (g === "A+" && lastGrade && lastGrade !== "A+" && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); }
+  }
   if (loaded === 77 && lastGrade && lastGrade !== g && !reduceMotion){ ge.classList.remove("pop"); void ge.offsetWidth; ge.classList.add("pop"); }
   if (loaded === 77) lastGrade = g;
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : ""; $("loadTxt").hidden = loaded >= 77;
@@ -4708,6 +4730,21 @@ function collapsify(g){
   if (g.id) body.id = g.id;
 }
 document.querySelectorAll("#pane-missions > .group, #pane-impact > .group").forEach(collapsify);
+// Build tools fold open and shut like the other sections (each remembers its state)
+{ const folded = new Set(lsGet("fch-folded", []));
+  document.querySelectorAll("#pane-zoning > .tool").forEach(tool => {
+    let head = tool.querySelector(":scope > .thead");
+    if (!head){ const h = tool.querySelector(":scope > h3"); if (!h) return; head = document.createElement("div"); head.className = "thead"; h.before(head); head.append(h); }
+    const h3 = head.querySelector("h3"); if (!h3 || !tool.id) return;
+    const b = document.createElement("button"); b.type = "button"; b.className = "foldbtn"; b.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4"/></svg>';
+    const sync = () => { const f = tool.classList.contains("folded"); b.setAttribute("aria-expanded", String(!f)); b.setAttribute("aria-label", (f ? "Show " : "Hide ") + h3.textContent); };
+    const flip = () => { if (tool.classList.contains("locked")) return; tool.classList.toggle("folded"); sync();
+      tool.classList.contains("folded") ? folded.add(tool.id) : folded.delete(tool.id); lsSet("fch-folded", [...folded]);
+      if (!reduceMotion && tool.animate) tool.animate([{opacity:.6}, {opacity:1}], {duration:220}); };
+    b.addEventListener("click", e => { e.stopPropagation(); flip(); });
+    h3.addEventListener("click", flip);
+    head.append(b); if (folded.has(tool.id)) tool.classList.add("folded"); sync();
+  }); }
 
 
 if (/[?&]qa/.test(location.search)) window.__fch = {selectArea, showTab, showMyth, showComment, showTown, setMode, render, plan, openInfo, sheetState};   // test hooks
