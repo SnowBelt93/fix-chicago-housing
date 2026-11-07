@@ -1,0 +1,23 @@
+# Downloads Cook County Assessor addresses and commercial land areas for the lot tool (tools/fetch_addresses.py).
+name: Fetch addresses
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/fetch_addresses.py', '.github/workflows/fetch-addresses.yml']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: python3 tools/fetch_addresses.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for f in tools/raw/cook_addr_chi.csv.gz tools/raw/cook_comm_chi.csv.gz tools/raw/cook_comm_columns.json; do [ -f "$f" ] && git add "$f"; done
+          git commit -m "Fetch Cook County parcel addresses and commercial land" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
