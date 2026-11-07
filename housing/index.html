@@ -2485,7 +2485,7 @@ let unlocked = new Set(lsGet("fch-unlocked", []));
 const isOpen = (k) => unlocked.has(k);
 function unlockAll(quiet){ UNLOCKS.forEach(u => u.keys.forEach(k => unlocked.add(k))); lsSet("fch-unlocked", [...unlocked]); applyLocks(); if (!quiet) toast("Everything's unlocked. Go wild."); }
 function checkUnlocks(total){
-  if (loaded < 77) return;
+  if (loaded < 77 || !dataReady) return;   // totals run high until today's-zoning capacity loads
   UNLOCKS.forEach(u => {
     if (total >= u.at && u.keys.some(k => !unlocked.has(k))){
       u.keys.forEach(k => unlocked.add(k)); lsSet("fch-unlocked", [...unlocked]); applyLocks();
@@ -2540,7 +2540,7 @@ function renderMissions(t){
   let count = 0;
   MISSIONS.forEach((m, i) => {
     const d = $("mis-" + m.id), pr = Math.max(0, Math.min(1, m.prog(t))), ok = m.ok ? m.ok(t) : true;
-    const done = pr >= 1 && ok && loaded === 77;
+    const done = pr >= 1 && ok && loaded === 77 && dataReady;   // wait for the zoning-capacity data, or early totals run high
     if (done){ count++; if (!won.has(m.id)){ won.add(m.id); lsSet("upzone-medals", [...won]); celebrate("Mission complete: " + m.title); } }
     d.classList.toggle("done", done);
     d.querySelector(".medal").textContent = done ? "✓" : String(i + 1);
@@ -3227,7 +3227,7 @@ async function loadExtra(){
     recompute();   // hides buildings torn down since 2013 and enables the Tower rings
   } catch (e) { console.warn("extra data failed", e); }
 }
-let hasExtra = false;
+let hasExtra = false, dataReady = false;
 async function boot(){
   META = await (await fetch("../meta.json")).json();
   megaPrep();
@@ -3253,6 +3253,7 @@ async function boot(){
   await Promise.all([worker(), worker(), worker(), worker()]);
   await streetsP;
   await loadExtra();
+  dataReady = true; render();
   $("loading").hidden = true;
   if (hasZoning){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; for (let i = 0; i < A.n; i++){ if (A.ext && (A.ext[i] & 64)) continue; tot++; if (A.fl[i] & 64) n++; } }
@@ -3633,7 +3634,7 @@ function render(){
   const g = gradeFor(tf.total / goal * 100), ge = $("grade");
   ge.textContent = g; ge.dataset.g = g; ge.setAttribute("aria-label", "Grade " + g); ge.classList.toggle("top", g === "A+" || g === "A");
   // confetti only when the plan itself closes the gap: not when switching modes or goals, and once per goal per visit
-  if (loaded === 77 && g === "A+" && lastGrade && lastGrade !== "A+" && year === YEARS && goal === lastGoal && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); }
+  if (loaded === 77 && dataReady && g === "A+" && lastGrade && lastGrade !== "A+" && year === YEARS && goal === lastGoal && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); }
   if (loaded === 77) lastGoal = goal;
   if (loaded === 77 && lastGrade && lastGrade !== g && !reduceMotion){ ge.classList.remove("pop"); void ge.offsetWidth; ge.classList.add("pop"); }
   if (loaded === 77) lastGrade = g;
