@@ -5,8 +5,10 @@
 <meta property="og:title" content="Fix Chicago Housing">
 <meta property="og:description" content="Rezone real Chicago, pass real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://fixchicagohousing.com/og.jpg">
-<meta property="og:url" content="https://fixchicagohousing.com/">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://shape-chicago.hd9bt6x5mn.workers.dev/housing/">
 <link rel="canonical" href="https://fixchicagohousing.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2b5da0">
@@ -1352,12 +1354,38 @@ body{--f-display:var(--sc-font)}
 body.wardmode #goalLbl{color:var(--sc-navy)}
 .sc-seg #modeWard[aria-checked="true"]{background:var(--sc-navy);color:#fff}
 @media (max-width:859px){ .hacts .sc-seg button{padding:7px 9px} }
+
+/* v50 loading screen: the city fills in neighborhood by neighborhood */
+.loading{background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.2));transition:opacity .6s}
+.loading.done{opacity:0}
+.ldcard{display:flex;flex-direction:column;align-items:center;gap:6px;background:#fff;border-radius:20px;box-shadow:var(--sc-shadow);padding:22px 30px 20px;font-family:var(--sc-font)}
+#ldMap{width:150px;height:170px;overflow:visible}
+#ldMap path{fill:#eef1f4;stroke:#c3cad3;stroke-width:1.1;stroke-linejoin:round;transition:fill .5s,stroke .5s}
+#ldMap path.on{fill:var(--sc-navy);stroke:#fff}
+.ldcard b{font:600 15px var(--sc-font);color:var(--sc-ink);margin-top:6px}
+.ldcard span{font:500 12.5px var(--sc-font);color:var(--sc-mute);font-variant-numeric:tabular-nums}
+@media (max-width:859px){ .loading{align-items:start;padding-top:calc(var(--hudH, 150px) + 24px)} #ldMap{width:110px;height:125px} }
+/* v50 the light over 15 years: dawn at the start of a simulation, full day mid-way, a golden evening by 2041 */
+#sky{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.2s;mix-blend-mode:soft-light;background:var(--skyc,transparent)}
+body.playing #sky{opacity:1}
+
+/* v50 before/after slider on the front page photo */
+.resphoto .cmpw{position:relative;overflow:hidden}
+.resphoto .before,.resphoto #resCmp,.resphoto .ctag{display:none}
+.resphoto.cmp .before{display:block;position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--x,50%)) 0 0)}
+.resphoto.cmp .before img{width:100%;height:100%;object-fit:cover;display:block}
+.resphoto.cmp .cmpw::after{content:"";position:absolute;top:0;bottom:0;left:var(--x,50%);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none}
+.resphoto.cmp .cmpw::before{content:"‹ ›";position:absolute;z-index:1;top:50%;left:var(--x,50%);transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3);display:grid;place-items:center;font:700 14px var(--sc-font);color:var(--sc-ink);pointer-events:none}
+.resphoto.cmp #resCmp{display:block;position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;touch-action:pan-y}
+.resphoto.cmp .ctag{display:block;position:absolute;top:8px;padding:2px 8px;border-radius:10px;background:rgba(26,29,33,.78);color:#fff;font:600 12px var(--sc-font);pointer-events:none}
+.resphoto .ctag.c0{left:8px} .resphoto .ctag.c1{right:8px}
 </style>
 
 <div id="app">
   <div id="basemap" aria-hidden="true"></div>
   <div id="map" aria-label="3D map of Chicago buildings"></div>
-  <div class="loading" id="loading">Loading 485,000 Chicago buildings…</div>
+  <div id="sky" aria-hidden="true"></div>
+  <div class="loading" id="loading"><div class="ldcard"><svg id="ldMap" aria-hidden="true"></svg><b id="ldTxt">Loading 485,000 Chicago buildings…</b><span id="ldSub">0 of 77 neighborhoods</span></div></div>
 
   <header class="sc-head">
     <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
@@ -1780,7 +1808,7 @@ body.wardmode #goalLbl{color:var(--sc-navy)}
       </div>
       <div class="paperrow">
         <div class="pleft">
-          <figure class="resphoto"><img id="resPhoto" alt="Your city in 2041"><figcaption id="resCap"></figcaption></figure>
+          <figure class="resphoto" id="resFig"><div class="cmpw"><img id="resPhoto" alt="Your city in 2041"><div class="before" aria-hidden="true"><img id="resPhoto0" alt=""></div><input type="range" id="resCmp" min="0" max="100" value="50" aria-label="Slide to compare 2026 with 2041"><span class="ctag c0">2026</span><span class="ctag c1">2041</span></div><figcaption id="resCap"></figcaption></figure>
           <div class="charts2">
             <div class="chartBox">
               <div class="ctitle">The shortage, 2026 to 2041<span class="clegend"><span><i class="sw-base"></i>No change</span><span><i class="sw-plan"></i>Your plan</span></span></div>
@@ -3264,8 +3292,24 @@ async function loadExtra(){
   } catch (e) { console.warn("extra data failed", e); }
 }
 let hasExtra = false, dataReady = false;
+// loading screen: the city's outline draws itself, and each neighborhood fills in as its buildings arrive
+function drawLoader(){
+  const svg = $("ldMap"); if (!svg || !META.outlines) return;
+  const k = Math.cos(41.84 * Math.PI / 180), X = lon => (lon + 87.95) * k * 1000, Y = lat => (42.03 - lat) * 1000;
+  let d = "";
+  const ring = r => r.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("") + "Z";
+  svg.setAttribute("viewBox", "0 0 " + (0.43 * k * 1000).toFixed(0) + " 390");
+  svg.innerHTML = META.outlines.features.map(f => { const g = f.geometry, polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+    return '<path data-n="' + f.properties.num + '" d="' + polys.map(p => p.map(ring).join("")).join("") + '"/>'; }).join("");
+}
+function loaderTick(num){
+  const p = document.querySelector('#ldMap path[data-n="' + num + '"]'); if (p) p.classList.add("on");
+  $("ldSub").textContent = loaded + " of 77 neighborhoods";
+  if (loaded === 77){ $("ldTxt").textContent = "Checking what today's zoning allows…"; $("ldSub").textContent = "Almost there"; }
+}
 async function boot(){
   META = await (await fetch("../meta.json")).json();
+  drawLoader();
   megaPrep();
   buildTypeTools();
   const pick = $("hoodPick");
@@ -3282,7 +3326,7 @@ async function boot(){
     while (next < queue.length){
       const m = queue[next++];
       try { AREAS[m.num] = await loadArea(m); } catch (e) { console.warn("area failed", m.num, e); }
-      loaded++;
+      loaded++; loaderTick(m.num);
       scheduleRender();
     }
   }
@@ -3290,7 +3334,7 @@ async function boot(){
   await streetsP;
   await loadExtra();
   dataReady = true; render();
-  $("loading").hidden = true;
+  { const ld = $("loading"); ld.classList.add("done"); setTimeout(() => { ld.hidden = true; }, reduceMotion ? 0 : 650); }
   if (hasZoning){
     let n = 0, tot = 0; for (const k in AREAS){ const A = AREAS[k]; for (let i = 0; i < A.n; i++){ if (A.ext && (A.ext[i] & 64)) continue; tot++; if (A.fl[i] & 64) n++; } }
     $("tool-illegal").hidden = false; $("lgIllWrap").hidden = false;
@@ -3819,7 +3863,8 @@ $("wardsList").addEventListener("click", async e => {
   const b = e.target.closest(".wrow"); if (!b) return;
   wardFocus = +b.dataset.w; renderWards();
   const S = wardS; if (S) toast("Ward " + wardFocus + ": " + fmt(S.cap[wardFocus]) + " of " + fmt(S.fl[wardFocus]) + " new homes allowed. About " + fmt(S.built[wardFocus]) + " likely built by 2041.");
-  if (await loadWards()){ const W = WARDS.find(x => x.ward === wardFocus); if (W) flyTo(W.lon, W.lat, isWide() ? 13 : 12.4); }
+  if (!isWide()) sheetState("menu");   // phones: drop the sheet so the ward is in view
+  if (await loadWards()){ const W = WARDS.find(x => x.ward === wardFocus); if (W) flyTo(W.lon, W.lat, isWide() ? 13 : 12.2); }
   scheduleRender();
 });
 $("wardsInfo").addEventListener("click", () => openInfo("Ward mode", $("wardsWhy")));
@@ -4018,13 +4063,30 @@ $("playBtn").addEventListener("click", () => {
   if (cineSheet) sheetState("peek");
   headlines = reduceMotion ? [] : planHeadlines();
   recompute();
-  if (!reduceMotion) cinema();
+  if (!reduceMotion){ cinema(); skyStart(); }
   playTimer = setInterval(() => {
-    year++; reduceMotion ? recompute() : recomputeWave();
+    year++; skyTick = performance.now(); reduceMotion ? recompute() : recomputeWave();
     const h = headlines.find(h => h.y === year); if (h) showHeadline(h);
     if (year >= YEARS) stopPlay(true);
   }, reduceMotion ? 120 : YEAR_MS);
 });
+// the light over the 15 years: a pink dawn in 2026, plain daylight through the middle, a golden evening by 2041
+let skyRaf = 0, skyTick = 0;
+const SKY = [[0, [255,150,120], .55], [.25, [255,236,214], .25], [.55, [255,255,255], 0], [.8, [255,206,140], .35], [1, [255,150,70], .6]];
+function skyAt(t){
+  let i = 1; while (i < SKY.length - 1 && SKY[i][0] < t) i++;
+  const [t0, c0, a0] = SKY[i - 1], [t1, c1, a1] = SKY[i], f = Math.max(0, Math.min(1, (t - t0) / (t1 - t0)));
+  const c = c0.map((v, k) => Math.round(v + (c1[k] - v) * f)), a = a0 + (a1 - a0) * f;
+  return "linear-gradient(200deg, rgba(" + c + "," + (a * 0.6).toFixed(3) + ") 0%, rgba(" + c + "," + a.toFixed(3) + ") 70%)";
+}
+function skyStart(){
+  skyTick = performance.now(); cancelAnimationFrame(skyRaf);
+  const sky = $("sky");
+  const step = now => { if (!playing) return;   // the overlay fades out with body.playing
+    const t = Math.min(1, (year + Math.min(1, (now - skyTick) / YEAR_MS)) / YEARS);
+    sky.style.setProperty("--skyc", skyAt(t)); skyRaf = requestAnimationFrame(step); };
+  skyRaf = requestAnimationFrame(step);
+}
 function scrubTo(y){ if (playing) return; year = Math.max(0, Math.min(YEARS, y)); scrubbing = true; recompute(); scrubbing = false; }
 $("yrRange").addEventListener("input", (e) => scrubTo(+e.target.value));
 $("resCompare").addEventListener("click", () => hideModal("result", () => {
@@ -4158,15 +4220,25 @@ function frontPage(homesEnd){
   lede += P0.name + ", a " + P0.job.replace(/^[A-Z][a-z]/, c => c.toLowerCase()) + ", would spend " + bNo + "% of her pay on a one-bedroom with no changes. " + (bPlan !== bNo || bHi !== bNo ? "Under this plan it's " + (bHi === bPlan ? bPlan : Math.min(bPlan, bHi) + " to " + Math.max(bPlan, bHi)) + "%." : "Under this plan it's about the same.");
   $("resLede").textContent = lede;
   $("resPhoto").removeAttribute("src");
-  captureMap().then(c => {
-    // crop to the visible part of the map at the photo's 16:10 shape
+  $("resFig").classList.remove("cmp");
+  const crop = c => {   // crop to the visible part of the map at the photo's 16:10 shape
     const W = c.width, H = c.height, cx = isWide() && !document.body.classList.contains("wide") ? (432 + (window.innerWidth - 432) / 2) / window.innerWidth * W : W / 2;
     let cw = Math.min(W, H * 1.6), ch = cw / 1.6; if (ch > H){ ch = H; cw = H * 1.6; }
     const o = document.createElement("canvas"); o.width = 1120; o.height = 700;
     o.getContext("2d").drawImage(c, Math.max(0, Math.min(W - cw, cx - cw / 2)), (H - ch) / 2, cw, ch, 0, 0, o.width, o.height);
-    lastPhoto = o; $("resPhoto").src = o.toDataURL("image/jpeg", 0.86);
+    return o;
+  };
+  captureMap().then(c => {
+    const o = crop(c); lastPhoto = o; $("resPhoto").src = o.toDataURL("image/jpeg", 0.86);
+    // the same view in 2026, for the before/after slider (the city drops back behind the front page, then rises again)
+    scrubTo(0);
+    setTimeout(() => captureMap().then(c0 => {
+      $("resPhoto0").src = crop(c0).toDataURL("image/jpeg", 0.86); scrubTo(YEARS);
+      $("resCmp").value = 50; $("resFig").style.setProperty("--x", "50%"); $("resFig").classList.add("cmp");
+    }), reduceMotion ? 150 : 1150);
   });
 }
+$("resCmp").addEventListener("input", e => $("resFig").style.setProperty("--x", e.target.value + "%"));
 async function makeShareCard(){
   const R = lastResult; if (!R) return null;
   try { await Promise.all(['900 48px "Big Shoulders Display"', '700 20px "Public Sans"', '700 40px "Source Serif 4"', 'italic 400 16px "Source Serif 4"'].map(f => document.fonts.load(f))); } catch (e) {}
