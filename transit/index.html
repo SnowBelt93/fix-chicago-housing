@@ -988,6 +988,9 @@ function accessFrom(x, y, g){ const t = zoneTimes(x, y, g, NW.net.cutoff); let j
    FRESH = null (today's network) or {on:Set of route ids, e.g. "cta:Red", "metra:BNSF", "cta:22"}. Switched-off routes are
    masked out of every search (g.off), and the whole network's riders are counted with the trip model, compared with today. */
 let FRESH = null;
+// yield to the page between slices of work: a message, not setTimeout, so a tab Chrome deprioritizes doesn't stall it to 1 a second
+const soonQ = []; let soonCh = null;
+function soon(fn){ if (!soonCh){ soonCh = new MessageChannel(); soonCh.port1.onmessage = () => { const f = soonQ.shift(); if (f) f(); }; } soonQ.push(fn); soonCh.port2.postMessage(0); }
 const freshKey = () => FRESH ? "F" + [...FRESH.on].sort().join(",").length + ":" + hashStr([...FRESH.on].sort().join(",")) : "";
 function hashStr(t){ let h = 2166136261; for (let i = 0; i < t.length; i++){ h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
 let OFFC = {key:null, off:null};
@@ -1027,7 +1030,7 @@ function systemCount(g, key, done){
   const step = () => {
     if (sysBusy !== key && sysBusy != null && key !== "today") return;   // a newer request took over
     const t0 = performance.now();
-    while (i < U.length && performance.now() - t0 < 30){
+    while (i < U.length && performance.now() - t0 < 50){
       const o = U[i++], OV = T.ovt || 1, t = zoneTimes(Z.x[o], Z.y[o], g, SYS_CUT, OV), WK = T.walk || 80.5;
       let j = 0;
       for (let d = 0; d < nz; d++){
@@ -1045,7 +1048,7 @@ function systemCount(g, key, done){
       }
     }
     r.frac = i / U.length;
-    if (i < U.length){ sysTick(); return setTimeout(step, 0); }
+    if (i < U.length){ sysTick(); return soon(step); }
     Object.assign(r, {pending:false, trips, jobs:pp ? jp / pp : 0, pop:pp});
     if (key === "today") lsSet(LSK, {trips, jobs:r.jobs, pop:pp});
     sysTick(); done && done(r);
@@ -1156,7 +1159,7 @@ function tripCompute(L, r, done){
         }
       }
     }
-    if (i < A.length) return setTimeout(step, 0);
+    if (i < A.length) return soon(step);
     const daily = 2 * (1 - T.wfh) * T.scale;   // two trips a commute, the share who travel to work, other trips
     Object.assign(r, {pending:false, new:nw * daily, gross:gr * daily, carMi:nw > 0 ? 1.3 * dm / nw / MI : 0, zones:A.length, pairs});
     done();
@@ -1186,7 +1189,7 @@ function travelReport(L, done){
       }
       popSum += p; accB += p * jb; accA += p * ja; if (sj){ saveW += p * ss / sj; saveN += p; }
     }
-    if (i < origins.length) return setTimeout(step, 0);
+    if (i < origins.length) return soon(step);
     Object.assign(res, {pending:false, people:popSum, before:popSum ? accB / popSum : 0, after:popSum ? accA / popSum : 0, minSaved:saveN ? saveW / saveN : 0});
     done && done();
   })();
