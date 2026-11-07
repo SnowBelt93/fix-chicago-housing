@@ -11,6 +11,9 @@ const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
 import { cardSvg } from "./card.js";
+import FONT_400 from "./fonts-400.bin";
+import FONT_600 from "./fonts-600.bin";
+import FONT_700 from "./fonts-700.bin";
 
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
 
@@ -81,21 +84,11 @@ async function planPage(id, url, env){
 <body><script>location.replace(${JSON.stringify(to)})</script><a href="${esc(to)}">Open the plan</a></body></html>`;
   return new Response(html, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300"}});
 }
-let wasmReady = null, fontBuf = null;
-async function font(){
-  if (fontBuf) return fontBuf;
-  // Instrument Sans as TrueType (an older browser string makes Google Fonts serve .ttf)
-  const out = [];
-  for (const w of [400, 600, 700]){
-    try {
-      const css = await (await fetch("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@" + w, {headers: {"user-agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.30 (KHTML, like Gecko) Safari/534.30"}})).text();
-      const m = css.match(/url\((https:[^)]+\.ttf)\)/); if (m) out.push(new Uint8Array(await (await fetch(m[1])).arrayBuffer()));
-    } catch (e) {}
-  }
-  return fontBuf = out;
-}
+let wasmReady = null;
+// Instrument Sans (SIL Open Font License), converted to TrueType for resvg, bundled with the Worker
+const FONTS = [new Uint8Array(FONT_400), new Uint8Array(FONT_600), new Uint8Array(FONT_700)];
 async function cardImage(id, url, env, ctx){
-  const cache = caches.default, key = new Request(url.origin + "/api/card/" + id + ".png");
+  const cache = caches.default, key = new Request(url.origin + "/api/card/" + id + ".png?r=2");
   const hit = await cache.match(key); if (hit) return hit;
   const c = await card(id, env);
   if (!c) return env.ASSETS.fetch(new Request(url.origin + "/shape/art/og-housing.jpg"));
@@ -106,7 +99,7 @@ async function cardImage(id, url, env, ctx){
     let b64 = "";
     if (art.ok){ const u = new Uint8Array(await art.arrayBuffer()); let bin = ""; for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); b64 = btoa(bin); }
     const svg = cardSvg(c, b64);
-    const png = new Resvg(svg, {fitTo: {mode: "width", value: 1200}, font: {fontBuffers: await font(), defaultFontFamily: "Instrument Sans", loadSystemFonts: false}}).render().asPng();
+    const png = new Resvg(svg, {fitTo: {mode: "width", value: 1200}, font: {fontBuffers: FONTS, defaultFontFamily: "Instrument Sans", loadSystemFonts: false}}).render().asPng();
     const res = new Response(png, {headers: {"content-type": "image/png", "cache-control": "public, max-age=86400"}});
     ctx.waitUntil(cache.put(key, res.clone()));
     return res;
