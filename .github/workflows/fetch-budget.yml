@@ -1,0 +1,23 @@
+# Downloads City of Chicago budget ordinance datasets for Balance the Chicago Budget (tools/budget/fetch.py).
+name: Fetch budget data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/budget/fetch.py', '.github/workflows/fetch-budget.yml']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: python3 tools/budget/fetch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/budget
+          git commit -m "Fetch City of Chicago budget datasets" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
