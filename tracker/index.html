@@ -181,6 +181,29 @@ body.next footer{border-top:1px solid var(--sc-line)}
 body.next .previewnote{display:block}
 .previewnote{display:none;position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;background:var(--sc-ink);color:#fff;font:500 13px var(--sc-font);padding:8px 14px;border-radius:18px;box-shadow:var(--sc-shadow2)}
 .previewnote a{color:#9fd3f0}
+
+/* v55 layout: verdict, section nav, near you */
+.hnums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 6px}
+.hnums.near{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin:18px 0}
+.hn{background:#fff;border:1px solid var(--sc-line,#e3e7ec);border-radius:16px;padding:14px 16px}
+.hn b{display:block;font-size:26px;line-height:1.1;color:var(--sc-ink,#1a1d21)}
+.hn span{display:block;font-size:13.5px;color:var(--sc-ink2,#3d434b);margin-top:4px;line-height:1.35}
+.hn.bad b{color:#b3261e}.hn.good b{color:#1f7a45}
+.secnav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid var(--sc-line,#e3e7ec)}
+.secnav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-top:8px;padding-bottom:8px}
+.secnav .wrap::-webkit-scrollbar{display:none}
+.secnav a{flex:none;padding:7px 12px;border-radius:14px;color:var(--sc-ink2,#3d434b);font-weight:500;font-size:14px;text-decoration:none}
+.secnav a:hover{background:#f1f3f6}
+section[id]{scroll-margin-top:56px}
+.neartools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:8px 0 4px}
+.neartools label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--sc-ink2,#3d434b)}
+.neartools select,.neartools input{font:inherit;font-size:14px;padding:8px 12px;border:1px solid var(--sc-line2,#cfd5dc);border-radius:12px;background:#fff}
+.neartools .nsearch input{width:min(300px,60vw)}
+.nbtn{font:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:20px;border:0;background:var(--sc-navy,#2b5da0);color:#fff;cursor:pointer}
+.nbtn:hover{filter:brightness(1.08)}
+.nh{font-size:16px;margin:18px 0 8px}
+.doit{margin-top:16px;padding:14px 16px;border-radius:16px;background:#f3f6fa;font-size:14.5px;line-height:1.5}
+@media (max-width:700px){ .hnums{grid-template-columns:1fr} .hn b{font-size:22px} }
 </style>
 </head>
 <body>
@@ -192,7 +215,6 @@ body.next .previewnote{display:block}
 <header class="mast">
   <div class="wrap">
     <div class="t"><b>Chicago Permit Tracker</b></div>
-    <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a></nav>
   </div>
 </header>
 <div class="fan"><div class="wrap">Built from the city's public permit and legislation data.</div></div>
@@ -201,14 +223,13 @@ body.next .previewnote{display:block}
   <div class="hero"><div class="wrap"><h1>Loading the city's permits…</h1></div></div>
 </main>
 <div class="tip" id="tip"></div>
-<div class="previewnote">Preview of the new look · <a href="/tracker/">see the current one</a></div>
 
 <footer><div class="wrap">
   <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>. <a href="/learn/">Learn the basics</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 </div></footer>
 
 <script>
-if (/[?&]look=new/.test(location.search)) document.body.classList.add("next");
+document.body.classList.add("next");   // the Shape Chicago look (approved Nov 7, 2026)
 (function(){
 const fmt = n => n == null ? '–' : Math.round(n).toLocaleString('en-US');
 const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
@@ -241,23 +262,21 @@ function render(D){
       <span style="left:${Math.max(8, Math.min(88, now.homes / now.needed_so_far * 50))}%"><b>${fmt(now.homes)}</b>permitted</span>
       <span style="left:calc(100% - 52px)"><b>${fmt(now.needed_so_far)}</b>needed by now</span>
     </div>
+    <div class="hnums">
+      <div class="hn ${behind > 0 ? 'bad' : 'good'}"><b>${behind > 0 ? 'Behind' : 'On pace'}</b><span>${behind > 0 ? `${fmt(behind)} homes short of the pace for ${now.year}` : `ahead of the pace for ${now.year}`}</span></div>
+      <div class="hn"><b>${fmt(D.last12.homes)}</b><span>homes permitted in the last 12 months</span></div>
+      <div class="hn"><b>${fmt(G.close)}</b><span>homes a year to close the gap by 2041 (${lastFull ? fmt(lastFull.homes) + ' in ' + lastFull.year : ''})</span></div>
+    </div>
     <div class="asof">Permits issued through ${dstr(D.through)}. Updated every morning from the City of Chicago's open data.</div>
   </div></div>
-
-  <section id="years"><div class="wrap">
-    <h2>Every year since 2010</h2>
-    <p class="lede">New homes in buildings that got a construction permit, by the year building started. ${lastFull ? `${lastFull.year} ended at ${fmt(lastFull.homes)}, ${pct(lastFull.homes, G.close)} of the yearly pace needed to close the gap by 2041.` : ''} Chicago hasn't reached the pace needed just to keep the gap from growing (${fmt(G.hold)} a year) since ${lastAbove(Y, G.hold)}.</p>
-    <div class="card">${yearChart(Y, G, now)}
-      <div class="legend"><span><i style="background:var(--nav)"></i>5+ homes per building</span><span><i style="background:var(--flag)"></i>1 to 4 homes</span><span><i style="background:none;border-top:2px dashed var(--star);height:0"></i>Pace to close the gap by 2041</span><span><i style="background:none;border-top:2px dashed var(--ink-3);height:0"></i>Pace to stop it growing</span></div>
-    </div>
-  </div></section>
-
+  <nav class="secnav" aria-label="On this page"><div class="wrap">
+    <a href="#pipeline">Pipeline</a><a href="#where">By ward</a><a href="#near">Near you</a><a href="#years">By year</a><a href="#projects">Buildings</a>${D.zoning && D.zoning.recent && D.zoning.recent.length ? '<a href="#zoning">Zoning</a>' : ''}<a href="#method">How we count</a>
+  </div></nav>
   <section id="pipeline"><div class="wrap">
     <h2>From zoning to keys</h2>
     <p class="lede">Most apartment buildings need a zoning change from City Council, then a building permit, then inspections before anyone moves in. Here's how many homes are at each step.</p>
     ${pipeline(D)}
   </div></section>
-
   <section id="where"><div class="wrap">
     <h2>Where the homes are going</h2>
     <p class="lede">Homes permitted since ${D.years.length ? (now.year - 3) : ''}, by ward and by neighborhood. Each dot on the map is a building; bigger dots hold more homes.</p>
@@ -271,7 +290,23 @@ function render(D){
       </div>
     </div>
   </div></section>
-
+  <section id="near"><div class="wrap">
+    <h2>Near you</h2>
+    <p class="lede">See what's being built in your ward and within half a mile of you. Your location stays on your device.</p>
+    <div class="neartools">
+      <button type="button" class="nbtn" id="nearGeo">Use my location</button>
+      <label>or pick a ward <select id="nearWard"><option value="">Ward</option>${Array.from({length:50}, (_, i) => `<option>${i + 1}</option>`).join('')}</select></label>
+      <label class="nsearch">or find a street <input type="search" id="nearQ" placeholder="Like Milwaukee or 2624 N Ashland"></label>
+    </div>
+    <div id="nearOut"></div>
+  </div></section>
+  <section id="years"><div class="wrap">
+    <h2>Every year since 2010</h2>
+    <p class="lede">New homes in buildings that got a construction permit, by the year building started. ${lastFull ? `${lastFull.year} ended at ${fmt(lastFull.homes)}, ${pct(lastFull.homes, G.close)} of the yearly pace needed to close the gap by 2041.` : ''} Chicago hasn't reached the pace needed just to keep the gap from growing (${fmt(G.hold)} a year) since ${lastAbove(Y, G.hold)}.</p>
+    <div class="card">${yearChart(Y, G, now)}
+      <div class="legend"><span><i style="background:var(--nav)"></i>5+ homes per building</span><span><i style="background:var(--flag)"></i>1 to 4 homes</span><span><i style="background:none;border-top:2px dashed var(--star);height:0"></i>Pace to close the gap by 2041</span><span><i style="background:none;border-top:2px dashed var(--ink-3);height:0"></i>Pace to stop it growing</span></div>
+    </div>
+  </div></section>
   <section id="projects"><div class="wrap">
     <h2>Buildings with 5 or more homes</h2>
     <p class="lede">Every permitted building of 5+ homes since ${now.year - 3}, newest first. Ask your alderperson about the ones in your ward.</p>
@@ -279,13 +314,11 @@ function render(D){
     <div id="projTable"></div>
     <button class="more" id="moreBtn" type="button">Show more</button>
   </div></section>
-
   ${D.zoning && D.zoning.recent && D.zoning.recent.length ? `<section id="zoning"><div class="wrap">
     <h2>Recent zoning approvals with homes</h2>
     <p class="lede">Zoning changes City Council passed whose application states how many homes are planned, and whether a building permit has followed at that address yet. Many applications are scanned images, so the tracker reads them with text recognition${D.accuracy && D.accuracy.zoning ? `; in a hand check of ${D.accuracy.zoning.n} random approvals it matched ${D.accuracy.zoning.exact} and found ${fmt(D.accuracy.zoning.parser_homes)} of ${fmt(D.accuracy.zoning.hand_homes)} homes (that sample was also used to fix the reader)` : ''}. Applications from before 2021 aren't read yet.</p>
     <div class="scroll" id="zoneTable"></div>
   </div></section>` : ''}
-
   <section id="method"><div class="wrap">
     <h2>How we count, and how accurate it is</h2>
     <p class="lede">The city's permit data doesn't have a "number of homes" field, so the tracker reads it from each permit's written description ("erect a 4-story, 12 dwelling unit building"). We check that two ways.</p>
@@ -313,6 +346,7 @@ function render(D){
   app.querySelectorAll('.seg button').forEach(b => b.onclick = () => { app.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b)); places(D, b.dataset.g); });
   projects(D);
   zoning(D);
+  nearYou(D);
   drawMap(D);
   addEventListener('resize', () => drawMap(D));
 }
@@ -390,6 +424,47 @@ function projects(D){
 function zoning(D){
   const el = $('#zoneTable'); if (!el) return;
   el.innerHTML = `<table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th><th>Permit yet?</th></tr></thead><tbody>${D.zoning.recent.map(z => `<tr><td style="white-space:nowrap">${z.final ? dstr(z.final) : ''}</td><td>${esc(z.title)}<div class="what">${z.mid ? `<a href="https://chicityclerkelms.chicago.gov/Matter/?matterId=${encodeURIComponent(z.mid)}" target="_blank" rel="noopener">${esc(z.rec)}</a>` : esc(z.rec)}</div></td><td class="num">${fmt(z.homes)}</td><td>${z.first_permit ? `<span class="stamp st-finished">Yes, ${dstr(z.first_permit)}</span>` : '<span class="stamp st-none">Not yet</span>'}</td></tr>`).join('')}</tbody></table>`;
+}
+
+// near you: your ward (from your location, a pick, or a street search) and what's permitted around you
+let WARDS = null;
+function inRing(x, y, r){ let c = false; for (let i = 0, j = r.length - 1; i < r.length; j = i++){ const [xi, yi] = r[i], [xj, yj] = r[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; }
+function wardAt(lon, lat){ for (const w of WARDS || []) for (const poly of w.polys) if (inRing(lon, lat, poly[0]) && !poly.slice(1).some(h => inRing(lon, lat, h))) return w.ward; return null; }
+function nearYou(D){
+  const out = $('#nearOut'), y0 = D.ytd.year - 3;
+  const ranked = D.wards.slice().sort((a, b) => b.homes - a.homes).map(w => w.ward);
+  const showWard = (ward, here) => {
+    const w = D.wards.find(x => x.ward === +ward); if (!w){ out.innerHTML = ''; return; }
+    const list = D.projects.filter(p => +p.ward === +ward).slice(0, 8);
+    let close = '';
+    if (here){ const k = Math.cos(41.84 * Math.PI / 180); let n = 0, h = 0; for (const p of D.points) if (p[3] >= y0 && Math.hypot((p[0] - here[0]) * k * 111.32, (p[1] - here[1]) * 111.32) <= 0.805){ n++; h += p[2]; }
+      close = `<div class="hn"><b>${fmt(h)}</b><span>homes permitted within half a mile of you since ${y0}, in ${fmt(n)} buildings</span></div>`; }
+    out.innerHTML = `<div class="hnums near">
+      <div class="hn"><b>Ward ${ward}</b><span>${here ? 'where you are' : 'the ward you picked'}</span></div>
+      <div class="hn"><b>${fmt(w.homes)}</b><span>homes permitted since ${y0}: #${ranked.indexOf(w.ward) + 1} of 50 wards</span></div>
+      <div class="hn"><b>${fmt(w.last12)}</b><span>in the last 12 months</span></div>${close}
+    </div>
+    ${list.length ? `<div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Status</th></tr></thead><tbody>${list.map(p => `<tr><td>${dstr(p.date)}</td><td>${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="lede">No buildings of 5+ homes permitted here since ' + y0 + '.</p>'}
+    <div class="doit"><b>Want more homes here?</b> Zoning changes in your ward go through your alderperson and City Council's zoning committee. <a href="https://www.chicago.gov/city/en/depts/mayor/iframe/lookup_ward_and_alderman.html" target="_blank" rel="noopener">Find your alderperson</a>, see what's on the <a href="https://chicityclerkelms.chicago.gov/Search/Meeting" target="_blank" rel="noopener">zoning committee agenda</a>, or <a href="/housing/">try rezoning your neighborhood</a>.</div>`;
+  };
+  $('#nearWard').onchange = e => { $('#nearQ').value = ''; showWard(e.target.value); };
+  $('#nearQ').oninput = e => {
+    const q = e.target.value.trim().toLowerCase(); $('#nearWard').value = '';
+    if (q.length < 3){ out.innerHTML = ''; return; }
+    const ps = D.projects.filter(p => p.addr.toLowerCase().includes(q)).slice(0, 12), zs = ((D.zoning || {}).recent || []).filter(z => (z.title || '').toLowerCase().includes(q)).slice(0, 8);
+    out.innerHTML = (ps.length ? `<h3 class="nh">Buildings permitted</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${ps.map(p => `<tr><td>${dstr(p.date)}</td><td>${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '') +
+      (zs.length ? `<h3 class="nh">Zoning changes passed</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th></tr></thead><tbody>${zs.map(z => `<tr><td>${dstr(z.final)}</td><td>${esc(z.title)}</td><td class="num">${fmt(z.homes)}</td></tr>`).join('')}</tbody></table></div>` : '') ||
+      `<p class="lede">Nothing of 5+ homes on a street matching “${esc(q)}” since ${y0}.</p>`;
+  };
+  $('#nearGeo').onclick = () => {
+    if (!navigator.geolocation){ out.innerHTML = '<p class="lede">Your browser can\'t share a location. Pick your ward instead.</p>'; return; }
+    out.innerHTML = '<p class="lede">Finding you…</p>';
+    const go = pos => { const lon = pos.coords.longitude, lat = pos.coords.latitude, w = wardAt(lon, lat);
+      if (!w){ out.innerHTML = '<p class="lede">You look to be outside Chicago. Pick a ward instead.</p>'; return; }
+      $('#nearWard').value = w; showWard(w, [lon, lat]); };
+    const ask = () => navigator.geolocation.getCurrentPosition(go, () => { out.innerHTML = '<p class="lede">Couldn\'t get your location. Pick your ward instead.</p>'; }, {timeout:10000, maximumAge:600000});
+    if (WARDS) ask(); else fetch('../wards.json').then(r => r.json()).then(w => { WARDS = w; ask(); }).catch(() => { out.innerHTML = '<p class="lede">Couldn\'t load the ward map. Pick your ward instead.</p>'; });
+  };
 }
 
 function accuracy(D){
