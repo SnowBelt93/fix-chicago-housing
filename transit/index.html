@@ -1445,6 +1445,65 @@ async function initMap(){
   map.addSource("pst", {type:"geojson", data:fc([])});
   map.addLayer({id:"pst", type:"circle", source:"pst", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "x"], 4.5, 3.2], 14, ["case", ["get", "x"], 9, 7]], "circle-color":"#fff", "circle-stroke-color":"#1a1d21", "circle-stroke-width":["case", ["get", "x"], 2.4, 2]}});
   bindMap();
+  startTrains();
+}
+
+/* ---------- trains running on the map: for fun, not data ----------
+   Every L line (and Metra, when that layer is on) runs trains at its midday frequency and average speed, sped up 60×
+   (one real minute a second). Lines in your plan run theirs too, in flag blue. Off under reduced motion. */
+const TRAIN_SPEEDUP = 60, SERVICE_MIN = 18 * 60;
+let TRAIN_ROUTES = null, trainRaf = 0, trainLast = 0, trainClock = 0;
+function trainsDirty(){ TRAIN_ROUTES = null; }
+function polyM(ll){
+  const xy = ll.map(p => toXY(p[0], p[1])), cum = [0];
+  for (let i = 1; i < xy.length; i++) cum.push(cum[i - 1] + Math.hypot(xy[i][0] - xy[i - 1][0], xy[i][1] - xy[i - 1][1]));
+  return {xy, cum, len:cum[cum.length - 1]};
+}
+function trainRoutes(){
+  const R = [], perDir = (trips, paths) => Math.max(1, trips / 2 / paths);
+  const add = (ll, head, mph, color, mine) => { if (!ll || ll.length < 2) return; const P = polyM(ll); if (P.len < 300) return;
+    const spd = mph * 1609.34 / 60, gap = spd * head; R.push({...P, spd, gap, color, mine:mine ? 1 : 0, ph:(P.len * 7.31) % gap}); };
+  if (layerOn.L) for (const l of NET.lLines) for (const p of l.paths) add(p, Math.min(30, SERVICE_MIN / perDir(l.trips, l.paths.length)), 16.98, l.color, false);
+  const up = {}; for (const L of active()) if (L.type === "metra") up[L.line] = L;
+  if (layerOn.commuter) for (const l of NET.metraLines){ const U = up[l.id];
+    const head = U && U.head ? U.head : Math.min(90, SERVICE_MIN / perDir(l.trips, l.paths.length));
+    for (const p of l.paths) add(p, head, 30, U ? "#41b6e6" : l.color, !!U); }
+  for (const L of active()){
+    if (L.type !== "draw" || L.mode === "infill" || L.pts.length < 2) continue;
+    const M = MODES[L.mode]; add(L.shape || shapeLL(L.mode, L.pts), L.head || M.head, M.speed, "#41b6e6", true);
+  }
+  return R;
+}
+function trainFrame(now){
+  trainRaf = 0;
+  if (document.hidden || !map || !map.getSource("trains")) return;
+  const dt = trainLast ? Math.min(0.1, (now - trainLast) / 1000) : 0; trainLast = now;
+  trainClock += dt * TRAIN_SPEEDUP / 60;   // minutes of service time
+  if (!TRAIN_ROUTES) TRAIN_ROUTES = trainRoutes();
+  const feats = [], mpp = 78271.52 * Math.cos(41.88 * Math.PI / 180) / Math.pow(2, map.getZoom()), tl = Math.max(150, 15 * mpp);   // a train is ~150 m, or 15 px when zoomed out
+  const at = (r, d) => { let i = 1; while (i < r.cum.length - 1 && r.cum[i] < d) i++;
+    const a = r.xy[i - 1], b = r.xy[i], f = (d - r.cum[i - 1]) / Math.max(1e-6, r.cum[i] - r.cum[i - 1]); return [i, a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; };
+  for (const r of TRAIN_ROUTES){
+    const n = Math.max(1, Math.round(r.len / r.gap)), g = r.len / n, L = Math.min(tl, r.len / 3);
+    for (let dir = 0; dir < 2; dir++) for (let k = 0; k < n; k++){
+      let d = (trainClock * r.spd + k * g + r.ph + dir * g / 2) % (r.len - L); if (dir) d = r.len - L - d;
+      const [i0, x0, y0] = at(r, d), [i1, x1, y1] = at(r, d + L), c = [toLL(x0, y0)];
+      for (let i = i0; i < i1; i++) c.push(toLL(r.xy[i][0], r.xy[i][1]));
+      c.push(toLL(x1, y1));
+      feats.push({type:"Feature", properties:{c:r.color, m:r.mine}, geometry:{type:"LineString", coordinates:c}});
+    }
+  }
+  map.getSource("trains").setData({type:"FeatureCollection", features:feats});
+  trainRaf = setTimeout(() => requestAnimationFrame(trainFrame), 33);   // about 30 updates a second is plenty
+}
+function startTrains(){
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || map.getSource("trains")) return;
+  map.addSource("trains", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  const tw = (a, b) => ["interpolate", ["linear"], ["zoom"], 9, a, 15, b];
+  map.addLayer({id:"trains-case", type:"line", source:"trains", layout:{"line-cap":"round", "line-join":"round"}, paint:{"line-color":["case", ["==", ["get", "m"], 1], "#1a1d21", ["get", "c"]], "line-width":tw(5, 11)}}, "pst");
+  map.addLayer({id:"trains", type:"line", source:"trains", layout:{"line-cap":"round", "line-join":"round"}, paint:{"line-color":["case", ["==", ["get", "m"], 1], ["get", "c"], "#ffffff"], "line-width":tw(2.4, 6)}}, "pst");
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !trainRaf){ trainLast = 0; trainRaf = requestAnimationFrame(trainFrame); } });
+  trainRaf = requestAnimationFrame(trainFrame);
 }
 
 /* density canvases: people or jobs per square mile on a 400 m grid */
@@ -1588,6 +1647,7 @@ function renderPlan(){
     for (const p of drawing.pts){ st.push({type:"Feature", properties:{x:!!p.snap}, geometry:{type:"Point", coordinates:p.ll}}); walk.push({type:"Feature", geometry:{type:"Point", coordinates:p.ll}}); }
   }
   map.getSource("plan").setData(fc(feats)); map.getSource("pst").setData(fc(st)); map.getSource("walk").setData(fc(walk));
+  trainsDirty();
 }
 
 function show(id){ if (map && map.getLayer("metra-hi") && id !== "vMetra") map.setFilter("metra-hi", ["==", ["get", "id"], ""]);
@@ -2358,7 +2418,7 @@ function tip(f, pt){
 
 /* ---------- layers ---------- */
 function setLayer(k, on){
-  layerOn[k] = on;
+  layerOn[k] = on; trainsDirty();
   document.querySelector(`#layers [data-l="${k}"]`).setAttribute("aria-pressed", on);
   const vis = v => v ? "visible" : "none";
   const ids = {L:["L", "L-case", "lst"], commuter:["metra", "metra-case", "mst", "ssl", "ssl-case", "sslst"]}[k];
@@ -2485,6 +2545,7 @@ function openSources(){
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Map layers</h3>
+  <p>The moving trains are for fun: each L and Metra line runs at its midday frequency from the schedules above, at an average speed (L 17 mph, Metra 30 mph), sped up 60 times. Your plan's lines run in blue. They don't affect any number.</p>
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
