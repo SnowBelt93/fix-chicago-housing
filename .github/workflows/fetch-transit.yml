@@ -40,6 +40,19 @@ jobs:
             [ -s "$f" ] && { echo "keeping partial $y ($(stat -c %s "$f") bytes)"; break; }
           done
           ls -la tools/raw/transit || true
+      - name: Download home-to-work flows (LODES OD, resumable)
+        if: contains(github.event.head_commit.message, ' od')
+        timeout-minutes: 30
+        continue-on-error: true
+        run: |
+          mkdir -p tools/raw/transit
+          f=tools/raw/transit/il_od_main_JT00_2022.csv.gz
+          u="https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_2022.csv.gz"
+          for i in $(seq 1 80); do
+            curl -sS -L --http1.1 -4 --connect-timeout 15 --max-time 120 -C - -A "Mozilla/5.0" -o "$f" "$u" || true
+            if gzip -t "$f" 2>/dev/null; then echo "got OD after $i tries ($(stat -c %s "$f") bytes)"; break; fi
+            echo "try $i: $(stat -c %s "$f" 2>/dev/null || echo 0) bytes"; sleep 3
+          done
       - name: Download
         # a push can name its steps in the commit message, e.g. "[steps: amtrak nictd]"; otherwise all steps run
         env:
@@ -52,6 +65,7 @@ jobs:
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm -f tools/raw/transit/il_od_main_JT00_*.csv.gz   # too big for the repo; od_zones.csv.gz keeps the sums
           git add tools/raw/transit
           git commit -m "Fetch transit data" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1

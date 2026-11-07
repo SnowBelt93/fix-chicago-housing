@@ -438,6 +438,69 @@ def cost_index():
             log(name, 'failed', repr(e))
 
 
+ZONE_M = 800   # must match network.py
+def zone_key(lat, lon):
+    LOOP = (41.8819, -87.6278)
+    x, y = (lon - LOOP[1]) * 111320 * math.cos(math.radians(41.85)), (lat - LOOP[0]) * 110574
+    return (int(x // ZONE_M), int(y // ZONE_M))
+
+
+def od():
+    """LODES home-to-work flows (all jobs, 2022), summed to the 800 m zones network.py uses: od_zones.csv.gz."""
+    cell = {}
+    for r in csv.DictReader(gzip.open(os.path.join(OUT, 'blocks.csv.gz'), 'rt')):
+        cell[r['geoid']] = zone_key(float(r['lat']), float(r['lon']))
+    # blocks with nobody living there are left out of blocks.csv: home blocks we don't know are kept by tract center later
+    year, raw = None, None
+    for y in (2022, 2021, 2023):
+        local = os.path.join(OUT, f'il_od_main_JT00_{y}.csv.gz')
+        if os.path.exists(local) and os.path.getsize(local) > 100000:
+            year, raw = y, open(local, 'rb').read(); break
+    if not raw:
+        raise RuntimeError('no LODES OD file downloaded')
+    import zlib
+    d = zlib.decompressobj(16 + zlib.MAX_WBITS)
+    text = d.decompress(raw).decode('utf-8', 'ignore')
+    partial = not d.eof
+    text = text[:text.rfind('\n') + 1]
+    flows, rows, kept, lost = collections.Counter(), 0, 0, 0
+    for r in csv.DictReader(io.StringIO(text)):
+        rows += 1
+        h, w = cell.get(r['h_geocode']), cell.get(r['w_geocode'])
+        n = int(r['S000'])
+        if h is None or w is None:
+            lost += n; continue
+        flows[(h, w)] += n; kept += n
+    with gzip.open(os.path.join(OUT, 'od_zones.csv.gz'), 'wt', newline='') as f:
+        wr = csv.writer(f); wr.writerow(['hx', 'hy', 'wx', 'wy', 'n'])
+        for (h, w), n in flows.items():
+            wr.writerow([h[0], h[1], w[0], w[1], n])
+    SOURCES['files']['od'] = {'url': f'https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_{year}.csv.gz', 'year': year,
+                              'rows': rows, 'workers_kept': kept, 'workers_outside_region': lost, 'pairs': len(flows), 'partial': partial}
+    log('od', SOURCES['files']['od'])
+
+
+def acs():
+    """ACS 5-year: how people get to work, and households without a car, by census tract in the six counties."""
+    VARS = {'B08301_001E': 'workers', 'B08301_002E': 'car', 'B08301_010E': 'transit', 'B08301_018E': 'bike', 'B08301_019E': 'walk',
+            'B08301_021E': 'home', 'B08201_001E': 'households', 'B08201_002E': 'no_car'}
+    for year in (2023, 2019):
+        out = []
+        for cty in COUNTIES:
+            url = (f'https://api.census.gov/data/{year}/acs/acs5?get=NAME,' + ','.join(VARS) +
+                   f'&for=tract:*&in=state:17&in=county:{cty}')
+            data = json.loads(get(url))
+            head = data[0]
+            for row in data[1:]:
+                d = dict(zip(head, row))
+                out.append(['17' + d['county'] + d['tract']] + [max(0, int(float(d[k] or 0))) for k in VARS])
+        with open(os.path.join(OUT, f'acs_tracts_{year}.csv'), 'w', newline='') as f:
+            w = csv.writer(f); w.writerow(['tract'] + list(VARS.values())); w.writerows(out)
+        SOURCES['files'][f'acs_{year}'] = {'url': f'https://api.census.gov/data/{year}/acs/acs5 (B08301, B08201)', 'tracts': len(out),
+                                           'workers': sum(r[1] for r in out), 'transit': sum(r[3] for r in out)}
+        log('acs', year, SOURCES['files'][f'acs_{year}'])
+
+
 if __name__ == '__main__':
     steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy', 'osm', 'costs']
     for s in steps:
@@ -471,6 +534,10 @@ if __name__ == '__main__':
                 future()
             elif s == 'costs':
                 cost_index()
+            elif s == 'od':       # LODES home-to-work flows for the trip model
+                od()
+            elif s == 'acs':      # ACS commute mode + cars by tract, to calibrate the trip model
+                acs()
         except Exception as e:
             import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)
