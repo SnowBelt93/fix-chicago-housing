@@ -488,8 +488,12 @@ def acs():
         out = []
         for cty in COUNTIES:
             url = (f'https://api.census.gov/data/{year}/acs/acs5?get=NAME,' + ','.join(VARS) +
-                   f'&for=tract:*&in=state:17&in=county:{cty}')
-            data = json.loads(get(url))
+                   f'&for=tract:*&in=state:17%20county:{cty}')
+            body = get(url)
+            try:
+                data = json.loads(body)
+            except Exception:
+                log('acs reply', year, cty, body[:300]); raise
             head = data[0]
             for row in data[1:]:
                 d = dict(zip(head, row))
