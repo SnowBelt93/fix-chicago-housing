@@ -481,29 +481,41 @@ def od():
 
 
 def acs():
-    """ACS 5-year: how people get to work, and households without a car, by census tract in the six counties."""
-    VARS = {'B08301_001E': 'workers', 'B08301_002E': 'car', 'B08301_010E': 'transit', 'B08301_018E': 'bike', 'B08301_019E': 'walk',
-            'B08301_021E': 'home', 'B08201_001E': 'households', 'B08201_002E': 'no_car'}
+    """ACS 5-year: how people get to work (B08301) and households without a car (B08201), by census tract in the six
+    counties, from the Census Bureau's table-based summary files (no API key needed)."""
+    COLS = {'b08301': {'E001': 'workers', 'E002': 'car', 'E010': 'transit', 'E018': 'bike', 'E019': 'walk', 'E021': 'home'},
+            'b08201': {'E001': 'households', 'E002': 'no_car'}}
     for year in (2023, 2019):
-        out = []
-        for cty in COUNTIES:
-            url = (f'https://api.census.gov/data/{year}/acs/acs5?get=NAME,' + ','.join(VARS) +
-                   f'&for=tract:*&in=state:17%20county:{cty}')
-            body = get(url)
+        rows = collections.defaultdict(dict)
+        for tab, cols in COLS.items():
+            url = f'https://www2.census.gov/programs-surveys/acs/summary_file/{year}/table-based-SF/data/5YRData/acsdt5y{year}-{tab}.dat'
             try:
-                data = json.loads(body)
-            except Exception:
-                log('acs reply', year, cty, body[:300]); raise
-            head = data[0]
-            for row in data[1:]:
-                d = dict(zip(head, row))
-                out.append(['17' + d['county'] + d['tract']] + [max(0, int(float(d[k] or 0))) for k in VARS])
+                req = urllib.request.Request(url, headers=UA)
+                with urllib.request.urlopen(req, timeout=900) as r:
+                    head = None
+                    for raw in io.TextIOWrapper(r, encoding='utf-8', errors='ignore'):
+                        f = raw.rstrip('\n').split('|')
+                        if head is None:
+                            head = f; idx = {c: head.index(tab.upper() + '_' + c) for c in cols}; continue
+                        g = f[0]
+                        if not g.startswith('1400000US17') or g[11:14] not in COUNTIES:
+                            continue
+                        for c, name in cols.items():
+                            v = f[idx[c]]
+                            rows[g[9:]][name] = max(0, int(float(v))) if v not in ('', 'null', 'N') else 0
+            except Exception as e:
+                log('acs', year, tab, 'failed', repr(e))
+        if not rows:
+            continue
+        names = [n for cols in COLS.values() for n in cols.values()]
         with open(os.path.join(OUT, f'acs_tracts_{year}.csv'), 'w', newline='') as f:
-            w = csv.writer(f); w.writerow(['tract'] + list(VARS.values())); w.writerows(out)
-        SOURCES['files'][f'acs_{year}'] = {'url': f'https://api.census.gov/data/{year}/acs/acs5 (B08301, B08201)', 'tracts': len(out),
-                                           'workers': sum(r[1] for r in out), 'transit': sum(r[3] for r in out)}
+            w = csv.writer(f); w.writerow(['tract'] + names)
+            for t, d in sorted(rows.items()):
+                w.writerow([t] + [d.get(n, 0) for n in names])
+        SOURCES['files'][f'acs_{year}'] = {'url': f'https://www2.census.gov/programs-surveys/acs/summary_file/{year}/table-based-SF/ (B08301, B08201)',
+                                           'tracts': len(rows), 'workers': sum(d.get('workers', 0) for d in rows.values()),
+                                           'transit': sum(d.get('transit', 0) for d in rows.values())}
         log('acs', year, SOURCES['files'][f'acs_{year}'])
-
 
 if __name__ == '__main__':
     steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy', 'osm', 'costs']

@@ -1,10 +1,10 @@
-acs reply 2023 031 b'<html style="font-size: 14px;">\n\n<head>\n    <title>Missing Key</title>\n    <link rel="icon" type="image/x-icon" href="favicon.ico">\n    <link rel="stylesheet" type="text/css" href="assets/styles.css">\n    <script type="text/javascript" src="assets/jquery-1.4.4.min.js"></script>\n    <script type="tex'
+od {'url': 'https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_2022.csv.gz', 'year': 2022, 'rows': 5152046, 'workers_kept': 3652467, 'workers_outside_region': 1880219, 'pairs': 2123204, 'partial': False}
 STEP FAILED acs Traceback (most recent call last):
-  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 544, in <module>
+  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 540, in <module>
     acs()
-  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 494, in acs
-    data = json.loads(body)
-           ^^^^^^^^^^^^^^^^
+  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 492, in acs
+    data = json.loads(get(url))
+           ^^^^^^^^^^^^^^^^^^^^
   File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
     return _default_decoder.decode(s)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^
