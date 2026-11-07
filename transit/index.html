@@ -1012,9 +1012,9 @@ const ROUTES = () => NW ? [...new Set(NW.net.pats.map(p => p.r))] : [];
 const routeKind = r => r.startsWith("metra:") ? "metra" : L_NAMES[r.slice(4)] ? "L" : "bus";
 // every trip the whole network carries on a weekday, by the trip model: zones near any stop, today and in your network
 const SYS = new Map(); let sysBusy = null;
-// a fixed sample: every third zone near a stop (weighted ×3) keeps a full count to a few seconds; today and your
+// a fixed sample: every fourth zone near a stop (weighted ×4) keeps a full count to a few seconds; today and your
 // network use the same zones, so keeping everything gives exactly 100%
-const SYS_STEP = 3, SYS_CUT = 120;
+const SYS_STEP = 4, SYS_CUT = 120;
 function sysUnits(g){
   const set = new Set(NW.served);
   if (g) for (const z of g.zExtra.keys()) set.add(z);
@@ -1030,7 +1030,7 @@ function systemCount(g, key, done){
   const step = () => {
     if (sysBusy !== key && sysBusy != null && key !== "today") return;   // a newer request took over
     const t0 = performance.now();
-    while (i < U.length && performance.now() - t0 < 50){
+    while (i < U.length && performance.now() - t0 < 180){   // long slices: the map redraws between them, which costs more than the work
       const o = U[i++], OV = T.ovt || 1, t = zoneTimes(Z.x[o], Z.y[o], g, SYS_CUT, OV), WK = T.walk || 80.5;
       let j = 0;
       for (let d = 0; d < nz; d++){
@@ -1138,7 +1138,7 @@ function tripCompute(L, r, done){
   let i = 0, nw = 0, gr = 0, dm = 0, pairs = 0;
   const step = () => {
     const t0 = performance.now();
-    while (i < A.length && performance.now() - t0 < 25){
+    while (i < A.length && performance.now() - t0 < 90){
       const z = A[i++];
       let b = T0C.get(z); if (!b){ b = zoneTimes(Z.x[z], Z.y[z], baseG(), TM, T.ovt || 1); if (T0C.size > 1500) T0C.clear(); T0C.set(z, b); }
       const a = zoneTimes(Z.x[z], Z.y[z], g, TM, T.ovt || 1);
@@ -2386,7 +2386,7 @@ function renderFreshBar(bar){
   const cap = A.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
   const capS = cap[1] > 0 ? (cap[0] === cap[1] ? money(cap[0]) : moneyRange(cap[0], cap[1])) : "$0";
   const wait = !fs || fs.wait, pct = wait ? "" : Math.round(100 * trips / TRIPM.tripsToday);
-  const info = `<p>Every weekday trip your network carries, from the trip model: for every half-mile square near a stop, where its workers commute and where its jobs' workers live, and how long each trip takes by transit on your network and by car. How many go by transit comes from how people actually get to work in each census tract today. Only trips the network makes possible count (the model's share with no usable transit trip is taken off), so switching everything off gives zero. Today's network is counted the same way, and yours is shown as that share of today's 1.12 million weekday rides. To keep it quick it counts every third half-mile square near a stop.</p><p>Jobs within 45 minutes: for the typical person living near a stop today, how many jobs they can reach by transit (walk, wait, ride) in 45 minutes.</p>`;
+  const info = `<p>Every weekday trip your network carries, from the trip model: for every half-mile square near a stop, where its workers commute and where its jobs' workers live, and how long each trip takes by transit on your network and by car. How many go by transit comes from how people actually get to work in each census tract today. Only trips the network makes possible count (the model's share with no usable transit trip is taken off), so switching everything off gives zero. Today's network is counted the same way, and yours is shown as that share of today's 1.12 million weekday rides. To keep it quick it counts every fourth half-mile square near a stop.</p><p>Jobs within 45 minutes: for the typical person living near a stop today, how many jobs they can reach by transit (walk, wait, ride) in 45 minutes.</p>`;
   bar.innerHTML = `<div class="sc-m tplan"><span>Your network</span><b>${A.length ? A.length + " new line" + (A.length > 1 ? "s" : "") : "Nothing new yet"}</b><small class="tkept">${kept}</small></div><span class="sc-sep"></span>
     <div class="sc-m"><b>${wait ? (fs ? Math.round(fs.frac * 100) + "%" : "…") : num(trips)} ${ib("fresh", "How your network's riders are counted", info)}</b><span>${wait ? "counting trips…" : `trips a weekday · ${pct}% of today`}</span></div>
     <div class="sc-m"><b>${wait ? "…" : num(fs.mine.jobs)}</b><span>${wait ? "jobs within 45 min" : `jobs within 45 min (today ${num(fs.today.jobs)})`}</span></div>
@@ -3105,7 +3105,7 @@ function openSources(){
   <ul>
   <li>New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit, and minutes spent walking and waiting count double (716 puts that weight at 2–3×; we use the low end). Only trips the line makes faster count. Each commute is 2 trips a day; ${Math.round((TRIPM ? TRIPM.wfh : 0.16) * 100)}% of workers work from home; other trips scale from today's 1.12 million weekday riders. Trips riding through the area without starting or ending within 1.5 miles of a station aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.</li>
   <li>Bus lanes: where the lane runs, buses ride 15% faster (studies find 5–25%: <a href="https://www.movemn.org/wp-content/uploads/2021/05/Boost-The-Bus_Technical-Fact-Sheet.pdf" target="_blank" rel="noopener">Move Minnesota, citing UCLA ITS 2019</a>), all day; a bus ride between two stops counts as on the lane when both stops are within 45 m of it and it runs along it. Cost $100,000–$500,000 a mile (same source). Bus hours saved = minutes saved × midday buses an hour × 18 hours, at $${BUS_HR.toFixed(0)} an hour (NTD 2024).</li>
-  <li>Starting from scratch: switched-off routes are removed from every trip. Your network's riders = today's 1.12 million × the trips your network carries ÷ the trips today's carries, both from the trip model, counting only trips faster than walking, on every third half-mile square near a stop. The model holds people's homes, jobs and car ownership fixed, so a city with far less transit would in time look different too.</li>
+  <li>Starting from scratch: switched-off routes are removed from every trip. Your network's riders = today's 1.12 million × the trips your network carries ÷ the trips today's carries, both from the trip model, counting only trips faster than walking, on every fourth half-mile square near a stop. The model holds people's homes, jobs and car ownership fixed, so a city with far less transit would in time look different too.</li>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
   <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}), at the chosen frequency except the last ${LATE_HOURS} hours, when trains and buses come half as often.</li>
   <li>When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.</li>
