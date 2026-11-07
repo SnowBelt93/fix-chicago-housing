@@ -185,11 +185,11 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   aside#panel.peek{max-height:calc(64px + env(safe-area-inset-bottom))}
   aside#panel.peek > :not(.grab){display:none !important}
   /* one handle: tap it (or drag it) to tuck the panel away or bring it back */
-  .grab{display:flex !important;align-items:center;justify-content:center;position:relative;width:100%;height:30px;margin:0;padding:0 18px;border:0;background:none;touch-action:none;cursor:pointer;flex:none;font:inherit;color:var(--ink)}
+  aside#panel .grab{display:flex !important;align-items:center;justify-content:center;position:relative;width:100%;height:30px;margin:0;padding:0 18px;border:0;border-radius:0;background:none;touch-action:none;cursor:pointer;flex:none;font:inherit;color:var(--ink);align-self:stretch}
   .grab::before{content:"";position:absolute;left:50%;top:10px;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:var(--line2);transition:background .15s}
   .grab:hover::before,.grab:active::before{background:#9aa3ad}
   .grab .gtitle,.grab .gchev{display:none}
-  aside#panel.peek .grab{height:56px;justify-content:space-between;padding-top:12px}
+  aside#panel.peek .grab{height:60px;justify-content:space-between;padding-top:14px}
   aside#panel.peek .grab .gtitle{display:block;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   aside#panel.peek .grab .gchev{display:block;width:22px;height:22px;flex:none;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .vhead{padding:8px 18px 12px}
@@ -1458,9 +1458,8 @@ async function initMap(){
 }
 
 /* ---------- the Easter egg: one Brown Line train running Kimball → the Loop → Kimball ----------
-   Four cars, drawn from above (silver roofs, rooftop units, a dark cab end), at 20× real speed. Too small to see from far out,
-   so each car grows to at least ~14 px. Tap it for a note. Hidden with the L layer, off under reduced motion. */
-const EGG_SPEEDUP = 20, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_GAP_M = 1.2;
+   Four cars, drawn from above (silver roofs, rooftop units, dark cab ends) at real size, 5× real speed. Tap it for a note. Hidden with the L layer, off under reduced motion. */
+const EGG_SPEEDUP = 5, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_GAP_M = 1.2;
 let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0;
 function trainsDirty(){}   // kept for older callers
 function eggPath(){
@@ -1482,8 +1481,7 @@ function eggFrame(now){
   const dt = eggLast ? Math.min(0.1, (now - eggLast) / 1000) : 0; eggLast = now;
   eggClock += dt * EGG_SPEEDUP;   // seconds of real running time
   const P = EGG || (EGG = eggPath()); if (!P) return;
-  const mpp = 78271.52 * Math.cos(41.88 * Math.PI / 180) / Math.pow(2, map.getZoom());
-  const carL = Math.max(EGG_CAR_M, 18 * mpp), carW = Math.max(2.9, 5.5 * mpp), gap = Math.max(EGG_GAP_M, 1.5 * mpp), train = EGG_CARS * carL + (EGG_CARS - 1) * gap;
+  const carL = EGG_CAR_M, carW = 2.9, gap = EGG_GAP_M, train = EGG_CARS * carL + (EGG_CARS - 1) * gap;   // real size: find it by zooming in
   const run = P.len - train, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
   const head = leg === 0 ? s0 + train : P.len - s0 - train;   // out to the Loop, then back to Kimball
   const dir = leg === 0 ? 1 : -1, feats = [];
@@ -1508,7 +1506,7 @@ function startTrains(){
   map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":["interpolate", ["linear"], ["zoom"], 10, 0.8, 15, 1.4]}}, "pst");
   map.addLayer({id:"egg-unit", type:"fill", source:"egg", filter:["==", ["get", "k"], "unit"], layout:{visibility:vis}, paint:{"fill-color":"#8b939c"}}, "pst");
   map.addLayer({id:"egg-cab", type:"fill", source:"egg", filter:["any", ["==", ["get", "k"], "cab"], ["==", ["get", "k"], "tail"]], layout:{visibility:vis}, paint:{"fill-color":"#2a3038"}}, "pst");
-  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 20 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, about 14.6 meters each, the length of a CTA rail car. Not to scale when you zoom out, or you'd never find it."];
+  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 5 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, 14.6 meters each, the length of a real CTA rail car."];
   let note = 0;
   map.on("click", "egg-body", e => { new maplibregl.Popup({closeButton:false, offset:8, className:"eggpop"}).setLngLat(e.lngLat).setText(NOTES[note++ % NOTES.length]).addTo(map); });
   map.on("mouseenter", "egg-body", () => { map.getCanvas().style.cursor = "pointer"; });
@@ -2556,7 +2554,7 @@ function openSources(){
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Map layers</h3>
-  <p>The little train on the Brown Line is an Easter egg: four cars running Kimball to the Loop and back at 20 times real speed (17 mph average). It grows when you zoom out so you can find it, and it doesn't affect any number.</p>
+  <p>The little train on the Brown Line is an Easter egg: four real-size cars running Kimball to the Loop and back at 5 times real speed (17 mph average). Zoom in on the Brown Line to find it. It doesn't affect any number.</p>
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>

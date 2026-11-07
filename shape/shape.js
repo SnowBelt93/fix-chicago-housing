@@ -58,3 +58,8 @@
     a.finished.then(done, done); setTimeout(done, 400);
   };
 })();
+
+/* Keep the big map data on the device so return visits open fast (see /sw.js). */
+if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|anthropic|usercontent/.test(location.hostname)){
+  addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
+}
