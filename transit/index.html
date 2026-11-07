@@ -641,7 +641,8 @@ const BUS_SPEED = 9.06, BUS_HR = 197.88;   // CTA bus (NTD 2024)
 // long run: total drop in driving ÷ the driving a line replaces directly, as homes and jobs grow near transit
 const LANDUSE_MULT = [1.9, 6.59];  // APTA 2009 national default (Bailey et al. 2008) to median of 28 US regions (Sabouri, Ewing & Kalantari 2024)
 const OCC = 1.5;             // people per car trip (NHTS 2022)
-const tripsPer = L => L.type !== "metra" && MODES[L.mode].kind === "rail" ? 2 : 1;   // trips per counted rider (rail counts entries, one way)
+const tripsPer = L => L.trip ? 1 : L.type !== "metra" && MODES[L.mode].kind === "rail" ? 2 : 1;   // trips per counted rider (station entries are one way; the trip model counts trips)
+const CAR_OCC_NEW = [1.1, 1.25];   // people per car on the commute trips that switch (assumption, ACS-style carpool share)
 const CIRCUITY = 1.2;        // road miles per straight-line mile for a rail rider's trip to the Loop (assumption)
 // NITA (Northern Illinois Transit Authority Act, PA 104-0457, signed Dec 16, 2025; NITA began Sept 1, 2026)
 const NITA_NEW_OP = 1.3e9;   // new operating money NITA expects in 2027 under the NITA Act (NITA proposed 2027 budget, Metro Magazine Nov. 3, 2026; was $1.2B in the Sept. 1 launch release); WBEZ: "$1.5 billion per year"
@@ -756,7 +757,7 @@ async function load(){
     fetch("data/net.json").then(r => r.json()), fetch("data/model.json").then(r => r.json()),
     fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
   NET = net; MODEL = model;
-  fetch("data/network.json").then(r => r.json()).then(buildNet).catch(e => console.warn("network", e));
+  fetch("data/network.json").then(r => r.json()).then(buildNet).then(() => fetch("data/trip.json")).then(r => r.json()).then(t => { TRIPM = t; tripRefresh(); }).catch(e => console.warn("network", e));
   fetch("data/presets.json").then(r => r.json()).then(p => { PRESETS = p;
     // a plan restored before the proposals loaded: read it again so its lines pick up their proposal (alignment, official cost)
     if (lines.length && typeof restore === "function"){ restore(); AFTER = null; if (map && map.getSource && map.getSource("plan")) renderPlan(); renderBar(); }
@@ -837,12 +838,14 @@ function buildNet(net){
 }
 // The plan's network: new lines as extra stops and patterns, Metra upgrades as shorter headways. Cached until the plan changes.
 let AFTER = null;
-function afterGraph(){
-  const key = encodePlan(); if (AFTER && AFTER.key === key) return AFTER;
+const SOLOG = new Map();   // after-graphs for one line at a time (the trip model credits each line on its own)
+function afterGraph(only){
+  const key = only ? "solo:" + only.map(lineKey).join("/") : encodePlan();
+  if (only){ if (SOLOG.has(key)) return SOLOG.get(key); } else if (AFTER && AFTER.key === key) return AFTER;
   const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [], posName = new Map();   // new stops: {x, y}; posName: a new line's ride nodes → its name
   const add = (a, b, w) => { let l = extra.get(a); if (!l) extra.set(a, l = []); l.push(b, w); };
   let next = NW.N; const extraHw = [];
-  for (const L of active()){
+  for (const L of only || active()){
     if (L.type === "metra"){
       const r = "metra:" + L.line;
       for (let i = 0; i < hw.length; i++) if (NW.posRoute[i] === r) hw[i] = Math.min(hw[i], L.head);
@@ -881,6 +884,14 @@ function afterGraph(){
         }
         if (k > 0) add(pos[k], st, 0);
       });
+      // an extension past today's last stop: trains run through, so riders stay on board instead of waiting at the old end
+      const fwd = order === sid, n = order.length, ptAt = k => L.pts[fwd ? k : n - 1 - k];
+      const isEnd = p => p && p.snap && p.snap.kind === "L" && TERMINALS.test(p.snap.ref.name.split(" (")[0]);
+      const nearT = (p, sIdx) => Math.hypot(NW.sx[sIdx] - p.x, NW.sy[sIdx] - p.y) < 250;
+      if (M.kind === "rail" && isEnd(ptAt(n - 1)))   // this direction ends at the old terminal: carry on along today's line
+        for (const pat of NW.net.pats) if (pat.k === "L" && nearT(ptAt(n - 1), pat.s[0])) add(pos[n - 1], pat.base, 0.3);
+      if (M.kind === "rail" && isEnd(ptAt(0)))       // this direction starts at the old terminal: today's trains carry on onto it
+        for (const pat of NW.net.pats) if (pat.k === "L" && nearT(ptAt(0), pat.s[pat.s.length - 1])) add(pat.base + pat.s.length - 1, pos[0], 0.3);
     }
   }
   // transfers between new stops and everything within 400 m; zones that can walk to new stops
@@ -890,7 +901,9 @@ function afterGraph(){
     for (const o of ns) if (o !== q){ const d = Math.hypot(o.x - q.x, o.y - q.y); if (d <= NW.net.xferM) add(q.id, o.id, d / W); }
     near(NW.zg, q.x, q.y, NW.net.accessM, z => NW.Z.x[z], z => NW.Z.y[z], (z, d2) => { let l = zExtra.get(z); if (!l) zExtra.set(z, l = []); l.push(q.id, Math.sqrt(d2) / W); });
   }
-  return AFTER = {key, extra, hw, ns, next, zExtra, posName};
+  const G = {key, extra, hw, ns, next, zExtra, posName};
+  if (only){ if (SOLOG.size > 40) SOLOG.clear(); SOLOG.set(key, G); return G; }
+  return AFTER = G;
 }
 // Dijkstra from a point. g = null (today) or afterGraph(). Returns minutes to every node (Infinity if past the cutoff).
 function search(x, y, g, cutoff){
@@ -924,6 +937,80 @@ function zoneTimes(x, y, g, cutoff){
 const ACC0 = new Map();   // jobs within 45 minutes today, by place (today's network never changes)
 function accBefore(x, y){ const k = Math.round(x / 20) + "," + Math.round(y / 20); let v = ACC0.get(k); if (v == null){ v = accessFrom(x, y, null); ACC0.set(k, v); } return v; }
 function accessFrom(x, y, g){ const t = zoneTimes(x, y, g, NW.net.cutoff); let j = 0; for (let z = 0; z < NW.nz; z++) if (t[z] <= NW.net.cutoff) j += NW.Z.jobs[z]; return j; }
+/* ---------- trip model (v54): riders come from trips that get faster ----------
+   Fit by tools/transit/tripmodel.py to LODES home-to-work flows and ACS commute modes by tract (transit/data/trip.json).
+   For every zone within 1.5 miles of the line's stations: where its workers commute (a gravity model fit to LODES) and
+   where its jobs' workers live, transit minutes today and with the line (the same midday network), and a transit-or-car
+   logit fit to how people get to work today, tract by tract. New riders = commute trips whose transit share rises because
+   the trip got faster, × 2 trips a day, × the share who don't work from home, × a factor for trips that aren't commutes.
+   A trip that isn't faster contributes nothing. */
+let TRIPM = null;   // the fitted trip model (trip.json)
+const TRIPS = new Map(), T0C = new Map();   // results by line; today's transit minutes from a zone (today's network never changes)
+const TRIP_R = 2414;         // zones within 1.5 miles of a new station (walk or a short bus ride; assumption)
+function carMin(d){ const km = 1.3 * d / 1000, v = 30 + 15 * Math.min(1, km / 30); return 5 + 60 * km / v; }   // same as tripmodel.py
+function lineKey(L){ return (L.mode || L.type) + "|" + (L.head || 0) + "|" + (L.pts || []).map(p => Math.round(p.x) + "," + Math.round(p.y)).join(";") + "|" + (L.shape ? L.shape.length : 0); }
+function tripResult(L){
+  if (!TRIPM || !NW) return null;
+  const key = lineKey(L); let r = TRIPS.get(key);
+  if (!r){ r = {pending:true}; TRIPS.set(key, r); tripQ.push({L:{...L, pts:L.pts.slice()}, r}); pumpTrips(); }
+  return r.pending ? null : r;
+}
+const tripQ = []; let tripBusy = false;
+function pumpTrips(){
+  if (tripBusy || !tripQ.length) return;
+  tripBusy = true; const {L, r} = tripQ.shift();
+  tripCompute(L, r, () => { tripBusy = false; tripRefresh(); pumpTrips(); });
+}
+let tripRefreshT = 0;
+function tripRefresh(){   // re-draw whatever is showing once a line's trips are worked out
+  clearTimeout(tripRefreshT);
+  tripRefreshT = setTimeout(() => {
+    for (const k in SOLO) if (SOLO[k] == null) delete SOLO[k];
+    renderPlan();
+    if (cur && $("vLine").classList.contains("on")) openLine(cur);
+    else if ($("vGroup").classList.contains("on")) openGroup(nav.g);
+    else if ($("vStart").classList.contains("on")) { renderMyLines(); renderGroups(); }
+    renderBar();
+  }, 60);
+}
+function tripCompute(L, r, done){
+  const T = TRIPM, P = T.mode, nz = NW.nz, Z = NW.Z, Wk = T.zones.workers, NC = T.zones.nocar, LND = T.zones.lnd, LNJ = T.zones.lnj, S = T.zones.S, TM = T.tmax;
+  const g = afterGraph([L]);
+  const pts = L.pts.map(p => [p.x, p.y]), inA = new Uint8Array(nz), A = [];
+  for (const [x, y] of pts) near(NW.zg, x, y, TRIP_R, z => Z.x[z], z => Z.y[z], z => { if (!inA[z]){ inA[z] = 1; A.push(z); } });
+  const sig = u => 1 / (1 + Math.exp(-u));
+  let i = 0, nw = 0, gr = 0, dm = 0, pairs = 0;
+  const step = () => {
+    const t0 = performance.now();
+    while (i < A.length && performance.now() - t0 < 25){
+      const z = A[i++];
+      let b = T0C.get(z); if (!b){ b = zoneTimes(Z.x[z], Z.y[z], null, TM); if (T0C.size > 1500) T0C.clear(); T0C.set(z, b); }
+      const a = zoneTimes(Z.x[z], Z.y[z], g, TM);
+      for (let d = 0; d < nz; d++){
+        const t1 = a[d]; if (!(t1 < TM)) continue;
+        const t0v = Math.min(b[d], TM); if (!(t1 < t0v - 0.25)) continue;   // only trips the line makes faster
+        const dist = Math.hypot(Z.x[z] - Z.x[d], Z.y[z] - Z.y[d]), c = carMin(dist), e = Math.exp(-T.gamma * c);
+        pairs++;
+        if (Wk[z] && Z.jobs[d]){   // people living here, working there
+          const f = Wk[z] * Z.jobs[d] * e / S[z], u = P.const + P.no_car * NC[z] + P.ln_jobs_density * LNJ[d] + P.ln_density * LND[z];
+          const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
+          nw += f * (p1 - p0); gr += f * p1; dm += f * (p1 - p0) * dist;
+        }
+        if (!inA[d] && Wk[d] && Z.jobs[z]){   // people living there, working here (same minutes both ways)
+          const f = Wk[d] * Z.jobs[z] * e / S[d], u = P.const + P.no_car * NC[d] + P.ln_jobs_density * LNJ[z] + P.ln_density * LND[d];
+          const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
+          nw += f * (p1 - p0); gr += f * p1; dm += f * (p1 - p0) * dist;
+        }
+      }
+    }
+    if (i < A.length) return setTimeout(step, 0);
+    const daily = 2 * (1 - T.wfh) * T.scale;   // two trips a commute, the share who travel to work, other trips
+    Object.assign(r, {pending:false, new:nw * daily, gross:gr * daily, carMi:nw > 0 ? 1.3 * dm / nw / MI : 0, zones:A.length, pairs});
+    done();
+  };
+  step();
+}
+
 // For one line: jobs within 45 min for people near it, before and after, and minutes saved per rider (async, cached)
 const TT = new Map();
 function travelReport(L, done){
@@ -1386,15 +1473,24 @@ function evaluate(){
     // on a street with buses only riders beyond today's bus riders are new to transit, and a larger share of them drove
     if (M.kind === "rail") L.newRiders = riders - L.lost;
     else L.newRiders = L.fromModel ? riders : riders - L.baseBus;
+    // the trip model replaces both: new riders are trips that got faster and moved from car to transit
+    const TR = tripResult(L); L.trip = TR;
+    if (!TR) L.waiting = true;
+    else {
+      L.newRiders = TR.new;
+      if (M.kind === "rail"){ L.riders = riders = TR.gross; for (const s of st) s.riders = 0; }
+      L.lost = Math.max(0, L.riders - TR.new);
+    }
     const sh = M.kind !== "rail" && !L.fromModel ? DIVERT_NEW : DIVERT;
     // rail riders are entries at the new stations, one way: the trip back enters at another station, so trips using the line ≈ 2 × entries.
     // Bus riders are already boardings in both directions.
     const ways = tripsPer(L);
-    L.carTrips = [ways * L.newRiders * sh[0] / OCC, ways * L.newRiders * sh[1] / OCC];
+    L.carTrips = L.trip ? [L.newRiders / CAR_OCC_NEW[1], L.newRiders / CAR_OCC_NEW[0]] : [ways * L.newRiders * sh[0] / OCC, ways * L.newRiders * sh[1] / OCC];
     // trip length: rail riders far from downtown ride farther than the CTA average, so each station's trips are at least its road distance
     // to the Loop (straight line × 1.2, assumption), weighted by its riders
     let tripMi = M.tripMi;
-    if (M.kind === "rail"){ let w = 0, d = 0; for (const st of L.st) if (st.riders > 0){ w += st.riders; d += st.riders * Math.max(M.tripMi, CIRCUITY * Math.hypot(st.x, st.y) / MI); } if (w > 0) tripMi = d / w; }
+    if (L.trip && L.trip.carMi > 0) tripMi = L.trip.carMi;   // the trips that switched, by road (1.3 × straight line)
+    else if (M.kind === "rail"){ let w = 0, d = 0; for (const st of L.st) if (st.riders > 0){ w += st.riders; d += st.riders * Math.max(M.tripMi, CIRCUITY * Math.hypot(st.x, st.y) / MI); } if (w > 0) tripMi = d / w; }
     L.tripMi = tripMi;
     const vmt = L.carTrips.map(t => t * tripMi);
     const tCO2 = () => { const vehT = M.co2 === "rail" ? elecT(KWH.rail) : M.co2 === "bus" ? busT() : M.co2 * gridMult();   // t CO2 per vehicle (car) mile; streetcar: FTA RFC West factor
@@ -1563,7 +1659,7 @@ async function initMap(){
 
 /* ---------- the Easter egg: one Brown Line train running Kimball → the Loop → Kimball ----------
    Four cars, drawn from above (silver roofs, rooftop units, dark cab ends) at real size, 5× real speed. Tap it for a note. Hidden with the L layer, off under reduced motion. */
-const EGG_SPEEDUP = 8, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_PX = 11, EGG_W_PX = 4.2, EGG_GAP_PX = 1.5;   // a fixed size on screen at every zoom
+const EGG_SPEEDUP = 1.5, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_W_M = 2.9, EGG_GAP_M = 1.2;   // real size: hidden from far out, a real-looking train up close
 let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0;
 function trainsDirty(){}   // kept for older callers
 function eggPath(){
@@ -1586,9 +1682,7 @@ function eggFrame(now){
   eggClock += dt * EGG_SPEEDUP;   // seconds of real running time
   if (!EGG){ EGG = eggPath(); if (EGG) eggClock = Math.random() * 2 * EGG.len / (EGG_MPH * 0.44704); }   // starts somewhere along the line
   const P = EGG; if (!P) return;
-  // the same size on screen at every zoom (meters per pixel at Chicago's latitude, 512-px tiles)
-  const mpp = 40075016.686 * Math.cos(41.9 * Math.PI / 180) / (512 * Math.pow(2, map.getZoom()));
-  const carL = EGG_CAR_PX * mpp, carW = EGG_W_PX * mpp, gap = EGG_GAP_PX * mpp, train = EGG_CARS * carL + (EGG_CARS - 1) * gap;
+  const carL = EGG_CAR_M, carW = EGG_W_M, gap = EGG_GAP_M, train = EGG_CARS * carL + (EGG_CARS - 1) * gap;
   const run = P.len, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
   const head = leg === 0 ? Math.min(P.len, Math.max(train, s0)) : Math.min(P.len - train, Math.max(0, P.len - s0));   // out to the Loop, then back to Kimball
   const dir = leg === 0 ? 1 : -1, feats = [];
@@ -1610,10 +1704,10 @@ function startTrains(){
   map.addSource("egg", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
   const vis = layerOn.L ? "visible" : "none";
   map.addLayer({id:"egg-body", type:"fill", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis}, paint:{"fill-color":"#cfd5dc"}}, "pst");
-  map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":1.1}}, "pst");
+  map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":["interpolate", ["linear"], ["zoom"], 13, 0.4, 16, 1.2]}}, "pst");
   map.addLayer({id:"egg-unit", type:"fill", source:"egg", filter:["==", ["get", "k"], "unit"], layout:{visibility:vis}, paint:{"fill-color":"#8b939c"}}, "pst");
   map.addLayer({id:"egg-cab", type:"fill", source:"egg", filter:["any", ["==", ["get", "k"], "cab"], ["==", ["get", "k"], "tail"]], layout:{visibility:vis}, paint:{"fill-color":"#2a3038"}}, "pst");
-  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 8 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, like a midday Brown Line train. Each real car is 48 feet long."];
+  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at an easy pace.", "Brown Line to the Loop. Doors closing.", "Four cars, like a midday Brown Line train. Each real car is 48 feet long."];
   let note = 0;
   map.on("click", "egg-body", e => { new maplibregl.Popup({closeButton:false, offset:8, className:"eggpop"}).setLngLat(e.lngLat).setText(NOTES[note++ % NOTES.length]).addTo(map); });
   map.on("mouseenter", "egg-body", () => { map.getCanvas().style.cursor = "pointer"; });
@@ -1946,7 +2040,7 @@ const SOLO = {};
 function soloRiders(P){
   if (SOLO[P.id] != null || !NW) return SOLO[P.id];
   const keep = lines, L = presetToLine(P); lines = [L];
-  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : Math.max(0, L.newRiders || 0); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
+  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.waiting ? null : Math.max(0, L.newRiders || 0); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
   lines = keep; return SOLO[P.id];
 }
 function openGroup(g){
@@ -1954,7 +2048,7 @@ function openGroup(g){
   $("gTitle").textContent = G.title; $("gSub").textContent = G.sub;
   const ps = PRESETS.filter(P => (P.group || "rail") === g);
   const draw = () => {
-    $("gList").innerHTML = ps.map(P => { const r = soloRiders(P); return `<div class="prow"><button type="button" class="pt" data-p="${P.id}"><b>${esc(P.name)}</b><span>${r != null ? num(r) + " more riders a weekday" + " · " : ""}${esc(P.status.split(";")[0].split(" (")[0])}</span></button><button type="button" class="sw" role="switch" aria-checked="${presetOn(P)}" aria-label="${esc(P.name)}" data-p="${P.id}"></button></div>`; }).join("") +
+    $("gList").innerHTML = ps.map(P => { const r = soloRiders(P); return `<div class="prow"><button type="button" class="pt" data-p="${P.id}"><b>${esc(P.name)}</b><span>${r != null ? num(r) + (g === "metra" ? " more riders a weekday" : " new transit trips a weekday") + " · " : "… · "}${esc(P.status.split(";")[0].split(" (")[0])}</span></button><button type="button" class="sw" role="switch" aria-checked="${presetOn(P)}" aria-label="${esc(P.name)}" data-p="${P.id}"></button></div>`; }).join("") +
       (g === "metra" ? `<div class="prow"><button type="button" class="pt" id="anyMetra"><b>Any Metra line</b><span>Pick a line and how often trains run</span></button></div>` : "");
     for (const b of $("gList").querySelectorAll(".pt[data-p]")) b.onclick = () => loadPreset(PRESETS.find(p => p.id === b.dataset.p));
     for (const b of $("gList").querySelectorAll(".sw")) b.onclick = () => { const on = b.getAttribute("aria-checked") !== "true"; b.setAttribute("aria-checked", on); setPreset(PRESETS.find(p => p.id === b.dataset.p), on); };
@@ -2031,7 +2125,7 @@ function renderBar(){   // the plan's effects, in the shared Shape Chicago metri
   const n = `${A.length} line${A.length > 1 ? "s" : ""}`;
   const co2Html = `<p>Your lines added together: the CO₂ from car trips people stop making, ${CO2_LABEL}. The power and fuel to run the new service isn't counted.</p><p>Open any line for its own breakdown, its long-run figure and the sources.</p>`;
   bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>${n}</b></div><span class="sc-sep"></span>
-    <div class="sc-m"><b>${wait ? "…" : num(net)}</b><span>more riders a weekday</span></div>
+    <div class="sc-m"><b>${wait ? "…" : num(net)}</b><span>new transit trips a weekday</span></div>
     <div class="sc-m"><b>${capS}</b><span>to build</span></div>
     <div class="sc-m top"><b>${money(Math.abs(op))}</b><span>${op < 0 ? "a year saved" : "a year to run"}</span></div>
     <div class="sc-m ${cars >= 0 ? "g" : ""}"><b>${num(Math.abs(cars))}</b><span>${cars >= 0 ? "fewer" : "more"} car trips a day</span></div>
@@ -2074,24 +2168,25 @@ function openLine(L){
   const isI = !isM && L.mode === "infill";
   $("lSub").textContent = isM ? `Metra · ${miFmt(L.len)} mi · ${L.st.length} stations` : isI ? `New station · ${L.onLines && L.onLines.length ? lineNames(L.onLines) : "not on an L line"}` : `${M.name} · ${miFmt(L.len)} mi · ${L.pts.length} stations`;
   $("lineEdit").style.display = isM ? "none" : "";
-  const isR = !isM && M.kind === "rail";   // rail: the headline is new riders; people who'd only switch stations are shown underneath
+  const isR = !isM && !!L.trip;   // the trip model: the headline is new transit trips; trips that just get faster are shown underneath
   const riders = isM ? (L.riders[0] + L.riders[1]) / 2 : isR ? Math.max(0, L.newRiders) : L.riders;
   const lo = isM ? L.riders[0] : riders * Math.exp(L.band[0]), hi = isM ? L.riders[1] : riders * Math.exp(L.band[1]);
   const heads = isM ? [15, 20, 30, 60] : M.heads;
   const cars = (L.carTrips[0] + L.carTrips[1]) / 2, co2 = (L.co2[0] + L.co2[1]) / 2;
-  if (L.waiting){ $("lBody").innerHTML = `<p class="note">Loading the transit network…</p>`; return; }
+  if (L.waiting){ $("lBody").innerHTML = `<p class="note">${NW ? "Working out whose trips this line makes faster…" : "Loading the transit network…"}</p>`; return; }
   // riders, with what goes into them behind (i)
   let why = "";
   if (isM) why += `<p>${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."} Riders come from Metra's 2018 station counts scaled to today, and how riders responded to more trains in Boston.</p>`;
+  else if (isR) why += `<p>Trips a weekday that move to transit because this ${isI ? "station" : "line"} gets people there faster. The tool looks at every neighborhood within 1.5 miles of ${isI ? "it" : "its stations"}: where the people who live there work, and where the people who work there live (fit to Census home-to-work flows), and how long each trip takes by transit today, by transit with ${isI ? "the new stop" : "this line"}, and by car. How many switch for a given time saving comes from how people actually get to work in each census tract today (the fit explains ${Math.round(TRIPM.fit.tract_r2 * 100)}% of the difference between tracts). A trip that isn't faster counts for nothing, so a line next to one Chicago already has adds almost no one. Trips that aren't commutes are scaled from today's ridership.</p><p>About ${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit and just get there faster` : ""}. The range is the model's typical miss for a single station (about a third either way).</p>`;
   else if (isI) why += `<p>People entering the new station on a weekday, from the same model of today's L stations, with the trains that already pass by (${L.near ? "as many as stop at " + esc(L.near.name.split(" (")[0]) : "the line's service"}). Only the people and jobs nearby that aren't already within a 10-minute walk of an L or Metra station (${Math.round((L.newShare || 0) * 100)}% here) count as new riders; the rest would have walked to a station on either side. A single station's estimate is typically off by about 37%.</p>`;
   else if (M.kind === "rail") why += `<p>New riders a weekday. A model of today's L stations (the people and jobs near each, its buses, how often trains come, and how many jobs you can reach in 45 minutes) says about ${num(L.riders)} people would board at its stations. Most people near a new station already have one: only those with no L station within a 10-minute walk count as new riders (half of them where a Metra station is that close), plus the share the model ties to faster trips (more jobs within 45 minutes). The rest would just switch from a station they already use. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
   else why += `<p>Starts from the ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today, which the new line replaces. Riders rise or fall with how often it comes compared with those buses${L.mode === "brt" ? ", plus 31% for faster BRT service (Cleveland and Los Angeles gained 26–51%)" : ""}.</p>`;
-  if (!isM && L.shifted > 50) why += `<p>The ${L.feeder.routes.map(r => NET.bus[r].short).join(", ")} bus${L.feeder.routes.length > 1 ? "es" : ""} that end at today's last stop would run to the new one instead, bringing about ${num(L.shifted)} riders who now board there.</p>`;
+  if (!isM && !isR && L.shifted > 50) why += `<p>The ${L.feeder.routes.map(r => NET.bus[r].short).join(", ")} bus${L.feeder.routes.length > 1 ? "es" : ""} that end at today's last stop would run to the new one instead, bringing about ${num(L.shifted)} riders who now board there.</p>`;
   if (!isM && !isR && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
-  if (!isM && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders, from people who can now reach more jobs within 45 minutes.</p>`;
-  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM || isR ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
-  if (isR && L.riders - riders > 100) h += `<p class="note">${num(L.riders)} would board at its stations; about ${num(L.riders - riders)} of them would just switch from a line they already use.</p>`;
+  if (!isM && !isR && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders, from people who can now reach more jobs within 45 minutes.</p>`;
+  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isR ? "new transit trips a weekday" : isM ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
+  if (isR && L.riders > 50) h += `<p class="note">${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit and just get there faster` : ""}.</p>`;
   if (isI) h += `<p class="note">Trains stop as often as they do at ${L.near ? esc(L.near.name.split(" (")[0]) : "the next station"}: about every ${L.head} minutes.</p>`;
   else h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
@@ -2506,7 +2601,7 @@ function openSummary(){
   $("sumBody").innerHTML = `<div class="sumtop"><input id="sumTitle" value="${esc(title)}" aria-label="Plan title" maxlength="70"><div class="sbtns"><button class="btn" type="button" id="sumCopy">Copy link</button><button class="btn dark" type="button" id="sumPrint">Print or save as PDF</button><button class="btn" type="button" id="sumClose">Close</button></div></div>
     <div class="summeta">Expand Chicago Transit · ${today} · ${A.length} line${A.length > 1 ? "s" : ""}</div>
     <img class="sumimg" id="sumImg" alt="Map of the plan">
-    <div class="sumnums"><div><b>${num(st.riders)}</b><span>more riders a weekday</span></div><div><b>${st.capLo === st.capHi ? money(st.capLo) : moneyRange(st.capLo, st.capHi)}</b><span>to build</span></div><div><b>${money(Math.abs(st.op))}</b><span>${st.op < 0 ? "a year saved" : "a year to run"}</span></div><div><b>${num(Math.abs(st.cars))}</b><span>${st.cars >= 0 ? "fewer" : "more"} car trips a day</span></div><div><b>${num(Math.abs(st.co2))} t</b><span>${st.co2 >= 0 ? "less" : "more"} CO₂ a year from car trips</span></div></div>
+    <div class="sumnums"><div><b>${num(st.riders)}</b><span>new transit trips a weekday</span></div><div><b>${st.capLo === st.capHi ? money(st.capLo) : moneyRange(st.capLo, st.capHi)}</b><span>to build</span></div><div><b>${money(Math.abs(st.op))}</b><span>${st.op < 0 ? "a year saved" : "a year to run"}</span></div><div><b>${num(Math.abs(st.cars))}</b><span>${st.cars >= 0 ? "fewer" : "more"} car trips a day</span></div><div><b>${num(Math.abs(st.co2))} t</b><span>${st.co2 >= 0 ? "less" : "more"} CO₂ a year from car trips</span></div></div>
     <h3>The lines</h3><table class="ftable"><thead><tr><th>Line</th><th>Type</th><th>More riders a weekday</th><th>Build</th><th>Could open</th></tr></thead><tbody>${rows}</tbody></table>
     <h3>Paying for it</h3><p>Federal grants could cover up to ${money(st.fed)}; the state and local share would be about ${money(st.local)}.${st.newLocal > 0 ? ` For the projects not yet funded, that's ${st.newLocal / NITA_CAPITAL_5YR * 100 < 1 ? "less than 1%" : Math.round(st.newLocal / NITA_CAPITAL_5YR * 100) + "%"} of NITA's proposed $9.73 billion 2027–2031 capital program for the whole region.` : ""} ${st.op > 0 ? `Running it costs about ${money(st.op)} a year before fares.` : ""} Opening years assume approval in ${START_YEAR}.</p>
     <p class="sumfoot">A sketch from Expand Chicago Transit, a fan-made planning tool (not affiliated with the City of Chicago, CTA or Metra). Riders and costs are estimates from public data; every source is listed in the tool under Sources. Plan link: ${esc(location.href)}</p>`;
@@ -2700,7 +2795,7 @@ function openSources(){
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
-  <li>New riders on a new rail line: only people and jobs within a 10-minute walk of a new station that have no L station that close count as new (half of them where a Metra station is that close, since Metra runs every 30–60 minutes midday and costs more). Everyone else would switch from a station they already use, except the share the station model ties to more jobs within 45 minutes. Existing stations a line stops at gain riders only from that same access effect.</li>
+  <li>New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit. Only trips the line makes faster count. Each commute is 2 trips a day; ${Math.round((TRIPM ? TRIPM.wfh : 0.16) * 100)}% of workers work from home; other trips scale from today's 1.12 million weekday riders. Trips riding through the area without starting or ending within 1.5 miles of a station aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.</li>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
   <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}), at the chosen frequency except the last ${LATE_HOURS} hours, when trains and buses come half as often.</li>
   <li>When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.</li>

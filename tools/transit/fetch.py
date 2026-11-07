@@ -438,6 +438,85 @@ def cost_index():
             log(name, 'failed', repr(e))
 
 
+ZONE_M = 800   # must match network.py
+def zone_key(lat, lon):
+    LOOP = (41.8819, -87.6278)
+    x, y = (lon - LOOP[1]) * 111320 * math.cos(math.radians(41.85)), (lat - LOOP[0]) * 110574
+    return (int(x // ZONE_M), int(y // ZONE_M))
+
+
+def od():
+    """LODES home-to-work flows (all jobs, 2022), summed to the 800 m zones network.py uses: od_zones.csv.gz."""
+    cell = {}
+    for r in csv.DictReader(gzip.open(os.path.join(OUT, 'blocks.csv.gz'), 'rt')):
+        cell[r['geoid']] = zone_key(float(r['lat']), float(r['lon']))
+    # blocks with nobody living there are left out of blocks.csv: home blocks we don't know are kept by tract center later
+    year, raw = None, None
+    for y in (2022, 2021, 2023):
+        local = os.path.join(OUT, f'il_od_main_JT00_{y}.csv.gz')
+        if os.path.exists(local) and os.path.getsize(local) > 100000:
+            year, raw = y, open(local, 'rb').read(); break
+    if not raw:
+        raise RuntimeError('no LODES OD file downloaded')
+    import zlib
+    d = zlib.decompressobj(16 + zlib.MAX_WBITS)
+    text = d.decompress(raw).decode('utf-8', 'ignore')
+    partial = not d.eof
+    text = text[:text.rfind('\n') + 1]
+    flows, rows, kept, lost = collections.Counter(), 0, 0, 0
+    for r in csv.DictReader(io.StringIO(text)):
+        rows += 1
+        h, w = cell.get(r['h_geocode']), cell.get(r['w_geocode'])
+        n = int(r['S000'])
+        if h is None or w is None:
+            lost += n; continue
+        flows[(h, w)] += n; kept += n
+    with gzip.open(os.path.join(OUT, 'od_zones.csv.gz'), 'wt', newline='') as f:
+        wr = csv.writer(f); wr.writerow(['hx', 'hy', 'wx', 'wy', 'n'])
+        for (h, w), n in flows.items():
+            wr.writerow([h[0], h[1], w[0], w[1], n])
+    SOURCES['files']['od'] = {'url': f'https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_{year}.csv.gz', 'year': year,
+                              'rows': rows, 'workers_kept': kept, 'workers_outside_region': lost, 'pairs': len(flows), 'partial': partial}
+    log('od', SOURCES['files']['od'])
+
+
+def acs():
+    """ACS 5-year: how people get to work (B08301) and households without a car (B08201), by census tract in the six
+    counties, from the Census Bureau's table-based summary files (no API key needed)."""
+    COLS = {'b08301': {'E001': 'workers', 'E002': 'car', 'E010': 'transit', 'E018': 'bike', 'E019': 'walk', 'E021': 'home'},
+            'b08201': {'E001': 'households', 'E002': 'no_car'}}
+    for year in (2023, 2019):
+        rows = collections.defaultdict(dict)
+        for tab, cols in COLS.items():
+            url = f'https://www2.census.gov/programs-surveys/acs/summary_file/{year}/table-based-SF/data/5YRData/acsdt5y{year}-{tab}.dat'
+            try:
+                req = urllib.request.Request(url, headers=UA)
+                with urllib.request.urlopen(req, timeout=900) as r:
+                    head = None
+                    for raw in io.TextIOWrapper(r, encoding='utf-8', errors='ignore'):
+                        f = raw.rstrip('\n').split('|')
+                        if head is None:
+                            head = f; idx = {c: head.index(tab.upper() + '_' + c) for c in cols}; continue
+                        g = f[0]
+                        if not g.startswith('1400000US17') or g[11:14] not in COUNTIES:
+                            continue
+                        for c, name in cols.items():
+                            v = f[idx[c]]
+                            rows[g[9:]][name] = max(0, int(float(v))) if v not in ('', 'null', 'N') else 0
+            except Exception as e:
+                log('acs', year, tab, 'failed', repr(e))
+        if not rows:
+            continue
+        names = [n for cols in COLS.values() for n in cols.values()]
+        with open(os.path.join(OUT, f'acs_tracts_{year}.csv'), 'w', newline='') as f:
+            w = csv.writer(f); w.writerow(['tract'] + names)
+            for t, d in sorted(rows.items()):
+                w.writerow([t] + [d.get(n, 0) for n in names])
+        SOURCES['files'][f'acs_{year}'] = {'url': f'https://www2.census.gov/programs-surveys/acs/summary_file/{year}/table-based-SF/ (B08301, B08201)',
+                                           'tracts': len(rows), 'workers': sum(d.get('workers', 0) for d in rows.values()),
+                                           'transit': sum(d.get('transit', 0) for d in rows.values())}
+        log('acs', year, SOURCES['files'][f'acs_{year}'])
+
 if __name__ == '__main__':
     steps = sys.argv[1:] or ['cta', 'metra', 'blocks', 'bus', 'metracounts', 'energy', 'osm', 'costs']
     for s in steps:
@@ -471,6 +550,10 @@ if __name__ == '__main__':
                 future()
             elif s == 'costs':
                 cost_index()
+            elif s == 'od':       # LODES home-to-work flows for the trip model
+                od()
+            elif s == 'acs':      # ACS commute mode + cars by tract, to calibrate the trip model
+                acs()
         except Exception as e:
             import traceback; log('STEP FAILED', s, traceback.format_exc())
             SOURCES['files'][s + '_error'] = repr(e)

@@ -4,3 +4,5 @@ __pycache__/
 tools/zoning.geojson
 .wrangler/
 node_modules/
+tools/raw/transit/trip_times_cache.npz
+tools/raw/transit/trip_gamma_cache.json
