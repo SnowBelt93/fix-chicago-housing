@@ -5,11 +5,11 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155449
+     "count": 155455
     },
     {
      "value": "Committee on Finance",
-     "count": 13807
+     "count": 13808
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117958
+     "count": 117962
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20541
+     "count": 20542
     },
     {
      "value": "Order",
-     "count": 9259
+     "count": 9260
     },
     {
      "value": "Appointment",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 632
+     "count": 633
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167328
+     "count": 167329
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1848
+     "count": 1849
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 37
+     "count": 42
     },
     {
      "value": "0-PreDraft",
@@ -296,7 +296,7 @@
     },
     {
      "value": "Silverstein, Debra L.",
-     "count": 2727
+     "count": 2728
     },
     {
      "value": "Pawar, Ameya",
@@ -328,7 +328,7 @@
     },
     {
      "value": "Dowell, Pat",
-     "count": 2174
+     "count": 2177
     },
     {
      "value": "Coleman, Stephanie D.",
@@ -412,7 +412,7 @@
     },
     {
      "value": "Taliaferro, Chris",
-     "count": 1265
+     "count": 1266
     },
     {
      "value": "Austin, Carrie M.",
@@ -492,7 +492,7 @@
     },
     {
      "value": "Martin, Matthew J.",
-     "count": 809
+     "count": 811
     },
     {
      "value": "Mell, Deborah",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169389
+     "count": 169394
     },
     {
      "value": "YES",
-     "count": 12137
+     "count": 12139
     }
    ]
   },
@@ -843,7 +843,7 @@
     },
     {
      "value": "2026",
-     "count": 7134
+     "count": 7141
     },
     {
      "value": "2022",
@@ -908,7 +908,7 @@
     },
     {
      "value": "47",
-     "count": 3633
+     "count": 3635
     },
     {
      "value": "43",
@@ -936,7 +936,7 @@
     },
     {
      "value": "50",
-     "count": 2943
+     "count": 2944
     },
     {
      "value": "39",
@@ -972,7 +972,7 @@
     },
     {
      "value": "03",
-     "count": 2113
+     "count": 2116
     },
     {
      "value": "38",
@@ -1024,7 +1024,7 @@
     },
     {
      "value": "29",
-     "count": 1720
+     "count": 1721
     },
     {
      "value": "06",
@@ -1173,7 +1173,7 @@
     },
     {
      "value": "Placed on File",
-     "count": 1655
+     "count": 1656
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1200,16 +1200,16 @@
      "count": 52
     },
     {
+     "value": "Accepted",
+     "count": 39
+    },
+    {
      "value": "Repealed",
      "count": 36
     },
     {
-     "value": "Accepted",
-     "count": 34
-    },
-    {
      "value": "Direct Introduction",
-     "count": 32
+     "count": 33
     },
     {
      "value": "Re-Referred",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163341
+     "count": 163347
     },
     {
      "value": "YES",
-     "count": 18183
+     "count": 18184
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181526,
-  "pages": 181526
+  "count": 181533,
+  "pages": 181533
  }
 }
