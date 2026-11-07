@@ -4234,11 +4234,20 @@ function showResult(){
   lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false, rHi);
   personaRows($("resPersonas"), homes[end]);
   $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Ward mode edition" : "Final edition";
-  lastResult = {hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
+  lastResult = {code: encodePlan(plan), hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
+  prepPlanLink();
   $("result").hidden = false;
 }
 $("resClose").addEventListener("click", () => hideModal("result", () => { maybeMyth("shrinking"); const n = mythQueue.shift(); if (n && $("myth").hidden) showMyth(n); }));
 let lastResult = null, lastPhoto = null, lastCaption = "";
+// shared plan links: /p/<id> shows this plan's homes, grade and rent in link previews, then opens it (see worker/index.js)
+const cardLinks = {};
+async function prepPlanLink(){
+  const R = lastResult; if (!API_OK || !R || cardLinks[R.code]) return;
+  try { const r = await api("/api/card", {code: R.code, homes: Math.round(R.homes), grade: R.grade, goal: Math.round(R.goal), rent: Math.round(R.rent), rentNo: Math.round(R.rentNo), mode: plan.g < 3 ? 1 : plan.g === 4 ? 2 : 0});
+    if (r && r.id) cardLinks[R.code] = location.origin + "/p/" + r.id; } catch (e) {}
+}
+const planLink = () => { const code = encodePlan(plan); return cardLinks[code] || SHARE_BASE + "#" + code; };
 function topAreas(n){ return Object.values(AREAS).filter(A => A.added >= 1).sort((a, b) => b.added - a.added).slice(0, n); }
 function frontPage(homesEnd){
   const t = totals(false), top = topAreas(3), names = top.map(A => A.name);
@@ -4329,7 +4338,7 @@ $("resImage").addEventListener("click", async (e) => {
   const btn = e.currentTarget; btn.disabled = true; const label = btn.textContent; btn.textContent = "Making image…";
   try {
     const blob = await makeShareCard(); if (!blob) return;
-    const file = new File([blob], "my-chicago-housing-plan.png", {type: "image/png"}), url = SHARE_BASE + "#" + encodePlan(plan);
+    const file = new File([blob], "my-chicago-housing-plan.png", {type: "image/png"}), url = planLink();
     if (navigator.canShare && navigator.canShare({files: [file]})){
       try { await navigator.share({files: [file], title: "My plan to fix Chicago housing", text: "My plan to fix Chicago's housing shortage. Try yours: " + url}); } catch (err) {}
     } else {
@@ -4339,7 +4348,7 @@ $("resImage").addEventListener("click", async (e) => {
     }
   } finally { btn.disabled = false; btn.textContent = label; }
 });
-$("resShare").addEventListener("click", () => copyText(SHARE_BASE + "#" + encodePlan(plan), "Link copied. Send it to anyone."));
+$("resShare").addEventListener("click", () => copyText(planLink(), "Link copied. Send it to anyone."));
 
 const SVGNS = "http://www.w3.org/2000/svg";
 function svgEl(tag, attrs, parent){ const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
@@ -4540,7 +4549,7 @@ async function copyText(txt, okMsg){
     toast("Selected. Copy it from the box on the Save tab.");
   }
 }
-$("copyLink").addEventListener("click", () => copyText(SHARE_BASE + "#" + encodePlan(plan), "Link copied. Send it to anyone."));
+$("copyLink").addEventListener("click", () => copyText(planLink(), "Link copied. Send it to anyone."));
 $("copyCode").addEventListener("click", () => copyText(encodePlan(plan), "Plan code copied"));
 $("openCode").addEventListener("click", () => {
   const p = decodePlan($("codeIn").value);
@@ -4622,7 +4631,7 @@ $("resPublish").addEventListener("click", async () => {
 });
 $("doAlder").addEventListener("click", async () => {
   const t = totals(false);
-  const note = "Hi, I'm a constituent. I played Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + SHARE_BASE + "#" + encodePlan(plan) + "\n\nWould you support zoning changes like these in our ward?";
+  const note = "Hi, I'm a constituent. I played Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + planLink() + "\n\nWould you support zoning changes like these in our ward?";
   try { await navigator.clipboard.writeText(note); toast("Note copied. Paste it into an email to your alderperson."); } catch (e) { toast("Couldn't copy automatically. Your plan link is in the Share tab."); }
   window.open("https://chicago.gov/city/en/depts/mayor/provdrs/your_ward_and_alderman/svcs/find_my_alderman.html", "_blank", "noopener");
 });

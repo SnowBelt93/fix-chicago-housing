@@ -8,11 +8,20 @@ const B32 = "0123456789abcdefghijklmnopqrstuv";
 const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-6]{77}[0-6][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-4][0-4][0-3]{10})$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
+import { Resvg, initWasm } from "@resvg/resvg-wasm";
+import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
+import { cardSvg } from "./card.js";
+
 const json = (data, status = 200, extra = {}) => new Response(JSON.stringify(data), {status, headers: {"content-type": "application/json", "cache-control": "no-store", ...extra}});
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
+    // shared plan links: /p/<id> is a tiny page whose link preview shows that plan, then it opens the plan
+    const pm = url.pathname.match(/^\/p\/([0-9a-f]{12})$/);
+    if (pm) return planPage(pm[1], url, env);
+    const im = url.pathname.match(/^\/api\/card\/([0-9a-f]{12})\.png$/);
+    if (im) return cardImage(im[1], url, env, ctx);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
     if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || url.searchParams.get("key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
@@ -43,6 +52,69 @@ async function hash(s){
   return [...new Uint8Array(d)].slice(0, 12).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+// ---------------- shared plan previews ----------------
+const card = async (id, env) => {
+  const r = await env.COMMUNITY.get(env.COMMUNITY.idFromName("v1")).fetch(new Request("https://do/api/card/" + id));
+  return r.ok ? r.json() : null;
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => Math.round(n).toLocaleString("en-US");
+function cardText(c){
+  const title = c.homes >= 1 ? "A plan for " + fmt(c.homes) + " new homes in Chicago by 2041" : "A plan for Chicago's housing";
+  const goalWord = c.mode === 1 ? "hard mode goal" : c.mode === 2 ? "ward mode goal" : "goal";
+  const desc = "Grade " + c.grade + " against a " + goalWord + " of " + fmt(c.goal) + " homes. Open it in Fix Chicago Housing, change it, and try to beat it.";
+  return {title, desc};
+}
+async function planPage(id, url, env){
+  const c = await card(id, env);
+  const to = c ? "/housing/#" + c.code : "/housing/";
+  if (!c) return Response.redirect(url.origin + to, 302);
+  const {title, desc} = cardText(c), img = url.origin + "/api/card/" + id + ".png";
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(title)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="${esc(desc)}">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
+<meta property="og:type" content="website"><meta property="og:url" content="${esc(url.href)}">
+<meta property="og:image" content="${img}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="0;url=${esc(to)}"></head>
+<body><script>location.replace(${JSON.stringify(to)})</script><a href="${esc(to)}">Open the plan</a></body></html>`;
+  return new Response(html, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300"}});
+}
+let wasmReady = null, fontBuf = null;
+async function font(){
+  if (fontBuf) return fontBuf;
+  // Instrument Sans as TrueType (an older browser string makes Google Fonts serve .ttf)
+  const out = [];
+  for (const w of [400, 600, 700]){
+    try {
+      const css = await (await fetch("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@" + w, {headers: {"user-agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.30 (KHTML, like Gecko) Safari/534.30"}})).text();
+      const m = css.match(/url\((https:[^)]+\.ttf)\)/); if (m) out.push(new Uint8Array(await (await fetch(m[1])).arrayBuffer()));
+    } catch (e) {}
+  }
+  return fontBuf = out;
+}
+async function cardImage(id, url, env, ctx){
+  const cache = caches.default, key = new Request(url.origin + "/api/card/" + id + ".png");
+  const hit = await cache.match(key); if (hit) return hit;
+  const c = await card(id, env);
+  if (!c) return env.ASSETS.fetch(new Request(url.origin + "/shape/art/og-housing.jpg"));
+  try {
+    if (!wasmReady) wasmReady = initWasm(RESVG_WASM);
+    await wasmReady;
+    const art = await env.ASSETS.fetch(new Request(url.origin + "/shape/art/card-art.png"));
+    let b64 = "";
+    if (art.ok){ const u = new Uint8Array(await art.arrayBuffer()); let bin = ""; for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); b64 = btoa(bin); }
+    const svg = cardSvg(c, b64);
+    const png = new Resvg(svg, {fitTo: {mode: "width", value: 1200}, font: {fontBuffers: await font(), defaultFontFamily: "Instrument Sans", loadSystemFonts: false}}).render().asPng();
+    const res = new Response(png, {headers: {"content-type": "image/png", "cache-control": "public, max-age=86400"}});
+    ctx.waitUntil(cache.put(key, res.clone()));
+    return res;
+  } catch (e) {
+    return env.ASSETS.fetch(new Request(url.origin + "/shape/art/og-housing.jpg"));
+  }
+}
+
 export class Community {
   constructor(state, env){
     this.sql = state.storage.sql;
@@ -51,6 +123,8 @@ export class Community {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS likes (plan INTEGER NOT NULL, who TEXT NOT NULL, PRIMARY KEY (plan, who))`);
     this.sql.exec(`CREATE INDEX IF NOT EXISTS plans_ts ON plans(ts)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, page TEXT NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS cards (id TEXT PRIMARY KEY, code TEXT NOT NULL, homes INTEGER NOT NULL, grade TEXT NOT NULL, goal INTEGER NOT NULL,
+      rent INTEGER NOT NULL, rentno INTEGER NOT NULL, mode INTEGER NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.cache = null;
   }
 
@@ -64,6 +138,9 @@ export class Community {
       if (path === "/api/feedback" && req.method === "GET") return json({feedback: this.sql.exec("SELECT id, text, page, ts FROM feedback ORDER BY ts DESC LIMIT 500").toArray()});
       if (path === "/api/stats" && req.method === "GET") return this.stats(+url.searchParams.get("hood") || 0);
       if (path === "/api/gallery" && req.method === "GET") return this.gallery(url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("hood") || 0);
+      if (path === "/api/card" && req.method === "POST") return this.addCard(await req.json(), who);
+      const cm = path.match(/^\/api\/card\/([0-9a-f]{12})$/);
+      if (cm && req.method === "GET"){ const r = this.sql.exec("SELECT code, homes, grade, goal, rent, rentno, mode FROM cards WHERE id = ?", cm[1]).toArray()[0]; return r ? json(r) : json({error: "not found"}, 404); }
       const m = path.match(/^\/api\/like\/(\d+)$/);
       if (m && req.method === "POST") return this.like(+m[1], who);
     } catch (e) { return json({error: "bad request"}, 400); }
@@ -81,6 +158,18 @@ export class Community {
     if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, Date.now(), dup.id); id = dup.id; }
     else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, who, Date.now()).one().id;
     this.cache = null;
+    return json({ok: true, id});
+  }
+
+  // a shared plan link: only the plan code and numbers are stored (no text, no image), and the preview image is drawn from them
+  async addCard(b, who){
+    const code = String(b.code || ""), homes = Math.round(+b.homes), grade = String(b.grade || ""), goal = Math.round(+b.goal), rent = Math.round(+b.rent), rentno = Math.round(+b.rentNo), mode = Math.round(+b.mode || 0);
+    if (!CODE_RE.test(code) || !(homes >= -500000 && homes <= 3000000) || !GRADES.has(grade) || !(goal > 0 && goal < 2000000) || !(rent > 0 && rent < 20000) || !(rentno > 0 && rentno < 20000) || !(mode >= 0 && mode <= 2)) return json({error: "invalid"}, 400);
+    const id = (await hash("card|" + code + "|" + homes + "|" + grade + "|" + goal)).slice(0, 12);
+    if (!this.sql.exec("SELECT 1 FROM cards WHERE id = ?", id).toArray().length){
+      if (this.sql.exec("SELECT COUNT(*) AS n FROM cards WHERE who = ?", who).one().n >= 60) return json({error: "slow down"}, 429);
+      this.sql.exec("INSERT INTO cards (id, code, homes, grade, goal, rent, rentno, mode, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, code, homes, grade, goal, rent, rentno, mode, who, Date.now());
+    }
     return json({ok: true, id});
   }
 

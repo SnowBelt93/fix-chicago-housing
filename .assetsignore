@@ -9,3 +9,6 @@ wrangler.jsonc
 .gitignore
 CLAUDE.md
 README.md
+package.json
+package-lock.json
+sw.js.map
