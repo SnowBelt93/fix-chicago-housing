@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chicago Housing Tracker</title>
+<title>Chicago Permit Tracker</title>
 <meta name="description" content="How many new homes Chicago is permitting, where, and how that compares with the pace needed to close its housing shortage. Updated daily from public City of Chicago data.">
-<meta property="og:title" content="Chicago Housing Tracker">
+<meta property="og:title" content="Chicago Permit Tracker">
 <meta property="og:description" content="New homes permitted in Chicago vs. the pace needed to close the shortage. Updated daily from public data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(
 .meterlbl{position:relative;height:38px;font-size:12.5px;color:#dbe6f4}
 .meterlbl span{position:absolute;top:4px;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.25}
 .meterlbl span b{display:block;color:#fff;font-size:14px}
-.asof{margin-top:14px;font-size:12.5px;color:#b9cbe3}
+.asof{margin-top:14px;font-size:12.5px;color:#dce7f5}
 /* sections */
 section{padding:40px 0 8px}
 h2{font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.05;margin:0 0 6px}
@@ -135,12 +135,12 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/" aria-current="page">Tracker</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/" aria-current="page">Permit tracker</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span><a class="sc-btn" href="#method" style="display:inline-flex;align-items:center;text-decoration:none">How we count</a></div>
 </header>
 <header class="mast">
   <div class="wrap">
-    <div class="t"><b>Chicago Housing Tracker</b></div>
+    <div class="t"><b>Chicago Permit Tracker</b></div>
     <nav><a href="#years">Years</a><a href="#pipeline">Pipeline</a><a href="#where">Where</a><a href="#projects">Projects</a><a href="#method">How we count</a></nav>
   </div>
 </header>
@@ -152,7 +152,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 <div class="tip" id="tip"></div>
 
 <footer><div class="wrap">
-  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>.</p>
+  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 </div></footer>
 
 <script>

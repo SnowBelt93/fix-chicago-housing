@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy · Shape Chicago</title>
+<meta name="description" content="What Shape Chicago stores and what stays in your browser.">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{max-width:720px;margin:0 auto;padding:48px max(24px,env(safe-area-inset-left)) 64px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
+.upd{color:var(--sc-mute);font-size:14px;margin:0 0 28px}
+.lede{font-size:18px;line-height:1.55;color:var(--sc-ink2);margin:0 0 32px}
+h2{font-size:20px;letter-spacing:-.01em;font-weight:600;margin:34px 0 10px}
+p,li{font-size:16px;line-height:1.6;color:var(--sc-ink2)}
+p{margin:0 0 12px}
+ul{margin:0 0 12px;padding-left:22px} li{margin-bottom:6px}
+b{color:var(--sc-ink);font-weight:600}
+footer{border-top:1px solid var(--sc-line)}
+footer .wrap{max-width:1200px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-left)) 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
+footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
+footer nav{display:flex;gap:18px;flex-wrap:wrap}
+@media (max-width:640px){ main{padding:32px 16px 48px} h1{font-size:32px} .lede{font-size:16px} footer .wrap{flex-direction:column;align-items:flex-start;padding-inline:16px} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit tracker</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+<h1>Privacy</h1>
+<p class="upd">Last updated November 6, 2026</p>
+<p class="lede">Shape Chicago has no accounts, no ads and no cookies. Almost everything you do stays in your own browser. Here is exactly what leaves it.</p>
+
+<h2>What stays on your device</h2>
+<p>Your plans, saved transit plans, settings (like which tips you've seen) and medals are kept in your browser's local storage. We can't see them. Clearing your browser's site data deletes them.</p>
+<p>If you tap <b>Use my location</b> in Trip times, your browser asks first, and your location is used on your device to pick a starting point. It is never sent to us.</p>
+
+<h2>What we receive</h2>
+<ul>
+<li><b>Finished housing simulations.</b> When a simulation finishes, the tool sends the plan code (which zoning levels and policies you picked), its home count and grade. We use these for "What other players chose" and the percent of players who voted for each policy.</li>
+<li><b>Plans you post.</b> Posting a plan to the gallery is optional. If you do, its code, totals and the neighborhood you picked under "I live in" (if any) are shown publicly. There is no place to type a name or comment, so nothing you write is ever published.</li>
+<li><b>Likes.</b> We record which plan was liked so each visitor can like a plan once.</li>
+</ul>
+<p>To stop spam, each of these is stored with a scrambled code made from your internet address and the date. The code changes every day, can't be turned back into your address, and isn't linked to anything else about you. We never store your address itself.</p>
+
+<h2>Share links</h2>
+<p>Share links and plan codes contain your plan's choices and nothing else. Anyone with the link can open the plan.</p>
+
+<h2>Services the site loads</h2>
+<p>Like any website, these services see your internet address and browser type when your browser loads files from them:</p>
+<ul>
+<li><b>Cloudflare</b> hosts the site and keeps short-lived request logs to run and protect it.</li>
+<li><b>OpenFreeMap</b> serves the base map tiles.</li>
+<li><b>Google Fonts</b> serves the typeface.</li>
+<li><b>unpkg</b> serves the open-source mapping code.</li>
+<li><b>Cloudflare Web Analytics</b> counts visits to the housing tool (pages viewed, rough location by country, browser type). It sets no cookies and doesn't follow you to other sites.</li>
+</ul>
+<p>We don't use advertising or social media trackers, and we don't sell or share data.</p>
+
+<h2>Children</h2>
+<p>The site is for a general audience and doesn't knowingly collect anything from children. It collects nothing that identifies anyone.</p>
+
+<h2>Changes</h2>
+<p>If this changes, we'll update this page and the date at the top.</p>
+
+</main>
+<footer><div class="wrap">
+  <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+  <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra.</span>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit tracker</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+</div></footer>
+</body>
+</html>
