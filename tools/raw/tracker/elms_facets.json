@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155455
+     "count": 155491
     },
     {
      "value": "Committee on Finance",
-     "count": 13808
+     "count": 13875
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10316
+     "count": 10451
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -61,7 +61,7 @@
     },
     {
      "value": "Committee on Police and Fire",
-     "count": 20
+     "count": 21
     },
     {
      "value": "Committee on Immigrant and Refugee Rights",
@@ -174,19 +174,19 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 117962
+     "count": 118103
     },
     {
      "value": "Claim",
-     "count": 29608
+     "count": 29676
     },
     {
      "value": "Resolution",
-     "count": 20542
+     "count": 20566
     },
     {
      "value": "Order",
-     "count": 9260
+     "count": 9264
     },
     {
      "value": "Appointment",
@@ -194,11 +194,11 @@
     },
     {
      "value": "Report",
-     "count": 677
+     "count": 678
     },
     {
      "value": "Communication",
-     "count": 633
+     "count": 634
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167329
+     "count": 167353
     },
     {
      "value": "3-Council Introduction",
@@ -227,15 +227,15 @@
     },
     {
      "value": "4-In Committee",
-     "count": 1849
+     "count": 2031
     },
     {
      "value": "5-Council Consideration",
-     "count": 190
+     "count": 189
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 42
+     "count": 76
     },
     {
      "value": "0-PreDraft",
@@ -248,11 +248,11 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29900
+     "count": 29968
     },
     {
      "value": "Reilly, Brendan",
-     "count": 12956
+     "count": 12957
     },
     {
      "value": "Burnett, Jr., Walter",
@@ -264,7 +264,7 @@
     },
     {
      "value": "Lopez, Raymond A.",
-     "count": 5069
+     "count": 5079
     },
     {
      "value": "Tunney, Thomas",
@@ -280,15 +280,15 @@
     },
     {
      "value": "Harris, Michelle A.",
-     "count": 3950
+     "count": 3954
     },
     {
      "value": "Waguespack, Scott",
-     "count": 3862
+     "count": 3864
     },
     {
      "value": "Quinn, Marty",
-     "count": 3327
+     "count": 3338
     },
     {
      "value": "Smith, Michele",
@@ -312,7 +312,7 @@
     },
     {
      "value": "Hopkins, Brian",
-     "count": 2310
+     "count": 2311
     },
     {
      "value": "Ervin, Jason C.",
@@ -328,11 +328,11 @@
     },
     {
      "value": "Dowell, Pat",
-     "count": 2177
+     "count": 2180
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2133
+     "count": 2139
     },
     {
      "value": "Lightfoot, Lori E.",
@@ -340,11 +340,11 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 2015
+     "count": 2017
     },
     {
      "value": "Mitts, Emma",
-     "count": 1940
+     "count": 1941
     },
     {
      "value": "Osterman, Harry",
@@ -368,7 +368,7 @@
     },
     {
      "value": "O'Shea, Matthew J.",
-     "count": 1659
+     "count": 1661
     },
     {
      "value": "Cappleman, James",
@@ -376,7 +376,7 @@
     },
     {
      "value": "Gardiner, James M.",
-     "count": 1489
+     "count": 1509
     },
     {
      "value": "Cardenas, George A.",
@@ -403,16 +403,16 @@
      "count": 1328
     },
     {
+     "value": "La Spata, Daniel",
+     "count": 1296
+    },
+    {
      "value": "Moore, Joseph",
      "count": 1296
     },
     {
-     "value": "La Spata, Daniel",
-     "count": 1293
-    },
-    {
      "value": "Taliaferro, Chris",
-     "count": 1266
+     "count": 1274
     },
     {
      "value": "Austin, Carrie M.",
@@ -428,7 +428,7 @@
     },
     {
      "value": "Tabares, Silvana",
-     "count": 1166
+     "count": 1178
     },
     {
      "value": "Sawyer, Roderick T.",
@@ -436,7 +436,7 @@
     },
     {
      "value": "Beale, Anthony",
-     "count": 1154
+     "count": 1155
     },
     {
      "value": "Balcer, James",
@@ -444,7 +444,7 @@
     },
     {
      "value": "Moore, David H.",
-     "count": 1066
+     "count": 1074
     },
     {
      "value": "King, Sophia D.",
@@ -452,7 +452,7 @@
     },
     {
      "value": "Curtis, Derrick G.",
-     "count": 957
+     "count": 970
     },
     {
      "value": "Colon, Rey",
@@ -463,12 +463,12 @@
      "count": 927
     },
     {
-     "value": "Munoz, Ricardo",
-     "count": 907
+     "value": "Sigcho-Lopez, Byron",
+     "count": 910
     },
     {
-     "value": "Sigcho-Lopez, Byron",
-     "count": 905
+     "value": "Munoz, Ricardo",
+     "count": 907
     },
     {
      "value": "Napolitano, Anthony V.",
@@ -476,11 +476,11 @@
     },
     {
      "value": "Mitchell, Gregory I.",
-     "count": 866
+     "count": 867
     },
     {
      "value": "Rodriguez, Michael D.",
-     "count": 856
+     "count": 858
     },
     {
      "value": "Burns, William D.",
@@ -500,11 +500,11 @@
     },
     {
      "value": "Vasquez, Jr., Andre",
-     "count": 787
+     "count": 790
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 743
+     "count": 744
     },
     {
      "value": "Suarez, Regner Ray",
@@ -512,7 +512,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 670
+     "count": 671
     },
     {
      "value": "O'Connor, Mary",
@@ -528,7 +528,7 @@
     },
     {
      "value": "Lee, Nicole T.",
-     "count": 591
+     "count": 593
     },
     {
      "value": "Lane, Lona",
@@ -544,11 +544,11 @@
     },
     {
      "value": "Mosley, Ronnie L.",
-     "count": 497
+     "count": 502
     },
     {
      "value": "Rodriguez Sanchez, Rossana",
-     "count": 497
+     "count": 500
     },
     {
      "value": "Graham, Deborah L.",
@@ -568,7 +568,7 @@
     },
     {
      "value": "Fuentes, Jessica L.",
-     "count": 439
+     "count": 443
     },
     {
      "value": "Chandler, Michael D.",
@@ -576,7 +576,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 387
+     "count": 394
     },
     {
      "value": "Thomas, Latasha R.",
@@ -587,28 +587,28 @@
      "count": 322
     },
     {
+     "value": "Taylor, Jeanette B.",
+     "count": 302
+    },
+    {
      "value": "Schulter, Eugene",
      "count": 299
     },
     {
-     "value": "Taylor, Jeanette B.",
-     "count": 299
-    },
-    {
      "value": "Ramirez, Julia M.",
-     "count": 266
+     "count": 269
     },
     {
      "value": "Scott, Monique L.",
-     "count": 260
+     "count": 263
     },
     {
      "value": "Gutierrez, Jeylu B.",
-     "count": 258
+     "count": 261
     },
     {
      "value": "Chico, Peter",
-     "count": 244
+     "count": 250
     },
     {
      "value": "Daley, Richard M.",
@@ -620,7 +620,7 @@
     },
     {
      "value": "Cruz, Ruth",
-     "count": 223
+     "count": 227
     },
     {
      "value": "Smith, Mary Ann",
@@ -648,7 +648,7 @@
     },
     {
      "value": "Robinson, Lamont J.",
-     "count": 171
+     "count": 175
     },
     {
      "value": "Holmes, Natashia",
@@ -660,7 +660,7 @@
     },
     {
      "value": "Conway, William",
-     "count": 150
+     "count": 152
     },
     {
      "value": "Levar, Patrick",
@@ -704,7 +704,7 @@
     },
     {
      "value": "Yancy, Desmon C.",
-     "count": 77
+     "count": 78
     },
     {
      "value": "Lyle, Freddrenna",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169394
+     "count": 169632
     },
     {
      "value": "YES",
-     "count": 12139
+     "count": 12140
     }
    ]
   },
@@ -838,12 +838,12 @@
      "count": 8077
     },
     {
-     "value": "2024",
-     "count": 7199
+     "value": "2026",
+     "count": 7380
     },
     {
-     "value": "2026",
-     "count": 7141
+     "value": "2024",
+     "count": 7199
     },
     {
      "value": "2022",
@@ -864,11 +864,11 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 29918
+     "count": 29986
     },
     {
      "value": "42",
-     "count": 12956
+     "count": 12957
     },
     {
      "value": "Mayor",
@@ -880,31 +880,31 @@
     },
     {
      "value": "14",
-     "count": 6150
+     "count": 6153
     },
     {
      "value": "01",
-     "count": 5250
+     "count": 5253
+    },
+    {
+     "value": "15",
+     "count": 5078
     },
     {
      "value": "44",
      "count": 5070
     },
     {
-     "value": "15",
-     "count": 5068
-    },
-    {
      "value": "02",
-     "count": 4599
+     "count": 4600
     },
     {
      "value": "08",
-     "count": 3946
+     "count": 3950
     },
     {
      "value": "32",
-     "count": 3862
+     "count": 3864
     },
     {
      "value": "47",
@@ -916,23 +916,23 @@
     },
     {
      "value": "13",
-     "count": 3447
+     "count": 3458
     },
     {
      "value": "11",
-     "count": 3347
+     "count": 3349
     },
     {
      "value": "25",
-     "count": 3336
+     "count": 3341
     },
     {
      "value": "16",
-     "count": 3308
+     "count": 3314
     },
     {
      "value": "45",
-     "count": 2962
+     "count": 2982
     },
     {
      "value": "50",
@@ -940,19 +940,19 @@
     },
     {
      "value": "39",
-     "count": 2851
+     "count": 2852
     },
     {
      "value": "26",
-     "count": 2770
+     "count": 2774
     },
     {
      "value": "23",
-     "count": 2542
+     "count": 2554
     },
     {
      "value": "40",
-     "count": 2486
+     "count": 2489
     },
     {
      "value": "35",
@@ -968,11 +968,11 @@
     },
     {
      "value": "04",
-     "count": 2147
+     "count": 2151
     },
     {
      "value": "03",
-     "count": 2116
+     "count": 2119
     },
     {
      "value": "38",
@@ -980,27 +980,27 @@
     },
     {
      "value": "Dept./Agency",
-     "count": 1980
+     "count": 1982
     },
     {
      "value": "31",
-     "count": 1973
+     "count": 1974
     },
     {
      "value": "21",
-     "count": 1960
+     "count": 1965
     },
     {
      "value": "37",
-     "count": 1940
+     "count": 1941
     },
     {
      "value": "30",
-     "count": 1901
+     "count": 1905
     },
     {
      "value": "19",
-     "count": 1858
+     "count": 1860
     },
     {
      "value": "46",
@@ -1008,11 +1008,11 @@
     },
     {
      "value": "12",
-     "count": 1770
+     "count": 1773
     },
     {
      "value": "22",
-     "count": 1760
+     "count": 1762
     },
     {
      "value": "49",
@@ -1020,15 +1020,15 @@
     },
     {
      "value": "33",
-     "count": 1739
+     "count": 1742
     },
     {
      "value": "29",
-     "count": 1721
+     "count": 1729
     },
     {
      "value": "06",
-     "count": 1620
+     "count": 1627
     },
     {
      "value": "41",
@@ -1040,39 +1040,39 @@
     },
     {
      "value": "18",
-     "count": 1534
+     "count": 1547
     },
     {
      "value": "17",
-     "count": 1452
+     "count": 1460
     },
     {
      "value": "10",
-     "count": 1413
+     "count": 1419
     },
     {
      "value": "34",
-     "count": 1370
+     "count": 1372
     },
     {
      "value": "05",
-     "count": 1273
-    },
-    {
-     "value": "07",
-     "count": 1227
+     "count": 1274
     },
     {
      "value": "20",
-     "count": 1226
+     "count": 1229
+    },
+    {
+     "value": "07",
+     "count": 1228
     },
     {
      "value": "09",
-     "count": 1155
+     "count": 1156
     },
     {
      "value": "24",
-     "count": 1142
+     "count": 1145
     },
     {
      "value": "Clerk",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113433
+     "count": 113435
     },
     {
      "value": "Adopted",
@@ -1157,7 +1157,7 @@
     },
     {
      "value": "Passed as Substitute",
-     "count": 7135
+     "count": 7156
     },
     {
      "value": "Input to Substitute",
@@ -1169,11 +1169,11 @@
     },
     {
      "value": "Referred",
-     "count": 1740
+     "count": 1806
     },
     {
      "value": "Placed on File",
-     "count": 1656
+     "count": 1657
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1184,12 +1184,20 @@
      "count": 161
     },
     {
+     "value": "Direct Introduction",
+     "count": 149
+    },
+    {
      "value": "Agreed Calendar",
      "count": 98
     },
     {
+     "value": "Accepted",
+     "count": 73
+    },
+    {
      "value": "Recommended to Pass",
-     "count": 67
+     "count": 66
     },
     {
      "value": "Withdrawn",
@@ -1200,16 +1208,8 @@
      "count": 52
     },
     {
-     "value": "Accepted",
-     "count": 39
-    },
-    {
      "value": "Repealed",
      "count": 36
-    },
-    {
-     "value": "Direct Introduction",
-     "count": 33
     },
     {
      "value": "Re-Referred",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163347
+     "count": 163562
     },
     {
      "value": "YES",
-     "count": 18184
+     "count": 18208
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181533,
-  "pages": 181533
+  "count": 181772,
+  "pages": 181772
  }
 }
