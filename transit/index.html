@@ -182,11 +182,16 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
   aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
   aside#panel{transition:max-height .3s cubic-bezier(.2,.8,.2,1)}
   aside#panel.tall{max-height:78vh}
-  aside#panel.peek{max-height:calc(84px + env(safe-area-inset-bottom))}
-  aside#panel.peek > :not(.grab):not(#peekBar){display:none !important}
-  aside#panel.peek #peekBar{display:flex}
-  .grab{display:block !important;position:relative;width:100%;height:22px;margin:0;background:none;touch-action:none;cursor:grab;flex:none}
-  .grab::before{content:"";position:absolute;left:50%;top:8px;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--line2)}
+  aside#panel.peek{max-height:calc(64px + env(safe-area-inset-bottom))}
+  aside#panel.peek > :not(.grab){display:none !important}
+  /* one handle: tap it (or drag it) to tuck the panel away or bring it back */
+  .grab{display:flex !important;align-items:center;justify-content:center;position:relative;width:100%;height:30px;margin:0;padding:0 18px;border:0;background:none;touch-action:none;cursor:pointer;flex:none;font:inherit;color:var(--ink)}
+  .grab::before{content:"";position:absolute;left:50%;top:10px;width:44px;height:5px;margin-left:-22px;border-radius:3px;background:var(--line2);transition:background .15s}
+  .grab:hover::before,.grab:active::before{background:#9aa3ad}
+  .grab .gtitle,.grab .gchev{display:none}
+  aside#panel.peek .grab{height:56px;justify-content:space-between;padding-top:12px}
+  aside#panel.peek .grab .gtitle{display:block;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  aside#panel.peek .grab .gchev{display:block;width:22px;height:22px;flex:none;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .vhead{padding:8px 18px 12px}
   .vhead h1{font-size:21px}
   .vbody{padding:12px 18px}
@@ -234,9 +239,6 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .crow .note{font-size:12.5px}
 .fan2{display:none;font-size:12px;color:var(--faint);margin:0}
 .grab{display:none;align-self:center;width:40px;height:5px;border-radius:3px;background:var(--line2);margin:8px auto 0;border:0;padding:0}
-#peekBar{display:none;align-items:center;justify-content:space-between;gap:10px;width:100%;border:0;background:none;padding:10px 18px 14px;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;touch-action:none;text-align:left}
-#peekBar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#peekBar small{font-size:13px;font-weight:500;color:var(--sc-navy,#2b5da0);white-space:nowrap}
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
 
 
@@ -381,6 +383,7 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 #srcBody .mfold:not([open]) > summary::after{transform:translateY(-40%) rotate(-45deg)}
 #srcBody .mfold > summary:hover{color:var(--sc-navy)}
 #srcBody .mfold .mbody{padding:0 0 14px}
+.eggpop .maplibregl-popup-content{font:500 13px/1.4 var(--sc-font,system-ui);padding:8px 12px;border-radius:10px;max-width:240px}
 </style>
 </head>
 <body>
@@ -394,8 +397,7 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 <div id="map" role="application" aria-label="Map of Chicago's L, Metra and bus lines"></div>
 
 <aside id="panel" aria-label="Transit plan">
-  <button class="grab" id="grab" type="button" aria-label="Hide or show the panel"></button>
-  <button id="peekBar" type="button" aria-label="Show the panel"><span id="peekTitle">Your plan</span><small>Show ▴</small></button>
+  <button class="grab" id="grab" type="button" aria-label="Hide the panel" aria-expanded="true"><span class="gtitle" id="peekTitle">Your plan</span><svg class="gchev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg></button>
   <!-- start -->
   <div id="planMini" aria-live="polite"></div>
   <section class="view on" id="vStart">
@@ -1455,64 +1457,65 @@ async function initMap(){
   startTrains();
 }
 
-/* ---------- trains running on the map: for fun, not data ----------
-   Every L line (and Metra, when that layer is on) runs trains at its midday frequency and average speed, sped up 60×
-   (one real minute a second). Lines in your plan run theirs too, in flag blue. Off under reduced motion. */
-const TRAIN_SPEEDUP = 60, SERVICE_MIN = 18 * 60;
-let TRAIN_ROUTES = null, trainRaf = 0, trainLast = 0, trainClock = 0;
-function trainsDirty(){ TRAIN_ROUTES = null; }
-function polyM(ll){
+/* ---------- the Easter egg: one Brown Line train running Kimball → the Loop → Kimball ----------
+   Four cars, drawn from above (silver roofs, rooftop units, a dark cab end), at 20× real speed. Too small to see from far out,
+   so each car grows to at least ~14 px. Tap it for a note. Hidden with the L layer, off under reduced motion. */
+const EGG_SPEEDUP = 20, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_GAP_M = 1.2;
+let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0;
+function trainsDirty(){}   // kept for older callers
+function eggPath(){
+  const L = NET.lLines.find(l => l.id === "Brn") || NET.lLines[0]; if (!L) return null;
+  const ll = L.paths.reduce((a, p) => p.length > a.length ? p : a, []);
   const xy = ll.map(p => toXY(p[0], p[1])), cum = [0];
   for (let i = 1; i < xy.length; i++) cum.push(cum[i - 1] + Math.hypot(xy[i][0] - xy[i - 1][0], xy[i][1] - xy[i - 1][1]));
   return {xy, cum, len:cum[cum.length - 1]};
 }
-function trainRoutes(){
-  const R = [], perDir = (trips, paths) => Math.max(1, trips / 2 / paths);
-  const add = (ll, head, mph, color, mine) => { if (!ll || ll.length < 2) return; const P = polyM(ll); if (P.len < 300) return;
-    const spd = mph * 1609.34 / 60, gap = spd * head; R.push({...P, spd, gap, color, mine:mine ? 1 : 0, ph:(P.len * 7.31) % gap}); };
-  if (layerOn.L) for (const l of NET.lLines) for (const p of l.paths) add(p, Math.min(30, SERVICE_MIN / perDir(l.trips, l.paths.length)), 16.98, l.color, false);
-  const up = {}; for (const L of active()) if (L.type === "metra") up[L.line] = L;
-  if (layerOn.commuter) for (const l of NET.metraLines){ const U = up[l.id];
-    const head = U && U.head ? U.head : Math.min(90, SERVICE_MIN / perDir(l.trips, l.paths.length));
-    for (const p of l.paths) add(p, head, 30, U ? "#41b6e6" : l.color, !!U); }
-  for (const L of active()){
-    if (L.type !== "draw" || L.mode === "infill" || L.pts.length < 2) continue;
-    const M = MODES[L.mode]; add(L.shape || shapeLL(L.mode, L.pts), L.head || M.head, M.speed, "#41b6e6", true);
-  }
-  return R;
+function eggAt(P, d){
+  d = Math.max(0, Math.min(P.len, d));
+  let i = 1; while (i < P.cum.length - 1 && P.cum[i] < d) i++;
+  const a = P.xy[i - 1], b = P.xy[i], f = (d - P.cum[i - 1]) / Math.max(1e-6, P.cum[i] - P.cum[i - 1]);
+  return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
 }
-function trainFrame(now){
-  trainRaf = 0;
-  if (document.hidden || !map || !map.getSource("trains")) return;
-  const dt = trainLast ? Math.min(0.1, (now - trainLast) / 1000) : 0; trainLast = now;
-  trainClock += dt * TRAIN_SPEEDUP / 60;   // minutes of service time
-  if (!TRAIN_ROUTES) TRAIN_ROUTES = trainRoutes();
-  const feats = [], mpp = 78271.52 * Math.cos(41.88 * Math.PI / 180) / Math.pow(2, map.getZoom()), tl = Math.max(150, 15 * mpp);   // a train is ~150 m, or 15 px when zoomed out
-  const at = (r, d) => { let i = 1; while (i < r.cum.length - 1 && r.cum[i] < d) i++;
-    const a = r.xy[i - 1], b = r.xy[i], f = (d - r.cum[i - 1]) / Math.max(1e-6, r.cum[i] - r.cum[i - 1]); return [i, a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]; };
-  for (const r of TRAIN_ROUTES){
-    const n = Math.max(1, Math.round(r.len / r.gap)), g = r.len / n, L = Math.min(tl, r.len / 3);
-    for (let dir = 0; dir < 2; dir++) for (let k = 0; k < n; k++){
-      let d = (trainClock * r.spd + k * g + r.ph + dir * g / 2) % (r.len - L); if (dir) d = r.len - L - d;
-      const [i0, x0, y0] = at(r, d), [i1, x1, y1] = at(r, d + L), c = [toLL(x0, y0)];
-      for (let i = i0; i < i1; i++) c.push(toLL(r.xy[i][0], r.xy[i][1]));
-      c.push(toLL(x1, y1));
-      feats.push({type:"Feature", properties:{c:r.color, m:r.mine}, geometry:{type:"LineString", coordinates:c}});
-    }
+function eggFrame(now){
+  eggRaf = 0;
+  if (document.hidden || !map || !map.getSource("egg")) return;
+  const dt = eggLast ? Math.min(0.1, (now - eggLast) / 1000) : 0; eggLast = now;
+  eggClock += dt * EGG_SPEEDUP;   // seconds of real running time
+  const P = EGG || (EGG = eggPath()); if (!P) return;
+  const mpp = 78271.52 * Math.cos(41.88 * Math.PI / 180) / Math.pow(2, map.getZoom());
+  const carL = Math.max(EGG_CAR_M, 18 * mpp), carW = Math.max(2.9, 5.5 * mpp), gap = Math.max(EGG_GAP_M, 1.5 * mpp), train = EGG_CARS * carL + (EGG_CARS - 1) * gap;
+  const run = P.len - train, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
+  const head = leg === 0 ? s0 + train : P.len - s0 - train;   // out to the Loop, then back to Kimball
+  const dir = leg === 0 ? 1 : -1, feats = [];
+  for (let c = 0; c < EGG_CARS; c++){
+    const front = leg === 0 ? head - c * (carL + gap) : head + c * (carL + gap), back = front - dir * carL;
+    const A = eggAt(P, back), B = eggAt(P, front), dx = B[0] - A[0], dy = B[1] - A[1], n = Math.hypot(dx, dy) || 1, ux = dx / n, uy = dy / n, nx = -uy * carW / 2, ny = ux * carW / 2;
+    const quad = (t0, t1, w) => { const p0 = [A[0] + dx * t0, A[1] + dy * t0], p1 = [A[0] + dx * t1, A[1] + dy * t1];
+      return [[p0[0] + nx * w, p0[1] + ny * w], [p1[0] + nx * w, p1[1] + ny * w], [p1[0] - nx * w, p1[1] - ny * w], [p0[0] - nx * w, p0[1] - ny * w], [p0[0] + nx * w, p0[1] + ny * w]].map(q => toLL(q[0], q[1])); };
+    feats.push({type:"Feature", properties:{k:"body"}, geometry:{type:"Polygon", coordinates:[quad(0, 1, 1)]}});
+    for (const [a, b] of [[0.18, 0.3], [0.7, 0.82]]) feats.push({type:"Feature", properties:{k:"unit"}, geometry:{type:"Polygon", coordinates:[quad(a, b, 0.5)]}});
+    if (c === 0) feats.push({type:"Feature", properties:{k:"cab"}, geometry:{type:"Polygon", coordinates:[quad(0.9, 1, 0.92)]}});
+    if (c === EGG_CARS - 1) feats.push({type:"Feature", properties:{k:"tail"}, geometry:{type:"Polygon", coordinates:[quad(0, 0.08, 0.92)]}});
   }
-  map.getSource("trains").setData({type:"FeatureCollection", features:feats});
-  trainRaf = setTimeout(() => requestAnimationFrame(trainFrame), 33);   // about 30 updates a second is plenty
+  map.getSource("egg").setData({type:"FeatureCollection", features:feats});
+  eggRaf = setTimeout(() => requestAnimationFrame(eggFrame), 40);
 }
 function startTrains(){
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches || map.getSource("trains")) return;
-  map.addSource("trains", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
-  const tw = (a, b) => ["interpolate", ["linear"], ["zoom"], 9, a, 15, b];
-  map.addLayer({id:"trains-case", type:"line", source:"trains", layout:{"line-cap":"round", "line-join":"round"}, paint:{"line-color":["case", ["==", ["get", "m"], 1], "#1a1d21", ["get", "c"]], "line-width":tw(5, 11)}}, "pst");
-  map.addLayer({id:"trains", type:"line", source:"trains", layout:{"line-cap":"round", "line-join":"round"}, paint:{"line-color":["case", ["==", ["get", "m"], 1], ["get", "c"], "#ffffff"], "line-width":tw(2.4, 6)}}, "pst");
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && !trainRaf){ trainLast = 0; trainRaf = requestAnimationFrame(trainFrame); } });
-  trainRaf = requestAnimationFrame(trainFrame);
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches || map.getSource("egg")) return;
+  map.addSource("egg", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  const vis = layerOn.L ? "visible" : "none";
+  map.addLayer({id:"egg-body", type:"fill", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis}, paint:{"fill-color":"#cfd5dc"}}, "pst");
+  map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":["interpolate", ["linear"], ["zoom"], 10, 0.8, 15, 1.4]}}, "pst");
+  map.addLayer({id:"egg-unit", type:"fill", source:"egg", filter:["==", ["get", "k"], "unit"], layout:{visibility:vis}, paint:{"fill-color":"#8b939c"}}, "pst");
+  map.addLayer({id:"egg-cab", type:"fill", source:"egg", filter:["any", ["==", ["get", "k"], "cab"], ["==", ["get", "k"], "tail"]], layout:{visibility:vis}, paint:{"fill-color":"#2a3038"}}, "pst");
+  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 20 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, about 14.6 meters each, the length of a CTA rail car. Not to scale when you zoom out, or you'd never find it."];
+  let note = 0;
+  map.on("click", "egg-body", e => { new maplibregl.Popup({closeButton:false, offset:8, className:"eggpop"}).setLngLat(e.lngLat).setText(NOTES[note++ % NOTES.length]).addTo(map); });
+  map.on("mouseenter", "egg-body", () => { map.getCanvas().style.cursor = "pointer"; });
+  map.on("mouseleave", "egg-body", () => { map.getCanvas().style.cursor = ""; });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && !eggRaf){ eggLast = 0; eggRaf = requestAnimationFrame(eggFrame); } });
+  eggRaf = requestAnimationFrame(eggFrame);
 }
-
 /* density canvases: people or jobs per square mile on a 400 m grid */
 let DENS_COORDS;
 function makeDensityCanvas(field){
@@ -1666,12 +1669,13 @@ var SHEET = "half";
 function setSheet(s){
   const P = $("panel"); SHEET = s;
   P.classList.toggle("peek", s === "peek"); P.classList.toggle("tall", s === "tall");
+  $("grab").setAttribute("aria-expanded", String(s !== "peek")); $("grab").setAttribute("aria-label", s === "peek" ? "Show the panel" : "Hide the panel");
   const h = document.querySelector("#panel .view.on h1"); $("peekTitle").textContent = h ? h.textContent : "Your plan";
   padMap(); setTimeout(padMap, 320);   // again once the height has finished moving
 }
 function sheetSwipe(el){
   let y0 = null;
-  el.addEventListener("pointerdown", e => { if (!matchMedia("(max-width:859px)").matches || e.target.closest("button:not(.grab):not(#peekBar),a,input,select")) return; y0 = e.clientY; });
+  el.addEventListener("pointerdown", e => { if (!matchMedia("(max-width:859px)").matches || e.target.closest("button:not(.grab),a,input,select")) return; y0 = e.clientY; });
   el.addEventListener("pointerup", e => {
     if (y0 == null) return; const dy = e.clientY - y0; y0 = null;
     if (Math.abs(dy) < 30) return;
@@ -2428,7 +2432,7 @@ function setLayer(k, on){
   layerOn[k] = on; trainsDirty();
   document.querySelector(`#layers [data-l="${k}"]`).setAttribute("aria-pressed", on);
   const vis = v => v ? "visible" : "none";
-  const ids = {L:["L", "L-case", "lst"], commuter:["metra", "metra-case", "mst", "ssl", "ssl-case", "sslst"]}[k];
+  const ids = {L:["L", "L-case", "lst", "egg-body", "egg-line", "egg-unit", "egg-cab"], commuter:["metra", "metra-case", "mst", "ssl", "ssl-case", "sslst"]}[k];
   if (ids) for (const id of ids) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis(on));
   if (k === "bus") map.setLayoutProperty("bus", "visibility", vis(on));
   if (k === "people" || k === "jobs"){
@@ -2552,7 +2556,7 @@ function openSources(){
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Map layers</h3>
-  <p>The moving trains are for fun: each L and Metra line runs at its midday frequency from the schedules above, at an average speed (L 17 mph, Metra 30 mph), sped up 60 times. Your plan's lines run in blue. They don't affect any number.</p>
+  <p>The little train on the Brown Line is an Easter egg: four cars running Kimball to the Loop and back at 20 times real speed (17 mph average). It grows when you zoom out so you can find it, and it doesn't affect any number.</p>
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
@@ -2610,8 +2614,7 @@ async function boot(){
   // phones: the sheet has three heights. Tap the handle to tuck it away or bring it back; swipe the handle, the
   // tucked bar or a view's header up or down to step between heights.
   $("grab").onclick = () => { if (Date.now() - (sheetSwipe.at || 0) < 350) return; setSheet(SHEET === "peek" ? "half" : "peek"); };
-  $("peekBar").onclick = () => { if (Date.now() - (sheetSwipe.at || 0) < 350) return; setSheet("half"); };
-  for (const el of [$("grab"), $("peekBar")]) sheetSwipe(el);
+  sheetSwipe($("grab"));
   for (const el of document.querySelectorAll("#panel .vhead")) sheetSwipe(el);
   addEventListener("resize", padMap); padMap();
   addEventListener("keydown", e => {
