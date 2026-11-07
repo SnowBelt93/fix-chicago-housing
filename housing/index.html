@@ -1407,6 +1407,8 @@ body.playing #sky{opacity:1}
 }
 @media (min-width:860px) and (max-width:1000px){ .sc-bar .hrent{display:none !important} }
 @media (min-width:860px) and (max-width:1100px){ .sc-bar #homesLbl{display:none} }
+.learnmore{margin-top:14px !important;font-size:14px !important}
+.learnmore a{font-weight:600}
 </style>
 
 <div id="app">
@@ -1693,7 +1695,7 @@ body.playing #sky{opacity:1}
           <tr><th>Rent growth a year</th><td>3.4%</td><td><a href="https://www.matthews.com/market_insights/chicago-il-multifamily-market-report-q4-2025" target="_blank" rel="noopener">CoStar</a></td></tr>
           <tr><th>Chance a small lot is rebuilt in 15 years, today</th><td>0.4–7.4%</td><td><a href="https://data.cityofchicago.org/Buildings/Building-Permits/ydr8-5enu" target="_blank" rel="noopener">City permits</a></td></tr>
         </tbody></table>
-        <p class="small mathnote">Anything we had to guess is under <b>Our assumptions</b>. Want the real count? The <a href="../tracker/" target="_blank" rel="noopener">Chicago Permit Tracker</a> shows what the city permits, updated daily.</p>
+        <p class="small mathnote">New to this? <a href="../learn/" target="_blank" rel="noopener">Learn the basics</a>. Anything we had to guess is under <b>Our assumptions</b>. Want the real count? The <a href="../tracker/" target="_blank" rel="noopener">Chicago Permit Tracker</a> shows what the city permits, updated daily.</p>
         <h3 class="mathsub">The details</h3>
         <div class="math mfolds">
 <details class="mfold"><summary>What each zoning level allows</summary><div class="mbody"><div style="overflow-x:auto"><table><thead><tr><th>Level</th><th>Stories</th><th>Homes on a 25×125 lot</th><th>Based on Chicago zoning</th></tr></thead><tbody id="tierTable"></tbody></table></div><span class="small">Homes per lot follow the minimum lot area per home in the <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48908" target="_blank" rel="noopener">Chicago Zoning Ordinance §17-2-0303</a>. A 25×125 ft (3,125 sq ft) lot is typical in Chicago (<a href="https://www.chipublib.org/blogs/post/technology-that-changed-chicago-subdivisions/" target="_blank" rel="noopener">Chicago Public Library</a>).</span></div></details>
@@ -4699,6 +4701,8 @@ function openInfo(title, src){
   const x = document.createElement("button"); x.type = "button"; x.className = "sc-btn sc-x"; x.textContent = "Close"; x.addEventListener("click", () => dlg.close());
   const h = document.createElement("h2"); h.textContent = title; body.append(x, h);
   if (src){ const c = src.cloneNode(true); c.hidden = false; c.classList.remove("tinfo", "more"); c.removeAttribute("style"); c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); c.removeAttribute("id"); body.append(c); }
+  { const t = title.toLowerCase(), k = /illegal|build them like/.test(t) ? "illegal" : /afford|aro/.test(t) ? "aro" : /prerogative/.test(t) ? "prerogative" : /megaproject|big project/.test(t) ? "megaprojects" : /goal|shortage|hard mode/.test(t) ? "shortage" : /rent/.test(t) ? "rents" : /zon|go up|level|neighborhood|metra|main street|corridor/.test(t) ? "zoning" : "";
+    const p = document.createElement("p"); p.className = "learnmore"; p.innerHTML = '<a href="../learn/' + (k ? "#" + k : "") + '" target="_blank" rel="noopener">' + (k ? "Learn the basics behind this" : "New to this? Learn the basics") + '</a>'; body.append(p); }
   if (dlg.showModal) { if (!dlg.open) dlg.showModal(); } else dlg.setAttribute("open", "");
   x.focus();
 }
