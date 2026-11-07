@@ -18,7 +18,7 @@ ${artB64 ? `<image x="600" y="210" width="640" height="404" preserveAspectRatio=
 <path d="${STAR}" transform="translate(64 48) scale(1.6)" fill="#e4002b"/>
 <text x="112" y="80" font-family="Instrument Sans" font-weight="700" font-size="30" fill="#1a1d21">Shape Chicago</text>
 <text x="64" y="168" font-family="Instrument Sans" font-weight="600" font-size="30" fill="#3d434b">A plan from Fix Chicago Housing</text>
-<text x="60" y="${168 + size + 6}" font-family="Instrument Sans" font-weight="600" font-size="${size}" letter-spacing="-4" fill="${neg ? "#b3001e" : "#1a1d21"}">${big}</text>
+<text x="60" y="${168 + size + 6}" font-family="Instrument Sans" font-weight="600" font-size="${size}" letter-spacing="-2" fill="${neg ? "#b3001e" : "#1a1d21"}">${big}</text>
 <text x="64" y="${168 + size + 60}" font-family="Instrument Sans" font-weight="400" font-size="34" fill="#1a1d21">new homes by 2041</text>
 <g transform="translate(64 ${168 + size + 104})">
   <path d="${STAR}" transform="scale(3.1)" fill="${gradeFill}" stroke="#e4002b" stroke-width="${gradeFill === "none" ? 0.9 : 0}"/>
