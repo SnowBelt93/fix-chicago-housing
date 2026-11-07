@@ -4072,7 +4072,7 @@ $("playBtn").addEventListener("click", () => {
 });
 // the light over the 15 years: a pink dawn in 2026, plain daylight through the middle, a golden evening by 2041
 let skyRaf = 0, skyTick = 0;
-const SKY = [[0, [255,150,120], .55], [.25, [255,236,214], .25], [.55, [255,255,255], 0], [.8, [255,206,140], .35], [1, [255,150,70], .6]];
+const SKY = [[0, [255,140,110], .75], [.25, [255,232,206], .3], [.55, [255,255,255], 0], [.8, [255,200,130], .45], [1, [255,140,60], .8]];
 function skyAt(t){
   let i = 1; while (i < SKY.length - 1 && SKY[i][0] < t) i++;
   const [t0, c0, a0] = SKY[i - 1], [t1, c1, a1] = SKY[i], f = Math.max(0, Math.min(1, (t - t0) / (t1 - t0)));
@@ -4228,15 +4228,24 @@ function frontPage(homesEnd){
     o.getContext("2d").drawImage(c, Math.max(0, Math.min(W - cw, cx - cw / 2)), (H - ch) / 2, cw, ch, 0, 0, o.width, o.height);
     return o;
   };
-  captureMap().then(c => {
+  // the photo: close over the neighborhood that changed most, so the 2026/2041 slider shows real buildings
+  const stop = homesEnd >= 1 ? cineStops()[0] : null, saved = {...viewState};
+  if (stop){
+    const v = {zoom:isWide() ? 14.6 : 14.2, pitch:58, bearing:viewState.bearing};
+    deckgl.setProps({initialViewState:{...viewState, ...v, ...centerAt(stop.lon, stop.lat, v, visibleCenter()), transitionDuration:0}});
+    lastCaption = list + " gained the most homes. This is " + stop.name + "; slide to compare 2026 with " + (START + YEARS) + ".";
+    $("resCap").textContent = lastCaption;
+  }
+  setTimeout(() => captureMap().then(c => {
     const o = crop(c); lastPhoto = o; $("resPhoto").src = o.toDataURL("image/jpeg", 0.86);
-    // the same view in 2026, for the before/after slider (the city drops back behind the front page, then rises again)
+    // the same view in 2026 (the city drops back behind the front page, then rises again)
     scrubTo(0);
     setTimeout(() => captureMap().then(c0 => {
       $("resPhoto0").src = crop(c0).toDataURL("image/jpeg", 0.86); scrubTo(YEARS);
       $("resCmp").value = 50; $("resFig").style.setProperty("--x", "50%"); $("resFig").classList.add("cmp");
+      if (stop) deckgl.setProps({initialViewState:{...saved, transitionDuration:0}});
     }), reduceMotion ? 150 : 1150);
-  });
+  }), stop ? 900 : 0);   // give the basemap a moment to draw the new view
 }
 $("resCmp").addEventListener("input", e => $("resFig").style.setProperty("--x", e.target.value + "%"));
 async function makeShareCard(){
