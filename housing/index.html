@@ -4229,7 +4229,7 @@ function frontPage(homesEnd){
     return o;
   };
   // the photo: close over the neighborhood that changed most, so the 2026/2041 slider shows real buildings
-  const stop = homesEnd >= 1 ? cineStops()[0] : null, saved = {...viewState};
+  const stop = homesEnd >= 1 ? cineStops().sort((a, b) => AREAS[b.num].added - AREAS[a.num].added)[0] : null, saved = {...viewState};   // the biggest gainer
   if (stop){
     const v = {zoom:isWide() ? 14.6 : 14.2, pitch:58, bearing:viewState.bearing};
     deckgl.setProps({initialViewState:{...viewState, ...v, ...centerAt(stop.lon, stop.lat, v, visibleCenter()), transitionDuration:0}});
