@@ -360,13 +360,27 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
   .sumtop .sbtns{display:none}
   .sumtop input{border:0}
 }
+
+/* Sources: a short how-it-works, then every section folded */
+#srcBody .howit{margin:6px 0 16px;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+#srcBody .howit li{font-size:14px;line-height:1.5;color:var(--sc-ink2)}
+#srcBody .howit b{color:var(--sc-ink);font-weight:600}
+#srcBody h3.mathsub{font:600 14.5px var(--sc-font);margin:6px 0 4px}
+#srcBody .mfold{border-top:1px solid var(--sc-line)}
+#srcBody .mfold:last-of-type{border-bottom:1px solid var(--sc-line)}
+#srcBody .mfold > summary{list-style:none;cursor:pointer;padding:11px 26px 11px 0;font:500 14.5px/1.35 var(--sc-font);color:var(--sc-ink);position:relative}
+#srcBody .mfold > summary::-webkit-details-marker{display:none}
+#srcBody .mfold > summary::after{content:"";position:absolute;right:6px;top:50%;width:7px;height:7px;border-right:1.6px solid var(--sc-mute);border-bottom:1.6px solid var(--sc-mute);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+#srcBody .mfold:not([open]) > summary::after{transform:translateY(-40%) rotate(-45deg)}
+#srcBody .mfold > summary:hover{color:var(--sc-navy)}
+#srcBody .mfold .mbody{padding:0 0 14px}
 </style>
 </head>
 <body>
 <div id="loading">Loading Chicago's transit…</div>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="../" aria-label="Shape Chicago home"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../housing/">Housing</a><a href="./" aria-current="page">Transit</a><a href="../tracker/">Tracker</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../housing/">Housing</a><a href="./" aria-current="page">Transit</a><a href="../tracker/">Permit tracker</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago, CTA or Metra.</span><button class="sc-btn" id="srcBtn" type="button">Sources</button><button class="sc-btn sc-share" id="share" type="button">Share</button></div>
 </header>
 <section class="sc-bar" id="tbar" aria-live="polite"></section>
@@ -2381,11 +2395,30 @@ function restore(){
   if (s) lines = decode(s);
 }
 
+/* fold each h3 section of a long explainer into a <details>, so the summary stays short */
+function foldSections(box){
+  [...box.querySelectorAll(":scope > h3:not(.mathsub)")].forEach(h => {
+    const d = document.createElement("details"); d.className = "mfold";
+    const sum = document.createElement("summary"); sum.innerHTML = h.innerHTML;
+    const body = document.createElement("div"); body.className = "mbody";
+    let n = h.nextSibling;
+    while (n && !(n.nodeType === 1 && n.tagName === "H3")){ const nx = n.nextSibling; body.appendChild(n); n = nx; }
+    d.append(sum, body); h.replaceWith(d);
+  });
+}
 /* ---------- sources ---------- */
 function openSources(){
   const S = NET.sources.files, R = MODEL.rail, Bm = MODEL.bus;
   $("srcBody").innerHTML = `<button class="btn x" type="button" onclick="srcDlg.close()">Close</button><h2 id="srcH">How the numbers work</h2>
-  <p>Every number is either from a source linked here or listed under assumptions. It's a sketch, not a forecast: real projects get studied for years.</p>
+  <p>It's a sketch, not a forecast: real projects get studied for years. Every number links to its source below or is listed under assumptions.</p>
+  <ol class="howit">
+    <li><b>Riders on new L lines</b> come from a model of how many people use each of today's L stations, based on who lives and works nearby and how many buses stop there.</li>
+    <li><b>BRT and streetcars</b> start from the riders on the buses they replace, plus the bump faster service got in Cleveland.</li>
+    <li><b>Travel times</b> use CTA and Metra's real weekday schedules, with your new lines added.</li>
+    <li><b>Costs</b> use the agency's own figure when a proposal has one, otherwise a per-mile range from real projects, in today's dollars.</li>
+    <li><b>Car trips and CO₂</b> use surveys of how new riders used to travel, and Chicago's actual train and bus energy use.</li>
+  </ol>
+  <h3 class="mathsub">The details</h3>
   <h3>Riders on a new subway or elevated line</h3>
   <p>A statistical model fit to how many people entered each of Chicago's ${R.n} L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and how many jobs you can reach from it within 45 minutes by transit. It explains ${Math.round(R.r2 * 100)}% of the differences between stations; a typical station estimate is off by about ${Math.round((Math.exp(R.median_abs_log_error) - 1) * 100)}%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.</p>
   <p>Trains: riders rise about 0.5% for each 1% more trains, the average in <a href="https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf" target="_blank" rel="noopener">TCRP Report 95, Chapter 9</a> (p. 9-4).</p>
@@ -2454,6 +2487,8 @@ function openSources(){
   <li>A trip that rides a line extension and then the line it extends counts a wait at the old end of the line, though in practice it would be the same train.</li>
   <li>Not modeled: riders on buses that cross a new rail line switching to it, slower trips from closely spaced stations, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.</li>
   </ul>`;
+  foldSections($("srcBody"));
+  $("srcBody").insertAdjacentHTML("beforeend", '<p style="margin-top:14px;font-size:13px"><a href="../privacy/" target="_blank" rel="noopener">Privacy</a> · <a href="../terms/" target="_blank" rel="noopener">Terms</a></p>');
   $("srcDlg").showModal();
 }
 

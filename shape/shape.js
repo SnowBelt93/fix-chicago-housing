@@ -32,3 +32,29 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan); else scan();
   new MutationObserver(scan).observe(document.documentElement, {childList:true, subtree:true});
 })();
+
+/* Closing animates too: every <dialog> fades and drops slightly before it closes (Close buttons, backdrop taps, Escape),
+   and scOut(el, then) does the same for floating cards that close by setting `hidden`. */
+(function(){
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const OUT = [{opacity:1, transform:"none"}, {opacity:0, transform:"translateY(10px) scale(.97)"}];
+  const close0 = HTMLDialogElement.prototype.close;
+  HTMLDialogElement.prototype.close = function(rv){
+    if (!this.open || reduce.matches || !this.animate || this._scClosing) return close0.apply(this, arguments);
+    this._scClosing = true;
+    const a = this.animate(OUT, {duration:170, easing:"cubic-bezier(.4,0,1,1)", fill:"forwards"});
+    const done = () => { if (!this._scClosing) return; this._scClosing = false; close0.call(this, rv); a.cancel(); };
+    a.finished.then(done, done); setTimeout(done, 400);
+  };
+  document.addEventListener("cancel", e => {
+    const d = e.target; if (!(d instanceof HTMLDialogElement) || reduce.matches) return;
+    e.preventDefault(); d.close();
+  }, true);
+  window.scOut = function(el, then){
+    const fin = () => { if (then) then(); };
+    if (!el || el.hidden || reduce.matches || !el.animate) return fin();
+    const a = el.animate(OUT, {duration:170, easing:"cubic-bezier(.4,0,1,1)", fill:"forwards"});
+    let ran = false; const done = () => { if (ran) return; ran = true; fin(); requestAnimationFrame(() => a.cancel()); };
+    a.finished.then(done, done); setTimeout(done, 400);
+  };
+})();
