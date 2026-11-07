@@ -46,10 +46,10 @@ try:
     land = [n for n in names if 'land' in n and ('sf' in n or 'sq' in n)]
     extra = [n for n in names if n in ('pins', 'keypin', 'year', 'class', 'classes', 'tot_units', 'apts', 'units', 'yearbuilt', 'year_built', 'bldgsf', 'property_type_use', 'township')]
     sel = list(dict.fromkeys([pinc] + extra + land))
-    ycol = 'year' if 'year' in names else None
-    where = '1=1'
-    if ycol:
-        y = json.loads(get(f'{B}/resource/csik-bsws.json?$select=max(year)%20as%20y'))[0]['y']; where = f"year={y}"
+    # Chicago's townships were last reassessed in 2024 (the county reassesses a third of itself each year), so take
+    # every year since 2021 for them and keep the latest per parcel when building the lot data
+    CHI_TWP = ['Hyde Park', 'Jefferson', 'Lake', 'Lake View', 'North Chicago', 'Rogers Park', 'South Chicago', 'West Chicago']
+    where = "year >= 2021 AND township in(" + ','.join(f"'{t}'" for t in CHI_TWP) + ")"
     pull('csik-bsws', ','.join(sel), where, 'cook_comm_chi.csv.gz', order=pinc)
 except Exception as e:
     print('commercial step failed:', e, file=sys.stderr)
