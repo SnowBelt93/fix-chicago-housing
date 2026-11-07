@@ -1318,6 +1318,25 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 .mfold:not([open]) > summary::after{transform:translateY(-40%) rotate(-45deg)}
 .mfold > summary:hover{color:var(--sc-navy)}
 .mfold .mbody{padding:0 0 14px;font-size:13.5px;line-height:1.55;color:var(--sc-ink2)}
+
+/* v49: comment slips and headlines center in the open map between the panel and the map key; the key tucks away during a simulation */
+@media (min-width:860px){
+  .comment{left:clamp(610px, calc(50% + 70px), calc(100% - 470px)) !important}
+  .ticker{left:clamp(680px, calc(50% + 70px), calc(100% - 540px)) !important}
+  body.playing .legend{opacity:0;pointer-events:none;transform:translateY(-6px)}
+  .legend{transition:opacity .25s,transform .25s}
+}
+
+/* v49: one typeface outside the newspaper. Pop-ups, tips and captions use Instrument Sans; the results front page keeps Big Shoulders */
+body{--f-display:var(--sc-font)}
+.paper{--f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif}
+.card:not(.paper) h2{font-weight:600 !important;letter-spacing:-.02em;line-height:1.12}
+.tip b{font-weight:600;letter-spacing:-.01em}
+.gp .n{font-size:23px !important;white-space:nowrap;letter-spacing:-.02em}
+.goalmath b{letter-spacing:-.02em}
+.cinecap{background:#fff !important;color:var(--sc-ink) !important;border-radius:14px !important;box-shadow:var(--sc-shadow);padding:10px 14px 11px !important}
+.cinecap b{font:600 21px/1.1 var(--sc-font) !important;letter-spacing:-.01em}
+.cinecap span{font:500 13px/1.3 var(--sc-font) !important;color:var(--sc-ink2)}
 </style>
 
 <div id="app">
@@ -2220,6 +2239,7 @@ function megaPrep(){
 // per-building inputs that don't depend on the plan: a 6-bit tier key (L distance, Metra, corridor, busy station, small lot),
 // whether it can be rebuilt (0 no, 1 building, 2 empty land, 255 replaced since 2013: skip), and its lot size
 function prepStatic(A){
+  if (plan.p.mega) megaPrep();   // build the site list before the first count, so totals don't shift on the next redraw
   const ML = plan.p.mega && MEGA_LAND ? MEGA_LAND[A.num] : null;
   const tag = (A.ext ? 1 : 0) + (A.open ? 2 : 0) + 4 * (A.vk || 0) + (ML ? 0.5 : 0);
   if (A.tk && A.tkTag === tag) return;
@@ -3047,7 +3067,7 @@ function closeAllComments(){ commentEpoch++; liveCards().forEach(closeCard); }
 function showComment(line, by, town){
   // wait until the map has finished redrawing after the change, so the card animates on an idle frame instead of stuttering
   const ep = commentEpoch;
-  if (!$("myth").hidden) return;   // one pop-up at a time: no comment slips over a myth card
+  if (!$("myth").hidden || !$("tip").hidden) return;   // one pop-up at a time: no comment slips over a myth card or a walkthrough tip
   requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => { if (ep === commentEpoch && $("myth").hidden) showCommentNow(line, by, town); }, 40)));
 }
 let commentNo = 411;   // public comments are numbered like a clerk's record
