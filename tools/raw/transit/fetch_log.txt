@@ -1,17 +1,3 @@
-od {'url': 'https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_2022.csv.gz', 'year': 2022, 'rows': 5152046, 'workers_kept': 3652467, 'workers_outside_region': 1880219, 'pairs': 2123204, 'partial': False}
-STEP FAILED acs Traceback (most recent call last):
-  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 540, in <module>
-    acs()
-  File "/home/runner/work/fix-chicago-housing/fix-chicago-housing/tools/transit/fetch.py", line 492, in acs
-    data = json.loads(get(url))
-           ^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/__init__.py", line 346, in loads
-    return _default_decoder.decode(s)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
-    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/lib/python3.12/json/decoder.py", line 355, in raw_decode
-    raise JSONDecodeError("Expecting value", s, err.value) from None
-json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
-
+acs 2023 {'url': 'https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/ (B08301, B08201)', 'tracts': 2051, 'workers': 4151994, 'transit': 376039}
+acs 2019 b08301 failed <HTTPError 404: 'Not Found'>
+acs 2019 b08201 failed <HTTPError 404: 'Not Found'>

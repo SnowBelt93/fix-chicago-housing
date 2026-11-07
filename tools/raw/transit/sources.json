@@ -1,5 +1,5 @@
 {
- "fetched": "2026-11-07T18:52Z",
+ "fetched": "2026-11-07T18:56Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -109,6 +109,11 @@
    "pairs": 2123204,
    "partial": false
   },
-  "acs_error": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
+  "acs_2023": {
+   "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/ (B08301, B08201)",
+   "tracts": 2051,
+   "workers": 4151994,
+   "transit": 376039
+  }
  }
 }
