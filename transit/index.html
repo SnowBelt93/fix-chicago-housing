@@ -1737,7 +1737,7 @@ const SOLO = {};
 function soloRiders(P){
   if (SOLO[P.id] != null || !NW) return SOLO[P.id];
   const keep = lines, L = presetToLine(P); lines = [L];
-  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders; } catch (e) { SOLO[P.id] = 0; }
+  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : Math.max(0, L.newRiders || 0); }   // net new riders, the same figure the top bar adds up catch (e) { SOLO[P.id] = 0; }
   lines = keep; return SOLO[P.id];
 }
 function openGroup(g){
@@ -1745,7 +1745,7 @@ function openGroup(g){
   $("gTitle").textContent = G.title; $("gSub").textContent = G.sub;
   const ps = PRESETS.filter(P => (P.group || "rail") === g);
   const draw = () => {
-    $("gList").innerHTML = ps.map(P => { const r = soloRiders(P); return `<div class="prow"><button type="button" class="pt" data-p="${P.id}"><b>${esc(P.name)}</b><span>${r != null ? num(r) + (P.metra ? " more riders a weekday" : " riders a weekday") + " · " : ""}${esc(P.status.split(";")[0].split(" (")[0])}</span></button><button type="button" class="sw" role="switch" aria-checked="${presetOn(P)}" aria-label="${esc(P.name)}" data-p="${P.id}"></button></div>`; }).join("") +
+    $("gList").innerHTML = ps.map(P => { const r = soloRiders(P); return `<div class="prow"><button type="button" class="pt" data-p="${P.id}"><b>${esc(P.name)}</b><span>${r != null ? num(r) + " more riders a weekday" + " · " : ""}${esc(P.status.split(";")[0].split(" (")[0])}</span></button><button type="button" class="sw" role="switch" aria-checked="${presetOn(P)}" aria-label="${esc(P.name)}" data-p="${P.id}"></button></div>`; }).join("") +
       (g === "metra" ? `<div class="prow"><button type="button" class="pt" id="anyMetra"><b>Any Metra line</b><span>Pick a line and how often trains run</span></button></div>` : "");
     for (const b of $("gList").querySelectorAll(".pt[data-p]")) b.onclick = () => loadPreset(PRESETS.find(p => p.id === b.dataset.p));
     for (const b of $("gList").querySelectorAll(".sw")) b.onclick = () => { const on = b.getAttribute("aria-checked") !== "true"; b.setAttribute("aria-checked", on); setPreset(PRESETS.find(p => p.id === b.dataset.p), on); };
@@ -2158,6 +2158,10 @@ function renderTrip(){
     feats.push({type:"Feature", properties:{c:inB ? "today" : "plan"}, geometry:{type:"Polygon", coordinates:[[toLL(x - h, y - h), toLL(x + h, y - h), toLL(x + h, y + h), toLL(x - h, y + h), toLL(x - h, y - h)]]}});
   }
   map.getSource("tripz").setData(fc(feats));
+  { // frame the reach area (and B) once per new start point or time, so the whole shape is in view
+    const key = A.x + "," + A.y + "," + (Bp ? Bp.x + "," + Bp.y : "") + "," + cut;
+    if (TRIP.fitKey !== key && feats.length){ TRIP.fitKey = key; const pts = [A.ll]; if (Bp && Bp.ll) pts.push(Bp.ll); feats.forEach(f => pts.push(f.geometry.coordinates[0][0], f.geometry.coordinates[0][2])); fitTo(pts); }
+  }
   let h1 = "";
   if (Bp){
     const T0 = tripPlan(A, Bp, null), T1 = g ? tripPlan(A, Bp, g) : null, faster = T1 ? T0.total - T1.total : 0;
@@ -2264,8 +2268,16 @@ function renderCompare(){
 function snapMap(done){
   const A = active(); const coords = [];
   for (const L of A) coords.push(...(L.type === "metra" ? NET.metraLines.find(l => l.id === L.line).paths.flat() : (L.shape || L.pts.map(p => p.ll))));
-  const grab = () => { map.once("render", () => { let url = ""; try { url = map.getCanvas().toDataURL("image/jpeg", 0.85); } catch (e){} done(url); }); map.triggerRepaint(); };
-  if (coords.length){ fitTo(coords); map.once("idle", grab); } else grab();
+  // frame the whole plan in the full canvas (the side panel and bars aren't in the picture), then put the padding back
+  const pad = map.getPadding();
+  const grab = () => { map.once("render", () => { let url = ""; try { url = map.getCanvas().toDataURL("image/jpeg", 0.85); } catch (e){} map.setPadding(pad); done(url); }); map.triggerRepaint(); };
+  if (coords.length){
+    let w = 180, s = 90, e = -180, n = -90; for (const [x, y] of coords){ if (x < w) w = x; if (x > e) e = x; if (y < s) s = y; if (y > n) n = y; }
+    map.stop(); map.setPadding({top:0, bottom:0, left:0, right:0});
+    const c = map.getCanvas(), m = Math.round(Math.min(c.clientWidth, c.clientHeight) * 0.12);
+    map.fitBounds([[w, s], [e, n]], {padding:m, duration:0, maxZoom:14});
+    map.once("idle", grab);
+  } else grab();
 }
 function openSummary(){
   const A = active(); if (!A.length) return;
