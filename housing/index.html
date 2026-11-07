@@ -1895,13 +1895,19 @@ const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.10, 1.0, 0.95, 1.20];  
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
-  // fl: stories drawn on the map [mid-rise low, high, tower low, high]; illustrative only (an assumption, listed in The math)
+  // fl: stories drawn on the map [mid-rise low, high, tower low, high], from each plan's published heights (sources beside each)
   {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet", fl:[7, 12, 25, 50]},
-  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3737, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; no new river bridge in the plan", fl:[5, 10, 15, 30]},
-  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases", fl:[6, 12, 20, 40]},
-  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans", fl:[6, 12, 18, 35]},
-  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started", fl:[8, 14, 18, 25]},
-  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Plan finalized 2026; first sites go to developers in 2027", fl:[4, 8, 10, 20]},
+  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3737, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; no new river bridge in the plan", fl:[8, 13, 22, 40]},   // phase one 8, 13 and 38 stories; later towers 250–450 ft (Chicago YIMBY, Jan 2026)
+  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases", fl:[6, 12, 20, 55]},   // tallest allowed 660 ft (Chicago YIMBY, Jan 2025)
+  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans", fl:[6, 12, 18, 30]},   // phase one up to 350 ft (City of Chicago PD presentation)
+  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started", fl:[10, 20, 30, 60]},   // up to 695 ft (City of Chicago presentation, 2021)
+  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Plan finalized 2026; first sites go to developers in 2027", fl:[3, 6, 12, 20]},   // six-flats, townhomes, mid-rises, one high-rise per site (CHA plan via Chicago YIMBY)
+];
+// non-housing anchors already under way, drawn in gray so the sites read like their plans (open by about 2028):
+// the Fire's stadium at The 78 (9 acres, groundbreaking March 2026, opening 2028) and the 1901 Project's 6,000-seat music hall at Adams and Damen
+const MEGA_ANCHORS = [
+  {site:"The 78", dx:-125, dy:185, w:175, h:140, m:30},
+  {site:"1901 Project", dx:-140, dy:-110, w:80, h:62, m:26},
 ];
 const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
 const MEGA_AFF = 0.2;                                      // 20% affordable: the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to
@@ -2221,7 +2227,8 @@ function megaPrep(){
     const S = META.megaSites[m.n]; if (!S) return;
     for (const k in S.land){ const L = MEGA_LAND[k] || (MEGA_LAND[k] = new Set()); S.land[k].forEach(i => L.add(i)); }
     const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180), need = m.homes * MEGA_BUILT * SQFT_HOME * 0.0929;   // m² of floor area
-    const fps = S.fp.map(f => { const p = []; for (let j = 0; j < 8; j += 2) p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]);
+    const anc = MEGA_ANCHORS.filter(a => a.site === m.n), inAnc = f => { const cx = (f[0] + f[4]) / 2, cy = (f[1] + f[5]) / 2; return anc.some(a => Math.abs(cx - a.dx) < a.w / 2 + 14 && Math.abs(cy - a.dy) < a.h / 2 + 14); };
+    const fps = S.fp.filter(f => !inAnc(f)).map(f => { const p = []; for (let j = 0; j < 8; j += 2) p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]);
       const a = Math.abs((f[2] - f[0]) * (f[5] - f[1]) - (f[4] - f[0]) * (f[3] - f[1])); return {p, a, tower: Math.abs(Math.hypot(f[2] - f[0], f[3] - f[1]) - Math.hypot(f[4] - f[2], f[5] - f[3])) < 2 && a > 600}; });
     const [lo, hi, tlo, thi] = m.fl, out = [];
     let sum = 0;
@@ -2235,6 +2242,9 @@ function megaPrep(){
     const tot = out.reduce((t, b) => t + b.a * b.st, 0);
     out.forEach(b => { MEGA_BLD.push({p: b.p, full: b.st * FLOOR_M, at: cum / tot, site: si}); cum += b.a * b.st; });
   });
+  MEGA_ANCHORS.forEach(a => { const S = META.megaSites[a.site]; if (!S) return;
+    const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180), c = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
+    MEGA_BLD.push({p: c.map(([u, v]) => [S.lon + (a.dx + u * a.w / 2) / kx, S.lat + (a.dy + v * a.h / 2) / 111319.49]), full: a.m, at: -1, anchor: true}); });
 }
 // per-building inputs that don't depend on the plan: a 6-bit tier key (L distance, Metra, corridor, busy station, small lot),
 // whether it can be rebuilt (0 no, 1 building, 2 empty land, 255 replaced since 2013: skip), and its lot size
@@ -2594,9 +2604,9 @@ const POLICIES = [
     model:"Pilot pace (about 0.75% of eligible lots over 15 years) in all 50 wards, doubled by dropping the extra rules.",
     src:[["WTTW","https://news.wttw.com/2026/04/09/coach-house-ordinance-aimed-housing-affordability-crisis-takes-effect-chicago"],["The Real Deal","https://therealdeal.com/chicago/2025/05/15/chicagos-granny-flat-program-falls-flat/"]]},
   {key:"mega", title:"Get the megaprojects built", status:["prop","Mostly stuck, 2026"],
-    what:"Chicago already approved or planned about 31,600 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (5,000), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (up to 3,737) and the rest of North Union (2,007). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
-    model:"Assumption: half of those 31,624 planned homes get built by 2041 once the city funds the infrastructure. That half is about a sixth of the normal-mode goal and about 5% of hard mode's, so everyday zoning still does most of the work. The purple buildings on the map hold that many homes, but their shapes are made up, not the real site plans.",
-    src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (City of Chicago)","https://chicago.gov/city/en/depts/dcd/supp_info/north-union.html"],["The 78 zoning, 2018 (Sun-Times)","https://www.pressreader.com/usa/chicago-sun-times/20181213/281646781230679"],["Bronzeville Lakefront (CBS)","https://www.cbsnews.com/chicago/news/former-michael-reese-hospital-campus-to-be-transformed-under-3-8-billion-bronzeville-lakefront-redevelopment-plan"],["Foundry Park plan (Chicago YIMBY)","https://chicagoyimby.com/2026/02/city-council-approves-plans-for-foundry-park.html"],["1901 Project groundbreaking (Chicago YIMBY)","https://chicagoyimby.com/2026/06/groundbreaking-held-for-the-1901-project-around-united-center.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"]]},
+    what:"Chicago already approved or planned about 31,600 homes in a handful of giant projects: The 78 (10,000), Bronzeville Lakefront at the old Michael Reese site (6,800), the 1901 Project around the United Center (about 5,000, though its zoning allows up to 9,463), Cabrini-Green (4,080), Foundry Park on the old Lincoln Yards site (up to 3,737) and the rest of North Union (2,007). Most are stuck waiting on roads, bridges, river walls or gap financing. Flip this on and the city pays to unstick them.",
+    model:"Assumption: half of those 31,624 planned homes get built by 2041 once the city funds the infrastructure. That half is about a sixth of the normal-mode goal and about 5% of hard mode's, so everyday zoning still does most of the work. The purple buildings on the map hold that many homes inside each project's approved zoning area, at the heights its plan allows (Foundry Park 8 to 38 stories at first, later towers 250–450 ft; the 1901 Project up to 660 ft; North Union up to 695 ft; Bronzeville Lakefront up to 350 ft in phase one; Cabrini-Green mostly six-flats, townhomes and mid-rises). Gray shapes are the Fire's stadium and the 1901 music hall, already under way. Exact building spots are our guess.",
+    src:[["Sun-Times: The 78 & Foundry Park, 2026","https://chicago.suntimes.com/city-hall/2026/07/15/megaprojects-tifs-the-78-foundry-park-projects"],["Foundry Park TIF, Sep 2026","https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval"],["1901 Project (Fox 32)","https://www.fox32chicago.com/news/chicago-1901-project-city-council-approval"],["Bronzeville Lakefront (City of Chicago)","https://chicago.gov/reese"],["North Union (City of Chicago)","https://chicago.gov/city/en/depts/dcd/supp_info/north-union.html"],["The 78 zoning, 2018 (Sun-Times)","https://www.pressreader.com/usa/chicago-sun-times/20181213/281646781230679"],["Bronzeville Lakefront (CBS)","https://www.cbsnews.com/chicago/news/former-michael-reese-hospital-campus-to-be-transformed-under-3-8-billion-bronzeville-lakefront-redevelopment-plan"],["Foundry Park plan (Chicago YIMBY)","https://chicagoyimby.com/2026/02/city-council-approves-plans-for-foundry-park.html"],["1901 Project groundbreaking (Chicago YIMBY)","https://chicagoyimby.com/2026/06/groundbreaking-held-for-the-1901-project-around-united-center.html"],["Cabrini-Green plan (Chicago YIMBY)","https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html"],["Foundry Park buildings (Chicago YIMBY)","https://chicagoyimby.com/2026/01/foundry-park-defined-as-it-heads-to-plan-commission.html"],["1901 Project heights and 9,463 homes (Chicago YIMBY)","https://chicagoyimby.com/2025/01/plan-commission-approves-united-center-redevelopment-the-1901-project.html"],["North Union heights (City of Chicago)","https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/north_union_pres_032421_final.pdf"],["Bronzeville Lakefront PD (City of Chicago)","https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/bronzeville_lakefront_cpc_final.pdf"],["Fire stadium (WTTW)","https://news.wttw.com/2025/06/17/chicago-fire-shares-first-look-design-proposed-650m-fortress-planned-78-chicago-river"]]},
   {key:"lots", title:"Build on city-owned vacant lots", status:["prop","City is selling lots now"],
     what:"The city owns more than 7,100 vacant lots, concentrated in Englewood, West Englewood, New City and North Lawndale, and sells some for $1 through its Missing Middle program.",
     model:"Assumption: half of the lots get a 2-flat within 15 years.",
@@ -3508,8 +3518,8 @@ function layers(){
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
   if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year); L.push(new deck.SolidPolygonLayer({id:"megaB", data:MEGA_BLD, extruded:true,
-    getPolygon:d => d.p, getElevation:d => d.at < f ? d.full : 0, getFillColor:[118,92,170],
-    updateTriggers:{getElevation:f},
+    getPolygon:d => d.p, getElevation:d => (d.anchor ? year >= 2 : d.at < f) ? d.full : 0, getFillColor:d => d.anchor ? [196,198,204] : [118,92,170],
+    updateTriggers:{getElevation:[f, year >= 2]},
     material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
     transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}})); } }
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
