@@ -103,8 +103,9 @@ def zones():
     return Z
 
 
-def build_graph(stops, pats, Z, extra_origins=()):
-    """Nodes: stops | pattern positions | zone-out | zone-in | extra origins. Edge weights in minutes."""
+def build_graph(stops, pats, Z, extra_origins=(), ovt=1.0):
+    """Nodes: stops | pattern positions | zone-out | zone-in | extra origins. Edge weights in minutes.
+    ovt: weight on minutes spent walking and waiting (1 = plain minutes; the trip model uses 2, see tripmodel.py)."""
     nS = len(stops)
     pos0, n = [], nS
     for p in pats:
@@ -117,7 +118,7 @@ def build_graph(stops, pats, Z, extra_origins=()):
     for p, b in zip(pats, pos0):
         for k, s in enumerate(p['s']):
             if k < len(p['s']) - 1:
-                edge(s, b + k, p['hw'][k] / 2)                     # board: wait half the headway
+                edge(s, b + k, ovt * p['hw'][k] / 2)               # board: wait half the headway
                 edge(b + k, b + k + 1, max(p['m'][k + 1] - p['m'][k], 0.2))   # ride
             if k > 0:
                 edge(b + k, s, 0)                                   # get off
@@ -125,14 +126,14 @@ def build_graph(stops, pats, Z, extra_origins=()):
     for a, (x, y) in enumerate(stops):
         for b, d in sg.near(x, y, XFER_M):
             if b != a:
-                edge(a, b, d / WALK)                                # transfer walk
+                edge(a, b, ovt * d / WALK)                          # transfer walk
     for k, (x, y, _, _) in enumerate(Z):
         for s, d in sg.near(x, y, ACCESS_M):
-            edge(zo + k, s, d / WALK); edge(s, zi + k, d / WALK)
+            edge(zo + k, s, ovt * d / WALK); edge(s, zi + k, ovt * d / WALK)
     zg = Grid([(z[0], z[1]) for z in Z], 800)
     for k, (x, y, _, _) in enumerate(Z):
         for m, d in zg.near(x, y, ACCESS_M):
-            edge(zo + k, zi + m, d / WALK)                          # walking alone
+            edge(zo + k, zi + m, ovt * d / WALK)                    # walking alone
     for k, (x, y) in enumerate(extra_origins):
         for s, d in sg.near(x, y, ACCESS_M):
             edge(eo + k, s, d / WALK)

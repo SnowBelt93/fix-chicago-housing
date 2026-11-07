@@ -35,6 +35,8 @@ ZONE_M = NWK.ZONE_M
 CBD = (0, 0, 2400)       # downtown work zone: within 2.4 km (1.5 mi) of State & Madison (parking costs; assumption)
 TMAX = 150.0             # transit minutes treated as "no usable trip"
 WORK_SHARE = {'cook': 0.15, 'collar': 0.024}   # transit share by county of work (see the fit)
+OVT = 2.0                # walking and waiting minutes count double (NCHRP Report 716: out-of-vehicle time is typically
+                         # weighted 2-3x in-vehicle time in home-based work mode choice; assumption at the low end)
 PER_MIN = -0.028         # utility per minute of transit time minus car time (NCHRP Report 716, typical home-based work value)
 
 
@@ -96,7 +98,7 @@ def main():
     lnj = np.log(jobs / (land / 2.59e6) + 100)                           # jobs per sq mi at the work zone
 
     # transit minutes for every flow, from the midday network (cached between runs: delete the cache if the network changes)
-    cache = os.path.join(RAW, 'trip_times_cache.npz')
+    cache = os.path.join(RAW, f'trip_times_cache_ovt{OVT:g}.npz')
     if os.path.exists(cache):
         T = np.load(cache)['T']
     else:
@@ -109,7 +111,7 @@ def main():
 
 def transit_times(Z, H, W_, N, nz):
     stops, pats = NWK.load_network()
-    G, zo, zi, eo = NWK.build_graph(stops, pats, Z)
+    G, zo, zi, eo = NWK.build_graph(stops, pats, Z, ovt=OVT)
     T = np.full(len(N), TMAX)
     order = np.argsort(H, kind='stable'); Hs = H[order]
     origins = np.unique(H)
@@ -208,7 +210,7 @@ def main2(Z, nz, zx, zy, pop, jobs, H, W_, N, T, C, workers, nocar, lnd, cbd, tr
 
     out = {'note': 'Trip model fit by tools/transit/tripmodel.py; see its docstring.',
            'gamma': round(gamma, 5), 'mode': {k: round(float(v), 5) for k, v in zip(['const', 'per_min', 'no_car', 'ln_jobs_density', 'ln_density'], a)},
-           'cbd': CBD, 'tmax': TMAX, 'wfh': round(wfh, 4), 'scale': round(F, 4), 'tripsToday': TRIPS_TODAY,
+           'cbd': CBD, 'tmax': TMAX, 'ovt': OVT, 'walk': NWK.WALK, 'wfh': round(wfh, 4), 'scale': round(F, 4), 'tripsToday': TRIPS_TODAY,
            'fit': {'tract_r2': round(float(r2), 3), 'tracts': int(have.sum()), 'flows': int(len(N)), 'workers': int(N.sum()),
                    'share_obs': round(float(obs_tr[have].sum() / obs_all[have].sum()), 4), 'share_model': round(float((N * P).sum() / N.sum()), 4),
                    'mean_car_min': round(float(mean_obs), 1), 'by_work': {k: round(float(v), 3) for k, v in by_work.items()},
