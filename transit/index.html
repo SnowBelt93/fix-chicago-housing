@@ -384,13 +384,59 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 #srcBody .mfold > summary:hover{color:var(--sc-navy)}
 #srcBody .mfold .mbody{padding:0 0 14px}
 .eggpop .maplibregl-popup-content{font:500 13px/1.4 var(--sc-font,system-ui);padding:8px 12px;border-radius:10px;max-width:240px}
+
+/* v53: the start view's sections (same tabs as the housing tool), share view, expand */
+.sr{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.vhead.stabhead{padding:14px 56px 10px 12px;border-bottom:1px solid #eef0f2}
+.stabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.stabs::-webkit-scrollbar{display:none}
+.stab{border:0;background:none;margin:0;padding:8px 10px;border-radius:16px;font:600 14.5px var(--sc-font,inherit);color:var(--ink2);white-space:nowrap;cursor:pointer;transition:background-color .15s,color .15s}
+.stab:hover{background:#f1f3f6}
+.stab[aria-selected="true"]{background:var(--ink);color:#fff}
+.stab .n{font:500 12px var(--sc-font,inherit);color:var(--faint)}
+.stab .n:empty{display:none}
+.stab[aria-selected="true"] .n{color:rgba(255,255,255,.7)}
+.tpane{display:flex;flex-direction:column;gap:16px}
+.tpane[hidden]{display:none}
+.tlede{margin:0;font-size:14px;line-height:1.45;color:var(--mute)}
+.tcards{display:flex;flex-direction:column;gap:8px}
+.tcard{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;width:100%;cursor:pointer;transition:border-color .15s,background-color .15s}
+.tcard:hover{border-color:var(--line2);background:#fafbfc}
+.tcard .ti{flex:none;width:40px;height:40px;border-radius:12px;background:#eef2f7;color:var(--sc-navy,#2b5da0);display:flex;align-items:center;justify-content:center}
+.tcard .ti svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tcard .tt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tcard .tt b{font-size:16px;font-weight:600}
+.tcard .tt span{font-size:13px;line-height:1.35;color:var(--mute)}
+.basics{display:grid;gap:8px}
+.basics a{display:block;padding:11px 14px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--ink);background:#fff;transition:border-color .15s,background-color .15s}
+.basics a:hover{border-color:var(--sc-navy,#2b5da0);background:#f6f8fb}
+.basics b{display:block;font-size:14.5px;font-weight:600;line-height:1.3}
+.basics span{display:block;font-size:13px;line-height:1.35;color:var(--mute);margin-top:2px}
+#shareLink{width:100%}
+.widebtn{display:none}
+@media (max-width:859px){ .vhead.stabhead{padding:4px 12px 10px} }
+@media (min-width:860px){
+  .widebtn{display:grid;place-items:center;position:absolute;right:12px;top:13px;z-index:6;width:34px;height:34px;padding:0;border:1px solid var(--line2);border-radius:50%;background:#fff;color:var(--ink);cursor:pointer;transition:background-color .15s,border-color .15s}
+  .widebtn:hover{background:#f3f5f8;border-color:var(--ink2)}
+  .widebtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  #panel .vhead:not(.stabhead){padding-right:60px}
+  body{--panelW:380px}
+  body.wide{--panelW:min(840px, calc(100vw - 440px))}
+  aside#panel{width:var(--panelW);transition:width .28s cubic-bezier(.2,.7,.2,1)}
+  body.wide .drawcard .dmodes{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body.wide .gcards,body.wide .tcards,body.wide .basics,body.wide .minicards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body.wide .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body.wide .vhead p{max-width:62ch}
+}
+@media (min-width:1200px){ body.wide .stats{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media (min-width:860px) and (max-width:1199px){ body.wide{--panelW:calc(100vw - 340px)} }
 </style>
 </head>
 <body>
 <div id="loading">Loading Chicago's transit…</div>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="../" aria-label="Shape Chicago home"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../housing/">Housing</a><a href="./" aria-current="page">Transit</a><a href="../tracker/">Permit tracker</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="../housing/">Housing</a><a href="./" aria-current="page">Transit</a><a href="../tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="../learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago, CTA or Metra.</span><button class="sc-btn" id="srcBtn" type="button">Sources</button><button class="sc-btn sc-share" id="share" type="button">Share</button></div>
 </header>
 <section class="sc-bar" id="tbar" aria-live="polite"></section>
@@ -398,26 +444,63 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 
 <aside id="panel" aria-label="Transit plan">
   <button class="grab" id="grab" type="button" aria-label="Hide the panel" aria-expanded="true"><span class="gtitle" id="peekTitle">Your plan</span><svg class="gchev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 10l4-4 4 4"/></svg></button>
+  <button type="button" class="widebtn" id="wideBtn" aria-pressed="false" title="Expand the panel"></button>
   <!-- start -->
   <div id="planMini" aria-live="polite"></div>
   <section class="view on" id="vStart">
-    <div class="vhead">
-      <h1>Expand Chicago Transit</h1>
+    <div class="vhead stabhead">
+      <h1 class="sr">Expand Chicago Transit</h1>
+      <div class="stabs" role="tablist" aria-label="Sections">
+        <button type="button" class="stab" role="tab" data-t="draw" aria-selected="true">Draw</button>
+        <button type="button" class="stab" role="tab" data-t="prop" aria-selected="false">Proposals <span class="n" id="propN"></span></button>
+        <button type="button" class="stab" role="tab" data-t="tools" aria-selected="false">Tools</button>
+        <button type="button" class="stab" role="tab" data-t="learn" aria-selected="false">Learn</button>
+      </div>
     </div>
     <div class="vbody">
-      <div class="drawcard" id="drawCard"></div>
-      <div class="mylines" id="myLines"></div>
-      <div class="mylines"><span class="sec">Real proposals</span><div class="gcards" id="groupCards"></div></div>
-      <div class="mylines"><span class="sec">Plan tools</span>
-      <div class="minicards">
-        <button type="button" class="minicard" id="tripCard"><b>Trip times</b><span>How long to get around</span></button>
-        <button type="button" class="minicard" id="fundCard"><b>Who pays, and when</b><span>Funding and opening years</span></button>
-        <button type="button" class="minicard" id="cmpCard"><b>Compare plans</b><span>Save plans side by side</span></button>
-        <button type="button" class="minicard" id="sumCard"><b>One-page summary</b><span>To share or print</span></button>
-        <button type="button" class="minicard" id="cleanCard"><b>Cleaner transit</b><span>Electric buses and trains</span></button>
-        <button type="button" class="minicard" id="nitaCard"><b>NITA</b><span>The cuts it stopped</span></button>
-      </div></div>
+      <div class="tpane" data-t="draw">
+        <div class="drawcard" id="drawCard"></div>
+        <div class="mylines" id="myLines"></div>
+      </div>
+      <div class="tpane" data-t="prop" hidden>
+        <p class="tlede">Lines CTA, Metra and the regional plan have actually studied. Switch on as many as you like.</p>
+        <div class="gcards" id="groupCards"></div>
+      </div>
+      <div class="tpane" data-t="tools" hidden>
+        <div class="tcards">
+          <button type="button" class="tcard" id="tripCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></span><span class="tt"><b>Trip times</b><span>How long it takes to get around at midday, today and with your plan</span></span></button>
+          <button type="button" class="tcard" id="cleanCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></span><span class="tt"><b>Cleaner transit</b><span>Switch buses and trains to electric, and clean up the grid</span></span></button>
+        </div>
+      </div>
+      <div class="tpane" data-t="learn" hidden>
+        <div class="tcards">
+          <button type="button" class="tcard" id="fundCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></span><span class="tt"><b>Who pays, and when</b><span>What your plan costs each level of government, and when lines could open</span></span></button>
+          <button type="button" class="tcard" id="nitaCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17h16M6 17V7h12v10M9 21l-2-4M15 21l2-4M9 11h6"/></svg></span><span class="tt"><b>NITA</b><span>The new regional transit agency, and the cuts it stopped</span></span></button>
+        </div>
+        <span class="sec">The basics</span>
+        <div class="basics">
+          <a href="../learn/#modes"><b>Subway, L, streetcar or BRT?</b><span>What each costs and what it carries</span></a>
+          <a href="../learn/#funding"><b>Who pays for a new line</b><span>Federal grants, state money and the local share</span></a>
+          <a href="../learn/#nita"><b>NITA in one minute</b><span>What the 2025 law changed</span></a>
+          <a href="../learn/#riders"><b>How this tool estimates riders</b><span>And why new lines mostly move riders around</span></a>
+        </div>
+      </div>
       <p class="fan2">A fan-made planning tool. Not affiliated with the City of Chicago, CTA or Metra.</p>
+    </div>
+  </section>
+  <!-- share and save -->
+  <section class="view" id="vShare">
+    <div class="vhead">
+      <button class="navback" type="button" id="shareBack"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back</button>
+      <h1>Share and save</h1>
+      <p>Send your plan, print it, or keep versions to compare.</p>
+    </div>
+    <div class="vbody">
+      <button type="button" class="btn big dark" id="shareLink">Copy a link to this plan</button>
+      <div class="tcards">
+        <button type="button" class="tcard" id="sumCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6z"/><path d="M14 2v5h5M9 13h7M9 17h7"/></svg></span><span class="tt"><b>One-page summary</b><span>A map and the key numbers, to print or save as a PDF</span></span></button>
+        <button type="button" class="tcard" id="cmpCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v16H4zM13 4h7v16h-7z"/></svg></span><span class="tt"><b>Compare plans</b><span>Save versions of your plan and put two side by side</span></span></button>
+      </div>
     </div>
   </section>
   <!-- a group of proposals -->
@@ -642,11 +725,14 @@ const MODES = {
 const METRA_ICON = '<path d="M2 3h20M12 3v4"/><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M7 22l2-4M17 22l-2-4"/>';
 const L_NAMES = {Red:"Red", Blue:"Blue", Brn:"Brown", G:"Green", Org:"Orange", P:"Purple", Pink:"Pink", Y:"Yellow"};
 const TERMINAL_BONUS = true;
+const METRA_SERVES = 0.5;   // near a Metra station but not the L: counts as half served when deciding who's new to transit (assumption: Metra runs every 30–60 minutes midday and costs more)
 
 /* ---------- state ---------- */
 let NET, MODEL, B, BGRID, LST = [], MST = [], LGRID, MGRID, STOPS, SGRID, BASE_LOSS = null;
 let map, lines = [], cur = null, drawing = null, layerOn = {L:true, commuter:true, bus:false, people:false, jobs:false};
 const $ = id => document.getElementById(id);
+function lsGet(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 const KX = 111320 * Math.cos(41.85 * Math.PI / 180), KY = 110574, O = [41.8819, -87.6278];
 const toXY = (lon, lat) => [(lon - O[1]) * KX, (lat - O[0]) * KY];
 const toLL = (x, y) => [O[1] + x / KX, O[0] + y / KY];
@@ -835,6 +921,8 @@ function zoneTimes(x, y, g, cutoff){
   for (let z = 0; z < NW.nz; z++) if (out[z] > cutoff) out[z] = Infinity;
   return out;
 }
+const ACC0 = new Map();   // jobs within 45 minutes today, by place (today's network never changes)
+function accBefore(x, y){ const k = Math.round(x / 20) + "," + Math.round(y / 20); let v = ACC0.get(k); if (v == null){ v = accessFrom(x, y, null); ACC0.set(k, v); } return v; }
 function accessFrom(x, y, g){ const t = zoneTimes(x, y, g, NW.net.cutoff); let j = 0; for (let z = 0; z < NW.nz; z++) if (t[z] <= NW.net.cutoff) j += NW.Z.jobs[z]; return j; }
 // For one line: jobs within 45 min for people near it, before and after, and minutes saved per rider (async, cached)
 const TT = new Map();
@@ -1196,13 +1284,16 @@ function evaluate(){
       L.close = 0; for (let k = 1; k < n; k++) if (Math.hypot(st[k].x - st[k - 1].x, st[k].y - st[k - 1].y) < 0.4 * MI) L.close++;
       const after = NW ? afterGraph() : null;
       const feed = L.mode === "infill" ? null : feederTrips(L); L.feeder = feed; L.shifted = 0;
+      let keepNew = 0;   // riders who are new to transit, not switching from a station they already use
       for (const s of st){
         if (s.snap && s.snap.kind === "L" && L.preset && PRESETS.find(q => q.id === L.preset && q.extends) && (s.i === 0 || s.i === n - 1)){
           s.riders = 0;   // an extension's trains are the same trains: no new departures at the station it extends from
         } else if (s.snap && s.snap.kind === "L"){
-          const o = s.snap.ref, wasX = o.lines.length > 1 ? 1 : 0;
-          const add = SERVICE_E * Math.log((o.deps + trips) / Math.max(o.deps, 1)) + (wasX ? 0 : c.transfer);
-          s.riders = (o.rides || 0) * (Math.exp(add) - 1); gainOld += s.riders;
+          // an existing station the line stops at gains riders only if the line takes them somewhere new: the station model's
+          // own effect of jobs reachable within 45 minutes, before vs. after (a line going where today's trains already go adds none)
+          const o = s.snap.ref;
+          const a0 = after ? accBefore(o.x, o.y) : 0, a1 = after ? accessFrom(o.x, o.y, after) : 0;
+          s.riders = after ? (o.rides || 0) * Math.max(0, Math.pow((a1 + 1000) / (a0 + 1000), c.ln_jobs_45min) - 1) : 0; gainOld += s.riders; keepNew += s.riders;
         } else {
           const f = {pop:s.pop, jobs:s.jobs, term:(s.i === 0 || s.i === n - 1) && TERMINAL_BONUS && L.mode !== "infill" ? 1 : 0,
                      xfer:(L.mode === "infill" ? infillXfer(s, L.onLines || []) : xferAt(s)) ? 1 : 0, loop:Math.hypot(s.x, s.y) / MI,
@@ -1210,6 +1301,14 @@ function evaluate(){
                      acc45:after ? accessFrom(s.x, s.y, after) : 0, deps:trips};
           let wp = 0; near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => wp += B.pop[i] + B.jobs[i]);
           s.riders = wp + s.pop + s.jobs < 50 ? 0 : Math.exp(railLogBase(f));   // nobody nearby (the lake, a rail yard): no riders
+          // who's new: people and jobs within a 10-minute walk that have no L or Metra station within one today. Everyone else
+          // already has a station; they count only for the share the model ties to faster trips (more jobs within 45 minutes)
+          let tot = 0, fr = 0;
+          near(BGRID, s.x, s.y, WALK_M, i => B.x[i], i => B.y[i], i => { const w = B.pop[i] + B.jobs[i]; tot += w;
+            if (nearestL(B.x[i], B.y[i], WALK_M) >= 0) return; let m = false; near(MGRID, B.x[i], B.y[i], WALK_M, k => MST[k].x, k => MST[k].y, () => m = true); fr += m ? w * (1 - METRA_SERVES) : w; });
+          s.fresh = tot > 0 ? fr / tot : 0;
+          const a0 = after ? accBefore(s.x, s.y) : f.acc45, gain = after ? Math.max(0, 1 - Math.pow((a0 + 1000) / (f.acc45 + 1000), c.ln_jobs_45min)) : 0;
+          s.keep = s.fresh + (1 - s.fresh) * gain;
           if (feed && feed.add[s.i] && s.riders > 0){
             // buses moved here from the old end bring their riders with them: more people board here, the same number fewer at the old end
             const withFeed = Math.exp(railLogBase({...f, bus:f.bus + feed.add[s.i]}));
@@ -1217,7 +1316,9 @@ function evaluate(){
           }
         }
         riders += s.riders;
+        if (s.keep != null && !(s.snap && s.snap.kind === "L")) keepNew += s.riders * s.keep;
       }
+      L.keepNew = keepNew;
       L.band = MODEL.rail.band_20_80;
     } else {
       // bus-type: CTA bus-route model on the corridor within 1/4 mile of the line
@@ -1265,6 +1366,9 @@ function evaluate(){
     // a new stop on an existing line: only people and jobs not already within a walk of a station are new riders; the
     // rest would have used the next station anyway (the station model alone barely shrinks a neighbor, so this sets the floor)
     if (L.mode === "infill"){ const tot = pop + jobs, fresh = tot > 0 ? (popNew + jobsNew) / tot : 0; L.newShare = fresh; L.lost = Math.max(L.lost, riders * (1 - fresh)); }
+    // every new rail line: riders who'd only switch from a station they already walk to aren't new riders (v53). The station
+    // model alone splits a neighborhood between two stations and counts most of both, so this sets the floor on switching
+    if (M.kind === "rail" && L.keepNew != null) L.lost = Math.max(L.lost, riders - L.keepNew);
     L.waiting = M.kind === "rail" && !NW;   // rail riders need travel times; shown once the network loads
     if (M.kind !== "rail" && !L.fromModel){ const lr = LIFT_RANGE[L.mode], m = MODE_LIFT[L.mode]; L.band = [Math.log(lr[0] / m), Math.log(lr[1] / m)]; }   // counted riders: range is only the boost
     // costs
@@ -1459,7 +1563,7 @@ async function initMap(){
 
 /* ---------- the Easter egg: one Brown Line train running Kimball → the Loop → Kimball ----------
    Four cars, drawn from above (silver roofs, rooftop units, dark cab ends) at real size, 5× real speed. Tap it for a note. Hidden with the L layer, off under reduced motion. */
-const EGG_SPEEDUP = 5, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_GAP_M = 1.2;
+const EGG_SPEEDUP = 8, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_PX = 11, EGG_W_PX = 4.2, EGG_GAP_PX = 1.5;   // a fixed size on screen at every zoom
 let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0;
 function trainsDirty(){}   // kept for older callers
 function eggPath(){
@@ -1480,10 +1584,13 @@ function eggFrame(now){
   if (document.hidden || !map || !map.getSource("egg")) return;
   const dt = eggLast ? Math.min(0.1, (now - eggLast) / 1000) : 0; eggLast = now;
   eggClock += dt * EGG_SPEEDUP;   // seconds of real running time
-  const P = EGG || (EGG = eggPath()); if (!P) return;
-  const carL = EGG_CAR_M, carW = 2.9, gap = EGG_GAP_M, train = EGG_CARS * carL + (EGG_CARS - 1) * gap;   // real size: find it by zooming in
-  const run = P.len - train, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
-  const head = leg === 0 ? s0 + train : P.len - s0 - train;   // out to the Loop, then back to Kimball
+  if (!EGG){ EGG = eggPath(); if (EGG) eggClock = Math.random() * 2 * EGG.len / (EGG_MPH * 0.44704); }   // starts somewhere along the line
+  const P = EGG; if (!P) return;
+  // the same size on screen at every zoom (meters per pixel at Chicago's latitude, 512-px tiles)
+  const mpp = 40075016.686 * Math.cos(41.9 * Math.PI / 180) / (512 * Math.pow(2, map.getZoom()));
+  const carL = EGG_CAR_PX * mpp, carW = EGG_W_PX * mpp, gap = EGG_GAP_PX * mpp, train = EGG_CARS * carL + (EGG_CARS - 1) * gap;
+  const run = P.len, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
+  const head = leg === 0 ? Math.min(P.len, Math.max(train, s0)) : Math.min(P.len - train, Math.max(0, P.len - s0));   // out to the Loop, then back to Kimball
   const dir = leg === 0 ? 1 : -1, feats = [];
   for (let c = 0; c < EGG_CARS; c++){
     const front = leg === 0 ? head - c * (carL + gap) : head + c * (carL + gap), back = front - dir * carL;
@@ -1503,10 +1610,10 @@ function startTrains(){
   map.addSource("egg", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
   const vis = layerOn.L ? "visible" : "none";
   map.addLayer({id:"egg-body", type:"fill", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis}, paint:{"fill-color":"#cfd5dc"}}, "pst");
-  map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":["interpolate", ["linear"], ["zoom"], 10, 0.8, 15, 1.4]}}, "pst");
+  map.addLayer({id:"egg-line", type:"line", source:"egg", filter:["==", ["get", "k"], "body"], layout:{visibility:vis, "line-join":"round"}, paint:{"line-color":"#3a424c", "line-width":1.1}}, "pst");
   map.addLayer({id:"egg-unit", type:"fill", source:"egg", filter:["==", ["get", "k"], "unit"], layout:{visibility:vis}, paint:{"fill-color":"#8b939c"}}, "pst");
   map.addLayer({id:"egg-cab", type:"fill", source:"egg", filter:["any", ["==", ["get", "k"], "cab"], ["==", ["get", "k"], "tail"]], layout:{visibility:vis}, paint:{"fill-color":"#2a3038"}}, "pst");
-  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 5 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, 14.6 meters each, the length of a real CTA rail car."];
+  const NOTES = ["You found the Easter egg train. It runs the Brown Line, Kimball to the Loop and back, at 8 times real speed.", "Brown Line to the Loop. Doors closing.", "Four cars, like a midday Brown Line train. Each real car is 48 feet long."];
   let note = 0;
   map.on("click", "egg-body", e => { new maplibregl.Popup({closeButton:false, offset:8, className:"eggpop"}).setLngLat(e.lngLat).setText(NOTES[note++ % NOTES.length]).addTo(map); });
   map.on("mouseenter", "egg-body", () => { map.getCanvas().style.cursor = "pointer"; });
@@ -1514,22 +1621,42 @@ function startTrains(){
   document.addEventListener("visibilitychange", () => { if (!document.hidden && !eggRaf){ eggLast = 0; eggRaf = requestAnimationFrame(eggFrame); } });
   eggRaf = requestAnimationFrame(eggFrame);
 }
-/* density canvases: people or jobs per square mile on a 400 m grid */
+/* density canvases: people or jobs per square mile on a 50 m grid */
 let DENS_COORDS;
 function makeDensityCanvas(field){
-  // a fine grid (120 m) smoothed with three box blurs (about a Gaussian 400 m wide), so the map reads as a smooth surface instead of squares
-  const cell = 120; let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  // Each census block's people (or jobs) are spread over about its own area: a soft disk as wide as the distance to its
+  // 4th-nearest neighboring block (60–600 m). Dense blocks stay sharp, big suburban blocks spread out, and nothing smears
+  // far into the lake or a rail yard (v53; before, a 400 m blur over everything).
+  const cell = 50; let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
   for (let i = 0; i < B.n; i++){ if (B.x[i] < x0) x0 = B.x[i]; if (B.x[i] > x1) x1 = B.x[i]; if (B.y[i] < y0) y0 = B.y[i]; if (B.y[i] > y1) y1 = B.y[i]; }
-  x0 = Math.floor(x0 / cell) * cell - 10 * cell; y0 = Math.floor(y0 / cell) * cell - 10 * cell;
-  const W = Math.ceil((x1 - x0) / cell) + 20, H = Math.ceil((y1 - y0) / cell) + 20;
-  let v = new Float32Array(W * H), tmp = new Float32Array(W * H); const src = field === "pop" ? B.pop : B.jobs;
-  for (let i = 0; i < B.n; i++){ const gx = Math.floor((B.x[i] - x0) / cell), gy = H - 1 - Math.floor((B.y[i] - y0) / cell); v[gy * W + gx] += src[i]; }
-  const r = 2, n = 2 * r + 1;
-  for (let pass = 0; pass < 3; pass++){
-    for (let y = 0; y < H; y++){ let acc = 0; const o = y * W;   // horizontal
+  x0 = Math.floor(x0 / cell) * cell - 14 * cell; y0 = Math.floor(y0 / cell) * cell - 14 * cell;
+  const W = Math.ceil((x1 - x0) / cell) + 28, H = Math.ceil((y1 - y0) / cell) + 28;
+  const v = new Float32Array(W * H), src = field === "pop" ? B.pop : B.jobs;
+  if (!DENS_H){   // spread radius per block (shared by both layers)
+    DENS_H = new Float32Array(B.n); const best = [0, 0, 0, 0];
+    for (let i = 0; i < B.n; i++){
+      best.fill(Infinity);
+      near(BGRID, B.x[i], B.y[i], 600, k => B.x[k], k => B.y[k], (k, d2) => { if (k === i || d2 >= best[3]) return; let m = 3; while (m > 0 && best[m - 1] > d2){ best[m] = best[m - 1]; m--; } best[m] = d2; });
+      DENS_H[i] = Math.min(900, Math.max(90, 1.5 * Math.sqrt(best[3])));
+    }
+  }
+  for (let i = 0; i < B.n; i++){
+    const m = src[i]; if (!m) continue;
+    const h = DENS_H[i], gx = (B.x[i] - x0) / cell, gy = H - (B.y[i] - y0) / cell, R = h / cell;
+    const ia = Math.max(0, Math.floor(gx - R)), ib = Math.min(W - 1, Math.ceil(gx + R)), ja = Math.max(0, Math.floor(gy - R)), jb = Math.min(H - 1, Math.ceil(gy + R));
+    let tot = 0;
+    for (let y = ja; y <= jb; y++) for (let x = ia; x <= ib; x++){ const q = ((x + 0.5 - gx) ** 2 + (y + 0.5 - gy) ** 2) / (R * R); if (q < 1) tot += 1 - q; }
+    if (!(tot > 0)){ const k = Math.min(H - 1, Math.max(0, Math.floor(gy))) * W + Math.min(W - 1, Math.max(0, Math.floor(gx))); v[k] += m; continue; }
+    const f = m / tot;
+    for (let y = ja; y <= jb; y++) for (let x = ia; x <= ib; x++){ const q = ((x + 0.5 - gx) ** 2 + (y + 0.5 - gy) ** 2) / (R * R); if (q < 1) v[y * W + x] += f * (1 - q); }
+  }
+  // then a light smoothing (two 250 m box passes, about a 100 m Gaussian) so it reads as a surface, not dots
+  const tmp = new Float32Array(W * H), r = 2, n = 2 * r + 1;
+  for (let pass = 0; pass < 2; pass++){
+    for (let y = 0; y < H; y++){ let acc = 0; const o = y * W;
       for (let x = -r; x <= r; x++) acc += x >= 0 && x < W ? v[o + x] : 0;
       for (let x = 0; x < W; x++){ tmp[o + x] = acc / n; const a = x + r + 1, b = x - r; if (a < W) acc += v[o + a]; if (b >= 0) acc -= v[o + b]; } }
-    for (let x = 0; x < W; x++){ let acc = 0;   // vertical
+    for (let x = 0; x < W; x++){ let acc = 0;
       for (let y = -r; y <= r; y++) acc += y >= 0 && y < H ? tmp[y * W + x] : 0;
       for (let y = 0; y < H; y++){ v[y * W + x] = acc / n; const a = y + r + 1, b = y - r; if (a < H) acc += tmp[a * W + x]; if (b >= 0) acc -= tmp[b * W + x]; } }
   }
@@ -1545,6 +1672,7 @@ function makeDensityCanvas(field){
   DENS_COORDS = [toLL(x0, y0 + H * cell), toLL(x0 + W * cell, y0 + H * cell), toLL(x0 + W * cell, y0), toLL(x0, y0)];
   return cv;
 }
+let DENS_H = null;
 // light to dark, one hue each (people blue, jobs purple)
 const DENS_RAMP = {pop:[[198, 219, 239], [107, 174, 214], [33, 113, 181], [8, 48, 107]], jobs:[[218, 210, 235], [158, 140, 200], [106, 81, 163], [63, 0, 125]]};
 function rampAt(r, t){ const f = t * (r.length - 1), i = Math.min(r.length - 2, Math.floor(f)), u = f - i; return r[i].map((c, k) => Math.round(c + (r[i + 1][k] - c) * u)); }
@@ -1689,7 +1817,7 @@ function padMap(){ // on phones the sheet covers the bottom of the map: keep the
   document.documentElement.style.setProperty("--sheet", h + "px");
   // the layer pills sit 8 px under the metrics bar (they move a frame later, so measure the bar, not the pills)
   const topH = ($("tbar").getBoundingClientRect().bottom || 110) + 8 + ($("layers") ? $("layers").offsetHeight : 0);
-  const pad = phone ? {top:Math.round(topH + 8), bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:400, right:0}, key = JSON.stringify(pad);
+  const pad = phone ? {top:Math.round(topH + 8), bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:Math.round(($("panel").getBoundingClientRect().right || 400) + 0), right:0}, key = JSON.stringify(pad);
   if (key === padMap.last) return;
   // setPadding stops a camera move: while the map is flying somewhere, wait until it lands
   if (map.isMoving()){ if (!padMap.waiting){ padMap.waiting = true; map.once("moveend", () => { padMap.waiting = false; padMap(); }); } return; }
@@ -1705,8 +1833,19 @@ const GROUPS = [
   {id:"rail", title:"New L lines and extensions", sub:"From CTA studies and the regional plan (CMAP 2026). Switch on as many as you like.", mode:"elevated"},
   {id:"bus", title:"Bus rapid transit", sub:"Corridors CTA, CDOT and the regional plan have studied. Switch on as many as you like.", mode:"brt"},
   {id:"metra", title:"Metra all-day trains", sub:"Trains in both directions all day, from the regional plan's Metra projects.", mode:"metra"}];
+// the start view's four sections, like the housing tool's tabs (remembered per browser)
+let START_TAB = lsGet("sc-ttab", "draw");
+function setStartTab(t){
+  if (!["draw","prop","tools","learn"].includes(t)) t = "draw"; START_TAB = t; lsSet("sc-ttab", t);
+  for (const b of document.querySelectorAll(".stab")) b.setAttribute("aria-selected", String(b.dataset.t === t));
+  for (const p of document.querySelectorAll("#vStart .tpane")) p.hidden = p.dataset.t !== t;
+  const vb = document.querySelector("#vStart .vbody"); if (vb) vb.scrollTop = 0;
+}
+function openShare(){ cur = null; renderPlan(); show("vShare"); $("shareLink").textContent = navigator.share && matchMedia("(pointer:coarse)").matches ? "Share a link to this plan" : "Copy a link to this plan"; }
+const WIDE_ICON = {open:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>', shut:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg>'};
+function setWide(on){ document.body.classList.toggle("wide", !!on); const b = $("wideBtn"); b.setAttribute("aria-pressed", String(!!on)); b.innerHTML = on ? WIDE_ICON.shut : WIDE_ICON.open; b.title = on ? "Shrink the panel" : "Expand the panel"; b.setAttribute("aria-label", b.title); lsSet("sc-twide", !!on); padMap.last = null; padMap(); setTimeout(padMap, 320); }
 function openStart(){
-  cur = null; nav = {view:"start"}; renderPlan(); show("vStart");
+  cur = null; nav = {view:"start"}; renderPlan(); show("vStart"); setStartTab(START_TAB);
   const modes = Object.entries(MODES).map(([k, M]) => `<button type="button" data-mode="${k}"><span class="di"><svg viewBox="0 0 24 24" aria-hidden="true">${M.icon}</svg></span><span>${M.name === "Bus rapid transit" ? "BRT" : M.name}<small>${moneyRange(...[today$(M.cost[0], M.costYear[0]), today$(M.cost[1], M.costYear[1])].sort((a, b) => a - b))} ${M.perStation ? "each" : "a mile"}</small></span></button>`).join("");
   $("drawCard").innerHTML = `<span class="sec">Draw your own line</span><div class="dmodes">${modes}</div>`;
   for (const b of $("drawCard").querySelectorAll("button")) b.onclick = () => startDraw(b.dataset.mode);
@@ -1720,6 +1859,7 @@ function renderGroups(){
     return `<button type="button" class="gcard" data-g="${G.id}"><span class="ico" ${G.mode === "metra" ? 'style="background:#e8ecf0"' : ""}>${icon(G.mode, G.mode === "metra")}</span><span class="gt"><b>${G.title}</b><span>${esc(names)}</span></span><span class="gn">${on ? `<em>${on} on</em> · ` : ""}${ps.length} ›</span></button>`;
   }).join("");
   for (const b of el.querySelectorAll(".gcard")) b.onclick = () => openGroup(b.dataset.g);
+  const nOn = PRESETS.filter(presetOn).length; if ($("propN")) $("propN").textContent = nOn ? String(nOn) : "";
 }
 let PRESETS = [];
 const presetLine = P => P.metra ? lines.find(l => l.type === "metra" && l.line === P.metra) : lines.find(l => l.preset === P.id);
@@ -1862,7 +2002,7 @@ function renderNITA(){
 }
 function renderMyLines(){
   const el = $("myLines"), mine = lines.filter(L => !L.preset && !(L.type === "metra" && PRESETS.some(P => P.metra === L.line)));
-  if (!mine.length){ el.innerHTML = ""; return; }
+  if (!mine.length){ el.innerHTML = `<span class="sec">Your lines</span><p class="tlede">Lines you draw show up here, each with a switch to turn it on or off.</p>`; return; }
   evaluate();
   el.innerHTML = `<span class="sec">Your lines</span><div class="plist">` + mine.map(L => `<div class="prow"><button type="button" class="pt" data-id="${L.id}"><b>${esc(L.name)}</b><span>${L.type === "metra" ? "Metra upgrade" : MODES[L.mode].name} · ${miFmt(L.len || 0)} mi${!L.off && !L.waiting && L.riders != null ? " · " + num(L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.riders) + " riders" : ""}</span></button><button type="button" class="sw" role="switch" aria-checked="${!L.off}" aria-label="${esc(L.name)}" data-id="${L.id}"></button></div>`).join("") + `</div>`;
   for (const b of el.querySelectorAll(".pt")) b.onclick = () => openLine(lines.find(L => L.id === b.dataset.id));
@@ -1934,7 +2074,8 @@ function openLine(L){
   const isI = !isM && L.mode === "infill";
   $("lSub").textContent = isM ? `Metra · ${miFmt(L.len)} mi · ${L.st.length} stations` : isI ? `New station · ${L.onLines && L.onLines.length ? lineNames(L.onLines) : "not on an L line"}` : `${M.name} · ${miFmt(L.len)} mi · ${L.pts.length} stations`;
   $("lineEdit").style.display = isM ? "none" : "";
-  const riders = isM ? (L.riders[0] + L.riders[1]) / 2 : L.riders;
+  const isR = !isM && M.kind === "rail";   // rail: the headline is new riders; people who'd only switch stations are shown underneath
+  const riders = isM ? (L.riders[0] + L.riders[1]) / 2 : isR ? Math.max(0, L.newRiders) : L.riders;
   const lo = isM ? L.riders[0] : riders * Math.exp(L.band[0]), hi = isM ? L.riders[1] : riders * Math.exp(L.band[1]);
   const heads = isM ? [15, 20, 30, 60] : M.heads;
   const cars = (L.carTrips[0] + L.carTrips[1]) / 2, co2 = (L.co2[0] + L.co2[1]) / 2;
@@ -1943,13 +2084,14 @@ function openLine(L){
   let why = "";
   if (isM) why += `<p>${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."} Riders come from Metra's 2018 station counts scaled to today, and how riders responded to more trains in Boston.</p>`;
   else if (isI) why += `<p>People entering the new station on a weekday, from the same model of today's L stations, with the trains that already pass by (${L.near ? "as many as stop at " + esc(L.near.name.split(" (")[0]) : "the line's service"}). Only the people and jobs nearby that aren't already within a 10-minute walk of an L or Metra station (${Math.round((L.newShare || 0) * 100)}% here) count as new riders; the rest would have walked to a station on either side. A single station's estimate is typically off by about 37%.</p>`;
-  else if (M.kind === "rail") why += `<p>People entering its stations on a weekday, from a model of how many people use each L station today, given the people and jobs near it, its buses, and how often trains come. A single station's estimate is typically off by about 37%.</p>`;
+  else if (M.kind === "rail") why += `<p>New riders a weekday. A model of today's L stations (the people and jobs near each, its buses, how often trains come, and how many jobs you can reach in 45 minutes) says about ${num(L.riders)} people would board at its stations. Most people near a new station already have one: only those with no L station within a 10-minute walk count as new riders (half of them where a Metra station is that close), plus the share the model ties to faster trips (more jobs within 45 minutes). The rest would just switch from a station they already use. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
   else why += `<p>Starts from the ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today, which the new line replaces. Riders rise or fall with how often it comes compared with those buses${L.mode === "brt" ? ", plus 31% for faster BRT service (Cleveland and Los Angeles gained 26–51%)" : ""}.</p>`;
   if (!isM && L.shifted > 50) why += `<p>The ${L.feeder.routes.map(r => NET.bus[r].short).join(", ")} bus${L.feeder.routes.length > 1 ? "es" : ""} that end at today's last stop would run to the new one instead, bringing about ${num(L.shifted)} riders who now board there.</p>`;
-  if (!isM && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
-  if (!isM && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders.</p>`;
-  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM ? "more riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
+  if (!isM && !isR && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
+  if (!isM && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders, from people who can now reach more jobs within 45 minutes.</p>`;
+  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isM || isR ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
+  if (isR && L.riders - riders > 100) h += `<p class="note">${num(L.riders)} would board at its stations; about ${num(L.riders - riders)} of them would just switch from a line they already use.</p>`;
   if (isI) h += `<p class="note">Trains stop as often as they do at ${L.near ? esc(L.near.name.split(" (")[0]) : "the next station"}: about every ${L.head} minutes.</p>`;
   else h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
@@ -2558,6 +2700,7 @@ function openSources(){
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
+  <li>New riders on a new rail line: only people and jobs within a 10-minute walk of a new station that have no L station that close count as new (half of them where a Metra station is that close, since Metra runs every 30–60 minutes midday and costs more). Everyone else would switch from a station they already use, except the share the station model ties to more jobs within 45 minutes. Existing stations a line stops at gain riders only from that same access effect.</li>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>
   <li>Service runs ${HOURS} hours a day (Metra upgrades: ${METRA_HOURS}), at the chosen frequency except the last ${LATE_HOURS} hours, when trains and buses come half as often.</li>
   <li>When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.</li>
@@ -2590,10 +2733,10 @@ async function boot(){
   if (lines.length && location.hash.startsWith("#p=")) openLine(lines[lines.length - 1]);
   $("drawCancel").onclick = cancelDraw; $("drawUndo").onclick = () => { drawing.pts.pop(); refreshDraw(); };
   $("drawDone").onclick = finishDraw; $("metraBack").onclick = goBack; $("lineBack").onclick = goBack;
-  $("lineAdd").onclick = goBack; $("groupBack").onclick = openStart; $("cleanBack").onclick = openStart; $("nitaBack").onclick = openStart;
+  $("lineAdd").onclick = goBack; $("groupBack").onclick = openStart; $("cleanBack").onclick = openStart; $("nitaBack").onclick = openStart; $("shareBack").onclick = openStart;
   $("cleanCard").onclick = () => { show("vClean"); renderClean(); renderBar(); };
   $("tripCard").onclick = openTrip; $("fundCard").onclick = openFund; $("cmpCard").onclick = openCompare; $("sumCard").onclick = () => active().length ? openSummary() : openCompare();
-  $("tripBack").onclick = () => { setTripLayer(false); openStart(); }; $("fundBack").onclick = openStart; $("cmpBack").onclick = openStart;
+  $("tripBack").onclick = () => { setTripLayer(false); openStart(); }; $("fundBack").onclick = openStart; $("cmpBack").onclick = openShare;
   for (const [f, id] of [["a", "tripA"], ["b", "tripB"]]){
     $(id).onfocus = () => setTripField(f);
     $(id).onchange = () => { const v = $(id).value.trim(); if (!v) setTripPoint(f, null); else { const pt = tripPlace(v); if (pt) setTripPoint(f, pt); } };
@@ -2606,8 +2749,12 @@ async function boot(){
   $("nitaCard").onclick = () => { show("vNita"); renderNITA(); renderBar(); }; $("lineEdit").onclick = () => cur && cur.type === "draw" && startDraw(cur.mode, cur);
   $("lineDel").onclick = () => { if (!cur) return; lines = lines.filter(l => l !== cur); save(); goBack(); };
   $("srcBtn").onclick = openSources;
-  $("share").onclick = async () => { save(); const url = location.href;
-    try { if (navigator.share) await navigator.share({title:"My Chicago transit plan", url}); else { await navigator.clipboard.writeText(url); hint("Link copied"); setTimeout(() => hint(""), 1800); } } catch (e) {} };
+  $("share").onclick = openShare;
+  $("shareLink").onclick = async () => { save(); const url = location.href;
+    try { if (navigator.share && matchMedia("(pointer:coarse)").matches) await navigator.share({title:"My Chicago transit plan", url}); else { await navigator.clipboard.writeText(url); hint("Link copied"); setTimeout(() => hint(""), 1800); } } catch (e) {} };
+  for (const b of document.querySelectorAll(".stab")) b.onclick = () => setStartTab(b.dataset.t);
+  $("wideBtn").onclick = () => setWide(!document.body.classList.contains("wide"));
+  setWide(matchMedia("(min-width:860px)").matches && lsGet("sc-twide", false));
   for (const b of document.querySelectorAll("#layers button")) b.onclick = () => setLayer(b.dataset.l, b.getAttribute("aria-pressed") !== "true");
   // phones: the sheet has three heights. Tap the handle to tuck it away or bring it back; swipe the handle, the
   // tucked bar or a view's header up or down to step between heights.
@@ -2621,6 +2768,34 @@ async function boot(){
     else if (e.key === "Enter") finishDraw();
     else if ((e.key === "z" && (e.metaKey || e.ctrlKey)) || e.key === "Backspace"){ if (document.activeElement.tagName !== "INPUT"){ e.preventDefault(); drawing.pts.pop(); refreshDraw(); } }
   });
+  // keyboard, same as the housing tool: hold WASD / arrows to glide, Q/E spin, R/F tilt, +/- zoom (not while typing or with a pop-up open)
+  map.keyboard.disable();
+  const KEYS = new Set(); let keyRaf = 0, keyLast = 0;
+  const KEYMAP = {w:"up", arrowup:"up", s:"down", arrowdown:"down", a:"left", arrowleft:"left", d:"right", arrowright:"right", q:"spinL", e:"spinR", r:"tiltU", f:"tiltD", "+":"zoomIn", "=":"zoomIn", "-":"zoomOut", "_":"zoomOut"};
+  const keyLoop = now => {
+    const dt = Math.max(0, Math.min(0.05, (now - (keyLast || now)) / 1000)); keyLast = now;
+    if (!KEYS.size){ keyRaf = 0; keyLast = 0; return; }
+    let dx = 0, dy = 0; if (KEYS.has("left")) dx -= 1; if (KEYS.has("right")) dx += 1; if (KEYS.has("up")) dy -= 1; if (KEYS.has("down")) dy += 1;
+    const c = map.getCanvas(), speed = Math.min(c.clientWidth, c.clientHeight) * 0.9 * dt;   // about 90% of the screen a second
+    const opt = {};
+    if (dx || dy){ const p = map.project(map.getCenter()); opt.center = map.unproject([p.x + dx * speed, p.y + dy * speed]); }
+    if (KEYS.has("spinL")) opt.bearing = map.getBearing() - 60 * dt;
+    if (KEYS.has("spinR")) opt.bearing = map.getBearing() + 60 * dt;
+    if (KEYS.has("tiltU")) opt.pitch = Math.min(60, map.getPitch() + 40 * dt);
+    if (KEYS.has("tiltD")) opt.pitch = Math.max(0, map.getPitch() - 40 * dt);
+    if (KEYS.has("zoomIn")) opt.zoom = Math.min(map.getMaxZoom(), map.getZoom() + 1.2 * dt);
+    if (KEYS.has("zoomOut")) opt.zoom = Math.max(map.getMinZoom(), map.getZoom() - 1.2 * dt);
+    map.jumpTo(opt); keyRaf = requestAnimationFrame(keyLoop);
+  };
+  addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target, tag = (t.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable || document.querySelector("dialog[open]")) return;
+    const a = KEYMAP[e.key.toLowerCase()]; if (!a) return;
+    e.preventDefault(); KEYS.add(a); if (!keyRaf) keyRaf = requestAnimationFrame(keyLoop);
+  });
+  addEventListener("keyup", e => { const a = KEYMAP[(e.key || "").toLowerCase()]; if (a) KEYS.delete(a); });
+  addEventListener("blur", () => KEYS.clear());
 }
 boot();
 </script>

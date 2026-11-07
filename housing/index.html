@@ -975,7 +975,7 @@ body.hard #goalLbl{color:var(--star);font-weight:700}
   .sheetdown svg,.toolsbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   body.sheetmin .sheetdown{display:none}
   body.sheetmin .sheet .tabs,body.sheetmin .sheet .panes{display:none !important}
-  body.sheetmin .secbtns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:2px 16px 12px;flex:0 0 auto}
+  body.sheetmin .secbtns{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:2px 16px 12px;flex:0 0 auto}
   body.sheetpeek .secbtns{display:none}
   .secbtns button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:68px;padding:0;border:1px solid var(--line);border-radius:2px;background:#fff;font:600 15px var(--f-body);color:var(--ink);cursor:pointer}
   .secbtns button svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -1409,6 +1409,44 @@ body.playing #sky{opacity:1}
 @media (min-width:860px) and (max-width:1100px){ .sc-bar #homesLbl{display:none} }
 .learnmore{margin-top:14px !important;font-size:14px !important}
 .learnmore a{font-weight:600}
+
+/* v53: expand the panel (desktop): the options panel widens over the map and its cards go into columns */
+.basics{display:grid;gap:8px}
+.townq{border-radius:14px !important;border-color:var(--sc-line) !important;background:#fff !important;font:600 14px/1.35 var(--sc-font) !important;padding:11px 14px !important;transition:border-color .15s,background-color .15s}
+.townq:hover{border-color:var(--sc-navy) !important;background:#f6f8fb !important}
+.townq + .townq{margin-top:8px}
+#mythList{display:grid;gap:8px}
+.basics a{display:block;padding:11px 14px;border:1px solid var(--sc-line);border-radius:14px;text-decoration:none;color:var(--sc-ink);background:#fff;transition:border-color .15s,background-color .15s}
+.basics a:hover{border-color:var(--sc-navy);background:#f6f8fb}
+.basics b{display:block;font:600 14.5px/1.3 var(--sc-font)}
+.basics span{display:block;font:400 13px/1.35 var(--sc-font);color:var(--sc-mute);margin-top:2px}
+@media (min-width:860px){
+  .sheet .widebtn{display:grid !important;place-items:center;position:absolute;right:12px;top:13px;z-index:6;width:34px;height:34px;padding:0;border:1px solid var(--sc-line2) !important;border-radius:50% !important;background:#fff !important;color:var(--sc-ink);box-shadow:none !important;cursor:pointer;transition:background-color .15s,border-color .15s}
+  .sheet .widebtn:hover{background:#f3f5f8 !important;border-color:var(--sc-ink2) !important}
+  .sheet .widebtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sheet .tabs{padding-right:52px !important}
+  body:not(.wide) .sheet .tab{padding:8px 8px !important;font-size:14px !important}
+  body:not(.wide) .sheet .tab #mCount{display:none}
+  body{--panelW:380px}
+  body.wide{--panelW:min(840px, calc(100vw - 440px))}
+  html body.wide .sheet{left:20px !important;width:var(--panelW) !important;top:calc(var(--hudH, 137px) + 16px) !important;bottom:20px !important;height:auto !important;border:0 !important;transition:width .28s cubic-bezier(.2,.7,.2,1)}
+  html body .sheet{transition:width .28s cubic-bezier(.2,.7,.2,1)}
+  body.wide .sheet .tabs{justify-content:flex-start !important;padding:14px 52px 10px 12px !important;gap:2px !important}
+  body.wide .sheet .tab{padding:8px 12px !important;font-size:14.5px !important}
+  body.wide .legend,body.wide .mapctl,body.wide .hoodbanner{opacity:1;pointer-events:auto}
+  body.wide .pane{max-width:none;padding:12px 20px 28px}
+  body.wide .credit{left:calc(var(--panelW) + 36px) !important}
+  body.wide .hoodbanner{left:calc(var(--panelW) + 36px) !important}
+  body.wide .comment,body.wide .ticker{left:calc(var(--panelW) + 20px + (100% - var(--panelW) - 20px) / 2) !important;width:min(380px, calc(100% - var(--panelW) - 80px)) !important;max-width:none !important;transform:translateX(-50%)}
+  body.wide .comment{top:auto !important;bottom:28px}
+  body.wide .basics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  body.wide #pane-learn #townList,body.wide #pane-learn #mythList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  body.wide #pane-impact .facts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  body.wide #pane-zoning:not([hidden]){grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+  body.wide #pane-zoning > .tool{align-self:start}
+}
+@media (min-width:860px) and (max-width:1199px){ body.wide{--panelW:calc(100vw - 340px)} }
+@media (max-width:859px){ .sheet .tab #mCount{display:none} .tabs{gap:0 !important} }
 </style>
 
 <div id="app">
@@ -1419,7 +1457,7 @@ body.playing #sky{opacity:1}
 
   <header class="sc-head">
     <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-      <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit tracker</a></nav></div>
+      <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
     <div class="sc-r"><span class="sc-fan fanline">Not affiliated with the City of Chicago.</span><button class="sc-btn" id="lookBtn" type="button">Sources</button><button class="sc-btn sc-share" id="shareTop" type="button">Share</button></div>
   </header>
   <section class="sc-bar hbar" id="hud" aria-live="polite">
@@ -1453,13 +1491,14 @@ body.playing #sky{opacity:1}
   <section class="sheet" id="sheet">
     <button class="grab" id="grab" aria-label="Show more or less of the tool panel"></button>
     <button type="button" class="sheetdown" id="sheetDown" aria-label="Back to the map"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-    <div class="secbtns" id="secBtns"><button type="button" data-go="zoning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg>Build</button><button type="button" data-go="policies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 11h6M10 15h6"/></svg>Policies</button><button type="button" data-go="missions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6z"/></svg>Missions</button><button type="button" data-go="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Impact</button></div>
+    <div class="secbtns" id="secBtns"><button type="button" data-go="zoning"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 20V9l6-4 6 4v11M10 20v-5h4v5"/></svg>Build</button><button type="button" data-go="policies"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4M10 11h6M10 15h6"/></svg>Policies</button><button type="button" data-go="missions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.2-5.4 3.2 1.3-6-4.6-4.1 6.1-.6z"/></svg>Missions</button><button type="button" data-go="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Impact</button><button type="button" data-go="learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5C5.5 5 9 5 12 7c3-2 6.5-2 9-.5V19c-2.5-1.5-6-1.5-9 .5-3-2-6.5-2-9-.5z"/><path d="M12 7v12.5"/></svg>Learn</button></div>
     <button class="widebtn" id="wideBtn" type="button" aria-pressed="false" title="Expand the panel" aria-label="Expand or collapse the panel">⤢</button>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-pane="zoning">Build</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="policies">Policies <span class="n" id="pCount">0</span></button>
       <button class="tab" role="tab" aria-selected="false" data-pane="missions">Missions <span class="n" id="mCount">0/8</span></button>
       <button class="tab" role="tab" aria-selected="false" data-pane="impact">Impact</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="learn">Learn</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="share">Share</button>
       <button class="tab" role="tab" aria-selected="false" data-pane="math">Math</button>
     </div>
@@ -1566,17 +1605,39 @@ body.playing #sky{opacity:1}
       <!-- Missions -->
       <div class="pane" id="pane-missions" hidden>
         <div class="group"><div class="eyebrow">Your missions</div><div id="missions" class="group"></div></div>
-        <div class="group">
-          <div class="eyebrow">Town hall · <span id="townCount"></span></div>
-          <p class="small">The ten things every community meeting hears, what the research actually says, and how another city got past it.</p>
-          <div id="townList"></div>
-          <details class="pgroup"><summary><span class="eyebrow">How to win the room</span></summary><div id="tacticList"></div></details>
-        </div>
         <div class="group" id="targetGroup">
           <div class="eyebrow">Your goal</div>
           <p class="small">Normal mode is Chicago's own share of the regional shortage: no study counts the city alone, so it takes the region's estimate in proportion to homes. Chicago permitted about 3,900 homes in 2025, yet the regional shortage still grew by about 8,800 homes in a year. Your goal: today's gap plus 15 years of that growth, on top of today's pace.</p>
           <div class="targets" id="targets"></div>
           <p class="goaleq" id="goalEq"></p>
+        </div>
+      </div>
+
+      <!-- Learn -->
+      <div class="pane" id="pane-learn" hidden>
+        <div class="group">
+          <div class="eyebrow">The basics</div>
+          <p class="small">One-minute explainers behind the numbers in this tool.</p>
+          <div class="basics">
+            <a href="../learn/#zoning"><b>What zoning decides</b><span>Why most of Chicago can only hold one or two homes per lot</span></a>
+            <a href="../learn/#illegal"><b>Illegal to build today</b><span>The two- and three-flats the current map wouldn't allow</span></a>
+            <a href="../learn/#shortage"><b>The shortage</b><span>How many homes Chicago is missing and how it's counted</span></a>
+            <a href="../learn/#rents"><b>Do new apartments lower rents?</b><span>What happens to rent when a city builds</span></a>
+            <a href="../learn/#prerogative"><b>Aldermanic prerogative</b><span>Who really decides what goes on your block</span></a>
+            <a href="../learn/#aro"><b>The affordable requirement</b><span>How the ARO works and what it costs</span></a>
+            <a href="../learn/#megaprojects"><b>Megaprojects, PDs and TIF</b><span>How the big sites get approved and paid for</span></a>
+          </div>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Town hall · <span id="townCount"></span></div>
+          <p class="small">The ten things every community meeting hears, what the research says, and how another city got past it.</p>
+          <div id="townList"></div>
+          <details class="pgroup"><summary><span class="eyebrow">How to win the room</span></summary><div id="tacticList"></div></details>
+        </div>
+        <div class="group">
+          <div class="eyebrow">Myths you've unlocked</div>
+          <p class="small">They pop up as you play. Tap one to read it again.</p>
+          <div class="list" id="mythList"></div>
         </div>
       </div>
 
@@ -1736,7 +1797,7 @@ body.playing #sky{opacity:1}
                 <li>Policies that cut supply cost this share of the homes Chicago builds anyway: downzoning 25%, parking minimums 10%, moratoriums 15%, rent control 30%, transfer tax 5%. They also cut rezoned projects: parking minimums 15%, moratoriums 20% (and 25% later), rent control 40% on buildings of 3+ homes, transfer tax 18% on buildings of 20+.</li>
                 <li>Local taxes use NAHB's 2015-dollar estimate, compared with the city's 2027 budget gap; it counts revenue to every local government, not just City Hall, and leaves out what new residents cost to serve.</li>
               </ul></div></details>
-          <details class="mfold"><summary>Myths you've unlocked</summary><div class="mbody"><div class="list" id="mythList"></div></div></details>
+          
           <details class="mfold"><summary>Big projects in the pipeline</summary><div class="mbody">Chicago's giant master plans add up to about 31,600 planned homes that aren't built yet: The 78, Bronzeville Lakefront, the 1901 Project, Cabrini-Green, Foundry Park and the rest of North Union (purple dots on the map). That's roughly eight years of the ~3,900 homes the city permits each year, or about a third of the city's 2041 goal (a tenth in hard mode). Most are stuck on infrastructure or financing, not zoning, so "Get the megaprojects built" is a money decision, not a zoning one. Some planned housing has been lost to other uses: the Tribune printing site's 5,900 planned homes became the Bally's casino (<a href="https://www.multihousingnews.com/tribune-media-unveils-chicago-river-district-master-plan/" target="_blank" rel="noopener">Multi-Housing News</a>), and a 13,575-home plan for the old U.S. Steel South Works site was cancelled; it's slated to become a quantum computing campus (<a href="https://en.wikipedia.org/wiki/Chicago_Lakeside_Development" target="_blank" rel="noopener">Wikipedia</a>; <a href="https://news.wttw.com/2024/07/25/quantum-computing-campus-touted-history-altering-picks-former-us-steel-south-works-site" target="_blank" rel="noopener">WTTW</a>).</div></details>
           <details class="mfold"><summary>Privacy</summary><div class="mbody">No accounts, no cookies, no ads. Visits are counted with Cloudflare Web Analytics, which doesn't use cookies or track you across sites. Finished plans are stored anonymously for "What other people chose"; your IP address is never stored, only a scrambled code that changes daily and is used to stop spam. Full details: <a href="../privacy/" target="_blank" rel="noopener">Privacy</a> · <a href="../terms/" target="_blank" rel="noopener">Terms</a>.</div></details>
           <details class="mfold"><summary>Data</summary><div class="mbody">Building footprints, stories and unit counts: <a href="https://github.com/Chicago/osd-building-footprints" target="_blank" rel="noopener">City of Chicago</a> (released February 2013; the city's portal copy was last updated in 2015), garages and sheds removed, brought up to date with <a href="https://gis.cookcountyil.gov/traditional/rest/services/buildingFootprint_2022/MapServer" target="_blank" rel="noopener">Cook County's 2022 building footprints</a> (aerial survey with LiDAR heights): 14,563 buildings that were torn down or replaced by 2022, or whose lot is vacant today (<a href="https://datacatalog.cookcountyil.gov/" target="_blank" rel="noopener">Cook County Assessor</a> vacant land, 2025, or the city's land inventory), are removed; 18,694 buildings that appear in the 2022 data but not the 2013 data are added with their measured height (they can't be rebuilt in the simulation, and the homes inside them aren't counted because the county data has no unit counts); and about 42,000 buildings with no recorded stories get them from LiDAR (roof height less 4 ft, ÷ 13 ft a floor). These fixes lower totals a bit in busy neighborhoods: some lots the 2013 data treated as one-story shops are really three-story buildings, and some lots were already rebuilt. Street centerlines: <a href="https://github.com/Chicago/osd-street-center-line" target="_blank" rel="noopener">City of Chicago</a>. 77 community areas. 124 L stations inside the city from the CTA station list; 74 Metra stations from Cook County GIS. Buildings marked illegal to build today hold more homes than their zoning district's minimum lot area per home allows on their lot. Lot sizes and apartment counts come from the <a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Single-and-Multi-Family-Improvement-Chara/x54s-btds" target="_blank" rel="noopener">Cook County Assessor</a> (matched to about 4 in 5 multi-home buildings; a check found 21% of the earlier estimated flags were actually legal and 13% of unflagged buildings actually illegal); the rest use an estimate of twice the building's footprint. Height, floor-area, setback and parking limits aren't checked, so more buildings break today's code than the map shows.</div></details>
@@ -3040,7 +3101,7 @@ function renderMythList(){
 // ---------------- town hall: common objections, what research finds, and how other places got past them ----------------
 const TOWN = [
   {k:"traffic", q:"Great, 200 new neighbors and every one of them drives down my street.",
-   e:"Households near jobs and transit drive less. In the leading meta-analysis of travel studies, living somewhere central and job-rich cuts a household's driving far more than density alone (elasticity about −0.20 vs −0.04). Honest caveat: trips on the next block can still go up a bit.",
+   e:"Neighbors near jobs and the L drive less. Across more than 200 travel studies, living close to jobs and downtown cuts a household's driving more than anything else. Every family that moves in here instead of on the region's edge means fewer cars on the road overall, and Chicago no longer forces a garage on buildings near transit.",
    f:"California (SB 743, statewide in 2020) stopped treating 'cars waiting at intersections' as environmental harm and now measures total driving, which favors infill near transit.",
    s:[["Ewing & Cervero elasticities (SACOG)","https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000"],["FHWA","https://www.fhwa.dot.gov/ENVIRONMENT/air_quality/conformity/research/emissions_benefits/benefits10.cfm"],["ITE guide to SB 743","https://www.westernite.org/SB%20743/ITE-Guide-to-SB-743-April-2021.pdf"]]},
   {k:"parking", q:"I already circle the block for twenty minutes. Where do they park?",
@@ -3052,19 +3113,19 @@ const TOWN = [
    f:"Portland (2021) allowed up to 4 homes per lot (6 with affordable units) but capped building size. In year one, 73% of new non-ADU homes were middle housing: duplexes to fourplexes about the size of a big house.",
    s:[["Metropolitan Planning Council","https://metroplanning.org/affordable-housing-outcome-part-2-of-2/"],["'Political Architecture' study","https://talim.scholar.princeton.edu/publications/political-architecture-contextual-development-and-opposition-housing"],["City of Portland, 2023","https://www.portland.gov/bps/planning/rip/news/2023/7/5/new-study-shows-promising-housing-production-results-residential"]]},
   {k:"values", q:"That's my retirement fund you're parking an apartment block next to.",
-   e:"In New York, new towers nudged nearby condo prices down about 0.9% per 10% more condos, with no significant effect on nearby 1–5 family homes. In Chicago, the 2015 transit upzoning raised the price of the upzoned lots themselves. Mixed evidence, but big losses for homeowners next door aren't the typical finding.",
+   e:"New apartments next door don't sink your house. In New York, new towers had no significant effect on the value of nearby 1–5 family homes. And when Chicago upzoned near transit in 2015, the upzoned lots went up in value: more homes allowed means more your land is worth.",
    f:"Houston's small-lot reforms (1998, 2013) let owners split and sell, and about 80,000 small-lot homes followed. Upzoning gives owners options, not just neighbors.",
    s:[["Li, 2022 (paper)","https://www.gwern.net/doc/economics/georgism/2021-li-3.pdf"],["Bloomberg CityLab on Freemark, 2019","https://www.bloomberg.com/news/articles/2019-02-05/why-that-new-zoning-study-shouldn-t-deter-yimbys"],["Mercatus","https://mercatus.org/research/policy-briefs/learning-houstons-townhouse-reforms"]]},
   {k:"displacement", q:"First comes the luxury tower, then my landlord doubles my rent.",
-   e:"In 11 US cities, big new buildings in low-income areas lowered nearby rents 5–7%. In San Francisco, new market-rate projects cut nearby renters' displacement risk about 17% (working paper). Mixed: a Minneapolis study found the cheapest units nearby rose about 6.7% while pricier ones fell slightly (not statistically clear).",
+   e:"New buildings lower rents nearby. In 11 US cities, big new buildings in low-income areas cut nearby rents 5–7%. In New York, every 10% more homes nearby lowered rents about 1%. Austin built at record pace and its median rent fell from $1,546 to $1,296.",
    f:"Oregon (2019) paired statewide rent stabilization with legalizing duplexes in every city of 10,000+. Build more and protect tenants: you don't have to pick one.",
-   s:[["Asquith, Mast & Reed (Upjohn)","https://www.upjohn.org/research-highlights/new-apartment-buildings-low-income-areas-decrease-nearby-rents"],["Pennington, 2021","https://gwern.net/doc/economics/georgism/2021-pennington.pdf"],["Damiano & Frenier (UMN)","https://www.cura.umn.edu/research/build-baby-build-housing-submarkets-and-effects-new-construction-existing-rents"],["NLIHC on Oregon, 2019","https://nlihc.org/resource/field-oregon-advocates-celebrate-huge-wins-zoning-reform-and-affordable-housing-funding"]]},
-  {k:"schools", q:"The schools are packed and my basement floods every spring.",
-   e:"Chicago had 3.62M people in 1950 and 2.75M in 2020; much of its infrastructure was built for the bigger city. CPS has room for about 450,000 students and enrolls about 306,000. New apartments add few kids: about 10 school-age children per 100 newer market-rate rental units in a New Jersey study. Flooding is real, though: it needs local engineering, not a ban.",
+   s:[["Asquith, Mast & Reed (Upjohn)","https://www.upjohn.org/research-highlights/new-apartment-buildings-low-income-areas-decrease-nearby-rents"],["Li, 2022 (paper)","https://www.gwern.net/doc/economics/georgism/2021-li-3.pdf"],["Pew on Austin, 2026","https://www.pew.org/en/research-and-analysis/articles/2026/03/18/austins-surge-of-new-housing-construction-drove-down-rents"],["NLIHC on Oregon, 2019","https://nlihc.org/resource/field-oregon-advocates-celebrate-huge-wins-zoning-reform-and-affordable-housing-funding"]]},
+  {k:"schools", q:"Our schools are already packed. Where do all these kids go?",
+   e:"There's room. CPS has seats for about 450,000 students and enrolls about 306,000, and Chicago has 875,000 fewer people than in 1950: the schools, pipes and trains were built for a bigger city. New apartments add few kids: about 10 school-age children per 100 new rental homes. More neighbors help keep half-empty schools open.",
    f:"Montgomery County, MD (2020) ended school-based building freezes and charged fees in crowded areas instead; most enrollment growth was coming from existing houses turning over to young families.",
    s:[["US Census Bureau","https://www.census.gov/about/history/stories/monthly/2021/october-2021.html"],["Civic Federation, 2025","https://civicfed.org/blog/chicago-public-schools-building-underutilization"],["Rutgers, 2018","https://highlandsnj.gov/wp-content/uploads/2021/02/the-school-age-children-study-rcre-july-2018.pdf"],["Greater Greater Washington, 2020","https://ggwash.org/view/79636/montgomery-eliminates-housing-moratorium-lowers-development-fees"]]},
   {k:"crime", q:"More strangers, more break-ins. I'm just saying what everyone's thinking.",
-   e:"Studies of subsidized housing, the kind that draws this fear most, find no crime increase; in the poorest areas violent crime fell. A Chicago study found dense, mixed-use blocks have less crime: more eyes on the street. Honest version: 'no evidence it raises crime,' not 'it cuts crime.'",
+   e:"Studies of subsidized housing, the kind that draws this fear most, find no evidence it raises crime; in the poorest areas violent crime fell. A Chicago study found dense, mixed-use blocks have less crime: more eyes on the street.",
    f:"After New Jersey's Mount Laurel fights, a Princeton study of the affordable development found no effect on taxes, crime or property values in the town.",
    s:[["Freedman & Owens, 2011","https://ideas.repec.org/a/eee/juecon/v70y2011i2-3p115-131.html"],["Diamond & McQuade (NBER)","https://nber.org/papers/w22204"],["Twinam, 2017 (APA)","https://planning.org/knowledgebase/resource/9182222"],["Princeton, 2013","https://www.princeton.edu/news/2013/11/07/mount-laurel-massey-finds-affordable-housing-model"]]},
   {k:"luxury", q:"$3,000 studios with a dog spa. Who exactly is this for?",
@@ -3925,7 +3986,7 @@ $("wdShow").addEventListener("click", async (e) => {
 const paneScroll = {};   // each tab keeps its own scroll position (they share one scroller)
 function showTab(name){
   if (name === "policies" && $("pane-policies").hidden){ sortPolicies(); if (gainsStale) setTimeout(renderPolicies, 30); }
-  const P = ["zoning","policies","missions","impact","share","math"], sc = document.querySelector(".panes"), cur = P.find(p => !$("pane-" + p).hidden);
+  const P = ["zoning","policies","missions","impact","learn","share","math"], sc = document.querySelector(".panes"), cur = P.find(p => !$("pane-" + p).hidden);
   if (sc && cur && cur !== name) paneScroll[cur] = sc.scrollTop;
   document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.pane === name)));
   P.forEach(p => { $("pane-" + p).hidden = p !== name; });
@@ -3938,9 +3999,11 @@ function syncSeg(seg){
 }
 new MutationObserver(ms => { const done = new Set(); ms.forEach(m => { const seg = m.target.parentElement; if (seg && seg.classList.contains("seg") && !done.has(seg)){ done.add(seg); syncSeg(seg); } }); })
   .observe(document.body, {subtree: true, attributes: true, attributeFilter: ["aria-pressed"]});
-function setWide(on){ document.body.classList.toggle("wide", on); $("wideBtn").setAttribute("aria-pressed", String(on)); $("wideBtn").textContent = on ? "⤡ Collapse" : "⤢"; $("wideBtn").title = on ? "Back to the sidebar" : "Expand the panel"; lsSet("fch-wide", on); }
+// expand: the options panel widens over the map and its cards go into columns (desktop only; remembered per browser)
+const WIDE_ICON = {open: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>', shut: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg>'};
+function setWide(on){ document.body.classList.toggle("wide", on); const b = $("wideBtn"); b.setAttribute("aria-pressed", String(on)); b.innerHTML = on ? WIDE_ICON.shut : WIDE_ICON.open; b.title = on ? "Shrink the panel" : "Expand the panel"; lsSet("fch-wide", on); }
 $("wideBtn").addEventListener("click", () => setWide(!document.body.classList.contains("wide")));
-setWide(false);   // the shared Shape Chicago layout has one panel width
+setWide(matchMedia("(min-width:860px)").matches && !!lsGet("fch-wide", false));
 // phones: the tool sheet has three heights: "open" (a tab's tools), "menu" (section buttons + Simulate) and "peek" (Simulate only)
 function syncSheet(){ const sh = $("sheet"); document.body.classList.toggle("sheetmin", sh.classList.contains("min")); document.body.classList.toggle("sheetpeek", sh.classList.contains("peek")); }
 const sheetNow = () => { const sh = $("sheet"); return sh.classList.contains("peek") ? "peek" : sh.classList.contains("min") ? "menu" : "open"; };
@@ -4753,7 +4816,7 @@ function collapsify(g){
   [...g.childNodes].forEach(n => { if (n !== head) body.appendChild(n); });
   if (g.id) body.id = g.id;
 }
-document.querySelectorAll("#pane-missions > .group, #pane-impact > .group").forEach(collapsify);
+document.querySelectorAll("#pane-missions > .group, #pane-impact > .group, #pane-learn > .group").forEach(collapsify);
 // Build tools fold open and shut like the other sections (each remembers its state)
 { const folded = new Set(lsGet("fch-folded", []));
   document.querySelectorAll("#pane-zoning > .tool").forEach(tool => {

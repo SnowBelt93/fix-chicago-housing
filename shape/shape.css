@@ -37,6 +37,7 @@
   .sc-head .sc-share,.sc-head .sc-fan{display:none}
   .sc-head .sc-l{gap:10px}
 }
+@media (max-width:440px){ .sc-nl{display:none} .sc-nav a{padding:7px 8px} }
 
 /* metrics bar */
 .sc-bar{position:absolute;left:0;right:0;top:var(--sc-head);background:#fff;border-top:1px solid var(--sc-line);border-bottom:1px solid var(--sc-line);z-index:4;display:flex;align-items:center;gap:24px;padding:0 20px;min-height:76px;box-sizing:border-box;font-family:var(--sc-font);color:var(--sc-ink)}
