@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.min.js"}}</script>
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
 <style>
@@ -1829,7 +1830,7 @@ async function initMap(){
     catch (e) { style = fallbackStyle(); }
   }
   const phone = matchMedia("(max-width:859px)").matches;
-  map = new maplibregl.Map({container:"map", style, center:phone ? [-87.68, 41.84] : [-87.68, 41.86], zoom:phone ? 9.4 : 10.3, minZoom:8, maxZoom:17,
+  map = new maplibregl.Map({container:"map", style, center:phone ? [-87.68, 41.84] : [-87.68, 41.86], zoom:phone ? 9.4 : 10.3, minZoom:8, maxZoom:18.5,
     maxBounds:[[-89.2, 41.1], [-86.9, 42.6]], attributionControl:{compact:true, customAttribution:credit}, dragRotate:false, pitchWithRotate:false,
     fadeDuration:0, doubleClickZoom:false});
   map.touchZoomRotate.disableRotation();
@@ -1899,7 +1900,7 @@ async function initMap(){
 /* ---------- the Easter egg: one Brown Line train running Kimball → the Loop → Kimball ----------
    Four cars, drawn from above (silver roofs, rooftop units, dark cab ends) at real size, 5× real speed. Tap it for a note. Hidden with the L layer, off under reduced motion. */
 const EGG_SPEEDUP = 1.5, EGG_MPH = 17, EGG_CARS = 4, EGG_CAR_M = 14.6, EGG_W_M = 2.9, EGG_GAP_M = 1.2;   // real size: hidden from far out, a real-looking train up close
-let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0;
+let EGG = null, eggRaf = 0, eggLast = 0, eggClock = 0, EGG_POSE = [], EGG3D = null, egg3dTried = false;
 function trainsDirty(){}   // kept for older callers
 function eggPath(){
   const L = NET.lLines.find(l => l.id === "Brn") || NET.lLines[0]; if (!L) return null;
@@ -1925,9 +1926,11 @@ function eggFrame(now){
   const run = P.len, trip = EGG_MPH * 0.44704 * eggClock, leg = Math.floor(trip / run) % 2, s0 = trip % run;
   const head = leg === 0 ? Math.min(P.len, Math.max(train, s0)) : Math.min(P.len - train, Math.max(0, P.len - s0));   // out to the Loop, then back to Kimball
   const dir = leg === 0 ? 1 : -1, feats = [];
+  EGG_POSE = [];
   for (let c = 0; c < EGG_CARS; c++){
     const front = leg === 0 ? head - c * (carL + gap) : head + c * (carL + gap), back = front - dir * carL;
     const A = eggAt(P, back), B = eggAt(P, front), dx = B[0] - A[0], dy = B[1] - A[1], n = Math.hypot(dx, dy) || 1, ux = dx / n, uy = dy / n, nx = -uy * carW / 2, ny = ux * carW / 2;
+    EGG_POSE.push({ll:toLL((A[0] + B[0]) / 2, (A[1] + B[1]) / 2), ang:Math.atan2(dy, dx) + (c % 2 ? Math.PI : 0)});   // married pairs: every second car faces back
     const quad = (t0, t1, w) => { const p0 = [A[0] + dx * t0, A[1] + dy * t0], p1 = [A[0] + dx * t1, A[1] + dy * t1];
       return [[p0[0] + nx * w, p0[1] + ny * w], [p1[0] + nx * w, p1[1] + ny * w], [p1[0] - nx * w, p1[1] - ny * w], [p0[0] - nx * w, p0[1] - ny * w], [p0[0] + nx * w, p0[1] + ny * w]].map(q => toLL(q[0], q[1])); };
     feats.push({type:"Feature", properties:{k:"body"}, geometry:{type:"Polygon", coordinates:[quad(0, 1, 1)]}});
@@ -1936,6 +1939,7 @@ function eggFrame(now){
     if (c === EGG_CARS - 1) feats.push({type:"Feature", properties:{k:"tail"}, geometry:{type:"Polygon", coordinates:[quad(0, 0.08, 0.92)]}});
   }
   map.getSource("egg").setData({type:"FeatureCollection", features:feats});
+  if (EGG3D) map.triggerRepaint();
   eggRaf = setTimeout(() => requestAnimationFrame(eggFrame), 40);
 }
 function startTrains(){
@@ -1953,6 +1957,46 @@ function startTrains(){
   map.on("mouseleave", "egg-body", () => { map.getCanvas().style.cursor = ""; });
   document.addEventListener("visibilitychange", () => { if (!document.hidden && !eggRaf){ eggLast = 0; eggRaf = requestAnimationFrame(eggFrame); } });
   eggRaf = requestAnimationFrame(eggFrame);
+  const want = () => { if (!egg3dTried && layerOn.L && map.getZoom() >= 13.5) loadEgg3D(); };
+  map.on("zoomend", want); want();
+}
+/* Up close the train is a real 3D model (tools/art/train.py → data/lcar.glb, drawn with three.js in a MapLibre custom
+   layer). three.js only loads once someone zooms in on the map, so nobody else pays for it. The flat shapes stay
+   underneath, invisible, so taps still find the train. */
+async function loadEgg3D(){
+  egg3dTried = true;
+  try {
+    const THREE = await import("three");
+    const {GLTFLoader} = await import("https://unpkg.com/three@0.169.0/examples/jsm/loaders/GLTFLoader.js");
+    const gltf = await new GLTFLoader().loadAsync("data/lcar.glb");
+    gltf.scene.traverse(o => { if (o.material && o.material.metalness > 0.2){ o.material.metalness = 0.15; o.material.roughness = 0.4; } });   // no reflections to show, so brushed steel reads as light grey
+    const layer = {id:"egg3d", type:"custom", renderingMode:"3d",
+      onAdd(m, gl){
+        this.camera = new THREE.Camera(); this.scene = new THREE.Scene();
+        this.scene.add(new THREE.HemisphereLight(0xffffff, 0x9aa0a8, 2.8));
+        const sun = new THREE.DirectionalLight(0xfff2e0, 2.6); sun.position.set(-30, -50, 90); this.scene.add(sun);
+        this.cars = [];
+        for (let i = 0; i < EGG_CARS; i++){ const c = gltf.scene.clone(); this.scene.add(c); this.cars.push(c); }
+        this.renderer = new THREE.WebGLRenderer({canvas:m.getCanvas(), context:gl, antialias:true});
+        this.renderer.autoClear = false;
+        this.V = new THREE.Vector3(); this.M = new THREE.Matrix4(); this.Lm = new THREE.Matrix4();
+      },
+      render(gl, matrix){
+        if (!layerOn.L || EGG_POSE.length !== this.cars.length) return;
+        const o = maplibregl.MercatorCoordinate.fromLngLat(EGG_POSE[0].ll, 0), sc = o.meterInMercatorCoordinateUnits();
+        EGG_POSE.forEach((p, i) => {
+          const q = maplibregl.MercatorCoordinate.fromLngLat(p.ll, 0), c = this.cars[i];
+          c.position.set((q.x - o.x) / sc, -(q.y - o.y) / sc, 0); c.rotation.set(0, 0, p.ang);
+        });
+        this.Lm.makeTranslation(o.x, o.y, o.z).scale(this.V.set(sc, -sc, sc));
+        this.camera.projectionMatrix = this.M.fromArray(matrix).multiply(this.Lm);
+        this.renderer.resetState(); this.renderer.render(this.scene, this.camera);
+      }};
+    map.addLayer(layer, "pst");
+    EGG3D = layer;
+    for (const id of ["egg-line", "egg-unit", "egg-cab"]) map.setPaintProperty(id, id === "egg-line" ? "line-opacity" : "fill-opacity", 0);
+    map.setPaintProperty("egg-body", "fill-opacity", 0);
+  } catch (e){ console.warn("[egg] 3D train unavailable, keeping the flat one", e); }
 }
 /* density canvases: people or jobs per square mile on a 50 m grid */
 let DENS_COORDS;
@@ -3099,7 +3143,7 @@ function openSources(){
   <li>L riders: CTA station entries by day, 2025 (<a href="https://data.cityofchicago.org/d/5neh-572f" target="_blank" rel="noopener">Chicago Data Portal</a>). Bus riders: CTA ridership by route, ${S.bus_ridership.year} (<a href="${S.bus_ridership.url}" target="_blank" rel="noopener">Chicago Data Portal</a>).</li>
   </ul>
   <h3>Map layers</h3>
-  <p>The little train on the Brown Line is an Easter egg: four real-size cars running Kimball to the Loop and back at 5 times real speed (17 mph average). Zoom in on the Brown Line to find it. It doesn't affect any number.</p>
+  <p>The little train on the Brown Line is an Easter egg: four real-size cars (a 3D model made in Blender once you zoom in) running Kimball to the Loop and back at 1.5 times real speed (17 mph average). Zoom in on the Brown Line to find it. It doesn't affect any number.</p>
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
