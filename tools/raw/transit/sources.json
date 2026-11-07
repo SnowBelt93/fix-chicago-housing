@@ -1,5 +1,5 @@
 {
- "fetched": "2026-10-29T04:32Z",
+ "fetched": "2026-11-07T18:52Z",
  "files": {
   "cta": {
    "url": "https://www.transitchicago.com/downloads/sch_data/google_transit.zip",
@@ -99,6 +99,16 @@
    "tiles": 49,
    "of": 49,
    "ways": 16121
-  }
+  },
+  "od": {
+   "url": "https://lehd.ces.census.gov/data/lodes/LODES8/il/od/il_od_main_JT00_2022.csv.gz",
+   "year": 2022,
+   "rows": 5152046,
+   "workers_kept": 3652467,
+   "workers_outside_region": 1880219,
+   "pairs": 2123204,
+   "partial": false
+  },
+  "acs_error": "JSONDecodeError('Expecting value: line 1 column 1 (char 0)')"
  }
 }
