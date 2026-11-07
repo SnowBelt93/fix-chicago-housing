@@ -84,3 +84,12 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 @keyframes scFade{from{opacity:0}}
 @media (max-width:859px){ dialog.sc-info[open]{animation:scSheet .28s cubic-bezier(.2,.8,.2,1)} @keyframes scSheet{from{transform:translateY(40px);opacity:.4}} }
 @media (prefers-reduced-motion:reduce){ dialog.sc-info[open], dialog.sc-info[open]::backdrop{animation:none} .ib:hover{transform:none} }
+
+/* Moving between Shape Chicago pages: the header stays put while the page underneath cross-fades (browsers that support it) */
+@view-transition { navigation: auto; }
+.sc-head { view-transition-name: sc-head; }
+::view-transition-old(root) { animation: 180ms cubic-bezier(.4,0,1,1) both sc-vt-out; }
+::view-transition-new(root) { animation: 260ms cubic-bezier(.2,.8,.2,1) both sc-vt-in; }
+@keyframes sc-vt-out { to { opacity: 0; } }
+@keyframes sc-vt-in { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
