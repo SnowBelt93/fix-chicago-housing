@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chicago Then and Now</title>
+<meta name="description" content="Watch Chicago's buildings go up year by year since the Great Fire, see how each neighborhood's population rose and fell, and find old photos of buildings that still stand or are gone.">
+<meta property="og:title" content="Chicago then and now">
+<meta property="og:description" content="Every Chicago building by the year it went up, and each neighborhood's population since 1930.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;height:100%;background:#eef0ec;font-family:var(--sc-font);color:var(--sc-ink);overflow:hidden;-webkit-font-smoothing:antialiased}
+#map{position:fixed;inset:var(--sc-head) 0 0 0}
+.panel{position:absolute;z-index:3;top:calc(var(--sc-head) + 14px);left:14px;width:380px;max-height:calc(100% - var(--sc-head) - 28px);background:#fff;border-radius:18px;box-shadow:var(--sc-shadow);display:flex;flex-direction:column;overflow:hidden}
+.ph{padding:18px 20px 12px;border-bottom:1px solid var(--sc-line)}
+h1{font-size:23px;line-height:1.15;letter-spacing:-.02em;font-weight:600;margin:0 0 4px}
+.lede{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0}
+.yr{display:flex;align-items:center;gap:12px;margin-top:14px}
+.yr b{font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;min-width:110px}
+.play{width:44px;height:44px;border-radius:50%;border:0;background:var(--sc-navy);color:#fff;cursor:pointer;display:grid;place-items:center;flex:none}
+.play:hover{background:var(--sc-navy2)}
+input[type=range]{width:100%;accent-color:var(--sc-navy);margin:10px 0 0}
+.ticks{display:flex;justify-content:space-between;font-size:11.5px;color:var(--sc-mute)}
+.pb{overflow:auto;padding:14px 20px 20px;overscroll-behavior:contain}
+.stat{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden;margin-bottom:12px}
+.stat div{background:#fff;padding:10px 12px}
+.stat b{display:block;font-size:19px;font-weight:600;letter-spacing:-.015em;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--sc-mute);line-height:1.35;display:block}
+.era{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0 0 12px;min-height:42px}
+.era b{color:var(--sc-ink)}
+h2{font-size:15px;font-weight:600;margin:16px 0 8px}
+svg.pop{width:100%;height:auto;display:block}
+.key{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12px;color:var(--sc-ink2);margin:6px 0 4px}
+.key span{display:inline-flex;align-items:center;gap:5px}
+.key i{width:11px;height:11px;border-radius:3px}
+.area{border:1px solid var(--sc-line);border-radius:14px;padding:12px 14px;margin-top:12px;animation:rin .25s ease-out}
+@keyframes rin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.area h3{margin:0 0 2px;font-size:17px;font-weight:600}
+.area p{margin:4px 0 0;font-size:13.5px;line-height:1.5;color:var(--sc-ink2)}
+.hint{font-size:13px;color:var(--sc-mute);margin:8px 0 0}
+.fine{font-size:11.5px;color:var(--sc-mute);line-height:1.5;margin:14px 0 0}
+.fine a{color:var(--sc-mute)}
+.photo{position:absolute;z-index:4;right:14px;top:calc(var(--sc-head) + 14px);width:340px;background:#fff;border-radius:16px;box-shadow:var(--sc-shadow);overflow:hidden;display:none}
+.photo.show{display:block;animation:rin .25s ease-out}
+.photo img{width:100%;max-height:300px;object-fit:cover;display:block;background:#ddd}
+.photo div{padding:10px 14px 12px;font-size:13px;line-height:1.45}
+.photo b{display:block;font-size:14.5px;margin-bottom:2px}
+.photo a{color:var(--sc-navy)}
+.photo button{position:absolute;right:8px;top:8px;border:0;background:rgba(255,255,255,.9);border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px}
+.tip{position:absolute;z-index:5;pointer-events:none;background:#fff;border-radius:10px;padding:6px 10px;font-size:12.5px;box-shadow:var(--sc-shadow2);display:none}
+@media (max-width:859px){
+  .panel{top:auto;left:0;right:0;bottom:0;width:auto;max-height:52vh;border-radius:18px 18px 0 0}
+  .ph{padding:12px 16px 10px} .lede{display:none} h1{font-size:19px}
+  .yr{margin-top:6px} .yr b{font-size:34px;min-width:84px}
+  .pb{padding:10px 16px 16px}
+  .photo{left:10px;right:10px;width:auto;top:calc(var(--sc-head) + 10px)}
+  .sc-fan{display:none}
+}
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<div id="map"></div>
+<div class="tip" id="tip"></div>
+<section class="panel">
+  <div class="ph">
+    <h1>Chicago then and now</h1>
+    <p class="lede">Every building standing today, by the year it went up. Press play to watch the city grow, then tap a neighborhood.</p>
+    <div class="yr"><button class="play" id="play" aria-label="Play"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" id="playI"><path d="M7 4l14 8-14 8z"/></svg></button><b id="yrN">2026</b></div>
+    <input type="range" id="yr" min="1870" max="2026" step="1" value="2026" aria-label="Year">
+    <div class="ticks"><span>1870</span><span>1900</span><span>1930</span><span>1960</span><span>1990</span><span>2026</span></div>
+  </div>
+  <div class="pb">
+    <div class="stat"><div><b id="sPop">2,746,388</b><span id="sPopL">Chicagoans, 2020 census</span></div><div><b id="sBld">–</b><span id="sBldL">of today's buildings were up by then</span></div></div>
+    <p class="era" id="era"></p>
+    <div class="key" id="key"></div>
+    <h2>Chicago's population, 1870–2020</h2>
+    <div id="popChart"></div>
+    <div id="areaCard"><p class="hint">Tap a neighborhood on the map to see its population since 1930 and how old its buildings are.</p></div>
+    <p class="fine">Buildings: City of Chicago footprints (2013) and Cook County's 2022 footprints, with year built from the Cook County Assessor for 427,000 of 500,000 (gray = unknown; the Assessor's oldest years are often estimates). This map shows only buildings that still stand: many thousands that came down are missing, which is why early decades look thin. Population: U.S. Census. Old photos: Historic American Buildings Survey, Library of Congress (public domain).</p>
+  </div>
+</section>
+<div class="photo" id="photo"></div>
+<script src="https://unpkg.com/deck.gl@9.3.11/dist.min.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+/* U.S. Census, city of Chicago */
+const CITY = [[1870,298977],[1880,503185],[1890,1099850],[1900,1698575],[1910,2185283],[1920,2701705],[1930,3376438],[1940,3396808],[1950,3620962],[1960,3550404],[1970,3366957],[1980,3005072],[1990,2783726],[2000,2896016],[2010,2695598],[2020,2746388]];
+const ERAS = [[1870, "<b>1871:</b> the Great Fire burns 17,000 buildings. The city rebuilds in brick, fast."], [1885, "<b>1880s–90s:</b> the first skyscrapers, cable cars, and the city annexes Lake View, Hyde Park and more in 1889."],
+  [1900, "<b>1900s–1920s:</b> the L and streetcars spread out the city. Two-flats, three-flats and bungalows fill whole neighborhoods."],
+  [1930, "<b>1930s–40s:</b> Depression and war: almost nothing gets built for 15 years."], [1946, "<b>1950s–60s:</b> expressways cut through neighborhoods; the city peaks at 3.6 million people in 1950, then starts losing people to the suburbs."],
+  [1970, "<b>1970s–80s:</b> population falls by 600,000. Neighborhoods empty out; downzonings start to limit what can be built."],
+  [1990, "<b>1990s–2000s:</b> condo towers downtown and new homes on the Near West and South Sides."], [2008, "<b>2008 on:</b> the crash, then towers in the Loop and West Loop, while most neighborhoods add almost nothing."]];
+const DEC = [[1880, [146, 52, 38]], [1900, [184, 92, 62]], [1920, [214, 140, 90]], [1940, [232, 192, 128]], [1960, [189, 206, 180]], [1980, [126, 182, 196]], [2000, [72, 132, 196]], [2027, [43, 70, 160]]];
+function decCol(y){ if (!y) return [190, 194, 199]; for (const [u, c] of DEC) if (y < u) return c; return DEC[DEC.length - 1][1]; }
+let META, AREAS = [], YEAR = 2026, POP = null, HABS = [], deckgl;
+function render(){
+  const L = [];
+  L.push(new deck.SolidPolygonLayer({id:"lake", data:META.lake, getPolygon:d => d, getFillColor:[196, 222, 236], parameters:{depthCompare:"always", depthWriteEnabled:false}}));
+  L.push(new deck.SolidPolygonLayer({id:"land", data:META.cityOutline, getPolygon:d => d, getFillColor:[246, 246, 242], parameters:{depthCompare:"always", depthWriteEnabled:false}}));
+  L.push(new deck.GeoJsonLayer({id:"areas", data:META.outlines, filled:true, stroked:true, getFillColor:f => f.properties.num === PICK ? [43, 93, 160, 30] : [0, 0, 0, 0], getLineColor:[120, 128, 138, 120], lineWidthMinPixels:1, pickable:true,
+    parameters:{depthCompare:"always", depthWriteEnabled:false}, updateTriggers:{getFillColor:PICK}}));
+  for (const A of AREAS) L.push(new deck.SolidPolygonLayer({id:"b" + A.num, data:A.data, extruded:true,
+    coordinateSystem:deck.COORDINATE_SYSTEM.METER_OFFSETS, coordinateOrigin:A.origin,
+    getElevation:(_, {index}) => (A.st[index] || 1) * 3.6, getFillColor:(_, {index}) => decCol(A.yr[index]),
+    getFilterValue:(_, {index}) => A.yr[index] || 9999, filterRange:[0, YEAR >= 2026 ? 9999 : YEAR], extensions:[FILTER],
+    material:{ambient:0.45, diffuse:0.6, shininess:12, specularColor:[40, 40, 40]}}));
+  if (HABS.length) L.push(new deck.ScatterplotLayer({id:"habs", data:HABS, getPosition:d => d.p, getRadius:7, radiusMinPixels:5, radiusMaxPixels:9, getFillColor:[228, 0, 43], getLineColor:[255, 255, 255], lineWidthMinPixels:2, stroked:true, pickable:true,
+    parameters:{depthCompare:"always"}}));
+  deckgl.setProps({layers:L});
+}
+const FILTER = new deck.DataFilterExtension({filterSize:1});
+let PICK = 0;
+async function loadArea(m){
+  const buf = await (await fetch("../b/" + m.num + ".wasm")).arrayBuffer(), dv = new DataView(buf);
+  const N = dv.getUint32(0, true), V = dv.getUint32(4, true), lon0 = dv.getFloat64(8, true), lat0 = dv.getFloat64(16, true);
+  const q = new Int16Array(buf, 24, V * 2), pos = new Float32Array(V * 2);
+  for (let i = 0; i < pos.length; i++) pos[i] = q[i] * 0.5;
+  let o = 24 + 4 * V; const nv = new Uint8Array(buf, o, N); o += N; const st = new Uint8Array(buf, o, N);
+  const starts = new Uint32Array(N + 1); for (let i = 0; i < N; i++) starts[i + 1] = starts[i] + nv[i];
+  return {num:m.num, name:m.name, origin:[lon0, lat0], st, n:N, yr:YRS[m.num] || new Uint16Array(N), data:{length:N, startIndices:starts, attributes:{getPolygon:{value:pos, size:2}}}};
+}
+const YRS = {};
+async function loadYears(){
+  const buf = await (await fetch("../b/year.wasm")).arrayBuffer(), dv = new DataView(buf); let o = 4;
+  for (let a = 0, na = dv.getUint32(0, true); a < na; a++){ const num = dv.getUint32(o, true), N = dv.getUint32(o + 4, true); o += 8; YRS[num] = new Uint16Array(buf.slice(o, o + 2 * N)); o += 2 * N; o += (4 - o % 4) % 4; }
+}
+/* stats for the slider year */
+let TOTAL = 0, HIST = null;
+function buildHist(){ HIST = new Uint32Array(2030); TOTAL = 0; for (const A of AREAS) for (let i = 0; i < A.n; i++){ const y = A.yr[i]; if (y){ HIST[Math.min(2029, y)]++; TOTAL++; } } for (let y = 1; y < 2030; y++) HIST[y] += HIST[y - 1]; }
+function popAt(y){ let best = CITY[0]; for (const c of CITY) if (c[0] <= y) best = c; return best; }
+function setYear(y){
+  YEAR = y; $("yrN").textContent = y >= 2026 ? "Today" : y; $("yr").value = y;
+  const [cy, cp] = popAt(Math.min(y, 2020)); $("sPop").textContent = cp.toLocaleString("en-US"); $("sPopL").textContent = "Chicagoans, " + cy + " census";
+  if (HIST && TOTAL){ const n = HIST[Math.min(2029, y)]; $("sBld").textContent = Math.round(100 * n / TOTAL) + "%"; $("sBldL").textContent = `of today's buildings (with a known year) were up by ${y >= 2026 ? "now" : y}: ${n.toLocaleString("en-US")}`; }
+  let e = ERAS[0][1]; for (const [k, t] of ERAS) if (y >= k) e = t; $("era").innerHTML = e;
+  drawPop(); render();
+}
+function drawPop(){
+  const W = 340, H = 120, P = {l:34, r:6, t:8, b:18}, max = 4e6;
+  const x = y => P.l + (y - 1870) / (2020 - 1870) * (W - P.l - P.r), yv = v => H - P.b - v / max * (H - P.t - P.b);
+  let g = `<svg class="pop" viewBox="0 0 ${W} ${H}" role="img" aria-label="Chicago population by census, 1870 to 2020: peak 3.6 million in 1950, 2.75 million in 2020">`;
+  for (const v of [1e6, 2e6, 3e6, 4e6]) g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(v)}" y2="${yv(v)}" stroke="#eceef1"/><text x="${P.l - 5}" y="${yv(v) + 3}" text-anchor="end" font-size="9.5" fill="#6a7079">${v / 1e6}M</text>`;
+  for (const yy of [1870, 1900, 1950, 2000, 2020]) g += `<text x="${x(yy)}" y="${H - 4}" text-anchor="middle" font-size="9.5" fill="#6a7079">${yy}</text>`;
+  g += `<polyline points="${CITY.map(c => x(c[0]) + "," + yv(c[1])).join(" ")}" fill="none" stroke="#2b5da0" stroke-width="2.2" stroke-linejoin="round"/>`;
+  const cx = x(Math.min(2020, YEAR)); g += `<line x1="${cx}" x2="${cx}" y1="${P.t}" y2="${H - P.b}" stroke="#e4002b" stroke-width="1.2"/>`;
+  $("popChart").innerHTML = g + "</svg>";
+}
+function areaCard(num){
+  PICK = num; render();
+  const A = AREAS.find(a => a.num === num); if (!A) return;
+  let known = 0, pre40 = 0, post2000 = 0, med = []; for (let i = 0; i < A.n; i++){ const y = A.yr[i]; if (!y) continue; known++; if (y < 1940) pre40++; if (y >= 2000) post2000++; med.push(y); }
+  med.sort((a, b) => a - b); const md = med[Math.floor(med.length / 2)];
+  const P = POP && POP[num] ? POP[num].pop : null;
+  let popTxt = "", spark = "";
+  if (P){
+    const ys = Object.keys(P).map(Number).filter(y => y >= 1930).sort(); const peak = ys.reduce((a, b) => P[b] > P[a] ? b : a, ys[0]), last = ys[ys.length - 1];
+    const ch = Math.round(100 * (P[last] / P[peak] - 1));
+    popTxt = `<p>Population peaked at <b>${P[peak].toLocaleString("en-US")}</b> in ${peak}; ${last}: <b>${P[last].toLocaleString("en-US")}</b>${ch < 0 ? ` (${ch}%)` : ""}.</p>`;
+    const W = 300, H = 60, mx = Math.max(...ys.map(y => P[y])), x = y => 4 + (y - 1930) / (2020 - 1930) * (W - 8), yv = v => H - 4 - v / mx * (H - 10);
+    spark = `<svg class="pop" viewBox="0 0 ${W} ${H}" aria-hidden="true"><polyline points="${ys.map(y => x(y) + "," + yv(P[y])).join(" ")}" fill="none" stroke="#2b5da0" stroke-width="2"/>${ys.map(y => `<circle cx="${x(y)}" cy="${yv(P[y])}" r="2.4" fill="${y === peak ? "#e4002b" : "#2b5da0"}"/>`).join("")}<text x="4" y="${H - 1}" font-size="9" fill="#6a7079">1930</text><text x="${W - 4}" y="${H - 1}" font-size="9" text-anchor="end" fill="#6a7079">2020</text></svg>`;
+  }
+  $("areaCard").innerHTML = `<div class="area"><h3>${A.name}</h3>${popTxt}${spark}
+    <p>Half its buildings went up before <b>${md || "?"}</b>. ${known ? Math.round(100 * pre40 / known) : 0}% are older than 1940; ${known ? Math.round(100 * post2000 / known) : 0}% were built since 2000.</p>
+    <p><a href="/lot/">Look up a lot here</a> · <a href="/housing/">Rezone it in Fix Chicago Housing</a></p>
+    ${P ? `<p class="fine" style="margin-top:6px">Population: U.S. Census, from <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(POP[num].page.replace(/ /g, "_"))}" target="_blank" rel="noopener">its Wikipedia page</a>.</p>` : ""}</div>`;
+}
+function showPhoto(d){
+  const el = $("photo"), img = (d.img || "").replace(/^\/\//, "https://");
+  el.innerHTML = `<button aria-label="Close">×</button>${img ? `<img src="${img}" alt="${d.t.replace(/"/g, "")}" loading="lazy">` : ""}<div><b>${d.t}</b>${d.date ? d.date + ". " : ""}Historic American Buildings Survey. <a href="${d.u}" target="_blank" rel="noopener">More photos at the Library of Congress</a> · <a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${d.p[1]},${d.p[0]}" target="_blank" rel="noopener">See it today</a></div>`;
+  el.classList.add("show"); el.querySelector("button").onclick = () => el.classList.remove("show");
+}
+let timer = 0;
+function play(){
+  if (timer){ cancelAnimationFrame(timer); timer = 0; $("playI").innerHTML = '<path d="M7 4l14 8-14 8z"/>'; return; }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches){ setYear(2026); return; }
+  let y = YEAR >= 2026 ? 1870 : YEAR, last = performance.now(); $("playI").innerHTML = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+  const step = t => { const dt = (t - last) / 1000; last = t; y = Math.min(2026, y + dt * 13); setYear(Math.floor(y)); if (y < 2026) timer = requestAnimationFrame(step); else { timer = 0; $("playI").innerHTML = '<path d="M7 4l14 8-14 8z"/>'; } };
+  timer = requestAnimationFrame(step);
+}
+(async function(){
+  META = await (await fetch("../meta.json")).json();
+  const phone = matchMedia("(max-width:859px)").matches;
+  deckgl = new deck.Deck({parent:$("map"), initialViewState:{longitude:-87.655, latitude:41.89, zoom:phone ? 11.2 : 12.4, pitch:50, bearing:-20, minZoom:9, maxZoom:17.5},
+    controller:true, useDevicePixels:Math.min(2, devicePixelRatio || 1), layers:[],
+    onClick:info => { if (!info.layer) return; if (info.layer.id === "habs") showPhoto(info.object); else if (info.layer.id === "areas") areaCard(info.object.properties.num); },
+    getCursor:({isHovering}) => isHovering ? "pointer" : "grab",
+    onHover:info => { const t = $("tip"); if (info.layer && info.layer.id === "habs" && info.object){ t.style.display = "block"; t.style.left = info.x + 12 + "px"; t.style.top = info.y + 60 + "px"; t.textContent = info.object.t; } else t.style.display = "none"; }});
+  $("key").innerHTML = [["Before 1880", 0], ["1880–99", 1], ["1900–19", 2], ["1920–39", 3], ["1940–59", 4], ["1960–79", 5], ["1980–99", 6], ["2000 on", 7]].map(([t, i]) => `<span><i style="background:rgb(${DEC[i][1]})"></i>${t}</span>`).join("") + `<span><i style="background:rgb(190,194,199)"></i>Unknown</span>`;
+  setYear(2026);
+  await loadYears();
+  // closest areas to the view first, a few at a time
+  const order = META.areas.slice().sort((a, b) => Math.hypot(a.lon + 87.655, a.lat - 41.89) - Math.hypot(b.lon + 87.655, b.lat - 41.89));
+  for (let i = 0; i < order.length; i += 6){ AREAS.push(...await Promise.all(order.slice(i, i + 6).map(loadArea))); render(); }
+  buildHist(); setYear(YEAR);
+  fetch("data/pop.json").then(r => r.ok ? r.json() : null).then(d => { POP = d; }).catch(() => {});
+  fetch("data/photos.json").then(r => r.ok ? r.json() : []).then(d => { HABS = d; render(); }).catch(() => {});
+})();
+$("yr").addEventListener("input", e => { if (timer) play(); setYear(+e.target.value); });
+$("play").onclick = play;
+</script>
+</body>
+</html>
