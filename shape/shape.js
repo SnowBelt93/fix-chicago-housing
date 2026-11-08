@@ -117,3 +117,19 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", footer); else footer();
 })();
+
+/* A short first-visit intro for each tool: scIntro("budget", {title, body, art, go}) shows once per browser
+   (localStorage sc-intro-<key>); scIntro(key, opts, true) shows it again (e.g. from an "About" link). */
+window.scIntro = function(key, o, force){
+  let seen = false; try { seen = localStorage.getItem("sc-intro-" + key) === "1"; } catch (e){}
+  if (seen && !force) return;
+  const d = document.createElement("dialog"); d.className = "sc-info sc-intro";
+  d.innerHTML = `${o.art ? `<div class="sc-intro-art"><img src="${o.art}" alt=""></div>` : ""}<div class="sc-ibody"><h2>${o.title}</h2>${o.body}<div class="sc-intro-go"><button class="sc-btn primary" type="button">${o.go || "Let's go"}</button></div></div>`;
+  document.body.appendChild(d);
+  const done = () => { try { localStorage.setItem("sc-intro-" + key, "1"); } catch (e){} d.close(); };
+  d.querySelector(".sc-intro-go button").onclick = done;
+  d.addEventListener("close", () => { try { localStorage.setItem("sc-intro-" + key, "1"); } catch (e){} setTimeout(() => d.remove(), 300); });
+  d.addEventListener("click", e => { if (e.target === d) done(); });
+  const show = () => { try { d.showModal(); } catch (e){ d.setAttribute("open", ""); } };
+  if (document.readyState === "complete") setTimeout(show, 250); else addEventListener("load", () => setTimeout(show, 250));
+};

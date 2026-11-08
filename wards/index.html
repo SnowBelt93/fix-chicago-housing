@@ -40,6 +40,7 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .cal .bd{font-size:15px;font-weight:600;line-height:1.3} .cal .mt{font-size:13px;color:var(--sc-mute);margin-top:2px;line-height:1.45}
 .cal .ln{display:flex;gap:12px;margin-top:6px;font-size:13px;font-weight:600} .cal .ln a{color:var(--sc-navy)}
 @media (max-width:760px){ .cal{grid-template-columns:1fr} }
+.aphoto{width:84px;height:84px;border-radius:50%;object-fit:cover;object-position:50% 20%;float:left;margin:4px 16px 8px 0;background:var(--sc-seg);border:3px solid #fff;box-shadow:var(--sc-shadow1, 0 1px 3px rgba(0,0,0,.15))}
 .card .sub{margin:0 0 14px;font-size:14px;color:var(--sc-mute);line-height:1.5}
 .ib{font:inherit;font-size:11px;font-weight:700;font-style:italic;width:19px;height:19px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);cursor:pointer;display:inline-grid;place-items:center;padding:0}
 .vote{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:11px 0;border-top:1px solid var(--sc-line)}
@@ -84,6 +85,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <main>
   <section class="hero">
     <div>
+      <img id="hPhoto" class="aphoto" alt="" hidden referrerpolicy="no-referrer" onerror="this.hidden=true">
       <h1 id="hTitle">Your ward's housing record</h1>
       <p class="ald" id="hAld">How your alderperson voted on housing, what got rezoned, and what got built.</p>
       <div class="find">
@@ -157,6 +159,7 @@ function render(){
   const w = D.wards[W - 1]; $("wSel").value = W;
   $("hTitle").textContent = `Ward ${W}`;
   $("hAld").textContent = `Alderperson ${w.ald.name.replace(/^(.*?), (.*)$/, "$2 $1")}`;
+  const ph = $("hPhoto"); if (w.ald.photo){ ph.src = w.ald.photo; ph.alt = "Alderperson " + w.ald.name.replace(/^(.*?), (.*)$/, "$2 $1"); ph.hidden = false; } else ph.hidden = true;
   $("contact").innerHTML = [w.ald.phone && `Ward office ${w.ald.phone}`, w.ald.email && `<a href="mailto:${w.ald.email}">${w.ald.email}</a>`, w.ald.web && `<a href="${w.ald.web}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
   $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
     const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Voted yes" : x === "Nay" ? "Voted no" : x ? VOTE[x] || x : "Not on the Council then";
@@ -166,7 +169,7 @@ function render(){
 function renderZ(){
   const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
   const pd = rows.filter(z => z.k === "pd").length, yes = rows.filter(z => z.v === "Yea").length, no = rows.filter(z => z.v === "Nay").length;
-  $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div><div><b>${pd}</b><span>planned developments</span></div>` +
+  $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div>` +
     (span === "term" ? `<div><b>${yes}</b><span>the alderperson voted yes</span></div><div><b>${no}</b><span>voted no</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
   const lot = z => z.hf != null && z.ht != null ? `homes on a typical lot: ${z.hf} → ${z.ht}` : z.ht != null ? `up to ${z.ht} homes on a typical lot` : "";
   const vote = z => z.v === "Yea" ? `<span class="k">Voted yes</span>` : z.v === "Nay" ? `<span class="k">Voted no</span>` : z.v ? `<span class="k">${VOTE[z.v] || z.v}</span>` : z.d >= "2023-05-15" ? `<span class="k na">No roll call on file</span>` : `<span class="k na"></span>`;
@@ -178,7 +181,7 @@ function renderP(){
   $("pnums").innerHTML = p ? `<div><b>${p.homes.toLocaleString("en-US")}</b><span>homes permitted</span></div><div><b>${p.projects}</b><span>buildings</span></div><div><b>${p.last12}</b><span>homes in the last 12 months</span></div><div><b>#${all.indexOf(p.homes) + 1}</b><span>of 50 wards</span></div>` : `<p class="fine">No permit data.</p>`;
 }
 function renderAll(){
-  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["pd", "Planned developments"], ["homes", "Homes permitted"]];
+  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["homes", "Homes permitted"]];
   const rows = D.wards.map(w => { const t = w.z.filter(z => z.d >= "2023-05-15"); return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, pd: t.filter(z => z.k === "pd").length, homes: w.permits?.homes || 0}; });
   rows.sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
   $("all").innerHTML = `<tr>${cols.map(([k, t]) => `<th data-k="${k}">${t}${sortK === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr>` +
@@ -225,5 +228,6 @@ fetch("data/meetings.json").then(r => r.json()).then(m => {
   $("calCard").hidden = false;
 }).catch(() => {});
 </script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("wards", {title:"Your ward's housing record", body:"<p>Pick your ward or type your address. You'll see how your alderperson voted on citywide housing laws, every zoning change in the ward, the homes it's permitting, and the next hearings at City Hall.</p><p>It's the public record from the City Clerk and the city's permit data, nothing more.</p>", art:"/shape/art/wards.webp"}));</script>
 </body>
 </html>

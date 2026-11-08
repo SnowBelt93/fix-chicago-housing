@@ -124,3 +124,12 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 .sc-nav.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
 .sc-head .sc-l{flex:1 1 auto}
 .sc-head .sc-r{flex:none}
+/* first-visit tool intro */
+dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
+@media (max-width:640px){ dialog.sc-intro{width:100vw} }
+.sc-intro-art{background:linear-gradient(180deg,#f6f8f5,#e8ede7);aspect-ratio:800/380}
+.sc-intro-art img{width:100%;height:100%;object-fit:contain;display:block}
+.sc-intro h2{margin:0 0 10px;font-size:22px;letter-spacing:-.01em;font-weight:600}
+.sc-intro p{margin:0 0 10px;font-size:15px;line-height:1.55;color:var(--sc-ink2)}
+.sc-intro ul{margin:0 0 10px;padding-left:20px;font-size:14.5px;line-height:1.55;color:var(--sc-ink2)}
+.sc-intro-go{display:flex;justify-content:flex-end;margin-top:14px}

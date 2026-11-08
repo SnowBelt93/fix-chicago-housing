@@ -158,6 +158,15 @@ norm_name = lambda n: re.sub(r'[^a-z]', '', n.lower().split(',')[0])
 ALD = {}
 for r in csv.DictReader(open(os.path.join(RAW, 'wards', 'ward_offices.csv'), encoding='utf-8-sig')):
     ALD[int(r['WARD'])] = {'name': r['ALDERMAN'].strip(), 'email': r.get('EMAIL', '').strip(), 'phone': r.get('WARD PHONE', '').strip(), 'web': (r.get('WEBSITE') or '').strip()}
+# official photos from the City Clerk's person records (tools/raw/wards/persons.json), matched by ward
+PP = os.path.join(RAW, 'wards', 'persons.json')
+if os.path.exists(PP):
+    for p in json.load(open(PP)):
+        try: w = int(p.get('ward') or 0)
+        except ValueError: continue
+        ph = (p.get('photo') or '').strip()
+        if w in ALD and ph and p.get('isActive', True) is not False:
+            ALD[w]['photo'] = ph if ph.startswith(('http', 'data:')) else 'https://chicityclerkelms.chicago.gov' + ('' if ph.startswith('/') else '/') + ph
 KEY = [  # citywide housing laws with contested or notable roll calls; "yes" says what a Yea vote did
  ('SO2022-2000', 'Homes near transit (ETOD)', 'More homes allowed near the L and busy bus routes, with less required parking.', 'more'),
  ('SO2025-0015560', 'Green Social Housing', 'Created a city-backed fund to build mixed-income homes the city keeps owning.', 'more'),

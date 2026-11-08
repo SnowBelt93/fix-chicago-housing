@@ -926,5 +926,6 @@ update();
 (function(){ const t = document.getElementById("tabs"); if (!t) return; const e = () => t.classList.toggle("more-r", t.scrollWidth > t.clientWidth + 2 && t.scrollLeft + t.clientWidth < t.scrollWidth - 4);
   t.addEventListener("scroll", e, {passive:true}); addEventListener("resize", e); new MutationObserver(e).observe(t, {childList:true}); e(); })();
 </script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("budget", {title:"Balance the Chicago Budget", body:"<p>Chicago's 2027 budget starts $882 million short. Raise or cut taxes, fund departments up or down, or reach for one-time money until the gap reads $0.</p><p>Every option is something the City Council can really do, or would have to ask Springfield for, with its dollar amount and sources behind the (i).</p>", art:"/shape/art/budget.webp"}));</script>
 </body>
 </html>
