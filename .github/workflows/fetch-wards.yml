@@ -1,10 +1,10 @@
-# Downloads City Clerk records for the ward housing record (tools/wards/fetch.py). Hourly until the zoning ordinance
-# backfill is done (each run skips what it already has), on changes to its script, or by hand.
+# Downloads City Clerk records for the ward housing record (tools/wards/fetch.py). Was hourly until the zoning ordinance
+# backfill is done; now daily for new matters (each run skips what it already has), on script changes, or by hand.
 name: Fetch ward records
 on:
   workflow_dispatch:
   schedule:
-    - cron: '41 * * * *'
+    - cron: '41 10 * * *'
   push:
     branches: [main]
     paths: ['tools/wards/fetch.py', '.github/workflows/fetch-wards.yml']
