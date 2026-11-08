@@ -183,6 +183,34 @@ def lot():
     car(14, -12.4, 0.04, 0, mat("#e6e8eb", rough=0.35, metal=0.3))
     return dict(ortho=74, target=(-1, 0, 2), elev=30, azim=-108, sun=(42, -150))
 
+def budget():
+    """Balance the Chicago Budget: a balance beam on a city block, a stack of coins on one pan and a little block of
+    flats, a fire station and a bus on the other, level."""
+    random.seed(5)
+    ground(64, 34)
+    sidewalk(0, -12, 64, 2.2)
+    # the fulcrum and beam
+    cyl(0, 0, 0.0, 2.2, 1.0, mat("steel", rough=0.4), verts=32)
+    box(0, 0, 1.0, 1.6, 1.6, 12.0, mat("steel", rough=0.4), bevel=0.15)
+    cyl(0, 0, 13.0, 1.0, 1.4, mat("star", rough=0.4), verts=24)
+    box(0, 0, 13.6, 44, 1.2, 0.8, mat("navy", rough=0.45, metal=0.2), bevel=0.2)
+    for sx in (-20, 20):
+        for dy in (-0.4, 0.4):
+            box(sx, dy, 6.6, 0.12, 0.12, 7.0, "ink", bevel=0)
+        cyl(sx, 0, 5.9, 7.2, 0.7, mat("#d9dde2", rough=0.35, metal=0.4), verts=48)
+    # left pan: stacks of coins
+    for i, (dx, dy, n) in enumerate([(-2.2, -1.5, 9), (1.6, -1.8, 6), (-0.4, 2.0, 12), (2.8, 1.6, 4), (-3.4, 1.2, 3)]):
+        for k in range(n):
+            cyl(-20 + dx, dy, 6.6 + k * 0.62, 1.55, 0.56, mat("gold", rough=0.3, metal=0.75), verts=28, bevel=0.06)
+    # right pan: a tiny city block
+    flat(20 - 2.6, 0.4, 6.6, 3.6, 4.8, 3, "brick", fh=1.4, cols=2, cornice="stone")
+    flat(20 + 1.6, 0.6, 6.6, 3.6, 4.8, 2, "buff", fh=1.4, cols=2, cornice="stone")
+    box(20, -3.4, 6.6, 6.0, 1.9, 1.6, mat("#f4f5f6", rough=0.35), bevel=0.4)          # a bus
+    box(20, -4.37, 7.5, 5.4, 0.05, 0.5, "glassdk", bevel=0)
+    tree(20 + 4.6, 2.4, 6.6, 0.45)
+    tree(-26, 9, 0, 0.9); tree(27, 10, 0, 0.8); tree(-9, -10, 0, 0.7)
+    return dict(ortho=54, target=(0, -1, 7), elev=22, azim=-100, sun=(42, -150))
+
 def transit():
     """Draw your own line: today's L on its steel structure with a Red Line train, and a new line in flag blue curving off
     from a new station, its own train already running."""

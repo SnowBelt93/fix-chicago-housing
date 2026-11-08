@@ -1,0 +1,1687 @@
+0
+                                                            Table of Contents
+INTRODUCTION......................................................................................................................................... 2
+KEY FINANCIAL ISSUES FACING THE CITY OF CHICAGO ................................................................... 4
+   STRUCTURAL BUDGET DEFICIT ........................................................................................................... 4
+     Spend-Down of ARPA Resources .......................................................................................................... 4
+     Other One-Time Revenues .................................................................................................................... 5
+   PENSIONS ............................................................................................................................................... 6
+     Tier 2 Pension Beneﬁts Safe Harbor Fix .............................................................................................. 9
+     Chicago Casino ..................................................................................................................................... 9
+     Police Birth Year Legislation............................................................................................................... 11
+   LONG-TERM DEBT BURDEN .............................................................................................................. 11
+   PUBLIC SAFETY .................................................................................................................................... 14
+   FINANCIAL ENTANGLEMENTS WITH CHICAGO PUBLIC SCHOOLS ........................................... 16
+   MIGRANT SUPPORT COSTS ............................................................................................................... 17
+   TAX INCREMENT FINANCING BOND ORDINANCE ....................................................................... 18
+RECOMMENDATIONS ............................................................................................................................. 19
+   IMMEDIATE POTENTIAL NON-REVENUE OPTIONS ...................................................................... 19
+   DEVELOP A SUSTAINABLE REVENUE PLAN.................................................................................... 22
+    Short-Term Revenue Options ............................................................................................................. 22
+    Long-Term Revenue Options .............................................................................................................. 26
+   DEVELOP A LONG-TERM FINANCIAL PLAN FOR CITY OPERATIONS AND PENSION FUNDS
+   ................................................................................................................................................................. 28
+   PENSION RECOMMENDATIONS ....................................................................................................... 29
+     Find a Stable Pension Funding Source to Supplement Uneven Casino Revenue ............................ 29
+     Find a Sustainable Solution to Fix Tier 2 Safe Harbor Issues ........................................................... 29
+     Work with the State to Explore Consolidation of Chicago’s Four Pension Funds ............................ 30
+   IMPROVE POLICE BUDGET TRANSPARENCY AND ACCOUNTABILITY ...................................... 30
+     Staﬃng and Overtime ........................................................................................................................ 31
+     Consent Decree Costs and Spends..................................................................................................... 31
+     Generate a Department Capital Budget ............................................................................................ 32
+     Reinvigorate and Empower an Oﬃce of Risk Management ............................................................. 32
+   FAST-TRACK A WORKING GROUP TO RESOLVE LEGAL AND FISCAL ENTANGLEMENTS WITH
+   CHICAGO PUBLIC SCHOOLS .............................................................................................................. 33
+   INCREASE TRANSPARENCY AND ACCOUNTABILITY AROUND MIGRANT CARE FUNDING
+   AND CONTRACTING ........................................................................................................................... 34
+   EXPAND THE ROLE OF THE CITY COUNCIL’S OFFICE OF FINANCIAL ANALYSIS .................... 34
+   ESTABLISH AN ORDINANCE-LEVEL GOVERNMENT EFFICIENCY TASK FORCE ........................ 35
+
+
+
+                                                                                  1
+INTRODUCTION
+This report lays out several major issues facing the Chicago Mayor and City Council as they
+prepare to enter the FY2025 budget cycle and beyond, including the City’s structural deﬁcit,
+pensions, long-term debt, public safety, ﬁnancial entanglements with Chicago Public Schools,
+plans for addressing migrant funding challenges and the City’s new economic development and
+housing bond ﬁnancing plan. The issues are presented as a framework for City elected oﬃcials
+and leadership when considering both short-term solutions to close the City’s budget deﬁcit in
+the coming budget year and long-term solutions to address the City’s massive liabilities and
+persistent structural deﬁcits. The report also includes options to address each of these issues in
+a ﬁscally responsible manner. It is our hope that this work elevates the discourse surrounding
+the City’s ﬁnances and provides a roadmap for a sustainable future.
+
+The City of Chicago faces serious ﬁnancial challenges that will only be rectiﬁed through
+innovative solutions and long-term planning. A generation-long persistence in structurally
+imbalanced budgets, coupled with high pension and debt burdens, means the City will face
+enormous budget shortfalls in the coming years. Now that federal American Rescue Plan Act
+(ARPA) revenue replacement funding is generally not available to ﬁll budget gaps, it is
+incumbent on City leadership to develop a responsible ﬁscal path forward.
+
+The chart below shows Chicago’s initial budget deﬁcits from FY2014 through FY2024, along with
+the most recent projections for FY2025 and FY2026. Initial budget deﬁcits are addressed by the
+City through increased revenues, decreased expenditures or use of one-time revenues. The
+City’s FY2025 Budget Forecast, released in August 2024, estimated a $222.9 million year-end
+budget shortfall for FY2024, a $982.4 million deﬁcit for FY2025 and over $1.1 billion for FY2026
+based on decreased resources and increased personnel expenditures. 1 These deﬁcits equal or
+exceed those faced during the pandemic, and the City must now ﬁll a cumulative $1.2 billion
+deﬁcit for FY2024 and FY2025 without the beneﬁt of the federal pandemic funding of recent
+years that allowed the City to end years in surpluses. This is unsustainable. The City already
+allocates approximately 40% of its operating budget to debt and pension payments year after
+year, crowding out its ability to deliver services to constituents. In addition, uncertainty remains
+respecting the ﬁscal impact surrounding ﬁxes to Tier 2 employee pensions and a pending
+ﬁreﬁghters contract that may further exacerbate the City’s already daunting future deﬁcit
+projections. Recourse to purely revenue-based solutions is constrained by the fact that the City
+already has a high tax burden. 2 The Mayor recently announced a hiring freeze across City
+departments (now purported to exclude police and ﬁre), but no further details have been
+released. 3 More diﬃcult choices will need to be made to reduce future deﬁcits, and the City
+
+
+
+
+1
+    City of Chicago FY2025 Budget Forecast, p. 13.
+2 For more information on the full list of consumer taxes charged to Chicago residents, see the Civic
+
+Federation’s 2024 Report on Consumer Taxes in Chicago.
+3 Fran Spielman, “’Upon further review,’ police and ﬁre departments exempt from Brandon Johnson’s hiring
+
+freeze,” Chicago Sun-Times, September 11, 2024.
+
+                                                        2
+cannot assume that additional State funds will be made available to soften the blow, as the
+State itself must attend to signiﬁcant ﬁscal challenges in its coming budget cycle. 4
+
+
+                            City of Chicago Corporate Fund Initial Deficit/Surplus FY2014-FY2026
+                                                        ($ in millions)                     FY2025                                          FY2026
+                  2014       2015       2016       2017     2018      2019      2020      2021      2022    2023      2024       Proj.       Proj.
+      $200.0
+                                                                                                            $61.7
+
+          $-                                                          $(97.8)
+                                                  $(137.6) $(114.8)
+                                       $(232.6)
+     $(200.0)               $(297.3)
+                 $(338.7)                                                                           ARPA
+
+     $(400.0)
+                                                                                                                             $(538.0)
+
+     $(600.0)
+                                                                                                           $(733.0)
+                                                                                    $(838.2)
+     $(800.0)
+                                                                                                                                        $(986.0)
+    $(1,000.0)
+
+                                                                                                                                                   $(1,203.9)
+    $(1,200.0)
+                                                                                       $(1,204.5)
+
+    $(1,400.0)
+
+
+
+
+The City’s ability to meet these accumulated burdens is further complicated by the ﬁnancial
+shortfalls faced by several of its sister agencies that draw signiﬁcant portions of their operating
+budget from the same tax base and/or receive direct funding from the City. The FY2025 Chicago
+Public Schools (CPS) budget had to ﬁll an initial $505 million deﬁcit, which could grow by
+hundreds of millions more once contract negotiations with the Chicago Teachers Union are
+ﬁnalized this fall. 5 Similarly sized budget gaps of over half a billion dollars are projected over
+the next ﬁve years and it is unclear how the District will address these gaps. The Regional
+Transportation Authority (RTA) has likewise projected a $730 million budget gap beginning in
+FY2026 once pandemic funds have depleted, including a nearly $600 million budget cliﬀ facing
+the Chicago Transit Authority. 6 Given that ridership has still not returned to pre-pandemic
+levels, the loss in farebox revenue will continue to be a drag on the CTA budget absent action
+from state and local oﬃcials to increase its revenues and/or reduce its expenditures. All of this
+suggests the City has reached a critical inﬂection point it can no longer postpone.
+
+
+
+
+4
+    See Civic Federation, City of Chicago FY2024 Proposed Budget: Analysis and Recommendations, p. 12.
+5 Chicago Public Schools FY2025 Budget, pp. 9-11; Civic Federation, Chicago Public Schools FY2025 Proposed
+
+Budget: Analysis and Recommendations, July 24, 2024.
+6 Regional Transportation Authority FY2024 Operating Budget, p. 7; Civic Federation, Reforming Mass Transit
+
+Governance in the Chicago Region, April 25, 2024.
+
+                                                                                3
+KEY FINANCIAL ISSUES FACING THE CITY OF
+CHICAGO
+STRUCTURAL BUDGET DEFICIT
+A structurally balanced budget is one in which recurring revenues equal or exceed recurring
+expenditures. This provides ﬁnancial stability for a government in the long-term. 7 A budget that
+is not structurally balanced is one that is balanced using non-recurring revenues, such as by
+spending prior year fund balance, using asset lease proceeds or borrowing — all of which are
+measures the City of Chicago had routinely used in the past to close budget deﬁcits. Using non-
+recurring, one-time revenues to repeatedly fund budgets masks serious systemic ﬁnancial
+problems and is not a sustainable practice.
+
+For at least a generation the City has passed and operated with annual budgets that are in
+structural imbalance between recurring operating expenditures and recurring revenue sources.
+Although the City made considerable progress on reducing its structural budget deﬁcit in the
+decade prior to the pandemic, it has persistently failed to balance expenditure growth with
+revenues. The budget deﬁcit ballooned to over $1 billion in FY2021 due to the COVID-19
+pandemic. A massive federal aid package as part of the American Rescue Plan Act (ARPA)
+helped the City stabilize its budget by applying $1.3 billion in pandemic relief funding to replace
+lost revenue over several ﬁscal years. Now, the City projects a budget gap of $982.4 million for
+FY2025 8 just as ARPA revenue replacement funds have been spent down, with budget deﬁcits
+projected to grow in the coming years absent action to reduce expenditures or increase
+revenues.
+
+The City has technically balanced its budgets in recent ﬁscal years with the use of one-time
+revenues (discussed further below), including federal pandemic funding, operating reserves
+and Tax Increment Financing (TIF) surplus funds. These sources are not guaranteed to recur
+every year. The use of one-time sources fails to resolve the structural deﬁcit and leaves the City
+particularly vulnerable in the event of unexpected costs or economic downturns.
+
+Spend-Down of ARPA Resources
+During the pandemic, the City of Chicago received a total allocation of $1.9 billion in American
+Rescue Plan Act (ARPA) federal stimulus funds. Of that total, $1.3 billion, or 70%, was allowed
+according to United States Treasury guidelines to be used as revenue replacement in the City’s
+FY2021, FY2022 and FY2023 budgets, which enabled the City to continue operations through
+the pandemic without making major cuts to programs or staﬀ. The City spent its last $152.4
+million in ARPA revenue replacement funds balancing the FY2023 budget. As such, the City no
+longer has federal revenue to directly reduce its future shortfalls.
+
+7 Government Finance Oﬃcers Association, “Achieving a Structurally Balanced Budget,” Best Practice, February
+
+2012.
+8 City of Chicago FY2025 Budget Forecast, p. 13.
+
+
+
+                                                      4
+The City has approximately $576 million in remaining APRA funds, which were made available
+for proposed infrastructure and social service investments as part of the Chicago Recovery
+Plan, later rebranded as the Road to Recovery by the Johnson administration. 9 The City is
+currently fast-tracking the spending of those remaining ARPA funds, most of which are going
+towards programs that will require ongoing support. With the deadline for obligating those
+funds approaching in December 2024, the public still lacks answers to several fundamental
+questions about the continuity of the City’s new infrastructure and social service initiatives once
+the ARPA funds run out.
+
+The Civic Federation strongly cautions the City against using remaining ARPA funding for
+programs intended to continue in out years beyond FY2026 without also securing reliable,
+continuing revenue streams to fund them.
+
+Other One-Time Revenues
+In addition to ARPA funds, the City has also utilized other one-time revenue sources to close
+budget gaps, such as TIF surplus funding and unassigned fund balance or budgetary reserves.
+The projected $538 million budget gap the City faced in FY2024 — the ﬁrst year ARPA funds
+were no longer available to be used for revenue replacement — was originally closed in part
+with $49.5 million additional TIF surplus. The City has continually relied on major sweeps on TIF
+surplus funds to balance its annual budget, both suggesting that many TIF districts do not need
+revenue for redevelopment projects due to unachievable goals or excess revenue, and
+perpetuating the City’s broader, long-running structural imbalance.
+
+Other sources of non-recurring revenues used to plug past budget deﬁcits have included debt
+reﬁnancings and using prior-year fund balance, which is the residual balance that has not been
+committed, assigned or restricted in the General Fund and deﬁcit fund balances. 10 The City
+allocated $222.1 million in unassigned fund balance to balance the FY2023 budget and $155.3
+million in FY2024. The Civic Federation does not oppose the use of fund balance if it is done in
+accordance with the government’s policy 11 or in the context of an emergency, and if there is a
+plan to replenish the reserve to the minimum level speciﬁed in the policy.
+
+The City of Chicago has a fund balance reserve policy to maintain an unrestricted fund balance
+of no less than two months or 16.7% of operating expenses in the Budget Stabilization Fund 12,
+composed of a combination of the following three elements: unassigned fund balance within
+the General Fund; the operating liquidity fund; and asset lease and concession reserves.
+Developing a fund balance policy to maintain a minimum level of reserves is a best practice
+recommended by the Government Finance Oﬃcers Association. The fund balance per the City’s
+stabilization policy was $935.1 million in FY2022, a ratio of 20% of expenditures. Therefore, the
+Budget Stabilization Funds met the City’s own fund balance policy at that time. Additionally,
+
+9 Road to Recovery: American Rescue Plan Under the Johnson Administration
+
+10 Chicago 2023 Annual Comprehensive Financial Report, p. 55.
+
+11 For information on the City’s fund balance policy, see City of Chicago FY2024 Budget Overview, p. 176.
+
+12 City of Chicago FY2024 Budget Overview, p. 176.
+
+
+
+                                                       5
+fund balance can be sustainably spent down if fund balance levels grow too large and if they
+are directed towards non-recurring expenditures. However, the perpetual reliance on reserves
+and debt reﬁnancing to balance budget shortfalls for predictably recurring operating expenses
+is not sustainable and further indicative of the City’s structural imbalance.
+
+
+PENSIONS
+Chicago’s four pension funds are among the most poorly funded of any large U.S. city. 13 A
+combination of statutory underfunding, beneﬁt enhancements, investment losses, optimistic
+assumptions and other long-term problems have all contributed to their abysmal ﬁnancial
+condition. Beneﬁts for new employees were reduced in 2011 along with most other public
+pension plans in the State of Illinois (to be discussed later), but later attempts to reduce
+beneﬁts for current employees in order to shore up the funds’ ﬁnancial condition were struck
+down by the Illinois Supreme Court. 14 City and State leaders subsequently worked together to
+amend state law governing the City’s pension funding to transition the funds to an actuarially-
+calculated funding schedule and prevent the funds from becoming insolvent. The table below
+shows the funded ratios and long-term liabilities for each of the City’s four pension funds,
+which have a total of $35.6 billion in unfunded pension liabilities.
+
+
+
+                        Status of Chicago's Pension Funds as of December 31, 2023
+
+                                               Actuarial Funded           Actuarial Unfunded
+                                                       Ratio                       Liability
+                 Municipal                             24.3%                    $14.7 billion
+                 Police                                23.4%                    $13.4 billion
+                 Fire                                  22.8%                     $5.7 billion
+                 Laborers                              42.1%                     $1.8 billion
+                 Sources: Municipal Employees' Annuity and Benefit Fund of Chicago: Actuarial
+                 Valuation and Review as of December 31, 2023, p. 11; Policemen's Annuity and Benefit
+                 Fund of Chicago: Actuarial Valuation for the Year Ending in December 31, 2023, p. 19;
+                 Firemen's Annuity and Benefit Fund of Chicago: Actuarial Valuation and Review as of
+                 December 31, 2023, p. 7; Laborers' and Retirement Board Employees' Annuity and
+                 Benefit Fund of Chicago: Actuarial Valuation for the Year Ending December 31, 2023,
+                 p.1.
+
+
+All four of the City’s pension funds began to transition to state law-mandated 40-year funding
+plans in 2016, each beginning with ﬁve-year ramps of growing annual contributions set by State
+statute before transitioning to a 35-year schedule of actuarially calculated contributions that
+are intended to increase their funded ratios to 90%. Since 2022, all four are now funded on an
+actuarially calculated basis, which means that the City’s annual contributions will now adjust
+
+
+13 See Equable, Pension Plan Funded Ratio Rankings 2023, January 10, 2024.
+
+14 Civic Federation, “Chicago Pension Reforms Struck Down by Illinois Supreme Court,” March 31, 2016.
+
+
+
+                                                           6
+according to the ﬁnancial needs of the fund. However, the length of the funding schedule and
+its backloaded nature mean that the City scheduled contributions would not be suﬃcient to
+begin to reduce the long-term liability on the largest funds until 2029 for the Police Fund and
+2035 for the Municipal Fund. 15
+
+As shown in the charts below, the FY2024 total required pension contribution was $2.8 billion
+(which included a $306.6 million supplemental pension payment), comprising 22.9% of total net
+appropriations. 16 The two largest funds, the Municipal and Police Funds, received the largest
+portion of annual funding at 77% or nearly $2.2 billion. 17
+
+
+
+
+15 See Fund Actuarial Valuations, 50-year funding projections. Backloading means that contributions are
+
+artiﬁcially low in the early years of the funding schedule and grow signiﬁcantly in the out years.
+16 Total net appropriations exclude debt proceeds and transfers between funds.
+
+17 The $2.2 billion includes the $306.6 million in supplemental contributions to the pension funds beyond the
+
+amounts required of the City under statutory funding formula.
+
+                                                       7
+             Pensions as a Percentage of Total Net Appropriations: FY2014-FY2024
+$14,000.0                               Pension Funds              All Other Appropriations
+
+                                                                                                                   22.9%
+                                                                                                         22.6%
+$12,000.0
+                                                                                               22.0%
+                                                                           17.3%     19.1%
+$10,000.0
+                                                     14.5%       15.3%
+                                           13.1%
+                        11.6%     12.5%
+  $8,000.0
+              6.8%
+
+  $6,000.0
+
+
+  $4,000.0
+
+
+  $2,000.0
+
+
+       $-
+             FY2014   FY2015  FY2016 FY2017          FY2018      FY2019    FY2020    FY2021    FY2022    FY2023    FY2024
+             Adopted Amended Amended Adopted         Adopted     Adopted   Adopted   Adopted   Adopted   Adopted   Adopted
+
+   Source: City of Chicago Budgets, FY2014-FY2024.
+
+
+
+A “Pension Working Group” was ﬁrst convened by Mayor Brandon Johnson in June 2023
+representing that “over the next several months,” it would “work with a broader set of advisors
+from the ﬁnancial and advocacy sectors to develop actionable solutions to meet the city’s
+obligations to retirees, workers, and taxpayers” to address the City’s underfunded pension
+crisis. 18 To date, the group has not released a public-facing report.
+
+While the signiﬁcant increases in the amount of money the City must contribute to the four
+pension funds are projected to level oﬀ beginning in FY2025 (not including the potential costs
+for a ﬁx to Tier 2 pensions), 19 the cost of pensions will continue to increase over time based on
+the back-loaded nature of the funding schedule. To fund ongoing annual increases, the City will
+need additional stable sources of funding. Unfortunately, the potential revenue to be dedicated
+from a Chicago casino has thus far not been a reliable revenue source, which the City should
+factor into future planning.
+
+
+
+
+18 Statement from Mayor Brandon Johnson on Pension Working Group, June 21, 2023; See also, Alice Yin &
+
+Gregory Royal Pratt, “Mayor Johnson aims to tackle a problem that vexed his predecessors: Woefully
+underfunded pensions,” Chicago Tribune, May 27, 2023.
+19
+   Tier 2 State pension beneﬁts must meet Internal Revenue Service Safe Harbor Rules, which require public
+workers to receive a retirement beneﬁt from their public pension that is at least equal to the beneﬁt they would
+receive under Social Security; City of Chicago FY2025 Budget Forecast, p. 24.
+
+                                                             8
+Tier 2 Pension Beneﬁts Safe Harbor Fix
+Recognizing concerns about pension plans for State and local government employees hired
+since January 1, 2011, in Illinois (known as Tier 2) potentially falling out of compliance with
+Social Security retirement beneﬁt guidelines, the Civic Federation calls on the City to advocate
+for the most cost-eﬀective, actuarily sound resolution. Over the past year, the State General
+Assembly has been considering legislation to address this issue for multiple state and local
+funds. 20
+
+In December 2023 the Illinois General Assembly passed and Governor Pritzker signed into law
+legislation for Tier 2 Chicago ﬁreﬁghters that changed the calculation of ﬁnal average salary. 21
+This was promoted as the ﬁrst part of a “ﬁx” to preemptively address concerns about Tier 2
+beneﬁts potentially failing to meet Internal Revenue Service Safe Harbor rules, which requires
+that government pension plans that do not coordinate with Social Security provide beneﬁts that
+meet certain minimum standards. 22 A second bill that would have changed the pensionable
+salary cap did not pass. The Civic Federation opposed the legislation, viewing it as premature
+given that a comprehensive analysis of the proposed change’s ﬁnancial impact and whether the
+approach taken was the most eﬃcient and eﬀective way to address Safe Harbor had not been
+publicly released.
+
+It is critically important that the Illinois General Assembly get any Tier 2 ﬁx right, because once
+pension beneﬁts are provided, they become protected under the Illinois Constitution and
+cannot be reduced later. Before passing any legislation to change Tier 2 beneﬁts, the Illinois
+General Assembly should commission an actuarial study of both state and local pension plans
+to estimate when pension plans may fail to meet Safe Harbor compliance, and what the cost of
+any enhanced beneﬁts would be to government employers like the City of Chicago. Reinstating
+pension beneﬁts without analysis showing they are necessary and suﬃcient to address Safe
+Harbor could substantially reverse much of the work Tier 2 has done to reduce massive
+pension liability costs. The State cannot aﬀord to take a ﬁscally irresponsible step backward by
+unnecessarily increasing Tier 2 pension beneﬁts. The Federation urges the City working group
+on pensions created by Mayor Johnson to develop recommendations that will be the most
+eﬀective, least costly and most directly tied to addressing compliance with IRS Safe Harbor
+rules.
+
+Chicago Casino
+The Civic Federation is concerned about the City of Chicago’s proposed reliance on casino
+revenues as a major funding source for its Police and Fireﬁghter Pension Funds given the
+uncertainty signaled by the temporary casino’s revenue performance to date that substantially
+
+
+20
+  See, Derek Douglas, Joe Ferguson, and David Greising, ”Civic leaders: How do we resolve Illinois’
+pension mess? These 10 principles are a start,“ Chicago Tribune, October 13, 2024
+21 Senate Bill 1629, 103rd General Assembly, signed into law as Public Act 103-0579.
+
+22
+  See Civic Federation and Civic Committee of the Commercial Club of Chicago, ”Tier 2 Pensions and Safe
+Harbor Explained,” November 7, 2023.
+
+                                                        9
+lag behind original projections. While a casino will generate some revenue, gaming revenues
+can be unreliable, particularly over the long run, and should be budgeted with caution. 23
+Additional revenue sources may be needed to stabilize and/or increase pension funding.
+
+The ﬁrst casino in the City of Chicago was authorized as part of the State’s gaming expansion
+legislation passed in 2019. 24 The City anticipates it will generate $200 million in tax revenue
+each year once it is up and running in its permanent space projected to open in 2026. In the
+meantime, the City of Chicago opened a temporary casino space at the Medinah Temple in
+September 2023. The Mayor’s FY2024 budget estimated that the temporary casino would
+generate $35 million to contribute toward the total $1.5 billion payment to the Police and Fire
+pension funds in FY2024. Meeting this projection would require just under $3 million per month
+in local tax allocations. However, as the table below illustrates, the casino has only generated
+$13.1 million in total local tax allocations in the past twelve months and has yet to break $1.5
+million in local allocations in a single month.
+
+                               Chicago Casino Monthly Revenue
+                                Adjusted Gross Receipts                 Local Tax Allocations
+September 2023                $                 6,678,431          $                     694,913
+October 2023                  $                 7,608,826          $                     767,802
+November 2023                 $                 7,068,132          $                     778,965
+December 2023                 $                 8,502,169          $                     864,645
+January 2024                  $                 9,276,819          $                     912,554
+February 2024                 $                 9,877,741          $                   1,005,872
+March 2024                    $                11,127,674          $                   1,354,550
+April 2024                    $                10,351,033          $                   1,068,498
+May 2024                      $                11,734,293          $                   1,417,473
+June 2024                     $                10,393,687          $                   1,299,875
+July 2024                     $                10,386,849          $                   1,403,437
+August 2024                   $                10,721,168          $                   1,496,544
+         Total                $              113,726,821           $                  13,065,128
+Source: Illinois Gaming Board Monthly Casino Reports.
+
+
+Given that the State of Illinois currently has 15 casinos, thousands of video gaming locations,
+legalized sports gambling and nearby casinos in neighboring states, the gambling market
+seems to be nearing saturation. 25 And based on the performance of the temporary Chicago
+casino and slow movement on the permanent casino, the $200 million annual revenue
+projection appears optimistic. Therefore, the Civic Federation cautions the City to begin to
+develop contingency plans to supplement unreliable casino revenue to pay for future pension
+contributions.
+
+23 Pew Charitable Trusts, “Are Sin Taxes Healthy for State Budgets?”, July 2018.
+
+24 See Public Act 101-0031.
+
+25
+  See, e.g., Robert McCoppin, As Chicago antes up in casino business, new sites in suburbs and
+across Illinois aim to build their own markets, Chicago Tribune, October 31, 2022.
+
+                                                        10
+Police Birth Year Legislation
+A change to Chicago police oﬃcer pension beneﬁts passed in December 2023 has signiﬁcantly
+increased unfunded liabilities of the Police Pension Fund. Public Act 103-0582 provides an
+annual 3% non-compounded cost-of-living adjustment to the pension beneﬁts for all Chicago
+Police retirees who were born after January 1, 1966, and hired before January 1, 2011, (Tier 1)
+who reach age 55 with 20 years of service. This law was enacted to match similar legislation for
+Chicago ﬁreﬁghters passed in 2021 through Public Act 101-0673, which doubled the cost-of-
+living adjustment for Chicago ﬁreﬁghters born after January 1, 1966. The legislation increased
+the actuarial accrued liability of the Chicago ﬁreﬁghters’ pension fund by $196.5 million and the
+normal cost (the cost of beneﬁts earned each year) by $6 million. 26
+
+Because the police fund is much larger than the ﬁre fund, the impact of the more recent police
+pension legislation is much more signiﬁcant. It increased the unfunded actuarial accrued
+liability of the police fund by $1.04 billion and increased the 2025 contribution rate from 67.46%
+to 73.38% of covered payroll. 27 The 2025 statutorily required contribution will total $1.04 billion,
+up from $928.8 million in FY2024. 28
+
+
+
+LONG-TERM DEBT BURDEN
+The City of Chicago has a high debt burden, meaning that annual debt service payments
+required to pay down long-term debt make up a signiﬁcant portion of the total City of Chicago
+budget. Debt service payments at or exceeding 15-20% of all appropriations are considered
+high by the rating agencies.
+
+The City of Chicago’s debt service appropriations totaled $2.1 billion in FY2024, which
+represents 17% of total net expenditures. This is a $341.7 million, or 19.6% increase, over the
+City’s debt service appropriations of $1.7 billion in FY2015. Despite the dollar increase in debt
+service, the City’s ratio of debt service to expenditures actually decreased from 23.8% in FY2015
+to 17.0% in FY2024 because total appropriations rose at a much faster rate than debt service
+spending.
+
+
+
+
+26 Firemen’s Annuity and Beneﬁt Fund of Chicago, Actuarial Valuation and Review as of December 31, 2021, June
+
+2022, p. 10.
+27 Policemen’s Annuity and Beneﬁt Fund of Chicago, Actuarial Valuation Report for the Year Ending December
+
+31, 2023, p. 10.
+28 The Civic Federation (and the previous Mayor) warned against this beneﬁt change absent a plan to fund the
+
+increase in payments from the City that will continue in out years beyond FY2025, as it will put more pressure
+on the City budget, especially as the City projects substantial budget deﬁcits in the coming years.
+
+
+                                                      11
+The City of Chicago’s amount of outstanding debt has increased signiﬁcantly over time. Total
+net debt outstanding increased by 32.8%, or $7.2 billion, over the ten-year period from FY2014
+to FY2023, rising from $22.0 billion to $29.2 billion. This amount of outstanding debt does not
+include additional debt issuances since FY2023. The City plans to issue $643 million in general
+obligation debt and $75 million in housing and economic development bonds later in 2024. 29
+A third bond proposal of $1.5 billion was approved by the Committee on Finance on October 2,
+2024, and is now pending full City Council approval. 30 Although the merits of aspects of the
+issuance remain disputed, the City agreed that no portion of the proceeds can be used for
+operating expenses and by implication will not add to the City’s long-term debt burden. That
+legislation remains pending at the time of this report.
+
+About 30% of the City’s outstanding net debt on average over this ten-year period is comprised
+of general obligation debt. The majority of the City of Chicago’s debt is revenue debt issued to
+support several large fee-generating enterprises including Chicago and Midway airports and the
+water and sewer system. It also includes motor fuel revenue bonds, which are used for repair
+of streets and pavement, and sales tax-backed debt issued through the Sales Tax Securitization
+Corporation (STSC). 31 Smaller amounts of debt issued include tax increment ﬁnancing bonds
+and capital leases.
+
+
+
+29 City of Chicago, General Obligations Bonds Series 2024A, Preliminary Oﬃcial Statement, July 31, 2024.
+
+30 Shruti Date Singh, “Chicago’s $1.5 billion bond reﬁnancing plan moves forward,” Crain’s Chicago Business,
+
+October 2, 2024.
+31 More information about the STSC can be found at the City of Chicago: Sales Tax Securitization Corporation.
+
+
+
+                                                       12
+The City’s increases in long-term debt bear watching as a potential sign of escalating ﬁnancial
+risk. Rising debt raises concerns that unless additional revenues are secured or reductions in
+spending are made, the City could have supporting other programs after making its debt
+payments.
+
+
+
+
+                                               13
+PUBLIC SAFETY
+The Civic Federation, like many other interested stakeholders, has questions and concerns
+about the eﬀectiveness and accountability of the Chicago Police Department and related public
+safety functions operated by the City of Chicago. We believe there are critical questions that
+need to be raised by alderpersons as part of the upcoming annual budget process and on an
+ongoing basis going forward.
+
+Consent Decree: The City is in its ﬁfth year of a federal consent decree. The pace and progress
+made under the Consent Decree is hampered by the question of whether the City is devoting
+the necessary resources to that eﬀort. The way progress on the Consent Decree is measured —
+with milestones indicated through compliance percentages for scheduled requirements — is
+not easily operationalized. There is little public-facing disclosure and accountability for what has
+been spent thus far in the sixth year of federal court monitoring and even less understanding of
+how much additional investment is needed to fully implement all Consent Decree mandates
+and provide the right infrastructure — personnel, programs and systems — for reform.
+
+Workforce Allocation and Eﬃciency: The Police Department has operated with staﬃng
+signiﬁcantly below budgeted levels since before the COVID-19 pandemic. Presently, there are
+many unﬁlled FY2024 appropriated positions. Although these numbers shift almost daily,
+present estimates of vacancies approach 1800 (or more than 12.5 % of total budgeted
+positions) across sworn, civilian and exempt position categories. There are many factors
+contributing to challenges in ﬁlling sworn vacancies. However, even a conversion of hundreds
+of previously sworn positions to civilian positions in the FY2024 budget (including many needed
+for Consent Decree implementation) has not produced better results, with only 51 of 398 newly
+created civilian positions being ﬁlled year to date. 32 Meanwhile, the City and the Department
+annually overspend signiﬁcant amounts on overtime. 33
+
+Whether the Department’s actual staﬃng meets mission responsibilities and needs has been
+the subject of near-continuous debate and controversy because of the absence of a
+comprehensive, public-facing workforce allocation study that for nearly a decade has been
+repeatedly promised but never delivered. If vacancies are not going to be ﬁlled, the Department
+needs to ﬁgure out how to operate more eﬃciently with current staﬃng levels. Questions
+should be raised about the use of overtime to ﬁll in staﬃng shortage gaps, with risk
+management playing a key role in increasing departmental eﬃciencies.
+
+Overtime: A March 2024 analysis found that the City spent $524 million on overtime in 2023,
+$293 million of which was in the Chicago Police Department (nearly three times the allocation in
+
+
+
+
+32
+   Alice Yin, “Mayor Brandon Johnson Slow on Push to Put Civilians in CPD Jobs,” Chicago Tribune, September 16,
+2024.
+33 Civic Federation, “How Much Does the Chicago Police Department Actually Spend Each Year?” January 26,
+
+2024.
+
+                                                      14
+the FY2023 budget). 34 The workforce allocation study that the City is undertaking must solve
+the underlying structural problems within CPD to allow for better accountability structures and
+relationship building between supervisors and subordinates. 35 The workforce allocation study
+should also establish a methodology for deployment based on data, with geographic
+accountability and scalability based on changes in the number of staﬀ available daily. Recent
+reporting suggests this has yet to begin, more than eight years following its original
+commission, but with fresh assurances that it will be delivered in FY2025. 36
+
+Police-Related Litigation: Chicago’s lack of robust, publicly accountable risk management also
+factors into the staggering volume of police misconduct judgments and settlements. A February
+2024 analysis reported that Chicago spent at least $74 million on police misconduct judgements
+in 2023. 37 This ﬁts into a much longer history. A new study presented at Northwestern
+University Pritzker Law School in September 2024 prepared by a coalition of legal organizations,
+has estimated City exposure of upwards of $750 million in settlements, judgments and
+estimated defense attorney fees for wrongful conviction cases alone over the past 20-plus
+years. 38 This staggering total does not include other forms of police misconduct judgments and
+settlements. The City‘s Oﬃce of Inspector General tallied more than $100 million in payouts for
+other types of police-involved conduct cases just from 2017-2020. 39 The IG noted signiﬁcant
+data limitations impacting the City’s ability to eﬀectively manage CPD’s operations risks,
+including insuﬃcient data collection from the Law Department and an inability to merge Law
+Department and CPD data for more thorough analysis. While Consent Decree reforms may
+mitigate the volume of future incidents leading to civil rights payouts, the past case pipeline is
+overwhelming. Nearly 200 pending wrongful conviction suits are connected to just one oﬃcer –
+disgraced (and convicted) CPD Sergeant Ronald Watts – with payouts to date of approximately
+$11.2 million, and a recent $50 million jury verdict returned in an unrelated matter in
+September 2024, which with attorneys’ fees could swell to approximately $60 million. 40
+
+True cost of public safety: The City of Chicago spends $2 billion on the Police Department, but
+this does not include a plethora of other public safety functions throughout the budget.
+Because of the way the City’s budget is presented, there is no way to account for the true full
+
+34 Heather Cherone & Jared Rutecki, “Chicago Spent $524M on Overtime in 2023, Including $293M for Police,
+
+Setting New Records,” WTTW News, March 12, 2024.
+35 The Workforce Allocation Study was approved by the Committee on Police and Fire in their February 5, 2024,
+
+hearing. See Heather Cherone, “City Council Set to Weigh Push to Require CPD to Study How Oﬃcers are
+Deployed, Despite Political Peril,” WTTW News, February 5, 2024.
+36 Heather Cherone, “CPD Has Yet to Launch Study on How Oﬃcers Are Deployed, Missing Deadline Set by
+
+Chicago City Council,” WTTW News, August 5, 2024.
+37 Heather Cherone, “Final Tally: Chicago Taxpayers Spent At Least $74M to Resolve Police Misconduct Lawsuits
+
+in 2023, Analysis Finds,” WTTW News, February 26, 2024
+38
+   Defense attorney estimates are based on invoices to the City, and the total ﬁgure does not include additional
+payments for Section 1988 plaintiﬀs’ counsel fees in such matters. See Truth, Hope & Justice Initiative, Wrongful
+Convictions Litigation Database: Chicago, December 2023, p. 7.
+39 City of Chicago Oﬃce of Inspector General, Use of Litigation Data in Risk Management Strategies for the Chicago
+
+Police Department, 2022.
+40
+   Heather Cherone, “Chicago Taxpayers Have Already Spent $11.2M Defending Convicted Police Sgt. Ronald Watts,
+With 193 Cases Pending,” WTTW, September 18, 2024.
+
+                                                       15
+cost of public safety in Chicago. Though CPD publishes its budget annually, the budget
+information does not translate directly to how the department actually operates and allocates
+personnel, and there are far more expenses associated with policing work that live within the
+budgets of other city departments, including but not limited to the CPD’s beneﬁts, police
+oversight and accountability, police infrastructure and equipment, and other programs that
+support public safety including community violence intervention, mental health and crisis
+response, and victim support. The City accounts for many of these expenditures in areas of the
+budget outside the Department. The largest expenses that fall outside the CPD budget are
+pension beneﬁts for police oﬃcers and civilian employees and employee beneﬁts (such as
+healthcare). These are both budgeted for within a catch-all Finance General 41 category of
+spending. 42 This lack of full accounting makes it impossible to determine if initiatives are
+eﬀective. There is a need for a true accounting of the cost of policing and related public safety
+spending in Chicago to allow for a full analysis and eﬀective policymaking.
+
+
+FINANCIAL ENTANGLEMENTS WITH CHICAGO PUBLIC SCHOOLS
+As noted in the Federation’s FY2025 Chicago Public Schools budget analysis, the ﬁnancial
+relationship between the City and CPS must still be resolved. 43 With the upcoming
+implementation of an elected school board to oversee the district, 44 CPS governance will
+become completely separated from the City of Chicago. The 21-member elected school board,
+set to replace the existing seven-member board appointed by the Chicago Mayor, will be seated
+in 2025, with the fully elected board in place in 2027. The separation raises questions about the
+ongoing ﬁnancial responsibility of the City to the school district and whether partnerships
+between the two agencies will continue.
+
+Despite the upcoming November 2024 election when half of the new board will be elected,
+there has been no public-facing discussion resolving which types of ﬁnancial support from the
+City of Chicago will continue. The lack of a resolution to this important question has been
+demonstrated through the ongoing dispute between the Mayor’s Oﬃce and CPS about how
+much CPS will contribute to the Chicago Municipal Employees’ pension fund. CPS employees
+account for about 65% of pension fund members.
+
+Historically, Chicago Public Schools and the City of Chicago have had a close ﬁnancial
+relationship, partly established in State statute and partly through intergovernmental
+agreements. As a result, the City provides the school district with signiﬁcant annual subsidies —
+estimated at $383 million based on an analysis of the entanglements released by the Chicago
+
+
+41 See Geoﬀrey Cubbage, “Growth of ‘Finance General’ Category in Chicago’s Budgets Obscures Departmental
+
+Costs; Reﬂects Rising Pension and Borrowing Expenses,” Better Government Association, September 25, 2023.
+42
+   See Civic Federation, “How Much Does the Chicago Police Department Actually Spend Each Year?,” January 26,
+2024.
+43 Civic Federation, Chicago Public Schools FY2025 Proposed Budget: Analysis and Recommendations, July 24,
+
+2024.
+44 Civic Federation, “Civic Federation Position Statement of 21-Member Elected Chicago School Board,” May 18,
+
+2021.
+
+                                                     16
+Board of Education in October 2022. 45 Among the largest of these is a $142 million payment of
+property taxes levied by the City on CPS’ behalf to pay for debt service on bonds. Also in dispute
+is a pension contribution made by the City on behalf of CPS employees and retirees who are
+members of the Chicago Municipal Employees’ pension fund. While the City is legally required
+to pay this pension contribution, CPS began covering a portion of the contribution in FY2019 at
+$60 million, which increased over the past several years to $175 million contributed to the Fund
+in FY2023 and FY2024. The District’s FY2025 budget did not include this payment, although the
+City has requested $175 million. 46 With Chicago Public Schools set to become a fully
+independent governmental body, it is not clear whether the City would or should be obligated
+to fund CPS pensions, debt and other costs.
+
+It is critical that the question of whether these partnerships and subsidies be resolved before
+the elected school board is in place. The City of Chicago should expedite work with the Board of
+Education to address these ﬁnancial entanglements and incorporate them into a long-term
+ﬁnancial plan while preparing the District to become a fully independent unit of government.
+
+
+MIGRANT SUPPORT COSTS
+Since August 2022, the City has seen an inﬂux of migrants sent to Chicago from the U.S.
+southern border, and the City has at times struggled to adequately care for such a large
+number of people. Of the over 45,000 migrants transported to Chicago thus far, more than
+5,600 are currently in the shelter system. 47 And while City reporting provides an overall sense
+of total spending, the constantly shifting nature of the response makes it impossible for
+stakeholders to ascertain what is actually needed to provide suﬃcient care for the recent
+arrivals.
+
+The FY2024 budget intentionally underbudgeted for the cost of caring for migrants, allocating
+only half of the projected City portion of the total cost of care, approximately $300 million. 48
+The State and County partially ﬁlled this gap as part of dedicating of $250 million to the City’s
+migrant mission. 49 The City Council approved an additional $70 million in April 2024 using prior-
+year unassigned fund balance 50 — another one-time revenue source not guaranteed to recur in
+future years. And although the number of arrivals has decreased in recent months, signiﬁcant
+uncertainty remains around how many additional migrants may be arriving in the future. To
+
+
+
+
+45 City of Chicago Board of Education, Analysis of District Finances and Entanglements Between the City of
+
+Chicago and the Chicago Public Schools, October 31, 2022.
+46 Reema Amin, “Chicago’s Mayor Johnson suggests CPS borrow to cover pension, contract costs,” Chalkbeat
+
+Chicago, July 12, 2024.
+47 Chicago New Arrivals Situational Awareness Dashboard.
+
+48 Chicago FY2024 Budget Overview, p. 16.
+
+49 Sabrina Franza, “State of Illinois, Cook County pledge funds for migrant mission, no word from City of
+
+Chicago,” CBS News Chicago, February 15, 2024.
+50 Sabrina Franza, “Chicago City Council weighs mayor’s ask for $70 million in migrant funding,” CBS News
+
+Chicago, April 15, 2024.
+
+                                                      17
+date, Chicago has spent $464.2 million on migrant services, of which $147.7 million comes from
+the City’s Corporate fund. 51
+
+The City’s Dashboard provides information on vendor payments and fund sources. 52 However,
+there is no speciﬁc information oﬀered on what departments and programs are involved, what
+projected spending looks like for FY2025 and beyond and how Corporate Fund resources will
+be used to fund programs on an ongoing basis. Further, now that the City has begun to enforce
+a policy evicting migrants from City-run shelters after 60 days, 53 there is no information on
+where they’ll go if they are unable to return, 54 which may be indicative of a worsening
+homelessness condition. 55
+
+Answers to several of these fundamental questions have not been attainable in the reporting
+the City has done. The Civic Federation continues to support the position of State and local
+government leaders that the federal government, which has jurisdiction over national borders,
+must provide additional ﬁnancial and operational support. However, it is imperative that the
+City make both short- and long-term contingency plans in the event that future State and
+federal dollars do not materialize.
+
+
+TAX INCREMENT FINANCING BOND ORDINANCE
+In April 2024, the City announced a new bond plan to issue $1.25 billion in debt over the course
+of ﬁve years (up to $250 million a year) to promote economic development and aﬀordable
+housing. 56 The City proposes to oﬀset the cost of the bonds within the budget with property tax
+revenues from sunsetting Tax Increment Financing (TIF) districts. Over the next four years, 47
+TIF districts are expected to expire. As they do, the City will levy for the expiring TIF increment
+before that value is returned to the tax base, generating revenue that is supposed to go toward
+funding debt service, estimated at $2.4 billion. 57
+
+The Civic Federation, with some caveats, regards this plan as a sensible means of resetting the
+over-usage of TIF funding while directing revenue back to the City that would help create the
+budgetary resources for these bonds for years to come without increasing taxes. By levying for
+expiring TIF increment, the City will be able to strategically repurpose revenue currently being
+paid into expiring TIF districts. This represents a funding proposal tied to existing housing and
+
+
+51 Chicago Cost Dashboard: Vendor Payments – New Arrivals Mission.
+
+52 Chicago Cost Dashboard: Vendor Payments – New Arrivals Mission.
+
+53 See Daniella Silva, “Chicago to begin evicting migrants from shelters Sunday,” NBC News, March 15, 2024;
+
+ Nell Salzman, “Chicago begins evicting entire migrant families from city shelters,” Chicago Tribune, June 13,
+2024.
+54 Heather Cherone, “More Than Half of Migrants Forced to Leave City Shelters Immediately Returned, Chicago
+
+Oﬃcials Say,” WTTTW News, June 6, 2024.
+55 See Andrew Ramos & Asal Rezael, “Chicago oﬃcials unveil plan to merge homeless and migrant shelters into
+
+one system,” CBS News Chicago, September 19, 2024.
+56 Council Oﬃce of Financial Analysis, Bond Proposal $1.25 Billion: City of Chicago Fiscal Year 2024, April 2,
+
+2024.
+57 Council Oﬃce of Financial Analysis, Bond Proposal $1.25 billion: City of Chicago Fiscal Year 2024, April 2, 2024.
+
+
+
+                                                        18
+economic development programs, rather than a policy proposal oriented towards the creation
+of new programs. While the Federation has long supported TIF as a crucial tool for economic
+development, the large surpluses of funds left in the TIF accounts each year indicate the
+practice needs reform. The inherent limitations of TIF — both in terms of fund use and
+geographic restrictions — have worked to the detriment of comprehensive, Citywide
+development. Eﬀorts at overcoming the constraints have at times stretched the use of TIF
+beyond what many regard as its core purpose — the development of “blighted” areas.
+
+However, while the Federation is encouraged by the overall plan and its accountability
+measures, we have concerns about the lack of planning in key aspects of the project.
+Speciﬁcally, the spending plan is not tied to the City’s Capital Improvement Plan, a Citywide
+housing plan or planning to replace TIF-subsidized infrastructure development. Further, the
+revenue estimates for this proposal remain uncertain as they do not account for the tax year
+2024 Chicago property reassessment, which could aﬀect property values making up the tax
+base. We encourage the City Council to develop a comprehensive planning strategy linked to
+the City’s Capital Improvement Plan for the use of these funds.
+
+
+RECOMMENDATIONS
+IMMEDIATE POTENTIAL NON-REVENUE OPTIONS
+As detailed throughout this report, the City’s ﬁnancial pressures are signiﬁcant. The structural
+deﬁcit, combined with signiﬁcant debt and pension payments, requires an approach to the
+FY2025 projected deﬁcit that should begin with non-revenue measures. Additionally, the City
+must be mindful of the constraints on revenue due to massive budgetary pressures on other
+units of government taxing the same revenue base.
+
+The Government Finance Oﬃcers Association (GFOA) oﬀers a framework for governments in
+ﬁscal crisis to address budget deﬁcits through immediate actions to improve cash ﬂows and the
+development of long-term strategies. Among others, GFAO recommends prioritization of
+reductions in personnel costs, reductions in capital spending, reductions in materials or
+contractor costs, the creation of more advantageous cash inﬂows and outﬂows and the
+generation of new resources. 58 Many of the measures would need to be implemented with full
+consideration of accompanying negative consequences. The options listed below align with the
+GFOA’s framework.
+
+The City faces a compressed time frame to approve a balanced budget by the end of the
+calendar (and ﬁscal) year according to State law. Therefore, the Federation begins with non-
+revenue options that may be within the City’s existing authority to eﬀectuate immediately. The
+Federation does not endorse any particular strategy and emphasizes that some options are not
+best practices, but still includes them below for a more complete list of the options the City has
+
+
+58 Shayne C. Kavanaugh & Joseph P. Casey, Cash is King: Short-Term Strategies to Slow the Flow of Money Out the
+
+Door and Keep the Budget Balanced, Government Finance Oﬃcers Association, March 2020.
+
+                                                       19
+to face down its short-term deﬁcit. The City Council should play an active role in exploring
+options and how they might be implemented in order to substantially reduce the deﬁcit in the
+current and future ﬁscal years before considering revenue options.
+
+    •   Cut or Oﬀset of Dormant Vacancies: The City routinely carries thousands of vacancies
+        as appropriated budget expenditures from year to year. In doing so it (1) must ﬁnd
+        revenue to support those expenditures and (2) by implication states an intention to the
+        public to provide services at the fully stated staﬃng level. In reality, and especially in the
+        face of a nearly $1 billion deﬁcit that it must close as a matter of law, the City should
+        make an objective assessment of the number of vacant positions it needs and has the
+        capacity to ﬁll in FY2025. Ideally, the City would cut unneeded vacant positions from the
+        FY2025 budget. The Civic Federation recognizes that full cuts of vacant positions, even
+        long-term vacancies, may be diﬃcult in the limited time available between now and the
+        end of the year when a balanced budget must be authorized, because a determination
+        based on operating needs may require more complex analysis of operation and, more
+        critically, most vacant positions are covered by collective bargaining agreements and
+        may require dialogue if not full agreement of unions in the City’s mostly unionized labor
+        force. The City should cut unneeded or dormant vacancies, and to the extent cuts are
+        not feasible at this time, make an oﬀsetting entry in the budget for the salary and
+        beneﬁts of vacancies it will not ﬁll in FY2025. The change would reduce the projected
+        deﬁcit by tens and possibly even hundreds of millions of dollars. It would also make the
+        budget a more accurate and transparent document with respect to operations in
+        FY2025.
+    •   Mandatory Furlough of City Personnel: Personnel 59 constitutes the largest portion of
+        the City operating budget, accounting for $4.6 billion in FY2024 across all funds. 60 In the
+        wake of the Great Recession that resulted in a sudden precipitous drop in tax revenues,
+        the City instituted (among other austerity measures) a long-term furlough of employees
+        across City departments, eﬀected through an unpaid day oﬀ every two-week pay period
+        (eﬀectively a 10 percent drop in payroll). The City might consider doing something
+        similar (and make adjustments as needed for essential personnel). To the extent this is
+        required of front-line and mid-level staﬀ, a commensurate pay reduction for City
+        executives and elected oﬃcials should be considered as a demonstration of equitable
+        burden-sharing both within government and between government and the public,
+        which may be called upon to take on increased ﬁnancial burden or reductions in
+        services or eﬀectiveness of service.
+    •   One-Time Suspension of Supplemental Pension Payment: The City has made a
+        substantial supplemental payment to its pension funds in recent years in an eﬀort to
+        prevent their unfunded liabilities from increasing until the scheduled actuarially-
+        calculated payments mandated by State law are suﬃcient to reduce the unfunded
+        liability. The supplemental payments from the Corporate Fund had been funded by
+
+
+
+59 Personnel expenditures include salaries and wages and other personnel costs, including overtime pay,
+
+unemployment compensation and other supplemental earnings.
+60 City of Chicago FY2024 Budget Overview, p. 26.
+
+
+
+                                                     20
+        assigned fund balance and are projected to run out by 2026. 61 Using assigned fund
+        balances should be done in accordance with formal policy. The Civic Federation has
+        strongly supported the supplemental contributions as an important improvement to the
+        City’s pension sustainability. However, given the size of the projected FY2025 deﬁcit, the
+        pressures on adjacent government bodies that constrict the capacity to impose property
+        taxes on already burdened City property owners, suspension of the supplemental
+        pension payment for FY2025 in whole or part, within policy, might warrant
+        consideration, though such a move’s impact on the longer-term sustainability of pension
+        contributions should also be considered. The FY2024 supplemental payment was $306.6
+        million, nearly one-third of the size of the current projected FY2025 deﬁcit.
+    •   Explore Repurposing ARPA Funds for Eligible Non-Recurring Expenses in the
+        FY2025 Budget: As summarized above, the City has expended the full portion of the
+        $1.9 billion in ARPA funding it was allowed to use for revenue replacement, $1.3 billion,
+        with the last portion helping to balance the FY2023 budget. The more than $576 million
+        remaining cannot be used as a direct revenue replacement. The City has published
+        proposed uses of the remainder for a wide array of largely community-oriented
+        programs and initiatives, with some one-time and others continuing, but without future
+        revenue sources identiﬁed when the ARPA funds run out. The City should review the
+        Treasury Department’s updated ARPA funding and obligation rules and consider
+        whether it can repurpose a portion of its remaining ARPA funds in a way that would
+        oﬀset eligible FY2025 budget costs. However, it is important to recognize that any such
+        funds would be non-recurring and could cause shortfalls in those programs in future
+        budgets. Priority might therefore be given to uses for which a one-time front-end
+        investment might bring long-term beneﬁt without future budget obligation, such as
+        aﬀordable housing. Such a review, which may relieve pressures from the core operating
+        budget deﬁcit, might be performed by the Council Oﬃce of Financial Analysis (COFA) in
+        collaboration with the City Council.
+    •   Review and Suspend Non-Critical Capital Expenditures: The GFOA counsels that it is
+        common and prudent for local governments to defer and even cancel capital spending
+        during ﬁnancial constrained times. Some spending is unquestionably critical. This may
+        take the form of reducing the scope of capital asset investment, paring down prior
+        planned spending on premium features not immediately needed and deferring near-
+        term non-critical capital asset purchases. 62
+    •   TIF Surplus: The Civic Federation has long warned about the City’s reliance on annual
+        TIF surpluses to balance its budgets, but to mitigate a crisis in a way that minimizes tax
+        and fee burdens on City residents, the magnitude of the FY2025 projected deﬁcit
+        warrants consideration of an increase from the prior year level of this generally
+        disfavored practice for the coming year. The TIF surplus in FY2024 provided $49.5
+        million in additional one-time revenue to the City. Should the City elect to use TIF
+        surplus funds to also close the FY2025 deﬁcit, an even larger amount would be required
+        than in FY2024. Additionally, because more than half of any TIF sweep goes to the
+
+
+61 City of Chicago 2025 Budget Forecast, p. 21.
+
+62 Shayne C. Kavanaugh & Joseph P. Casey, Cash is King: Short-Term Strategies to Slow the Flow of Money Out the
+
+Door and Keep the Budget Balanced, Government Finance Oﬃcers Association, March 2020.
+
+                                                       21
+        Chicago Public Schools, any TIF sweep should be preceded by an agreement respecting
+        possible use of proceeds to CPS being applied in part or whole to the unresolved MEABF
+        reimbursement obligation under the 2019 MOU between the City and CPS.
+
+
+DEVELOP A SUSTAINABLE REVENUE PLAN
+If non-revenue of the type outlined in the previous section prove insuﬃcient to close the deﬁcit,
+as they likely will with a deﬁcit of nearly $1 billion, the City may also need to increase its
+revenue. As part of a broader ﬁnancial plan, the City Council and Mayoral Administration must
+establish a sustainable revenue plan that is balanced with cuts in order to keep revenue and
+spending aligned in future years — both for required obligations and discretionary programs —
+along with identifying areas where cuts can be made.
+
+A logical entity to undertake this charge would be the Finance Committee’s Subcommittee on
+Revenue. 63 Eight months after its formation, the Subcommittee held its ﬁrst subject matter
+hearing on June 26, 2024. It put up several revenue sources for consideration but has yet to
+release any recommendations.
+
+A Civic Federation report released last summer also presented a number of revenue options
+the City of Chicago could pursue, and outlined the pros and cons associated with each revenue
+source, as well as whether they would fall within the City Council’s own authority or will require
+State and/or federal action. 64 In doing so, the Civic Federation then (and now) stresses that any
+new taxes or revenue sources or increases to existing ones must be tied to a long-term ﬁnancial
+plan that balances the City’s budget, stabilizes its ﬁnances over the long term and involves
+eﬃciencies and other reforms. The Federation again stresses that each of these are options for
+consideration and not necessarily endorsed by the organization. Understanding the
+implications and realities of each tax source on its own and in relation to other options,
+whether on the revenue or expenditure side, will be critical to ensuring good tax policy rather
+than politically popular options to address Chicago’s major ﬁscal challenges.
+
+Some potential revenue options available to the City are brieﬂy outlined below. For a more in-
+depth discussion, see the Civic Federation’s research on these revenue options. 65 66
+
+Short-Term Revenue Options
+Several revenue options could be implemented in the immediate term for FY2025 purposes
+under the City’s home rule authority. A non-exclusive list of those options includes the
+following. Again, readers should note that the Federation is not endorsing any of these options
+
+63 See City Council Committee on Finance Agenda, October 23, 2023.
+
+64 Civic Federation, Financial Challenges Facing the Chicago Mayor and City Council: Options and Recommendations,
+
+June 14, 2023; Civic Federation, “A Refresher on Chicago’s Revenue Options,” July 10, 2024.
+65 Civic Federation, Financial Challenges Facing the Chicago Mayor and City Council: Options and Recommendations,
+
+June 14, 2023; Civic Federation, “A Refresher on Chicago’s Revenue Options,” July 10, 2024.
+66 For more information on the myriad of taxes and fees already imposed by the City of Chicago, see the Civic
+
+Federation’s annual report on Selected Consumer Taxes in the City of Chicago.
+
+                                                       22
+and will not take a position on the City’s use of any of them until and unless they are made in
+the context of a full budgetary and longer-term ﬁnancial plan.
+
+    •   Garbage Collection Fee: In 2016, the City began imposing a waste removal fee of $9.50
+        per month on approximately 600,000 residents already receiving waste removal services
+        provided by the City of Chicago. However, the revenue generated is not suﬃcient to
+        cover the full cost of garbage removal, and the fee has not been reassessed since being
+        implemented. 67 In FY2024 the City estimated that the Garbage Collection fee would
+        generate $68.8 million — only around 41.1% of the estimated $167.2 million of the
+        estimated garbage removal cost, with the remaining portion coming from the Corporate
+        Fund. 68 Estimates by the City’s Inspector General more than a decade ago found
+        substantially higher fees in comparable jurisdictions. The City is overdue to reassess this
+        fee and consider increasing it to more closely align with the full cost of waste removal to
+        potentially generate tens of millions in revenue and free up Corporate Fund resources
+        for other operational purposes.
+    •   Legalizing Video Gambling: The City currently bans video gambling, which it is allowed
+        to do under the 2009 State legislation that legalized it Statewide. However,
+        municipalities can pass ordinances prohibiting video gambling in their respective
+        jurisdictions. At the time of implementation, Chicago had a pre-existing law prohibiting
+        video gambling and, to date, the City has yet to opt in. 69 Lifting the ban would require
+        City Council authorization. The City would then receive a share of video gaming tax
+        proceeds from the State’s Local Government Redistributive Fund (one-sixth of video
+        gaming tax proceeds), and the City as home rule government could also collect an
+        annual fee up to $250 on video gaming terminals. 70
+    •   Reduce and Recalibrate Fire Department Staﬃng: The Chicago Fire Department
+        (CFD) is the second-largest service department in the City, behind only the Chicago
+        Police Department, and more than double the size of the third-largest department. 71 Its
+        workforce is nearly entirely unionized. The City’s contract with Chicago Fireﬁghters
+        Union is the only major collective bargaining agreement currently open and under
+        negotiation. The prior contract, the terms of which continue in eﬀect until a new
+        agreement is reached, expired more than three years ago. 72 The staﬃng requirements
+        for ﬁretrucks and the number of ﬁretrucks as compared to ambulances and emergency
+        medical technicians to staﬀ them has long been a debated and disputed subject. One
+        argument advanced over the years is that staﬃng requirements for ﬁretrucks — which
+
+
+67 See also Civic Federation, “Time for the City of Chicago to Reassess the Garbage Collection Fee?,” November
+
+30, 2018.
+68
+   City of Chicago FY2024 Budget Overview, p. 84.
+69 Commission on Government Forecasting and Accountability, 2024 Update: Wagering in Illinois, October 2024,
+
+p. 44.
+70 Illinois Legislative Research Unit. Illinois Tax Handbook for Legislators, February 2018, p. 129.
+
+71 See Chicago Oﬃce of Inspector General Information Portal, City of Chicago Active Employee Portal, last
+
+updated October 5, 2024. https://igchicago.org/information-portal/data-dashboards/city-of-chicago-active-
+employees-overview/.
+72 Labor Contract Between Fire Fighters Union - Local No. 2 and the City of Chicago (July 1, 2017 through June
+
+30, 2021).
+
+                                                      23
+        are written into the labor contract — are higher than needed. CFD itself has not changed
+        its operations model, equipment or staﬃng to align with service demand in a City in
+        which more than 70 percent of all calls to CFD are for emergency medical assistance and
+        less than 30 percent related to ﬁre suppression. The current (and likely to continue)
+        budget crisis warrants active consideration of such a shift, especially to the extent it
+        could yield savings, eﬃciencies and better alignment of operations to public need. Such
+        a shift may also have the eﬀect of addressing CFD’s longstanding gender and racial
+        staﬃng imbalances that has resulted in adverse litigation outcomes and payments.
+        Indeed, national data shows that generally the number of female emergency medical
+        technicians exceeds 30 percent (and rising) while traditional ﬁreﬁghting functions are
+        over 90 percent male. 73 While negotiated agreement is always preferred, an impasse in
+        the long-running negotiations should prompt consideration of pursuing interest
+        arbitration to bring about a new agreement, which alone may be needed to stop the
+        meter running on the bill for backpay, which already could be well north of $300 million.
+    •   Liquor Tax: The current composite rates per gallon of alcohol charged in Chicago are
+        $1.19 per gallon of beer ($0.29 taxed by the City), $3.06 per gallon of wine with 14% or
+        less in alcohol ($0.36 taxed by the City for beverages containing 14% alcohol by volume
+        and $0.89 for beverages containing 14%-20% alcohol) and $27.23 per gallon of distilled
+        liquor with over 20% alcohol ($2.68 taxed by the City). The City portion of these rates,
+        which the City neither indexes to inﬂation nor has increased since 2007, could be
+        increased through the City’s home rule authority. 74 Chicagoans already pay among the
+        highest liquor taxes in the nation and a further increase may prompt people to
+        purchase liquor outside of the City.
+    •   Rideshare Tax: This tax applies to taxicabs and network transportation providers. The
+        City currently charges licensed taxicabs a monthly fee of $98 per vehicle per month plus
+        $22 per month for the Wheelchair Accessible Vehicle Fund. Rideshare fees have been
+        adjusted since their 2015 inception to include the addition of congestion-based fees in
+        certain areas of the City. Transportation network providers are currently charged a per-
+        ride rate of $1.13 per single ride and $0.53 per shared ride Citywide regardless of the
+        pick-up or drop-oﬀ location. Rides within certain areas of the City such as downtown
+        and Chicago’s airports include additional fees.
+    •   Checkout Bag Tax: The City of Chicago charges a $0.07 tax for each paper or plastic bag
+        sold or used in the City. Of this amount, the City receives $0.05 and the retailer is eligible
+        to keep the remainder. 75
+    •   Motor Fuel Tax: The composite tax for gasoline in Chicago (which includes the federal
+        government, State of Illinois, Cook County and the City of Chicago) is $0.73 per gallon
+        and $0.86 per gallon of diesel, including a $0.08 per gallon City tax. The City portion of
+        the tax could be changed through the City’s home rule authority, but consideration
+        should be given to whether this would bring Chicago out of line with neighboring
+
+
+73 See Rebecca E. Cash, Jonathan R. Powell, Gregory A Peters, Scott A. Goldberg, Ashish R. Panchal, & Carlos A.
+
+Camargo, Jr., “Trends in demographic and employment characteristics of US emergency medical technicians
+and paramedics, 2011-2019,” Journal of the American College of Emergency Physicians, 3(4), August 2022.
+74 Civic Federation, “Selected Consumer Taxes in the City of Chicago,” p. 15.
+
+75 City of Chicago Municipal Code, Chapter 3-50.
+
+
+
+                                                       24
+         suburbs and surrounding states and thereby encourage people to purchase gasoline
+         outside the City.
+    •    Wheel Tax (City Sticker Tax): Applies to Chicago residents who drive, park, lease
+         and/or own a vehicle for which they are responsible and must purchase a Chicago City
+         Vehicle Sticker each year. 76 The current rate is $100.17 for smaller passenger vehicles
+         and $159.12 for larger passenger vehicles.
+    •    Grocery Tax: The State currently taxes groceries at a rate of 1%, which includes food to
+         be consumed oﬀ store premises, and transfers the revenue to counties and
+         municipalities. 77 However, as part of the FY2025 State Budget, the Pritzker
+         administration proposed and the General Assembly passed an elimination of the tax
+         beginning in 2026. 78 To compensate for the estimated $80 million annual loss in local
+         revenue, the City could implement a local grocery tax through ordinance. Only 13 states
+         in the country impose a grocery tax, with the vast majority of states refraining from
+         doing so because it is generally regarded as one of the more regressive forms of
+         taxation, burdening the lower and middle class most because the purchase of groceries
+         constitutes a higher percentage of their total income. 79
+    •    Congestion Pricing: Two options are available through the City’s home rule authority
+         (two others require State legislation):
+             o Cordon Charges: Either variable or ﬁxed charges to drive within or into a
+                 congested area within a City; or
+             o Area-Wide Charges: Per-mile charges on all roads within an area that may vary
+                 by level of congestion.
+    •    Restaurant Tax: The City imposes a 0.50% restaurant tax in addition to the sales tax on
+         general merchandise. The Metropolitan Pier and Exposition Authority (MPEA) also
+         imposes a 1.0% tax on prepared food in the downtown and surrounding area. 80 The
+         current composite tax rate on prepared food is 11.75% within the MPEA area and
+         10.75% outside the MPEA area.
+    •    Amusement Tax: The City has imposed a 9.0% tax on amusement events since 2018
+         (excluding events in venues with a capacity of less than 1,500, events for nonproﬁts,
+         educational events and fees and memberships to health clubs). The tax also applies to
+         cable television and streaming services. A ﬂat 3% tax rate also applies to ticket resales.
+    •    Accommodations-Related Taxes
+             o Hotel Operators Tax: The City applies a 4.5% hotel operators’ tax on net
+                 receipts (base charges paid by guests) as part of the composite 17.39% rate.
+             o Home Sharing Tax: The City imposes a 6.0% tax on the gross rental charge of
+                 vacation rentals or shared housing units. This includes a 4% tax to fund
+                 supportive services and housing for the homeless and an additional 2.0%
+                 surcharge to fund housing and related supportive services for victims of
+
+76 Municipal Code of Chicago, Chapter 3-56.
+
+77 Illinois Tax Handbook for Legislators, March 2024, p. 118.
+
+78 Todd Feurer, “Gov. JB Pritzker signs legislation ending Illinois grocery tax in 2026,” CBS News Chicago, August 5,
+
+2024.
+79 Jordan Mangi, “Why Do Some States Still Have a Grocery Tax,” Marketplace, September 6, 2023.
+
+80 The MPEA area consists on the area bordered by the Stevenson Expressway (south), Ashland Avenue (west),
+
+Diversey Parkway (north), Lake Michigan (east), and O’Hare and Midway Airports.
+
+                                                         25
+                 domestic violence. These rates are applied on top of the City’s composite hotel
+                 tax of 17.39%, meaning that home sharing is charged a total tax rate of 23.39%.
+    •    Employer’s Expense Tax (Head Tax): A tax imposed on (typically larger) businesses at a
+         ﬂat rate based on the number of employees. The City previously imposed a head tax but
+         phased out the tax over a three-year period from 2012-2014 in response to criticism
+         from business leaders. The criticism and attendant risks – potential business ﬂight –
+         remain. While implemented, the tax generated approximately $23 million a year. 81
+    •    Property Tax: Property taxes are a reliable source of revenue because they do not
+         signiﬁcantly ﬂuctuate with economic cycles but are politically unpopular. They are also
+         too often one of the ﬁrst places government oﬃcials look for increased revenue. For a
+         range of reasons, the Civic Federation believes they should be a last resort for the
+         upcoming ﬁscal year. Mayor Johnson promised throughout his campaign to avoid
+         raising property taxes, and the FY2024 budget did not include a general property
+         increase. Two factors strongly argue against reliance on a property tax increase to
+         address the FY2025 projected deﬁcit. The ﬁrst is the looming impact of the triennial
+         reassessment of property in the City being conducted by Cook County. Stresses on
+         Commercial Real Estate in the downtown area may result in reduced equalized assessed
+         valuations on commercial property and therefore potentially drive up tax rates on other
+         types of property. Such a change would be in addition to the shocks being experienced
+         in some communities of sharp increases in residential equalized assessed values, which
+         can potentially lead to signiﬁcant hikes in the property tax bills for City property owners
+         that will be paid in summer 2025. The second is the possible need for property tax
+         increases on City residents by the Chicago Public Schools to address its ﬁscal challenges
+         and the eﬀects of the triennial reassessment by Cook County. CPS relies on property
+         taxes for a signiﬁcant portion of its overall operations, though it is subject to the
+         Property Tax Extension Limitation Law, which will limit its property tax increases on tax-
+         capped funds to the lesser of 5% or the increase in CPI, which has decreased
+         signiﬁcantly in recent months.
+
+Long-Term Revenue Options
+Additional options would require changes to State statute for the City to implement and in most
+instances would take too long to pass and implement (and some involve front-end expenses)
+which would render them unavailable for City FY2025 purposes. They include:
+    • Expanding the Sales Tax to Services: Illinois’ sales tax base is much narrower than
+       other states because it excludes most services from being subjected to the sales tax,
+       which leads to greater volatility and higher rates. 82 Taxing services would bring the sales
+       tax more in line with the modern economy. Further, by generating more revenue
+       through a wider base, the tax could also be used to oﬀset a portion of the sales tax on
+       goods and allow for the overall tax rate to be lowered. 83 It is important to reinforce that
+
+81 Hal Dardick, “City Council votes to eliminate ‘head tax,’” Chicago Tribune, June 18, 2018.
+
+82 Illinois General Assembly, Commission on Government Forecasting and Accountability, Illinois Revenue
+
+Volatility Study, Public Act 98-0682, Updated February 17, 2015, p. 66.
+83 Illinois General Assembly, Commission on Government Forecasting and Accountability, Three-Year Budget
+
+Forecast FY2024-FY2026, p. 10.
+
+                                                         26
+        expansion of the sales tax will require legislation in Springﬁeld in addition to State-level
+        structuring and implementation to avoid tax pyramiding. It is also important to consider
+        possible border eﬀects to neighboring areas with more favorable sales tax systems.
+        Even with authorization from the State, which would require a substantial amount of
+        analysis and legislative negotiation, it would take two to three years to implement, which
+        in the interim would require the establishment of bridge funding.
+    •   Congestion Pricing: Two available options would require regional and State
+        cooperation (two others — cordon and area charges — can be done through Chicago’s
+        home rule authority and are discussed above):
+             o Variably-Priced Lanes: Variable toll rates on separated lanes within a highway,
+                  such as Express Toll Lanes or High Occupancy Toll Lanes; and
+             o Variable Tolls on Entire Roadways: Tolls placed on both roll roads and bridges,
+                  as well as on existing toll-free facilities during rush hours.
+    •   Chicago Income Tax: This measure would require authority provided by the Illinois
+        General Assembly (which it has not granted to date 84) and can be narrow or broad in
+        nature.
+    •   Commuter Tax: A tax imposed on the wages of nonresidents who work in one
+        municipality but live elsewhere. This could take the form of a municipal income tax, a
+        payroll expense tax or a surcharge on commuter railroad or toll road fees. To
+        implement it, the City would need to seek a change in State statute.
+    •   Financial Transaction Tax: Levies imposed on the purchase and/or sale of securities.
+        This has been proposed several times over the years, including more recently by the
+        Chicago Teachers Union. 85 However, most trades today are done electronically, making
+        it easy for trading ﬁrms and customers to leave Illinois for other jurisdictions that do not
+        impose the tax, resulting in a possible net economic loss. The Governor and legislative
+        leaders have indicated they oppose a ﬁnancial transaction tax. 86
+    •   Graduated Real Estate Transfer Tax: A tax imposed upon the privilege of transferring
+        title to, or beneﬁcial interest in, real property. Changes to the current tax must be
+        approved by voters in a referendum or through a change in State law. 87 Bring Chicago
+        Home, 88 an initiative to increase the real estate transfer tax on high-end properties to
+        fund initiatives aimed at curbing homelessness, was brought to referendum in March
+        2024 and failed. 89
+    •   Increasing the City Share of the Local Government Redistributive Fund: Prior to
+        2011, 10% of State revenues derived from individual and corporate income tax rates
+        were directed toward local governments. In 2011, at the time of the institution of a
+        temporary increase in state income taxes, that percentage was reduced from 10% to
+
+
+
+84 Illinois Constitution. Article VII Local Government, Section 6 (e): Powers of Home Rule Units.
+
+85 Becky Schlikerman, “CTU chief says transaction tax would save pensions, make traders ‘heroes,” Chicago Sun-
+
+Times, May 6, 2014.
+86 Rich Miller, “Financial Transaction Tax for Chicago? Forget It,” Chicago Sun-Times, May 19, 2023.
+
+87 Public Act 095-0708.
+
+88 Civic Federation, Graduated Real Estate Tax and Bring Chicago Home: Data and Analysis, March 2024.
+
+89 Tessa Weinberg & Mariah Woelfel, “Bring Chicago Home referendum fails after vote-by-mail ballots counted,”
+
+WBEZ Chicago, March 22, 2024.
+
+                                                        27
+         6%. It has remained limited, with minor variation, even after the state income tax
+         increase was made permanent in 2018. 90 91
+    •    Retirement Income Tax: Illinois is one of the few states that exempts all retirement
+         income from taxation. The Civic Federation has in the past supported eliminating or
+         reducing the State exemption, but only as part of a comprehensive plan to balance State
+         budgets during ﬁnancial crises. Historically, retirement income has grown at a much
+         higher annual rate than regular income. It would be a sustainable revenue source and
+         provide a higher share to local governments via the Local Government Redistributive
+         Fund but would be a diﬃcult lift politically. 92
+
+
+DEVELOP A LONG-TERM FINANCIAL PLAN FOR CITY OPERATIONS
+AND PENSION FUNDS
+Given the City’s structural budget deﬁcit related to the high cost of pension contributions and
+debt service payments discussed in this report, as well as the depletion of American Rescue
+Plan Act (ARPA) dollars, the Civic Federation urges the Mayor’s Oﬃce and City Council to take a
+long-term view of the City’s ﬁnancial future and the impact of these burdens on future budgets.
+
+The Civic Federation recommends that the Mayor and City Council undertake a strategic and
+comprehensive long-term ﬁnancial planning process in line with several other U.S. cities. This
+would beneﬁt City stakeholders by identifying solutions to address the City’s future pension
+funding needs. It could also help to address issues like the future of the downtown commercial
+and residential real estate markets. To reduce the structural deﬁcit and absorb increasing
+liabilities, diﬃcult decisions may need to be made, including reducing expenditures and looking
+for additional stable sources of revenue. The City Council and Mayor’s Budget Oﬃce should
+look at ways the annual planning process can be used to think more strategically and long-term
+rather than just relative to the upcoming budget year. The Budget Forecast is an important
+piece in the development of a formal long-term ﬁnancial plan and could be expanded to include
+more information that would help inform a strategic planning process, such as longer-term
+forecasting and possible actions and scenarios that could be used to address ﬁscal challenges.
+Additionally, a reserve analysis, a cost of services analysis, ﬁscal performance indicators and a
+menu of revenue-generating or expenditure-reduction options should be incorporated.
+
+
+
+
+90 Illinois Municipal League, LGDF – Local Share of State Income Tax Revenue: A Critical Investment in Illinois
+
+Communities, August 14, 2024.
+
+92 See for example Civic Federation, “State of Illinois FY2020 Roadmap,” February 13, 2019.
+
+
+
+                                                          28
+PENSION RECOMMENDATIONS
+Find a Stable Pension Funding Source to Supplement Uneven Casino
+Revenue
+As part of developing a long-term ﬁnancial plan, the City must ﬁnd stable funding for its four
+pension funds, which combined have nearly $35.6 billion in unfunded pension liabilities. While
+signiﬁcant increases in the amount of money the City must contribute to the four pension funds
+are projected to level oﬀ in the coming years, the cost of pensions will nevertheless continue to
+increase over time based on the back-loaded nature of the funding schedule. Casino revenue
+thus far has fallen far short of the anticipated $35 million in local revenue generation for
+FY2024, and given the volatility surrounding this revenue, questions remain as to whether the
+casino will be able to generate the estimated $170.1 million in annual revenue once the full
+casino opens, which is projected for FY2026. 93
+
+The potential revenue from the Chicago casino will not be a stable source, and the City must
+plan to develop more reliable and sustainable revenue sources. The most recent gaming report
+from the Illinois Commission on Government Forecasting and Accountability noted that casino
+revenues have largely declined over the past decade, and even amid pandemic recovery and
+the addition of several new casinos, adjusted gross receipts have failed to reach their FY2016
+peak. 94
+
+Find a Sustainable Solution to Fix Tier 2 Safe Harbor Issues
+Before any further action is taken on legislation to address the IRS Safe Harbor issue relating to
+the City of Chicago pension funds, the Mayor and City Council should advocate for a ﬁx that is
+simple and the least costly possible, such as increasing the pensionable salary cap for Tier 2
+employees to match the Social Security Wage Base. Such a change would bring Tier 2 pension
+beneﬁts into compliance with Safe Harbor rules at what actuaries say would be a lower cost
+than many other options. 95
+
+Any beneﬁts that go beyond this change would likely overshoot necessary enhancements.
+Enhancing pension beneﬁts without analysis showing the enhancements are necessary and
+suﬃcient to address potential issues with Tier 2 could substantially reverse much of the work
+the State and City have done to reduce massive pension liability costs. The State and City
+cannot aﬀord to take a step backward by increasing Tier 2 pension beneﬁts beyond what is
+strictly necessary.
+
+
+
+93
+     See “Chicago Casino Projections.”
+94
+   Illinois Commission on Government Forecasting and Accountability, “Wagering in Illinois: 2023 Update,”
+September 2023, p. 16.
+95 This was the recommendation made by the representatives of several State pension funds during testimony
+
+provided over summer 2023 to the Illinois House Committee on Personnel and Pensions during subject matter
+hearings on Tier 2 pensions.
+
+                                                    29
+The Civic Federation supported Mayor Johnson’s decision to convene a working group to
+address the various pension issues facing the City. 96 However, after more than a year, the
+group has yet to release any ﬁndings or recommendations. While the Civic Federation
+understands that some beneﬁt changes are necessary to meet Safe Harbor requirements (for
+example, potentially increasing the ﬁnal average salary cap to meet the Social Security wage
+base), the solution should be thoroughly vetted, actuarily sound and the most cost-eﬀective of
+all possible options. Any pension beneﬁts enhancements should be tied directly to Safe Harbor
+requirements.
+
+Work with the State to Explore Consolidation of Chicago’s Four Pension
+Funds
+In October 2019 Governor Pritzker’s Pension Consolidation Feasibility Task Force released a
+report that called for consolidating the assets of the 649 downstate suburban and police and
+ﬁre pensions and making changes to Tier 2 employee beneﬁts. The City of Chicago’s public
+safety pension funds were not included in the ﬁrst phase, which has been completed over the
+last several years. Since the release of the report, the Task Force has not followed through on
+its stated intention that the unique challenges facing the City’s pension funds will be part of the
+future work of the task force.
+
+Given the funding challenges faced by the City’s four pension funds, the Civic Federation
+believes the City should explore and pursue reforms that could reduce the cost of pensions.
+These might include consolidation of investments and eventually beneﬁt management with
+downstate and suburban funds. The Civic Federation recommends the City of Chicago work
+with the Illinois General Assembly and Governor Pritzker to ﬁnd a long-term solution that
+consolidates the City’s police and ﬁre with the downstate police and ﬁre pension funds to gain
+greater eﬃciencies and savings for taxpayers.
+
+
+IMPROVE POLICE BUDGET TRANSPARENCY AND
+ACCOUNTABILITY
+With a budget of $2 billion and some of the highest per-capita staﬃng levels in the country, the
+Chicago Police Department should maximize the best use of current resources available within
+the Department and gain a clearer understanding of how many staﬀ members are truly needed
+for optimal CPD operations. The Civic Federation hopes to see the City Budget Oﬃce include a
+more detailed itemization of resources being directed toward public safety operations and
+initiatives and how progress is being measured. With greater transparency comes greater
+accountability and, over time, the ability to assure the Department is putting its resources
+constituting approximately 40% of the City’s corporate fund budget and 40% of the City’s
+personnel performing one of the most important services a municipality provides to its
+residents.
+
+96 Mayor Johnson requested that lawmakers delay passing the Chicago ﬁreﬁghter pension legislation so that a
+
+working group of legislators, City budget oﬃcials and union representatives could evaluate the issue. Yvette
+Shields, “Chicago will seek pension answers over the summer,” Bond Buyer, May 30, 2023.
+
+                                                      30
+Staﬃng and Overtime
+As with governmental components generally, personnel costs are the greatest portion of the
+departmental budgets. For a generation or more, elected oﬃcials have hovered over the
+question of how many sworn personnel are needed at a Department-wide and district level,
+where criminal activity and communities and their needs vary widely. In recent years, it has
+become a norm for the Department to carry a large number of vacancies with exorbitant
+overtime costs that year after year exceed budgeted allocations by tens of millions, commonly
+amounting to more than $100 million over budget. Whether this is mission cost-eﬀective is
+something no one in City government has been able to say, including Superintendents. To
+ensure eﬀective use of resources, there needs to be better transparency and accountability
+around how the Department currently makes staﬃng and deployment decisions based on the
+staﬀ it has. During the last CPD budget hearing, the Superintendent noted the need for a true
+staﬃng analysis that looks at needs based on several diﬀerent metrics. A year later, reports are
+that the study is just begun or soon to begin, an assurance that has been given for a decade
+spanning at least four superintendents and three mayors. The Civic Federation urges the Police
+Department, with the support of City Council and the Mayor’s Oﬃce, to prioritize the
+completion of a staﬃng analysis to identify opportunities for more eﬀective allocation of police,
+along with civilian support. A detailed public report of that analysis should be produced to serve
+as a basis for an oversight hearing in the City Council.
+
+The analysis should extend to civilian personnel and operations in addition to sworn oﬃcers. It
+is well understood that the Department substantially lags its peer agencies in major cities in the
+percentage of its workforce that is civilian. The Department has long had too high a percentage
+of sworn, ﬁeld-trained personnel performing professional administrative functions for which
+they may not be fully trained. Relatedly, the Department lacks various professional and
+technical expertise staﬃng suﬃcient to optimize mission operations and Consent Decree
+implementation (see below). As a ﬁscal matter, civilians hired into such positions also generally
+cost less than sworn personnel.
+
+While this analysis is pending, the Department should endeavor to communicate with the best
+information and understanding available how personnel is allocated, how the Department is
+performing and how performance is measured.
+
+Consent Decree Costs and Spend
+The Department and the City are in year six of a court-ordered Consent Decree. Progress and
+results aside, there is no comprehensive, transparent accounting for what has been spent to
+date, is being spent now, and will need to be spent in the future, in order to come into
+substantial compliance. The known cost of legal counsel and the oﬃce of the Consent Decree
+Monitor alone have cost tens of millions to date, and that does not include the substantially
+greater costs within the Department itself. More clarity around the cost and budgetary impact
+of the Consent Decree is needed. While the Civic Federation understands that implementation
+of the Consent Decree is spread throughout the Police Department budget, the City’s budget
+documents could and therefore should do a better job describing the ways in which CPD is
+
+                                               31
+working toward meeting requirements such as training, recruitment and required staﬃng levels
+associated with unity of command and supervisor ratios.
+
+The Federation also urges the Mayor’s Oﬃce, Budget Oﬃce and Superintendent to better
+communicate how Consent Decree requirements are informing its public safety and violence
+reduction strategy and improve mission eﬀectiveness. The City should, in a detailed line-item
+fashion, quantify the ongoing and future cost of full implementation of the Consent Decree and
+identify where those costs are spread throughout the budgets of CPD and adjacent City
+agencies providing services supporting the Department or providing services tangent to the
+Department’s Consent Decree-related eﬀorts. Without a better understanding of the full
+breadth of resources the Consent Decree requires, there will be no way to determine whether
+the Department has allocated adequate staﬃng and resources to meet those goals.
+
+Generate a Department Capital Budget
+One of the reasons the Department lags in Consent Decree compliance, in addition to lagging
+civilian professional and technical expertise and staﬃng, is its antiquated infrastructure. This
+ranges from the physical condition of District-level facilities, to outdated, unsupported or even
+non-existent systems in headquarters. Examples of the latter include the Department’s Records
+Management Systems, inadequate facilities for mental wellness support, and the absence of a
+Forensics Lab as exists in peer municipal departments. All of these aﬀect mission eﬀectiveness,
+eﬃciency and Consent Decree implementation. The Department is called upon daily to address
+today’s problems with yesterday’s facilities and systems, which in turn result in human and
+organizational stress that delay outcomes to tomorrow. A full capital budget detailing
+operational infrastructure and equipment needs would allow for proper identiﬁcation of ﬁscal
+needs and priorities.
+
+Reinvigorate and Empower an Oﬃce of Risk Management
+One of the early initiatives of the last mayoral administration was the creation of an ordinance-
+level position of Chief Risk Oﬃcer. 97 The ﬁrst Chief Risk Oﬃcer was announced in June 2019, 98
+but resigned the following year. 99 While risk management work continues, it is
+compartmentalized and all but invisible. The massive volume and amounts of judgments,
+settlements and attorneys’ fees for police-involved conduct alone warrant a reinvigoration,
+empowerment and resourcing of the position and Oﬃce of Risk Management working with the
+Mayor‘s Oﬃce, the Department of Finance, the Department of Law and CPD to analyze claims
+and litigation to mitigate future risk and costs. The ﬁndings and recommendations of the City
+Inspector General in 2022 for use of litigation data in risk management 100 should be elevated,
+and implemented with regular reporting to enable greater public transparency and
+
+97 Municipal Code of Chicago, 2-4-060.
+
+98 Press Release,” Mayor Lightfoot Announces Tamika Burgos Puckett As Chief Risk Oﬃcer,” June 28, 2019.
+
+99 Fran Spielman, ”Taxpayers shell out $250M in police-related settlements; new report slams city eﬀorts to
+
+learn from those mistakes,” Chicago Sun-Times, Sept, 29, 2022.
+100
+    City of Chicago Oﬃce of Inspector General, Use of Litigation Data in Risk Management Strategies for the Chicago
+Police Department, 2022.
+
+                                                        32
+accountability and more eﬀective legislative oversight. This should extend beyond police risk
+management to City-wide operations as speciﬁed in the 2019 enabling legislation.
+
+
+FAST-TRACK A WORKING GROUP TO RESOLVE LEGAL AND
+FISCAL ENTANGLEMENTS WITH CHICAGO PUBLIC SCHOOLS
+As noted in the Civic Federation’s analysis of the Chicago Public Schools FY2025 proposed
+budget 101, the ﬁnancial entanglements between Chicago Public Schools and the City of Chicago
+still need to be resolved. These entanglements are aﬀecting the FY2024 budget, recently
+projected to be more than $220 million in signiﬁcant part because of a dispute between the City
+and CPS about who bears the burden of contributions due for CPS non-teacher employees to
+the Municipal Employees and Annuity Beneﬁt Fund. This cost issue and others have the
+potential to impact the City’s budget in FY2025 and beyond. This should ideally be resolved well
+before the fully elected school board is in place. Chicagoans will elect 10 Board members on
+November 5 of this year. The Mayor will appoint 11 members, which include the Board
+President, and by January 15, 2025, the ﬁrst 21-member school board will be sworn in. 102 In
+November 2026, elections will be held to ﬁll the 11 Mayoral-appointed seats, at which point
+from a governance perspective the District will become fully independent.
+
+Among the ﬁscal entanglements, as noted above, is the question of the District’s contribution
+level to the Municipal Employees’ Annuity and Beneﬁt Fund (MEABF), which is a City of Chicago
+pension annuity fund that covers non-teacher employees of CPS. While the City of Chicago is
+legally obligated to pay this pension contribution, CPS began covering a portion of the MEABF
+contribution in FY2019 at $60 million, which increased over the past several years to $175
+million contributed in FY2023 and FY2024. CPS’ FY2025 budget does not include this payment,
+although the City has requested $175 million. 103
+
+Considering that these legal and ﬁscal entanglements remain unresolved and that the Board of
+Education will soon become fully independent of mayoral control, the City of Chicago and
+Chicago Public Schools should work to expedite the creation of a public-facing and -reporting
+working group to include, among others, representatives of the major constituent bodies —
+CPS, the City, and the State of Illinois — to resolve these entanglement questions before the
+elected school board is fully phased in. The Federation strongly opposes the District seeking
+short-term loans to cover operating expenses and pension payments.
+
+
+
+
+101 Civic Federation, Chicago Public Schools FY2025 Proposed Budget: Analysis and Recommendations, July 24,
+
+2024.
+102 Mila Koumpilova & Becky Vevea, “More than $400,000 raised so far in Chicago’s 2024 school board
+
+elections,” Chalkbeat Chicago, July 16, 2024.
+103 Reema Amin, “Chicago’s Mayor Johnson suggests CPS borrow to cover pension, contract costs,” Chalkbeat
+
+Chicago, July 12, 2024.
+
+                                                     33
+INCREASE TRANSPARENCY AND ACCOUNTABILITY AROUND
+MIGRANT CARE FUNDING AND CONTRACTING
+The City currently operates an online dashboard that provides information on vendor
+payments made related to caring for migrants. 104 However, it remains unclear what additional
+funds will be needed to address the crisis and where the funding will come from. The Civic
+Federation urges the City Budget Oﬃce to produce additional information on migrant spending
+as the budget forecast and budget proposal are released this fall. The City Council, possibly
+using the services of the Council Oﬃce of Financial Analysis, should also call for and track this
+information.
+
+
+EXPAND THE ROLE OF THE CITY COUNCIL’S OFFICE OF
+FINANCIAL ANALYSIS
+The Civic Federation supported the creation of the Council Oﬃce of Financial Analysis (COFA) in
+2014 as a means of providing ﬁnancial information to the City Council independent of the
+Mayor’s Oﬃce of Management and Budget. The Federation also supported the expansion of
+COFA’s powers and duties over the years, as well as requirements that all COFA’s reports be
+made public. While there have been some improvements in scope and transparency since the
+Oﬃce was created, the Council Oﬃce of Financial Analysis needs to be strengthened
+signiﬁcantly to make it a meaningful resource to City Council members. With just three
+budgeted staﬀ members, COFA lacks the capacity to do much proactive analysis beyond
+reacting to the budget or special requests for analysis. By comparison, the New York City
+Independent Budget Oﬃce has close to 40 staﬀ positions. 105
+
+The Civic Federation would like to see City Council empower COFA to serve as a meaningful
+asset to the Council. Several ways the Council could do that are by:
+   • Increasing COFA’s budget and staﬀ numbers;
+   • Establishing a budget ﬂoor, similar to the way the Oﬃce of the Inspector General and
+        the Civilian Oﬃce of Police Accountability each have a set appropriations ﬂoor;
+   • Ensuring that COFA has access to all the information it needs to conduct analysis;
+   • Empowering and encouraging COFA to work with other bodies that serve as resources
+        to City Council such as the Legislative Research Bureau; and
+   • Expanding the role that COFA plays in providing ﬁnancial and budget analysis to City
+        Council throughout the year.
+
+
+
+
+104
+      Chicago Cost Dashboard: Vendor Payments – New Arrivals Mission.
+105 New York City FY2024 Expense, Revenue, and Contract Budget, p. 155E.
+
+
+
+                                                      34
+ESTABLISH AN ORDINANCE-LEVEL GOVERNMENT EFFICIENCY
+TASK FORCE
+Many of the actions needed to produce and enact a technically balanced budget for FY2025 will
+be one-time measures or involve non-recurring revenue sources. In other words, the FY2025
+budget will be structurally imbalanced, as has been the case for a generation of City budgets
+that have preceded it. The same will apply for FY2026, for which the City’s ﬁnance team has
+projected a potentially larger beneﬁt. Avoiding a replay of the current crunch this time next year
+will require the City to change how it conducts public budgeting and administration. Some of
+this work is done. The City’s Cut the Tape initiative is such an example, although its
+implementation is lagging and needs to be expedited. But such initiatives are episodic, and
+without public-facing, enforceable calendars and requirements.
+
+A joint Mayor-Council Task Force or Commission created by ordinance, with speciﬁed public
+reporting obligations and deadlines in the ﬁrst half of the 2025 calendar year, can provide the
+ﬁndings and recommendations needed to recalibrate both the budget and operations to
+greatly reduce the projected deﬁcit for FY2026, and in a far more ﬁscally sustainable and
+responsible manner than in the past. Other cities faced with ﬁscal challenges have oﬀered
+models for how this might be done, in a collaborative manner that includes labor, business,
+ﬁnancial and public administration experts along with internal and external stakeholders. 106
+Such a task force, aside from highlighting opportunities, could recommend speciﬁc studies in
+complicated areas that could themselves be ordinance-prescribed to assure proper cadence
+and public-facing outcomes. Examples might include:
+
+    •   Planning for Instituting GFOA-Standard Performance Management Budgeting 107
+    •   Cost of Services Study 108
+    •   Citywide Staﬃng Analysis (in addition to CPD Workforce Allocation Study, see above)
+    •   Citywide Overtime Reduction Analysis (in addition to Police Overtime, see above)
+    •   Middle Management Reduction Study
+    •   Public-Private Artiﬁcial Intelligence/Technology Eﬃciency
+    •   City-County-Sister Agency Collaboration and Eﬃciency Study 109
+    •   Municipal Bank Study 110
+
+The City Council might consider such ordinance-level initiatives as a condition of approving the
+FY2025 budget at year’s end.
+
+
+
+
+106 E.g., City of Atlanta 2014 Commission on Waste and Eﬃciency in Government
+
+107 See Government Finance Oﬃcers Association, A Performance Management Framework for State and Local
+
+Governments: From Measurement and Reporting to Management and Improving, May 2010.
+108 See Government Finance Oﬃcers Association, Measuring the Full Cost of Government Service, October 1, 2021.
+
+109 See, e.g., City-County Collaboration Report, October 2013.
+
+110 See Bank of North Dakota, “The BND Story.”; See also Sarah Jones, “Why Public Banks Are Suddenly Popular,
+
+The New Republic, August 10, 2018.
+
+                                                      35
+

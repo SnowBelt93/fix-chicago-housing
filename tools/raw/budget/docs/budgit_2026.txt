@@ -1,0 +1,1711 @@
+Citizens’ Guide
+to Chicago’s
+2026 Budget
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+                                           Citizens’ Guide
+                                           to Chicago’s
+                                           2026 Budget
+                                           Understanding How the City Raises, Spends,
+                                           and Manages Public Funds
+
+                                           Theme:
+
+                                           "Protecting Chicago: Navigating Fiscal
+                                           Pressure in a Post-Pandemic Era”
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+           About BudgIT
+          BudgIT is a civic technology organization founded in 2011 with the mission of promoting
+          government transparency and ensuring that public resources are managed effectively for the
+          benefit of all citizens. We analyze local budgets, visualize data, and have created a curriculum on
+          local budgeting processes. Our methodology centers on the belief that a well-informed citizenry is
+          the most potent check on fiscal mismanagement and the most effective driver of equitable policy.
+
+          BudgIT operates in Nigeria, Ghana, Liberia, Senegal, Sierra Leone, and the United States by
+          providing in-depth analyses of local budgets to help advocates and policymakers make
+          data-driven decisions.
+
+          Global Director: Oluseun Onigbinde
+          Research Team: Abiola J. Afolabi, Rebecca Nzerem
+          Data Visualisation/Creative Development: Michael Pabiekun
+          Prepared Date: March 2026
+
+
+
+          Sources
+
+          City of Chicago OBM, Civic Federation FY2026 Budget Analysis, COFA Budget , The Better
+          Government Association
+
+
+
+          Disclaimer: This report has been produced by BudgIT to provide information on budgets and
+          public data issues. BudgIT hereby certifies that all the perspectives expressed in this document
+          accurately reflect our analytical views, which we believe are reliable and fact-based. While
+          reasonable care has been taken in preparing this document, no responsibility or liability is
+          accepted for errors or any views expressed herein by BudgIT for actions taken as a result of the
+          information provided in this report.
+
+
+          Contact: usoffice@budgit.org | (773) 491-3055.
+          Website: www.budgit.us
+
+
+
+
+                    T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+                                                                                                                                                             01
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+                 A Simple Guide
+                 to Understanding
+                 Chicago’s 2026
+                 Budget
+                 The Chicago budget can feel complex, but it doesn’t have to
+                 be. This guide is designed to help you quickly understand what
+                 matters and how it affects you.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                02
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+                          Here is how to use both
+                          in five steps, in any order.
+ 1      Start with the executive                                                                      2 Follow the money
+                                                                                                        in two directions
+        summary
+                                                                                                                Revenue tells you where the city gets its
+        One page. Three questions answered:                                                                     money: local taxes, fees, grants, and, this
+        how much the city is spending, how it                                                                   year a record cloud tax and a record TIF
+        closed the gap, and what the risks are                                                                  surplus. Expenditure tells you where it goes.
+        going into 2027. If you read nothing else,                                                              Most of it is not discretionary. Pensions
+        read that page; it tells you whether the                                                                ($2.76B), debt service, and personnel
+        headline number is real or assembled from                                                               together consume the majority before a
+        borrowed time.                                                                                          single library opens or a single pothole gets
+                                                                                                                filled.
+       Net budget: $16.6B.
+       Gross: $18.6B.                                                                                           40% of the operating budget is legally locked
+                                                                                                                into pensions and debt. That share grows in
+       The difference is transfers and deductions-                                                              2027.
+       both figures are real, for different purposes.
+
+
+
+
+       Look for what cannot
+       be repeated
+       This budget closed its gap using three
+       mechanisms that cannot be relied on
+                                                                          4                                                               3
+       every year: a cloud tax untested at 15%,
+       the largest TIF surplus ever declared,
+       and $194M in debt proceeds counted as                                                                Ground it in your ward
+       operating revenue. When you see a
+       balanced budget, ask what holds it                                                                   Citywide figures are real but distant. Your
+       together—and whether it will still be                                                                alderperson controls a ward's menu budget
+       there next year.                                                                                     for local infrastructure. Department spending
+                                                                                                            on public health, libraries, and streets varies
+       Official projections show a $1.16B gap in                                                            meaningfully by neighborhood. Use the
+       2027 and $1.225B in 2028. This year's tools                                                          Chicago Data Portal to see what was
+       are spent.                                                                                           budgeted and what was actually spent in
+                                                                                                            your area — those two numbers are rarely
+                                                                                                            identical.
+
+      Use this report to ask                                                                                data.cityofchicago.org — search by ward,
+      harder questions                                                                                      department, or year.
+
+      A budget is a political document. It reflects
+      choices about who pays and who benefits.
+      The numbers in this report are tools for ward
+      meetings, for emails to your alderperson, and                                5
+      for public comment periods. The citizens
+      guide at the end gives you five specific
+      questions designed to be hard to deflect. Use
+      them.
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             03
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+                    Corporate Fund
+
+
+
+                    $6.2B
+                    The $6.2B pool that funds daily city
+                    operations — police, fire, parks, health. The
+                    fiscal crisis lives here, not in the total budget.
+
+
+
+
+                    Enterprise Funds
+
+
+
+                    $3.84B
+                    Airports, water, and sewer. $3.84B that is
+                    legally ring-fenced — it cannot plug the
+                    Corporate Fund gap, no matter the size.
+
+
+
+
+                     TIF surplus
+
+                     Property tax growth held in development
+                     districts. When declared surplus, it is
+                     distributed once. Chicago's 2026 sweep was
+                     a record-breaking, one-time event.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                   04
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+  Chicago 2026
+  Budget at a
+  Glance
+
+
+        Total Budget
+
+       $16.6B                                                                                                                                         Budget Gap
+                                                                                                                                                     $1.19B
+
+                                                                           Gross Spending
+
+                                                                      $18.6B
+
+
+                  Pension Spending                                         New Debt                                          Projected 2027 Gap
+
+                 $2.76B                                                    $1.8B                                            $1.16B
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                              05
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+   Executive
+   Summary                                                                                                            How the gap
+                                                                                                                      was closed
+    The 2026 budget of Chicago was only enacted after the                                                            Cloud tax (15% PPLTT)
+    City Council rejected the mayor's proposed head tax,                                                             increased from 11%; expected
+    raised the cloud tax above his request, and mandated full                                                        to generate $415 million in new
+    pension payments, which he had intended to reduce, for                                                           annual revenue from digital and
+    the first time in modern history. The $16.6 billion plan                                                         cloud services.
+    works for now, but it has future implications for the
+    upcoming fiscal year.
+                                                                                                                     Record TIF surplus sweep
+    What happened?                                                                                                   $1 billion declared, with $232.6
+                                                                                                                     million flowing to the city's
+    In October 2025, Mayor Brandon Johnson proposed a                                                                Corporate Fund. The largest TIF
+    $16.6 billion budget that was centered on a "Community                                                           surplus ever declared.
+    Safety Surcharge," a per-employee head tax on large
+    businesses, and a 14% increase in the cloud tax. The
+    Council rejected the head tax in its entirety, increased the                                                     $1.8 billion in new bond
+    cloud tax to 15%, the highest rate in the nation, and                                                            issuances, including $450
+    restored $238.6 million in advance pension payments                                                              million to fund police
+    that the Mayor had sought to halve.                                                                              misconduct settlements ($283
+                                                                                                                     million) and retroactive firefighter
+    For the first time in Chicago's modern history, the Council                                                      pay ($166 million). Borrowed to
+    created and approved its own alternative budget without                                                          pay recurring bills.
+    the mayor's support. The final budget passed 29–19 on
+    revenue and 30–18 on appropriations.
+                                                                                                                     Debt sales and transfers
+    The Chicago FY2026 budget estimated a $1.19 billion                                                              $194 million in debt proceeds
+    gap in the Corporate Fund, largely driven by the end of                                                          and $492 million in Sales Tax
+    temporary federal support and the steady rise in fixed                                                           Corporation residuals were
+    costs. During the pandemic, the city relied on funding                                                           swept into the Corporate Fund.
+    from the American Rescue Plan Act (ARPA) to sustain
+    services and stabilize finances. Now, Chicago must rely
+    on its own slowly growing revenues to meet the same
+    obligations, as the funds have disappeared.
+    At the same time, a significant share of the city’s
+    spending is locked into pensions, debt service, and
+    personnel costs, expenses that increase annually and are                                                          While the city managed to close its
+    difficult to reduce. Combined with policy choices such as                                                         gap this year, projected gaps for the
+    avoiding property tax increases, this situation creates a                                                         upcoming year are estimated at
+    structural mismatch between revenue and spending. As                                                              $1.16 billion, as pension
+    a result, the city has relied on short-term measures like                                                         contributions are expected to rise by
+    new digital taxes, debt issuance, and one-time transfers                                                          over $60 million in 2027.
+    to close the gap, while projecting continued deficits in the
+    coming years.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                          06
+
+
+
+
+Questions every Chicagoan
+should ask their alderperson
+
+
+The cloud tax and TIF sweep cannot be
+repeated at this scale every year. What is the
+2027 plan that does not rely on one-time
+fixes?
+
+
+
+
+$450M
+Chicago borrowed $450M to pay police
+settlements and firefighter back pay. Who
+pays the interest, and from which budget?
+
+
+
+Pensions and debt now consume roughly
+40% of the operating budget. What is the
+threshold at which services must be cut?
+
+
+
+
+T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                            07
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+   What Changed
+   from 2025?
+    While the 2026 budget is smaller on paper, it is more strained when compared to the 2025
+    budget. The loss of federal funding has exposed underlying fiscal pressures, and the city is
+    now relying on new debt, one-time revenues, and new taxes to fill the gap.
+
+
+
+
+    Comparing Chicago’s Budget: 2025 vs 2026
+
+           Category                                     2025                                             2026                                    What Changed
+
+
+           Total Budget (Net)                           ~$16.7B+                                       $16.6B                                   Slight decline due to
+                                                                                                                                                loss of federal funds
+
+           Gross Budget                                 ~$19.2B                                        $18.6B                                   Down ~3.2% (ARPA
+                                                                                                                                                funds ended)
+
+           Federal Support                              High (ARPA funding                             Significantly reduced                    End of pandemic relief
+                                                        active)                                                                                 funding
+
+           Budget Gap                                   ~$146M (est.)                                  $1.19B                                   Major increase—largest
+                                                                                                                                                since COVID
+
+           Pension Spending                             $2.91B                                         $2.76B                                   Slight decline, but still
+                                                                                                                                                very high
+
+           New Revenue                                  Limited                                        Expanded (cloud tax                      Shift toward digital
+           Measures                                                                                    increase)                                taxation
+
+           Debt Issuance                                Moderate                                       $1.8B authorized                         Increased reliance on
+                                                                                                                                                borrowing
+
+           TIF Surplus Use                              Lower                                          Record $1B declared                      Heavy use of one-time
+                                                                                                                                                funds
+
+           Property Tax                                 No increase                                    No increase                              Continued political
+                                                                                                                                                constraint
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                             08
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+     2026 Fiscal
+     Framework
+        Revenue
+
+
+      N E T T O TA L R E V E N U E
+                                                                       Corporate Funds
+
+      $16.60B                                                          $6.2B
+      Chicago’s 2026 budget
+      expects to generate
+      approximately $16.6 billion,
+      drawn from multiple funding
+      sources. The city depends
+      heavily on locally generated
+      revenue, while federal and
+      state support funding
+      continues to decline.
+
+
+
+
+                                                                       Grant Funds
+
+                                                                       $3.85B
+
+                                                                       Enterprise Funds
+
+                                                                       $3.8B                                                                          Pension Funds
+
+                                                                                                                                                      $2.8B
+
+                                                                                     Special Revenue Funds
+
+                                                                                     $1.1B                                                              $552.1M
+                                                                                                                                                        Debt Service Funds
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                09
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+    Where Will the
+    Money Come
+    From?                                                                                                               Chicago has fully exhausted its
+                                                                                                                        ARPA funds, which implies a
+    Revenue                                                                                                             permanent loss of approximately
+                                                                                                                        $1.9 billion in federal cushion
+    Chicago's approved 2026 budget is funded by a                                                                       that propped up departmental
+    projected $16.6 billion in net resources, a figure that                                                             budgets from 2021 through
+    looks stable until you examine what holds it together. Of                                                           2025. Federal grants in the
+    that total, approximately $12.7 billion comes from local                                                            approved 2026 budget stand at
+    funds: the Corporate Fund, Enterprise Funds, and                                                                    $2.31 billion, state grants at
+    Special Revenue Funds, all supported primarily by                                                                   $740 million, and public and
+    taxpayers and ratepayers within city limits. The remaining                                                          private awards at $760 million,
+    $3.85 billion comes from federal and state grants — a                                                               collectively representing a
+    revenue stream that is actively shrinking and will not                                                              smaller share of total resources
+    recover.                                                                                                            than in any year since the
+                                                                                                                        pandemic.
+    Chicago has fully exhausted its ARPA funds, which
+    implies a permanent loss of approximately $1.9 billion in
+    federal cushion that propped up departmental budgets
+    from 2021 through 2025. Federal grants in the approved
+    2026 budget stand at $2.31 billion, state grants at $740
+    million, and public and private awards at $760 million,
+    collectively representing a smaller share of total resources
+    than in any year since the pandemic. The Better
+    Government Association confirmed that grant
+    appropriations fell from 25 percent of the total 2025
+    budget to approximately 20.9 percent in 2026.
+    Chicagoans must now fund a larger share of city services
+    locally, primarily through taxes, fees, fines, and debt.
+
+    Corporate Funds
+
+    The $6.2 billion pool within the Corporate Fund, which                                                            The first is the cloud tax. Transaction
+    finances day-to-day city operations, presents a revenue                                                           taxes, totaling $1.39 billion,
+    picture of structural fragility disguised as balance. Three                                                       constitute the largest local tax
+    features of the 2026 Corporate Fund revenue warrant                                                               category, with the 15 percent
+    particular scrutiny.                                                                                              Personal Property Lease Transaction
+                                                                                                                      Tax, the highest rate in the nation,
+    The first is the cloud tax. Transaction taxes, totaling                                                           contributing the most. The Civic
+    $1.39 billion, constitute the largest local tax category,                                                         Federation projects that the rate
+    with the 15 percent Personal Property Lease Transaction                                                           increase from 11 percent to 15
+    Tax, the highest rate in the nation, contributing the most.                                                       percent will generate $415 million in
+    The Civic Federation projects that the rate increase from                                                         new annual revenue.
+    11 percent to 15 percent will generate $415 million in
+    new annual revenue.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                               10
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+    Targeted at cloud and digital service providers, this tax
+    rate, if fully absorbed, would rank among the highest in
+    US cities. (Civic Federation, 2026). The Chicagoland
+    Chamber of Commerce has already flagged the risk that
+    the rate discourages business investment and retention.
+    If collections fall short of projections, there is no backup                                                        The second is the TIF surplus
+    plan identified in the approved budget.                                                                             sweep. The city's Corporate
+                                                                                                                        Fund receives $492 million in
+    The second is the TIF surplus sweep. The city's                                                                     Sales Tax Corporation residual
+    Corporate Fund receives $492 million in Sales Tax                                                                   and $232.6 million from the
+    Corporation residual and $232.6 million from the record                                                             record $1 billion Tax Increment
+    $1 billion Tax Increment Financing surplus declared for                                                             Financing surplus declared for
+    2026, the largest TIF surplus in Chicago's history. TIF                                                             2026, the largest TIF surplus in
+    surplus declarations are discretionary and non-recurring.                                                           Chicago's history. TIF surplus
+    The Civic Federation notes that Chicago receives                                                                    declarations are discretionary
+    approximately 23 percent of the declared surplus, with                                                              and non-recurring.
+    over $500 million flowing to Chicago Public Schools.
+    Declaring a surplus of this magnitude twice in a row is a
+    pantry raid that reduces the amount available in
+    subsequent years rather than a revenue strategy.
+    The third is the use of debt proceeds as revenue. The
+    Corporate Fund includes $194 million in debt proceeds,
+    money borrowed, and is counted as a resource to fund
+    current operations. The Civic Federation and fiscal
+    watchdogs, including former Inspector General Joseph
+    Ferguson, describe this practice as a return to the habits
+    that damaged Chicago's credit rating in the prior decade.
+    When debt proceeds substitute for earned revenue, the                                                             The third is the use of debt proceeds
+    principal and interest still need to be repaid from future                                                        as revenue. The Corporate Fund
+    budgets, compounding the very structural deficit they                                                             includes $194 million in debt
+    were meant to close.                                                                                              proceeds, money borrowed, and is
+                                                                                                                      counted as a resource to fund
+    Enterprise Funds                                                                                                  current operations.
+
+    The O'Hare Airport, Midway, Water, and Sewer funds,
+    along with the Enterprise Funds, contribute a total of
+    $3.84 billion, with O'Hare at $2.06 billion, Midway at
+    $431 million, Water at $921 million, and Sewer at $437
+    million. These funds are legally restricted to their
+    respective operations and cannot be redirected to plug
+    the Corporate Fund gap, a constraint the budget
+    document does not explain, but it is essential for
+    understanding why the city's fiscal crisis is concentrated                                                        The O'Hare Airport, Midway, Water,
+    and difficult to solve despite its apparent total wealth.                                                         and Sewer funds, along with the
+                                                                                                                      Enterprise Funds, contribute a total
+    Taken together, Chicago's 2026 revenue base has three                                                             of $3.84 billion, with O'Hare at $2.06
+    structural problems that the approved budget does not                                                             billion, Midway at $431 million, Water
+    resolve. It is increasingly reliant on one-time or                                                                at $921 million, and Sewer at $437
+    non-recurring sources, the TIF sweep, debt proceeds,                                                              million.
+    and a cloud tax that has never been tested at this rate to
+    meet recurring obligations. As federal grants decline,
+    local taxes cannot replace them dollar-for-dollar without
+    placing a greater burden on residents and businesses.
+    And it is inequitable in its pressure points: fines and
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             11
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+        penalties at $481 million disproportionately affect lower-income
+        residents, while transaction taxes on cloud services, though nominally
+        paid by businesses, are routinely passed through to consumers and
+        small operators who rely on leased digital tools to function.
+
+        The city's own Budget Forecast, confirmed by COFA, projects that
+        Corporate Fund revenues will face continued pressure through 2028
+        under all economic scenarios. Even in the baseline, the structural gap
+        between what Chicago reliably earns and what it is obligated to spend
+        does not close; it widens to $1.16 billion in 2027 and $1.225 billion in
+        2028. The revenue package for 2026 is not a starting point; it is a
+        bridge, and what lies on the other side remains unbuilt.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             12
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+             Estimated Resources
+              Corporate Funds
+
+             G R A N D T O TA L
+
+
+             $6.2B
+
+                    Local Tax
+
+                   $3.0B
+
+
+
+                                                                                                                         Local Non-Tax
+                                                                                                                         Revenue
+
+                                                                                                                         $686.70M
+                       Local Non-Tax
+                       Revenue
+
+                      $1.8B                                                                                   Intergovernmental Revenue
+
+                                                                                                              $753.73M
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                    13
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+      Components of Corporate Funds
+         1a. Local Tax Revenue
+
+
+         Local tax revenue includes
+         business taxes, recreation
+         taxes, transaction taxes,
+         and transportation taxes.
+
+
+
+                                                                                                                        Recreation Taxes
+
+                                                                                                                        $425M
+                                                                                                                                                                 City Sales Taxes
+                                            Transaction Taxes                                                                                                    $94M
+                                           $1.39B
+                                                                                                                            Transportation Taxes
+
+                                                                                                                           $497M
+
+                                                                                                  Municipal Public
+                                                                                                  Utility Taxes and
+                                                                                                  Fees
+
+                                                                                                  $395M                        Business Taxes
+
+                                                                                                                               $195M
+
+
+                1b. Intergovernmental Revenue
+
+              Intergovernmental revenue is primarily made up of state income tax, personal property
+              replacement tax, municipal auto rental tax, and reimbursements for city services.
+
+
+
+
+                                                                                                                       Personal Property
+                                                                                                                       Replacement Tax
+
+                                                                                                                       $202M
+                                                                                                                                                             Reimbursements
+                                                                                                                                                             for City Services
+                    State Income Tax                                                                                                                         $1.1M
+                    $545M
+                                                                                                                                 $4.8M
+                                                                                                                           Municipal Auto Rental Tax
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                   14
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+         1c. Local Non-Tax Revenue
+
+       Local non-tax revenue consists of fees for
+       licenses, permits, and certificates; fines,
+       forfeitures, and penalties; charges for services;                                                            Licenses, Permits,
+                                                                                                                    and Certificates
+       municipal parking; leases, rentals, and sales;
+       interest income; internal service earnings; and                                                              $142M
+       other revenues.
+
+
+
+                                                                                                                                                             Fines, Forfeitures,
+                                                                                                                                                             and Penalties
+                                                                                                                                                             $481M
+
+                                                                                          Other Revenue
+                                                                                          $255M
+                         Internal Service
+                         Earnings
+                                                                                                                          Municipal
+                         $357M                                                                                            Parking
+                                                                                                                          $9M
+
+                                                                                          Leases,
+                                                                                          Rentals,
+                                                                                          and Sales
+                         Interest Income                                                  $86M
+                        $55M
+
+
+
+
+                                                                                                                       Charges for Service
+                                                                                                                       $413M
+
+                                                                                              Sales Tax
+                                                                                              Corporation
+             1d. Proceeds and Transfers-In                                                    Residual
+
+                                                                                           $492M
+                Proceeds-In are
+                resources moved from
+                other funds into the
+                Corporate Fund.
+
+                                                                                                                                       Proceeds of Debt
+
+                                                                                                                                        $194M
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                            15
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+        Estimated Resources
+           Special Revenue Funds                                                                                                                     Library Property
+                                                                                                                                                     Tax Levy Fund
+           T O TA L                                                                                                                                  $131M
+           $1.1B
+         ~2.7% increase from 2025
+
+
+
+                                                                      Chicago Midway                                                                             CTA Real
+                                                                      Airport Fund                                                                               Property
+                                                                                                                                                                 Transfer
+
+
+
+                                                                     $431M
+                                                                                                                                                                 Tax Fund
+   Garbage
+   Collection
+   Fund           $64.3M
+                                                                                                                                                                $63.4M
+
+
+
+
+                       Bond Redemption
+                       and Interest Series                                                                                 Vehicle Tax Fund
+                       Fund
+                      $430M                                                                                                $276M
+
+
+                                                                                     Emergency
+                                                                                     Communication Fund
+                           Library Fund
+                                                                                     $168M                                                             Motor Fuel
+                           $145M                                                                                                                       Tax Fund
+                                                                                                                                                       $129M
+
+
+                       Special Events and
+                       Municipal Hotel
+                                                              $72M                                                                   $31M Protecting
+                                                                                                                                                    CARE Fund
+                       Operators’
+                       Occupation Tax Fund
+
+
+                      T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                           16
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+   Estimated Resources                                                                Opioid
+                                                                                      Settlement
+                                                                                                                                                       Chicago
+                                                                                                                                                       Parking
+                                                                                      Fund                                                             Meters Fund
+     Special Revenue Funds
+                                                                                       $8.4M                                                           $6.5M
+
+
+                                                                                                  Wheelchair
+                                                                                                  Accessible
+      Houseshare                                                                                  Vehicle Fund
+      Surcharge -
+      Homeless                                         Neighborhoods
+                                                       Opportunity
+                                                                                                  $8.08M                                               Cannabis
+                                                                                                                                                       Regulation
+      Services Fund                                                                                                                                    Tax
+                                                       Fund
+       $8M                                             $8M                                                                                             $4M
+
+
+                                                                                                          Affordable
+                       Houseshare                                                                         Housing
+                       Surcharge -                                                                        Opportunity
+                       Domestic                                                                           Fund
+                       Violence Fund
+                                                                                                          $1.37M                                             Local
+                       $4M                                        Citywide
+                                                                                                                                                             Impact
+                                                                                                                                                             Fund
+                                                                  Adopt-a-landmark
+                                                                  Fund                                                                                       $0.39M
+                                                                  $0.39M
+            Chicago Police
+            CTA Detail Fund
+
+            $30M
+                                                                                                                                       Tax Increment
+                                                                                         Vaping                                        Financing
+                                    Construction                                         Settlement                                    Administration
+                                    and Demolition                                       Fund                                          Fund
+                                    Debris Management
+                                    Fund                                                 $0.10M                                        $23.4M
+                                    $0.38M
+                                                                              Foreign Fire
+                                                                              Insurance
+      Cable Local                                                             Tax Fund
+      Origination Fund
+
+      $0.5M                                                                   $8.2M
+
+                                                                                                                                                         Controlled
+                                                                                                                                                         Substances Fund
+
+                                                                                                                                                        $0.062M
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                           17
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+               Enterprise Funds
+
+              T O TA L
+
+
+              $3.84B
+
+                                                                                                                                                             Chicago
+                                                                                                                                                             Midway
+                                                                                                                                                             Airport
+                                                                                                                                          Sewer Fund         Fund
+
+
+
+
+                                                                                                                                           $437M
+
+                                                                                                                                                             $431M
+                 Chicago O’Hare
+                 Airport Fund                                                                   Water Fund
+
+                 $2.06B                                                                         $921M
+
+
+
+               Pension Funds
+
+
+               T O TA L S TAT U T O R Y P E N S I O N PAY M E N T
+
+
+               $2.8B
+                   Policemen’s Annuity
+                   and Benefit Fund
+
+                     $1.14B                                   Municipal Employees
+                                                              Annuity and Benefit
+                                                              Fund
+
+                                                                $1.13B
+
+
+                                                                                                          Firemen’s Annuity                          Laborers’ and
+                                                                                                          and Benefit Fund                           Retirement Board
+                                                                                                                                                     Annuity and Benefit
+                                                                                                           $468M                                     Fund
+
+                                                                                                                                                     $153M
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             18
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+               Grant Funds
+
+              T O TA L
+
+
+              $3.8B
+
+
+
+
+                                                           Federal Government
+
+                                                           $2.31B
+                                                                                                                                    State of Illinois
+
+                                                                                                                                   $740M
+                                                                       Public and
+                                                                       Private Awards
+
+
+                                                                      $760M
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                19
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+    Where the
+    Money Goes
+    Chicago's approved 2026 budget carries a gross                                                                      Pension obligations, while lower
+    appropriation of $18.6 billion; it is down from $19.2 billion                                                       in gross terms than 2025's
+    in 2025, a 3.2 percent decline that flatters a city under                                                           $2.91 billion contribution, remain
+    serious fiscal pressure. While the headline number                                                                  the single largest
+    appears to be decreasing, the city's costs continue to                                                              non-discretionary cost at $2.76
+    rise for two main reasons.                                                                                          billion and are legislatively
+                                                                                                                        required to increase further
+    First, the City has fully exhausted its federal pandemic                                                            beginning in 2027.
+    relief under the American Rescue Plan Act (ARPA).
+    Chicago received approximately $1.9 billion in ARPA
+    funds beginning in 2021; those dollars temporarily
+    inflated departmental budgets across public health,
+    housing, and family services. With ARPA gone, several
+    departments face sharp reductions in total
+    appropriations, not because their work has ended, but
+    because the emergency subsidy funding they received
+    has ended.
+
+    Second, Mayor Johnson's originally proposed budget
+    cuts to the discretionary advance pension payment from
+    $238.6 million to $120.8 million to help close the $1.19
+    billion Corporate Fund gap, a reduction that lowered the
+    gross budget figure but drew a swift negative outlook
+    revision from S&P Global Ratings. The City Council
+    ultimately restored the full $238.6 million advance
+    payment in the final adopted budget, partially reversing
+    that effect.
+
+    Beneath these headline movements, the city's underlying
+    local operational spending is rising in three areas year
+    over year. Personnel costs, salaries, overtime, and
+    healthcare benefits increased by more than $496 million                                                           Mayor Johnson himself warned after
+    compared to 2025, driven in part by newly ratified                                                                the budget's passage that a $163
+    collective bargaining agreements for both police and                                                              million gap remains and that
+    firefighters. Pension obligations, while lower in gross                                                           emergency mid-year cuts may be
+    terms than 2025's $2.91 billion contribution, remain the                                                          necessary if revenues fall short. With
+    single largest non-discretionary cost at $2.76 billion and                                                        official projections showing shortfalls
+    are legislatively required to increase further beginning in                                                       of $1.16 billion in 2027 and $1.225
+    2027.                                                                                                             billion in 2028, the 2026 budget is
+                                                                                                                      best understood not as a resolved
+    Debt service costs are also rising, now compounded by                                                             problem but as a one-year deferral of
+    the Council's authorization of $1.8 billion in new bond                                                           a structural reckoning that continues
+    issuances, including a concerning $450 million borrowed                                                           to grow.
+    not for infrastructure but to cover recurring operating
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                                                     20
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+         costs: $283 million in police misconduct                                           The 2026 budget holds those services largely
+         settlements and $166 million in retroactive                                        intact on paper. Whether they remain intact in
+         firefighter back pay.                                                              practice depends on whether the revenue
+                                                                                            measures that nominally balance this budget
+         Taken together, pensions and debt service                                          particularly the new 15 percent cloud tax and
+         now consume approximately 40 percent of the                                        the record $1 billion TIF surplus sweep
+         city's operating budget. That share is                                             materialize as projected. Mayor Johnson
+         structurally locked; it cannot be reduced                                          himself warned after the budget's passage
+         through hiring freezes, departmental cuts, or                                      that a $163 million gap remains and that
+         efficiency drives. Every dollar of growth in                                       emergency mid-year cuts may be necessary if
+         those obligations is a dollar that must come                                       revenues fall short. With official projections
+         from somewhere else, squeezing the                                                 showing shortfalls of $1.16 billion in 2027 and
+         discretionary services, libraries, public health                                   $1.225 billion in 2028, the 2026 budget is
+         clinics, mental health outreach, and street                                        best understood not as a resolved problem
+         maintenance that residents experience most                                         but as a one-year deferral of a structural
+         directly.                                                                          reckoning that continues to grow.
+
+
+
+
+                  General Financing Requirements
+
+
+                 $8.1B
+                                                                                                                                       $1.11B
+                                                                                                                                                 Community Services
+
+                                                                                                                                                                      $1.19B
+                                                                                                                                                                               Deficit
+
+
+
+
+                  Infrastructure Services                                              Public Safety
+
+
+                  $4.6B                                                                $3.2B
+                                                                                                   City Development                 Regulatory
+
+                                                                                                  $381M                            $152M
+                                                                                                                                                                                         Legislative and Elections
+                                          Finance and Administration
+
+                                          $867M                                                                                                                                          $65M
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                                                     21
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+            N E T T O TA L , A L L F U N C T I O N S
+
+            $16,842.55M
+
+
+                                                                                                                                               Total, All Functions
+             Deductions & Transfer                                                                                                             $18,668.57M
+             $1,826.02M
+
+
+
+
+           Expenditure by Department
+           Finance and Administration
+           T O TA L                                                                           Office of the Mayor
+
+                                                                                          $16.42M
+           $867.57M                                                                                                     Office of Budget and Management
+
+
+                                                                                                                        $38.55M
+                                                                                                                                                          Department of Technology
+                                                                                                                                                          and Innovation
+
+                                                                                                                                                          $76.38M
+                                                                                                                                                                          Department of Finance
+
+                                                                                                                                                                          $15.21M
+
+                                                                                                                                                                    Department of Finance
+
+
+           Department of Fleet and
+                                                                                                                                                                   $127.82M
+           Facilities Management
+
+
+          $503.45M
+                                                                                                                                                                             City Treasurer
+
+                                                                                                                                                                             $6.50M
+                                                                                                                                                                             Department of Administrative Hearings
+
+                                                                                                                                              Department of Law              $8.39M
+                                                                                                                                             $47.95M
+                                                                                                                                                                               Department of Human Resources
+
+                                                                                                                                                                              $12.96M
+                                                                                              Department of Procurement Services
+
+                                                                                              $13.92M
+                      T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                                  22
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+          Public Safety
+
+          T O TA L
+
+
+          $3.2B
+
+
+
+                                                                                                                  Chicago Fire
+                                                                                                                  Department
+
+                               Chicago Police                                                                    $901.68M
+                               Department
+
+                              $2.1B                                                                              Office of Public
+                                                                                                                                          Office of Emergency
+                                                                                                                                          Management and
+                                                                                                                                                                Civilian Office of
+                                                                                                                                                                Police Accountability
+                                                                                                                 Safety Administration    Communications
+
+                                                                                                                                          $99.93M
+                                                                                                                                                                $15.78M
+                                                                                                                $135.63M
+                                                                                                                                                                          Community Commission
+                                                                                                                                                                          for Public Safety and
+                                                                                                                                                                          Accountability
+
+                                                                                                                                            Chicago Police
+                                                                                                                                            Board
+                                                                                                                                                                          $4.03M
+                                                                                                                                            $0.50M
+
+         Community Services
+                                                                                                                                                       Department of
+          T O TA L                                                                                                                                     Public Health
+
+          $1.1B                                                                                                                                        $335.05M
+
+
+                                                                                                 Chicago Public
+                                                                                                 Library
+                                                                                                $116.02M
+
+                                                                                                                                                                Commission on
+                                                                                                        Mayor’s Office                                          Human Relations
+                              Department of                                                             for People with                                         $2.77M
+                              Family and                                                                Disabilities
+                              Support Services
+                                                                                                       $9.68M
+                              $653.37M
+
+
+
+
+                     T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                                     23
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+           City Development
+            T O TA L
+
+
+            $381.74M
+                   $173.25M
+
+
+
+                                                                                                                                    $146.48M
+
+
+
+                                                                                    $62M
+
+                 Department of                                                                                                         Department of
+                                                                                   Department of
+                 Housing                                                                                                               Planning and
+                                                                                   Cultural Affairs and
+                                                                                   Special Events                                      Development
+
+
+
+
+             Regulatory
+             T O TA L
+
+
+
+             $152.22M
+                                                                                                                                            Chicago Animal
+                                                                                                                                            Care and Control
+
+                                                                                                                                            $8.18M
+
+                                                                                                                                                               Board of Ethics
+
+                                                                                                                                                               $0.93M
+                                                                                Department of
+       Department of                            Department                      Business Affairs
+       Environment                              of Buildings                    and Consumer
+       $52.46M                                  $39.37M                         Protection
+
+                                                                                $36.78M
+
+
+
+                                                                                                                                                                    License Appeal
+                                                                                                                                     Office of Inspector            Commission
+                                                                                                                                     General
+                                                                                                                                                                    $0.21M
+                                                                                                                                     $14.30M
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                               24
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+        Infrastructure Services
+         T O TA L
+
+
+         $4.6B                                                                                                                             Department
+                                                                                                                                           of Water
+                                                                                                                                           Management
+
+
+
+
+                                                                                                                                              $772.72M
+                                                                   Department of
+                                                                   Transportation
+
+                                                                   $1.83B
+
+
+                                                                    Department
+                                                                    of Aviation
+
+                                                                   $1.66B                                                     Department of
+                                                                                                                              Streets and Sanitation
+
+                                                                                                                              $349.89M
+
+
+
+
+          Legislative and Elections
+
+          T O TA L
+
+
+          $65.63M                                                                                    Board of Election Commissioners
+
+                                                                                                              $27.87M
+
+
+                                                                                                                  City Council
+                                                                                                                $37.76M
+
+
+
+
+                     T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             25
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+           General Financing Requirements
+            T O TA L
+
+
+            $8.1B
+
+
+                                                                                                                                Finance
+                                                                                                                                General
+                                                                                                                               $8.1B
+
+
+
+
+                                           $1 billion
+                                         The 2026 budget holds those services largely intact
+                                         on paper. Whether they remain intact in practice
+                                         depends on whether the revenue measures that
+                                         nominally balance this budget particularly the new 15
+                                         percent cloud tax and the record $1 billion TIF surplus
+                                         sweep materialize as projected.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             26
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+    Fiscal Vulnerabilities
+    and What They
+    Mean for Chicago
+    Chicago entered 2026 without a safety net. The
+    federal pandemic relief, approximately $1.9 billion in                                                               When Mayor Johnson presented
+    ARPA funds, has been exhausted, leaving the city's                                                                   his October 2025 budget
+    budget without support for 4 years. There are no                                                                     proposal, it rested on two
+    remaining reserves to draw down, no extraordinary                                                                    revenue pillars the City Council
+    federal transfers on the horizon, and a Corporate                                                                    rejected: a "Community Safety
+    Fund gap of $1.19 billion that had to be closed with                                                                 Surcharge," effectively a revival
+    whatever tools were available. What those tools were                                                                 of the corporate head tax,
+    and how durable they are are the central questions                                                                   charging businesses with more
+    facing the city's finances.                                                                                          than 100 employees $21 per
+                                                                                                                         month per worker, estimated to
+    The Council's budget is an improvement, not a                                                                        generate $100 million, and a
+    solution                                                                                                             cloud tax increase to 14
+                                                                                                                         percent.
+    When Mayor Johnson presented his October 2025
+    budget proposal, it rested on two revenue pillars the
+    City Council rejected: a "Community Safety
+    Surcharge," effectively a revival of the corporate head
+    tax, charging businesses with more than 100
+    employees $21 per month per worker, estimated to
+    generate $100 million, and a cloud tax increase to 14
+    percent. The Council struck down the head tax
+    entirely, citing concerns about its effect on business
+    retention and job creation. It then went further than
+    the Mayor on the cloud tax, raising the Personal
+    Property Lease Transaction Tax to 15 percent rather
+    than the proposed 14 percent, making Chicago the
+    only city in the United States with a municipal cloud
+    tax at that rate. The Civic Federation projects that this
+    increase will generate $415 million in new annual
+    revenue.
+                                                                                                                      There are no remaining reserves to
+    In place of the head tax, the Council built its                                                                   draw down, no extraordinary federal
+    gap-closing strategy on three additional mechanisms.                                                              transfers on the horizon, and a
+    It declared a record $1 billion TIF surplus, the largest                                                          Corporate Fund gap of $1.19 billion
+    in Chicago's history, of which the city retains $232.6                                                            that had to be closed with whatever
+    million in its Corporate Fund, with the remainder                                                                 tools were available. What those
+    distributed to other taxing bodies, including Chicago                                                             tools were and how durable they are
+    Public Schools. It authorized $1.8 billion in new bond                                                            are the central questions facing the
+    issuances. And it restored the full $238.6 million                                                                city's finances.
+    advance pension payment that the Mayor had sought
+    to cut to $120.8 million, a restoration that mattered
+    not only fiscally but also for the city's credit standing:
+    the Mayor's original pension cut had already
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                    27
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+        prompted S&P Global Ratings to revise its outlook on                                        Whether this consolidation delivers the efficiency gains
+        Chicago's debt from stable to negative.                                                     and equitable access it promises, or simply absorbs
+                                                                                                    two underfunded systems into one, will become
+        The Council's version is better than the Mayor's                                            clearer in mid-year departmental reporting. Residents
+        proposal; however, it is not enough.                                                        and advocates should closely monitor the DFSS
+                                                                                                    budget actuals.
+        Chicago is borrowing to pay the bills
+
+        Fiscal watchdogs are most alarmed not by the total
+        debt authorized, but by the intended use of $450
+        million. Of the $1.8 billion in new bonds, $283 million
+        will cover police misconduct settlements, and $166
+        million will cover retroactive firefighter pay under a                                               What 2027 and 2028
+        newly ratified collective bargaining agreement neither
+        of which is a capital investment. Financing these
+                                                                                                             look like from here
+        recurring operational costs over the long term is a
+        significant concern.
+                                                                                                           The city's own Office of Budget and Management,
+                                                                                                           confirmed by the Council Office of Financial
+        The Civic Federation, whose analysis was led by
+                                                                                                           Analysis, projects a $1.16 billion Corporate Fund
+        former Inspector General Joseph Ferguson, notes
+                                                                                                           shortfall in 2027 and a $1.225 billion shortfall in
+        that this practice, “borrowing to pay day-to-day bills,”
+                                                                                                           2028 under the baseline economic scenario. In a
+        is precisely what contributed to Chicago's prior credit
+                                                                                                           negative scenario, a recession in late 2025 or early
+        rating downgrades. The principal and interest on that
+                                                                                                           2026 could widen that 2028 gap to over $2 billion.
+        debt must be repaid from future budgets,
+                                                                                                           In 2027, required payments for pensions will go up
+        compounding the structural deficit rather than
+                                                                                                           by over $60 million compared to 2026, due to a
+        reducing it. Combined with $830 million in backloaded
+                                                                                                           schedule set by the state and a new pension law,
+        bonds issued earlier in 2025, with no principal
+                                                                                                           HB3657, that Governor Pritzker signed in 2025,
+        payments due until 2045, the total new debt burden is
+                                                                                                           which adds about $11.5 billion in long-term debt
+        considerably larger than the FY2026 budget figure
+                                                                                                           and $7 billion in extra payments until 205
+        alone suggests.
+                                                                                                           None of the revenue measures in the 2026 budget
+        Pensions and debt service now account for
+                                                                                                           address this trajectory structurally. The cloud tax is
+        approximately 40 percent of the city's operating
+                                                                                                           real revenue, but it is untested at 15 percent and
+        budget. That share is legally fixed and growing. It
+                                                                                                           faces legal and competitive pressure. The TIF
+        cannot be reduced by eliminating a city program or
+                                                                                                           sweep cannot be repeated at this scale without
+        freezing hiring. Every dollar those obligations grow is a
+                                                                                                           stripping the very reserves designed to fund future
+        dollar that must either be raised from taxpayers or cut
+                                                                                                           development. The debt proceeds counted as
+        from services residents can see: health clinics,
+                                                                                                           2026 revenue are treated as 2027 expenditure
+        libraries, street repairs, or mental health services.
+                                                                                                           obligations. And the $163 million gap that Mayor
+                                                                                                           Johnson himself warned remains in the "balanced"
+        A note on shelter services
+                                                                                                           budget means the city may not even finish 2026 in
+                                                                                                           the position the approved ordinance assumes.
+        One structural shift embedded in the 2026 budget is
+        worth tracking at the service level. As of January
+                                                                                                           Chicago is not facing a budget problem. It is
+        2025, the Department of Family and Support Services
+                                                                                                           facing a structural mismatch between what the
+        completed the transition of Chicago's shelter system
+                                                                                                           city is legally and contractually obligated to spend
+        into a single unified network named the "One System
+                                                                                                           and what its current economy reliably generates in
+        Initiative," replacing the parallel infrastructure that had
+                                                                                                           revenue that has been deferred, bridged, and
+        separately housed migrants and longer-term
+                                                                                                           papered over for years. The 2026 budget defers it
+        unhoused residents. The consolidated system
+                                                                                                           again. At some point, deferral becomes a
+        operates with a reported capacity of approximately
+                                                                                                           decision.
+        6,800 beds, available to all unhoused residents
+        regardless of immigration status or arrival date.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             28
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                 29
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+       What residents should
+       demand in 2026
+       The budget is now law. The accountability work begins now. Residents and their
+       alderpersons should be pressing for answers to four specific questions before the
+       2027 budget cycle opens:
+
+
+
+
+                     1                                                              2                                                            3
+           10% $60m 2027
+            What is the                                             How will the city                                              Which union contracts
+                                                                                                                                   expiring in 2027 will be
+            mid-year revenue                                        fund the $60 million                                           renegotiated, and what
+            performance of the                                      increase in                                                    cost parameters has the
+            15 percent cloud                                        mandatory pension                                              city set before entering
+            tax — and what is                                       contributions due in                                           those negotiations? And
+                                                                                                                                   what structural spending
+            the contingency                                         2027 without                                                   reforms not efficiency
+            plan if it                                              another round of                                               language, but actual
+            underperforms by                                        one-time fixes?                                                reductions or restructuring
+                                                                                                                                   is the administration
+            even 10 percent?                                                                                                       prepared to put on the
+                                                                                                                                   table before October?
+
+
+
+
+                      A city that cannot answer those questions clearly by mid-2026 is a city
+                      that will arrive at its next budget in the same position it arrived at this
+                      one: holding a gap, holding a press conference, and reaching for the
+                      nearest one-time tool.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                           30
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+   Your money.                                                                                                                     The budget is now law. But a
+                                                                                                                                   budget passed is not a budget
+
+
+
+
+   Your city.
+                                                                                                                                   delivered. The gap between what
+                                                                                                                                   city officials approve in December
+                                                                                                                                   and what residents experience in
+                                                                                                                                   their neighborhoods is where civic
+
+
+
+
+   Your move.
+                                                                                                                                   accountability either works or fails.
+                                                                                                                                   Here is how to close that gap.
+
+
+
+
+    1           Attend City Council meetings
+
+                Full Council meets at City Hall, 121 N. LaSalle.
+                                                                                          2                 Track spending in your ward
+
+                                                                                                            Each alderperson controls a menu program
+                                                                                                            budget for ward infrastructure. Use the Chicago
+                Committee on Budget and Government
+                Operations hearings, where the real scrutiny                                                Data Portal to see how those funds are allocated
+                happens, are open to the public. Testimony slots                                            and spent by ward, by department, and by year.
+                are available. Your alderperson's office can                                                Compare what was promised in October to what
+                register you to speak.                                                                      was contracted by June.
+
+                Refer to chicityclerk.com for meeting schedules                                             See data. cityofchicago.org to monitor spending
+                and agendas                                                                                 data
+
+
+
+
+    3           Engage your alderperson directly
+
+                Chicago has 50 alderpersons. Nineteen voted
+                against the revenue ordinance; thirty voted for it.
+                                                                                         4                   Follow budget reporting and watchdogs
+
+                                                                                                             The Civic Federation, Better Government
+                                                                                                             Association, COFA, and BudgIT publish
+                Both groups now own the consequences. Find                                                   independent analyses at no cost. The city's own
+                your alderperson's office, show up to their ward                                             mid-year budget report, typically released in
+                nights, and ask specific questions, not general                                              August, is the earliest signal of whether 2026
+                ones. Specific questions are harder to deflect.                                              revenues are tracking to projections. Read it
+                                                                                                             when it drops.
+                Find your ward and alderperson at chicago.gov
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                              31
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+      Questions to ask
+      and why they matter
+                                                                                               2
+                  Why do pensions and debt now
+
+     1
+                                                                                                                The cloud tax and TIF surplus cannot
+                  consume roughly 40% of the                                                                    close a $1.19B gap every year. What
+                  operating budget and what is the plan                                                         recurring revenue will replace them in
+                  to stop that share from growing?                                                              2027?
+
+                  Pension contributions are projected to                                                        The 15% cloud tax is untested at this rate
+                  rise by more than $60M in 2027 alone,                                                         and faces business and legal pressure.
+                  driven by a state-mandated schedule and                                                       The 2026 TIF sweep was the largest ever
+                  a 2025 pension sweetener law (HB3657)                                                         declared it cannot be repeated at scale.
+                  that added $11.5B in long-term liabilities.                                                   Official projections show a $1.16B gap in
+                  No structural reform has been enacted.                                                        2027. There is currently no identified plan
+                  Ask what will give way when that bill                                                         to close it.
+                  comes due.
+
+
+
+
+      3                                                                                        4
+                   Chicago borrowed $450M to pay                                                                 Are taxes being collected equitably
+                   police settlements and firefighter                                                            and are fines and fees falling hardest
+                   back pay. Who bears the interest and                                                          on those least able to pay?
+                   from which future budget does it
+                   come?                                                                                         Fines and penalties account for $481M in
+                                                                                                                 city revenue. Research consistently
+                   Borrowing to pay recurring operational                                                        shows that municipal fines fall
+                   costs is the practice that contributed to                                                     disproportionately on lower-income and
+                   Chicago's prior credit rating                                                                 Black and Brown communities. The
+                   downgrades. The Civic Federation                                                              cloud tax is nominally paid by businesses
+                   describes it as a repeat of a documented                                                      but is routinely passed through to
+                   mistake. The interest compounds in                                                            consumers and small operators. Ask who
+                   future budgets. Ask your alderperson to                                                       is actually paying.
+                   name the repayment source.
+
+
+
+
+                   5
+                                   Are public funds producing visible results in your neighborhood and
+                                   how would you know if they weren't?
+
+                                   Appropriation is not delivery. The CPD has consistently exceeded its
+                                   overtime budget spending $190M in 2025 against a $100M allocation.
+                                   DFSS shelter services were restructured mid-year. Public health and library
+                                   positions were cut. Ask what performance metrics apply to every major
+                                   department budget line and where those results are publicly reported.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                                     32
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+               Key dates to
+               watch in 2026
+
+
+                                                                 6
+                                                  Mid-202                        eport
+                                                     id - y e a r budget r
+                                                  M                                                       er
+                                                                                 ia l s ig n a l on wheth
+                                                                 e first offic ew revenues are
+                                                   This is th                    rn
+                                                             ta x and othe                       are not,
+                                                   c lo u d
+                                                                   ro je c ti o n s. If they
+                                                    tracking p uts follow.
+                                                                  cy c
+                                                     emergen
+
+
+
+
+                                                                                                                           6
+                                                                                                                 Aug 202 get Forecast
+                                                                                                                          Bud
+                                                                                                                 FY2027                                       king
+                                                                                                                                       e s it s  fo rward-loo
+                                                                                                                             ublis   h                 oment to
+                                                                                                                  The city p       . T h is is the m cted
+          6                            sal                                                                                   a te
+Oct 202 27 budget propo                                                                                           gap estim the $1.16B proje ,
+          20                                                                                                                   er                           nk
+Mayor's                                                                                                            see wheth ll has grown, shru
+                                 sal relies                                                                        2027 s h o rt fa
+            e th e r the propo hether                                                                                          ddressed
+                                                                                                                                               .
+ Watch w
+          h
+                 -time fixe
+                              s or w                                                                                or been a
+           o n e                        and
+ again o n
+                   rm  s to spending r.
+           l refo                  y appea
+ structura          v e nue finall
+           b le re
+  sustaina
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+                                                                                                                                                             33
+CITIZENS’ GUIDE TO CHICAGO’S 2026 BUDGET
+
+
+
+
+       Closing note
+       from BudgIT
+       Chicago's 2026 budget did not solve
+       the problem. It survived it, for one
+       more year.
+
+
+
+       The city enters 2026 having closed its largest budget gap
+       since the pandemic through a combination of a record tax
+       rate, a record TIF surplus, and a record level of new debt
+       authorization. Each of those words and records should give
+       pause. You cannot set records every year. And you cannot
+       borrow your way to structural balance.
+
+       What makes this moment different from prior Chicago budget
+       cycles is not the size of the gap. It is the absence of a
+       cushion. ARPA is gone. The TIF pantry has been raided to its
+       limit. The advance pension payment that credit agencies
+       closely watched was nearly cut and may face pressure again
+       in 2027. The structural mismatch between what Chicago is
+       legally obligated to spend and what it reliably earns is not a
+       problem that creativity, political will, or noble intentions alone
+       can solve. It requires decisions that impose real costs on
+       actual constituencies, such as labor, business, property
+       owners, or service recipients, and no group has yet been
+       asked to bear a proportionate share.
+
+       That is not a partisan observation. It is an arithmetic one. And
+       it is the reason that informed, persistent, organized civic
+       engagement is not optional right now. Elected officials
+       respond to what they hear from constituents between budget
+       cycles, not just during them. The 2027 budget conversation
+       has already started in the offices and committee rooms of
+       City Hall. It should also be happening in every ward meeting,
+       community organization, and neighborhood association in
+       Chicago.
+
+       BudgIT's role is to make the numbers accessible, the stakes
+       clear, and the questions sharp. What happens next depends
+       on you.
+
+
+
+
+                   T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us | Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+Citizens’ Guide
+to Chicago’s
+2026 Budget
+T · Chicago FY2026 Budget Analysis · usoffice@budgit.org · www.budgit.us |
+Sources: City of Chicago OBM · Civic Federation · COFA · BGA
+
