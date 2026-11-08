@@ -151,6 +151,11 @@ for it in items:
         m2 = re.search(r'<meta[^>]+(?:property|name)=["\'](?:og:description|description)["\'][^>]+content=["\']([^"\']+)', h, re.I) or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\'](?:og:description|description)["\']', h, re.I)
         if m2 and dek(m2.group(1)): it['x'] = dek(m2.group(1))
 print('images', sum(1 for i in items if i.get('i')), 'of', len(items), '; looked up', tries)
+# a summary that shares no real word with its headline is usually the outlet's page description for some other story: drop it
+STOP = set('that this with from have will about after their into they them what when where which while would could said says over more than been were your just also'.split())
+def words(s): return {w for w in re.findall(r"[a-z0-9']{4,}", (s or '').lower()) if w not in STOP}
+for it in items:
+    if it.get('x') and not (words(it['t']) & words(it['x'])): it.pop('x', None)
 json.dump({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'sources': status, 'items': items}, open(OUT, 'w'), separators=(',', ':'))
 print('sources', status); print('items', len(items))
 # an Atom feed of the same list, for feed readers (and RSS-to-email services later)
