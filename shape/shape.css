@@ -94,3 +94,11 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 @keyframes sc-vt-out { to { opacity: 0; } }
 @keyframes sc-vt-in { from { opacity: 0; transform: translateY(6px); } }
 @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
+
+/* the on/off switch every tool uses (housing policies, transit proposals and routes, budget options) */
+.sc-switch{flex:none;width:46px;height:28px;border-radius:14px;border:0;background:var(--sc-line2);position:relative;padding:0;cursor:pointer;transition:background .15s}
+.sc-switch::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .18s}
+.sc-switch[aria-checked="true"]{background:var(--sc-navy)}
+.sc-switch[aria-checked="true"]::after{transform:translateX(18px)}
+.sc-switch:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){ .sc-switch,.sc-switch::after{transition:none} }

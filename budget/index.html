@@ -50,9 +50,6 @@ main{display:grid;grid-template-columns:minmax(380px,460px) 1fr;gap:20px;padding
 .lv .warn{font-size:12.5px;color:var(--sc-warn);background:var(--sc-warnbg);border-radius:9px;padding:6px 9px;margin-top:8px;display:none}
 .lv.on .warn{display:block}
 .ctl{margin-top:10px}
-.sw{position:relative;width:44px;height:26px;border-radius:13px;background:var(--sc-line2);border:0;cursor:pointer;flex:none;transition:background .15s}
-.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .18s}
-.sw[aria-checked="true"]{background:var(--sc-navy)} .sw[aria-checked="true"]::after{transform:translateX(18px)}
 .lv.cost .sw[aria-checked="true"]{background:var(--sc-hard)}
 .opts{display:flex;flex-wrap:wrap;gap:6px}
 .opts button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);cursor:pointer}
@@ -241,7 +238,7 @@ function renderLevers(){
     const extra = l.type === "range" ? `<p class="note live">${liveNote(l, a)}</p>` : "";
     return `<div class="lv ${on ? "on" : ""} ${cost ? "cost" : ""}" data-id="${l.id}">
       <div class="top"><h3>${l.t}</h3><div class="amt">${on ? (cost ? "+" : "") + m(a) : l.type === "sw" ? m(l.amt) : "$0"}</div>
-      ${l.type === "sw" ? `<div style="grid-column:2;justify-self:end"><button class="sw" role="switch" aria-checked="${!!st[l.id]}" aria-label="${l.t}"></button></div>` : ""}</div>
+      ${l.type === "sw" ? `<div style="grid-column:2;justify-self:end"><button class="sw sc-switch" role="switch" aria-checked="${!!st[l.id]}" aria-label="${l.t}"></button></div>` : ""}</div>
       <p>${l.p}</p>${ctl}${extra}
       ${l.note ? `<p class="note">${l.note}</p>` : ""}${l.warn ? `<div class="warn">${l.warn}</div>` : ""}
       <span class="who">${cost ? "Adds to the gap" : WHO[l.who][0]}</span>

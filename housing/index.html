@@ -1242,6 +1242,8 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 @media (max-width:400px){ .hlbl{display:none} }
 .hbar .load{display:none !important}
 .policy .t{display:block}
+.policy .vote > .sc-switch{margin:2px 0}
+.policy.worse .vote > .sc-switch[aria-checked="true"]{background:var(--sc-hard)}
 .policy .picon{float:left;width:56px;height:56px;margin:-6px 8px 0 -6px}
 .policy .t h3{display:inline}
 .policy .t .ib{margin:-2px 0 0 6px;width:20px;height:20px;font-size:11px}
@@ -2850,12 +2852,10 @@ function buildPolicies(){
       const seg = document.createElement("div"); seg.className = "seg";
       P.levels.forEach((lv, i) => { const v = P.vals ? P.vals[i] : i, b = document.createElement("button"); b.type = "button"; b.textContent = lv; b.dataset.v = v; b.addEventListener("click", () => { seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setPolicy(P.key, v)); }); seg.appendChild(b); });
       d.querySelector(".vote").prepend(seg);
-    } else {   // a council vote: aye turns it on, nay turns it off
-      const seg = document.createElement("div"); seg.className = "seg ayenay"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Vote on " + P.title);
-      [["Aye", 1], ["Nay", 0]].forEach(([lbl, v]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lbl; b.dataset.vote = v; b.setAttribute("aria-pressed", "false");
-        b.addEventListener("click", () => { if (!!plan.p[P.key] === !!v) return; seg.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
-        seg.appendChild(b); });
-      d.querySelector(".vote").prepend(seg);
+    } else {   // an on/off switch, the same control every Shape Chicago tool uses
+      const sw = document.createElement("button"); sw.type = "button"; sw.className = "sc-switch"; sw.setAttribute("role", "switch"); sw.setAttribute("aria-checked", "false"); sw.setAttribute("aria-label", P.title);
+      sw.addEventListener("click", () => { const v = plan.p[P.key] ? 0 : 1; sw.setAttribute("aria-checked", String(!!v)); d.classList.toggle("on", !!v); later(() => setPolicy(P.key, v)); });
+      d.querySelector(".vote").prepend(sw);
     }
     if (SCOPED.includes(P.key)){
       const w = document.createElement("label"); w.className = "scope";
@@ -2944,8 +2944,8 @@ function renderPolicies(){
     const active = P.key === "aro" ? v !== 1 : !!v;
     if (active) on++;
     d.classList.toggle("on", active);
-    d.querySelectorAll(".ayenay button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.vote === (v ? 1 : 0))));
-    d.querySelectorAll(".seg:not(.ayenay) button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
+    d.querySelectorAll(".vote > .sc-switch").forEach(b => b.setAttribute("aria-checked", String(!!v)));
+    d.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === v)));
     const g = d.querySelector(".gain");
     if (P.key === "str") g.textContent = v ? "+" + fmt(ph.str) + " homes" : "Up to +" + fmt(STR_LISTINGS * ENTIRE_SHARE * STR_RETURN[2]) + " homes";
     else if (P.key === "adu") g.textContent = (v ? "+" : "Would add +") + fmt(aduScoped() * ADU_RATE15 * (2 - ADU_WARD_SHARE)) + " homes";
@@ -2960,7 +2960,7 @@ function renderPolicies(){
   const CS = communityStats && communityStats.all;
   POLICIES.forEach(P => { const el = $("pol-" + P.key).querySelector(".ptally"); if (!el) return;
     const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
-    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " people voted aye"; });
+    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " people turn this on"; });
   clearTimeout(gainTimer);
   gainsStale = true;
   if (loaded === 77 && !playing && !$("pane-policies").hidden) gainTimer = setTimeout(() => {
