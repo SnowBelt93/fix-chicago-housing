@@ -51,12 +51,25 @@ def text(el, *names):
         x = el.find(n)
         if x is not None and (x.text or x.get('href')): return (x.text or x.get('href') or '').strip()
     return ''
+MRSS = '{http://search.yahoo.com/mrss/}'
+def feed_img(it):
+    """The picture the outlet attached to the story in its feed (media:content, media:thumbnail, an image enclosure,
+    or the first <img> in the story body), if any."""
+    for tag in (MRSS + 'content', MRSS + 'thumbnail'):
+        for m in it.iter(tag):
+            u = m.get('url') or ''
+            if u and (m.get('medium') in (None, 'image') or re.search(r'\.(jpe?g|png|webp)', u, re.I)): return u
+    for e in it.findall('enclosure'):
+        if (e.get('type') or '').startswith('image') and e.get('url'): return e.get('url')
+    body = text(it, '{http://purl.org/rss/1.0/modules/content/}encoded', 'description')
+    m = re.search(r'<img[^>]+src=["\']([^"\']+)', body or '')
+    return html.unescape(m.group(1)) if m else ''
 def parse(b):
     root = ET.fromstring(b); ns = {'a': 'http://www.w3.org/2005/Atom'}; out = []
     for it in root.iter('item'):
-        out.append((text(it, 'title'), text(it, 'link'), text(it, 'pubDate', '{http://purl.org/dc/elements/1.1/}date'), text(it, 'description'), [c.text or '' for c in it.findall('category')]))
+        out.append((text(it, 'title'), text(it, 'link'), text(it, 'pubDate', '{http://purl.org/dc/elements/1.1/}date'), text(it, 'description'), [c.text or '' for c in it.findall('category')], feed_img(it)))
     for it in root.iter('{http://www.w3.org/2005/Atom}entry'):
-        link = it.find('a:link', ns); out.append((text(it, '{http://www.w3.org/2005/Atom}title'), link.get('href') if link is not None else '', text(it, '{http://www.w3.org/2005/Atom}updated', '{http://www.w3.org/2005/Atom}published'), text(it, '{http://www.w3.org/2005/Atom}summary'), []))
+        link = it.find('a:link', ns); out.append((text(it, '{http://www.w3.org/2005/Atom}title'), link.get('href') if link is not None else '', text(it, '{http://www.w3.org/2005/Atom}updated', '{http://www.w3.org/2005/Atom}published'), text(it, '{http://www.w3.org/2005/Atom}summary'), [], feed_img(it)))
     return out
 def when(s):
     try: return email.utils.parsedate_to_datetime(s).astimezone(dt.timezone.utc)
@@ -82,7 +95,7 @@ for name, urls in jobs:
         except Exception as e: print('  parse fail', u, str(e)[:60], flush=True)
     if got is not None: status[name] = max(status.get(name, 0), 0) + len(got)
     else: status.setdefault(name, -1)
-    for title, link, date, desc, cats in got or []:
+    for title, link, date, desc, cats, img in got or []:
         title = html.unescape(re.sub(r'<[^>]+>', '', title)).strip(); d = when(date)
         if not title or not link or link in seen or not d or (now - d).days > 45: continue
         blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
@@ -91,9 +104,21 @@ for name, urls in jobs:
         if not tags: continue
         if name in STATEWIDE and not re.search(CHI, title): continue          # statewide outlets: Chicago must be in the headline
         if not local and not re.search(CHI, blob): continue
-        seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags})
+        seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags, **({'i': img} if img.startswith('http') else {})})
 items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z', '+00:00'))).days <= 45]
 items.sort(key=lambda i: i['d'], reverse=True); items = items[:600]
+# stories with no picture in the feed: read the share image the outlet sets for link previews (og:image), once per story;
+# 'i': '' means we looked and found none. Only the image's address is kept; readers' browsers load it from the outlet.
+tries = 0
+for it in items:
+    if 'i' in it or tries >= 80: continue
+    tries += 1; b = get(it['u']); it['i'] = ''
+    if not b: continue
+    h = b[:200000].decode('utf-8', 'ignore')
+    m = (re.search(r'<meta[^>]+property=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)', h, re.I) or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', h, re.I)
+         or re.search(r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)', h, re.I))
+    if m and m.group(1).startswith('http'): it['i'] = html.unescape(m.group(1))
+print('images', sum(1 for i in items if i.get('i')), 'of', len(items), '; looked up', tries)
 json.dump({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'sources': status, 'items': items}, open(OUT, 'w'), separators=(',', ':'))
 print('sources', status); print('items', len(items))
 # an Atom feed of the same list, for feed readers (and RSS-to-email services later)
