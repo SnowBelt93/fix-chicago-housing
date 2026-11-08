@@ -73,7 +73,13 @@ print('key matters with roll calls', len(full), flush=True)
 b = get('https://data.cityofchicago.org/api/views/htai-wnw4/rows.csv?accessType=DOWNLOAD')
 if b: open(os.path.join(OUT, 'ward_offices.csv'), 'wb').write(b)
 
-# 3) zoning ordinances' text
+# 3) zoning ordinances' text and how each alderperson voted on them
+def roll(r):
+    """The City Council roll call on a matter: [[action, date, [[name, vote], ...]], ...] (empty when no roll call is recorded)."""
+    out = []
+    for a in r.get('actions') or []:
+        if a.get('votes'): out.append([a.get('actionName'), a.get('actionDate'), a.get('actionByName'), [[v.get('voterName'), v.get('vote')] for v in a['votes']]])
+    return out
 Z = json.load(gzip.open(os.path.join(ROOT, 'tools', 'raw', 'tracker', 'elms_zoning.json.gz'), 'rt'))
 Z = [m for m in Z if m.get('status') == '90-Final']
 Z.sort(key=lambda m: m.get('introductionDate') or '', reverse=True)
@@ -86,7 +92,8 @@ for m in Z:
     if not r: continue
     rec = {'record': r.get('recordNumber'), 'title': r.get('title'), 'sub': r.get('subStatus'), 'final': r.get('finalActionDate'),
            'intro': r.get('introductionDate'), 'sponsors': [s.get('sponsorName') for s in r.get('sponsors') or []],
-           'actions': [[a.get('actionDate'), a.get('actionByName'), a.get('actionName')] for a in r.get('actions') or []], 'text': ''}
+           'actions': [[a.get('actionDate'), a.get('actionByName'), a.get('actionName')] for a in r.get('actions') or []], 'text': '',
+           'votes': roll(r)}
     att = [a for a in r.get('attachments') or [] if (a.get('attachmentType') or '') == 'Legislation' or 'Ordinance' in (a.get('fileName') or '')]
     if att:
         pdf = get(att[0]['path'], tries=2, timeout=60)
@@ -98,3 +105,16 @@ for m in Z:
     json.dump(rec, open(path, 'w')); n += 1
     time.sleep(0.15)
 print('ordinances fetched this run', n, 'of', len(Z), 'final matters', flush=True)
+# records saved before roll calls were kept: add them (newest first, 30 minutes a run)
+t1 = time.time(); k = 0
+for m in Z:
+    if time.time() - t1 > 30 * 60: break
+    path = os.path.join(OUT, 'ord', (m.get('recordNumber') or m['matterId']).replace('/', '_') + '.json')
+    if not os.path.exists(path): continue
+    rec = json.load(open(path))
+    if 'votes' in rec: continue
+    r = ej('/matter/' + m['matterId'])
+    if not r: continue
+    rec['votes'] = roll(r); json.dump(rec, open(path, 'w')); k += 1
+    time.sleep(0.1)
+print('roll calls added this run', k, flush=True)
