@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your Ward's Housing Record</title>
+<meta name="description" content="How your alderperson voted on Chicago's housing laws, every zoning change passed in your ward since 2013, and how many homes got permits.">
+<meta property="og:title" content="Your Ward's Housing Record">
+<meta property="og:description" content="Votes, zoning changes and new homes, ward by ward.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+.sc-head{position:sticky;top:0}
+main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-direction:column;gap:18px}
+.hero{display:grid;grid-template-columns:1fr 300px;gap:24px;background:#fff;border-radius:22px;box-shadow:var(--sc-shadow2);padding:24px 26px;align-items:center}
+.hero h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;margin:0 0 4px;line-height:1.08}
+.hero .ald{font-size:18px;margin:0 0 12px;color:var(--sc-ink2)}
+.hero .find{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.hero select,.hero input{font:inherit;font-size:15px;padding:9px 12px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.hero input{min-width:220px}
+.hero .contact{font-size:13.5px;color:var(--sc-mute);margin-top:10px}
+.hero .contact a{color:var(--sc-navy)}
+.hero svg{width:100%;height:auto}
+.hint{font-size:12.5px;color:var(--sc-mute);min-height:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);padding:20px 22px;min-width:0}
+.card h2{margin:0 0 4px;font-size:20px;font-weight:600;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+.cal{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cal li{border:1px solid var(--sc-line);border-radius:14px;padding:12px 14px;display:flex;gap:14px;align-items:flex-start}
+.cal li.off{opacity:.55}
+.cal li.hot{border-color:#c9d8ee;background:#f7faff}
+.cal .dt{flex:none;width:52px;text-align:center;border-radius:10px;background:var(--sc-seg);padding:6px 0;line-height:1.1}
+.cal .dt b{display:block;font-size:20px} .cal .dt span{font-size:11.5px;font-weight:600;color:var(--sc-mute)}
+.cal .bd{font-size:15px;font-weight:600;line-height:1.3} .cal .mt{font-size:13px;color:var(--sc-mute);margin-top:2px;line-height:1.45}
+.cal .ln{display:flex;gap:12px;margin-top:6px;font-size:13px;font-weight:600} .cal .ln a{color:var(--sc-navy)}
+@media (max-width:760px){ .cal{grid-template-columns:1fr} }
+.card .sub{margin:0 0 14px;font-size:14px;color:var(--sc-mute);line-height:1.5}
+.ib{font:inherit;font-size:11px;font-weight:700;font-style:italic;width:19px;height:19px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);cursor:pointer;display:inline-grid;place-items:center;padding:0}
+.vote{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:11px 0;border-top:1px solid var(--sc-line)}
+.vote:first-of-type{border-top:0}
+.vote b{font-size:14.5px} .vote p{margin:2px 0 0;font-size:13px;color:var(--sc-mute);line-height:1.4;grid-column:1}
+.vote .v{grid-row:1/3;grid-column:2;align-self:center;font-size:13px;font-weight:700;padding:5px 11px;border-radius:12px;white-space:nowrap}
+.v.yes{background:#e3f3e8;color:#1f7a45} .v.no{background:#fbe3e6;color:#b4152d} .v.na{background:var(--sc-seg);color:var(--sc-mute)}
+.vote a{color:var(--sc-mute);font-size:12px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:8px;margin-left:6px;vertical-align:1px}
+.tag.more{background:#e3f3e8;color:#1f7a45} .tag.fewer{background:#fbe3e6;color:#b4152d} .tag.afford{background:#e7eefb;color:#2b5da0} .tag.budget{background:var(--sc-seg);color:var(--sc-ink2)}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden}
+.nums div{background:#fff;padding:12px 12px} .nums b{display:block;font-size:24px;font-weight:600;letter-spacing:-.02em} .nums span{font-size:12px;color:var(--sc-mute);line-height:1.35;display:block}
+.nums .up b{color:#1f7a45} .nums .down b{color:#b4152d}
+.zlist{margin-top:14px;max-height:420px;overflow:auto}
+.zrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;font-size:13.5px;padding:7px 0;border-top:1px solid var(--sc-line);align-items:baseline}
+.zrow .d{color:var(--sc-mute);font-size:12.5px}
+.zrow .k{font-size:12px;font-weight:600;white-space:nowrap}
+.zrow .k.up{color:#1f7a45} .zrow .k.down{color:#b4152d} .zrow .k.pd{color:#2b5da0} .zrow .k.same,.zrow .k.other{color:var(--sc-mute)}
+.zrow a{color:var(--sc-ink);text-decoration:none} .zrow a:hover{text-decoration:underline}
+.seg2{display:inline-flex;gap:2px;padding:3px;background:var(--sc-seg);border-radius:16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.seg2 button{font:inherit;border:0;padding:6px 12px;border-radius:13px;background:transparent;color:var(--sc-ink2);cursor:pointer}
+.seg2 button[aria-checked="true"]{background:#fff;color:var(--sc-ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+table.all{width:100%;border-collapse:collapse;font-size:13.5px}
+table.all th{text-align:right;font-size:12px;color:var(--sc-mute);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--sc-line);cursor:pointer;white-space:nowrap}
+table.all th:first-child,table.all td:first-child{text-align:left}
+table.all td{padding:7px 8px;border-bottom:1px solid var(--sc-line);text-align:right;font-variant-numeric:tabular-nums}
+table.all tr.me td{background:#eef4fc;font-weight:600}
+table.all tr{cursor:pointer}
+.wrap{overflow-x:auto}
+.fine{font-size:12px;color:var(--sc-mute);line-height:1.55}
+.fine a{color:var(--sc-mute)}
+dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
+@media (max-width:900px){ .hero{grid-template-columns:1fr} .hero svg{max-width:240px} .grid{grid-template-columns:1fr} .nums{grid-template-columns:repeat(2,1fr)} main{padding:12px 12px 40px} .sc-fan{display:none} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/" aria-current="page">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+  <section class="hero">
+    <div>
+      <h1 id="hTitle">Your ward's housing record</h1>
+      <p class="ald" id="hAld">How your alderperson voted on housing, what got rezoned, and what got built.</p>
+      <div class="find">
+        <select id="wSel" aria-label="Pick a ward"></select>
+        <input id="addr" type="search" placeholder="Or type your address" autocomplete="street-address" aria-label="Your address">
+        <button class="sc-btn" id="geo">Use my location</button>
+      </div>
+      <div class="hint" id="hint"></div>
+      <div class="contact" id="contact"></div>
+    </div>
+    <div id="map" aria-hidden="true"></div>
+  </section>
+  <div class="grid">
+    <section class="card">
+      <h2>Votes on citywide housing laws <button class="ib" data-i="votes" aria-label="About these votes">i</button></h2>
+      <p class="sub">The contested ones, plus the last two budgets. Votes cast by today's alderperson; earlier votes in this ward were cast by whoever held the seat then.</p>
+      <div id="votes"></div>
+    </section>
+    <section class="card">
+      <h2>Zoning changes in this ward <button class="ib" data-i="zoning" aria-label="About zoning changes">i</button></h2>
+      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines. In Chicago, almost none pass without the local alderperson's support.</p>
+      <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">Since May 2023</button><button role="radio" aria-checked="false" data-k="all">Since 2013</button></div>
+      <div class="nums" id="znums"></div>
+      <div class="zlist" id="zlist"></div>
+    </section>
+  </div>
+  <section class="card">
+    <h2>New homes permitted <button class="ib" data-i="permits" aria-label="About permits">i</button></h2>
+    <p class="sub" id="psub"></p>
+    <div class="nums" id="pnums"></div>
+  </section>
+  <section class="card" id="calCard" hidden>
+    <h2>Coming up at City Hall <button class="ib" data-i="cal" aria-label="About the hearing calendar">i</button></h2>
+    <p class="sub">The next City Council and committee meetings. Zoning changes go through the Zoning Committee, then the full Council. Anyone can send written comment before the deadline or sign up to speak.</p>
+    <ul class="cal" id="cal"></ul>
+  </section>
+  <section class="card">
+    <h2>All 50 wards</h2>
+    <p class="sub">Tap a column to sort; tap a ward to open it.</p>
+    <div class="wrap"><table class="all" id="all"></table></div>
+  </section>
+  <div data-ad="wards"></div>
+  <p class="fine" id="srcs"></p>
+</main>
+<dialog class="sc-info" id="infoDlg"></dialog>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let D = null, G = null, W = 1, span = "term", sortK = "up", sortDir = -1;
+const KL = {up:"More homes allowed", down:"Fewer homes allowed", pd:"Planned development", same:"Same homes, other changes", other:"Not classified"};
+const elms = id => id ? `https://chicityclerkelms.chicago.gov/Matter/?matterId=${id}` : null;
+function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
+const INFO = {
+  votes: ["About these votes", `<p>These are citywide laws that changed how many homes can be built, or how affordable they must be, and that drew real opposition, plus the 2025 and 2026 budgets. Laws that passed unanimously or by voice vote aren't listed, since they don't tell wards apart. Tags show what a Yes vote did: <span class="tag more">more homes</span> <span class="tag fewer">fewer homes</span> <span class="tag afford">affordable homes</span>.</p><p class="src">Roll calls: City Clerk eLMS (each vote links to its record).</p>`],
+  zoning: ["About zoning changes", `<p>Each rezoning is read from the ordinance or the applicant's narrative, which name the district it changes from and to. "More homes allowed" means the new district permits more homes per lot under Chicago's zoning code (for example RS-3 to RT-4). "Planned development" is a large project with its own rules, usually more homes. About a third of recent changes couldn't be read from the scanned documents; they're listed as not classified. Addresses are placed in today's ward lines (the 2023 map), so changes before 2023 may have happened under a different alderperson.</p><p>Why it matters: under "aldermanic prerogative," the Council almost always follows the local alderperson on rezonings in their ward, so these are as close to a ward-by-ward record as Chicago has.</p><p class="src">Sources: City Clerk eLMS ordinances and narratives; Chicago Zoning Ordinance (Title 17) for homes per lot.</p>`],
+  cal: ["About the hearing calendar", `<p>Meetings come from the City Clerk's legislation system (eLMS) and are checked once a day, so a meeting added or moved today may not show yet. Times are Chicago time. The clerk's page for each meeting has the agenda, the notice, how to send public comment and, afterwards, the video.</p><p>Zoning changes are heard by the Committee on Zoning, Landmarks and Building Standards, then voted on by the full City Council. Budget hearings run through the Committee on Budget and Government Operations.</p><p><a href="https://chicityclerkelms.chicago.gov/Meetings/" target="_blank" rel="noopener">All meetings at the City Clerk</a></p>`],
+  permits: ["About permits", `<p>Homes in new-construction building permits, counted the way the <a href="/tracker/">Permit tracker</a> counts them (it matches the Census count for Chicago within 1%). The ward comes from the permit record.</p>`],
+};
+document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
+function wmap(){
+  const all = G.flatMap(w => w.polys.flat(2)); let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (const [x, y] of all){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  const k = Math.cos(41.85 * Math.PI / 180), Wd = 300, H = Wd * (y1 - y0) / ((x1 - x0) * k);
+  const P = ([x, y]) => ((x - x0) * k / ((x1 - x0) * k) * Wd).toFixed(1) + "," + ((y1 - y) / (y1 - y0) * H).toFixed(1);
+  $("map").innerHTML = `<svg viewBox="0 0 ${Wd} ${H.toFixed(0)}">${G.map(w => w.polys.map(poly => `<path d="${poly.map(r => "M" + r.map(P).join("L") + "Z").join("")}" fill="${w.ward === W ? "#2b5da0" : "#dfe4ea"}" stroke="#fff" stroke-width=".8" data-w="${w.ward}" style="cursor:pointer"><title>Ward ${w.ward}</title></path>`).join("")).join("")}</svg>`;
+  $("map").querySelectorAll("path").forEach(p => p.onclick = () => go(+p.dataset.w));
+}
+function go(w){ W = w; try { history.replaceState(null, "", "#" + w); localStorage.setItem("sc-ward", String(w)); } catch (e){} render(); }
+function render(){
+  const w = D.wards[W - 1]; $("wSel").value = W;
+  $("hTitle").textContent = `Ward ${W}`;
+  $("hAld").textContent = `Alderperson ${w.ald.name.replace(/^(.*?), (.*)$/, "$2 $1")}`;
+  $("contact").innerHTML = [w.ald.phone && `Ward office ${w.ald.phone}`, w.ald.email && `<a href="mailto:${w.ald.email}">${w.ald.email}</a>`, w.ald.web && `<a href="${w.ald.web}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
+  $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
+    const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Yes" : x === "Nay" ? "No" : x ? x : "Not on Council";
+    const tag = {more:"more homes", fewer:"fewer homes", afford:"affordable homes", budget:"budget"}[v.eff];
+    return `<div class="vote"><b>${v.t}<span class="tag ${v.eff}">${tag}</span></b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
+  renderZ(); renderP(); wmap(); renderAll();
+}
+function renderZ(){
+  const w = D.wards[W - 1], c = w[span], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
+  $("znums").innerHTML = `<div class="up"><b>${c.up}</b><span>allowed more homes</span></div><div class="down"><b>${c.down}</b><span>allowed fewer homes</span></div><div><b>${c.pd}</b><span>planned developments</span></div><div><b>${c.same + c.other}</b><span>other or not classified</span></div>`;
+  $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}${z.f || z.t ? ` <span class="fine">${z.f || "?"} → ${z.t || "?"}</span>` : ""}${z.h ? ` <span class="fine">· ${z.h} homes planned</span>` : ""}</span><span class="k ${z.k}">${KL[z.k]}</span></div>`).join("") + (span === "all" && w.z.length >= 60 ? `<p class="fine">Showing the latest 60.</p>` : "") : `<p class="fine">No rezonings passed here in this period.</p>`;
+}
+function renderP(){
+  const p = D.wards[W - 1].permits, all = D.wards.map(x => x.permits?.homes || 0).sort((a, b) => b - a);
+  $("psub").textContent = "Homes in new-construction permits in this ward over the last three full years and this year, from the Permit tracker.";
+  $("pnums").innerHTML = p ? `<div><b>${p.homes.toLocaleString("en-US")}</b><span>homes permitted</span></div><div><b>${p.projects}</b><span>buildings</span></div><div><b>${p.last12}</b><span>homes in the last 12 months</span></div><div><b>#${all.indexOf(p.homes) + 1}</b><span>of 50 wards</span></div>` : `<p class="fine">No permit data.</p>`;
+}
+function renderAll(){
+  const cols = [["w", "Ward"], ["name", "Alderperson"], ["up", "More homes allowed"], ["down", "Fewer"], ["pd", "Planned dev."], ["homes", "Homes permitted"], ["etod", "Transit homes vote"]];
+  const rows = D.wards.map(w => ({w: w.w, name: w.ald.name.split(",")[0], up: w.term.up, down: w.term.down, pd: w.term.pd, homes: w.permits?.homes || 0, etod: w.votes[0][1] || "–"}));
+  rows.sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
+  $("all").innerHTML = `<tr>${cols.map(([k, t]) => `<th data-k="${k}">${t}${sortK === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr>` +
+    rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.up}</td><td>${r.down}</td><td>${r.pd}</td><td>${r.homes.toLocaleString("en-US")}</td><td>${r.etod === "Yea" ? "Yes" : r.etod === "Nay" ? "No" : r.etod}</td></tr>`).join("");
+  $("all").querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "w" || k === "name" ? 1 : -1); sortK = k; renderAll(); });
+  $("all").querySelectorAll("tr[data-w]").forEach(tr => tr.onclick = () => { go(+tr.dataset.w); window.scrollTo({top:0, behavior:"smooth"}); });
+}
+/* find a ward: address through the lot tool's index, or location in the ward shapes */
+function inPoly(x, y, poly){ let inside = false; for (const ring of poly) for (let i = 0, j = ring.length - 1; i < ring.length; j = i++){ const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside; } return inside; }
+function wardAt(lon, lat){ for (const w of G) if (w.polys.some(p => inPoly(lon, lat, p))) return w.ward; return null; }
+$("geo").onclick = () => { $("hint").textContent = "Finding you…"; navigator.geolocation.getCurrentPosition(p => { const w = wardAt(p.coords.longitude, p.coords.latitude); $("hint").textContent = w ? `You're in Ward ${w}.` : "That spot isn't inside Chicago's wards."; if (w) go(w); }, () => { $("hint").textContent = "Couldn't get your location."; }, {timeout:10000}); };
+const SUF = {AVENUE:"AVE", STREET:"ST", BOULEVARD:"BLVD", ROAD:"RD", DRIVE:"DR", PLACE:"PL", PARKWAY:"PKWY", COURT:"CT", TERRACE:"TER"};
+async function findAddr(q){
+  const m = q.toUpperCase().replace(/[.,#]/g, " ").trim().match(/^(\d+)\s+(.+?)(?:\s+CHICAGO.*)?$/); if (!m){ $("hint").textContent = "Type a house number and street, like 1060 W Addison St."; return; }
+  let st = m[2].split(/\s+/); if (SUF[st[st.length - 1]]) st[st.length - 1] = SUF[st[st.length - 1]]; st = st.join(" ");
+  const key = (st.replace(/^[NSEW] /, "").replace(/[^A-Z0-9]/g, "").slice(0, 2)) || "_";
+  try {
+    const sh = await (await fetch(`/lot/data/a/${key}.json`)).json();
+    const names = Object.keys(sh).filter(k => k === st || k.endsWith(" " + st) || k.replace(/ (AVE|ST|BLVD|RD|DR|PL|PKWY|CT|TER)$/, "") === st || k.replace(/^[NSEW] /, "") === st);
+    if (!names.length){ $("hint").textContent = "Couldn't find that street."; return; }
+    const n = +m[1]; let best = null;
+    for (const nm of names) for (const r of sh[nm]){ const d = Math.abs(r[0] - n) + ((r[0] - n) % 2 ? 50 : 0); if (!best || d < best.d) best = {d, r, nm}; }
+    const t = await (await fetch(`/lot/data/t/${best.r[1]}_${best.r[2]}.json`)).json(), w = +t.p[best.r[3]][10];
+    if (w){ $("hint").textContent = `${best.r[0]} ${best.nm.toLowerCase().replace(/\b\w/g, c => c.toUpperCase())} is in Ward ${w}.`; go(w); } else $("hint").textContent = "Couldn't place that address.";
+  } catch (e){ $("hint").textContent = "Couldn't look that up right now."; }
+}
+$("addr").addEventListener("keydown", e => { if (e.key === "Enter") findAddr(e.target.value); });
+$("addr").addEventListener("change", e => findAddr(e.target.value));
+$("span").querySelectorAll("button").forEach(b => b.onclick = () => { span = b.dataset.k; $("span").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderZ(); });
+$("wSel").innerHTML = Array.from({length:50}, (_, i) => `<option value="${i + 1}">Ward ${i + 1}</option>`).join("");
+$("wSel").onchange = e => go(+e.target.value);
+Promise.all([fetch("data/wards.json").then(r => r.json()), fetch("/wards.json").then(r => r.json())]).then(([d, g]) => {
+  D = d; G = g; let w = +location.hash.slice(1); if (!(w >= 1 && w <= 50)) { try { w = +localStorage.getItem("sc-ward"); } catch (e){} } W = w >= 1 && w <= 50 ? w : 1; render();
+  $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago Permit tracker. Contact details: City of Chicago ward offices dataset.`;
+});
+
+const HOT = /Zoning|Housing|City Council|Budget|Finance|Traffic/;
+fetch("data/meetings.json").then(r => r.json()).then(m => {
+  const now = Date.now() - 2 * 3600e3, up = m.meetings.filter(x => Date.parse(x.d) >= now).slice(0, 8);
+  if (!up.length) return;
+  const tz = {timeZone:"America/Chicago"};
+  $("cal").innerHTML = up.map(x => { const d = new Date(x.d);
+    return `<li class="${HOT.test(x.b) ? "hot" : ""}${/cancel/i.test(x.st) ? " off" : ""}"><div class="dt"><span>${d.toLocaleDateString("en-US", {...tz, month:"short"})}</span><b>${d.toLocaleDateString("en-US", {...tz, day:"numeric"})}</b></div><div><div class="bd">${x.b.replace(/^Committee on /, "")}</div><div class="mt">${d.toLocaleDateString("en-US", {...tz, weekday:"long"})}, ${d.toLocaleTimeString("en-US", {...tz, hour:"numeric", minute:"2-digit"})} · ${x.loc}${x.n ? `<br>${x.n.replace(/</g, "&lt;")}` : ""}${x.c ? `<br>Written comment due ${x.c}` : ""}</div><div class="ln"><a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${x.id}" target="_blank" rel="noopener">Details</a>${x.ag ? `<a href="${x.ag}" target="_blank" rel="noopener">Agenda</a>` : ""}</div></div></li>`; }).join("");
+  $("calCard").hidden = false;
+}).catch(() => {});
+</script>
+</body>
+</html>

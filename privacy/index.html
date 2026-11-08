@@ -30,7 +30,7 @@ b{color:var(--sc-ink);font-weight:600}
 footer{border-top:1px solid var(--sc-line)}
 footer .wrap{max-width:1200px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-left)) 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
 footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
-footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:none}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
 footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
 footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (max-width:640px){ main{padding:32px 16px 48px} h1{font-size:32px} .lede{font-size:16px} footer .wrap{flex-direction:column;align-items:flex-start;padding-inline:16px} }
@@ -39,13 +39,13 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
 <h1>Privacy</h1>
-<p class="upd">Last updated November 6, 2026</p>
-<p class="lede">Shape Chicago has no accounts, no ads and no cookies. Almost everything you do stays in your own browser. Here is exactly what leaves it.</p>
+<p class="upd">Last updated November 7, 2026</p>
+<p class="lede">Shape Chicago has no accounts, no ad networks and no cookies. Almost everything you do stays in your own browser. Here is exactly what leaves it.</p>
 
 <h2>What stays on your device</h2>
 <p>Your plans, saved transit plans, settings (like which tips you've seen) and medals are kept in your browser's local storage. We can't see them. Clearing your browser's site data deletes them.</p>
@@ -59,6 +59,12 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <li><b>Likes.</b> We record which plan was liked so each visitor can like a plan once.</li>
 </ul>
 <p>To stop spam, each of these is stored with a scrambled code made from your internet address and the date. The code changes every day, can't be turned back into your address, and isn't linked to anything else about you. We never store your address itself.</p>
+
+<h2>Local sponsors</h2>
+<p>Some pages show one small card from a Chicago business, labeled "Local sponsor". It's a plain link drawn by our own code: no ad network, no tracking pixel, and the sponsor learns nothing about you unless you click it and visit their site.</p>
+
+<h2>If you write to us</h2>
+<p>If you send the advertising form, we keep what you typed (name, business, email, neighborhood, message) privately so we can reply, and delete it when it's no longer needed. It's never shown on the site. If you chip in through the Support page, the payment company handles the payment; we only see what it shares with us, such as your name and email.</p>
 
 <h2>Share links</h2>
 <p>Share links and plan codes contain your plan's choices and nothing else. Anyone with the link can open the plan.</p>
@@ -84,7 +90,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <footer><div class="wrap">
   <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
   <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit tracker</a><a href="/learn/">Learn</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/advertise/">Advertise</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
 </div></footer>
 </body>
 </html>

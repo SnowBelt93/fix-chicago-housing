@@ -209,7 +209,7 @@ section[id]{scroll-margin-top:56px}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/" aria-current="page">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/" aria-current="page">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span><a class="sc-btn" href="#method" style="display:inline-flex;align-items:center;text-decoration:none">How we count</a></div>
 </header>
 <header class="mast">
@@ -279,7 +279,7 @@ function render(D){
   </div></section>
   <section id="where"><div class="wrap">
     <h2>Where the homes are going</h2>
-    <p class="lede">Homes permitted since ${D.years.length ? (now.year - 3) : ''}, by ward and by neighborhood. Each dot on the map is a building; bigger dots hold more homes.</p>
+    <p class="lede">Homes permitted since ${D.years.length ? (now.year - 3) : ''}, by ward and by neighborhood. Each dot on the map is a building; bigger dots hold more homes. For how each alderperson voted on housing and every zoning change in their ward, see <a href="/wards/">ward records</a>.</p>
     <div class="two">
       <div><canvas id="map" aria-label="Map of permitted homes in Chicago"></canvas>
         <div class="legend"><span><i style="background:var(--good);border-radius:50%"></i>Finished</span><span><i style="background:var(--nav);border-radius:50%"></i>Under way</span><span><i style="background:var(--ink-3);border-radius:50%"></i>Permit expired</span></div>
@@ -300,6 +300,7 @@ function render(D){
     </div>
     <div id="nearOut"></div>
   </div></section>
+  <div class="wrap"><div data-ad="tracker"></div></div>
   <section id="years"><div class="wrap">
     <h2>Every year since 2010</h2>
     <p class="lede">New homes in buildings that got a construction permit, by the year building started. ${lastFull ? `${lastFull.year} ended at ${fmt(lastFull.homes)}, ${pct(lastFull.homes, G.close)} of the yearly pace needed to close the gap by 2041.` : ''} Chicago hasn't reached the pace needed just to keep the gap from growing (${fmt(G.hold)} a year) since ${lastAbove(Y, G.hold)}.</p>
@@ -341,6 +342,7 @@ function render(D){
       <li>Code and method: <a href="https://github.com/SnowBelt93/fix-chicago-housing/tree/main/tools/tracker" target="_blank" rel="noopener">tools/tracker on GitHub</a></li>
     </ul>
   </div></section>`;
+  window.scShowAds && window.scShowAds();
   requestAnimationFrame(() => { const f = app.querySelector('.meter .fill'); if (f) f.style.width = Math.min(100, now.homes / now.needed_so_far * 100) + '%'; });
   places(D, 'ward');
   app.querySelectorAll('.seg button').forEach(b => b.onclick = () => { app.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b)); places(D, b.dataset.g); });

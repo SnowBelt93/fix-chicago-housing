@@ -66,3 +66,49 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
 /* keep the current page's tab visible when the tab bar scrolls (phones) */
 (function(){ function f(){ const n = document.querySelector(".sc-nav"), a = n && n.querySelector('[aria-current="page"]'); if (!a || n.scrollWidth <= n.clientWidth) return; n.scrollLeft = a.offsetLeft - n.offsetLeft - (n.clientWidth - a.offsetWidth) / 2; }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
+
+/* Support and local sponsors. Settings live in /shape/site.json (no code change needed to switch them on):
+   - [data-support] elements become a "Chip in" button once support.url is set (else they link to /support/).
+   - [data-ad="<slot>"] elements show one local sponsor for that slot (rotating by day), or a small
+     "Your Chicago business here" card when ads.showHouse is true. No ad scripts, no tracking, no cookies:
+     a sponsor is a plain link with rel="sponsored". */
+(function(){
+  let site = null, loading = null;
+  const load = () => loading || (loading = fetch("/shape/site.json", {cache:"no-cache"}).then(r => r.ok ? r.json() : {}).catch(() => ({})).then(s => site = s || {}));
+  const esc = s => String(s || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function adFor(slot){
+    const ads = (site && site.ads) || {}, today = new Date().toISOString().slice(0, 10);
+    const list = (ads.sponsors || []).filter(a => a.on !== false && (a.slots || []).includes(slot) && (!a.until || a.until >= today));
+    if (list.length){ const day = Math.floor(Date.now() / 864e5); return list[day % list.length]; }
+    return ads.showHouse ? "house" : null;
+  }
+  function render(){
+    document.querySelectorAll("[data-ad]:not([data-ad-done])").forEach(el => {
+      el.dataset.adDone = 1;
+      const a = adFor(el.dataset.ad); if (!a){ el.remove(); return; }
+      el.classList.add("sc-ad");
+      if (a === "house"){
+        el.innerHTML = `<span class="sc-ad-l">Local sponsor</span><a class="sc-ad-b" href="/advertise/"><img src="/shape/art/ad-house.webp" alt="" width="96" height="64" loading="lazy" onerror="this.remove()"><span><b>Your Chicago business here</b><span>One small card, seen by people who care where this city is headed. Chicago businesses only.</span></span></a>`;
+      } else {
+        el.innerHTML = `<span class="sc-ad-l">Local sponsor</span><a class="sc-ad-b" href="${esc(a.url)}" target="_blank" rel="sponsored noopener">${a.logo ? `<img src="${esc(a.logo)}" alt="" width="96" height="64" loading="lazy">` : ""}<span><b>${esc(a.name)}</b><span>${esc(a.line)}</span></span></a>`;
+      }
+    });
+    document.querySelectorAll("[data-support]:not([data-support-done])").forEach(el => {
+      el.dataset.supportDone = 1;
+      const s = (site && site.support) || {}, ext = !!s.url;
+      if (!ext && location.pathname.startsWith("/support")){ el.remove(); return; }
+      el.innerHTML = `<a class="sc-btn sc-support" href="${ext ? esc(s.url) : "/support/"}"${ext ? ' target="_blank" rel="noopener"' : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>${esc(s.label || "Chip in")}</a>`;
+    });
+  }
+  window.scShowAds = () => load().then(render);
+  function footer(){
+    const f = document.querySelector("footer");
+    if (f && !f.querySelector('a[href="/support/"]') && !f.querySelector(".sc-foot-extra")){
+      const p = document.createElement("p"); p.className = "sc-foot-extra";
+      p.innerHTML = `<span data-support></span> <a href="/advertise/">Advertise with us</a>`;
+      (f.querySelector(".wrap, .fw") || f).appendChild(p);
+    }
+    if (document.querySelector("[data-ad], [data-support]")) window.scShowAds();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", footer); else footer();
+})();

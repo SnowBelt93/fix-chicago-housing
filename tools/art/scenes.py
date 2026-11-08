@@ -249,49 +249,204 @@ def transit():
     box(2, -1.0, 12.0, 18.6, 7.2, 0.35, mat("navy", rough=0.5), bevel=0.06)
     for dx in (-8, 0, 8):
         for dy in (-2.9, 2.9): box(2 + dx, -1.0 + dy, 9.5, 0.25, 0.25, 2.5, "steel", bevel=0.02)
-    # your new line: a flag-blue structure curving off toward the camera, its train already running
-    P0, P1, P2 = (8, -1.0), (26, -1.0), (30, -20)
+    # your new line: its own flag-blue structure starting at a new platform beside today's station (a transfer, not
+    # under the L), then curving off toward the camera with its own train
+    box(2, -8.8, 7.6, 16, 4.6, 0.85, mat("flag", rough=0.5), bevel=0.06)                 # new platform deck
+    box(2, -8.8, 11.4, 16.6, 5.0, 0.3, mat("flag", rough=0.5), bevel=0.05)               # its canopy
+    for dx in (-7, 0, 7):
+        box(2 + dx, -8.8, 0, 0.8, 0.8, 7.6, mat("#e9eef2", rough=0.6), bevel=0.05)
+        box(2 + dx, -10.8, 8.45, 0.22, 0.22, 2.95, "steel", bevel=0.02)
+    box(2, -5.2, 8.3, 3.0, 2.6, 0.18, "steel", bevel=0.02)                                # walkway to the L platform
+    P0, P1, P2 = (10, -8.8), (24, -8.8), (30, -24)
     bez = lambda t: ((1 - t) ** 2 * P0[0] + 2 * (1 - t) * t * P1[0] + t * t * P2[0], (1 - t) ** 2 * P0[1] + 2 * (1 - t) * t * P1[1] + t * t * P2[1])
     pts = [bez(i / 18) for i in range(19)]
-    ribbon(pts, 4.8, 0.85, 6.8, mat("flag", rough=0.5))
-    for i in range(4, len(pts), 3): box(pts[i][0], pts[i][1], 0, 0.8, 0.8, 6.8, mat("#e9eef2", rough=0.6), bevel=0.05)
-    for t0 in (0.36, 0.66):   # two cars of your new train, bent to the curve
-        car_pts = [bez(t0 + k * 0.024) for k in range(12)]
-        ribbon(car_pts, 2.8, 3.0, 7.75, mat("#f4f8fb", rough=0.35, metal=0.2), name="car")
-        win = [bez(t0 + 0.03 + k * 0.022) for k in range(10)]
+    ribbon(pts, 4.6, 0.85, 7.6, mat("flag", rough=0.5))
+    for i in range(3, len(pts), 3): box(pts[i][0], pts[i][1], 0, 0.8, 0.8, 7.6, mat("#e9eef2", rough=0.6), bevel=0.05)
+    for t0 in (0.34, 0.62):   # two cars of your new train, bent to the curve
+        car_pts = [bez(t0 + k * 0.022) for k in range(12)]
+        ribbon(car_pts, 2.8, 3.0, 8.5, mat("#f4f8fb", rough=0.35, metal=0.2), name="car")
+        win = [bez(t0 + 0.03 + k * 0.02) for k in range(10)]
         for side in (1.42, -1.42):
-            sp = [];
+            sp = []
             for i, (x, y) in enumerate(win):
                 a = win[max(0, i - 1)]; b = win[min(len(win) - 1, i + 1)]; tx, ty = b[0] - a[0], b[1] - a[1]; L = math.hypot(tx, ty) or 1
                 sp.append((x - ty / L * side, y + tx / L * side))
-            ribbon(sp, 0.08, 1.0, 9.2, "glassdk", name="win"); ribbon(sp, 0.08, 0.28, 8.5, mat("flag", rough=0.5), name="stripe")
+            ribbon(sp, 0.08, 1.0, 9.95, "glassdk", name="win"); ribbon(sp, 0.08, 0.28, 9.25, mat("flag", rough=0.5), name="stripe")
     for xx in (-30, -18, 16, 28): tree(xx, -3.2 - 0.0, 0.18, 0.8, random.choice(["tree", "tree2"]))
     car(-24, -10, 0.04, 0, mat("#e6e8eb", rough=0.35, metal=0.3)); car(20, -6, 0.04, math.pi, mat("#2f3a46", rough=0.35, metal=0.3))
     return dict(ortho=74, target=(2, -4, 6.5), elev=27, azim=-104, sun=(40, -160))
 
 def tracker():
-    """What Chicago actually builds: a bar chart where every bar is a stack of floors, one per year, the newest still under
-    a crane. In front, a permit with the red star stamp."""
+    """What Chicago actually builds: a bar chart where every bar is a building, one per year (one floor per 600 homes
+    permitted), the newest still going up under a crane. In front, a permit with the red star stamp."""
     random.seed(3)
     # homes permitted in Chicago, 2016 to 2026 so far, from the Permit Tracker (tracker/data.json): one floor per 600 homes
     vals = [9044, 8822, 6305, 6544, 3765, 5150, 7285, 4027, 3226, 3908, 3359]
-    W = len(vals) * 5.0 + 6
+    W = len(vals) * 5.0 + 10
     box(0, 0, -1.2, W, 16, 1.2, mat("ground", rough=0.9), bevel=0.3)
     x0 = -W / 2 + 5
+    FH = 1.3
+    glass = mat("#dff1fb", rough=0.12)
     for i, v in enumerate(vals):
         fl = max(1, int(round(v / 600))); x = x0 + i * 5.0
-        col = "navy" if i < len(vals) - 1 else "flag"
-        for f in range(fl):
-            box(x, 0, f * 1.25, 3.6, 3.6, 1.18, mat(col, rough=0.55), bevel=0.06)
-            box(x, -1.83, f * 1.25 + 0.35, 2.4, 0.05, 0.5, mat("#eaf5fb", rough=0.15), bevel=0.01)
-            box(x + 1.83, 0, f * 1.25 + 0.35, 0.05, 2.4, 0.5, mat("#eaf5fb", rough=0.15), bevel=0.01)
-    xl = x0 + (len(vals) - 1) * 5.0
-    crane(xl + 3.4, 2.8, 0, round(vals[-1] / 600) * 1.25 + 7, 8, ang=math.radians(-165), m=mat("star", rough=0.45))
+        last = i == len(vals) - 1
+        built = fl - 2 if last else fl
+        wall = mat("flag" if last else ("navy" if i % 2 == 0 else "navy2"), rough=0.6)
+        box(x, 0, 0, 3.9, 3.9, 0.5, mat("stone", rough=0.8), bevel=0.05)                  # plinth
+        box(x, 0, 0.5, 3.6, 3.6, built * FH, wall, bevel=0.07)                              # body
+        for f in range(built):                                                              # a window band per floor
+            z = 0.5 + f * FH + 0.38
+            box(x, -1.82, z, 3.0, 0.06, 0.55, glass, bevel=0.01)
+            box(x + 1.82, 0, z, 0.06, 3.0, 0.55, glass, bevel=0.01)
+        top = 0.5 + built * FH
+        if not last:
+            box(x, 0, top, 3.7, 3.7, 0.35, mat("hi", rough=0.6), bevel=0.04)                 # parapet cap
+            box(x + 0.6, 0.4, top + 0.35, 1.2, 1.0, 0.7, mat("grey", rough=0.7), bevel=0.05)   # rooftop box
+        else:                                                                                # two floors still framed out
+            for f in range(2):
+                zf = top + f * FH
+                box(x, 0, zf, 3.6, 3.6, 0.16, mat("stone", rough=0.8), bevel=0.02)
+                for ox in (-1.6, 1.6):
+                    for oy in (-1.6, 1.6): box(x + ox, oy, zf + 0.16, 0.22, 0.22, FH - 0.16, mat("stone", rough=0.8), bevel=0.02)
+            last_top = top + 2 * FH
+            xl = x
+    # the crane beside the newest building: mast, a jib reaching over it, the counterweight sitting on the short back arm
+    cx, cy, H = xl + 4.2, 1.6, last_top + 7.5
+    st = mat("star", rough=0.45)
+    box(cx, cy, 0, 1.4, 1.4, 0.4, mat("grey", rough=0.8), bevel=0.03)
+    box(cx, cy, 0.4, 1.0, 1.0, H, st, bevel=0.03)
+    for k in range(int(H / 1.6)): box(cx, cy, 0.4 + k * 1.6 + 0.8, 1.08, 1.08, 0.1, "white", bevel=0)
+    box(cx, cy, 0.4 + H, 1.3, 1.3, 1.1, mat("white", rough=0.5), bevel=0.08)                  # cab
+    box(cx - 2.0, cy, 0.4 + H + 1.1, 14.4, 0.7, 0.7, st, bevel=0.03)                          # jib + back arm, one piece
+    box(cx + 4.4, cy, 0.4 + H + 1.8, 1.6, 1.0, 1.4, mat("grey", rough=0.7), bevel=0.06)        # counterweight, on the arm
+    hx = cx - 4.6
+    cyl(hx, cy, last_top + 2.6, 0.05, 0.4 + H + 1.1 - (last_top + 2.6), "ink", verts=6, bevel=0)
+    box(hx, cy, last_top + 1.6, 1.8, 1.0, 1.0, mat("buff", rough=0.7), bevel=0.05)              # a load of brick on its way
     # the permit and its stamp
-    import bpy
     box(-W / 2 + 9, -6.0, 0, 7, 5.2, 0.08, mat("white", rough=0.7), bevel=0.02, rot=math.radians(-8))
-    for k in range(4): box(-W / 2 + 8.4 + 0.0, -5.0 - k * 0.9, 0.09, 4.6, 0.25, 0.02, mat("#c9ced4", rough=0.8), bevel=0, rot=math.radians(-8))
+    for k in range(4): box(-W / 2 + 8.4, -5.0 - k * 0.9, 0.09, 4.6, 0.25, 0.02, mat("#c9ced4", rough=0.8), bevel=0, rot=math.radians(-8))
     cyl(-W / 2 + 11.2, -7.0, 0.09, 1.0, 0.03, mat("star", rough=0.6), verts=40, bevel=0)
     cyl(-W / 2 + 11.2, -7.0, 0.12, 0.72, 0.03, mat("white", rough=0.6), verts=40, bevel=0)
-    star_flag(0, 0, -100)   # (keeps the kit happy; drawn off-scene)
-    return dict(ortho=70, target=(1, -3, 8.5), elev=24, azim=-110, sun=(40, -160))
+    return dict(ortho=72, target=(1, -3, 9), elev=24, azim=-110, sun=(40, -160))
+
+
+def prism(ring, z, h, m, name="prism"):
+    """Extrude one polygon ring (scene x, y) from z up by h."""
+    import bmesh
+    me = bpy.data.meshes.new(name); bm = bmesh.new()
+    vs = [bm.verts.new((x, y, z)) for x, y in ring]
+    try: f = bm.faces.new(vs)
+    except ValueError: bm.free(); return None
+    r = bmesh.ops.extrude_face_region(bm, geom=[f])
+    for v in [e for e in r["geom"] if isinstance(e, bmesh.types.BMVert)]: v.co.z += h
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o)
+    o.data.materials.append(m if not isinstance(m, str) else mat(m))
+    mod = o.modifiers.new("bev", "BEVEL"); mod.width = 0.08; mod.segments = 2; mod.limit_method = "ANGLE"
+    return o
+
+def wards():
+    """Ward housing records: all 50 wards as raised clay tiles, each as tall as the homes it permitted in the last 12
+    months (Permit Tracker, tracker/data.json), the tallest marked with a red star. Seen from over the lake."""
+    import json, os
+    root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+    W = json.load(open(os.path.join(root, "wards.json")))
+    T = {w["ward"]: w for w in json.load(open(os.path.join(root, "tracker", "data.json")))["wards"]}
+    lon0, lat0, k = -87.68, 41.84, 1.3        # 1.3 scene units per km
+    kx, ky = 111.32 * math.cos(math.radians(lat0)) * k, 110.57 * k
+    P = lambda lo, la: ((lo - lon0) * kx, (la - lat0) * ky)
+    top = max(T[w]["last12"] for w in T)
+    ramp = ["#86c6e8", "#56b0e0", "#3a96d2", "#2f74b8", "#2b5da0", "#1d4580"]
+    best = max(T, key=lambda w: T[w]["last12"])
+    box(-4, -1, -2.4, 56, 62, 1.8, mat("#dfe2da", rough=0.9), bevel=0.25)
+    box(20, -1, -0.75, 8, 62, 0.5, mat("lake", rough=0.08, spec=0.6), bevel=0.15)    # the lake along the east edge
+    for w in W:
+        n = T.get(w["ward"], {}).get("last12", 0); f = (n / top) ** 0.6
+        h = 0.4 + 10 * f; col = ramp[min(5, int(f * 5.99))]
+        for poly in w["polys"]:
+            ring = [P(*p) for p in poly[0]]
+            if len(ring) > 3 and ring[0] == ring[-1]: ring = ring[:-1]
+            # simplify: drop points closer than 0.15 units
+            out = [ring[0]]
+            for p in ring[1:]:
+                if math.hypot(p[0] - out[-1][0], p[1] - out[-1][1]) > 0.15: out.append(p)
+            if len(out) >= 3: prism(out, -0.6, h + 0.6, mat(col, rough=0.6), name="w%d" % w["ward"])
+        if w["ward"] == best:
+            bx, by = P(w["lon"], w["lat"])
+            cyl(bx, by, h, 0.12, 3.2, "steel", verts=8, bevel=0)
+            star_pin(bx, by, h + 3.2)
+    return dict(ortho=74, target=(-5, -1, 1), elev=40, azim=-6, sun=(42, -40))
+
+def star_pin(x, y, z, s=1.0, rot=0.0):
+    """A red six-point star standing on edge, facing the camera's side."""
+    import bmesh
+    me = bpy.data.meshes.new("star"); bm = bmesh.new()
+    pts = []
+    for i in range(12):
+        r = (1.4 if i % 2 == 0 else 0.62) * s; a = math.pi / 2 + i * math.pi / 6
+        pts.append((r * math.cos(a), r * math.sin(a)))
+    f = bm.faces.new([bm.verts.new((0, px, py)) for px, py in pts])
+    r = bmesh.ops.extrude_face_region(bm, geom=[f])
+    for v in [e for e in r["geom"] if isinstance(e, bmesh.types.BMVert)]: v.co.x += 0.35 * s
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces); bm.to_mesh(me); bm.free()
+    o = bpy.data.objects.new("star", me); bpy.context.scene.collection.objects.link(o)
+    o.location = (x, y, z + 1.4 * s); o.rotation_euler = (0, 0, rot); o.data.materials.append(mat("star", rough=0.45))
+    mod = o.modifiers.new("bev", "BEVEL"); mod.width = 0.06; mod.segments = 2
+    return o
+
+def news_box(x, y, col, rot=0.0):
+    """A street newspaper box: body on short legs, a slanted lid, a window with today's paper."""
+    c, s = math.cos(rot), math.sin(rot)
+    for dx in (-0.8, 0.8):
+        box(x + dx * c, y + dx * s, 0.18, 0.12, 0.9, 0.5, "steel", bevel=0, rot=rot)
+    box(x, y, 0.68, 2.0, 1.5, 2.3, mat(col, rough=0.45), bevel=0.12, rot=rot)
+    box(x, y, 2.98, 2.1, 1.6, 0.25, mat(col, rough=0.45), bevel=0.1, rot=rot)
+    box(x - 0.76 * s, y - 0.76 * c * 1.0 * (1 if True else 0) + 0.0, 1.55, 1.5, 0.06, 1.05, mat("#dfeaf2", rough=0.1), bevel=0.02, rot=rot)
+    box(x - 0.8 * s, y - 0.8 * c, 1.62, 1.2, 0.04, 0.85, "white", bevel=0.01, rot=rot)                 # the paper
+    for k in range(3): box(x - 0.83 * s, y - 0.83 * c, 2.25 - k * 0.14, 0.9, 0.02, 0.05, "ink", bevel=0, rot=rot)
+    box(x + 0.55 * c - 0.78 * s, y + 0.55 * s - 0.78 * c, 1.1, 0.35, 0.08, 0.3, "steel", bevel=0.02, rot=rot)   # coin box
+
+def news():
+    """Chicago planning news: a row of street newspaper boxes in front of a brick flat and a new mid-rise."""
+    random.seed(5)
+    ground(34, 20)
+    sidewalk(0, -3.5, 34, 5); street(0, -8.5, 34, 5)
+    flat(-9, 5, 0.18, 9, 9, 3, "brick")
+    flat(1, 5, 0.18, 8, 9, 2, "buff", cornice="stone")
+    tower(11, 5, 0.18, 9, 9, 6, mat("navy", rough=0.6), faces=("-y", "+x"))
+    for (x, col, r) in [(-6.5, "navy", 0.05), (-3.6, "flag", -0.04), (-0.7, "star", 0.03), (2.2, "white", -0.02)]:
+        news_box(x, -3.4, col, r)
+    tree(9, -3.2, 0.18, 0.8)
+    return dict(ortho=30, target=(0, -1, 4), elev=20, azim=-100, sun=(40, -150))
+
+def storefront():
+    """'Your Chicago business here': a corner storefront with a flag-blue awning and a blank sign, a sandwich board out front."""
+    ground(20, 14)
+    sidewalk(0, -3.2, 20, 4)
+    box(0, 2, 0.18, 12, 8, 7.4, mat("brick", rough=0.8), bevel=0.06)
+    box(0, 2, 7.58, 12.3, 8.2, 0.5, "stone", bevel=0.05)
+    windows(0, 2, 4.0, 12, 8, 3.2, 1, face="-y", glass="glass", cols=3)
+    box(0, -2.04, 0.5, 10.4, 0.1, 2.6, mat("#cfe7f5", rough=0.08, spec=0.6), bevel=0.02)          # shop window
+    box(-3.6, -2.08, 0.5, 1.6, 0.12, 2.9, mat("#e9eef2", rough=0.4), bevel=0.02)                   # door
+    box(0, -2.25, 3.35, 9.0, 0.25, 0.85, mat("navy", rough=0.5), bevel=0.05)                        # the blank sign
+    box(0, -2.9, 2.95, 11.2, 1.6, 0.18, mat("flag", rough=0.5), bevel=0.04, rot=0.0)                # awning
+    for i in range(14): box(-5.2 + i * 0.8, -3.66, 2.7, 0.4, 0.06, 0.3, mat("white" if i % 2 else "flag", rough=0.5), bevel=0)
+    # sandwich board
+    box(3.6, -3.9, 0.18, 1.2, 0.08, 1.6, mat("ink", rough=0.6), bevel=0.02, rot=0.0).rotation_euler = (math.radians(14), 0, 0.2)
+    box(3.6, -3.5, 0.18, 1.2, 0.08, 1.6, mat("ink", rough=0.6), bevel=0.02, rot=0.0).rotation_euler = (math.radians(-14), 0, 0.2)
+    tree(-7.5, -3.4, 0.18, 0.7); flat(15, 2, 0.18, 8, 8, 2, "buff")
+    return dict(ortho=18, target=(0, -1, 3.6), elev=14, azim=-104, sun=(40, -150))
+
+def jar():
+    """Chip in: a tip jar of gold coins with a red star label, on a little block of sidewalk."""
+    box(0, 0, -0.5, 9, 7, 0.5, mat("curb", rough=0.85), bevel=0.15)
+    g = mat("#dceef8", rough=0.05, spec=0.8, alpha=0.28)
+    cyl(0, 0, 0, 1.9, 4.2, g, verts=48, bevel=0.06)
+    cyl(0, 0, 4.2, 1.6, 0.45, mat("#d7dbe0", rough=0.3, metal=0.6), verts=48, bevel=0.04)
+    for k in range(9):
+        a = k * 0.7; cyl(0.25 * math.cos(a), 0.25 * math.sin(a), 0.08 + k * 0.22, 1.35, 0.2, mat("gold", rough=0.3, metal=0.75), verts=36, bevel=0.03)
+    for (x, y, z, rx) in [(2.6, -1.2, 0, 0), (3.1, 0.6, 0, 0), (2.8, -0.2, 0.21, 0)]:
+        cyl(x, y, z, 0.7, 0.2, mat("gold", rough=0.3, metal=0.75), verts=32, bevel=0.03)
+    star_pin(0, -2.0, 1.1, 0.7, rot=math.pi / 2)
+    return dict(ortho=10, target=(0.4, 0, 2.1), elev=16, azim=-100, sun=(42, -140))

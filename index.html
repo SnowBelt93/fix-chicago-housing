@@ -43,8 +43,9 @@ a{color:var(--sc-navy)}
 .sh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:22px}
 .sh h2{margin:0;font-size:28px;letter-spacing:-.02em;font-weight:600}
 .sh span{font-size:14px;color:var(--sc-mute)}
-.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-@media (max-width:1000px){ .tools{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+@media (max-width:1180px){ .tools{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.tools .tb p{font-size:14.5px}
 .tool{border:1px solid var(--sc-line);border-radius:20px;overflow:hidden;background:#fff;display:flex;flex-direction:column;color:inherit;text-decoration:none;transition:border-color .15s,box-shadow .15s}
 .tool:hover{border-color:var(--sc-line2);box-shadow:var(--sc-shadow2)}
 .thumb{height:190px;background:var(--sc-map);border-bottom:1px solid var(--sc-line)}
@@ -80,17 +81,33 @@ a{color:var(--sc-navy)}
 .sh a{font-size:14px;font-weight:600;text-decoration:none}
 @media (max-width:1000px){ .learn{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:640px){ .learn{grid-template-columns:1fr} }
+.week{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.wk{border:1px solid var(--sc-line);border-radius:18px;padding:18px 20px;background:#fff;display:flex;flex-direction:column;gap:10px;min-width:0}
+.wk h3{margin:0;font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px}
+.wk h3 img{width:44px;height:30px;object-fit:contain}
+.wk ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.wk li{font-size:14.5px;line-height:1.38;color:var(--sc-ink2)}
+.wk li a{color:var(--sc-ink);text-decoration:none;font-weight:500}
+.wk li a:hover{color:var(--sc-navy);text-decoration:underline}
+.wk li small{display:block;font-size:12.5px;color:var(--sc-mute);margin-top:1px}
+.wk .more{margin-top:auto;font-size:14px;font-weight:600;text-decoration:none}
+.wk .new{font-size:11px;font-weight:600;background:#e3f3e8;color:#1f7a45;border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.wk select{font:inherit;font-size:14px;padding:6px 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff}
+.wk .tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:7px;padding:0 6px;margin-right:4px}
+.tag.up{background:#e3f3e8;color:#1f7a45} .tag.down{background:#fde8ea;color:#b4001f} .tag.pd{background:#e8eef8;color:#2b5da0} .tag.same,.tag.other{background:var(--sc-seg);color:var(--sc-ink2)}
+@media (max-width:1180px){ .week{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:700px){ .week{grid-template-columns:1fr} }
 footer{border-top:1px solid var(--sc-line)}
 footer .wrap{padding-block:28px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
 footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
-footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:none}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
 footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
 footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (max-width:1000px){
   .hero{grid-template-columns:1fr;gap:28px;padding-block:36px 40px}
-  .tools{grid-template-columns:1fr}
   .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+@media (max-width:700px){ .tools{grid-template-columns:1fr} }
 @media (max-width:640px){
   .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
   .hero h1{font-size:34px}
@@ -109,7 +126,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -123,8 +140,18 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   </section>
   <section class="band alt" aria-labelledby="toolsH"><div class="wrap">
     <div class="sh"><h2 id="toolsH">Pick a tool</h2></div>
-    <div class="tools"><a class="tool" href="/housing/"><div class="thumb"><img src="/shape/art/housing.webp" width="800" height="380" alt="Lots stepping up from a bungalow to a three-flat, six-flat, mid-rise and high-rise, with a crane on the tallest." loading="lazy"></div><div class="tb"><div class="tn"><h3>Fix Chicago Housing</h3><span class="chip ">Simulation</span></div><p>Let more homes go up near the L, vote on real policies, then watch 15 years of building. See what happens to the shortage and to rent.</p><span class="see">Shortage · rent · jobs and taxes</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/transit/"><div class="thumb"><img src="/shape/art/transit.webp" width="800" height="380" alt="The L with a Red Line train and a station, and a new line in blue curving off with its own train." loading="lazy"></div><div class="tb"><div class="tn"><h3>Expand Chicago Transit</h3><span class="chip ">New</span></div><p>Switch on real proposals like the Red Line Extension, or draw your own subway, streetcar or BRT line. See riders, cost, car trips and CO₂.</p><span class="see">Riders · cost · cars · CO₂</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/budget/"><div class="thumb"><img src="/shape/art/budget.webp" width="800" height="380" alt="A balance beam with stacks of gold coins on one side and a little city block with a bus on the other." loading="lazy"></div><div class="tb"><div class="tn"><h3>Balance the Chicago Budget</h3><span class="chip ">New</span></div><p>The 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.</p><span class="see">Taxes · cuts · pensions · past years</span><span class="sc-btn primary go">Balance it</span></div></a><a class="tool" href="/pensions/"><div class="thumb"><img src="/shape/art/pensions.webp" width="800" height="380" alt="Four stacks of gold coins, one per city pension fund, each well short of a blue ring marking 90% funded." loading="lazy"></div><div class="tb"><div class="tn"><h3>Pay Down Chicago's Pensions</h3><span class="chip ">New</span></div><p>Chicago's four city pension funds hold about a quarter of what they owe. Choose how much the city pays, what investments earn and whether to borrow. See when each fund gets to 90%, and the bill.</p><span class="see">Funded ratio · yearly payments · bonds · crashes</span><span class="sc-btn primary go">Run the numbers</span></div></a><a class="tool" href="/lot/"><div class="thumb"><img src="/shape/art/lot.webp" width="800" height="380" alt="A row of two- and three-flats with one lot marked by a red pin and a glass outline of the bigger building its zoning would allow." loading="lazy"></div><div class="tb"><div class="tn"><h3>What can I build on my lot?</h3><span class="chip ">New</span></div><p>Type any Chicago address. See its zoning, how many homes the rules allow, whether today's building could even be built today, and what would change that.</p><span class="see">Zoning · homes allowed · what would change it</span><span class="sc-btn primary go">Look up a lot</span></div></a><a class="tool" href="/tracker/"><div class="thumb"><img src="/shape/art/tracker.webp" width="800" height="380" alt="A bar chart of homes Chicago permitted each year since 2016, each bar a stack of floors, the newest under a crane." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago Permit Tracker</h3><span class="chip live">Updated daily</span></div><p>Every new-home permit since 2006 and every zoning change since 2013, so you can see what Chicago is actually building.</p><span class="see">Permits · zoning changes · pace</span><span class="sc-btn primary go">See the tracker</span></div></a></div>
+    <div class="tools"><a class="tool" href="/housing/"><div class="thumb"><img src="/shape/art/housing.webp" width="800" height="380" alt="Lots stepping up from a bungalow to a three-flat, six-flat, mid-rise and high-rise, with a crane on the tallest." loading="lazy"></div><div class="tb"><div class="tn"><h3>Fix Chicago Housing</h3><span class="chip ">Simulation</span></div><p>Let more homes go up near the L, vote on real policies, then watch 15 years of building. See what happens to the shortage and to rent.</p><span class="see">Shortage · rent · jobs and taxes</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/transit/"><div class="thumb"><img src="/shape/art/transit.webp" width="800" height="380" alt="The L with a Red Line train and a station, and a new line in blue curving off with its own train." loading="lazy"></div><div class="tb"><div class="tn"><h3>Expand Chicago Transit</h3><span class="chip ">New</span></div><p>Switch on real proposals like the Red Line Extension, or draw your own subway, streetcar or BRT line. See riders, cost, car trips and CO₂.</p><span class="see">Riders · cost · cars · CO₂</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/budget/"><div class="thumb"><img src="/shape/art/budget.webp" width="800" height="380" alt="A balance beam with stacks of gold coins on one side and a little city block with a bus on the other." loading="lazy"></div><div class="tb"><div class="tn"><h3>Balance the Chicago Budget</h3><span class="chip ">New</span></div><p>The 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.</p><span class="see">Taxes · cuts · pensions · past years</span><span class="sc-btn primary go">Balance it</span></div></a><a class="tool" href="/pensions/"><div class="thumb"><img src="/shape/art/pensions.webp" width="800" height="380" alt="Four stacks of gold coins, one per city pension fund, each well short of a blue ring marking 90% funded." loading="lazy"></div><div class="tb"><div class="tn"><h3>Pay Down Chicago's Pensions</h3><span class="chip ">New</span></div><p>Chicago's four city pension funds hold about a quarter of what they owe. Choose how much the city pays, what investments earn and whether to borrow. See when each fund gets to 90%, and the bill.</p><span class="see">Funded ratio · yearly payments · bonds · crashes</span><span class="sc-btn primary go">Run the numbers</span></div></a><a class="tool" href="/lot/"><div class="thumb"><img src="/shape/art/lot.webp" width="800" height="380" alt="A row of two- and three-flats with one lot marked by a red pin and a glass outline of the bigger building its zoning would allow." loading="lazy"></div><div class="tb"><div class="tn"><h3>What can I build on my lot?</h3><span class="chip ">New</span></div><p>Type any Chicago address. See its zoning, how many homes the rules allow, whether today's building could even be built today, and what would change that.</p><span class="see">Zoning · homes allowed · what would change it</span><span class="sc-btn primary go">Look up a lot</span></div></a><a class="tool" href="/wards/"><div class="thumb"><img src="/shape/art/wards.webp" width="800" height="380" alt="Chicago's 50 wards as raised tiles, each as tall as the homes it permitted in the last year; the tallest has a red star." loading="lazy"></div><div class="tb"><div class="tn"><h3>Your ward's housing record</h3><span class="chip live">Updated daily</span></div><p>How your alderperson voted on the big housing laws, every zoning change in your ward since 2013, and the homes it's permitting.</p><span class="see">Votes · rezonings · permits</span><span class="sc-btn primary go">Find your ward</span></div></a><a class="tool" href="/tracker/"><div class="thumb"><img src="/shape/art/tracker.webp" width="800" height="380" alt="A bar chart of homes Chicago permitted each year since 2016, each bar a stack of floors, the newest under a crane." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago Permit Tracker</h3><span class="chip live">Updated daily</span></div><p>Every new-home permit since 2006 and every zoning change since 2013, so you can see what Chicago is actually building.</p><span class="see">Permits · zoning changes · pace</span><span class="sc-btn primary go">See the tracker</span></div></a><a class="tool" href="/news/"><div class="thumb"><img src="/shape/art/news.webp" width="880" height="600" alt="A row of newspaper boxes in navy, blue, red and white in front of a brick flat and a new mid-rise." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago planning news</h3><span class="chip live">Every 3 hours</span></div><p>Every new story on Chicago housing, development, zoning, transit and the budget from local newsrooms, in one list.</p><span class="see">Block Club · Sun-Times · WBEZ · WTTW · more</span><span class="sc-btn primary go">Read the news</span></div></a></div>
   </div></section>
+  <section class="band" aria-labelledby="weekH"><div class="wrap">
+    <div class="sh"><h2 id="weekH">This week in Chicago</h2><span id="weekNote">What changed since you last looked</span></div>
+    <div class="week">
+      <div class="wk"><h3>In the news</h3><ul id="wkNews"><li>Loading…</li></ul><a class="more" href="/news/">All stories</a></div>
+      <div class="wk"><h3>Zoning the Council passed</h3><ul id="wkZone"><li>Loading…</li></ul><a class="more" href="/wards/" id="wkWardLink">See your ward</a></div>
+      <div class="wk"><h3>Coming up at City Hall</h3><ul id="wkCal"><li>Loading…</li></ul><a class="more" href="/wards/#calCard" id="wkCalLink">The full calendar</a></div>
+      <div class="wk"><h3>New homes permitted</h3><ul id="wkPermits"><li>Loading…</li></ul><a class="more" href="/tracker/">The permit tracker</a></div>
+    </div>
+  </div></section>
+  <div class="wrap"><div data-ad="home"></div></div>
   <section class="band" aria-labelledby="learnH"><div class="wrap">
     <div class="sh"><h2 id="learnH">New to this? Start with the basics</h2><a href="/learn/">All topics</a></div>
     <div class="learn">
@@ -142,7 +169,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <footer><div class="wrap">
   <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
   <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra. Every number links to its source.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit tracker</a><a href="/learn/">Learn</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/advertise/">Advertise</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
 </div></footer>
 <script>
 const AREAS = ["", "Rogers Park", "West Ridge", "Uptown", "Lincoln Square", "North Center", "Lake View", "Lincoln Park", "Near North Side", "Edison Park", "Norwood Park", "Jefferson Park", "Forest Glen", "North Park", "Albany Park", "Portage Park", "Irving Park", "Dunning", "Montclare", "Belmont Cragin", "Hermosa", "Avondale", "Logan Square", "Humboldt Park", "West Town", "Austin", "West Garfield Park", "East Garfield Park", "Near West Side", "North Lawndale", "South Lawndale", "Lower West Side", "Loop", "Near South Side", "Armour Square", "Douglas", "Oakland", "Fuller Park", "Grand Boulevard", "Kenwood", "Washington Park", "Hyde Park", "Woodlawn", "South Shore", "Chatham", "Avalon Park", "South Chicago", "Burnside", "Calumet Heights", "Roseland", "Pullman", "South Deering", "East Side", "West Pullman", "Riverdale", "Hegewisch", "Garfield Ridge", "Archer Heights", "Brighton Park", "Mckinley Park", "Bridgeport", "New City", "West Elsdon", "Gage Park", "Clearing", "West Lawn", "Chicago Lawn", "West Englewood", "Englewood", "Greater Grand Crossing", "Ashburn", "Auburn Gresham", "Beverly", "Washington Heights", "Mount Greenwood", "Morgan Park", "Ohare", "Edgewater"];
@@ -169,6 +196,42 @@ async function loadPlans(){
   } catch (e) { el.innerHTML = '<div class="empty">Plans people post show up here.</div>'; }
 }
 loadPlans();
+
+/* This week: the newest news, zoning changes and permits, loaded when the section comes into view. */
+(function(){
+  const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const day = d => new Date(d.length > 10 ? d.replace("Z", ":00Z") : d + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  const KIND = {up:"More homes allowed", down:"Fewer homes allowed", pd:"Planned development", same:"Same density", other:"Other change"};
+  let seen = null; try { seen = localStorage.getItem("sc-home-seen"); } catch (e){}
+  let myWard = null; try { myWard = +localStorage.getItem("sc-ward") || null; } catch (e){}
+  if (myWard){ const a = document.getElementById("wkWardLink"); a.href = "/wards/#" + myWard; a.textContent = "Ward " + myWard + "'s record"; }
+  const fail = id => document.getElementById(id).innerHTML = "<li>Not available right now.</li>";
+  function go(){
+    fetch("/news/data/news.json").then(r => r.json()).then(d => {
+      const items = d.items.slice(0, 5), fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
+      document.getElementById("wkNews").innerHTML = items.map(i => `<li><a href="${esc(i.u)}" target="_blank" rel="noopener">${esc(i.t)}</a>${seen && i.d > seen ? '<span class="new">New</span>' : ""}<small>${esc(i.s)} · ${day(i.d)}</small></li>`).join("") || "<li>No stories yet.</li>";
+      if (fresh) document.getElementById("weekNote").textContent = fresh + " new " + (fresh === 1 ? "story" : "stories") + " since your last visit";
+      try { localStorage.setItem("sc-home-seen", d.updated); } catch (e){}
+    }).catch(() => fail("wkNews"));
+    fetch("/wards/data/wards.json").then(r => r.json()).then(d => {
+      const all = []; d.wards.forEach(w => (w.z || []).forEach(z => all.push(z)));
+      all.sort((a, b) => (b.d || "").localeCompare(a.d || ""));
+      document.getElementById("wkZone").innerHTML = all.slice(0, 5).map(z => `<li><a href="/wards/#${z.w}">${esc(z.a)}</a><small><span class="tag ${z.k}">${KIND[z.k] || "Change"}</span>${z.f && z.t ? esc(z.f) + " to " + esc(z.t) + " · " : ""}Ward ${z.w} · ${day(z.d)}</small></li>`).join("") || "<li>None yet.</li>";
+    }).catch(() => fail("wkZone"));
+    fetch("/wards/data/meetings.json").then(r => r.json()).then(m => {
+      const now = Date.now() - 2 * 3600e3, tz = {timeZone:"America/Chicago"};
+      const up = m.meetings.filter(x => Date.parse(x.d) >= now && !/cancel/i.test(x.st)).slice(0, 5);
+      document.getElementById("wkCal").innerHTML = up.map(x => { const d = new Date(x.d);
+        return `<li><a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(x.id)}" target="_blank" rel="noopener">${esc(x.b.replace(/^Committee on /, ""))}</a><small>${d.toLocaleDateString("en-US", {...tz, weekday:"short", month:"short", day:"numeric"})}, ${d.toLocaleTimeString("en-US", {...tz, hour:"numeric", minute:"2-digit"})}${x.c ? " · comment by " + esc(x.c.replace(/, \d{4}/, "")) : ""}</small></li>`; }).join("") || "<li>Nothing scheduled yet.</li>";
+    }).catch(() => fail("wkCal"));
+    fetch("/tracker/data.json").then(r => r.json()).then(d => {
+      const ps = d.projects.filter(p => p.homes >= 2).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+      document.getElementById("wkPermits").innerHTML = ps.map(p => `<li><a href="/tracker/#projects">${esc(p.addr)}</a><small>${fmt(p.homes)} homes · ${esc(p.ca || "")}${p.ward ? " · Ward " + esc(p.ward) : ""} · ${day(p.date)}</small></li>`).join("");
+    }).catch(() => fail("wkPermits"));
+  }
+  const sec = document.getElementById("weekH").closest("section");
+  if ("IntersectionObserver" in window){ const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); go(); } }, {rootMargin:"400px"}); io.observe(sec); } else go();
+})();
 </script>
 </body>
 </html>

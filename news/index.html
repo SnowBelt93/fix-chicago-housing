@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chicago Planning News</title>
+<meta name="description" content="Every new Chicago story on housing, development, zoning, transit and the city budget, from Block Club, the Sun-Times, WBEZ, WTTW, Streetsblog and more, in one list.">
+<meta property="og:title" content="Chicago Planning News">
+<meta property="og:description" content="Chicago housing, development, transit and budget stories from local outlets, in one list.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" type="application/atom+xml" title="Chicago planning news" href="/news/feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+.sc-head{position:sticky;top:0}
+main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
+.top{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:center;margin-bottom:14px}
+.top h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;margin:0 0 6px;line-height:1.08}
+.top p{margin:0;color:var(--sc-ink2);font-size:15.5px;line-height:1.5}
+.top img{width:100%;height:auto;border-radius:16px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0 6px}
+.chip{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+.bar input{font:inherit;font-size:14px;padding:7px 12px;border-radius:14px;border:1px solid var(--sc-line2);margin-left:auto;min-width:180px}
+.day{font-size:13px;font-weight:600;color:var(--sc-mute);margin:20px 4px 6px}
+.item{display:block;background:#fff;border-radius:14px;box-shadow:var(--sc-shadow1, 0 1px 2px rgba(0,0,0,.06));padding:12px 16px;margin-bottom:8px;text-decoration:none;color:var(--sc-ink);transition:transform .15s,box-shadow .15s}
+.item:hover{transform:translateY(-1px);box-shadow:var(--sc-shadow2)}
+.item b{display:block;font-size:16px;font-weight:600;line-height:1.35;letter-spacing:-.005em}
+.item span{font-size:12.5px;color:var(--sc-mute)}
+.item .t{display:inline-block;font-size:11px;font-weight:600;background:var(--sc-seg);color:var(--sc-ink2);border-radius:8px;padding:1px 7px;margin-left:6px}
+.empty{color:var(--sc-mute);font-size:14px;padding:20px 4px}
+.fine{font-size:12px;color:var(--sc-mute);line-height:1.55;margin-top:24px}
+.fine a{color:var(--sc-mute)}
+.follow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+@media (max-width:700px){ .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .bar input{margin-left:0;width:100%} .sc-fan{display:none} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/" aria-current="page">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+  <section class="top">
+    <div><h1>Chicago planning news</h1>
+      <p>Every new story about Chicago housing, development, zoning, transit and the city budget, from local newsrooms, in one list. Headlines link straight to the outlet.</p>
+      <div class="follow"><button class="sc-btn" id="newOnly">Show what's new since my last visit</button><a class="sc-btn" href="/news/feed.xml" style="display:inline-flex;align-items:center;text-decoration:none">Follow in a feed reader</a></div></div>
+    <img src="/shape/art/news.webp" width="880" height="600" alt="" id="art" onerror="this.remove()">
+  </section>
+  <div class="bar" id="chips"></div>
+  <div id="list"><p class="empty">Loading…</p></div>
+  <p class="fine" id="srcs"></p>
+</main>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const TOP = [["all", "Everything"], ["housing", "Housing"], ["development", "Development"], ["zoning", "Zoning"], ["transit", "Transit"], ["budget", "Budget"], ["policy", "City Hall"]];
+let D = null, topic = "all", q = "", since = null;
+let last = null; try { last = localStorage.getItem("sc-news-seen"); } catch (e){}
+function render(){
+  const items = D.items.filter(i => (topic === "all" || i.g.includes(topic)) && (!q || (i.t + " " + i.s).toLowerCase().includes(q)) && (!since || i.d > since));
+  if (!items.length){ $("list").innerHTML = `<p class="empty">${since ? "Nothing new since your last visit." : "No stories match."}</p>`; return; }
+  let h = "", day = "";
+  items.forEach((i, n) => {
+    const d = new Date(i.d.replace("Z", ":00Z")), k = d.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric"});
+    if (k !== day){ day = k; h += `<div class="day">${k}</div>`; }
+    h += `<a class="item" href="${i.u}" target="_blank" rel="noopener"><b>${i.t.replace(/</g, "&lt;")}</b><span>${i.s}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></a>`;
+    if (items.length >= 4 && n === Math.min(7, items.length - 1)) h += `<div data-ad="news"></div>`;
+  });
+  $("list").innerHTML = h;
+  window.scShowAds && window.scShowAds();
+}
+function chips(){
+  $("chips").innerHTML = TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
+  $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => { topic = b.dataset.k; chips(); render(); });
+  $("q").value = q; $("q").oninput = e => { q = e.target.value.toLowerCase(); render(); };
+}
+$("newOnly").onclick = () => { since = since ? null : last; $("newOnly").textContent = since ? "Show everything" : "Show what's new since my last visit"; render(); };
+fetch("data/news.json").then(r => r.json()).then(d => {
+  D = d; chips(); render();
+  if (!last) $("newOnly").style.display = "none";
+  const ok = Object.entries(d.sources).filter(([, n]) => n >= 0).map(([s]) => s);
+  $("srcs").innerHTML = `From the public feeds of ${ok.join(", ")}. Checked every three hours; stories stay for about six weeks. Only headlines and links are shown: read the stories at the outlets. Stories are picked by keywords, so a few misses get through.`;
+  try { localStorage.setItem("sc-news-seen", d.updated); } catch (e){}
+}).catch(() => { $("list").innerHTML = `<p class="empty">The news list isn't available right now.</p>`; });
+</script>
+</body>
+</html>

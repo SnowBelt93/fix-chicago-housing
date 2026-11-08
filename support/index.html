@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Support · Shape Chicago</title>
+<meta name="description" content="Chip in to keep Shape Chicago free.">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#fff}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{max-width:720px;margin:0 auto;padding:48px max(24px,env(safe-area-inset-left)) 64px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
+.upd{color:var(--sc-mute);font-size:14px;margin:0 0 28px}
+.lede{font-size:18px;line-height:1.55;color:var(--sc-ink2);margin:0 0 32px}
+h2{font-size:20px;letter-spacing:-.01em;font-weight:600;margin:34px 0 10px}
+p,li{font-size:16px;line-height:1.6;color:var(--sc-ink2)}
+p{margin:0 0 12px}
+ul{margin:0 0 12px;padding-left:22px} li{margin-bottom:6px}
+b{color:var(--sc-ink);font-weight:600}
+footer{border-top:1px solid var(--sc-line)}
+footer .wrap{max-width:1200px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-left)) 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
+footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
+footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
+footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
+@media (max-width:640px){ main{padding:32px 16px 48px} h1{font-size:32px} .lede{font-size:16px} footer .wrap{flex-direction:column;align-items:flex-start;padding-inline:16px} }
+.hero{display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:center;margin-bottom:8px}
+.hero img{width:100%;height:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 8px}
+.cards div{border:1px solid var(--sc-line);border-radius:14px;padding:14px 16px}
+.cards b{display:block;margin-bottom:4px}
+.cards p{font-size:14.5px;margin:0}
+form{display:grid;gap:10px;margin:14px 0}
+label{font-size:14px;font-weight:600;color:var(--sc-ink)}
+input,textarea,select{font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--sc-line2);border-radius:10px;width:100%;margin-top:4px}
+textarea{min-height:110px}
+.ok{color:#1f7a45;font-weight:600}
+@media (max-width:640px){ .hero{grid-template-columns:1fr} .hero img{max-width:260px} .cards{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+<section class="hero"><div>
+<h1>Support Shape Chicago</h1>
+<p class="lede">Shape Chicago is free, has no accounts and never will. If it helped you understand your city, you can chip in to keep it running.</p>
+<p data-support></p>
+</div><img src="/shape/art/support.webp" width="600" height="420" alt="A tip jar of gold coins with a red Chicago star."></section>
+<h2>What it pays for</h2>
+<ul>
+<li><b>Hosting and the domain.</b> The maps, data files and plan gallery run on Cloudflare.</li>
+<li><b>Keeping the data fresh.</b> The permit tracker, ward records and news list rebuild themselves every day; that takes computing time.</li>
+<li><b>New tools.</b> More of the city's big questions, done the same way: every number linked to its source.</li>
+</ul>
+<h2>What it doesn't buy</h2>
+<p>Influence. Supporters don't get a say in what the tools show, and no number changes for anyone. If you'd rather put your business in front of people who use the site, see <a href="/advertise/">advertising</a>.</p>
+<p class="upd" id="soon"></p>
+<script>
+fetch("/shape/site.json").then(r => r.json()).then(s => { if (!(s.support && s.support.url)) document.getElementById("soon").textContent = "The payment link is being set up. Check back soon."; }).catch(() => {});
+</script>
+</main>
+<footer><div class="wrap">
+  <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+  <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra.</span>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/advertise/">Advertise</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+</div></footer>
+</body>
+</html>

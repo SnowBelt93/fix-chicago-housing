@@ -106,3 +106,15 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 .sc-nav{min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .sc-nav::-webkit-scrollbar{display:none}
 @media (max-width:440px){ .sc-nav a{padding:7px 7px} .sc-nav{font-size:12.5px} }
+
+/* local sponsor card and support button (shape.js fills [data-ad] and [data-support]) */
+.sc-ad{display:block;margin:14px 0;font-family:var(--sc-font)}
+.sc-ad-l{display:block;font-size:11px;font-weight:600;color:var(--sc-mute);margin:0 0 4px 2px}
+.sc-ad-b{display:flex;gap:12px;align-items:center;background:#fff;border:1px dashed var(--sc-line2);border-radius:14px;padding:10px 14px;text-decoration:none;color:var(--sc-ink);transition:border-color .15s,background .15s}
+.sc-ad-b:hover{border-color:var(--sc-navy);background:#f8fbff}
+.sc-ad-b img{width:72px;height:48px;object-fit:contain;flex:none;border-radius:8px}
+.sc-ad-b b{display:block;font-size:14.5px;font-weight:600;line-height:1.3}
+.sc-ad-b span span{display:block;font-size:13px;color:var(--sc-ink2);line-height:1.4;margin-top:1px}
+.sc-support{display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.sc-support svg{width:15px;height:15px;color:var(--sc-star)}
+.sc-foot-extra{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:12px 0 0;font-size:13px}

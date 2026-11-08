@@ -30,7 +30,7 @@ b{color:var(--sc-ink);font-weight:600}
 footer{border-top:1px solid var(--sc-line)}
 footer .wrap{max-width:1200px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-left)) 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
 footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
-footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:none}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
 footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
 footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (max-width:640px){ main{padding:32px 16px 48px} h1{font-size:32px} .lede{font-size:16px} footer .wrap{flex-direction:column;align-items:flex-start;padding-inline:16px} }
@@ -39,12 +39,12 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
 <h1>Terms of use</h1>
-<p class="upd">Last updated November 6, 2026</p>
+<p class="upd">Last updated November 7, 2026</p>
 <p class="lede">Shape Chicago is a free, fan-made set of simulations for learning how housing and transit in Chicago work. By using it, you agree to these terms.</p>
 
 <h2>These are estimates, not advice</h2>
@@ -60,6 +60,9 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <li>If you post a plan to the gallery, you let us show it publicly and let others open and remix it. We may remove any plan.</li>
 </ul>
 
+<h2>Sponsors, support and news links</h2>
+<p>Cards labeled "Local sponsor" are paid. Sponsors don't review or change anything the tools show. Chipping in through the Support page is a gift, not a purchase: it buys nothing and gives no say over the site. The news list shows headlines and links from each outlet's public feed; the stories belong to those outlets.</p>
+
 <h2>Data and credits</h2>
 <p>The map and numbers come from public sources, including the City of Chicago Data Portal, the Cook County Assessor, the CTA, Metra, the U.S. Census Bureau and OpenStreetMap contributors (Open Database License). Each source keeps its own terms, and the Sources page in each tool lists them.</p>
 
@@ -73,7 +76,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <footer><div class="wrap">
   <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
   <span>A fan-made project. Not affiliated with the City of Chicago, CTA or Metra.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/tracker/">Permit tracker</a><a href="/learn/">Learn</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/advertise/">Advertise</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
 </div></footer>
 </body>
 </html>
