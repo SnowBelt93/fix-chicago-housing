@@ -1,0 +1,1779 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "CITY OF CHICAGO",
+    "description": "LEGISLATION API",
+    "termsOfService": "https://chicityclerkelms.chicago.gov/TermsAndConditions",
+    "contact": {
+      "email": "ClerkELMSSupport@cityofchicago.org"
+    },
+    "version": "BETA"
+  },
+  "host": "api.chicityclerkelms.chicago.gov",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/body": {
+      "get": {
+        "tags": [
+          "Body"
+        ],
+        "description": "Sortable fields: body,lastPublicationDate; Filterable fields:bodyType, isActive, lastPublicationDate",
+        "operationId": "GetBodies",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=bodyType eq 'Full City Council'",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for bodies. Allowed values are 'body', 'body asc' and 'body desc'. If not provided, bodies will be sorted by body in ascending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Bodies",
+            "schema": {
+              "$ref": "#/definitions/bodies"
+            }
+          }
+        }
+      }
+    },
+    "/body/{bodyId}": {
+      "get": {
+        "tags": [
+          "Body"
+        ],
+        "operationId": "GetBody",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bodyId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetBody",
+            "schema": {
+              "$ref": "#/definitions/body"
+            }
+          }
+        }
+      }
+    },
+    "/export/body": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "Filterable fields:bodyType, isActive",
+        "operationId": "GetBodiGetBodiesCsv",
+        "produces": [
+          "text/csv"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=bodyType eq 'Full City Council'",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for bodies. Allowed values are 'body', 'body asc' and 'body desc'. If not provided, bodies will be sorted by body in ascending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/apiError"
+            }
+          }
+        }
+      }
+    },
+    "/matter": {
+      "get": {
+        "tags": [
+          "Matter"
+        ],
+        "description": "Sortable fields: fileYear, recordCreateDate, finalActionDate, introductionDate, lastPublicationDate; Filterable fields: matterId, fileYear, recordNumber, legacyRecordNumber, originalRecordNumber, supersededBy, status, filingOffice, filingSponsor, introductionDate, controllingBody, keyLegislation, economicDisclosure, recordCreateDate, finalActionDate, sponsors/office, sponsors/sponsorName, sponsors/sponsorType, relations/recordNumber, relations/matterId, actions/journalPage, actions/actionDate, actions/actionByName, actions/actionName, actions/meetingId, actions/historyId, actions/votes/voterName, actions/votes/vote, attachments/fileName, attachments/attachmentType. Note: Complex collections (sponsors, relations, actions, attachments) can be accessed using the 'get by ID' endpoint.",
+        "operationId": "GetMatters",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=introductionDate lt 2023-01-01T00:00:00Z and attachments/any(a: a/attachmentType eq 'Misc.')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for matters. Allowed values are fileYear, recordCreateDate, finalActionDate, introductionDate; 'fileYear asc' and 'fileYear desc'. If not provided, matters will be sorted by introductionDate in descending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Matters",
+            "schema": {
+              "$ref": "#/definitions/matters"
+            }
+          }
+        }
+      }
+    },
+    "/matter/{matterId}": {
+      "get": {
+        "tags": [
+          "Matter"
+        ],
+        "operationId": "GetMatter",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "matterId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMatter",
+            "schema": {
+              "$ref": "#/definitions/matter"
+            }
+          }
+        }
+      }
+    },
+    "/matter/recordNumber/{recordNumber}": {
+      "get": {
+        "tags": [
+          "Matter"
+        ],
+        "operationId": "GetMatterByRecordNumber",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "recordNumber",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMatterByRecordNumber",
+            "schema": {
+              "$ref": "#/definitions/matter"
+            }
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "Full-text Search"
+        ],
+        "description": "Sortable fields: introductionDate, finalActionDate, lastPublicationDate; Filterable fields: matterId, keyLegislation, economicDisclosure, fileYear, recordNumber, legacyRecordNumber, orignalRecordNumber, supersededBy, controllingBody, type, status, introductionDate, finalActionDate, lastPublicationDate",
+        "operationId": "GetUIMatterSearch",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=introductionDate lt 2023-01-01T00:00:00Z",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for matters. Allowed values are title, filingOffice, keyLegislation, status, filingSponsor, economicDisclosure, fileYear, recordNumber, controllingBody, type, finalActionDate, introductionDate; 'introductionDate asc' and 'introductionDate desc'. If not provided, matters will be sorted by introductionDate in descending order.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includeAttachments",
+            "description": "Flag indicating whether to include matter attachments in the search",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Search Matters",
+            "schema": {
+              "$ref": "#/definitions/mattersSearch"
+            }
+          }
+        }
+      }
+    },
+    "/export/matter": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "Retrieves matters and returns the results as a CSV file, exports up to 500 records",
+        "operationId": "GetMattersAsCsv",
+        "produces": [
+          "text/csv"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=introductionDate lt 2023-01-01T00:00:00Z and attachments/any(a: a/attachmentType eq 'Misc.')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for matters. Allowed values are fileYear, recordCreateDate, finalActionDate, introductionDate; 'fileYear asc' and 'fileYear desc'. If not provided, matters will be sorted by introductionDate in descending order.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includeAttachments",
+            "description": "Flag indicating whether to include matter attachments in the search",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/apiError"
+            }
+          }
+        }
+      }
+    },
+    "/meeting-agenda": {
+      "get": {
+        "tags": [
+          "Meeting-Agenda"
+        ],
+        "description": "Sortable fields: body, date, lastPublicationDate; Filterable fields: body, date, location, meetingId, meetingKey, files/attachmentType, agenda/matterId, agenda/recordNumber, agenda/actionName. Note: Complex collections (agenda, attendance) can be accessed using the 'get by Id' endpoint.",
+        "operationId": "GetMeetingAgendas",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=body eq 'City Council' and location eq 'Room' and date lt 2023-01-01T00:00:00Z and files/any(f: f/attachmentType eq 'Agenda')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for meetings. Allowed values are date, body and status, 'date asc' and 'date desc'. If not provided, meetings will be sorted by date in descending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Meetings",
+            "schema": {
+              "$ref": "#/definitions/meetingAgendas"
+            }
+          }
+        }
+      }
+    },
+    "/meeting-agenda/{meetingId}": {
+      "get": {
+        "tags": [
+          "Meeting-Agenda"
+        ],
+        "operationId": "GetMeetingAgenda",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "meetingId",
+            "description": "The unique identifier of the meeting for which the agenda is being requested.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The detailed agenda of the specified meeting.",
+            "schema": {
+              "$ref": "#/definitions/meetingAgenda"
+            }
+          }
+        }
+      }
+    },
+    "/meeting-agenda/{meetingId}/matter/{lineId}/votes": {
+      "get": {
+        "tags": [
+          "Meeting-Agenda"
+        ],
+        "operationId": "GetMatterVotes",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "meetingId",
+            "description": "The unique identifier of the meeting.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "lineId",
+            "description": "The unique identifier of the matter or comment associated with the meeting agenda. Either a matterId or a commentId can be passed.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of votes associated with the specified matter or comment.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/vote"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export/meeting-agenda": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "Sortable fields: date; Filterable fields: body, date, location, meetingId, meetingKey, files/attachmentType, agenda/matterId, agenda/recordNumber, agenda/actionName. Note: Complex collections (agenda, attendance) can be accessed using the 'get by Id' endpoint.",
+        "operationId": "GetMeetingsAgendaAsCsv",
+        "produces": [
+          "text/csv"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=body eq 'City Council' and location eq 'Room' and date lt 2023-01-01T00:00:00Z and files/any(f: f/attachmentType eq 'Agenda')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for meetings. Allowed values are date, body and status, 'date asc' and 'date desc'. If not provided, meetings will be sorted by date in descending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/apiError"
+            }
+          }
+        }
+      }
+    },
+    "/meeting": {
+      "get": {
+        "tags": [
+          "Meeting"
+        ],
+        "description": "Sortable fields: date,lastPublicationDate; Filterable fields: body, date, location, meetingId, meetingKey, files/attachmentType, agenda/matterId, agenda/recordNumber, agenda/actionName. Note: Complex collections (agenda, attendance) can be accessed using the 'get by Id' endpoint.",
+        "operationId": "GetMeetings",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=body eq 'City Council' and location eq 'Room' and date lt 2023-01-01T00:00:00Z and files/any(f: f/attachmentType eq 'Agenda')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for meetings. Allowed values are date, body and status, 'date asc' and 'date desc'. If not provided, meetings will be sorted by date in descending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Meetings",
+            "schema": {
+              "$ref": "#/definitions/meetings"
+            }
+          }
+        }
+      }
+    },
+    "/meeting/{meetingId}": {
+      "get": {
+        "tags": [
+          "Meeting(Deprecated)"
+        ],
+        "operationId": "GetMeeting",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "meetingId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMeeting",
+            "schema": {
+              "$ref": "#/definitions/meeting"
+            }
+          }
+        }
+      }
+    },
+    "/meeting/{meetingId}/matter/{matterId}/votes": {
+      "get": {
+        "tags": [
+          "Meeting(Deprecated)"
+        ],
+        "operationId": "GetMatterVotes",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "meetingId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "matterId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetMatterVotes",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/vote"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export/meeting": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "(Deprecated)Sortable fields: date; Filterable fields: body, date, location, meetingId, meetingKey, files/attachmentType, agenda/matterId, agenda/recordNumber, agenda/actionName. Note: Complex collections (agenda, attendance) can be accessed using the 'get by Id' endpoint.",
+        "operationId": "GetMeetingsAsCsv",
+        "produces": [
+          "text/csv"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=body eq 'City Council' and location eq 'Room' and date lt 2023-01-01T00:00:00Z and files/any(f: f/attachmentType eq 'Agenda')",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for meetings. Allowed values are date, body and status, 'date asc' and 'date desc'. If not provided, meetings will be sorted by date in descending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/apiError"
+            }
+          }
+        }
+      }
+    },
+    "/person": {
+      "get": {
+        "tags": [
+          "Person"
+        ],
+        "description": "Sortable fields: displayName, ward, lastPublicationDate; Filterable fields:ward, email",
+        "operationId": "GetPersons",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=personType eq 'Full City Council'",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "top",
+            "description": "Must be a non-negative integer. If not provided, defaults to 100. The maximum value for the 'top' parameter is 500.",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "skip",
+            "description": "The number of results to skip before returning the remaining results. Must be a non-negative integer. If not provided, defaults to 0.",
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for persons. Allowed values are 'displayName', 'displayName asc' and 'displayName desc'. If not provided, persons will be sorted by displayName in ascending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of Persons",
+            "schema": {
+              "$ref": "#/definitions/persons"
+            }
+          }
+        }
+      }
+    },
+    "/export/person": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "Sortable fields: displayName, ward; Filterable fields:ward, email",
+        "operationId": "GetPersonsCsv",
+        "produces": [
+          "text/csv"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "A filter expression used to reduce the result set based on a given criteria. Example: filter=personType eq 'Full City Council'",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "A full-text search query used to find results that match a given text",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "description": "Sort order for persons. Allowed values are 'displayName', 'displayName asc' and 'displayName desc'. If not provided, persons will be sorted by displayName in ascending order.",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/apiError"
+            }
+          }
+        }
+      }
+    },
+    "/person/{personId}": {
+      "get": {
+        "tags": [
+          "Person"
+        ],
+        "operationId": "GetPerson",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "personId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GetPerson",
+            "schema": {
+              "$ref": "#/definitions/person"
+            }
+          }
+        }
+      }
+    },
+    "/swagger.json": {
+      "get": {
+        "tags": [
+          "Swagger"
+        ],
+        "operationId": "Swagger",
+        "produces": [
+          "application/json; charset=utf-8"
+        ],
+        "responses": {
+          "200": {
+            "description": "Swagger",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "action": {
+      "type": "object",
+      "properties": {
+        "actionDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "journalPage": {
+          "type": "string"
+        },
+        "actionByName": {
+          "type": "string"
+        },
+        "actionName": {
+          "type": "string"
+        },
+        "actionText": {
+          "type": "string"
+        },
+        "meetingId": {
+          "type": "string"
+        },
+        "historyId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "sort": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vote"
+          }
+        }
+      }
+    },
+    "agenda": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/agendaGroup"
+          }
+        }
+      }
+    },
+    "agendaGroup": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "sort": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "groupTag": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/meetingAgendaItem"
+          }
+        }
+      }
+    },
+    "agendaItem": {
+      "type": "object",
+      "properties": {
+        "matterId": {
+          "type": "string"
+        },
+        "matterTitle": {
+          "type": "string"
+        },
+        "matterType": {
+          "type": "string"
+        },
+        "recordNumber": {
+          "type": "string"
+        },
+        "actionName": {
+          "type": "string"
+        },
+        "actionText": {
+          "type": "string"
+        },
+        "sort": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "agendaItemDescription": {
+          "type": "string"
+        }
+      }
+    },
+    "apiError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "status": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "attachment": {
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "attachmentType": {
+          "type": "string"
+        }
+      }
+    },
+    "attendance": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/vote"
+          }
+        }
+      }
+    },
+    "bodies": {
+      "type": "object",
+      "properties": {
+        "facets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/facet"
+          }
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/body"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "body": {
+      "type": "object",
+      "properties": {
+        "bodyId": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "bodyDescription": {
+          "type": "string"
+        },
+        "bodyType": {
+          "type": "string"
+        },
+        "bodyAbbreviation": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/member"
+          }
+        }
+      }
+    },
+    "facet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/facetValue"
+          }
+        }
+      }
+    },
+    "facetValue": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "count": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "matter": {
+      "type": "object",
+      "properties": {
+        "matterId": {
+          "type": "string"
+        },
+        "fileYear": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "recordNumber": {
+          "type": "string"
+        },
+        "legacyRecordNumber": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "legacyStatus": {
+          "type": "string"
+        },
+        "subStatus": {
+          "type": "string"
+        },
+        "statusDescription": {
+          "type": "string"
+        },
+        "filingOffice": {
+          "type": "string"
+        },
+        "filingSponsor": {
+          "type": "string"
+        },
+        "filingSponsorId": {
+          "type": "string"
+        },
+        "introductionDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "finalActionDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "shortTitle": {
+          "type": "string"
+        },
+        "committeReferral": {
+          "type": "string"
+        },
+        "routine": {
+          "type": "string"
+        },
+        "introductionType": {
+          "type": "string"
+        },
+        "controllingBody": {
+          "type": "string"
+        },
+        "controllingBodyId": {
+          "type": "string"
+        },
+        "keyLegislation": {
+          "type": "string"
+        },
+        "economicDisclosure": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "nicknameAlias": {
+          "type": "string"
+        },
+        "recordCreateDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "matterCategory": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "originalRecordNumber": {
+          "type": "string"
+        },
+        "supersededBy": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/action"
+          }
+        },
+        "sponsors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sponsor"
+          }
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/attachment"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "agreedCalendar": {
+          "type": "string"
+        },
+        "timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/timelineEvent"
+          }
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "matters": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/matter"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "matterSearch": {
+      "type": "object",
+      "properties": {
+        "matterId": {
+          "type": "string"
+        },
+        "recordNumber": {
+          "type": "string"
+        },
+        "legacyRecordNumber": {
+          "type": "string"
+        },
+        "originalRecordNumber": {
+          "type": "string"
+        },
+        "supersededBy": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "controllingBodyId": {
+          "type": "string"
+        },
+        "controllingBody": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "subStatus": {
+          "type": "string"
+        },
+        "legacyStatus": {
+          "type": "string"
+        },
+        "introductionDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "finalActionDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "filingSponsorId": {
+          "type": "string"
+        },
+        "filingSponsor": {
+          "type": "string"
+        },
+        "fileYear": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "keyLegislation": {
+          "type": "string"
+        },
+        "economicDisclosure": {
+          "type": "string"
+        },
+        "filingOffice": {
+          "type": "string"
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "agreedCalendar": {
+          "type": "string"
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "mattersSearch": {
+      "type": "object",
+      "properties": {
+        "facets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/facet"
+          }
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/matterSearch"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "meeting": {
+      "type": "object",
+      "properties": {
+        "meetingId": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "bodyId": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "bodyAbbreviation": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "videoLink": {
+          "type": "string"
+        },
+        "transcriptLink": {
+          "type": "string"
+        },
+        "date": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/meetingFile"
+          }
+        },
+        "agenda": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/agendaItem"
+          }
+        },
+        "attendance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/attendance"
+          }
+        }
+      }
+    },
+    "meetingAgenda": {
+      "type": "object",
+      "properties": {
+        "meetingId": {
+          "type": "string"
+        },
+        "meetingCode": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "bodyId": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "bodyAbbreviation": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "videoLink": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transcriptLink": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "date": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "publicCommentDeadline": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "agenda": {
+          "$ref": "#/definitions/agenda"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/meetingFile"
+          }
+        },
+        "attendance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/attendance"
+          }
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "relatedMeetings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/relatedMeeting"
+          }
+        },
+        "timeline": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/timelineEvent"
+          }
+        }
+      }
+    },
+    "meetingAgendaItem": {
+      "type": "object",
+      "properties": {
+        "matterId": {
+          "type": "string"
+        },
+        "matterTitle": {
+          "type": "string"
+        },
+        "matterType": {
+          "type": "string"
+        },
+        "recordNumber": {
+          "type": "string"
+        },
+        "actionName": {
+          "type": "string"
+        },
+        "actionText": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "commentId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "sort": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "displayId": {
+          "type": "string"
+        },
+        "agendaItemDescription": {
+          "type": "string"
+        },
+        "hasVotes": {
+          "type": "boolean"
+        },
+        "voteType": {
+          "type": "string"
+        }
+      }
+    },
+    "meetingAgendas": {
+      "type": "object",
+      "properties": {
+        "facets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/facet"
+          }
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/meetingAgenda"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "meetingFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "attachmentType": {
+          "type": "string"
+        },
+        "sort": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "meetings": {
+      "type": "object",
+      "properties": {
+        "facets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/facet"
+          }
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/meeting"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "member": {
+      "type": "object",
+      "properties": {
+        "personId": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "ward": {
+          "type": "string"
+        },
+        "memberType": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "fax": {
+          "type": "string"
+        },
+        "site": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "email2": {
+          "type": "string"
+        },
+        "phone2": {
+          "type": "string"
+        },
+        "fax2": {
+          "type": "string"
+        },
+        "site2": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "city2": {
+          "type": "string"
+        },
+        "zip2": {
+          "type": "string"
+        },
+        "state2": {
+          "type": "string"
+        },
+        "startDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "endDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "skip": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "top": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "count": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "pages": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "person": {
+      "type": "object",
+      "properties": {
+        "personId": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "ward": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "fax": {
+          "type": "string"
+        },
+        "site": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "zip": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "email2": {
+          "type": "string"
+        },
+        "phone2": {
+          "type": "string"
+        },
+        "fax2": {
+          "type": "string"
+        },
+        "site2": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "city2": {
+          "type": "string"
+        },
+        "zip2": {
+          "type": "string"
+        },
+        "state2": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "lastPublicationDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "photo": {
+          "type": "string"
+        }
+      }
+    },
+    "persons": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/person"
+          }
+        },
+        "meta": {
+          "$ref": "#/definitions/meta"
+        }
+      }
+    },
+    "relatedMeeting": {
+      "type": "object",
+      "properties": {
+        "meetingId": {
+          "type": "string"
+        },
+        "meetingCode": {
+          "type": "string"
+        },
+        "date": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "actionTaken": {
+          "type": "string"
+        }
+      }
+    },
+    "sponsor": {
+      "type": "object",
+      "properties": {
+        "office": {
+          "type": "string"
+        },
+        "sponsorName": {
+          "type": "string"
+        },
+        "sponsorType": {
+          "type": "string"
+        },
+        "personId": {
+          "type": "string"
+        }
+      }
+    },
+    "timelineEvent": {
+      "type": "object",
+      "properties": {
+        "eventName": {
+          "type": "string"
+        },
+        "timestamp": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "eventText": {
+          "type": "string"
+        }
+      }
+    },
+    "vote": {
+      "type": "object",
+      "properties": {
+        "voterName": {
+          "type": "string"
+        },
+        "vote": {
+          "type": "string"
+        },
+        "personId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
