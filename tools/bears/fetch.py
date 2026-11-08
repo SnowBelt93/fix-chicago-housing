@@ -100,8 +100,9 @@ def land():
     path = os.path.join(OUT, 'land_tiles.json.gz')
     done = json.load(gzip.open(path, 'rt')) if os.path.exists(path) else {}
     good = sorted(k for k in GOOD if k[0] != 'amenity')
-    for i in range(NT):
-        for j in range(NT):
+    order = sorted(((i, j) for i in range(NT) for j in range(NT)), key=lambda t: abs(t[0] - 2) + abs(t[1] - 2))   # the city first
+    for i, j in order:
+        if True:
             key = f'{i}_{j}'
             if key in done:
                 continue
