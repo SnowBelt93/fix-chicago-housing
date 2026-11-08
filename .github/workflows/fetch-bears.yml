@@ -31,6 +31,8 @@ jobs:
             done
           done
       - name: Download
+        timeout-minutes: 95
+        continue-on-error: true
         env:
           MSG: ${{ github.event.head_commit.message }}
         run: |
@@ -38,6 +40,7 @@ jobs:
           python3 tools/bears/fetch.py $STEPS
           ls -la tools/raw/bears
       - name: Commit
+        if: always()
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add tools/raw/bears
