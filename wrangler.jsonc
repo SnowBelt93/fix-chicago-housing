@@ -13,6 +13,8 @@
     "bindings": [{ "name": "COMMUNITY", "class_name": "Community" }]
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Community"] }],
+  // the old site's Worker, to copy plans people posted there into this gallery until launch (worker/index.js sync())
+  "services": [{ "binding": "OLD", "service": "fix-chicago-housing" }],
   "workers_dev": true,
   "observability": { "enabled": true }
 }

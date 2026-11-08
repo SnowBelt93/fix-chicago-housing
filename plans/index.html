@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neighbors' Plans · Shape Chicago</title>
+<meta name="description" content="Housing plans people built in Shape Chicago's housing simulator. Endorse the ones you'd back, or open one and remix it.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Neighbors' plans for Chicago housing">
+<meta property="og:description" content="Housing plans people built and shared. Endorse the ones you'd back, or open one and remix it.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{max-width:1200px;margin:0 auto;padding:36px max(24px,env(safe-area-inset-left)) 64px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
+.lede{font-size:17px;line-height:1.5;color:var(--sc-ink2);margin:0 0 22px;max-width:40em}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 18px}
+.bar select{font:inherit;font-size:14px;min-height:38px;padding:0 10px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.bar .n{margin-left:auto;font-size:14px;color:var(--sc-mute)}
+.mine{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:14px 18px;margin:0 0 22px;font-size:15px}
+.mine b{font-weight:600} .mine .new{color:#1f6b44;font-weight:600}
+.mine a{font-weight:600;text-decoration:none}
+.empty{background:#fff;border:1px dashed var(--sc-line2);border-radius:16px;padding:28px;text-align:center;color:var(--sc-ink2);font-size:15.5px;line-height:1.5}
+.empty .sc-btn{display:inline-flex;align-items:center;margin-top:12px;text-decoration:none}
+/* one plan */
+.back{display:inline-flex;align-items:center;gap:6px;font-size:14.5px;font-weight:600;text-decoration:none;margin:0 0 14px}
+.det{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;align-items:start}
+.dmap{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.dmap svg{width:100%;max-height:640px;height:auto}
+.key{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--sc-ink2);justify-content:center}
+.key i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dside{display:flex;flex-direction:column;gap:14px}
+.dcard{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:20px 22px}
+.dtop{display:flex;gap:14px;align-items:flex-start}
+.dtop .pgr{position:relative;left:auto;top:auto;flex:none;width:58px;height:58px}
+.dtop .pgr i{font-size:17px}
+.dtop h1{font-size:28px;margin:2px 0 4px}
+.dtop .pwho{margin:0}
+.nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 0}
+.nums div{background:#f6f7f9;border-radius:12px;padding:10px 12px}
+.nums b{display:block;font-size:22px;font-weight:600;letter-spacing:-.01em}
+.nums span{font-size:13px;color:var(--sc-mute)}
+.acts{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.acts .sc-btn{display:inline-flex;align-items:center;text-decoration:none}
+.dcard h2{font-size:17px;font-weight:600;margin:0 0 10px}
+.dcard h3{font-size:13px;font-weight:600;color:var(--sc-mute);margin:14px 0 6px}
+.dcard h3:first-of-type{margin-top:0}
+.note{font-size:13px;color:var(--sc-mute);line-height:1.45;margin:0}
+footer{border-top:1px solid var(--sc-line);background:#fff}
+footer .wrap{max-width:1200px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-left)) 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
+footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;justify-content:flex-end;max-width:620px}
+footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
+footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
+@media (max-width:900px){ .det{grid-template-columns:1fr} }
+@media (max-width:640px){ main{padding:24px 16px 48px} h1{font-size:30px} .lede{font-size:15.5px} .bar .n{margin-left:0;width:100%} footer .wrap{flex-direction:column;align-items:flex-start;padding-inline:16px} .dtop h1{font-size:23px} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main id="app">
+  <section id="list">
+    <h1>Neighbors' plans</h1>
+    <p class="lede">Housing plans people built in the housing simulator and chose to share. Endorse the ones you'd back, or open one and change it.</p>
+    <div class="mine" id="mine" hidden></div>
+    <div class="bar">
+      <div class="sc-seg" role="radiogroup" aria-label="Sort plans"><button type="button" role="radio" aria-checked="true" data-s="top">Most endorsed</button><button type="button" role="radio" aria-checked="false" data-s="new">Newest</button></div>
+      <select id="hood" aria-label="Neighborhood"><option value="0">From anywhere</option></select>
+      <span class="n" id="count"></span>
+    </div>
+    <div class="pgrid" id="grid"><div class="empty">Loading plans…</div></div>
+  </section>
+  <section id="one" hidden></section>
+</main>
+<footer><div class="wrap">
+  <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+  <span>Not affiliated with the City of Chicago.</span>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/">Neighbors' plans</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+</div></footer>
+<script>
+const S = window.SCPlans, $ = id => document.getElementById(id);
+let sort = "top", hood = 0;
+try { hood = +localStorage.getItem("fch-home-hood") || 0; } catch (e) {}
+S.AREAS.forEach((n, i) => { if (i) { const o = document.createElement("option"); o.value = i; o.textContent = "From " + n; $("hood").appendChild(o); } });
+[...$("hood").options].sort((a, b) => +a.value === 0 ? -1 : +b.value === 0 ? 1 : a.textContent.localeCompare(b.textContent)).forEach(o => $("hood").appendChild(o));
+$("hood").value = String(hood);
+
+const none = '<div class="empty" style="grid-column:1/-1">No plans posted yet' + '<span id="nh"></span>. Build one in the housing simulator and post it from the results page.<br><a class="sc-btn primary" href="/housing/">Open the housing simulator</a></div>';
+async function list(){
+  const grid = $("grid");
+  try {
+    const [G, r] = await Promise.all([S.geo(), fetch("/api/gallery?limit=60&sort=" + sort + (hood ? "&hood=" + hood : ""))]);
+    if (!r.ok) throw 0;
+    const {plans} = await r.json();
+    grid.innerHTML = "";
+    $("count").textContent = plans.length ? plans.length + (plans.length === 60 ? "+" : "") + (plans.length === 1 ? " plan" : " plans") : "";
+    if (!plans.length){ grid.innerHTML = none; if (hood) $("nh").textContent = " from " + S.AREAS[hood]; return; }
+    for (const P of plans){ const c = S.card(P, G); if (c) grid.appendChild(c); }
+  } catch (e) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Plans show up here once the site is connected to its plan gallery.</div>'; }
+}
+document.querySelectorAll(".bar .sc-seg button").forEach(b => b.addEventListener("click", () => {
+  sort = b.dataset.s; document.querySelectorAll(".bar .sc-seg button").forEach(x => x.setAttribute("aria-checked", String(x === b))); list();
+}));
+$("hood").addEventListener("change", () => { hood = +$("hood").value; try { localStorage.setItem("fch-home-hood", hood); } catch (e) {} list(); });
+
+async function mine(){
+  const N = await S.myNews(), el = $("mine"); if (!N || !N.plans.length) return;
+  const fresh = N.plans.reduce((s, x) => s + x.fresh, 0), total = N.plans.reduce((s, x) => s + x.P.likes, 0);
+  el.innerHTML = '<span>You\'ve shared <b>' + N.plans.length + (N.plans.length === 1 ? " plan" : " plans") + '</b> with <b>' + S.fmt(total) + '</b> ' + (total === 1 ? "endorsement" : "endorsements") + '.</span>'
+    + (fresh ? '<span class="new">' + S.fmt(fresh) + ' new since you last looked</span>' : "") + N.plans.map(x => '<a href="#' + x.P.id + '">' + S.esc(S.title(S.decode(x.P.code) || {areas:{}, on:{}})) + '</a>').slice(0, 3).join("");
+  el.hidden = false; N.mark();
+}
+
+const TIERN = ["", "3-flat", "6-flat", "Mid-rise", "High-rise", "Tower", "Supertall"], COLORS = [null, "#7ec8ec", "#41b6e6", "#2b5da0", "#14335f", "#0f7c86", "#161820"];
+async function one(id){
+  const el = $("one");
+  el.innerHTML = '<a class="back" href="#">← All plans</a><div class="empty">Loading the plan…</div>';
+  try {
+    const [G, r] = await Promise.all([S.geo(), fetch("/api/plan/" + id)]);
+    if (!r.ok) throw r.status;
+    const P = await r.json(), p = S.decode(P.code); if (!p) throw 0;
+    const c = S.choices(p), g = String(P.grade || "–");
+    const used = new Set([p.tod, p.metra, p.corr, ...Object.values(p.areas)].filter(Boolean));
+    const group = (k, h) => { const L = c.filter(x => x.kind === k); return L.length ? '<h3>' + h + '</h3><ul class="pchips">' + L.map(x => '<li class="' + k + '">' + S.esc(x.t) + '</li>').join("") + '</ul>' : ""; };
+    const rentLine = P.rent && P.rentno ? [("$" + S.fmt(P.rent)), "median rent in 2041 ($" + S.fmt(P.rentno) + " with no change)"] : null;
+    document.title = S.title(p) + " · Neighbors' Plans · Shape Chicago";
+    el.innerHTML = '<a class="back" href="#">← All plans</a><div class="det"><div class="dmap">' + S.map(p, G, "big")
+      + '<div class="key">' + [...used].sort().map(t => '<span><i style="background:' + COLORS[t] + '"></i>' + TIERN[t] + '</span>').join("") + (used.size ? "" : '<span>No rezoning in this plan</span>') + '</div></div>'
+      + '<div class="dside"><div class="dcard"><div class="dtop"><span class="pgr" data-g="' + S.esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + S.STAR + '"/></svg><i>' + S.esc(g) + '</i></span><div><h1>' + S.esc(S.title(p)) + '</h1><p class="pwho">' + (P.hood && S.AREAS[P.hood] ? "From " + S.esc(S.AREAS[P.hood]) : "From a neighbor") + ' · shared ' + S.ago(P.ts) + ' · ' + S.MODE(p.g) + '</p></div></div>'
+      + '<div class="nums"><div><b>' + S.fmt(P.homes) + '</b><span>new homes by 2041</span></div>' + (rentLine ? '<div><b>' + rentLine[0] + '</b><span>' + rentLine[1] + '</span></div>' : '<div><b>' + S.esc(g) + '</b><span>grade against the ' + (p.g === 4 ? "every-ward" : p.g < 3 ? "hard mode" : "city") + ' goal</span></div>')
+      + (P.aff ? '<div><b>' + S.fmt(P.aff) + '</b><span>affordable homes</span></div>' : "") + '<div><b>' + S.fmt(P.likes) + '</b><span>' + (P.likes === 1 ? "endorsement" : "endorsements") + '</span></div></div>'
+      + '<div class="acts" id="acts"><a class="sc-btn primary" href="/housing/#' + P.code + '">Open it in the simulator</a><button class="sc-btn" type="button" id="copy">Copy link</button></div></div>'
+      + '<div class="dcard"><h2>What this plan does</h2>' + group("zone", "Zoning") + group("policy", "Policies") + group("cut", "Cuts housing") + (c.length ? "" : '<p class="note">Nothing changed from today.</p>')
+      + '<p class="note" style="margin-top:14px">Numbers are what the housing simulator showed when the plan was shared. Open it to see every year, the map in 3D and the sources.</p></div></div></div>';
+    $("acts").insertBefore(S.endorseBtn(P), $("copy"));
+    $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } setTimeout(() => $("copy").textContent = "Copy link", 1800); });
+  } catch (e) { el.innerHTML = '<a class="back" href="#">← All plans</a><div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now.") + '</div>'; }
+}
+function route(){
+  const id = +(location.hash.match(/^#(\d+)$/) || [])[1] || 0;
+  $("list").hidden = !!id; $("one").hidden = !id;
+  if (id) one(id); else { document.title = "Neighbors' Plans · Shape Chicago"; list(); }
+  scrollTo(0, 0);
+}
+addEventListener("hashchange", route);
+route(); mine();
+</script>
+</body>
+</html>

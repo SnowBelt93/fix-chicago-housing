@@ -76,12 +76,15 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 @media (max-width:900px){ .hero{grid-template-columns:1fr} .hero svg{max-width:240px} .grid{grid-template-columns:1fr} .nums{grid-template-columns:repeat(2,1fr)} main{padding:12px 12px 40px} .sc-fan{display:none} }
 /* Nov 8: selected = solid navy */
 .seg2 button[aria-checked="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
+.subcal{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--sc-line);font-size:14px;color:var(--sc-ink2)}
+.subcal span{flex:1 1 220px}
+.subcal .sc-btn{display:inline-flex;align-items:center;text-decoration:none}
 </style>
 </head>
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a></div></div><a href="/wards/" aria-current="page">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/" aria-current="page">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -124,6 +127,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     <h2>Coming up at City Hall <button class="ib" data-i="cal" aria-label="About the hearing calendar">i</button></h2>
     <p class="sub">The next City Council and committee meetings. Zoning changes go through the Zoning Committee, then the full Council. Anyone can send written comment before the deadline or sign up to speak.</p>
     <ul class="cal" id="cal"></ul>
+    <div class="subcal"><span>Get every meeting in your own calendar. It updates itself.</span><a class="sc-btn" id="calApple" href="/api/calendar.ics">Apple or Outlook</a><a class="sc-btn" id="calGoogle" href="#" target="_blank" rel="noopener">Google Calendar</a></div>
   </section>
   <section class="card">
     <h2>All 50 wards</h2>
@@ -236,5 +240,11 @@ fetch("data/meetings.json").then(r => r.json()).then(m => {
 }).catch(() => {});
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("wards", {title:"Your ward's housing record", body:"<p>Pick your ward or type your address. You'll see how your alderperson voted on citywide housing laws, every zoning change in the ward, the homes it's permitting, and the next hearings at City Hall.</p><p>It's the public record from the City Clerk and the city's permit data, nothing more.</p>", art:"/shape/art/wards.webp"}));</script>
+<script>
+/* subscribe to City Hall meetings: webcal:// for Apple/Outlook, Google's add-by-URL link */
+(function(){ const u = location.host + "/api/calendar.ics";
+  document.getElementById("calApple").href = "webcal://" + u;
+  document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent("webcal://" + u); })();
+</script>
 </body>
 </html>

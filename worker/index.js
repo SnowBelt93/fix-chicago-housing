@@ -6,6 +6,7 @@
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
 const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-6]{77}[0-6][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-4][0-4][0-3]{10})$/;
+const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff";
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
@@ -25,6 +26,7 @@ export default {
     if (pm) return planPage(pm[1], url, env);
     const im = url.pathname.match(/^\/api\/card\/([0-9a-f]{12})\.png$/);
     if (im) return cardImage(im[1], url, env, ctx);
+    if (url.pathname === "/api/calendar.ics") return calendar(url, env);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
     if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || url.searchParams.get("key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
@@ -33,6 +35,28 @@ export default {
     return stub.fetch(fwd);
   },
 };
+
+// City Hall meetings as a calendar people can subscribe to (Google, Apple, Outlook): from the daily wards/data/meetings.json
+async function calendar(url, env){
+  let M = [];
+  try { M = (await (await env.ASSETS.fetch(new Request(url.origin + "/wards/data/meetings.json"))).json()).meetings || []; } catch (e) {}
+  const esc = t => String(t || "").replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+  const stamp = d => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const fold = l => { let o = ""; while (l.length > 74){ o += l.slice(0, 74) + "\r\n "; l = l.slice(74); } return o + l; };
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//City Hall meetings//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+    "X-WR-CALNAME:Chicago City Hall meetings", "X-WR-CALDESC:City Council and committee meetings from the City Clerk. Shared by Shape Chicago (not affiliated with the City of Chicago).",
+    "REFRESH-INTERVAL;VALUE=DURATION:PT12H", "X-PUBLISHED-TTL:PT12H"];
+  const now = Date.now(), made = stamp(new Date());
+  for (const m of M){
+    const t = Date.parse(m.d); if (!t || t < now - 30 * 864e5) continue;
+    const desc = [m.c ? "Public comment sign-up deadline: " + m.c : "", m.ag ? "Agenda: " + m.ag : "", "Details: https://chicityclerkelms.chicago.gov/Meeting/?meetingId=" + m.id].filter(Boolean).join("\n");
+    L.push("BEGIN:VEVENT", "UID:" + m.id + "@shapechicago", "DTSTAMP:" + made, "DTSTART:" + stamp(new Date(t)), "DTEND:" + stamp(new Date(t + 2 * 3600e3)),   // the Clerk lists start times only; 2 hours is a placeholder
+      fold("SUMMARY:" + esc(m.b)), fold("LOCATION:" + esc(m.loc || "City Hall, 121 N. LaSalle St.")), fold("DESCRIPTION:" + esc(desc)),
+      "URL:https://chicityclerkelms.chicago.gov/Meeting/?meetingId=" + m.id, "STATUS:" + (/cancel/i.test(m.st || "") ? "CANCELLED" : "CONFIRMED"), "END:VEVENT");
+  }
+  L.push("END:VCALENDAR");
+  return new Response(L.join("\r\n") + "\r\n", {headers: {"content-type": "text/calendar; charset=utf-8", "cache-control": "public, max-age=3600", "content-disposition": "inline; filename=chicago-city-hall.ics"}});
+}
 
 function features(code){
   if (code[1] === "6"){   // u6: one character per area (towers allowed downtown), then the same fields, then policy scopes
@@ -118,6 +142,37 @@ export class Community {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, page TEXT NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS cards (id TEXT PRIMARY KEY, code TEXT NOT NULL, homes INTEGER NOT NULL, grade TEXT NOT NULL, goal INTEGER NOT NULL,
       rent INTEGER NOT NULL, rentno INTEGER NOT NULL, mode INTEGER NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
+    for (const c of ["rent INTEGER", "rentno INTEGER", "aff INTEGER"]) try { this.sql.exec("ALTER TABLE plans ADD COLUMN " + c); } catch (e) {}   // added Nov 8; old rows stay null
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL)`);
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS imports (old INTEGER PRIMARY KEY, id INTEGER NOT NULL, likes INTEGER NOT NULL)`);
+    this.env = env;
+    this.cache = null;
+  }
+
+  // Plans posted on fixchicagohousing.com (the fix-chicago-housing Worker) are copied in, at most every 6 hours, until launch.
+  // Imported plans keep their old endorsements; endorsements made here are added on top.
+  async sync(){
+    const last = +((this.sql.exec("SELECT v FROM meta WHERE k = 'sync'").toArray()[0] || {}).v || 0);
+    if (Date.now() - last < 6 * 3600e3) return;
+    this.sql.exec("INSERT OR REPLACE INTO meta (k, v) VALUES ('sync', ?)", String(Date.now()));
+    const get = async q => {
+      const u = "https://fixchicagohousing.com/api/gallery?" + q;
+      try { const r = this.env.OLD ? await this.env.OLD.fetch(new Request(u)) : await fetch(u); return r.ok ? ((await r.json()).plans || []) : []; } catch (e) { return []; }
+    };
+    const seen = new Map();
+    for (const q of ["sort=top", "sort=new"]) for (const P of await get(q)) seen.set(P.id, P);
+    for (const P of seen.values()){
+      const code = String(P.code || ""), grade = String(P.grade || ""), homes = Math.round(+P.homes), hood = Math.round(+P.hood || 0), likes = Math.max(0, Math.round(+P.likes || 0));
+      if (!CODE_RE.test(code) || !GRADES.has(grade) || !(homes >= 0 && homes <= 3000000) || !(hood >= 0 && hood <= 77)) continue;
+      const had = this.sql.exec("SELECT id FROM imports WHERE old = ?", P.id).toArray()[0];
+      if (had){
+        const local = this.sql.exec("SELECT COUNT(*) AS n FROM likes WHERE plan = ?", had.id).one().n;
+        this.sql.exec("UPDATE plans SET likes = ? WHERE id = ?", likes + local, had.id); this.sql.exec("UPDATE imports SET likes = ? WHERE old = ?", likes, P.id);
+      } else {
+        const id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, likes, who, ts) VALUES (?, ?, ?, ?, 1, ?, 'import', ?) RETURNING id", code, homes, grade, hood, likes, Math.round(+P.ts) || Date.now()).one().id;
+        this.sql.exec("INSERT INTO imports (old, id, likes) VALUES (?, ?, ?)", P.id, id, likes);
+      }
+    }
     this.cache = null;
   }
 
@@ -130,7 +185,13 @@ export class Community {
       if (path === "/api/feedback" && req.method === "POST") return this.addFeedback(await req.json(), who);
       if (path === "/api/feedback" && req.method === "GET") return json({feedback: this.sql.exec("SELECT id, text, page, ts FROM feedback ORDER BY ts DESC LIMIT 500").toArray()});
       if (path === "/api/stats" && req.method === "GET") return this.stats(+url.searchParams.get("hood") || 0);
-      if (path === "/api/gallery" && req.method === "GET") return this.gallery(url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("hood") || 0);
+      if (path === "/api/gallery" && req.method === "GET"){ await this.sync(); return this.gallery(url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("hood") || 0, +url.searchParams.get("limit") || 30); }
+      if (path === "/api/plans" && req.method === "GET"){   // a few plans by id (your own posted plans, for their endorsement counts)
+        const ids = String(url.searchParams.get("ids") || "").split(",").map(Number).filter(n => n > 0).slice(0, 40);
+        return json({plans: ids.length ? this.sql.exec(`SELECT ${COLS} FROM plans WHERE gallery = 1 AND id IN (${ids.join(",")})`).toArray() : []});
+      }
+      const pm = path.match(/^\/api\/plan\/(\d+)$/);
+      if (pm && req.method === "GET"){ const r = this.sql.exec(`SELECT ${COLS} FROM plans WHERE gallery = 1 AND id = ?`, +pm[1]).toArray()[0]; return r ? json(r) : json({error: "not found"}, 404); }
       if (path === "/api/card" && req.method === "POST") return this.addCard(await req.json(), who);
       const cm = path.match(/^\/api\/card\/([0-9a-f]{12})$/);
       if (cm && req.method === "GET"){ const r = this.sql.exec("SELECT code, homes, grade, goal, rent, rentno, mode FROM cards WHERE id = ?", cm[1]).toArray()[0]; return r ? json(r) : json({error: "not found"}, 404); }
@@ -143,13 +204,15 @@ export class Community {
   addPlan(b, who){
     const code = String(b.code || ""), homes = Math.round(+b.homes), grade = String(b.grade || ""), hood = Math.round(+b.hood || 0), gallery = b.gallery ? 1 : 0;
     if (!CODE_RE.test(code) || !(homes >= 0 && homes <= 3000000) || !GRADES.has(grade) || !(hood >= 0 && hood <= 77)) return json({error: "invalid plan"}, 400);
+    const num = (v, lo, hi) => { v = Math.round(+v); return v >= lo && v <= hi ? v : null; };
+    const rent = num(b.rent, 300, 20000), rentno = num(b.rentNo, 300, 20000), aff = num(b.aff, 0, 3000000);
     const n = this.sql.exec("SELECT COUNT(*) AS n FROM plans WHERE who = ?", who).one().n;
     if (n >= 40) return json({error: "slow down"}, 429);
     // the same person re-running the same plan updates their row instead of stacking duplicates
     const dup = this.sql.exec("SELECT id, gallery FROM plans WHERE who = ? AND code = ?", who, code).toArray()[0];
     let id;
-    if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, Date.now(), dup.id); id = dup.id; }
-    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, who, Date.now()).one().id;
+    if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, rent = ?, rentno = ?, aff = ?, ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, rent, rentno, aff, Date.now(), dup.id); id = dup.id; }
+    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, rent, rentno, aff, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, rent, rentno, aff, who, Date.now()).one().id;
     this.cache = null;
     return json({ok: true, id});
   }
@@ -182,10 +245,10 @@ export class Community {
     return json({ok: true, likes: this.sql.exec("SELECT likes FROM plans WHERE id = ?", id).one().likes});
   }
 
-  gallery(sort, hood){
-    const where = "gallery = 1" + (hood ? " AND hood = " + hood : "");
+  gallery(sort, hood, limit){
+    const where = "gallery = 1" + (hood ? " AND hood = " + Math.round(hood) : "");
     const order = sort === "top" ? "likes DESC, homes DESC" : "ts DESC";
-    const rows = this.sql.exec(`SELECT id, code, homes, grade, hood, likes, ts FROM plans WHERE ${where} ORDER BY ${order} LIMIT 30`).toArray();
+    const rows = this.sql.exec(`SELECT ${COLS} FROM plans WHERE ${where} ORDER BY ${order} LIMIT ${Math.max(1, Math.min(60, Math.round(limit) || 30))}`).toArray();
     return json({plans: rows});
   }
 

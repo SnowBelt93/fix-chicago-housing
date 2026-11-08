@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js"></script>
 <style>
 /* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted. */
 *{box-sizing:border-box}
@@ -160,19 +161,20 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 /* Nov 8: one hover rule for everything you can open (see shape.css) */
 @media (hover:hover){ .quick a,.feature,.pulse a,.tool,.plan,.learn a,.wnews a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
 @media (prefers-reduced-motion:reduce){ .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:none} }
+.mine{margin:-6px 0 14px;font-size:15px;color:var(--sc-ink2)} .mine b{color:#1f6b44}
 </style>
 </head>
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
   <section class="wrap hero2">
     <div class="hl">
-      <h1>Everyone has a plan for Chicago. Test yours.</h1>
-      <p>Real maps, real budgets and real votes. Try the ideas planners argue about and see what they would do.</p>
+      <h1>Think you could fix Chicago? Prove it.</h1>
+      <p>Rezone a neighborhood, draw a new train line or close the budget gap. Real city data shows what your plan would actually do.</p>
       <div class="quick">
         <a href="/housing/"><img src="/shape/art/icons/build.webp" alt="" width="56" height="56"><span><b>Housing</b>Zone for more homes</span></a>
         <a href="/transit/"><img src="/shape/art/icons/subway.webp" alt="" width="56" height="56"><span><b>Transit</b>Draw a new line</span></a>
@@ -195,18 +197,18 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
     <div class="sh"><h2 id="weekH">This week in Chicago</h2><span id="weekNote">What changed since you last looked</span></div>
     <div class="wnews" id="wkNews"></div>
     <p class="wmore"><a href="/news/">All Chicago planning news</a></p>
-    <div class="week">
-      <div class="wk"><h3>Zoning the Council passed</h3><ul id="wkZone"><li>Loading…</li></ul><a class="more" href="/wards/" id="wkWardLink">See your ward</a></div>
-      <div class="wk"><h3>Coming up at City Hall</h3><ul id="wkCal"><li>Loading…</li></ul><a class="more" href="/wards/#calCard" id="wkCalLink">The full calendar</a></div>
-      <div class="wk"><h3>New homes permitted</h3><ul id="wkPermits"><li>Loading…</li></ul><a class="more" href="/tracker/">The permit tracker</a></div>
-    </div>
   </div></section>
-  <section class="band alt" aria-labelledby="toolsH"><div class="wrap">
+  <section class="band alt" aria-labelledby="plansH"><div class="wrap">
+    <div class="sh"><h2 id="plansH">What neighbors built</h2><a href="/plans/">All plans</a></div>
+    <p class="mine" id="mine" hidden></p>
+    <div class="pgrid" id="plans"><div class="empty">Loading plans…</div></div>
+  </div></section>
+  <section class="band" aria-labelledby="toolsH"><div class="wrap">
     <div class="sh"><h2 id="toolsH">Pick a tool</h2></div>
     <div class="tools"><a class="tool" href="/housing/"><div class="thumb"><img src="/shape/art/housing.webp" width="800" height="380" alt="Lots stepping up from a bungalow to a three-flat, six-flat, mid-rise and high-rise, with a crane on the tallest." loading="lazy"></div><div class="tb"><div class="tn"><h3>Fix Chicago Housing</h3><span class="chip ">Simulation</span></div><p>Let more homes go up near the L, vote on real policies, then watch 15 years of building. See what happens to the shortage and to rent.</p><span class="see">Shortage · rent · jobs and taxes</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/transit/"><div class="thumb"><img src="/shape/art/transit.webp" width="800" height="380" alt="The L with a Red Line train and a station, and a new line in blue curving off with its own train." loading="lazy"></div><div class="tb"><div class="tn"><h3>Expand Chicago Transit</h3><span class="chip ">New</span></div><p>Switch on real proposals like the Red Line Extension, or draw your own subway, streetcar or BRT line. See riders, cost, car trips and CO₂.</p><span class="see">Riders · cost · cars · CO₂</span><span class="sc-btn primary go">Open the simulation</span></div></a><a class="tool" href="/budget/"><div class="thumb"><img src="/shape/art/budget.webp" width="800" height="380" alt="A balance beam with stacks of gold coins on one side and a little city block with a bus on the other." loading="lazy"></div><div class="tb"><div class="tn"><h3>Balance the Chicago Budget</h3><span class="chip ">New</span></div><p>The 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.</p><span class="see">Taxes · cuts · pensions · past years</span><span class="sc-btn primary go">Balance it</span></div></a><a class="tool" href="/pensions/"><div class="thumb"><img src="/shape/art/pensions.webp" width="800" height="380" alt="Four stacks of gold coins, one per city pension fund, each well short of a blue ring marking 90% funded." loading="lazy"></div><div class="tb"><div class="tn"><h3>Pay Down Chicago's Pensions</h3><span class="chip ">New</span></div><p>Chicago's four city pension funds hold about a quarter of what they owe. Choose how much the city pays, what investments earn and whether to borrow. See when each fund gets to 90%, and the bill.</p><span class="see">Funded ratio · yearly payments · bonds · crashes</span><span class="sc-btn primary go">Run the numbers</span></div></a><a class="tool" href="/lot/"><div class="thumb"><img src="/shape/art/lot.webp" width="800" height="380" alt="A row of two- and three-flats with one lot marked by a red pin and a glass outline of the bigger building its zoning would allow." loading="lazy"></div><div class="tb"><div class="tn"><h3>What can I build on my lot?</h3><span class="chip ">New</span></div><p>Type any Chicago address. See its zoning, how many homes the rules allow, whether today's building could even be built today, and what would change that.</p><span class="see">Zoning · homes allowed · what would change it</span><span class="sc-btn primary go">Look up a lot</span></div></a><a class="tool" href="/wards/"><div class="thumb"><img src="/shape/art/wards.webp" width="800" height="380" alt="Chicago's 50 wards as raised tiles, each as tall as the homes it permitted in the last year; the tallest has a red star." loading="lazy"></div><div class="tb"><div class="tn"><h3>Your ward's housing record</h3><span class="chip live">Updated daily</span></div><p>How your alderperson voted on the big housing laws, every zoning change in your ward since 2013, and the homes it's permitting.</p><span class="see">Votes · rezonings · permits</span><span class="sc-btn primary go">Find your ward</span></div></a><a class="tool" href="/tracker/"><div class="thumb"><img src="/shape/art/tracker.webp" width="800" height="380" alt="A bar chart of homes Chicago permitted each year since 2016, each bar a stack of floors, the newest under a crane." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago Permit Tracker</h3><span class="chip live">Updated daily</span></div><p>Every new-home permit since 2006 and every zoning change since 2013, so you can see what Chicago is actually building.</p><span class="see">Permits · zoning changes · pace</span><span class="sc-btn primary go">See the tracker</span></div></a><a class="tool" href="/news/"><div class="thumb"><img src="/shape/art/news.webp" width="880" height="600" alt="A row of newspaper boxes in navy, blue, red and white in front of a brick flat and a new mid-rise." loading="lazy"></div><div class="tb"><div class="tn"><h3>Chicago planning news</h3><span class="chip live">Every 3 hours</span></div><p>Every new story on Chicago housing, development, zoning, transit and the budget from local newsrooms, in one list.</p><span class="see">Block Club · Sun-Times · WBEZ · WTTW · more</span><span class="sc-btn primary go">Read the news</span></div></a></div>
   </div></section>
   <div class="wrap"><div data-ad="home"></div></div>
-  <section class="band" aria-labelledby="learnH"><div class="wrap">
+  <section class="band alt" aria-labelledby="learnH"><div class="wrap">
     <div class="sh"><h2 id="learnH">New to this? Start with the basics</h2><a href="/learn/">All topics</a></div>
     <div class="learn">
       <a href="/learn/#zoning"><b>Zoning, in plain English</b><span>What can go on a lot, and who decides</span></a>
@@ -215,39 +217,28 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
       <a href="/learn/#funding"><b>Who pays for a new line?</b><span>Federal grants, the state and NITA</span></a>
     </div>
   </div></section>
-  <section class="band alt" aria-labelledby="plansH"><div class="wrap">
-    <div class="sh"><h2 id="plansH">What neighbors built</h2><span>Plans people posted from Fix Chicago Housing</span></div>
-    <div class="plans" id="plans"><div class="empty">Loading plans…</div></div>
-  </div></section>
 </main>
 <footer><div class="wrap">
   <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
   <span>Not affiliated with the City of Chicago.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
+  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/">Neighbors' plans</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
 </div></footer>
 <script>
 const AREAS = ["", "Rogers Park", "West Ridge", "Uptown", "Lincoln Square", "North Center", "Lake View", "Lincoln Park", "Near North Side", "Edison Park", "Norwood Park", "Jefferson Park", "Forest Glen", "North Park", "Albany Park", "Portage Park", "Irving Park", "Dunning", "Montclare", "Belmont Cragin", "Hermosa", "Avondale", "Logan Square", "Humboldt Park", "West Town", "Austin", "West Garfield Park", "East Garfield Park", "Near West Side", "North Lawndale", "South Lawndale", "Lower West Side", "Loop", "Near South Side", "Armour Square", "Douglas", "Oakland", "Fuller Park", "Grand Boulevard", "Kenwood", "Washington Park", "Hyde Park", "Woodlawn", "South Shore", "Chatham", "Avalon Park", "South Chicago", "Burnside", "Calumet Heights", "Roseland", "Pullman", "South Deering", "East Side", "West Pullman", "Riverdale", "Hegewisch", "Garfield Ridge", "Archer Heights", "Brighton Park", "Mckinley Park", "Bridgeport", "New City", "West Elsdon", "Gage Park", "Clearing", "West Lawn", "Chicago Lawn", "West Englewood", "Englewood", "Greater Grand Crossing", "Ashburn", "Auburn Gresham", "Beverly", "Washington Heights", "Mount Greenwood", "Morgan Park", "Ohare", "Edgewater"];
 const STARP = "M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z";
 const fmt = n => Number(n).toLocaleString("en-US");
 async function loadPlans(){
-  const el = document.getElementById("plans");
-  const none = '<div class="empty">No plans posted yet. Run a simulation in <a href="/housing/">Fix Chicago Housing</a> and post yours from the results page.</div>';
+  const el = document.getElementById("plans"), S = window.SCPlans;
+  const none = '<div class="empty">No plans shared yet. Build one in the <a href="/housing/">housing simulator</a> and share it from the results page.</div>';
   try {
-    const r = await fetch("/api/gallery?sort=top"); if (!r.ok) throw 0;
+    const [G, r] = await Promise.all([S.geo(), fetch("/api/gallery?sort=top&limit=4")]); if (!r.ok) throw 0;
     const {plans} = await r.json();
     if (!plans || !plans.length){ el.innerHTML = none; return; }
-    el.innerHTML = "";
-    plans.slice(0, 4).forEach(P => {
-      const a = document.createElement("a"); a.className = "plan"; a.href = "/housing/#" + P.code;
-      const where = P.hood && AREAS[P.hood] ? "A plan from " + AREAS[P.hood] : "A plan";
-      a.innerHTML = '<div class="top"><span class="gs"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="' + STARP + '"/></svg><span></span></span><b></b></div><span class="n"></span><div class="row"><span>Open to remix</span><span class="lk"></span></div>';
-      a.querySelector(".gs span").textContent = P.grade;
-      a.querySelector("b").textContent = where;
-      a.querySelector(".n").innerHTML = fmt(P.homes) + " <small>homes by 2041</small>";
-      a.querySelector(".lk").textContent = "♥ " + P.likes;
-      el.appendChild(a);
-    });
-  } catch (e) { el.innerHTML = '<div class="empty">Plans people post show up here.</div>'; }
+    el.innerHTML = ""; plans.slice(0, 4).forEach(P => { const c = S.card(P, G); if (c) el.appendChild(c); });
+  } catch (e) { el.innerHTML = '<div class="empty">Plans people share show up here.</div>'; }
+  const N = await S.myNews(); if (!N || !N.plans.length) return;
+  const fresh = N.plans.reduce((s, x) => s + x.fresh, 0);
+  if (fresh){ const m = document.getElementById("mine"); m.innerHTML = '<b>Your ' + (N.plans.length === 1 ? "plan has" : "plans have") + ' ' + S.fmt(fresh) + ' new ' + (fresh === 1 ? "endorsement" : "endorsements") + '</b> since you last looked. <a href="/plans/">See them</a>'; m.hidden = false; N.mark(); }
 }
 loadPlans();
 
@@ -256,9 +247,6 @@ loadPlans();
   const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const day = d => new Date(d.length > 10 ? d.replace("Z", ":00Z") : d + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric"});
   let seen = null; try { seen = localStorage.getItem("sc-home-seen"); } catch (e){}
-  let myWard = null; try { myWard = +localStorage.getItem("sc-ward") || null; } catch (e){}
-  if (myWard){ const a = document.getElementById("wkWardLink"); a.href = "/wards/#" + myWard; a.textContent = "Ward " + myWard + "'s record"; }
-  const fail = id => document.getElementById(id).innerHTML = "<li>Not available right now.</li>";
   function go(){
     fetch("/news/data/news.json").then(r => r.json()).then(d => {
       const items = d.items.slice(0, 8), fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
@@ -267,21 +255,6 @@ loadPlans();
       if (fresh) document.getElementById("weekNote").textContent = fresh + " new " + (fresh === 1 ? "story" : "stories") + " since your last visit";
       try { localStorage.setItem("sc-home-seen", d.updated); } catch (e){}
     }).catch(() => (document.getElementById("wkNews").innerHTML = "<p>Not available right now.</p>"));
-    fetch("/wards/data/wards.json").then(r => r.json()).then(d => {
-      const all = []; d.wards.forEach(w => (w.z || []).forEach(z => all.push(z)));
-      all.sort((a, b) => (b.d || "").localeCompare(a.d || ""));
-      document.getElementById("wkZone").innerHTML = all.slice(0, 5).map(z => `<li><a href="/wards/#${z.w}">${esc(z.a)}</a><small>${z.k === "pd" ? "Planned development · " : z.f && z.t ? esc(z.f) + " → " + esc(z.t) + (z.hf != null && z.ht != null ? ` (homes on a typical lot ${z.hf} → ${z.ht})` : "") + " · " : ""}Ward ${z.w} · ${day(z.d)}</small></li>`).join("") || "<li>None yet.</li>";
-    }).catch(() => fail("wkZone"));
-    fetch("/wards/data/meetings.json").then(r => r.json()).then(m => {
-      const now = Date.now() - 2 * 3600e3, tz = {timeZone:"America/Chicago"};
-      const up = m.meetings.filter(x => Date.parse(x.d) >= now && !/cancel/i.test(x.st)).slice(0, 5);
-      document.getElementById("wkCal").innerHTML = up.map(x => { const d = new Date(x.d);
-        return `<li><a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(x.id)}" target="_blank" rel="noopener">${esc(x.b.replace(/^Committee on /, ""))}</a><small>${d.toLocaleDateString("en-US", {...tz, weekday:"short", month:"short", day:"numeric"})}, ${d.toLocaleTimeString("en-US", {...tz, hour:"numeric", minute:"2-digit"})}${x.c ? " · comment by " + esc(x.c.replace(/, \d{4}/, "")) : ""}</small></li>`; }).join("") || "<li>Nothing scheduled yet.</li>";
-    }).catch(() => fail("wkCal"));
-    fetch("/tracker/data.json").then(r => r.json()).then(d => {
-      const ps = d.projects.filter(p => p.homes >= 2).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
-      document.getElementById("wkPermits").innerHTML = ps.map(p => `<li><a href="/tracker/#projects">${esc(p.addr)}</a><small>${fmt(p.homes)} homes · ${esc(p.ca || "")}${p.ward ? " · Ward " + esc(p.ward) : ""} · ${day(p.date)}</small></li>`).join("");
-    }).catch(() => fail("wkPermits"));
   }
   const sec = document.getElementById("weekH").closest("section");
   if ("IntersectionObserver" in window){ const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); go(); } }, {rootMargin:"400px"}); io.observe(sec); } else go();

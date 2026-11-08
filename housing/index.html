@@ -1475,7 +1475,7 @@ body.playing #sky{opacity:1}
 
   <header class="sc-head">
     <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
     <div class="sc-r"><span class="sc-fan fanline">Not affiliated with the City of Chicago.</span><button class="sc-btn" id="lookBtn" type="button">Sources</button><button class="sc-btn sc-share" id="shareTop" type="button">Share</button></div>
   </header>
   <section class="sc-bar hbar" id="hud" aria-live="polite">
@@ -1749,8 +1749,9 @@ body.playing #sky{opacity:1}
         </div>
         <div class="group comm">
           <div class="eyebrow">Plan gallery</div>
-          <div class="seg2" id="galSort"><button type="button" data-s="new" aria-pressed="true">Newest</button><button type="button" data-s="top" aria-pressed="false">Most liked</button><button type="button" data-s="hood" aria-pressed="false">My neighborhood</button></div>
+          <div class="seg2" id="galSort"><button type="button" data-s="new" aria-pressed="true">Newest</button><button type="button" data-s="top" aria-pressed="false">Most endorsed</button><button type="button" data-s="hood" aria-pressed="false">My neighborhood</button></div>
           <div class="gal" id="gallery"><div class="empty">Loading…</div></div>
+          <p class="small" style="margin:8px 0 0"><a href="/plans/" target="_blank" rel="noopener">See every plan, with maps, on Neighbors' plans</a></p>
           <p class="small ptally">Post your plan from the results screen after you simulate. Open any plan to remix it.</p>
         </div>
        </div></div>
@@ -1974,7 +1975,7 @@ body.playing #sky{opacity:1}
       </section>
       <section class="rsec rcomm">
         <div class="eyebrow">Add it to the community</div>
-        <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select><button class="btn" id="resPublish" type="button">Post to the plan gallery</button></div>
+        <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select><button class="btn" id="resPublish" type="button">Share with neighbors</button></div>
         <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Posting adds yours to the public gallery; your neighborhood shows what neighbors chose.</p>
       </section>
 
@@ -4728,9 +4729,9 @@ async function renderGallery(){
       d.innerHTML = '<div><b></b><span></span></div><button type="button" class="op">Open</button><button type="button" class="lk"></button>';
       d.querySelector("b").textContent = who;
       d.querySelector("span").textContent = fmt(P.homes) + " homes · grade " + P.grade;
-      const lk = d.querySelector(".lk"); lk.textContent = "♥ " + P.likes; lk.classList.toggle("liked", liked.has(P.id));
+      const lk = d.querySelector(".lk"); lk.textContent = (liked.has(P.id) ? "Endorsed · " : "Endorse · ") + P.likes; lk.classList.toggle("liked", liked.has(P.id));
       d.querySelector(".op").addEventListener("click", () => { const p = decodePlan(P.code); if (!p) return; plan = p; unlockAll(true); recompute(); renderTargets(); toast("Opened " + who.toLowerCase() + ". Remix away."); });
-      lk.addEventListener("click", async () => { if (liked.has(P.id)) return; try { const r = await api("/api/like/" + P.id, {}); liked.add(P.id); lsSet("fch-liked", [...liked]); lk.textContent = "♥ " + r.likes; lk.classList.add("liked"); } catch (e) {} });
+      lk.addEventListener("click", async () => { if (liked.has(P.id)) return; try { const r = await api("/api/like/" + P.id, {}); liked.add(P.id); lsSet("fch-liked", [...liked]); lk.textContent = "Endorsed · " + r.likes; lk.classList.add("liked"); } catch (e) {} });
       el.appendChild(d);
     });
   } catch (e) { el.innerHTML = '<div class="empty">The gallery is offline right now.</div>'; }
@@ -4744,16 +4745,21 @@ async function loadCommunity(){
 async function submitPlan(gallery){
   const code = encodePlan(plan), t = totals(false), key = code + (gallery ? "g" : "");
   if (!API_OK || key === lastSubmitted || t.total < 1) return false;
-  try { await api("/api/plan", {code, homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood, gallery: gallery ? 1 : 0}); lastSubmitted = key; return true; } catch (e) { return false; }
+  try {
+    const r = await api("/api/plan", {code, homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood, gallery: gallery ? 1 : 0,
+      rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0))});
+    if (gallery && r && r.id){ const M = lsGet("fch-my-plans", []); if (!M.includes(r.id)) M.push(r.id); lsSet("fch-my-plans", M.slice(-40)); }   // so the home page and /plans/ can show your plans' endorsements
+    lastSubmitted = key; return true;
+  } catch (e) { return false; }
 }
 $("resPublish").addEventListener("click", async () => {
   const ok = await submitPlan(true);
-  toast(ok ? "Posted to the gallery. See it under Share." : "Couldn't post right now. Try again in a bit.");
+  toast(ok ? "Shared with neighbors. See it on the Neighbors' plans page." : "Couldn't share it right now. Try again in a bit.");
   if (ok){ $("resPublish").disabled = true; galSort = "new"; loadCommunity(); }
 });
 $("doAlder").addEventListener("click", async () => {
   const t = totals(false);
-  const note = "Hi, I'm a constituent. I played Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + planLink() + "\n\nWould you support zoning changes like these in our ward?";
+  const note = "Hi, I'm a constituent. I used Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + planLink() + "\n\nWould you support zoning changes like these in our ward?";
   try { await navigator.clipboard.writeText(note); toast("Note copied. Paste it into an email to your alderperson."); } catch (e) { toast("Couldn't copy automatically. Your plan link is in the Share tab."); }
   window.open("https://chicago.gov/city/en/depts/mayor/provdrs/your_ward_and_alderman/svcs/find_my_alderman.html", "_blank", "noopener");
 });
