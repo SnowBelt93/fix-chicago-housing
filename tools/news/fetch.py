@@ -34,6 +34,7 @@ TOPICS = {
  'budget': r'\b(budget|property tax|pension|TIF|bond rating|revenue|deficit|head tax|tax levy|city finances|Corporate Fund|credit rating)',
  'policy': r'\b(City Council|alderperson|alderman|alder|ordinance|mayor Johnson|Johnson administration|ward\b|Planning and Development|DPD|Department of Housing|zoning board)',
 }
+STATEWIDE = {'Capitol News Illinois', 'Illinois Answers Project'}
 NOT = r'\b(shooting|shot|gunman|homicide|murder|carjack|stabb|arrest|police chase|charged|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
 def get(u):
@@ -60,7 +61,7 @@ old = []
 if os.path.exists(OUT):
     try: old = json.load(open(OUT)).get('items', [])
     except Exception: old = []
-old = [o for o in old if not re.search(NOT, o['t'], re.I) and [k for k, rx in TOPICS.items() if re.search(rx, o['t'], re.I if k != 'transit' else 0)]]   # re-check kept items against the current rules
+old = [o for o in old if not re.search(NOT, o['t'], re.I) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and [k for k, rx in TOPICS.items() if re.search(rx, o['t'], re.I if k != 'transit' else 0)]]   # re-check kept items against the current rules
 seen = {o['u'] for o in old}; items = list(old); status = {}
 now = dt.datetime.now(dt.timezone.utc)
 for name, local, urls in SOURCES:
@@ -78,6 +79,7 @@ for name, local, urls in SOURCES:
         if re.search(NOT, title, re.I): continue
         tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
         if not tags: continue
+        if name in STATEWIDE and not re.search(CHI, title): continue          # statewide outlets: Chicago must be in the headline
         if not local and not re.search(CHI, blob): continue
         seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags})
 items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z', '+00:00'))).days <= 45]
