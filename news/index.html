@@ -28,7 +28,16 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
 .chip[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
 .bar input{font:inherit;font-size:14px;padding:7px 12px;border-radius:14px;border:1px solid var(--sc-line2);margin-left:auto;min-width:180px}
 .day{font-size:13px;font-weight:600;color:var(--sc-mute);margin:20px 4px 6px}
-.item{display:block;background:#fff;border-radius:14px;box-shadow:var(--sc-shadow1, 0 1px 2px rgba(0,0,0,.06));padding:12px 16px;margin-bottom:8px;text-decoration:none;color:var(--sc-ink);transition:transform .15s,box-shadow .15s}
+.item{display:grid;grid-template-columns:148px minmax(0,1fr);gap:16px;align-items:center;background:#fff;border-radius:16px;box-shadow:var(--sc-shadow1, 0 1px 2px rgba(0,0,0,.06));padding:12px;margin-bottom:10px;text-decoration:none;color:var(--sc-ink);transition:transform .15s,box-shadow .15s}
+.item .ph{width:148px;height:100px;border-radius:10px;overflow:hidden;background:var(--sc-seg);display:flex;align-items:center;justify-content:center}
+.item .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.item .ph img.logo{width:44px;height:44px;object-fit:contain}
+.item .ph .ini{font-weight:700;font-size:20px;color:var(--sc-navy)}
+.item.lead{grid-template-columns:1fr;padding:0;overflow:hidden}
+.item.lead .ph{width:100%;height:auto;aspect-ratio:16/8;border-radius:0}
+.item.lead .tx{padding:4px 18px 16px}
+.item.lead b{font-size:22px;letter-spacing:-.01em}
+.srcsel{font:inherit;font-size:13px;font-weight:600;padding:6px 10px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2)}
 .item:hover{transform:translateY(-1px);box-shadow:var(--sc-shadow2)}
 .item b{display:block;font-size:16px;font-weight:600;line-height:1.35;letter-spacing:-.005em}
 .item span{font-size:12.5px;color:var(--sc-mute)}
@@ -37,7 +46,7 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
 .fine{font-size:12px;color:var(--sc-mute);line-height:1.55;margin-top:24px}
 .fine a{color:var(--sc-mute)}
 .follow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-@media (max-width:700px){ .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .bar input{margin-left:0;width:100%} .sc-fan{display:none} }
+@media (max-width:700px){ .item{grid-template-columns:96px minmax(0,1fr);gap:12px} .item .ph{width:96px;height:72px} .item b{font-size:15px} .item.lead b{font-size:19px} .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .bar input{margin-left:0;width:100%} .sc-fan{display:none} }
 </style>
 </head>
 <body>
@@ -61,24 +70,33 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
 "use strict";
 const $ = id => document.getElementById(id);
 const TOP = [["all", "Everything"], ["housing", "Housing"], ["development", "Development"], ["zoning", "Zoning"], ["transit", "Transit"], ["budget", "Budget"], ["policy", "City Hall"]];
-let D = null, topic = "all", q = "", since = null;
+let D = null, topic = "all", q = "", since = null, src = "";
 let last = null; try { last = localStorage.getItem("sc-news-seen"); } catch (e){}
+const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const host = u => { try { return new URL(u).origin; } catch (e){ return ""; } };
+const ini = s => s.split(/\s+/).filter(w => /^[A-Z]/.test(w)).slice(0, 2).map(w => w[0]).join("");
+// the story's own picture (loaded from the outlet), else the outlet's site icon, else its initials
+function pic(i){
+  if (i.i) return `<img src="${esc(i.i)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=ini>${esc(ini(i.s))}</span>'">`;
+  return `<img class="logo" src="${esc(host(i.u))}/favicon.ico" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=ini>${esc(ini(i.s))}</span>'">`;
+}
 function render(){
-  const items = D.items.filter(i => (topic === "all" || i.g.includes(topic)) && (!q || (i.t + " " + i.s).toLowerCase().includes(q)) && (!since || i.d > since));
+  const items = D.items.filter(i => (topic === "all" || i.g.includes(topic)) && (!src || i.s === src) && (!q || (i.t + " " + i.s).toLowerCase().includes(q)) && (!since || i.d > since));
   if (!items.length){ $("list").innerHTML = `<p class="empty">${since ? "Nothing new since your last visit." : "No stories match."}</p>`; return; }
   let h = "", day = "";
   items.forEach((i, n) => {
     const d = new Date(i.d.replace("Z", ":00Z")), k = d.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric"});
     if (k !== day){ day = k; h += `<div class="day">${k}</div>`; }
-    h += `<a class="item" href="${i.u}" target="_blank" rel="noopener"><b>${i.t.replace(/</g, "&lt;")}</b><span>${i.s}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></a>`;
+    h += `<a class="item${n === 0 && !q && !since ? " lead" : ""}" href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${pic(i)}</div><div class="tx"><b>${esc(i.t)}</b><span>${esc(i.s)}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></div></a>`;
     if (items.length >= 4 && n === Math.min(7, items.length - 1)) h += `<div data-ad="news"></div>`;
   });
   $("list").innerHTML = h;
   window.scShowAds && window.scShowAds();
 }
 function chips(){
-  $("chips").innerHTML = TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
+  $("chips").innerHTML = TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<select class="srcsel" id="src" aria-label="Filter by outlet"><option value="">Every outlet</option>${[...new Set(D.items.map(i => i.s))].sort().map(n => `<option${n === src ? " selected" : ""}>${esc(n)}</option>`).join("")}</select><input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
   $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => { topic = b.dataset.k; chips(); render(); });
+  $("src").onchange = e => { src = e.target.value; render(); };
   $("q").value = q; $("q").oninput = e => { q = e.target.value.toLowerCase(); render(); };
 }
 $("newOnly").onclick = () => { since = since ? null : last; $("newOnly").textContent = since ? "Show everything" : "Show what's new since my last visit"; render(); };

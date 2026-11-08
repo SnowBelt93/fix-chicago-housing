@@ -24,9 +24,9 @@ from shapely import affinity
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DECK = 111319.49
 HALF = {1: 20, 2: 13, 3: 11, 4: 10}     # street half-widths in metres, as STREET_HALF in index.html
-GAP = 18                                # metres between new buildings (about a street)
-SIZES = [(44, 24), (28, 28), (20, 20)]   # footprints (metres): mid-rise slabs first, then tower-sized squares, then small ones in the gaps
-MAX_FP = 90
+GAP = 10                                # metres between new buildings (a narrow private street or courtyard)
+SIZES = [(64, 30), (44, 24), (28, 28), (20, 20)]   # footprints (metres): big slabs first, then mid-rise slabs, tower squares, small fill
+MAX_FP = 160
 
 # name, origin (the map pin), PD numbers, optional (x0, y0, x1, y1) box to keep (metres from the pin), optional boxes to leave
 # empty, whether the project replaces the low buildings inside its "replace" box
@@ -160,7 +160,7 @@ def main():
                 if region.contains(shapely.Point(X, Y)): land.setdefault(a['num'], []).append(A['N'] + j)
         free = region
         if roads: free = free.difference(unary_union(roads))
-        if obst: free = free.difference(unary_union(obst).buffer(8))
+        if obst: free = free.difference(unary_union(obst).buffer(6))
         # lay out footprints in the grid's frame, nearest the middle first
         rot = lambda g, s: affinity.rotate(g, s * ang, origin=(0, 0), use_radians=True)
         F = rot(free, -1); PF = prep(F)

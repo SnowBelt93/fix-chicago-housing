@@ -2,7 +2,7 @@
   "_about": "Site settings read by /shape/shape.js. support.url: paste a Stripe Payment Link, Buy Me a Coffee or Ko-fi link to switch the Support buttons on. ads.showHouse: show 'Your Chicago business here' cards in empty ad spots. ads.sponsors: one entry per paid ad; slots = where it shows (home, news, learn, tracker, budget, pensions, wards, lot); it stops on its own after 'until'.",
   "support": { "url": "", "label": "Chip in" },
   "ads": {
-    "showHouse": true,
+    "showHouse": false,
     "sponsors": [
       { "id": "example", "on": false, "name": "Your business", "line": "One line about it.", "url": "https://example.com", "logo": "", "slots": ["home", "news"], "until": "2027-12-31" }
     ]

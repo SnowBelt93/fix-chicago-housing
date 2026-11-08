@@ -33,6 +33,7 @@ html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-
 main{display:grid;grid-template-columns:minmax(380px,460px) 1fr;gap:20px;padding:20px;max-width:1440px;margin:0 auto;align-items:start}
 .panel{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);overflow:hidden;position:sticky;top:calc(var(--sc-head) + 96px);max-height:calc(100vh - var(--sc-head) - 116px);display:flex;flex-direction:column}
 .tabs{flex:none;display:flex;gap:4px;padding:10px 12px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--sc-line);background:#fff}
+.tabs.more-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
 .tab{font:inherit;font-size:14px;font-weight:600;border:0;background:transparent;color:var(--sc-mute);padding:8px 12px;border-radius:14px;cursor:pointer;white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--sc-seg);color:var(--sc-ink)}
 .tab small{font-weight:500;color:var(--sc-faint);margin-left:4px}
@@ -96,6 +97,9 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .irow span{font-size:13px;font-weight:600} .irow small{display:block;font-weight:400;color:var(--sc-mute);font-size:11.5px}
 .irow em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--sc-navy);min-height:0}
 .iopt{gap:4px} .iopt button{padding:4px 8px;font-size:12px}
+.iyou{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0 8px;padding:10px 12px;border-radius:12px;background:var(--sc-chip)}
+.iyou label{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.iyou b{font-size:18px}
 .iex{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:10px;overflow:hidden;margin-top:10px}
 .iex div{background:#fff;padding:7px 6px;text-align:center} .iex b{display:block;font-size:13px} .iex span{font-size:10.5px;color:var(--sc-mute);line-height:1.25;display:block}
 .pc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
@@ -138,6 +142,17 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .meform .seg2{margin:0}
 .meinc{font-size:13px;color:var(--sc-mute);display:flex;align-items:center;gap:6px}
 .meinc select{font:inherit;font-size:14px;padding:6px 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.meinc{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;margin-top:4px}
+.meinc label{font-size:14px;font-weight:600}
+.incbox{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--sc-line2);border-radius:10px;padding:0 10px;font-weight:600;justify-self:start}
+.incbox input{font:inherit;font-size:15px;border:0;width:110px;padding:8px 2px;outline:none;background:transparent}
+.meinc input[type=range]{grid-column:1 / -1;width:100%;accent-color:var(--sc-navy)}
+.meinc .fine{grid-column:1 / -1}
+.rtab{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0 0}
+.rtab th{text-align:left;font-size:11.5px;font-weight:600;color:var(--sc-mute);padding:4px 6px;border-bottom:1px solid var(--sc-line)}
+.rtab td{padding:7px 6px;border-bottom:1px solid var(--sc-line)}
+.rtab td.neg{color:#b4152d;font-weight:600}
+.rtab a{color:var(--sc-navy);font-weight:600}
 .metotal{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:14px 0 6px}
 .metotal.up{color:var(--sc-hard)} .metotal.down{color:var(--sc-green)}
 .melist div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--sc-line)}
@@ -235,7 +250,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
         <div class="seg2" role="radiogroup" id="meHome"><button role="radio" aria-checked="false" data-k="own">I own</button><button role="radio" aria-checked="true" data-k="rent">I rent</button></div>
         <div class="seg2" role="radiogroup" id="meCar"><button role="radio" aria-checked="true" data-k="0">No car</button><button role="radio" aria-checked="false" data-k="1">A car</button></div>
         <div class="seg2" role="radiogroup" id="meBldg"><button role="radio" aria-checked="true" data-k="1">City garbage pickup</button><button role="radio" aria-checked="false" data-k="0">Big building</button></div>
-        <label class="meinc">Household income <select id="meInc"><option value="25000">$25,000</option><option value="50000">$50,000</option><option value="75000" selected>$75,000</option><option value="125000">$125,000</option><option value="250000">$250,000</option><option value="1000000">$1 million</option><option value="5000000">$5 million</option></select></label>
+        <div class="meinc"><label for="meIncN">Household income</label><span class="incbox">$<input id="meIncN" type="text" inputmode="numeric" value="75,000" aria-label="Household income in dollars"></span><input id="meInc" type="range" min="0" max="400000" step="5000" value="75000" aria-label="Household income slider"><span class="fine" id="meIncNote"></span></div>
       </div>
       <p class="metotal" id="meTotal"></p>
       <div class="melist" id="meList"></div>
@@ -252,7 +267,15 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
     </section>
     <section class="card" id="rateCard">
       <h2>What the rating agencies would notice <button class="ib" id="rateInfo" aria-label="About credit ratings">i</button></h2>
-      <p class="sub">Chicago's bonds sit a few steps above junk, and the agencies have been cutting them. Lower ratings mean more interest on every dollar the city borrows.</p>
+      <p class="sub">Chicago's bonds sit one to three steps above junk, and three of four agencies have negative outlooks. Lower ratings mean more interest on every dollar the city borrows.</p>
+      <table class="rtab">
+        <tr><th>Agency</th><th>Rating</th><th>Steps above junk</th><th>Outlook</th><th>Latest</th></tr>
+        <tr><td><a href="https://www.bondbuyer.com/news/chicago-will-return-to-market-with-800-million-go-deal" target="_blank" rel="noopener">S&amp;P</a></td><td><b>BBB</b></td><td>2</td><td class="neg">Negative</td><td>Cut Jan. 2025</td></tr>
+        <tr><td><a href="https://www.cbsnews.com/chicago/news/chicago-credit-rating-downgraded-operating-deficits/" target="_blank" rel="noopener">Fitch</a></td><td><b>BBB+</b></td><td>3</td><td class="neg">Negative</td><td>Cut Feb. 2026</td></tr>
+        <tr><td><a href="https://www.kbra.com/publications/rTcQhdRk/kbra-affirms-bbb-negative-outlook-on-city-of-chicago-il-g-o-bonds?format=web" target="_blank" rel="noopener">KBRA</a></td><td><b>BBB+</b></td><td>3</td><td class="neg">Negative</td><td>Cut Feb. 2026</td></tr>
+        <tr><td><a href="https://www.bondbuyer.com/news/moodys-revises-chicagos-outlook-to-stable" target="_blank" rel="noopener">Moody's</a></td><td><b>Baa3</b></td><td>1</td><td>Stable</td><td>Affirmed Sept. 2025</td></tr>
+      </table>
+      <p class="fine" style="margin:6px 0 12px">KBRA publishes its full report free; S&amp;P, Fitch and Moody's reports need a subscription, so their names link to news coverage. Ratings as of the city's March 2026 bond sale. The City Council's own budget office explains the February 2026 cuts in <a href="https://www.chicago.gov/content/dam/city/depts/COFA/BondRating/COFA_Bond%20Analysis_Fitch%20KBRA%20Downgrades.pdf" target="_blank" rel="noopener">a short free analysis</a>.</p>
       <div id="rateBody"></div>
     </section>
     <section class="card" id="misCard">
@@ -327,6 +350,11 @@ const S = {
   acs_units:["Census ACS 2024: Chicago homes and vacant homes", "https://data.census.gov/table/ACSDT1Y2024.B25004?g=160XX00US1714000"],
   dss:["City of Chicago: residential garbage collection (about 600,000 households)", "https://chicago.gov/city/en/depts/streets/provdrs/streets_san/svcs/residential_garbagecollection.html"],
   sp_out:["WTTW: S&P revises Chicago's outlook to negative", "https://news.wttw.com/node/52432"],
+  kbra26:["KBRA affirms BBB+, negative outlook on Chicago G.O. bonds (Mar. 2026)", "https://www.kbra.com/publications/rTcQhdRk/kbra-affirms-bbb-negative-outlook-on-city-of-chicago-il-g-o-bonds?format=web"],
+  kbra26d:["KBRA downgrades Chicago G.O. bonds to BBB+ (Feb. 25, 2026)", "https://www.kbra.com/publications/ycHGdGMP/kbra-downgrades-the-city-of-chicago-il-general-obligation-bonds-to-bbb-assigns-bbb-rating-to-the-city-s-general-obligation-bonds-taxable-series-2026a-and-general-obligation-bonds-series-2026b-outlook-remains-negative"],
+  fitch_bb:["Bond Buyer: Chicago's ratings before its $800 million G.O. sale (Mar. 2026)", "https://www.bondbuyer.com/news/chicago-will-return-to-market-with-800-million-go-deal"],
+  sp_cut:["ABC7: S&P lowers Chicago to BBB (Jan. 2025)", "https://abc7chicago.com/post/sp-global-ratings-chicagos-credit-rating-drops-bbb/15800750/"],
+  moodys25:["Bond Buyer: Moody's affirms Chicago at Baa3, outlook to stable (Sept. 2025)", "https://www.bondbuyer.com/news/moodys-revises-chicagos-outlook-to-stable"],
   kbra:["KBRA: Chicago downgrade and what could change it (Jan. 2025)", "https://www.kbra.com/publications/KxSPjngZ/kbra-downgrades-the-city-of-chicago-il-g-o-rating-to-a-outlook-is-negative"],
   fitch:["CBS Chicago: Fitch downgrades Chicago to BBB+ (Feb. 2026)", "https://www.cbsnews.com/chicago/news/chicago-credit-rating-downgraded-operating-deficits"],
   wttw26:["WTTW: Council approves 2026 budget, 30–18 (Dec. 20, 2025)", "https://news.wttw.com/2025/12/20/city-council-votes-30-18-approve-final-part-2026-budget-will-mayor-veto-it"],
@@ -345,7 +373,7 @@ const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], 
 const LEAD = {tax:"Raise or cut each one. Changes count every year.", dept:"Fund each department more or less, or take a savings idea. Cuts count every year.",
   one:"Money for this year only. Next year's budget starts that much further behind.", else:"From the Mayor's own task force and other cities. The City Council can pass all of these on its own.",
   state:"The city can't do these alone: each needs a new state law, or a citywide vote. They count toward your budget, but it only balances if Springfield or the voters say yes.",
-  add:"New spending in the Mayor's plan. Turning it on makes the gap bigger."};
+  add:"Two things the Mayor's plan spends money on beyond the forecast. Each one you turn on adds to the gap you have to close."};
 const L = [
   {id:"ptax", g:"tax", sub:"Property tax", kind:"rec", who:"home", t:"City property tax levy", type:"range", min:-300, max:400, step:25, mayor:0,
    info:"The city's part is about a fifth of a property tax bill; renters pay much of it through rent. The 2027 levy is $1.87 billion. The Mayor proposed +$300 million for 2025 and the Council voted it down 50 to 0. The 2027 plan has no increase. The Mayor's task force suggested raising it with inflation every year (about $56 million for 2026).", pro:["The biggest, steadiest money the city has", "Owners of expensive property pay more"], con:["Hits homeowners directly and renters through rent", "The Council voted a $300M increase down 50 to 0 in 2024"], s:["forecast", "treas", "nbc", "tfip"]},
@@ -422,8 +450,8 @@ const L = [
    info:"Illinois shared 10% of its income tax with cities before 2011; it shares 6.47% of individual income tax now. Restoring it would pay Chicago up to $250 million, from other state spending. Task force estimate.", s:["tf"]},
   {id:"bch", g:"state", kind:"rec", who:"home", sub:"Needs a citywide vote", t:"Higher transfer tax on $1M+ sales (Bring Chicago Home)", type:"sw", amt:100, mayor:0,
    info:"State law says a city can only raise its transfer tax if voters approve it in a referendum. Supporters expected more than $100 million a year. Voters rejected it 53% to 47% in 2024. Big-sale taxes like it slowed apartment building in Los Angeles, so it trades budget money for fewer homes.", s:["globest", "rett_law"]},
-  {id:"inv", g:"add", kind:"cost", who:"none", t:"Fund the Mayor's new programs", type:"sw", amt:131.5, mayor:1, info:"Homelessness prevention ($30M), library subsidy ($30.9M), 40,000 summer youth jobs ($24M), streets and sanitation ($14.5M) and others ($32.1M).", s:["forecast", "release"]},
-  {id:"adj", g:"add", kind:"cost", who:"none", t:"Cost changes since the forecast", type:"sw", amt:36.1, mayor:1, info:"Budget adjustments the Mayor's plan made after the September forecast.", s:["forecast"]},
+  {id:"inv", g:"add", kind:"cost", who:"none", t:"Pay for the Mayor's new programs: homelessness prevention, libraries, summer jobs, streets", type:"sw", amt:131.5, mayor:1, info:"Homelessness prevention ($30M), library subsidy ($30.9M), 40,000 summer youth jobs ($24M), streets and sanitation ($14.5M) and others ($32.1M).", s:["forecast", "release"]},
+  {id:"adj", g:"add", kind:"cost", who:"none", t:"Cover cost increases the city found after its forecast", type:"sw", amt:36.1, mayor:1, info:"Between the city's budget forecast and the Mayor's proposal, the city found $36.1 million in higher costs it has to cover (the proposal lists them as budget adjustments). Leaving this off doesn't make the costs go away; it only shows how the plan was built.", s:["forecast"]},
 ];
 const WHO = {home:["Homeowners and renters", "#2b5da0"], biz:["Businesses and institutions", "#6a4fb0"], cons:["Shoppers, visitors and riders", "#b07a1f"], drive:["Drivers", "#9a5b3f"],
   city:["City government (efficiency)", "#1f7a45"], workers:["City workers", "#3d8f8a"], svc:["City services", "#c0392b"], state:["The state budget", "#7d8a99"],
@@ -482,13 +510,15 @@ function leverHtml(l){
   return `<div class="lv ${on ? "on" : ""} ${cost || a < 0 ? "cost" : ""}" data-id="${l.id}">
     <div class="top"><h3>${l.t} ${ib("lv", l.id, l.t)}</h3>${amtHtml(a, cost)}${ctl}</div>${opts}${rng}</div>`;
 }
+let YOU = 75000;   // the income typed into the income tax card
 function incomeHtml(l, a){
   const I = DATA && DATA.inc, b = incBy();
   const rows = SLICES.map(([t], k) => `<div class="irow"><span>${t}${I ? `<small>${fmtN(I.n[k])} returns reach it</small>` : ""}</span>
     <div class="opts iopt" data-k="${k}">${RATES.map((r, i) => `<button data-i="${i}" aria-pressed="${st.inc[k] === i}" aria-label="${r}% on ${t}">${r}%</button>`).join("")}</div><em>${b.slice[k] ? m(b.slice[k]) : ""}</em></div>`).join("");
+  const you = `<div class="iyou"><label>Your household income <span class="incbox">$<input class="iyouIn" type="text" inputmode="numeric" value="${YOU.toLocaleString("en-US")}" aria-label="Your household income"></span></label><b class="iyouOut">${money(taxOn(YOU))} a year</b></div>`;
   const ex = [40e3, 75e3, 150e3, 500e3, 2e6].map(x => `<div><b>${money(taxOn(x))}</b><span>a year on ${x >= 1e6 ? "$" + x / 1e6 + " million" : "$" + (x / 1e3) + ",000"}</span></div>`).join("");
   return `<div class="lv inc ${a ? "on" : ""}" data-id="${l.id}"><div class="top"><h3>${l.t} ${ib("lv", l.id, l.t)}</h3>${amtHtml(a)}</div>
-    ${I ? `<div class="irows">${rows}</div><div class="iex">${ex}</div><p class="dnote">${a ? `Tax returns under $200,000 pay ${m(b.mid)}; over $200,000 pay ${m(b.rich)}.` : "Pick a rate for each slice of income. Rates apply only to the part of income inside each slice."}</p>` : `<p class="dnote">Loading income data…</p>`}</div>`;
+    ${I ? `<div class="irows">${rows}</div>${you}<div class="iex">${ex}</div><p class="dnote">${a ? `Tax returns under $200,000 pay ${m(b.mid)}; over $200,000 pay ${m(b.rich)}.` : "Pick a rate for each slice of income. Rates apply only to the part of income inside each slice."}</p>` : `<p class="dnote">Loading income data…</p>`}</div>`;
 }
 const fmtN = n => n >= 1e6 ? (n / 1e6).toFixed(2) + " million" : Math.round(n).toLocaleString("en-US");
 function ptaxNote(a){ return a ? `${money(CITY_SHARE_BILL * a / LEVY)} a year on a typical home's bill` : "No change"; }
@@ -513,6 +543,7 @@ function renderLevers(){
     const l = L.find(x => x.id === el.dataset.id);
     el.querySelector(".sc-switch")?.addEventListener("click", () => { st[l.id] = st[l.id] ? 0 : 1; update(); });
     if (l.type === "income") el.querySelectorAll(".iopt").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => { st.inc[+g.dataset.k] = +b.dataset.i; update(); }));
+    if (l.type === "income"){ const yi = el.querySelector(".iyouIn"); if (yi){ yi.oninput = () => { YOU = Math.max(0, +yi.value.replace(/[^0-9.]/g, "") || 0); el.querySelector(".iyouOut").textContent = money(taxOn(YOU)) + " a year"; }; yi.onblur = () => { yi.value = YOU.toLocaleString("en-US"); }; } }
     else el.querySelectorAll(".opts button").forEach(b => b.onclick = () => { st[l.id] = +b.dataset.i; update(); });
     const r = el.querySelector("input[type=range]");
     if (r){ r.addEventListener("input", () => { st[l.id] = +r.value; const a = amt(l); el.classList.toggle("on", !!a); el.classList.toggle("cost", a < 0);
@@ -716,7 +747,10 @@ function renderMe(){
 }
 function bindSeg(id, key, num){ $(id).querySelectorAll("button").forEach(b => b.onclick = () => { me[key] = num ? +b.dataset.k : b.dataset.k; $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderMe(); }); }
 bindSeg("meHome", "home"); bindSeg("meCar", "car", 1); bindSeg("meBldg", "bldg", 1);
-$("meInc").onchange = e => { me.inc = +e.target.value; renderMe(); };
+const fmtInc = n => Math.round(n).toLocaleString("en-US");
+$("meInc").oninput = e => { me.inc = +e.target.value; $("meIncN").value = fmtInc(me.inc) + (me.inc >= 400000 ? "+" : ""); renderMe(); };
+$("meIncN").oninput = e => { const n = Math.max(0, Math.min(1e8, +e.target.value.replace(/[^0-9.]/g, "") || 0)); me.inc = n; $("meInc").value = Math.min(400000, n); renderMe(); };
+$("meIncN").onblur = e => { e.target.value = fmtInc(me.inc); };
 $("meInfo").onclick = () => info("How this is estimated", `<p>Every number here is rough. It applies your choices to one household:</p><ul>
   <li>Property tax: the city's part of a typical bill is about a fifth of the $4,457 median (Cook County Treasurer). Renters are assumed to see half of a change in rent (an assumption).</li>
   <li>Income tax: your income, run through the rates you set.</li>
@@ -754,7 +788,7 @@ function renderRate(){
   const v = bad >= 3 ? "Expect more downgrade pressure" : bad ? "More of the same: negative outlooks stay" : good ? "This is what the agencies have asked for" : "Nothing they'd flag either way";
   $("rateBody").innerHTML = `<p class="rverdict">${v}</p><div class="rflags">${f.map(([k, t]) => `<div class="rflag ${k}"><i>${k === "good" ? "✓" : "!"}</i><span>${t}</span></div>`).join("")}</div>`;
 }
-$("rateInfo").onclick = () => info("Chicago's credit ratings", `<p>Early 2026: S&P rates Chicago's general obligation bonds BBB with a negative outlook (downgraded in January 2025); Fitch cut them to BBB+ in February 2026; KBRA cut them to BBB the same month, with negative outlooks. The city says it remains investment grade with all four major agencies. BBB is two steps above junk.</p><p>This card checks your plan against what the agencies themselves have said would hurt or help. It's our reading, not a prediction.</p><p class="src">Sources: ${src("sp_out", "fitch", "kbra")}</p>`);
+$("rateInfo").onclick = () => info("Chicago's credit ratings", `<p>A credit rating is an agency's opinion of how likely Chicago is to pay its bonds back in full and on time. The scale runs from AAA down; anything BBB- (Baa3 at Moody's) or higher is "investment grade," and anything below is "junk" (speculative grade). Many pension funds and bond funds can only buy investment-grade bonds, so falling below that line would shrink the pool of buyers and raise the city's interest costs sharply.</p><p>Chicago's general obligation bonds today: S&P BBB, negative outlook (cut from BBB+ in January 2025); Fitch BBB+, negative (cut from A- on February 25, 2026); KBRA BBB+, negative (cut from A- the same day, affirmed March 2, 2026); Moody's Baa3, stable (affirmed September 2025). A negative outlook means the agency sees at least a one-in-three chance of another cut within about two years.</p><p>What the agencies have said they want: recurring revenue or lasting cuts that close the structural gap, less one-time money and borrowing for operations, and a dedicated way to pay what the pension funds need. What they've said would hurt: using reserves such as the Skyway and parking meter funds to fill gaps, borrowing for things other than capital projects, and missing the city's own financial policies (KBRA, March 2026).</p><p>This card checks your plan against those statements. It's our reading, not a prediction.</p><p class="src">Sources: ${src("sp_cut", "sp_out", "fitch_bb", "fitch", "kbra26", "moodys25")}</p>`);
 
 /* ---- Missions ---- */
 const MIS = [
@@ -889,6 +923,8 @@ $("srcs").innerHTML = `Numbers are millions of dollars for the 2027 Corporate Fu
 load();
 fetch("data/budget.json").then(r => r.json()).then(d => { DATA = d; VOTE = d.votes || null; renderWhere(); renderHist(); renderCmp(); update(); });
 update();
+(function(){ const t = document.getElementById("tabs"); if (!t) return; const e = () => t.classList.toggle("more-r", t.scrollWidth > t.clientWidth + 2 && t.scrollLeft + t.clientWidth < t.scrollWidth - 4);
+  t.addEventListener("scroll", e, {passive:true}); addEventListener("resize", e); new MutationObserver(e).observe(t, {childList:true}); e(); })();
 </script>
 </body>
 </html>

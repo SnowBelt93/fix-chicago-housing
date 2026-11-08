@@ -64,7 +64,12 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
   addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
 }
 /* keep the current page's tab visible when the tab bar scrolls (phones) */
-(function(){ function f(){ const n = document.querySelector(".sc-nav"), a = n && n.querySelector('[aria-current="page"]'); if (!a || n.scrollWidth <= n.clientWidth) return; n.scrollLeft = a.offsetLeft - n.offsetLeft - (n.clientWidth - a.offsetWidth) / 2; }
+(function(){
+  function edges(){ const n = document.querySelector(".sc-nav"); if (!n) return; const over = n.scrollWidth > n.clientWidth + 2;
+    n.classList.toggle("more-r", over && n.scrollLeft + n.clientWidth < n.scrollWidth - 4); n.classList.toggle("more-l", over && n.scrollLeft > 4); }
+  function f(){ const n = document.querySelector(".sc-nav"), a = n && n.querySelector('[aria-current="page"]'); if (!n) return;
+    n.addEventListener("scroll", edges, {passive:true}); addEventListener("resize", edges);
+    if (a && n.scrollWidth > n.clientWidth) n.scrollLeft = a.offsetLeft - n.offsetLeft - (n.clientWidth - a.offsetWidth) / 2; edges(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 
 /* Support and local sponsors. Settings live in /shape/site.json (no code change needed to switch them on):
@@ -105,7 +110,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     const f = document.querySelector("footer");
     if (f && !f.querySelector('a[href="/support/"]') && !f.querySelector(".sc-foot-extra")){
       const p = document.createElement("p"); p.className = "sc-foot-extra";
-      p.innerHTML = `<span data-support></span> <a href="/advertise/">Advertise with us</a>`;
+      p.innerHTML = `<span data-support></span>`;
       (f.querySelector(".wrap, .fw") || f).appendChild(p);
     }
     if (document.querySelector("[data-ad], [data-support]")) window.scShowAds();

@@ -167,8 +167,9 @@ def crane(x, y, z, h, jib, ang=0.0, m="star", hook_box=None):
     for k in range(int(h / 2.4)):
         box(x, y, z + k * 2.4 + 1.2, 1.3, 1.3, 0.12, "white", bevel=0)
     ca, sa = math.cos(ang), math.sin(ang)
-    box(x + ca * (jib / 2 - 4), y + sa * (jib / 2 - 4), z + h, jib, 0.9, 0.9, m, bevel=0.04, rot=ang)
-    box(x - ca * 6, y - sa * 6, z + h - 1.0, 2.4, 1.8, 1.4, "steel", bevel=0.05, rot=ang)                    # counterweight
+    back = 7.5                                                                                               # the short back arm
+    box(x + ca * (jib - 4 - back) / 2, y + sa * (jib - 4 - back) / 2, z + h, jib - 4 + back, 0.9, 0.9, m, bevel=0.04, rot=ang)
+    box(x - ca * (back - 1.4), y - sa * (back - 1.4), z + h + 0.9, 2.4, 1.6, 1.3, mat("grey", rough=0.7), bevel=0.05, rot=ang)   # counterweight, on the arm
     box(x, y, z + h + 0.9, 1.0, 1.0, 2.4, m, bevel=0.04)                                                     # cab/peak
     hx, hy = x + ca * (jib - 7), y + sa * (jib - 7)
     if hook_box:

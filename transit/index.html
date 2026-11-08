@@ -2436,7 +2436,7 @@ function renderFreshBar(bar){
     <div class="sc-m"><b>${wait ? (fs ? Math.round(fs.frac * 100) + "%" : "…") : num(trips)} ${ib("fresh", "How your network's riders are counted", info)}</b><span>${wait ? "counting trips…" : `trips a weekday · ${pct}% of today`}</span></div>
     <div class="sc-m"><b>${wait ? "…" : num(fs.mine.jobs)}</b><span>${wait ? "jobs within 45 min" : `jobs within 45 min (today ${num(fs.today.jobs)})`}</span></div>
     <div class="sc-m"><b>${capS}</b><span>to build</span></div>
-    <span class="tsum">${wait ? "Counting trips…" : num(trips) + " trips a weekday · " + pct + "% of today"}</span>
+    <span class="tsum">${A.length ? A.length + " new line" + (A.length > 1 ? "s" : "") : "Starting from scratch"}${kept ? " · " + kept : ""}</span>
     <div class="sc-push">${modeSeg()}<button class="sc-btn" type="button" id="planClear"${A.length ? "" : " disabled"}>Start over</button></div>`;
   bindInfo(bar); bindMode(bar);
 }

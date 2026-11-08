@@ -2380,13 +2380,16 @@ function megaPrep(){
     const fps = S.fp.filter(f => !inAnc(f)).map(f => { const p = []; for (let j = 0; j < 8; j += 2) p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]);
       const a = Math.abs((f[2] - f[0]) * (f[5] - f[1]) - (f[4] - f[0]) * (f[3] - f[1])); return {p, a, tower: Math.abs(Math.hypot(f[2] - f[0], f[3] - f[1]) - Math.hypot(f[4] - f[2], f[5] - f[3])) < 2 && a > 600}; });
     const [lo, hi, tlo, thi] = m.fl, out = [];
-    let sum = 0;
-    for (let k = 0; k < fps.length && sum < need; k++){
+    let sum = 0, k = 0;
+    for (; k < fps.length && sum < need; k++){
       const f = fps[k], r = hash01(k, 911 + si * 37), tw = f.a > 600 && (f.tower || hash01(k, 577 + si) < 0.2), st = tw ? tlo + Math.floor(r * (thi - tlo + 1)) : lo + Math.floor(r * (hi - lo + 1));
       out.push({p: f.p, a: f.a, st}); sum += f.a * st;
     }
     if (sum < need) out.forEach(b => b.st = Math.min(80, Math.ceil(b.st * need / sum)));   // ran out of ground: go taller
     else if (out.length){ const b = out[out.length - 1], rest = need - (sum - b.a * b.st); b.st = Math.max(3, Math.ceil(rest / b.a)); }
+    // the rest of the site: later phases (the model counts half the remaining homes by 2041), drawn as low pads so the
+    // project's whole footprint shows
+    for (; k < fps.length; k++) MEGA_BLD.push({p: fps[k].p, full: 1.2, at: 0, site: si, later: true});
     let cum = 0;
     const tot = out.reduce((t, b) => t + b.a * b.st, 0);
     out.forEach(b => { MEGA_BLD.push({p: b.p, full: b.st * FLOOR_M, at: cum / tot, site: si}); cum += b.a * b.st; });
@@ -3696,7 +3699,7 @@ function layers(){
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
   if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year); L.push(new deck.SolidPolygonLayer({id:"megaB", data:MEGA_BLD, extruded:true,
-    getPolygon:d => d.p, getElevation:d => (d.anchor ? year >= 2 : d.at < f) ? d.full : 0, getFillColor:d => d.anchor ? [196,198,204] : [118,92,170],
+    getPolygon:d => d.p, getElevation:d => (d.anchor ? year >= 2 : d.at < f) ? d.full : 0, getFillColor:d => d.anchor ? [140,118,186] : d.later ? [196,184,222] : [118,92,170],
     updateTriggers:{getElevation:[f, year >= 2]},
     material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
     transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}})); } }

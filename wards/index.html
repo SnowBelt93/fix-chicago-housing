@@ -46,7 +46,7 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .vote:first-of-type{border-top:0}
 .vote b{font-size:14.5px} .vote p{margin:2px 0 0;font-size:13px;color:var(--sc-mute);line-height:1.4;grid-column:1}
 .vote .v{grid-row:1/3;grid-column:2;align-self:center;font-size:13px;font-weight:700;padding:5px 11px;border-radius:12px;white-space:nowrap}
-.v.yes{background:#e3f3e8;color:#1f7a45} .v.no{background:#fbe3e6;color:#b4152d} .v.na{background:var(--sc-seg);color:var(--sc-mute)}
+.v.yes{background:#e8eef8;color:#2b5da0} .v.no{background:#eceef1;color:#3d434b} .v.na{background:var(--sc-seg);color:var(--sc-mute)}
 .vote a{color:var(--sc-mute);font-size:12px}
 .tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:8px;margin-left:6px;vertical-align:1px}
 .tag.more{background:#e3f3e8;color:#1f7a45} .tag.fewer{background:#fbe3e6;color:#b4152d} .tag.afford{background:#e7eefb;color:#2b5da0} .tag.budget{background:var(--sc-seg);color:var(--sc-ink2)}
@@ -57,7 +57,7 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .zrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;font-size:13.5px;padding:7px 0;border-top:1px solid var(--sc-line);align-items:baseline}
 .zrow .d{color:var(--sc-mute);font-size:12.5px}
 .zrow .k{font-size:12px;font-weight:600;white-space:nowrap}
-.zrow .k.up{color:#1f7a45} .zrow .k.down{color:#b4152d} .zrow .k.pd{color:#2b5da0} .zrow .k.same,.zrow .k.other{color:var(--sc-mute)}
+.zrow .k{color:var(--sc-ink2)} .zrow .k.na{color:var(--sc-mute);font-weight:500}
 .zrow a{color:var(--sc-ink);text-decoration:none} .zrow a:hover{text-decoration:underline}
 .seg2{display:inline-flex;gap:2px;padding:3px;background:var(--sc-seg);border-radius:16px;font-size:13px;font-weight:600;margin-bottom:10px}
 .seg2 button{font:inherit;border:0;padding:6px 12px;border-radius:13px;background:transparent;color:var(--sc-ink2);cursor:pointer}
@@ -99,12 +99,12 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   <div class="grid">
     <section class="card">
       <h2>Votes on citywide housing laws <button class="ib" data-i="votes" aria-label="About these votes">i</button></h2>
-      <p class="sub">The contested ones, plus the last two budgets. Votes cast by today's alderperson; earlier votes in this ward were cast by whoever held the seat then.</p>
+      <p class="sub">Citywide housing laws with a recorded roll call, plus the last two budgets. Each vote is the one cast by whoever held this seat at the time.</p>
       <div id="votes"></div>
     </section>
     <section class="card">
       <h2>Zoning changes in this ward <button class="ib" data-i="zoning" aria-label="About zoning changes">i</button></h2>
-      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines. In Chicago, almost none pass without the local alderperson's support.</p>
+      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. For this term, the alderperson's own vote on each one.</p>
       <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">Since May 2023</button><button role="radio" aria-checked="false" data-k="all">Since 2013</button></div>
       <div class="nums" id="znums"></div>
       <div class="zlist" id="zlist"></div>
@@ -132,13 +132,14 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
-let D = null, G = null, W = 1, span = "term", sortK = "up", sortDir = -1;
+let D = null, G = null, W = 1, span = "term", sortK = "w", sortDir = 1;
 const KL = {up:"More homes allowed", down:"Fewer homes allowed", pd:"Planned development", same:"Same homes, other changes", other:"Not classified"};
+const VOTE = {Absent:"Absent", Recused:"Recused", "Not Voting":"Didn't vote", Excused:"Excused"};
 const elms = id => id ? `https://chicityclerkelms.chicago.gov/Matter/?matterId=${id}` : null;
 function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
 const INFO = {
-  votes: ["About these votes", `<p>These are citywide laws that changed how many homes can be built, or how affordable they must be, and that drew real opposition, plus the 2025 and 2026 budgets. Laws that passed unanimously or by voice vote aren't listed, since they don't tell wards apart. Tags show what a Yes vote did: <span class="tag more">more homes</span> <span class="tag fewer">fewer homes</span> <span class="tag afford">affordable homes</span>.</p><p class="src">Roll calls: City Clerk eLMS (each vote links to its record).</p>`],
-  zoning: ["About zoning changes", `<p>Each rezoning is read from the ordinance or the applicant's narrative, which name the district it changes from and to. "More homes allowed" means the new district permits more homes per lot under Chicago's zoning code (for example RS-3 to RT-4). "Planned development" is a large project with its own rules, usually more homes. About a third of recent changes couldn't be read from the scanned documents; they're listed as not classified. Addresses are placed in today's ward lines (the 2023 map), so changes before 2023 may have happened under a different alderperson.</p><p>Why it matters: under "aldermanic prerogative," the Council almost always follows the local alderperson on rezonings in their ward, so these are as close to a ward-by-ward record as Chicago has.</p><p class="src">Sources: City Clerk eLMS ordinances and narratives; Chicago Zoning Ordinance (Title 17) for homes per lot.</p>`],
+  votes: ["About these votes", `<p>Citywide laws about housing that had a recorded roll call with at least one No vote, plus the 2025 and 2026 budgets. Laws passed unanimously or by voice vote aren't listed, since every ward voted the same way. Each line says what the law does and how this ward's alderperson at the time voted.</p><p class="src">Roll calls: City Clerk eLMS (each vote links to its record).</p>`],
+  zoning: ["About zoning changes", `<p>Each rezoning is read from the ordinance or the applicant's narrative, which name the district before and after. "Homes on a typical lot" is how many homes each district allows on a standard 25 by 125 foot Chicago lot under the zoning code's minimum lot area per home (§17-2-0303), so you can compare before and after. A planned development has its own rules set in its ordinance. Some scanned documents can't be read; those show a question mark.</p><p>For this term (since May 2023), each row shows the alderperson's own vote when the City Clerk recorded a roll call on it. Many rezonings pass together in one vote; when no roll call is on file, the row says so.</p><p>Addresses are placed in today's ward lines (the 2023 map), so changes before 2023 may have been in a different ward.</p><p class="src">Sources: City Clerk eLMS ordinances, narratives and roll calls; Chicago Zoning Ordinance §17-2-0303.</p>`],
   cal: ["About the hearing calendar", `<p>Meetings come from the City Clerk's legislation system (eLMS) and are checked once a day, so a meeting added or moved today may not show yet. Times are Chicago time. The clerk's page for each meeting has the agenda, the notice, how to send public comment and, afterwards, the video.</p><p>Zoning changes are heard by the Committee on Zoning, Landmarks and Building Standards, then voted on by the full City Council. Budget hearings run through the Committee on Budget and Government Operations.</p><p><a href="https://chicityclerkelms.chicago.gov/Meetings/" target="_blank" rel="noopener">All meetings at the City Clerk</a></p>`],
   permits: ["About permits", `<p>Homes in new-construction building permits, counted the way the <a href="/tracker/">Permit tracker</a> counts them (it matches the Census count for Chicago within 1%). The ward comes from the permit record.</p>`],
 };
@@ -158,15 +159,18 @@ function render(){
   $("hAld").textContent = `Alderperson ${w.ald.name.replace(/^(.*?), (.*)$/, "$2 $1")}`;
   $("contact").innerHTML = [w.ald.phone && `Ward office ${w.ald.phone}`, w.ald.email && `<a href="mailto:${w.ald.email}">${w.ald.email}</a>`, w.ald.web && `<a href="${w.ald.web}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
   $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
-    const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Yes" : x === "Nay" ? "No" : x ? x : "Not on Council";
-    const tag = {more:"more homes", fewer:"fewer homes", afford:"affordable homes", budget:"budget"}[v.eff];
-    return `<div class="vote"><b>${v.t}<span class="tag ${v.eff}">${tag}</span></b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
+    const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Voted yes" : x === "Nay" ? "Voted no" : x ? VOTE[x] || x : "Not on the Council then";
+    return `<div class="vote"><b>${v.t}</b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
   renderZ(); renderP(); wmap(); renderAll();
 }
 function renderZ(){
-  const w = D.wards[W - 1], c = w[span], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
-  $("znums").innerHTML = `<div class="up"><b>${c.up}</b><span>allowed more homes</span></div><div class="down"><b>${c.down}</b><span>allowed fewer homes</span></div><div><b>${c.pd}</b><span>planned developments</span></div><div><b>${c.same + c.other}</b><span>other or not classified</span></div>`;
-  $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}${z.f || z.t ? ` <span class="fine">${z.f || "?"} → ${z.t || "?"}</span>` : ""}${z.h ? ` <span class="fine">· ${z.h} homes planned</span>` : ""}</span><span class="k ${z.k}">${KL[z.k]}</span></div>`).join("") + (span === "all" && w.z.length >= 60 ? `<p class="fine">Showing the latest 60.</p>` : "") : `<p class="fine">No rezonings passed here in this period.</p>`;
+  const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
+  const pd = rows.filter(z => z.k === "pd").length, yes = rows.filter(z => z.v === "Yea").length, no = rows.filter(z => z.v === "Nay").length;
+  $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div><div><b>${pd}</b><span>planned developments</span></div>` +
+    (span === "term" ? `<div><b>${yes}</b><span>the alderperson voted yes</span></div><div><b>${no}</b><span>voted no</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
+  const lot = z => z.hf != null && z.ht != null ? `homes on a typical lot: ${z.hf} → ${z.ht}` : z.ht != null ? `up to ${z.ht} homes on a typical lot` : "";
+  const vote = z => z.v === "Yea" ? `<span class="k">Voted yes</span>` : z.v === "Nay" ? `<span class="k">Voted no</span>` : z.v ? `<span class="k">${VOTE[z.v] || z.v}</span>` : z.d >= "2023-05-15" ? `<span class="k na">No roll call on file</span>` : `<span class="k na"></span>`;
+  $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}<span class="fine"> · ${z.k === "pd" ? "Planned development" : z.f && z.t ? z.f + " → " + z.t : z.t ? "now " + z.t : "districts not readable in the filed document"}${lot(z) ? " · " + lot(z) : ""}${z.h ? ` · ${z.h} homes planned` : ""}${z.by ? " · introduced by the alderperson" : ""}</span></span>${vote(z)}</div>`).join("") : `<p class="fine">None in this period.</p>`;
 }
 function renderP(){
   const p = D.wards[W - 1].permits, all = D.wards.map(x => x.permits?.homes || 0).sort((a, b) => b - a);
@@ -174,8 +178,8 @@ function renderP(){
   $("pnums").innerHTML = p ? `<div><b>${p.homes.toLocaleString("en-US")}</b><span>homes permitted</span></div><div><b>${p.projects}</b><span>buildings</span></div><div><b>${p.last12}</b><span>homes in the last 12 months</span></div><div><b>#${all.indexOf(p.homes) + 1}</b><span>of 50 wards</span></div>` : `<p class="fine">No permit data.</p>`;
 }
 function renderAll(){
-  const cols = [["w", "Ward"], ["name", "Alderperson"], ["up", "More homes allowed"], ["down", "Fewer"], ["pd", "Planned dev."], ["homes", "Homes permitted"], ["etod", "Transit homes vote"]];
-  const rows = D.wards.map(w => ({w: w.w, name: w.ald.name.split(",")[0], up: w.term.up, down: w.term.down, pd: w.term.pd, homes: w.permits?.homes || 0, etod: w.votes[0][1] || "–"}));
+  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["pd", "Planned developments"], ["homes", "Homes permitted"]];
+  const rows = D.wards.map(w => { const t = w.z.filter(z => z.d >= "2023-05-15"); return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, pd: t.filter(z => z.k === "pd").length, homes: w.permits?.homes || 0}; });
   rows.sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
   $("all").innerHTML = `<tr>${cols.map(([k, t]) => `<th data-k="${k}">${t}${sortK === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr>` +
     rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.up}</td><td>${r.down}</td><td>${r.pd}</td><td>${r.homes.toLocaleString("en-US")}</td><td>${r.etod === "Yea" ? "Yes" : r.etod === "Nay" ? "No" : r.etod}</td></tr>`).join("");

@@ -97,6 +97,17 @@ def homes_allowed(d):        # homes per 10,000 sq ft of lot under a district, f
     if d.startswith(('M', 'PMD', 'POS', 'T', 'DS')) or re.match(r'^C3', d): return 0
     v = mla(d.replace('RM-6.5', 'RM-6.5'))
     return 10000 / v if v else None
+def lot_homes(d):          # homes allowed on a typical 25 x 125 ft (3,125 sq ft) Chicago lot; None if unknown or a PD
+    if not d or d == 'PD': return None
+    h = homes_allowed(d)
+    if h is None: return None
+    if h == 0: return 0
+    n = int(h * 3125 / 10000 + 1e-9)
+    return max(1, n) if d.startswith(('R', 'B', 'C')) else n
+def council_roll(r):        # the final City Council roll call on this matter, {normalized surname: vote}
+    for act, date, body, vs in reversed(r.get('votes') or []):
+        if body == 'City Council' and vs: return {re.sub(r'[^a-z]', '', (n or '').lower().split(',')[0]): v for n, v in vs}
+    return None
 def kind(f, to):
     if to == 'PD' or f == 'PD': return 'pd'
     a, b = homes_allowed(f), homes_allowed(to)
@@ -137,7 +148,9 @@ for f in glob.glob(os.path.join(RAW, 'wards', 'ord', '*.json')):
         fr2, to2 = change(eltext(r['record'])); fr, to = fr or fr2, to or to2
     k = kind(fr, to) if (fr or to) else ('pd' if re.search(r'Planned Development|Residential[- ]Business', title, re.I) else 'other')
     addr = re.sub(r'^.*?\bat\s+', '', title); addr = re.sub(r'\s*-\s*App(?:lication)?\.? No\.?.*$', '', addr).strip()
-    Z.append({'w': w, 'r': r['record'], 'm': MID.get(r['record']), 'd': (r.get('final') or '')[:10], 'a': addr[:80], 'f': fr, 't': to, 'k': k, 'h': planned(r['record'])})
+    Z.append({'w': w, 'r': r['record'], 'm': MID.get(r['record']), 'd': (r.get('final') or '')[:10], 'a': addr[:80], 'f': fr, 't': to, 'k': k, 'h': planned(r['record']),
+              'hf': lot_homes(fr), 'ht': lot_homes(to), 'sp': [x for x in (r.get('sponsors') or []) if x and 'Transmittal' not in x],
+              'rc': council_roll(r)})
 print('zoning changes placed', len(Z), dict(miss), collections.Counter(z['k'] for z in Z))
 
 # ---- alderpeople and their votes
@@ -173,6 +186,12 @@ wards = []
 for w in range(1, 51):
     a = ALD.get(w, {'name': '?'}); nm = norm_name(a['name'])
     zz = sorted([z for z in Z if z['w'] == w], key=lambda z: z['d'], reverse=True)
+    zz = [dict(z) for z in zz]
+    for z in zz:
+        rc = z.pop('rc'); sp = z.pop('sp')
+        if z['d'] >= '2023-05-15':      # this term: the current alderperson's own record on it
+            z['v'] = (rc or {}).get(nm)
+            z['by'] = any(norm_name(x) == nm for x in sp) or None
     term = [z for z in zz if z['d'] >= '2023-05-15']
     cnt = lambda L, k: sum(1 for z in L if z['k'] == k)
     wards.append({'w': w, 'ald': a, 'votes': [[v['rec'], v['by'].get(nm)] for v in votes],

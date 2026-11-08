@@ -68,6 +68,12 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   .sc-fan{display:none}
 }
 @media (max-width:560px){ .bar .btns{width:100%} .bar .k.hide{display:none} }
+.split{display:flex;height:34px;border-radius:10px;overflow:hidden;margin:6px 0 4px;font-size:12px;font-weight:600;color:#fff}
+.split div{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;min-width:0}
+.split .s1{background:#41b6e6;color:#0d3a52} .split .s2{background:#2b5da0} .split .s3{background:#e4002b}
+.splitkey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--sc-ink2);margin:4px 0 10px}
+.splitkey i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+#tSave td.good{color:#1f7a45;font-weight:600}
 </style>
 </head>
 <body>
@@ -113,6 +119,18 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
       <div class="stats" id="stats"></div>
     </section>
     <section class="card">
+      <h2>Most of each payment is interest <button class="ib" data-i="int" aria-label="About the interest">i</button></h2>
+      <p class="sub" id="intSub"></p>
+      <div class="split" id="split"></div>
+      <div class="stats" id="intStats"></div>
+    </section>
+    <section class="card">
+      <h2>What paying sooner saves <button class="ib" data-i="save" aria-label="About the savings">i</button></h2>
+      <p class="sub">Every dollar paid in earlier stays invested, so the city needs fewer dollars later. Totals count the city's payments from 2026 to 2070 plus whatever is still owed in 2070, all in today's dollars, at the investment return picked on the left.</p>
+      <table class="funds" id="tSave"></table>
+      <p class="fine" id="saveNote"></p>
+    </section>
+    <section class="card">
       <h2>Fund by fund</h2>
       <table class="funds" id="tFunds"></table>
     </section>
@@ -136,6 +154,7 @@ const S = {
   ctw:["A City That Works: the state of Chicago pensions (2025)", "https://citythatworks.substack.com/p/a-2025-update-on-the-state-of-chicago"],
   ilcon:["Illinois Constitution, Article XIII, Section 5 (pension protection)", "https://law.counselstack.com/constitution/il/XIII/5"],
   ctwr:["Civic Federation: Chicago pensions", "https://civicfed.org/node/1216"],
+  bud:["City of Chicago budget ordinance appropriations, 2026 (Chicago Data Portal)", "https://data.cityofchicago.org/browse?q=budget%20ordinance%20appropriations"],
 };
 const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
 const PAYS = [["law", "State law"], ["full", "Pay it off fully"], ["freeze", "Freeze at 2026"]];
@@ -225,7 +244,39 @@ function render(){
   $("tFunds").innerHTML = `<tr><th>Fund</th><th class="n">Funded, 2025</th><th class="n">90% in</th><th class="n">100% in</th><th class="n">Owed, 2025</th></tr>` +
     Object.entries(R.funds).map(([k, v]) => { const f = D.funds[k], r0 = v.rows[0];
       return `<tr><td>${f.name}<br><span class="fine">State law: 90% by ${f.tgt}</span></td><td class="n">${pct(r0.fnp / r0.tpl)}</td><td class="n ${v.y90 && v.y90 <= f.tgt ? "" : "warn"}">${v.broke ? `<span class="warn">Broke in ${v.broke}</span>` : v.y90 || "After 2070"}</td><td class="n">${v.y100 || "After 2070"}</td><td class="n">${money(r0.tpl - r0.fnp)}</td></tr>`; }).join("");
+  renderSave();
   save();
+}
+
+/* ---- where the 2026 payment goes: benefits earned this year, interest on what's owed, and paying it down ---- */
+const LOCAL26 = 14798710, PENS26 = 2899698;   // $ thousands: 2026 city budget, all local funds, and pension fund appropriations (budget ordinance)
+function renderInt(){
+  const R = BASE; let U = 0, I = 0, N = 0, E = 0;
+  for (const [k, f] of Object.entries(D.funds)){
+    const r0 = R.funds[k].rows[0], r1 = R.funds[k].rows[1], u = r0.tpl - r0.fnp, p26 = f.pay * Math.pow(1 + D.payG, 2);
+    U += u; I += u * f.d; N += (f.sc - f.ee) / f.pay * p26; E += r1.er;
+  }
+  const down = E - N - I, w = x => Math.max(0, x / Math.max(E, N + I) * 100).toFixed(1) + "%";
+  $("intSub").textContent = `The four funds are short ${money(U)}. Because the funds count on earning about 6.7% a year on money they don't have, that shortfall costs about ${money(I)} a year by itself, like interest on a loan. In 2026 the city pays ${money(E)}.`;
+  $("split").innerHTML = `<div class="s1" style="width:${w(N)}">${money(N)}</div><div class="s2" style="width:${w(Math.min(I, E - N))}">${money(Math.min(I, E - N))}</div>` + (down > 0 ? `<div class="s3" style="width:${w(down)}">${money(down)}</div>` : "");
+  $("split").insertAdjacentHTML("afterend", "");
+  const key = `<div class="splitkey"><span><i style="background:#41b6e6"></i>Benefits workers earn this year</span><span><i style="background:#2b5da0"></i>Interest on what's owed</span>${down > 0 ? `<span><i style="background:#e4002b"></i>Paying down what's owed</span>` : ""}</div>`;
+  const prev = $("split").nextElementSibling; if (prev && prev.classList.contains("splitkey")) prev.remove();
+  $("split").insertAdjacentHTML("afterend", key);
+  $("intStats").innerHTML = `<div><b>${Math.round(PENS26 / LOCAL26 * 100)}%</b><span>of the city's own 2026 budget goes to the pension funds (${money(PENS26)} of ${money(LOCAL26)})</span></div>
+    <div><b>${Math.round(I / LOCAL26 * 100)}%</b><span>of that budget equals the yearly interest on the shortfall</span></div>
+    <div><b>${down > 0 ? money(down) : money(-down)}</b><span>${down > 0 ? "actually pays down what's owed in 2026" : "short of covering the interest in 2026, so the debt still grows"}</span></div>`;
+}
+/* ---- what paying sooner saves ---- */
+function renderSave(){
+  const ret = RETS[st.ret][0], base = {pay:"law", extra:0, bond:0, ret, crash:st.crash};
+  const real = (T, a, b) => T.filter(t => t.y >= a && t.y <= b).reduce((x, t) => x + (t.er + t.ds) / Math.pow(1 + INFL, t.y - 2026), 0);
+  const total = R => { const T = R.tot, e = T[T.length - 1]; return real(T, 2026, 2070) + Math.max(0, e.tpl - e.fnp) / Math.pow(1 + INFL, 2070 - 2026); };
+  const rows = [["State law (today's schedule)", base], ["Add $250M a year", {...base, extra:250}], ["Add $500M a year", {...base, extra:500}], ["Add $1B a year", {...base, extra:1000}], ["Pay it off fully (100%)", {...base, pay:"full"}]]
+    .map(([t, o]) => { const R = run(o); return {t, y90: R.tot.find(x => x.fr >= 0.899)?.y, cost: total(R), owed: R.tot[R.tot.length - 1].tpl - R.tot[R.tot.length - 1].fnp}; });
+  const b = rows[0].cost;
+  $("tSave").innerHTML = `<tr><th>Plan</th><th class="n">90% in</th><th class="n">Total cost</th><th class="n">Saves</th></tr>` + rows.map((r, i) => `<tr><td>${r.t}</td><td class="n">${r.y90 || "After 2070"}</td><td class="n">${money(r.cost)}</td><td class="n ${i && b - r.cost > 0 ? "good" : ""}">${i ? (b - r.cost > 0 ? money(b - r.cost) : "costs " + money(r.cost - b) + " more") : "–"}</td></tr>`).join("");
+  $("saveNote").textContent = ret != null && ret < 0.066 ? "At this lower return, paying early saves less: money parked in the funds earns less than the funds assume." : "Under state law, extra money lowers the payments the law requires later, so the funds reach 90% in the same year for less. Savings depend on the funds actually earning their assumed returns.";
 }
 function chart(id, T, B, f, fmt, fixedMax, line, bars){
   const W = 760, H = 260, P = {l:58, r:16, t:12, b:26};
@@ -265,6 +316,8 @@ const INFO = {
   bond: ["Pension bonds", `<p>The city borrows now, puts the money in the funds in 2027, and repays the bond over 30 years at 6% (an assumption about Chicago's borrowing cost). It's a bet: if the funds earn more than the bond costs, it saves money; if not, it adds to the debt. Bond payments show in pink.</p>`],
   ret: ["Investment returns", `<p>The funds assume they'll earn about 6.6% to 6.75% a year (the rates they use to value their debt in the 2024 report). Payments under state law are always set using those assumed returns, so if real returns come in lower, the funds fall behind and later payments jump. The crash switch drops all four funds' assets 25% in 2028, like 2008.</p><p class="src">Source: ${src("acfr")}</p>`],
   cut: ["Why benefit cuts aren't here", `<p>The Illinois Constitution says membership in a public pension system is a contract whose benefits "shall not be diminished or impaired." The Illinois Supreme Court used it to strike down the state's pension cuts in 2015 and Chicago's own changes for the municipal and laborers' funds in 2016. Changing benefits for current workers would take a constitutional amendment.</p><p class="src">Source: ${src("ilcon")}</p>`],
+  int: ["Why most of the payment is interest", `<p>A pension fund promises benefits it will pay over decades and plans to cover them partly with investment returns. When a fund holds less than it owes, the missing money can't earn those returns, so the gap grows each year by roughly the fund's assumed return times the shortfall. That growth is the "interest" here: about 6.6% to 6.75% a year, the rates the four funds assume.</p><p>Each year's city payment first covers the benefits workers earn that year (after their own contributions), then that interest. Only what's left actually shrinks the debt. Illinois law sets payments that start low and rise steeply, which is why so little goes to paying down the debt now and why payments keep climbing toward the 2050s.</p><p>Budget figures are the 2026 appropriations to the four pension funds and the total of the city's own (local) funds, excluding grants.</p><p class="src">Sources: ${src("acfr", "bud", "ctw")}</p>`],
+  save: ["How the savings are counted", `<p>Each row runs the same model as the charts with one change. "Total cost" adds every city payment from 2026 to 2070, converted to today's dollars at 2.5% inflation (an assumption), plus whatever the funds still owe in 2070, so plans that leave a debt behind aren't made to look cheap.</p><p>Paying more early saves money because those dollars earn investment returns for decades. If the funds earn less than they assume, the savings shrink. Benefits themselves are the same in every row.</p><p class="src">Sources: ${src("acfr", "fc27")}</p>`],
   how: ["How the model works", `<p>Each fund starts from its December 31, 2024 numbers in the city's financial report: what it owes, what it holds, the cost of benefits earned each year, payroll and the rate it uses to value its debt. Each year:</p><ul><li>Benefit payments stay the same share of what's owed as in 2024.</li><li>The cost of new benefits and worker contributions stay the same share of payroll, which grows 3% a year (an assumption).</li><li>What's owed grows a bit faster than that formula alone, by 0.7% to 1% a year depending on the fund. We set that so the city's actual 2026 payments, growing with payroll, reach 90% exactly in the years state law sets. It stands in for things the simple formula misses, like the 2025 Tier 2 law for police and fire (which the city says adds about $11 billion through 2055).</li></ul><p>The result: at the end of 2025 the four funds owe about ${money(BASE ? BASE.tot[0].tpl - BASE.tot[0].fnp : 0)} more than they hold (the city's own figure: $36.4 billion). It's a simple model, not an actuary's. Use it to compare choices, not to predict exact years.</p><p class="src">Sources: ${src("acfr", "ov26", "fc27", "wttw", "ctw")}</p>`],
 };
 document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
@@ -273,7 +326,7 @@ $("crash").onclick = () => { st.crash = !st.crash; syncCtl(); render(); };
 $("reset").onclick = () => { Object.assign(st, {pay:"law", extra:0, bond:0, ret:2, crash:false}); syncCtl(); render(); };
 $("srcs").innerHTML = `A simple model of Chicago's four city pension funds, built on each fund's 2024 figures and calibrated so today's legal payment schedule reaches 90% on time. Sources: ${src("acfr", "ov26", "fc27", "wttw")}. Assumptions: payroll grows 3% a year; pension bonds cost 6%; "today's dollars" uses 2.5% inflation.`;
 load();
-fetch("data/pensions.json").then(r => r.json()).then(d => { D = d; BASE = run({pay:"law", extra:0, bond:0, ret:null, crash:false}); syncCtl(); render(); });
+fetch("data/pensions.json").then(r => r.json()).then(d => { D = d; BASE = run({pay:"law", extra:0, bond:0, ret:null, crash:false}); syncCtl(); render(); renderInt(); });
 </script>
 </body>
 </html>
