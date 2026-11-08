@@ -4,20 +4,23 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['tools/budget/fetch.py', 'tools/budget/fetch_irs.py', '.github/workflows/fetch-budget.yml']
+    paths: ['tools/budget/fetch.py', 'tools/budget/fetch_irs.py', 'tools/budget/fetch_votes.py', '.github/workflows/fetch-budget.yml']
 permissions:
   contents: write
 jobs:
   fetch:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      SKIP_MAIN: '1'
     steps:
       - uses: actions/checkout@v4
       - name: Download
         run: |
           sudo apt-get install -y poppler-utils >/dev/null
-          python3 tools/budget/fetch_irs.py || true
-          python3 tools/budget/fetch.py
+          python3 tools/budget/fetch_votes.py || true
+          [ -f tools/raw/budget/irs/zip_il.csv.gz ] || python3 tools/budget/fetch_irs.py || true
+          [ -n "$SKIP_MAIN" ] || python3 tools/budget/fetch.py
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
