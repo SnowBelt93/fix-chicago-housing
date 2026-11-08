@@ -152,7 +152,7 @@ function drawPop(){
   const x = y => P.l + (y - 1870) / (2020 - 1870) * (W - P.l - P.r), yv = v => H - P.b - v / max * (H - P.t - P.b);
   let g = `<svg class="pop" viewBox="0 0 ${W} ${H}" role="img" aria-label="Chicago population by census, 1870 to 2020: peak 3.6 million in 1950, 2.75 million in 2020">`;
   for (const v of [1e6, 2e6, 3e6, 4e6]) g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(v)}" y2="${yv(v)}" stroke="#eceef1"/><text x="${P.l - 5}" y="${yv(v) + 3}" text-anchor="end" font-size="9.5" fill="#6a7079">${v / 1e6}M</text>`;
-  for (const yy of [1870, 1900, 1950, 2000, 2020]) g += `<text x="${x(yy)}" y="${H - 4}" text-anchor="middle" font-size="9.5" fill="#6a7079">${yy}</text>`;
+  for (const yy of [1870, 1900, 1950, 2000, 2020]) g += `<text x="${x(yy)}" y="${H - 4}" text-anchor="${yy === 2020 ? "end" : yy === 1870 ? "start" : "middle"}" font-size="9.5" fill="#6a7079">${yy}</text>`;
   g += `<polyline points="${CITY.map(c => x(c[0]) + "," + yv(c[1])).join(" ")}" fill="none" stroke="#2b5da0" stroke-width="2.2" stroke-linejoin="round"/>`;
   const cx = x(Math.min(2020, YEAR)); g += `<line x1="${cx}" x2="${cx}" y1="${P.t}" y2="${H - P.b}" stroke="#e4002b" stroke-width="1.2"/>`;
   $("popChart").innerHTML = g + "</svg>";
