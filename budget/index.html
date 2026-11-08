@@ -91,6 +91,17 @@ svg.chart{width:100%;height:auto;display:block}
 .fine{font-size:12px;color:var(--sc-mute);line-height:1.55}
 .fine a{color:var(--sc-mute)}
 dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
+.irows{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.irow{display:grid;grid-template-columns:1fr;gap:4px}
+.irow span{font-size:13px;font-weight:600} .irow small{display:block;font-weight:400;color:var(--sc-mute);font-size:11.5px}
+.irow em{font-style:normal;font-size:12.5px;font-weight:600;color:var(--sc-navy);min-height:0}
+.iopt{gap:4px} .iopt button{padding:4px 8px;font-size:12px}
+.iex{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:10px;overflow:hidden;margin-top:10px}
+.iex div{background:#fff;padding:7px 6px;text-align:center} .iex b{display:block;font-size:13px} .iex span{font-size:10.5px;color:var(--sc-mute);line-height:1.25;display:block}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.pc div{background:var(--sc-seg);border-radius:12px;padding:10px 12px;font-size:13.5px}
+.pc ul{margin:6px 0 0;padding-left:18px} .pc li{margin:3px 0;line-height:1.4}
+@media (max-width:560px){.pc{grid-template-columns:1fr}}
 /* v2 */
 .subh{margin:16px 2px 8px;font-size:13px;font-weight:600;color:var(--sc-mute)}
 .subh:first-of-type{margin-top:4px}
@@ -214,6 +225,14 @@ const S = {
   cf:["Civic Federation, FY2025 roadmap", "https://civicfed.org/sites/default/files/2024-10/City%20of%20Chicago%20FY2025%20Roadmap_2.pdf"],
   data:["City of Chicago budget ordinance data", "https://data.cityofchicago.org/browse?q=budget%20ordinance%20appropriations"],
   nyc:["6sqft: one year of NYC congestion pricing, $550M", "https://www.6sqft.com/one-year-of-congestion-pricing-in-nyc-27-million-fewer-vehicles-less-traffic"],
+  ov26:["City of Chicago 2026 Budget Overview (sales tax, vehicle stickers)", "https://news.wttw.com/sites/default/files/article/file-attachments/2026%20City%20of%20Chicago%20Budget%20Overview.pdf"],
+  ipi_sales:["Illinois Policy: Chicago's sales tax rate vs other cities", "https://www.illinoispolicy.org/?p=76718"],
+  fuel:["City of Chicago: Vehicle Fuel Tax", "https://chicago.gov/city/en/depts/fin/supp_info/revenue/tax_list/vehicle_fuel_tax.html"],
+  propub:["ProPublica: Chicago's city sticker tickets", "https://propublica.org/article/chicago-vehicle-sticker-law-ticket-price-hike-black-drivers-debt"],
+  reserves:["Chicago Tribune via Brunswick News: Chicago ended 2025 with extra money (July 2026)", "https://thebrunswicknews.com/news/national_news/chicago-ended-2025-with-extra-money-but-long-term-troubles-linger/article_08f642de-883f-59c7-9226-c78ab7442d14.html"],
+  irs:["IRS Statistics of Income: individual income by ZIP code, 2022", "https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-2022-zip-code-data-soi"],
+  irs_t2:["IRS Statistics of Income: Historic Table 2 (by state), 2022", "https://www.irs.gov/statistics/soi-tax-stats-historic-table-2"],
+  stl:["City of St. Louis: U.S. cities that tax earnings", "https://www.stlouis-mo.gov/government/departments/comptroller/initiatives/us-cities-that-levy-earnings-taxes.cfm"],
   tf:["Chicago Financial Future Task Force, interim report (Sept. 2025)", "https://www.ingame.com/wp-content/uploads/2025/09/68c9742e20efecbd01ee5692_CFFTF_Interim-Report_2025.pdf"],
   tfip:["Illinois Policy on the task force's options (Sept. 2025)", "https://www.illinoispolicy.org/?p=76385"],
   tffinal:["Sun-Times: task force final report, June 2026", "https://chicago.suntimes.com/city-hall/2026/06/25/mayor-financial-task-force-chicago-fiscal-outlook-downtown-congestion-fee-service-tax"],
@@ -231,25 +250,40 @@ const LEAD = {tax:"Raise or cut each one. Changes count every year.", dept:"Fund
   add:"New spending in the Mayor's plan. Turning it on makes the gap bigger."};
 const L = [
   {id:"ptax", g:"tax", sub:"Property tax", kind:"rec", who:"home", t:"City property tax levy", type:"range", min:-300, max:400, step:25, mayor:0,
-   info:"The city's part is about a fifth of a property tax bill; renters pay much of it through rent. The 2027 levy is $1.87 billion. The Mayor proposed +$300 million for 2025 and the Council voted it down 50 to 0. The 2027 plan has no increase. The Mayor's task force suggested raising it with inflation every year (about $56 million for 2026).", s:["forecast", "treas", "nbc", "tfip"]},
+   info:"The city's part is about a fifth of a property tax bill; renters pay much of it through rent. The 2027 levy is $1.87 billion. The Mayor proposed +$300 million for 2025 and the Council voted it down 50 to 0. The 2027 plan has no increase. The Mayor's task force suggested raising it with inflation every year (about $56 million for 2026).", pro:["The biggest, steadiest money the city has", "Owners of expensive property pay more"], con:["Hits homeowners directly and renters through rent", "The Council voted a $300M increase down 50 to 0 in 2024"], s:["forecast", "treas", "nbc", "tfip"]},
+  {id:"sales", g:"tax", sub:"Sales tax", kind:"rec", who:"cons", t:"City sales tax", type:"opts", opts:[["1%", -54.7], ["1.25% today", 0], ["1.5%", 54.7], ["1.75%", 109.4]], start:1, mayor:1,
+   info:"The city's own sales tax is 1.25%, on top of the state, county and transit taxes, which already make Chicago's combined rate one of the highest of any big U.S. city. The city also gets 1% of the state's 6.25%. The two together bring in about $492.7 million (2026 projection); a quarter point is about $54.7 million, assuming both apply to the same purchases (an assumption: the city's tax skips some items, like groceries). The city sold its sales tax to a bond corporation in 2017; what's left after bond payments comes back to the budget, so new money flows through.",
+   pro:["Spread across everyone who shops here, including visitors and commuters", "The city can change it by ordinance, a quarter point at a time"], con:["Falls hardest on lower-income households, who spend more of what they earn", "Big purchases can move to the suburbs or online sellers that don't collect the city's part"], s:["ov26", "ipi_sales"]},
+  {id:"inc", g:"tax", sub:"A city income tax (needs a state law)", kind:"rec", who:"mid", t:"City income tax by income", type:"income", mayor:0,
+   info:"Illinois' constitution bars cities from taxing income unless the state passes a law allowing it. New York City (3.078% to 3.876%), Philadelphia, Detroit (2.4%), Baltimore (3.2%), St. Louis and Kansas City (1% each) all tax income (rates as listed by St. Louis in 2021). Set a rate for each slice of income: like the federal tax, a rate only applies to the part of income inside its slice, so someone making $120,000 pays the first rate on their first $50,000, and so on. Estimates use the IRS's 2022 count of income (adjusted gross income) by ZIP code: 1.23 million tax returns and $120 billion. ZIP codes that cross the city line count by the share of their land inside Chicago, and income over $1 million is estimated from Illinois' mix (both assumptions). Nobody moves or changes how they earn in this estimate (a static estimate), and people who work here but live in the suburbs aren't taxed.",
+   pro:["Can ask the most from people who earn the most", "Big: 1% on all residents' income would raise about $1.2 billion, more than the whole gap"], con:["Needs Springfield, where it has never passed", "Some high earners and businesses could move to the suburbs, where there's no such tax"], s:["irs", "irs_t2", "stl"]},
   {id:"lease", g:"tax", sub:"Taxes on businesses", kind:"rec", who:"biz", t:"Cloud and equipment lease tax", type:"opts", opts:[["Back to 11%", -187.2], ["15% today", 0], ["17.5%", 117], ["20%", 234]], start:1, mayor:3,
-   info:"Taxes businesses' software, cloud services and equipment leases. It was 9% in 2024, 11% in 2025 and 15% in 2026. +$234 million at 20% is the Mayor's estimate (car leases stay where they are); 17.5% and the cut back to 11% use the same $46.8 million per point (an assumption: businesses may move or cut back).", s:["release", "bga", "data"]},
+   info:"Taxes businesses' software, cloud services and equipment leases. It was 9% in 2024, 11% in 2025 and 15% in 2026. +$234 million at 20% is the Mayor's estimate (car leases stay where they are); 17.5% and the cut back to 11% use the same $46.8 million per point (an assumption: businesses may move or cut back).", pro:["Mostly paid by businesses, not households", "Raised quickly and reliably since 2024"], con:["Already among the highest such taxes in the country", "Businesses can buy software and cloud services through offices outside the city"], s:["release", "bga", "data"]},
   {id:"head", g:"tax", sub:"Taxes on businesses", kind:"rec", who:"biz", t:"Big employers: $25 a month per worker", type:"sw", amt:113.8, mayor:1,
-   info:"The Equitable Employer Tax, on companies with over 125 full-time workers outside disadvantaged areas. The Council struck down a $21 version for 2026. Seattle's similar tax led Amazon to pause its headquarters plans; Chicago ended its old $4 head tax in 2014.", s:["forecast", "budgit", "tfip"]},
+   info:"The Equitable Employer Tax, on companies with over 125 full-time workers outside disadvantaged areas. The Council struck down a $21 version for 2026. Seattle's similar tax led Amazon to pause its headquarters plans; Chicago ended its old $4 head tax in 2014.", pro:["Only the biggest employers pay", "Exempts disadvantaged areas"], con:["Taxes hiring itself", "Can push jobs and offices to the suburbs"], s:["forecast", "budgit", "tfip"]},
   {id:"hotel", g:"tax", sub:"Taxes on businesses", kind:"rec", who:"cons", t:"Hotel tax", type:"opts", opts:[["3.5%", -35.6], ["4.5% today", 0], ["5.5%", 35.6]], start:1, mayor:1,
    info:"The city's 4.5% hotel tax brings in $160 million in 2027. With state, county and convention taxes, a Chicago hotel bill carried 17.4% in taxes in 2019, high next to New York, Los Angeles, Las Vegas and Orlando. A point up or down scales the city's part in proportion (an assumption).", s:["hotel", "cfhotel", "data"]},
   {id:"amuse", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Amusement tax (tickets, streaming)", type:"opts", opts:[["Cut to 5%", -138.8], ["9% today", 0], ["10%", 34.7]], start:1, mayor:1,
    info:"9% on tickets, cable and streaming, $312.4 million in 2027. Other rates scale that in proportion (an assumption).", s:["data"]},
   {id:"soda", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Repeal the soft drink tax", type:"sw", amt:-37.2, mayor:0,
    info:"The city's non-alcoholic beverage tax brings in $37.2 million in 2027. Cook County repealed its own penny-an-ounce soda tax in 2017, four months after it started.", s:["data", "soda"]},
+  {id:"util", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"home", t:"Utility, phone and cable taxes", type:"opts", opts:[["A tenth lower", -39.1], ["Today", 0], ["A tenth higher", 39.1]], start:1, mayor:1,
+   info:"Taxes on gas and electric bills, phones and cable bring in $391.2 million in 2027. A tenth more or less scales that (an assumption). The Mayor's task force suggested charging big electricity users more while keeping homes and small businesses the same; that needs a state law.",
+   pro:["Steady money that doesn't swing with the economy", "Paid by businesses as well as homes"], con:["Heating and power aren't optional, so it takes a bigger bite from low-income households", "Cable taxes shrink every year as people cut the cord"], s:["data", "tffinal"]},
   {id:"bag", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Repeal the checkout bag tax", type:"sw", amt:-28.5, mayor:0, info:"The 7¢ bag tax brings in $28.5 million in 2027.", s:["data"]},
   {id:"bet", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Sports betting tax to 20%", type:"sw", amt:37, mayor:1, info:"From 10.25% on online sportsbooks' Chicago bets.", s:["release"]},
   {id:"liq", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Liquor tax to 3% on store sales", type:"sw", amt:13.8, mayor:1, info:"From 2.38% on alcohol bought to take home.", s:["ipi"]},
   {id:"pack", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"15¢ packaging tax", type:"sw", amt:9, mayor:1, info:"On each non-food, non-medical package, like the bag tax.", s:["release"]},
   {id:"other", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Other fees in the Mayor's plan", type:"sw", amt:20.8, mayor:1, info:"The rest of the $447.2 million in new revenue in the Mayor's plan, not itemized in the overview.", s:["forecast"]},
-  {id:"parkt", g:"tax", sub:"Driving and parking", kind:"rec", who:"drive", t:"Parking garage and lot tax", type:"opts", opts:[["A quarter lower", -45.9], ["Today", 0], ["A quarter higher", 45.9]], start:1, mayor:1,
+  {id:"fuel", g:"tax", sub:"Cars and driving", kind:"rec", who:"drive", t:"City gas tax", type:"opts", opts:[["5¢", -24.2], ["8¢ today", 0], ["10¢", 16.1], ["13¢", 40.3]], start:1, mayor:1,
+   info:"Chicago adds 8¢ a gallon (since 2021, up from 5¢) on top of the state and county gas taxes. It brings in $64.5 million in 2027, about $8.1 million per cent; other rates scale that (an assumption: some drivers fill up in the suburbs).",
+   pro:["Drivers pay for the wear and traffic they cause", "Small per gallon: 5¢ more is about 75¢ a tank"], con:["Easy to dodge by buying gas outside the city", "Hits people who have to drive, like shift workers"], s:["fuel", "data"]},
+  {id:"stick", g:"tax", sub:"Cars and driving", kind:"rec", who:"drive", t:"City sticker (wheel tax)", type:"opts", opts:[["A quarter less", -32.3], ["Today", 0], ["A quarter more", 32.3], ["Half more", 64.5]], start:1, mayor:1,
+   info:"Every car kept in Chicago needs a city sticker. Stickers bring in $129 million (2027), which goes to the Vehicle Tax Fund for street repair rather than the main budget; the city could move the same amount of street costs off the main budget (an assumption). The city issued 708,565 stickers in a year.",
+   pro:["Charges car owners, not people who walk, bike or ride transit", "Steady and hard to avoid for people who live here"], con:["A flat fee: the same price for a nurse's car as a CEO's", "Unpaid stickers turn into tickets and debt; ProPublica found that fell hardest on low-income drivers"], s:["ov26", "data", "propub"]},
+  {id:"parkt", g:"tax", sub:"Cars and driving", kind:"rec", who:"drive", t:"Parking garage and lot tax", type:"opts", opts:[["A quarter lower", -45.9], ["Today", 0], ["A quarter higher", 45.9]], start:1, mayor:1,
    info:"$183.5 million in 2027. A quarter more or less scales that in proportion (an assumption; some drivers park less).", s:["data"]},
-  {id:"cams", g:"tax", sub:"Driving and parking", kind:"rec", who:"drive", t:"Bus- and bike-lane cameras citywide", type:"sw", amt:12.8, mayor:1, info:"Smart Streets cameras on city vehicles and CTA buses, in every ward.", s:["ipi", "release"]},
+  {id:"cams", g:"tax", sub:"Cars and driving", kind:"rec", who:"drive", t:"Bus- and bike-lane cameras citywide", type:"sw", amt:12.8, mayor:1, info:"Smart Streets cameras on city vehicles and CTA buses, in every ward.", s:["ipi", "release"]},
   {id:"eff", g:"dept", sub:"Savings ideas", kind:"rec", who:"city", t:"Consolidate offices, modernize the fleet", type:"sw", amt:85.4, mayor:1, info:"Fewer leased buildings, newer vehicles that cost less to run, merged offices. In the Mayor's plan.", s:["forecast"]},
   {id:"pers", g:"dept", sub:"Savings ideas", kind:"rec", who:"city", t:"Keep some open jobs empty longer", type:"sw", amt:34.4, mayor:1, info:"Personnel savings in the Mayor's plan, without layoffs. About 1 in 9 city jobs sat empty in 2026.", s:["forecast", "bga"]},
   {id:"hlth", g:"dept", sub:"Savings ideas", kind:"rec", who:"workers", t:"Workers pay more toward health care", type:"opts", opts:[["No", 0], ["Low", 41.6], ["High", 52.2]], mayor:0,
@@ -269,9 +303,13 @@ const L = [
    info:"Leave open jobs empty for a year. Services slow where those jobs are. Overlaps with the Mayor's smaller version under Departments. Task force estimate.", s:["tf"]},
   {id:"ot", g:"one", kind:"one", who:"svc", t:"Cut overtime", type:"opts", opts:[["No", 0], ["Low", 52.1], ["High", 69.5]], mayor:0, info:"Mostly police and fire overtime. Task force estimate.", s:["tf"]},
   {id:"furl", g:"one", kind:"one", who:"workers", t:"Unpaid furlough days", type:"opts", opts:[["No", 0], ["Low", 9.4], ["High", 18.8]], mayor:0, info:"Flexible unpaid days off for city workers. Task force estimate.", s:["tf"]},
-  {id:"bonds", g:"one", kind:"one", who:"future", t:"Borrow for police misconduct settlements", type:"sw", amt:266, mayor:1, info:"Sell $480 million in bonds instead of paying settlements this year. Future taxpayers repay it with interest; 2026 already borrowed $283 million for settlements.", s:["forecast", "budgit"]},
+  {id:"resv", g:"one", kind:"one", who:"cushion", t:"Spend some of the reserves", type:"opts", opts:[["No", 0], ["$100M", 100], ["$250M", 250]], mayor:0,
+   info:"The city's reserves are a little over $700 million, including money left from the Skyway and parking meter deals, down from $1.9 billion during federal pandemic aid (Chicago Tribune, July 2026). Spending them closes this year's gap once and leaves less for a recession.",
+   pro:["No new tax and no cut this year", "The money is already in the bank"], con:["Gone next year, so 2028 starts this far behind", "Ratings agencies watch reserves; thinner reserves can raise borrowing costs"], s:["reserves"]},
+  {id:"land", g:"one", kind:"one", who:"none", t:"Sell surplus city property", type:"sw", amt:29.5, mayor:0, info:"The task force estimated $29.5 million in the first year from selling or leasing city buildings and land it doesn't need.", s:["tf"]},
+  {id:"bonds", g:"one", kind:"one", who:"future", t:"Borrow for police misconduct settlements", type:"sw", amt:266, mayor:1, info:"Sell $480 million in bonds instead of paying settlements this year. Future taxpayers repay it with interest; 2026 already borrowed $283 million for settlements.", pro:["Spreads a big one-time cost over years"], con:["Borrowing to pay bills that come every year", "Interest makes it cost more in the end"], s:["forecast", "budgit"]},
   {id:"pens", g:"one", kind:"one", who:"future", t:"Skip the extra pension payment", type:"opts", opts:[["Make it", 0], ["Half", 181.5], ["Skip it", 363]], mayor:0,
-   info:"The city plans $363 million beyond what state law requires. When the Mayor proposed cutting it for 2026, S&P lowered the city's outlook and the Council restored it. Skipping payments is how the pension hole was dug.", s:["release", "budgit"]},
+   info:"The city plans $363 million beyond what state law requires. When the Mayor proposed cutting it for 2026, S&P lowered the city's outlook and the Council restored it. Skipping payments is how the pension hole was dug.", pro:["Frees up to $363 million this year"], con:["The pension debt grows, and costs more later", "Ratings agencies treat it as a warning sign"], s:["release", "budgit"]},
   {id:"garb", g:"else", sub:"The city could do it", kind:"rec", who:"home", t:"Garbage fee that covers the cost", type:"opts", opts:[["$9.50 today", 0], ["Phase in", 19.6], ["Full cost", 296.9]], mayor:0,
    info:"Chicago charges $9.50 a month per home for city pickup; the fee brings in about $60 million and doesn't cover the cost. Los Angeles, Philadelphia, Phoenix and San Antonio charge more. Task force estimates for 2026.", s:["tf", "tfip"]},
   {id:"ride", g:"else", sub:"The city could do it", kind:"rec", who:"cons", t:"Bigger rideshare surcharge downtown and at the airports", type:"opts", opts:[["No", 0], ["Low", 26], ["High", 103]], mayor:0, info:"A larger congestion fee on Uber and Lyft trips in busy zones. Task force estimate.", s:["tf"]},
@@ -290,6 +328,7 @@ const L = [
 ];
 const WHO = {home:["Homeowners and renters", "#2b5da0"], biz:["Businesses and institutions", "#6a4fb0"], cons:["Shoppers, visitors and riders", "#b07a1f"], drive:["Drivers", "#9a5b3f"],
   city:["City government (efficiency)", "#1f7a45"], workers:["City workers", "#3d8f8a"], svc:["City services", "#c0392b"], state:["The state budget", "#7d8a99"],
+  mid:["People earning under $200,000", "#4d7fc0"], rich:["People earning over $200,000", "#1b3f73"], cushion:["The city's reserves", "#c9a227"],
   future:["Future taxpayers", "#e07a8b"], risk:["A bet on the economy", "#b8c0ca"], none:["Money already in hand", "#a9c3e3"]};
 /* departments: what each does (for the (i)) and how they're grouped; dollars come from the budget data */
 const DEPT_INFO = {"57":"Patrol, detectives and 911 response. About 93% of its money pays people, so cuts mean fewer officers or less overtime.",
@@ -308,8 +347,14 @@ const DGROUPS = [["Public safety", ["57", "59", "51", "58", "60"]], ["City servi
   ["Running the city", ["38", "27", "31", "39", "15", "6", "1", "25", "35", "3", "33", "30", "28", "5"]]];
 const st = {}; const dpct = {};
 let tab = "tax";
-function startOf(l){ return l.start || 0; }
-function amt(l){ const v = st[l.id]; if (l.type === "range") return v; if (l.type === "opts") return l.opts[v][1]; return v ? l.amt : 0; }
+function startOf(l){ return l.type === "income" ? [0, 0, 0, 0, 0] : l.start || 0; }
+/* city income tax: marginal rates (%) for five slices of income; DATA.inc.m[c][k] = $ of income that filers in class c earn inside slice k */
+const RATES = [0, 0.5, 1, 1.5, 2, 3, 4];
+const SLICES = [["First $50,000", 0, 5e4], ["$50,000 to $100,000", 5e4, 1e5], ["$100,000 to $200,000", 1e5, 2e5], ["$200,000 to $1 million", 2e5, 1e6], ["Over $1 million", 1e6, Infinity]];
+function incBy(){ const r = st.inc, I = DATA && DATA.inc; const out = {mid:0, rich:0, slice:[0, 0, 0, 0, 0]}; if (!I) return out;
+  I.m.forEach((row, c) => row.forEach((v, k) => { const t = RATES[r[k]] / 100 * v / 1e6; out[c < 3 ? "mid" : "rich"] += t; out.slice[k] += t; })); return out; }
+function taxOn(x){ return SLICES.reduce((t, [, lo, hi], k) => t + RATES[st.inc[k]] / 100 * Math.max(0, Math.min(x, hi) - lo), 0); }
+function amt(l){ const v = st[l.id]; if (l.type === "income"){ const b = incBy(); return b.mid + b.rich; } if (l.type === "range") return v; if (l.type === "opts") return l.opts[v][1]; return v ? l.amt : 0; }
 function m(x){ if (!x) return "$0"; const a = Math.abs(x), s = x < 0 ? "−" : ""; return s + "$" + (a >= 1000 ? (a / 1000).toFixed(2) + "B" : (a >= 100 ? Math.round(a) : a.toFixed(1)) + "M"); }
 function money(x){ return (x < 0 ? "−" : "") + "$" + Math.abs(Math.round(x)).toLocaleString("en-US"); }
 const signed = x => x > 0.05 ? "+" + m(x) : x < -0.05 ? m(x) : "$0";
@@ -331,10 +376,20 @@ function leverHtml(l){
   let ctl = "";
   if (l.type === "sw") ctl = `<button class="sc-switch" role="switch" aria-checked="${!!st[l.id]}" aria-label="${l.t}"></button>`;
   const opts = l.type === "opts" ? `<div class="ctl opts">${l.opts.map((o, i) => `<button data-i="${i}" aria-pressed="${st[l.id] === i}">${o[0]}</button>`).join("")}</div>` : "";
+  if (l.type === "income") return incomeHtml(l, a);
   const rng = l.type === "range" ? `<div class="ctl"><input type="range" min="${l.min}" max="${l.max}" step="${l.step}" value="${st[l.id]}" aria-label="${l.t}"><div class="rrow"><span>Cut ${m(-l.min)}</span><span class="live">${ptaxNote(a)}</span><span>Raise ${m(l.max)}</span></div></div>` : "";
   return `<div class="lv ${on ? "on" : ""} ${cost || a < 0 ? "cost" : ""}" data-id="${l.id}">
     <div class="top"><h3>${l.t} ${ib("lv", l.id, l.t)}</h3>${amtHtml(a, cost)}${ctl}</div>${opts}${rng}</div>`;
 }
+function incomeHtml(l, a){
+  const I = DATA && DATA.inc, b = incBy();
+  const rows = SLICES.map(([t], k) => `<div class="irow"><span>${t}${I ? `<small>${fmtN(I.n[k])} returns reach it</small>` : ""}</span>
+    <div class="opts iopt" data-k="${k}">${RATES.map((r, i) => `<button data-i="${i}" aria-pressed="${st.inc[k] === i}" aria-label="${r}% on ${t}">${r}%</button>`).join("")}</div><em>${b.slice[k] ? m(b.slice[k]) : ""}</em></div>`).join("");
+  const ex = [40e3, 75e3, 150e3, 500e3, 2e6].map(x => `<div><b>${money(taxOn(x))}</b><span>a year on ${x >= 1e6 ? "$" + x / 1e6 + " million" : "$" + (x / 1e3) + ",000"}</span></div>`).join("");
+  return `<div class="lv inc ${a ? "on" : ""}" data-id="${l.id}"><div class="top"><h3>${l.t} ${ib("lv", l.id, l.t)}</h3>${amtHtml(a)}</div>
+    ${I ? `<div class="irows">${rows}</div><div class="iex">${ex}</div><p class="dnote">${a ? `Tax returns under $200,000 pay ${m(b.mid)}; over $200,000 pay ${m(b.rich)}.` : "Pick a rate for each slice of income. Rates apply only to the part of income inside each slice."}</p>` : `<p class="dnote">Loading income data…</p>`}</div>`;
+}
+const fmtN = n => n >= 1e6 ? (n / 1e6).toFixed(2) + " million" : Math.round(n).toLocaleString("en-US");
 function ptaxNote(a){ return a ? `${money(CITY_SHARE_BILL * a / LEVY)} a year on a typical home's bill` : "No change"; }
 function deptHtml(d){
   const p = dpct[d.id] || 0, a = dAmt(d.id), n = p ? jobsFor(d, a) : 0;
@@ -356,7 +411,8 @@ function renderLevers(){
   $("levers").querySelectorAll(".lv[data-id]").forEach(el => {
     const l = L.find(x => x.id === el.dataset.id);
     el.querySelector(".sc-switch")?.addEventListener("click", () => { st[l.id] = st[l.id] ? 0 : 1; update(); });
-    el.querySelectorAll(".opts button").forEach(b => b.onclick = () => { st[l.id] = +b.dataset.i; update(); });
+    if (l.type === "income") el.querySelectorAll(".iopt").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => { st.inc[+g.dataset.k] = +b.dataset.i; update(); }));
+    else el.querySelectorAll(".opts button").forEach(b => b.onclick = () => { st[l.id] = +b.dataset.i; update(); });
     const r = el.querySelector("input[type=range]");
     if (r){ r.addEventListener("input", () => { st[l.id] = +r.value; const a = amt(l); el.classList.toggle("on", !!a); el.classList.toggle("cost", a < 0);
       el.querySelector(".amt").outerHTML = amtHtml(a); el.querySelector(".live").textContent = ptaxNote(a); renderBar(); renderResult(); });
@@ -373,7 +429,8 @@ function renderLevers(){
 }
 const KIND = {rec:"Counts every year", one:"This year only", cost:"New spending: adds to the gap"};
 function leverInfo(l){
-  info(l.t, `<p>${l.info}</p><p class="src"><b>${KIND[l.kind]}</b>${l.kind !== "cost" ? ` · Paid by: ${WHO[l.who][0].toLowerCase()}` : ""}</p><p class="src">Sources: ${src(...l.s)}</p>`);
+  const pc = (l.pro || l.con) ? `<div class="pc">${l.pro ? `<div><b>The case for</b><ul>${l.pro.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}${l.con ? `<div><b>The case against</b><ul>${l.con.map(x => `<li>${x}</li>`).join("")}</ul></div>` : ""}</div>` : "";
+  info(l.t, `<p>${l.info}</p>${pc}<p class="src"><b>${KIND[l.kind]}</b>${l.kind !== "cost" ? ` · Paid by: ${WHO[l.who][0].toLowerCase()}` : ""}</p><p class="src">Sources: ${src(...l.s)}</p>`);
 }
 function spark(d, w = 420, h = 110){
   const Y = Object.keys(d.y).map(Number).sort(), C = DATA.cpi, base = C[2026], v = Y.map(y => d.y[y][0] * base / (C[Math.min(y, 2026)] || base));
@@ -400,7 +457,7 @@ function totals(){
   const add = (a, kind, who) => { if (!a) return; if (kind === "cost"){ cost += a; more += a; return; }
     if (a < 0){ cost -= a; back -= a; gave[who] = (gave[who] || 0) - a; return; }
     if (kind === "rec") rec += a; else one += a; by[who] = (by[who] || 0) + a; };
-  for (const l of L) add(amt(l), l.kind, l.who);
+  for (const l of L){ if (l.type === "income"){ const b = incBy(); add(b.mid, "rec", "mid"); add(b.rich, "rec", "rich"); } else add(amt(l), l.kind, l.who); }
   if (DATA) for (const id in dpct){ const a = dAmt(id); if (a < 0){ cost -= a; more -= a; } else add(a, "rec", "svc"); }
   return {rec, one, cost, back, more, by, gave, need:GAP + cost, left:GAP + cost - rec - one};
 }
@@ -524,17 +581,18 @@ $("cmpSeg").querySelectorAll("button").forEach(b => b.onclick = () => { cmpMode 
 $("cmpMoney").querySelectorAll("button").forEach(b => b.onclick = () => { cmpReal = b.dataset.k === "real"; $("cmpMoney").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderCmp(); });
 /* save / share: the plan lives in the URL hash */
 function save(){
-  const code = L.map(l => st[l.id]).join(".") + "~" + Object.entries(dpct).filter(([, p]) => p).map(([k, p]) => k + ":" + p).join(",");
+  const code = L.map(l => l.type === "income" ? "1" + st.inc.join("") : st[l.id]).join(".") + "~" + Object.entries(dpct).filter(([, p]) => p).map(([k, p]) => k + ":" + p).join(",");
   try { history.replaceState(null, "", "#b2." + code); } catch (e){}
 }
 function load(){
   const h = location.hash.match(/^#b2\.([-\d.]+)~([-\d:,]*)$/); if (!h) return;
   const v = h[1].split("."); L.forEach((l, i) => { const n = +v[i]; if (v[i] === undefined || !isFinite(n)) return;
+    if (l.type === "income"){ const d = v[i].slice(1).split("").map(Number); if (d.length === 5 && d.every(x => x >= 0 && x < RATES.length)) st.inc = d; return; }
     if (l.type === "opts" && (n < 0 || n >= l.opts.length)) return; if (l.type === "range" && (n < l.min || n > l.max)) return; st[l.id] = n; });
   for (const kv of h[2].split(",").filter(Boolean)){ const [k, p] = kv.split(":"); if (Math.abs(+p) <= 20) dpct[k] = +p; }
 }
 function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
-$("mayor").onclick = () => { L.forEach(l => st[l.id] = l.mayor); for (const k in dpct) delete dpct[k]; update(); };
+$("mayor").onclick = () => { L.forEach(l => st[l.id] = l.type === "income" ? [0, 0, 0, 0, 0] : l.mayor); for (const k in dpct) delete dpct[k]; update(); };
 $("reset").onclick = () => { L.forEach(l => st[l.id] = startOf(l)); for (const k in dpct) delete dpct[k]; update(); };
 L.forEach(l => st[l.id] = startOf(l));
 $("histSeg").querySelectorAll("button").forEach(b => b.onclick = () => { histMode = b.dataset.k; $("histSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderHist(); });

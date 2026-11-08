@@ -150,3 +150,54 @@ print('avg corporate fund pay', avgPay, 'positions', n)
 CPI = {2011: 224.939, 2012: 229.594, 2013: 232.957, 2014: 236.736, 2015: 237.017, 2016: 240.007, 2017: 245.120, 2018: 251.107,
        2019: 255.657, 2020: 258.811, 2021: 270.970, 2022: 292.655, 2023: 304.702, 2024: 313.689, 2025: 321.943, 2026: 332.243}
 json.dump({'years': years, 'corp27': corp27, 'rev': rev, 'avgPay': avgPay, 'cpi': CPI, 'depts': depts}, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))
+
+# ---- City income tax option: Chicago residents' income by slice (IRS SOI ZIP data + Historic Table 2 + Census ZCTA-place file)
+def build_income():
+    IRS = os.path.join(RAW, 'irs')
+    if not os.path.exists(os.path.join(IRS, 'zip_il.csv.gz')): print('no IRS data'); return None
+    year = open(os.path.join(IRS, 'year.txt')).read().strip()
+    # share of each ZIP's land inside Chicago (2020 ZCTA-place relationship file)
+    share = {}
+    rr = csv.DictReader(gzip.open(os.path.join(IRS, 'zcta_place.txt.gz'), 'rt'), delimiter='|')
+    for r in rr:
+        if r.get('GEOID_PLACE_20') != '1714000' or not r.get('GEOID_ZCTA5_20'): continue
+        z = r['GEOID_ZCTA5_20']; part = num(r.get('AREALAND_PART', '0')); whole = num(r.get('AREALAND_ZCTA5_20', '0'))
+        if whole: share[z] = share.get(z, 0) + part / whole
+    # ZIP rows: agi_stub 1..6 = $1-25k, 25-50k, 50-75k, 75-100k, 100-200k, 200k+; N1 returns, A00100 AGI ($1,000s)
+    N = collections.Counter(); A = collections.Counter()
+    for r in csv.DictReader(gzip.open(os.path.join(IRS, 'zip_il.csv.gz'), 'rt')):
+        r = {k.strip().lower(): v for k, v in r.items()}
+        z = r['zipcode'].zfill(5); w = share.get(z, 0)
+        if w < 0.02: continue
+        st = int(num(r['agi_stub'])); N[st] += w * num(r['n1']); A[st] += w * num(r['a00100']) * 1000
+    # Illinois Historic Table 2: classes 200-500k, 500k-1M, 1M+ (to split Chicago's $200k+ class)
+    il = collections.Counter(); iln = collections.Counter()
+    for r in csv.DictReader(gzip.open(os.path.join(IRS, 'state_t2.csv.gz'), 'rt', encoding='latin-1')):
+        r = {k.strip().upper(): v for k, v in r.items()}
+        if r.get('STATE', '').strip() != 'IL': continue
+        stb = int(num(r['AGI_STUB'])); il[stb] += num(r['A00100']) * 1000; iln[stb] += num(r['N1'])
+    print('IL stubs', sorted(iln.items()))
+    # state stubs (2022 layout): 8 = 200-500k, 9 = 500k-1M, 10 = 1M+
+    il200 = sum(il[k] - iln[k] * 2e5 for k in (8, 9, 10)); il1m = il[10] - iln[10] * 1e6
+    f1m = il1m / il200                                   # share of Illinois income above $200k that sits above $1M
+    n1m_share = iln[10] / sum(iln[k] for k in (8, 9, 10))
+    # classes c: 0 under 50k (stubs 1,2), 1 50-100k (3,4), 2 100-200k (5), 3 200k-1M, 4 1M+
+    n = [N[1] + N[2], N[3] + N[4], N[5]]; a = [A[1] + A[2], A[3] + A[4], A[5]]
+    above200 = A[6] - N[6] * 2e5; x1m = f1m * above200      # Chicago income above $1M (assumption: same share as Illinois)
+    n1m = N[6] * n1m_share; a1m = n1m * 1e6 + x1m; n.append(N[6] - n1m); a.append(A[6] - a1m); n.append(n1m); a.append(a1m)
+    lo = [0, 5e4, 1e5, 2e5, 1e6]; hi = [5e4, 1e5, 2e5, 1e6, float('inf')]
+    m = []
+    for c in range(5):
+        row = []
+        for k in range(5):
+            if k < c: row.append(n[c] * (hi[k] - lo[k]))
+            elif k == c: row.append(max(0, a[c] - n[c] * lo[k]))
+            else: row.append(0)
+        m.append([round(v) for v in row])
+    reach = [sum(n[c] for c in range(k, 5)) for k in range(5)]   # returns with income reaching each slice
+    print('income', year, 'returns', round(sum(n)), 'AGI $B', round(sum(a) / 1e9, 1), 'per slice $B', [round(sum(m[c][k] for c in range(5)) / 1e9, 2) for k in range(5)])
+    return {'year': int(year), 'm': m, 'n': [round(x) for x in reach], 'classN': [round(x) for x in n], 'classA': [round(x) for x in a], 'f1m': round(f1m, 4)}
+inc = build_income()
+if inc:
+    d = json.load(open(os.path.join(OUT, 'budget.json'))); d['inc'] = inc
+    json.dump(d, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))
