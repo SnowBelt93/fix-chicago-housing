@@ -28,8 +28,8 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html{background:#fff}
-body{margin:0;background:#fff;color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+html{background:var(--sc-page,#f3f5f7)}
+body{margin:0;background:var(--sc-page,#f3f5f7);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 a{color:var(--nav)}
 a:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid var(--star);outline-offset:2px}
 .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
@@ -137,7 +137,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 .fan{background:none;color:var(--ink-3)}
 
 /* ---- preview: the tracker in the Shape Chicago look (open with ?look=new; becomes the default once approved) ---- */
-body.next{background:#fff}
+body.next{background:var(--sc-page,#f3f5f7)}
 body.next .mast{border-bottom:1px solid var(--sc-line)}
 body.next .mast .t b{font-size:20px}
 body.next .mast nav a{color:var(--sc-ink2);font-weight:500;padding:6px 10px;border-radius:14px}
@@ -205,6 +205,8 @@ section[id]{scroll-margin-top:56px}
 .nh{font-size:16px;margin:18px 0 8px}
 .doit{margin-top:16px;padding:14px 16px;border-radius:16px;background:#f3f6fa;font-size:14.5px;line-height:1.5}
 @media (max-width:700px){ .hnums{grid-template-columns:1fr} .hn b{font-size:22px} }
+/* Nov 8: selected = solid navy */
+body.next .seg button[aria-pressed=true]{background:var(--sc-navy);color:#fff;box-shadow:none}
 </style>
 </head>
 <body>

@@ -210,6 +210,8 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   .meter{grid-column:1/-1;min-width:0} .mlab{display:none} .bar .sc-m{display:none}
 }
 @media (prefers-reduced-motion:reduce){ .track i,.whobar i{transition:none} }
+/* Nov 8: selected = solid navy */
+.tab[aria-selected="true"],.seg2 button[aria-checked="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
 </style>
 </head>
 <body>

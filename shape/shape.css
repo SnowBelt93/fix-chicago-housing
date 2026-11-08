@@ -149,3 +149,23 @@ dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
 @media (max-width:860px){ .sc-simbtn{padding:7px 9px} }
 @media (max-width:440px){ .sc-simbtn{padding:7px 8px} }
 @media (prefers-reduced-motion:no-preference){ .sc-simmenu:not([hidden]){animation:scMenuIn .14s ease-out} @keyframes scMenuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}} }
+
+/* Nov 8 (Kyle picked A): what's selected is solid navy everywhere, so it never reads as white on white */
+.sc-nav a[aria-current="page"],.sc-simbtn[aria-current="page"]{background:var(--sc-navy);color:#fff;box-shadow:none}
+.sc-simbtn[aria-current="page"] svg{stroke:#fff}
+.sc-seg button[aria-checked="true"]{background:var(--sc-navy);color:#fff;box-shadow:none}
+.sc-seg button.hard[aria-checked="true"]{background:var(--sc-hard);color:#fff}
+.sc-seg button:not([aria-checked="true"]):hover{background:#e3e7ec;color:var(--sc-ink)}
+.sc-nav a:not([aria-current]):hover,.sc-simbtn:not([aria-current]):hover{background:#e3e7ec}
+/* one hover rule: things you can open lift a little and get a navy edge; buttons darken; switches and sliders stay put */
+@media (hover:hover){
+  .sc-lift{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+  .sc-lift:hover{transform:translateY(-2px);border-color:var(--sc-navy) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important}
+  .sc-btn{transition:background-color .15s ease,border-color .15s ease}
+  .sc-btn:not(.primary):not(:disabled):hover{background:#e9ecf0;border-color:#c4cad2}
+}
+@media (prefers-reduced-motion:reduce){ .sc-lift:hover{transform:none} }
+/* reading pages: a light gray page so white cards stand off it (maps keep their own look) */
+:root{--sc-page:#f3f5f7}
+body.sc-gray{background:var(--sc-page)}
+

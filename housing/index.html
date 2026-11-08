@@ -1462,6 +1462,9 @@ body.playing #sky{opacity:1}
 }
 @media (min-width:860px) and (max-width:1199px){ body.wide{--panelW:calc(100vw - 340px)} }
 @media (max-width:859px){ .sheet .tab #mCount{display:none} .tabs{gap:0 !important} }
+/* Nov 8: selected options solid navy */
+.seg2 button[aria-pressed="true"],.btn[aria-pressed="true"]{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
+.target[aria-pressed="true"]{border-color:var(--sc-navy) !important;box-shadow:inset 0 0 0 2px var(--sc-navy) !important;background:#eef3fa !important}
 </style>
 
 <div id="app">
@@ -1491,14 +1494,14 @@ body.playing #sky{opacity:1}
     <span class="sc-sep hsep"></span>
     <div class="sc-m hstat hrent"><span id="rentLbl">rent in 2041</span><b id="rent">–</b></div>
     <div class="sc-m hstat" id="affLine" hidden><span>affordable</span><b id="affNum">0</b></div>
-    <div class="sc-m hstat hpace"><span id="paceLbl">built anyway at today's pace</span><b id="pace">–</b></div>
+    <div class="sc-m hstat hpace"><span id="paceLbl">built anyway by 2041</span><b id="pace">–</b></div>
     <div class="sc-push hacts">
-      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Ward<span class="ml"> mode</span></button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard<span class="ml"> mode</span></button></div>
+      <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Every ward</button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard<span class="ml"> mode</span></button></div>
       <button type="button" class="ib" id="hardBtn" aria-label="What's hard mode?">i</button>
       <button class="sc-btn" id="reset" type="button" aria-label="Start over"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg><span>Start over</span></button>
     </div>
     <div class="play" id="playRow">
-      <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate 15 years</span></button>
+      <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Run to 2041</span></button>
       <div class="tline"><span class="y0">2026</span><input type="range" class="yrrange" id="yrRange" min="0" max="15" step="1" value="15" aria-label="Show the city in any year from 2026 to 2041" title="Drag to see any year"><span class="yr" id="yrTxt">2041</span></div>
     </div>
   </section>
@@ -1521,11 +1524,11 @@ body.playing #sky{opacity:1}
       <!-- Build -->
       <div class="pane" id="pane-zoning">
         <div class="tool" id="tool-wards" hidden>
-          <div class="thead"><h3>Every ward's fair share</h3><button type="button" class="ib" id="wardsInfo" aria-label="About ward mode">i</button></div>
+          <div class="thead"><h3>Every ward's fair share</h3><button type="button" class="ib" id="wardsInfo" aria-label="About every ward">i</button></div>
           <p class="wsum" id="wardsSum"></p>
           <div class="wlist" id="wardsList"></div>
           <div class="tinfo" id="wardsWhy">
-            <p>Ward mode splits the city's goal into 50 floors, one per ward. Half of each floor follows the ward's share of the city's homes today, and half follows its share of the land within a 10-minute walk (½ mile) of an L or Metra station, so wards on the train lines carry more (our assumption; homes and lots from the city's building data).</p>
+            <p>Every ward splits the city's goal into 50 floors, one per ward. Half of each floor follows the ward's share of the city's homes today, and half follows its share of the land within a 10-minute walk (½ mile) of an L or Metra station, so wards on the train lines carry more (our assumption; homes and lots from the city's building data).</p>
             <p>A ward meets its floor when your zoning allows at least that many new homes there, beyond what today's zoning already allows. That's how fair-share housing laws work: <a href="https://www.hcd.ca.gov/planning-and-community-development/regional-housing-needs-allocation" target="_blank" rel="noopener">California</a> gives every city a number and makes it zone for it, and <a href="https://fairsharehousing.org/mount-laurel-doctrine/" target="_blank" rel="noopener">New Jersey's Mount Laurel rules</a> do the same for affordable homes.</p>
             <p>Zoning isn't building. Tap a ward to see how many of its allowed homes are likely to go up by 2041; in soft markets it's a small share.</p>
           </div>
@@ -2967,7 +2970,7 @@ function renderPolicies(){
   const CS = communityStats && communityStats.all;
   POLICIES.forEach(P => { const el = $("pol-" + P.key).querySelector(".ptally"); if (!el) return;
     const v = CS && CS.n >= 20 ? (P.key === "aro" ? 1 - CS.aro[1] : P.key === "str" ? 1 - CS.str[0] : CS.policies[P.key]) : null;
-    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " people turn this on"; });
+    el.hidden = v == null; if (v != null) el.textContent = Math.round(v * 100) + "% of " + fmt(CS.n) + " plans use this"; });
   clearTimeout(gainTimer);
   gainsStale = true;
   if (loaded === 77 && !playing && !$("pane-policies").hidden) gainTimer = setTimeout(() => {
@@ -3068,7 +3071,7 @@ const TOUR = [
   {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
   {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use the turn buttons to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
   {el:() => document.querySelector('.tab[data-pane="policies"]'), sheet:1, t:"Then vote on real policies", b:"Policies unlock at 30,000 homes. Each item on the docket says what it adds and where the number comes from."},
-  {el:() => $("playBtn"), t:"Then hit Simulate", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
+  {el:() => $("playBtn"), t:"Then run it to 2041", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
 ];
 function startTour(){ tourPending = false; if (lsGet("fch-tour", false)) return; tourStep = 0; showTip(); }
 function showTip(){
@@ -3835,7 +3838,7 @@ function render(){
   const tv = totals(true), tf = totals(false), goal = needed();
   if (Math.round(tv.total) !== Math.round(lastTotal)){ animateNumber(tv.total); lastTotal = tv.total; }
   $("goalNum").textContent = fmt(goal);
-  { const hard = plan.g < 3, wm = plan.g === 4; $("goalLbl").textContent = hard ? "Hard mode:" : wm ? "Ward mode:" : "Goal:"; document.body.classList.toggle("hard", hard); document.body.classList.toggle("wardmode", wm);
+  { const hard = plan.g < 3, wm = plan.g === 4; $("goalLbl").textContent = hard ? "Hard mode:" : wm ? "Every ward:" : "Goal:"; document.body.classList.toggle("hard", hard); document.body.classList.toggle("wardmode", wm);
     $("modeNormal").setAttribute("aria-checked", String(!hard && !wm)); $("modeWard").setAttribute("aria-checked", String(wm)); $("modeHard").setAttribute("aria-checked", String(hard)); }
   const yrLabel = START + year;
   const short = target() + gapGrowth() * year - tv.total;
@@ -3847,7 +3850,7 @@ function render(){
   $("rentLbl").textContent = "rent in " + yrLabel + (rr ? ", " + rr + " no change" : "");
   const cut = baseCut();
   $("pace").textContent = fmt(CITY_PACE * (1 - cut) * year);
-  $("paceLbl").textContent = cut && year ? "built by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built by " + yrLabel + " at today's pace";
+  $("paceLbl").textContent = cut && year ? "built anyway by " + yrLabel + ", down from " + fmt(CITY_PACE * year) : "built anyway by " + yrLabel;
   { $("affLine").hidden = tf.aff < 1; $("affNum").textContent = fmt(tv.aff); }   // affordable homes built by the year shown
   const segs = [["z", tv.parts.zone], ["o", tv.parts.office], ["a", tv.parts.adu], ["s", tv.parts.str], ["l", tv.parts.lots], ["v", tv.parts.vac], ["h", tv.parts.social], ["m", tv.parts.mega], ["i", tv.parts.vland]];
   const bar = $("bar"), scale = Math.max(goal, tv.total);
@@ -4017,7 +4020,7 @@ $("wardsList").addEventListener("click", async e => {
   if (await loadWards()){ const W = WARDS.find(x => x.ward === wardFocus); if (W) flyTo(W.lon, W.lat, isWide() ? 13 : 12.2); }
   scheduleRender();
 });
-$("wardsInfo").addEventListener("click", () => openInfo("Ward mode", $("wardsWhy")));
+$("wardsInfo").addEventListener("click", () => openInfo("Every ward", $("wardsWhy")));
 document.addEventListener("click", e => { const a = e.target.closest && e.target.closest("[data-act=wards]"); if (!a) return; e.preventDefault(); $("infoDlg").close(); showTab("zoning"); openSheet(); setTimeout(() => $("tool-wards").scrollIntoView({block:"start", behavior:reduceMotion ? "auto" : "smooth"}), 60); });
 function wardLayers(L){
   if (plan.g !== 4 || !WARDS || !wardS) return;
@@ -4208,7 +4211,7 @@ $("playBtn").addEventListener("click", () => {
     const short = []; for (let w = 1; w <= 50; w++) if (S.cap[w] < S.fl[w]) short.push(w);
     short.sort((a, b) => S.cap[a] / S.fl[a] - S.cap[b] / S.fl[b]);
     const box = document.createElement("div");
-    box.innerHTML = "<p>" + short.length + " ward" + (short.length > 1 ? "s haven't" : " hasn't") + " zoned for their share yet. In ward mode every ward carries its share, so the plan isn't finished until all 50 do.</p><p>Furthest behind: " + short.slice(0, 3).map(w => "Ward " + w + " (" + fmt(S.cap[w]) + " of " + fmt(S.fl[w]) + ")").join(", ") + ".</p><p><a href=\"#\" data-act=\"wards\">Show me the wards</a></p>";
+    box.innerHTML = "<p>" + short.length + " ward" + (short.length > 1 ? "s haven't" : " hasn't") + " zoned for their share yet. In this mode every ward carries its share, so the plan isn't finished until all 50 do.</p><p>Furthest behind: " + short.slice(0, 3).map(w => "Ward " + w + " (" + fmt(S.cap[w]) + " of " + fmt(S.fl[w]) + ")").join(", ") + ".</p><p><a href=\"#\" data-act=\"wards\">Show me the wards</a></p>";
     openInfo("Not every ward is in yet", box); return; } }
   playing = true; year = 0; $("playBtn").querySelector("span").textContent = "Stop"; closeAllComments(); document.body.classList.add("playing");
   cineSheet = !isWide() && !reduceMotion ? sheetNow() : false;   // phones: tuck the tool sheet away so the flyover has room
@@ -4311,7 +4314,7 @@ function fadeTo(el, show){
 function stopPlay(finished){
   clearInterval(playTimer); cancelAnimationFrame(camRaf); camRaf = 0; playing = false; hideHeadline(); document.body.classList.remove("playing"); fadeTo($("cineCap"), false);
   if (cineSheet){ sheetState(cineSheet === "peek" ? "peek" : "menu"); cineSheet = false; }
-  $("playBtn").querySelector("span").textContent = "Simulate 15 years";
+  $("playBtn").querySelector("span").textContent = "Run to 2041";
   if (year !== YEARS){ year = YEARS; recompute(); }
   if (finished) setTimeout(() => { showResult(); }, reduceMotion ? 0 : 500);
 }
@@ -4352,7 +4355,7 @@ function showResult(){
   lineChart($("chShort"), noShort, planShort, v => fmt(v), true);
   lineChart($("chRent"), rNo, rPlan, v => "$" + fmt(v), false, rHi);
   personaRows($("resPersonas"), homes[end]);
-  $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Ward mode edition" : "Final edition";
+  $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Every ward edition" : "Final edition";
   lastResult = {code: encodePlan(plan), hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
   prepPlanLink();
   $("result").hidden = false;

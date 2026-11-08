@@ -21,7 +21,7 @@
 <style>
 /* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted. */
 *{box-sizing:border-box}
-html,body{margin:0;background:#fff}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
 body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 a{color:var(--sc-navy)}
 :focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
@@ -157,6 +157,9 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   footer .wrap{flex-direction:column;align-items:flex-start}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* Nov 8: one hover rule for everything you can open (see shape.css) */
+@media (hover:hover){ .quick a,.feature,.pulse a,.tool,.plan,.learn a,.wnews a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
+@media (prefers-reduced-motion:reduce){ .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:none} }
 </style>
 </head>
 <body>

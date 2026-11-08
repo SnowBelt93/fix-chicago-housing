@@ -19,7 +19,7 @@
 <style>
 *{box-sizing:border-box}
 html{scroll-padding-top:20px}
-html,body{margin:0;background:#fff}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
 body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 a{color:var(--sc-navy)}
 :focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
@@ -99,6 +99,11 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 .note{font-size:13px !important;color:var(--sc-mute) !important;margin:10px 0 0 !important}
 @media (max-width:860px){ .involve{grid-template-columns:1fr 1fr} .lotview{grid-template-columns:1fr} .cards3{grid-template-columns:1fr} .cards2{grid-template-columns:1fr} .bar{grid-template-columns:100px minmax(0,1fr) 8ch} }
 @media (prefers-reduced-motion:reduce){ .bar i{transition:none} }
+/* Nov 8: selected = solid navy */
+.toc a.on{background:var(--sc-navy) !important;color:#fff !important}
+/* Nov 8: one hover rule for everything you can open (see shape.css) */
+@media (hover:hover){ .involve a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .involve a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
+@media (prefers-reduced-motion:reduce){ .involve a:hover{transform:none} }
 </style>
 </head>
 <body>
@@ -168,7 +173,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   <div class="out" id="prOut"></div>
 </div>
 <p>It's a custom, not a law: City Council nearly always follows the local alderperson on zoning in their ward, which lets one person approve or quietly stop a building. A 2023 federal HUD investigation found it blocks affordable housing; HUD withdrew the finding in 2025.</p>
-<p class="try"><a href="/housing/">Try ward mode</a><span>Every ward has to take its share.</span></p>
+<p class="try"><a href="/housing/">Try Every ward mode</a><span>Every ward has to take its share.</span></p>
 <p class="src">Sources: <a href="https://news.wttw.com/2023/11/28/aldermanic-prerogative-fuels-segregation-and-violates-black-latino-chicagoans-civil" target="_blank" rel="noopener">WTTW, 2023</a> · <a href="https://insideclimatenews.org/news/07082025/trump-chicago-housing-environmental-racism/" target="_blank" rel="noopener">Inside Climate News, 2025</a></p></section>
 
 <section class="topic" id="aro"><h2>How much of a new building should be affordable?</h2><img class="art" src="/shape/art/learn/aro.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">

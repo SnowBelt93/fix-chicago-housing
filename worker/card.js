@@ -4,7 +4,7 @@ const STAR = "M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 2
 const fmt = n => Math.round(n).toLocaleString("en-US");
 export function cardSvg(c, artB64){
   const neg = c.homes < 0, big = (neg ? "−" : "") + fmt(Math.abs(c.homes));
-  const goalWord = c.mode === 1 ? "Hard mode goal" : c.mode === 2 ? "Ward mode goal" : "Goal";
+  const goalWord = c.mode === 1 ? "Hard mode goal" : c.mode === 2 ? "Every ward goal" : "Goal";
   const rentLine = c.rent < c.rentno ? "Rent in 2041: $" + fmt(c.rent) + " instead of $" + fmt(c.rentno)
     : c.rent > c.rentno ? "Rent in 2041: $" + fmt(c.rent) + ", up from $" + fmt(c.rentno) + " with no change" : "Rent in 2041: $" + fmt(c.rent);
   const gradeFill = c.grade === "F" || c.grade === "–" ? "none" : "#e4002b";

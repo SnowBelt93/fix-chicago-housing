@@ -49,6 +49,9 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
 .fine a{color:var(--sc-mute)}
 .follow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 @media (max-width:700px){ .item .sm{font-size:13.5px;-webkit-line-clamp:3} .item{grid-template-columns:96px minmax(0,1fr);gap:12px} .item .ph{width:96px;height:72px} .item b{font-size:15px} .item.lead b{font-size:19px} .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .bar input{margin-left:0;width:100%} .sc-fan{display:none} }
+/* Nov 8: one hover rule for everything you can open (see shape.css) */
+@media (hover:hover){ .item{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .item:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
+@media (prefers-reduced-motion:reduce){ .item:hover{transform:none} }
 </style>
 </head>
 <body>

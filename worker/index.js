@@ -64,7 +64,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":
 const fmt = n => Math.round(n).toLocaleString("en-US");
 function cardText(c){
   const title = c.homes >= 1 ? "A plan for " + fmt(c.homes) + " new homes in Chicago by 2041" : "A plan for Chicago's housing";
-  const goalWord = c.mode === 1 ? "hard mode goal" : c.mode === 2 ? "ward mode goal" : "goal";
+  const goalWord = c.mode === 1 ? "hard mode goal" : c.mode === 2 ? "every-ward goal" : "goal";
   const desc = "Grade " + c.grade + " against a " + goalWord + " of " + fmt(c.goal) + " homes. Open it in Fix Chicago Housing, change it, and try to beat it.";
   return {title, desc};
 }

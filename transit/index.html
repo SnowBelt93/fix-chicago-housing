@@ -468,6 +468,12 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 .tmode button{padding:6px 10px;font-size:13px}
 .lchip{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lfoot{margin-top:12px;font-size:13px}
+/* Nov 8: selected options solid navy */
+.seg button[aria-checked="true"],#layers button[aria-pressed="true"],.stab[aria-selected="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
+.mbtn[aria-pressed="true"]{border-color:var(--sc-navy) !important;box-shadow:inset 0 0 0 2px var(--sc-navy) !important;background:#eef3fa !important}
+/* Nov 8: one hover rule for everything you can open (see shape.css) */
+@media (hover:hover){ .drawcard .dmodes button,.gcard,.minicard,.mbtn:not([aria-pressed="true"]),.tcard,.basics a,.mode{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .drawcard .dmodes button:hover,.gcard:hover,.minicard:hover,.mbtn:not([aria-pressed="true"]):hover,.tcard:hover,.basics a:hover,.mode:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
+@media (prefers-reduced-motion:reduce){ .drawcard .dmodes button:hover,.gcard:hover,.minicard:hover,.mbtn:not([aria-pressed="true"]):hover,.tcard:hover,.basics a:hover,.mode:hover{transform:none} }
 </style>
 </head>
 <body>
@@ -2450,7 +2456,7 @@ function renderBar(){   // the plan's effects, in the shared Shape Chicago metri
   if (FRESH && NET){ renderFreshBar(bar); return; }
   if (!A.length || !NET){
     bar.classList.add("empty");
-    bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>No lines yet</b></div><span class="sc-sep"></span><span class="tempty">Your plan's riders, cost, cars and CO₂ add up here.</span><div class="sc-push">${NET ? modeSeg() : ""}<button class="sc-btn" type="button" disabled>Start over</button></div>`;
+    bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>No lines yet</b></div><span class="sc-sep"></span><span class="tempty">Draw a line to see riders and cost.</span><div class="sc-push">${NET ? modeSeg() : ""}<button class="sc-btn" type="button" disabled>Start over</button></div>`;
     bindMode(bar);
     return;
   }
