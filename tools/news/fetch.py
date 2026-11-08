@@ -51,7 +51,7 @@ TOPICS = {
  'policy': r'\b(City Council|alderperson|alderman|alder|ordinance|mayor Johnson|Johnson administration|ward\b|Planning and Development|DPD|Department of Housing|zoning board)',
 }
 STATEWIDE = {'Capitol News Illinois', 'Illinois Answers Project'}
-NOT = r'\b(shooting|shot|gunman|homicide|murder|carjack|stabb|arrest|police chase|charged|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
+NOT = r'\b(shooting|shot|shots|gun|guns|gunman|gunfire|hostage|homicide|murder|killed|dead|death|carjack|stabb|robbery|burglar|arrest|police chase|charged|crash|crashes|collides|collision|fire breaks|blaze|fundraiser|gala|lawsuit filed against .* officer|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
 # extra feeds read on top of each outlet's main feed: WordPress search feeds (?s=term&feed=rss2) reach further back on
 # the topics we keep, since a main feed only holds the latest 10 to 20 stories
