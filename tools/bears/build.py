@@ -5,7 +5,8 @@ site already has (transit stations, Census blocks, the lake outline).
   bears/data/land.json    land big enough for a stadium: OpenStreetMap industrial, brownfield, rail yard, commercial,
                           retail, parking, racetrack, construction, port and greenfield areas, minus homes, parks, water,
                           cemeteries, schools, hospitals, golf courses and airports; pieces closer than ~30 m are joined
-                          (streets between them), and only pieces of MIN_ACRES or more are kept.
+                          (streets between them), anything narrower than 240 m is cut away, and only pieces of MIN_ACRES
+                          or more are kept.
                           {"min": acres, "parts": [[acres, kind, name, [ring, ...]], ...]}  rings as [[lon,lat],...]
   bears/data/places.json  hotels [lon,lat,rooms|0], parking lots [lon,lat,spaces] (spaces = tagged capacity, else lot
                           area / SQM_PER_SPACE), expressway exits [lon,lat,name], rail stations [lon,lat,name,kind,trains a
@@ -28,7 +29,8 @@ os.makedirs(OUT, exist_ok=True)
 ORIGIN = (41.85, -87.65)          # lat, lon
 K = 111319.49
 KX, KY = K * math.cos(math.radians(ORIGIN[0])), K
-MIN_ACRES = 30                    # assumption: a domed stadium, its plazas and a little parking, with most fans arriving by transit
+MIN_ACRES = 50                    # assumption: a domed stadium (about 13 acres), plazas, some parking and a little development in one piece
+OPEN_M = 120                      # drop every part narrower than 2 x 120 m (the stadium is 290 x 240 m): slivers along tracks, roads and fences
 ACRE = 4046.86
 JOIN_M = 15                       # close gaps up to 2 x 15 m (streets) between pieces of usable land
 SQM_PER_SPACE = 30                # assumption: one surface parking space plus its share of aisles (about 325 sq ft)
@@ -66,7 +68,9 @@ def land():
     ok, no, parking, names = [], [], [], []
     for row in rows:
         k, tag, name, outer = row[0], row[1], row[2], row[3]
-        g = poly(outer, row[4] if len(row) > 4 else ())
+        # usable land keeps its holes filled (a racetrack's infield, a yard's unmapped middle); anything that really can't
+        # take a stadium in a hole is mapped on its own and subtracted below
+        g = poly(outer) if k == 'ok' else poly(outer, row[4] if len(row) > 4 else ())
         if g is None or g.is_empty:
             continue
         if k == 'ok':
@@ -103,11 +107,13 @@ def land():
     good = unary_union(ok).buffer(JOIN_M).buffer(-JOIN_M)
     bad = unary_union(no)
     use = good.difference(bad)
+    # keep only land that's wide enough everywhere for the stadium: an "opening" (shrink by OPEN_M, grow back)
+    use = use.buffer(-OPEN_M, quad_segs=4).buffer(OPEN_M, quad_segs=4).intersection(use)
     parts = list(use.geoms) if hasattr(use, 'geoms') else [use]
     out = []
     names.sort(key=lambda t: -t[0])
     for p in parts:
-        if p.geom_type != 'Polygon' or p.area < MIN_ACRES * ACRE:
+        if p.geom_type != 'Polygon' or p.area < MIN_ACRES * ACRE:   # (intersection can leave tiny bits; they fail this)
             continue
         p = p.simplify(6, preserve_topology=True)
         nm, kind = '', ''

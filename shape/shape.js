@@ -149,3 +149,42 @@ window.scIntro = function(key, o, force){
   const show = () => { try { d.showModal(); } catch (e){ d.setAttribute("open", ""); } };
   if (document.readyState === "complete") setTimeout(show, 250); else addEventListener("load", () => setTimeout(show, 250));
 };
+
+// Keyboard camera for every map page (same keys as the housing and transit tools): hold WASD or the arrows to glide,
+// Q/E to spin, R/F to tilt, +/- to zoom. Not while typing, in the Simulators menu or with a pop-up open.
+// cam = {get() -> {lng, lat, zoom, bearing, pitch, minZoom, maxZoom}, set(view), size() -> [w, h]}; scKeyCam.maplibre(map) makes one.
+window.scKeyCam = function(cam){
+  const KEYS = new Set(); let raf = 0, last = 0;
+  const MAP = {w:"up", arrowup:"up", s:"down", arrowdown:"down", a:"left", arrowleft:"left", d:"right", arrowright:"right", q:"spinL", e:"spinR", r:"tiltU", f:"tiltD", "+":"zoomIn", "=":"zoomIn", "-":"zoomOut", "_":"zoomOut"};
+  const loop = now => {
+    const dt = Math.max(0, Math.min(0.05, (now - (last || now)) / 1000)); last = now;
+    if (!KEYS.size){ raf = 0; last = 0; return; }
+    const v = cam.get(), [w, h] = cam.size();
+    let dx = 0, dy = 0; if (KEYS.has("left")) dx -= 1; if (KEYS.has("right")) dx += 1; if (KEYS.has("up")) dy -= 1; if (KEYS.has("down")) dy += 1;
+    if (dx || dy){ const px = Math.min(w, h) * 0.9 * dt, mpp = 40075016 * Math.cos(v.lat * Math.PI / 180) / (512 * 2 ** v.zoom), b = v.bearing * Math.PI / 180;
+      const east = (dx * Math.cos(b) - dy * Math.sin(b)) * px * mpp, north = (-dx * Math.sin(b) - dy * Math.cos(b)) * px * mpp;
+      v.lng += east / (111320 * Math.cos(v.lat * Math.PI / 180)); v.lat += north / 110574; }
+    if (KEYS.has("spinL")) v.bearing -= 60 * dt;
+    if (KEYS.has("spinR")) v.bearing += 60 * dt;
+    if (KEYS.has("tiltU")) v.pitch = Math.min(60, v.pitch + 40 * dt);
+    if (KEYS.has("tiltD")) v.pitch = Math.max(0, v.pitch - 40 * dt);
+    if (KEYS.has("zoomIn")) v.zoom = Math.min(v.maxZoom == null ? 20 : v.maxZoom, v.zoom + 1.2 * dt);
+    if (KEYS.has("zoomOut")) v.zoom = Math.max(v.minZoom == null ? 0 : v.minZoom, v.zoom - 1.2 * dt);
+    cam.set(v); raf = requestAnimationFrame(loop);
+  };
+  addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target, tag = (t.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable || document.querySelector("dialog[open]") || (t.closest && t.closest(".sc-simmenu"))) return;
+    const a = MAP[(e.key || "").toLowerCase()]; if (!a) return;
+    e.preventDefault(); KEYS.add(a); if (!raf) raf = requestAnimationFrame(loop);
+  });
+  addEventListener("keyup", e => { const a = MAP[(e.key || "").toLowerCase()]; if (a) KEYS.delete(a); });
+  addEventListener("blur", () => KEYS.clear());
+};
+window.scKeyCam.maplibre = (map, flat) => { if (map.keyboard) map.keyboard.disable();   // flat: a top-down map (no spin or tilt)
+  return {get:() => { const c = map.getCenter(); return {lng:c.lng, lat:c.lat, zoom:map.getZoom(), bearing:map.getBearing(), pitch:map.getPitch(), minZoom:map.getMinZoom(), maxZoom:map.getMaxZoom()}; },
+    set:v => map.jumpTo(flat ? {center:[v.lng, v.lat], zoom:v.zoom} : {center:[v.lng, v.lat], zoom:v.zoom, bearing:v.bearing, pitch:v.pitch}),
+    size:() => { const c = map.getCanvas(); return [c.clientWidth, c.clientHeight]; }}; };
+// call once a page's map exists: works whether or not this file has loaded yet
+window.scWhenReady = fn => { if (document.readyState === "loading") addEventListener("DOMContentLoaded", fn); else fn(); };

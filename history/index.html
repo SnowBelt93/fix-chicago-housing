@@ -104,7 +104,7 @@ const ERAS = [[1870, "<b>1871:</b> the Great Fire burns 17,000 buildings. The ci
   [1990, "<b>1990s–2000s:</b> condo towers downtown and new homes on the Near West and South Sides."], [2008, "<b>2008 on:</b> the crash, then towers in the Loop and West Loop, while most neighborhoods add almost nothing."]];
 const DEC = [[1880, [146, 52, 38]], [1900, [184, 92, 62]], [1920, [214, 140, 90]], [1940, [232, 192, 128]], [1960, [189, 206, 180]], [1980, [126, 182, 196]], [2000, [72, 132, 196]], [2027, [43, 70, 160]]];
 function decCol(y){ if (!y) return [190, 194, 199]; for (const [u, c] of DEC) if (y < u) return c; return DEC[DEC.length - 1][1]; }
-let META, AREAS = [], YEAR = 2026, POP = null, HABS = [], deckgl;
+let META, AREAS = [], YEAR = 2026, POP = null, HABS = [], deckgl, HVS = null;
 function render(){
   const L = [];
   L.push(new deck.SolidPolygonLayer({id:"lake", data:META.lake, getPolygon:d => d, getFillColor:[196, 222, 236], parameters:{depthCompare:"always", depthWriteEnabled:false}}));
@@ -193,10 +193,16 @@ function play(){
   META = await (await fetch("../meta.json")).json();
   const phone = matchMedia("(max-width:859px)").matches;
   deckgl = new deck.Deck({parent:$("map"), initialViewState:{longitude:-87.655, latitude:41.89, zoom:phone ? 11.2 : 12.4, pitch:50, bearing:-20, minZoom:9, maxZoom:17.5},
+    onViewStateChange:({viewState}) => { HVS = viewState; },
     controller:true, useDevicePixels:Math.min(2, devicePixelRatio || 1), layers:[],
     onClick:info => { if (!info.layer) return; if (info.layer.id === "habs") showPhoto(info.object); else if (info.layer.id === "areas") areaCard(info.object.properties.num); },
     getCursor:({isHovering}) => isHovering ? "pointer" : "grab",
     onHover:info => { const t = $("tip"); if (info.layer && info.layer.id === "habs" && info.object){ t.style.display = "block"; t.style.left = info.x + 12 + "px"; t.style.top = info.y + 60 + "px"; t.textContent = info.object.t; } else t.style.display = "none"; }});
+  HVS = {longitude:-87.655, latitude:41.89, zoom:phone ? 11.2 : 12.4, pitch:50, bearing:-20, minZoom:9, maxZoom:17.5};
+  const keys = () => window.scKeyCam && scKeyCam({get:() => ({lng:HVS.longitude, lat:HVS.latitude, zoom:HVS.zoom, bearing:HVS.bearing, pitch:HVS.pitch, minZoom:9, maxZoom:17.5}),
+    set:v => { HVS = {...HVS, longitude:v.lng, latitude:v.lat, zoom:v.zoom, bearing:v.bearing, pitch:v.pitch}; deckgl.setProps({initialViewState:HVS}); },
+    size:() => [$("map").clientWidth, $("map").clientHeight]});
+  if (window.scKeyCam) keys(); else addEventListener("DOMContentLoaded", keys);
   $("key").innerHTML = [["Before 1880", 0], ["1880–99", 1], ["1900–19", 2], ["1920–39", 3], ["1940–59", 4], ["1960–79", 5], ["1980–99", 6], ["2000 on", 7]].map(([t, i]) => `<span><i style="background:rgb(${DEC[i][1]})"></i>${t}</span>`).join("") + `<span><i style="background:rgb(190,194,199)"></i>Unknown</span>`;
   setYear(2026);
   await loadYears();

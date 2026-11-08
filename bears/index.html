@@ -118,6 +118,10 @@ dialog.sc-info{max-width:520px}
 .pk b{font-size:13.5px;font-weight:600} .pk span{font-size:12px;color:var(--sc-mute)}
 .pk:disabled{opacity:.45;cursor:default}
 @media (hover:hover){ .pk:not(:disabled){transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .pk:not(:disabled):hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+.mprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
+.mpseg{font-size:12.5px} .mpseg button{padding:6px 10px}
+.pkey{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--sc-mute);margin-top:6px}
+.pkey span{display:flex;align-items:center;gap:5px} .pkey i{width:11px;height:11px;border-radius:3px;display:inline-block}
 .selrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 0;padding:8px 10px;background:var(--sc-chip);border-radius:12px;font-size:14px}
 .warnline{color:#a0001b} b.red{color:#a0001b;font-size:inherit;display:inline;font-weight:600}
 .plist{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -155,7 +159,7 @@ dialog.sc-info{max-width:520px}
     <h1>Where should the Bears play?</h1>
     <p class="lede">Every proposed site, measured the same way: trains, parking, hotels and neighbors. Or drop your own pin.</p>
     <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-t="sites">Sites</button><button role="tab" aria-selected="false" data-t="rank">Ranking</button><button role="tab" aria-selected="false" data-t="picks">Readers</button><button role="tab" aria-selected="false" data-t="learn">Learn</button>
+      <button role="tab" aria-selected="true" data-t="sites">Sites</button><button role="tab" aria-selected="false" data-t="rank">Ranking</button><button role="tab" aria-selected="false" data-t="picks">Users</button><button role="tab" aria-selected="false" data-t="learn">Learn</button>
     </div>
   </div>
   <div class="scroll" id="scroll">
@@ -177,12 +181,12 @@ dialog.sc-info{max-width:520px}
       <div style="overflow-x:auto"><table class="cmp" id="cmp"></table></div>
     </section>
     <section class="pane" id="p-picks" hidden>
-      <h2>Where readers put it</h2>
+      <h2>Where users put it</h2>
       <p>Pick a site (or your own pin) from its page with <b>This is my pick</b>. One pick per person a day. A pick made while planning a site saves the plan's pieces too, so others can open it; nothing you type is stored.</p>
       <ul class="picks" id="picks"><li>Loading…</li></ul>
-      <h3>Readers' site plans</h3>
+      <h3>Users' site plans</h3>
       <ul class="plist" id="planList"><li class="small">Loading…</li></ul>
-      <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show readers' pins on the map</label>
+      <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show users' pins on the map</label>
     </section>
     <section class="pane" id="p-learn" hidden>
       <h2>Stadium economics</h2>
@@ -434,6 +438,7 @@ async function initMap(){
   map.on("mouseenter", "sites", () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", "sites", () => map.getCanvas().style.cursor = "");
   map.on("click", e => { if (mode !== "pin") return; if (map.queryRenderedFeatures(e.point, {layers:["sites"]}).length) return; placePin(e.lngLat.lng, e.lngLat.lat); });
   bindPlanDrag(); drawSites(); legend();
+  const keys = () => window.scKeyCam && scKeyCam(scKeyCam.maplibre(map)); if (window.scKeyCam) keys(); else addEventListener("DOMContentLoaded", keys);
 }
 function drawSites(){
   const f = SITES.map(s => ({type:"Feature", properties:{id:s.id, n:s.name, c:s.c, on:cur === s.id}, geometry:{type:"Point", coordinates:s.ll}}));
@@ -601,7 +606,7 @@ async function loadSegs(x, y, force){
   SEGS.forEach((g, i) => { const x0 = Math.floor(Math.min(g[0], g[2]) / 100), x1 = Math.floor(Math.max(g[0], g[2]) / 100), y0 = Math.floor(Math.min(g[1], g[3]) / 100), y1 = Math.floor(Math.max(g[1], g[3]) / 100);
     for (let a = x0; a <= x1; a++) for (let b = y0; b <= y1; b++){ const k = a + "," + b; let l = SEGG.get(k); if (!l) SEGG.set(k, l = []); l.push(i); } });
 }
-function segsNear(x, y, r){ const out = new Set(); for (let a = Math.floor((x - r) / 100); a <= Math.floor((x + r) / 100); a++) for (let b = Math.floor((y - r) / 100); b <= Math.floor((y + r) / 100); b++){ const l = SEGG.get(a + "," + b); if (l) for (const i of l) out.add(i); } return [...out].map(i => SEGS[i]); }
+function segsNear(x, y, r){ const out = []; for (let a = Math.floor((x - r) / 100); a <= Math.floor((x + r) / 100); a++) for (let b = Math.floor((y - r) / 100); b <= Math.floor((y + r) / 100); b++){ const l = SEGG.get(a + "," + b); if (l) for (const i of l) out.push(SEGS[i]); } return out; }
 // which way the street grid runs here: the length-weighted average of street directions, folded onto a quarter turn
 function gridRot(x, y){ let c = 0, s = 0;
   for (const g of segsNear(x, y, 350)){ const dx = g[2] - g[0], dy = g[3] - g[1], L = Math.hypot(dx, dy); if (L < 1) continue; const t = Math.atan2(dy, dx) * 4, w = L * (g[5] ? 2 : 1); c += w * Math.cos(t); s += w * Math.sin(t); }
@@ -686,21 +691,77 @@ function drawPlan(){
   if (P){ const [lon, lat] = llOf(P.x, P.y); showStadium(lon, lat, P.rot, P.bad ? "#f6c9d0" : null); }
 }
 
+// ---- the automatic master plan ----
+const MP = {park:[1, 0.5, 0.25], parkN:["Every car", "Half the cars", "A quarter"], homes:[0, 4, 10], homesN:["None", "A few blocks", "A neighborhood"]};
+let MASK = null;
+// where pieces may go: usable land, the proposed site itself (a circle of its published acreage, or 120 acres), not the lake,
+// and not on top of homes (cells near Census blocks with homes are cleared)
+function buildMask(){
+  const P = PLAN, cell = 20, Rr = PLAN_R + 160, n = Math.ceil(2 * Rr / cell), x0 = P.x - Rr, y0 = P.y - Rr, a = new Uint8Array(n * n);
+  const parts = LAND.parts.filter(p => p.bb[0] < P.x + Rr && p.bb[2] > P.x - Rr && p.bb[1] < P.y + Rr && p.bb[3] > P.y - Rr);
+  const s = SITES.find(q => q.id === P.base), sr = s ? Math.sqrt((s.acres || 120) * 4046.86 / Math.PI) : 0, [sx, sy] = s ? xy(s.ll[0], s.ll[1]) : [0, 0];
+  const lake = NET && NET.lake ? NET.lake.map(r => r.map(q => xy(q[0], q[1]))) : [];
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++){ const x = x0 + (i + 0.5) * cell, y = y0 + (j + 0.5) * cell;
+    let ok = !!s && Math.hypot(x - sx, y - sy) <= sr;
+    if (!ok) for (const p of parts) if (x >= p.bb[0] && x <= p.bb[2] && y >= p.bb[1] && y <= p.bb[3] && inRing(x, y, p.xy[0]) && !p.xy.slice(1).some(h => inRing(x, y, h))){ ok = true; break; }
+    if (ok && lake.some(r => inRing(x, y, r))) ok = false;
+    a[j * n + i] = ok ? 1 : 0; }
+  if (BLK) for (let k = 0; k < BLK.n; k++){ if (!BLK.H[k]) continue; const i = Math.floor((BLK.X[k] * 10 - x0) / cell), j = Math.floor((BLK.Y[k] * 10 - y0) / cell);
+    if (i < -2 || j < -2 || i > n + 1 || j > n + 1) continue; for (let dj = -2; dj <= 2; dj++) for (let di = -2; di <= 2; di++){ const ii = i + di, jj = j + dj; if (ii >= 0 && jj >= 0 && ii < n && jj < n) a[jj * n + ii] = 0; } }
+  MASK = {x0, y0, n, cell, a};
+}
+function maskAt(x, y){ const M2 = MASK, i = Math.floor((x - M2.x0) / M2.cell), j = Math.floor((y - M2.y0) / M2.cell); return i >= 0 && j >= 0 && i < M2.n && j < M2.n && M2.a[j * M2.n + i] === 1; }
+function onMask(p){ const t = p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+  for (const u of [-0.48, -0.16, 0.16, 0.48]) for (const v of [-0.46, 0, 0.46]){ const dx = u * p.w, dy = v * p.h; if (!maskAt(p.x + dx * c - dy * s, p.y + dx * s + dy * c)) return false; }
+  return true; }
+// lay out the district: transit first, a plaza, garages close in, surface lots out to a mile, homes over shops on the side
+// people walk in from (toward the station, or the nearest neighborhood). Everything shares the street grid's direction.
+function autoPlan(){
+  const P = PLAN; P.items = []; PSEL = -1; buildMask();
+  const m0 = planMeasure();
+  const tr = nearestTrack(P.x, P.y, 8000);
+  if (tr && tr.d <= A.walk){ if (!m0.lines.some(l => l.line === tr.line)) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); }
+  else if (!m0.lines.length){ if (tr) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); P.items.push({k:"bus"}); }
+  const m1 = planMeasure();
+  // the walk-in side: the station fans use, else where the neighbors are
+  let ex = 0, ey = 0;
+  const st = P.items.find(i => i.k === "stop") || (m1.busFrom ? m1.busFrom : null) || PL.rail.filter(r => Math.hypot(r.x - P.x, r.y - P.y) <= A.walk).sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
+  if (st){ ex = st.x - P.x; ey = st.y - P.y; }
+  else if (BLK) for (let k = 0; k < BLK.n; k++){ const dx = BLK.X[k] * 10 - P.x, dy = BLK.Y[k] * 10 - P.y, d = Math.hypot(dx, dy); if (d > 300 && d < 2500 && BLK.H[k]){ ex += dx / d * BLK.H[k]; ey += dy / d * BLK.H[k]; } }
+  const el = Math.hypot(ex, ey) || 1, hx = P.x + ex / el * 420, hy = P.y + ey / el * 420;
+  const g = gridRot(P.x, P.y), t = g * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), cand = [];
+  for (let u = -PLAN_R; u <= PLAN_R; u += 20) for (let v = -PLAN_R; v <= PLAN_R; v += 20){ const d = Math.hypot(u, v); if (d <= PLAN_R - 40) cand.push({x:P.x + u * c - v * s, y:P.y + u * s + v * c, d, dh:0}); }
+  for (const q of cand) q.dh = Math.hypot(q.x - hx, q.y - hy);
+  const need = Math.max(0, (m1.cars - m1.nearby) * MP.park[P.pk]);
+  const nG = need ? Math.min(4, Math.ceil(need * 0.35 / 1080)) : 0, nL = Math.max(0, Math.min(18, Math.ceil((need - nG * 1080) / 1800)));
+  const byD = cand.slice().sort((a, b) => a.d - b.d), byH = cand.slice().sort((a, b) => a.dh - b.dh), byPlaza = cand.slice().sort((a, b) => (a.d + 0.6 * a.dh) - (b.d + 0.6 * b.dh));
+  P.missed = {};
+  for (const [k, n, list] of [["plaza", 1, byPlaza], ["home", MP.homes[P.hk], byH], ["gar", nG, byD], ["lot", nL, byD]]){
+    const K = KINDS[k]; let idx = 0;
+    for (let q = 0; q < n; q++){ let done = false;
+      for (; idx < list.length && !done; idx++){ const o = list[idx];
+        for (const r of [g, g + 90]){ const it = {k, w:K.w, h:K.h, x:o.x, y:o.y, rot:r}; if (onMask(it) && okAt(it, P.items.length)){ P.items.push(it); done = true; break; } } }
+      if (!done){ P.missed[k] = n - q; break; } } }
+}
+async function redoPlan(){ await loadSegs(PLAN.x, PLAN.y); autoPlan(); planChanged(); }
+
 // the panel while planning
 const pc = (n, k) => fmt(n) + " " + k + (Math.round(n) === 1 ? "" : "s");
 function renderPlan(){
   const P = PLAN, m = M.plan = planMeasure(), s = SITES.find(q => q.id === P.base);
   const need = m.cars, have = m.parking, sel = PLAN.items[PSEL];
-  const add = Object.entries(KINDS).map(([k, K]) => { const a = K.w ? K.w * K.h : 0;
-    const sub = K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : k === "plaza" ? (a / 4046.86).toFixed(1) + " acres" : k === "stop" ? "on the nearest track" : `${BUS.fleet} buses to a station`;
-    const dis = (k === "bus" && P.items.some(i => i.k === "bus")) || (k === "stop" && P.items.filter(i => i.k === "stop").length >= 2);
-    return `<button type="button" class="pk" data-k="${k}"${dis ? " disabled" : ""}><i style="background:${K.c || (k === "stop" ? "#2b5da0" : "#d9822b")}"></i><b>${K.n}</b><span>${sub}</span></button>`; }).join("");
+  const seg = (key, names) => `<div class="sc-seg mpseg" role="radiogroup">${names.map((t, i) => `<button type="button" role="radio" aria-checked="${P[key] === i}" data-key="${key}" data-v="${i}">${t}</button>`).join("")}</div>`;
+  const cnt = k => P.items.filter(i => i.k === k).length, got = [];
+  if (cnt("gar")) got.push(pc(cnt("gar"), "garage")); if (cnt("lot")) got.push(pc(cnt("lot"), "surface lot")); if (cnt("plaza")) got.push("a tailgate plaza");
+  if (cnt("home")) got.push(pc(cnt("home"), "block") + " of homes over shops"); if (cnt("stop")) got.push("a game-day train stop"); if (cnt("bus")) got.push("shuttle buses");
+  const miss = P.missed || {}, short = (miss.lot || 0) * 1800 + (miss.gar || 0) * 1080;
+  const key = Object.entries(KINDS).filter(([, K]) => K.c).map(([, K]) => `<span><i style="background:${K.c}"></i>${K.n}</span>`).join("") + '<span><i style="background:#2b5da0;border-radius:50%"></i>Train stop</span><span><i style="background:#d9822b;border-radius:50%"></i>Shuttle station</span>';
   const stopNote = P.items.filter(i => i.k === "stop" && !i.walk).length && !(m.busFrom && m.busFrom.name === "your new stop") ? `<p class="small warnline">Your train stop is more than a 15-minute walk from the stadium. Move it closer, or add shuttle buses.</p>` : "";
   const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : P.items.some(i => i.k === "bus") ? `<p class="small warnline">No station within about 6 miles is on a line that fans can't already walk to, so shuttles wouldn't add anyone.</p>` : "";
   const bad = P.items.filter(i => i.bad).length;
   $("detail").innerHTML = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button>
     <h2>Plan the site</h2>
-    <p class="small">Drag the stadium or any piece on the map. Pieces line up with the streets around them and stay off them; tap one to remove it.</p>
+    <p class="small">The plan lays itself out on open land around the stadium, lined up with the streets and off them. Drag the stadium and it redoes the plan; drag a piece to adjust it, or tap one to remove it.</p>
     <div class="tiles">
       ${tile(fmt(have), `parking spaces: ${fmt(m.yourSpaces)} yours, ${fmt(m.nearby)} nearby, for ${fmt(need)} cars`, grade(have / Math.max(1, need), 0.9, 0.4), "")}
       ${tile(fmt(m.byTrain), `fans by train${m.busFrom ? " and shuttle" : ""} (${Math.round(m.byTrain / A.seats * 100)}%)`, grade(m.trainCap, 30000, 5000), "trains")}
@@ -710,17 +771,21 @@ function renderPlan(){
     ${bad ? `<p class="small warnline">${bad === 1 ? "One piece doesn't" : bad + " pieces don't"} fit where ${bad === 1 ? "it is" : "they are"} (on a street, over another piece or more than a mile out). It's outlined in red; drag it somewhere open.</p>` : ""}
     ${P.bad ? `<p class="small warnline">The stadium sits on a main street or a track. Drag it onto open land.</p>` : ""}
     ${stopNote}${busNote}
-    <h3>Add</h3><div class="pkgrid">${add}</div>
+    <h3>Master plan</h3>
+    <div class="mprow"><span>Parking for</span>${seg("pk", MP.parkN)}</div>
+    <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
+    <p class="small">${got.length ? "Laid out: " + got.join(", ") + "." : "Nothing to add here."}${short ? ` <span class="warnline">No open land left within a mile for about ${fmt(short)} more spaces.</span>` : ""}${miss.home ? ` <span class="warnline">Room for only ${cnt("home")} of the ${MP.homes[P.hk]} blocks of homes.</span>` : ""}</p>
+    <div class="pkey">${key}</div>
     ${sel ? `<div class="selrow"><span>Selected: <b>${esc(KINDS[sel.k].n)}</b>${sel.under ? ` (${fmt(sel.under)} homes under it)` : ""}</span><button class="sc-btn" type="button" id="pRemove">Remove</button></div>` : ""}
-    <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button>${P.items.length ? '<button class="sc-btn" type="button" id="pClear">Clear pieces</button>' : ""}</div>`;
+    <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pRedo">Redo the plan</button></div>`;
   $("planBack").onclick = endPlan;
-  $("detail").querySelectorAll(".pk").forEach(b => b.onclick = () => addPiece(b.dataset.k));
+  $("detail").querySelectorAll(".mpseg button").forEach(b => b.onclick = () => { PLAN[b.dataset.key] = +b.dataset.v; redoPlan(); });
+  $("pRedo").onclick = redoPlan;
   $("detail").querySelectorAll("[data-info]").forEach(b => b.onclick = () => info(b.dataset.info));
-  if ($("pRemove")) $("pRemove").onclick = () => { PLAN.items.splice(PSEL, 1); PSEL = -1; planChanged(); };
+  if ($("pRemove")) $("pRemove").onclick = () => { PLAN.items.splice(PSEL, 1); PSEL = -1; PLAN.touched = true; planChanged(); };
   $("pKick").onclick = () => kickoff(M.plan, (s ? s.name : "your site") + " (your plan)");
   $("pPick").onclick = () => pickIt(PLAN.base, M.plan, planCode());
   $("pLink").onclick = async () => { const u = location.origin + location.pathname + "#plan=" + planCode(); try { await navigator.clipboard.writeText(u); toast("Link copied"); } catch (e) { toast(u); } };
-  if ($("pClear")) $("pClear").onclick = () => { PLAN.items = []; PSEL = -1; planChanged(); };
 }
 let planT = null;
 function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() => { renderPlan(); drawPlan(); setHash(); }, 30); }
@@ -728,7 +793,7 @@ function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() =
 async function startPlan(base, fromCode){
   const s = SITES.find(q => q.id === base);
   const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat);
-  PLAN = fromCode || PLANS[base] || {base, x:at[0], y:at[1], rot:s ? s.rot : (pin ? pin.rot : 0), items:[]};
+  PLAN = fromCode || PLANS[base] || {base, x:at[0], y:at[1], rot:s ? s.rot : (pin ? pin.rot : 0), items:[], pk:0, hk:1, fresh:true};
   PLANS[base] = PLAN; PSEL = -1; cur = base; mode = "plan"; stopKick(); document.body.classList.add("planning");
   for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
   $("list").hidden = true; $("detail").hidden = false; $("detail").innerHTML = '<p class="small">Loading the streets around the site…</p>';
@@ -736,25 +801,15 @@ async function startPlan(base, fromCode){
   const [lon, lat] = llOf(PLAN.x, PLAN.y);
   map.easeTo({center:[lon, lat], zoom:phone() ? 14.2 : 14.9, pitch:40, bearing:0, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
   await loadSegs(PLAN.x, PLAN.y);
-  if (map.getSource("openmaptiles")) map.once("idle", async () => { if (PLAN){ await loadSegs(PLAN.x, PLAN.y, true); planChanged(); } });
+  if (PLAN.fresh){ PLAN.fresh = false; autoPlan(); } else buildMask();
+  // on our domain the base map's streets arrive once its tiles load: lay the plan out again with them
+  if (map.getSource("openmaptiles")) map.once("idle", async () => { if (PLAN){ await loadSegs(PLAN.x, PLAN.y, true); if (!PLAN.touched) autoPlan(); planChanged(); } });
   renderPlan(); drawPlan(); setHash(); $("scroll").scrollTop = 0;
 }
 function endPlan(){ const b = PLAN ? PLAN.base : cur; PLAN = null; PSEL = -1; mode = "site"; document.body.classList.remove("planning"); drawPlan();
   for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
   if ($("landChk").checked) for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
   if (b === "pin") openPin(); else openSite(b); }
-async function addPiece(k){
-  const P = PLAN, K = KINDS[k];
-  if (k === "stop"){ const t = nearestTrack(P.x, P.y, 6000); if (!t){ toast("No train track within about 4 miles."); return; }
-    P.items.push({k, x:t.x, y:t.y, line:t.line, li:t.li, kind:t.kind}); PSEL = P.items.length - 1; planChanged(); toast(t.d > A.walk ? "That's the nearest track, but it's too far to walk. Drag the stadium closer or add shuttles." : "Stop added on the " + t.kind + " line"); return; }
-  if (k === "bus"){ P.items.push({k}); PSEL = P.items.length - 1; planChanged(); return; }
-  // try spots around the stadium, nearest first, lined up with the streets
-  const g = gridRot(P.x, P.y), it = {k, w:K.w, h:K.h, x:P.x, y:P.y, rot:g};
-  let ok = false;
-  for (const d of [240, 380, 560, 800, 1100]){ for (let a = 0; a < 8 && !ok; a++){ const t = (g + a * 45) * Math.PI / 180, q = {...it, x:P.x + d * Math.cos(t), y:P.y + d * Math.sin(t)}; P.items.push(q); ok = fit(q, P.items.length - 1, 120); if (!ok) P.items.pop(); else Object.assign(it, q); } if (ok) break; }
-  if (!ok){ toast("No open spot within a mile. Try a smaller piece, or drag pieces closer together."); return; }
-  P.items[P.items.length - 1] = it; PSEL = P.items.length - 1; planChanged(); toast(K.n + " added. Drag it where you want it.");
-}
 // dragging on the map while planning
 function planHit(x, y, px){
   const P = PLAN; for (let i = P.items.length - 1; i >= 0; i--){ const it = P.items[i];
@@ -775,8 +830,8 @@ function bindPlanDrag(){
   const up = async () => { if (!D) return; const d = D; D = null; map.dragPan.enable();
     if (!d.moved){ PSEL = d.h >= 0 ? d.h : -1; planChanged(); return; }
     if (d.h === -2){ await loadSegs(PLAN.x, PLAN.y); const st = {x:PLAN.x, y:PLAN.y, rot:PLAN.rot}; PLAN.bad = !fit(Object.assign(st, {w:0, h:0}), -1, 260); PLAN.x = st.x; PLAN.y = st.y; PLAN.rot = st.rot;
-      PLAN.items.forEach((it, i) => { if (it.w) fit(it, i, 120); }); }
-    else { const it = PLAN.items[d.h]; PSEL = d.h;
+      PLAN.touched = false; autoPlan(); }
+    else { const it = PLAN.items[d.h]; PSEL = d.h; PLAN.touched = true;
       if (it.k === "stop"){ const t = nearestTrack(it.x, it.y, 1500); if (t) Object.assign(it, {x:t.x, y:t.y, line:t.line, li:t.li, kind:t.kind}); else { it.x = d.ox; it.y = d.oy; toast("A stop has to sit on a train track."); } }
       else if (it.w) fit(it, d.h, 160); }
     planChanged(); };
@@ -784,11 +839,13 @@ function bindPlanDrag(){
 }
 // share it: "#plan=" base ~ x,y,rot ~ pieces (meters from the map origin), letters and digits only
 function planCode(){ const P = PLAN, r = Math.round;
-  return P.base + "~" + [r(P.x), r(P.y), r(P.rot)].join(",") + "~" + P.items.map(it => KINDS[it.k].code + (it.k === "bus" ? "" : it.k === "stop" ? [r(it.x), r(it.y), it.li].join(",") : [r(it.x), r(it.y), r(it.rot)].join(","))).join(";"); }
+  return P.base + "~" + [r(P.x), r(P.y), r(P.rot)].join(",") + "~k" + (P.pk || 0) + (P.hk == null ? 1 : P.hk) + (P.items.length ? ";" : "") + P.items.map(it => KINDS[it.k].code + (it.k === "bus" ? "" : it.k === "stop" ? [r(it.x), r(it.y), it.li].join(",") : [r(it.x), r(it.y), r(it.rot)].join(","))).join(";"); }
 function planDecode(code){
   const [base, st, items] = code.split("~"); if (!base || !st) return null; const [x, y, rot] = st.split(",").map(Number); if (![x, y, rot].every(Number.isFinite)) return null;
   const byCode = Object.fromEntries(Object.entries(KINDS).map(([k, K]) => [K.code, k])), L = allLines(), out = {base, x, y, rot, items:[]};
-  for (const t of (items || "").split(";").filter(Boolean)){ const k = byCode[t[0]], v = t.slice(1).split(",").map(Number); if (!k) continue; const K = KINDS[k];
+  out.pk = 0; out.hk = 1; out.touched = true;
+  for (const t of (items || "").split(";").filter(Boolean)){ if (/^k\d\d$/.test(t)){ out.pk = Math.min(2, +t[1]); out.hk = Math.min(2, +t[2]); continue; }
+    const k = byCode[t[0]], v = t.slice(1).split(",").map(Number); if (!k) continue; const K = KINDS[k];
     if (k === "bus") out.items.push({k});
     else if (k === "stop"){ const l = L[v[2]]; if (l) out.items.push({k, x:v[0], y:v[1], li:v[2], line:l.l.id, kind:l.kind}); }
     else if (v.length === 3 && v.every(Number.isFinite)) out.items.push({k, x:v[0], y:v[1], rot:v[2], w:K.w, h:K.h}); }
@@ -1026,12 +1083,12 @@ function updateRank(){
   $("cmp").innerHTML = `<tr><th></th>${order.map(id => `<th>${esc((SITES.find(x => x.id === id) || {name:"Your pin"}).name)}</th>`).join("")}</tr>` + cols.map(([t, f]) => `<tr><td>${t}</td>${order.map(id => `<td>${f(M[id])}</td>`).join("")}</tr>`).join("");
 }
 
-/* ---------- readers' picks (anonymous, one a day) ---------- */
+/* ---------- users' picks (anonymous, one a day) ---------- */
 async function pickIt(id, m, code){
   const body = {site: id === "pin" ? "pin" : id, lon: +m.lon.toFixed(3), lat: +m.lat.toFixed(3)}; if (code) body.plan = code;
   try { const r = await fetch("/api/bears/pick", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}); if (!r.ok) throw r.status;
     try { localStorage.setItem("sc-bears-pick", JSON.stringify(body)); } catch (e) {}
-    toast("Counted. See where readers put it under Readers."); loadPicks(); }
+    toast("Counted. See where users put it under Users."); loadPicks(); }
   catch (e) { toast(e === 429 ? "You've already picked today. Come back tomorrow." : "Couldn't count it right now."); }
 }
 async function loadPicks(){
@@ -1043,7 +1100,7 @@ async function loadPicks(){
     $("planList").innerHTML = pl.length ? pl.map(q => { const n = (q.plan.split("~")[2] || "").split(";").filter(Boolean).length; return `<li><a href="#plan=${esc(q.plan)}" data-plan="${esc(q.plan)}">${esc((SITES.find(s => s.id === q.site) || {name:"Their own site"}).name)}</a><span class="small">${n} ${n === 1 ? "piece" : "pieces"} · ${ago(q.ts)}</span></li>`; }).join("") : '<li class="small">No site plans yet. Open a site, tap <b>Plan the site</b>, then <b>This is my pick</b>.</li>';
     $("planList").querySelectorAll("[data-plan]").forEach(a => a.onclick = e => { e.preventDefault(); openPlanCode(a.dataset.plan); });
     map.getSource("heat").setData({type:"FeatureCollection", features:(d.cells || []).map(([lon, lat, n]) => ({type:"Feature", properties:{n}, geometry:{type:"Point", coordinates:[lon, lat]}}))});
-  } catch (e) { $("picks").innerHTML = '<li class="small">Readers\' picks show up here on the live site.</li>'; }
+  } catch (e) { $("picks").innerHTML = '<li class="small">Users\' picks show up here on the live site.</li>'; }
 }
 
 /* ---------- learn ---------- */
@@ -1061,13 +1118,13 @@ const LAKE = `<p>Chicago's lakefront is protected by the <b>public trust doctrin
 <ul class="facts"><li><b>Lucas Museum:</b> Friends of the Parks sued in 2014. After nearly two years in court, George Lucas took the museum to Los Angeles.</li><li><b>Soldier Field:</b> the 2003 renovation survived a public trust challenge in the Illinois Supreme Court; the Park District kept ownership.</li><li><b>Obama Presidential Center:</b> won in court in 2022; the legislature had approved it and the city kept control.</li><li><b>The Bears' 2024 plan:</b> Friends of the Parks said it was “prepared to fight for the lakefront”, but the plan stalled first, in Springfield, over the public money.</li></ul>
 <p>So the lakefront isn't off-limits, but it's slower, costlier and harder to predict.</p><p class="src">${src("st24", "stfop")}</p>`;
 const HOW = `<ul class="facts">
-<li><b>Land that fits:</b> OpenStreetMap areas mapped as industrial, brownfield, rail yard, commercial, retail, parking, racetrack, construction, port or open land, minus homes, parks, water, cemeteries, schools, hospitals, golf courses and airports. Pieces split only by a street are joined, and only pieces of 30 acres or more count (assumption: enough for a dome and plazas if most fans don't drive). OpenStreetMap is volunteer-made and can be out of date.</li>
+<li><b>Land that fits:</b> OpenStreetMap areas mapped as industrial, brownfield, rail yard, commercial, retail, parking, racetrack, construction, port or open land, minus homes, parks, water, cemeteries, schools, hospitals, golf courses and airports. Pieces split only by a street are joined; anything narrower than 240 m is cut away (the stadium alone is 290 by 240 m), and only single areas of 50 acres or more count (assumption: a dome, plazas and some parking in one piece). Gaps inside an area that aren't mapped as something else (a racetrack's infield, say) count as part of it. OpenStreetMap is volunteer-made and can be out of date.</li>
 <li><b>Trains:</b> every L, Metra and South Shore line with a station within a 15-minute walk (1,200 m). On game day each line runs up to twice its usual trains, capped at 20 an hour each way for the L, 6 for Metra and 4 for the South Shore; trains carry about 800 (L), 1,200 (Metra) or 900 (South Shore) fans. All assumptions.</li>
 <li><b>Who takes the train:</b> 30% of fans where both the L and commuter rail are within a walk, 25% with the L only, 15% with commuter rail only, 5% with neither (shuttles). Assumptions; no public count of how fans get to Soldier Field exists.</li>
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
 <li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
-<li><b>Your site plan:</b> typical sizes, not anyone's plan. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
+<li><b>Your site plan:</b> laid out automatically. It goes on usable land within a mile of the stadium (for the proposed sites, also a circle the size of the site's published acreage, or 120 acres when none is published), never on the lake or on blocks with homes. Transit comes first: a game-day stop on the nearest track if it's within a walk, or, with no train within a walk, a stop on the nearest track plus shuttle buses. Then a plaza on the side fans walk in from, homes over shops toward the station (or the nearest neighborhood), garages closest to the stadium and surface lots out to a mile, until there's parking for every car, half or a quarter (your choice), counting lots already there. Typical sizes, not anyone's plan. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
 <li><b>Your ranking:</b> each measure is scaled from the lowest to the highest site, multiplied by your weight and added up. Money isn't scored: the public costs aren't comparable yet.</li>
@@ -1116,7 +1173,7 @@ addEventListener("keydown", e => { if (e.key === "Escape") stopKick(); });
   if ((m = h.match(/^#plan=([A-Za-z0-9,;~.-]+)/))) openPlanCode(m[1]);
   else if ((m = h.match(/^#s=(\w+)/))) openSite(m[1]);
   else if ((m = h.match(/^#p=(-?[\d.]+),(-?[\d.]+),?(\d*)/))){ pin = {lon:+m[1], lat:+m[2], rot:+m[3] || 0}; openPin(); map.jumpTo({center:[pin.lon, pin.lat], zoom:13.5, pitch:45}); }
-  window.__bears = {road: () => ROAD, kick: () => KICK, plan: () => PLAN, startPlan, addPiece, planCode, renderPlan, fit, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
+  window.__bears = {road: () => ROAD, kick: () => KICK, plan: () => PLAN, startPlan, autoPlan, planCode, renderPlan, fit, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
 })();
 </script>
 </body>
