@@ -39,8 +39,8 @@
   // the plan's choices, biggest first: [{t: text, kind: "zone"|"policy"|"cut"}]
   function choices(p){
     const out = [];
-    if (p.tod) out.push({t: TIER[p.tod] + " near the L", kind:"zone"});
-    if (p.metra) out.push({t: TIER[p.metra] + " near Metra", kind:"zone"});
+    if (p.tod && p.tod === p.metra) out.push({t: TIER[p.tod] + " near the L and Metra", kind:"zone"});
+    else { if (p.tod) out.push({t: TIER[p.tod] + " near the L", kind:"zone"}); if (p.metra) out.push({t: TIER[p.metra] + " near Metra", kind:"zone"}); }
     if (p.corr) out.push({t: TIER[p.corr] + " on main streets", kind:"zone"});
     const ar = Object.keys(p.areas).filter(n => p.areas[n]).map(Number);
     if (ar.length) out.push({t: ar.length <= 2 ? "Rezones " + ar.map(n => AREAS[n]).join(" and ") : "Rezones " + ar.length + " neighborhoods", kind:"zone"});
@@ -71,7 +71,7 @@
     const c = choices(p), z = c.filter(x => x.kind === "zone"), pol = c.filter(x => x.kind === "policy").length, ar = Object.values(p.areas).filter(Boolean);
     if (c.some(x => x.kind === "cut")) return {t:"Cuts housing", c:"cut"};
     if (!z.length) return {t:pol ? "Policies only" : "No changes", c:"pol"};
-    if (c.length >= 12) return {t:"Everything at once", c:"all"};
+    if (c.length >= 18) return {t:"Everything at once", c:"all"};
     if (p.tod >= 5 || ar.some(t => t >= 5)) return {t:"Towers", c:"tall"};
     const mm = p.on.build || p.on.camb || p.on.mpls || p.on.small || p.on.adu;
     if (mm && Math.max(p.tod, p.corr, p.metra, ...ar, 0) <= 2) return {t:"Missing middle", c:"mm"};
