@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['tools/budget/fetch.py', '.github/workflows/fetch-budget.yml']
+    paths: ['tools/budget/fetch.py', 'tools/budget/fetch_irs.py', '.github/workflows/fetch-budget.yml']
 permissions:
   contents: write
 jobs:
@@ -16,6 +16,7 @@ jobs:
       - name: Download
         run: |
           sudo apt-get install -y poppler-utils >/dev/null
+          python3 tools/budget/fetch_irs.py || true
           python3 tools/budget/fetch.py
       - name: Commit
         run: |
