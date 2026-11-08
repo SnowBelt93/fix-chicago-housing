@@ -41,8 +41,8 @@ for a in meta['areas']:
 print('areas with populations', len(pops), flush=True)
 json.dump(pops, open(os.path.join(OUT, 'ca_population.json'), 'w'), indent=1)
 
-items, page = [], 1
-while page < 60:
+items, page, seenu = [], 1, set()
+while page < 40:
     u = 'https://www.loc.gov/collections/historic-american-buildings-landscapes-and-engineering-records/?' + urllib.parse.urlencode({'q': 'chicago cook county illinois', 'fo': 'json', 'c': 100, 'sp': page})
     b = get(u)
     if not b: break
@@ -50,10 +50,12 @@ while page < 60:
     print('loc keys', list(d.keys())[:12], flush=True)
     for r in d.get('results', []):
         if not any('chicago' in str(x).lower() for x in (r.get('location') or []) + [r.get('title') or '']): continue
+        if (r.get('url') or r.get('id')) in seenu: continue
+        seenu.add(r.get('url') or r.get('id'))
         items.append({'title': r.get('title'), 'date': r.get('date'), 'url': r.get('url') or r.get('id'), 'images': r.get('image_url') or [],
                       'subjects': r.get('subject') or [], 'location': r.get('location') or []})
     print('loc page', page, len(d.get('results', [])), flush=True)
-    if not d.get('pagination', {}).get('next'): break
+    if not d.get('results'): break
     page += 1; time.sleep(1)
 json.dump(items, open(os.path.join(OUT, 'habs.json'), 'w'))
 print('habs items', len(items))
