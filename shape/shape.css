@@ -102,3 +102,7 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 .sc-switch[aria-checked="true"]::after{transform:translateX(18px)}
 .sc-switch:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){ .sc-switch,.sc-switch::after{transition:none} }
+/* six tools: the page tabs scroll sideways on narrow screens instead of widening the page */
+.sc-nav{min-width:0;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sc-nav::-webkit-scrollbar{display:none}
+@media (max-width:440px){ .sc-nav a{padding:7px 7px} .sc-nav{font-size:12.5px} }

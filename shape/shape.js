@@ -63,3 +63,6 @@
 if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|anthropic|usercontent/.test(location.hostname)){
   addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
 }
+/* keep the current page's tab visible when the tab bar scrolls (phones) */
+(function(){ function f(){ const n = document.querySelector(".sc-nav"), a = n && n.querySelector('[aria-current="page"]'); if (!a || n.scrollWidth <= n.clientWidth) return; n.scrollLeft = a.offsetLeft - n.offsetLeft - (n.clientWidth - a.offsetWidth) / 2; }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();

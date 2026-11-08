@@ -211,6 +211,29 @@ def budget():
     tree(-26, 9, 0, 0.9); tree(27, 10, 0, 0.8); tree(-9, -10, 0, 0.7)
     return dict(ortho=54, target=(0, -1, 7), elev=22, azim=-100, sun=(42, -150))
 
+def pensions():
+    """Pay Down Chicago's Pensions: four coin stacks, one per fund, each in an open frame with a flag-blue ring at 90%,
+    on a little plaza in front of a row of flats."""
+    random.seed(11)
+    ground(70, 34)
+    sidewalk(0, -12, 70, 2.2)
+    for i, (x, fill) in enumerate([(-19.5, 0.27), (-6.5, 0.42), (6.5, 0.26), (19.5, 0.26)]):
+        cyl(x, 0, 0.0, 4.0, 0.6, mat("navy", rough=0.45), verts=40)                           # base
+        h = 14.0
+        for a in range(4):                                                                     # frame posts
+            import math
+            px, py = x + 3.2 * math.cos(a * math.pi / 2 + .6), 3.2 * math.sin(a * math.pi / 2 + .6)
+            box(px, py, 0.6, 0.22, 0.22, h, mat("steel", rough=0.4), bevel=0)
+        cyl(x, 0, 0.6 + h, 3.5, 0.3, mat("steel", rough=0.4), verts=40)                        # rim
+        cyl(x, 0, 0.6 + h * 0.9, 3.45, 0.28, mat("#41b6e6", rough=0.4), verts=40)              # the 90% ring
+        n = max(1, int(h * fill / 0.6))
+        for k in range(n):
+            cyl(x, 0, 0.7 + k * 0.6, 2.8, 0.55, mat("gold", rough=0.3, metal=0.75), verts=40, bevel=0.05)
+    for i, x in enumerate(range(-33, 36, 10)):
+        flat(x, 12, 0.18, 8.6, 6, 2 + (i % 2), ["brick", "buff", "brick2", "grey"][i % 4])
+    tree(-29, -6, 0, 0.8); tree(29, -6, 0, 0.7)
+    return dict(ortho=66, target=(0, 0, 8), elev=18, azim=-96, sun=(42, -150))
+
 def transit():
     """Draw your own line: today's L on its steel structure with a Red Line train, and a new line in flag blue curving off
     from a new station, its own train already running."""

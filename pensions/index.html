@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pay Down Chicago's Pensions</title>
+<meta name="description" content="Chicago's four city pension funds are about a quarter funded. Choose how much the city pays, what the investments earn and whether to borrow, and see when each fund reaches 90% and what it costs.">
+<meta property="og:title" content="Pay Down Chicago's Pensions">
+<meta property="og:description" content="See how long it takes to fix Chicago's pensions, and what it costs, under different choices.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+.sc-head{position:sticky;top:0}
+.bar{position:sticky;top:var(--sc-head);z-index:4;background:#fff;border-bottom:1px solid var(--sc-line);padding:12px 20px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+.bar .k{display:flex;flex-direction:column}
+.bar .k b{font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.bar .k span{font-size:12.5px;color:var(--sc-mute)}
+.bar .k b.ok{color:var(--sc-green)} .bar .k b.bad{color:var(--sc-hard)}
+.bar .btns{margin-left:auto;display:flex;gap:8px}
+main{display:grid;grid-template-columns:minmax(360px,420px) 1fr;gap:20px;padding:20px;max-width:1440px;margin:0 auto;align-items:start}
+.panel{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);padding:16px 18px 20px;position:sticky;top:calc(var(--sc-head) + 92px)}
+.ctl{border-top:1px solid var(--sc-line);padding:14px 0}
+.ctl:first-of-type{border-top:0;padding-top:4px}
+.ctl h3{margin:0 0 8px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.ctl p{margin:6px 0 0;font-size:12.5px;color:var(--sc-mute);line-height:1.45}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);cursor:pointer}
+.opts button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+input[type=range]{width:100%;accent-color:var(--sc-navy)}
+.rrow{display:flex;justify-content:space-between;font-size:12px;color:var(--sc-mute)}
+.rrow b{color:var(--sc-ink)}
+.swrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ib{font:inherit;font-size:11px;font-weight:700;font-style:italic;width:19px;height:19px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);cursor:pointer;display:inline-grid;place-items:center;padding:0;flex:none}
+.ib:hover{border-color:var(--sc-navy);color:var(--sc-navy)}
+.right{display:flex;flex-direction:column;gap:20px;min-width:0}
+.card{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);padding:20px 22px}
+.card h2{margin:0 0 4px;font-size:20px;font-weight:600;letter-spacing:-.015em;display:flex;align-items:center;gap:8px}
+.card .sub{margin:0 0 14px;font-size:14px;color:var(--sc-mute);line-height:1.5}
+.verdict{font-size:22px;font-weight:600;letter-spacing:-.015em;line-height:1.25;margin:0 0 6px}
+svg.chart{width:100%;height:auto;display:block}
+.key{display:flex;gap:16px;font-size:12.5px;color:var(--sc-mute);margin:4px 0 6px;flex-wrap:wrap}
+.key span::before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:3px;background:var(--k)}
+table.funds{width:100%;border-collapse:collapse;font-size:14px}
+table.funds th{text-align:left;font-size:12px;color:var(--sc-mute);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--sc-line)}
+table.funds td{padding:9px 8px;border-bottom:1px solid var(--sc-line)}
+table.funds th.n{text-align:right}
+table.funds td.n{text-align:right;font-variant-numeric:tabular-nums}
+table.funds .warn{color:var(--sc-hard);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden;margin-top:12px}
+.stats div{background:#fff;padding:12px 14px}
+.stats b{display:block;font-size:20px;font-weight:600;letter-spacing:-.015em}
+.stats span{font-size:12.5px;color:var(--sc-mute);line-height:1.4;display:block}
+.fine{font-size:12px;color:var(--sc-mute);line-height:1.55}
+.fine a{color:var(--sc-mute)}
+dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
+@media (max-width:980px){
+  main{grid-template-columns:1fr;padding:12px}
+  .panel{position:static}
+  .bar{gap:14px;padding:10px 14px}
+  .bar .k b{font-size:21px}
+  .sc-fan{display:none}
+}
+@media (max-width:560px){ .bar .btns{width:100%} .bar .k.hide{display:none} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/" aria-current="page">Pensions</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<section class="bar" aria-label="Your pension plan">
+  <div class="k"><b id="kFr">–</b><span>funded today (all four funds)</span></div>
+  <div class="k"><b id="k90">–</b><span id="k90l">reaches 90% funded</span></div>
+  <div class="k hide"><b id="kCost">–</b><span>city pays 2026–2060, in today's dollars</span></div>
+  <div class="k hide"><b id="kPeak">–</b><span>biggest yearly payment</span></div>
+  <div class="btns"><button class="sc-btn" id="reset">Back to state law</button></div>
+</section>
+<main>
+  <section class="panel" aria-label="Your choices">
+    <div class="ctl"><h3>How much the city pays <button class="ib" data-i="pay" aria-label="About payments">i</button></h3>
+      <div class="opts" id="oPay"></div><p id="pPay"></p></div>
+    <div class="ctl"><h3>Extra money every year <button class="ib" data-i="extra" aria-label="About extra payments">i</button></h3>
+      <input type="range" id="rExtra" min="0" max="1000" step="25" value="0" aria-label="Extra payment each year"><div class="rrow"><span>$0</span><b id="vExtra">$0</b><span>$1B a year</span></div></div>
+    <div class="ctl"><h3>Borrow now with a pension bond <button class="ib" data-i="bond" aria-label="About pension bonds">i</button></h3>
+      <div class="opts" id="oBond"></div></div>
+    <div class="ctl"><h3>What the investments earn <button class="ib" data-i="ret" aria-label="About returns">i</button></h3>
+      <div class="opts" id="oRet"></div>
+      <div class="swrow" style="margin-top:10px"><span style="font-size:13.5px">A market crash in 2028 (−25%)</span><button class="sc-switch" id="crash" role="switch" aria-checked="false" aria-label="A market crash in 2028"></button></div></div>
+    <div class="ctl"><h3>Cut benefits? <button class="ib" data-i="cut" aria-label="Why benefit cuts aren't here">i</button></h3>
+      <p>Not an option here: the Illinois Constitution protects the benefits of current workers and retirees, and the state Supreme Court struck down Chicago's attempt in 2016.</p></div>
+  </section>
+  <div class="right">
+    <section class="card">
+      <h2>Funded over time</h2>
+      <p class="sub">Assets as a share of what's owed, all four city funds together. State law requires 90% by 2055 for police and fire and 2058 for municipal workers and laborers.</p>
+      <p class="verdict" id="verdict"></p>
+      <div class="key"><span style="--k:#9aa4b0">State law, funds' assumed returns</span><span style="--k:var(--sc-navy)">Your plan</span></div>
+      <div id="chFr"></div>
+    </section>
+    <section class="card">
+      <h2>What the city pays each year</h2>
+      <p class="sub">City contributions to the four funds, plus pension bond payments if you borrow. Nominal dollars.</p>
+      <div class="key"><span style="--k:#9aa4b0">State law</span><span style="--k:var(--sc-navy)">Your plan</span><span style="--k:#e07a8b">Bond payments</span></div>
+      <div id="chPay"></div>
+      <div class="stats" id="stats"></div>
+    </section>
+    <section class="card">
+      <h2>Fund by fund</h2>
+      <table class="funds" id="tFunds"></table>
+    </section>
+    <section class="card">
+      <h2>How this works <button class="ib" data-i="how" aria-label="How the model works">i</button></h2>
+      <p class="fine" id="srcs"></p>
+    </section>
+  </div>
+</main>
+<dialog class="sc-info" id="infoDlg"></dialog>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let D = null;
+const S = {
+  acfr:["City of Chicago 2024 Annual Comprehensive Financial Report (pension schedules)", "https://www.chicago.gov/content/dam/city/depts/fin/supp_info/CAFR/2024CAFR/ACFR_2024.pdf"],
+  ov26:["City of Chicago 2026 Budget Overview (pension contributions by fund)", "https://news.wttw.com/sites/default/files/article/file-attachments/2026%20City%20of%20Chicago%20Budget%20Overview.pdf"],
+  fc27:["City of Chicago 2027 Budget Forecast (projected contributions, advance payments, HB 3657)", "https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Forecast/2027_Chicago_Budget_Forecast.pdf"],
+  wttw:["WTTW: Chicago's pension debt rose to $36.4B in 2025 (city analysis)", "https://news.wttw.com/2026/07/06/chicago-s-pension-debt-increased-2025-364b-city-analysis"],
+  ctw:["A City That Works: the state of Chicago pensions (2025)", "https://citythatworks.substack.com/p/a-2025-update-on-the-state-of-chicago"],
+  ilcon:["Illinois Constitution, Article XIII, Section 5 (pension protection)", "https://law.counselstack.com/constitution/il/XIII/5"],
+  ctwr:["Civic Federation: Chicago pensions", "https://civicfed.org/node/1216"],
+};
+const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
+const PAYS = [["law", "State law"], ["full", "Pay it off fully"], ["freeze", "Freeze at 2026"]];
+const BONDS = [[0, "No"], [5e6, "$5B"], [10e6, "$10B"]];          // $ thousands
+const BOND_RATE = 0.06, BOND_YEARS = 30;                          // assumption: taxable city bond rate
+const INFL = 0.025;                                               // assumption: inflation for "today's dollars"
+const RETS = [[0.04, "4%"], [0.055, "5.5%"], [null, "What funds assume (about 6.7%)"], [0.08, "8%"]];
+const st = {pay:"law", extra:0, bond:0, ret:2, crash:false};
+const Y0 = 2025, Y1 = 2070;
+
+/* one fund, one year */
+function stepF(f, s, er, r){
+  const k = f.b / f.tpl, b = k * s.tpl, sc = f.sc / f.pay * s.pay, ee = f.ee / f.pay * s.pay;
+  const tpl = s.tpl * (1 + f.d + f.eps) + sc - b * Math.sqrt(1 + f.d);
+  const fnp = s.fnp * (1 + r) + (er + ee - b) * Math.sqrt(1 + r);
+  return {tpl, fnp, pay: s.pay * (1 + D.payG), b, sc, ee};
+}
+/* the level share of payroll that reaches `goal` funded by the target year, assuming the fund's own return */
+function solvePct(f, s, y, goal){
+  let lo = 0, hi = 4;
+  for (let it = 0; it < 28; it++){
+    const mid = (lo + hi) / 2; let t = {...s};
+    for (let yy = y; yy <= f.tgt; yy++) t = stepF(f, t, mid * t.pay, f.d);
+    if (t.fnp / t.tpl >= goal) hi = mid; else lo = mid;
+  }
+  return hi;
+}
+function run(opt){
+  const out = {}, ret = y => (opt.crash && y === 2028) ? -0.25 : opt.ret == null ? null : opt.ret;
+  const npl0 = Object.values(D.funds).reduce((t, f) => t + (f.tpl - f.fnp), 0);
+  const bondDS = opt.bond ? opt.bond * BOND_RATE / (1 - Math.pow(1 + BOND_RATE, -BOND_YEARS)) : 0;
+  for (const [key, f] of Object.entries(D.funds)){
+    let s = {tpl: f.tpl, fnp: f.fnp, pay: f.pay}; const rows = []; let broke = null, y90 = null, y100 = null;
+    const share = (f.tpl - f.fnp) / npl0;
+    for (let y = Y0; y <= Y1; y++){
+      const r = ret(y) ?? f.d;
+      let er;
+      if (y === 2025) er = f.er25;
+      else if (opt.pay === "freeze") er = f.s26;
+      else {
+        const goal = opt.pay === "full" ? 1 : 0.9;
+        if (y <= f.tgt) er = solvePct(f, s, y, goal) * s.pay;
+        else { // after the deadline: pay what keeps the fund at its goal next year, on the fund's own assumed return
+          const k = f.b / f.tpl, b = k * s.tpl, ee = f.ee / f.pay * s.pay, sc = f.sc / f.pay * s.pay;
+          const tplN = s.tpl * (1 + f.d + f.eps) + sc - b * Math.sqrt(1 + f.d);
+          er = Math.max(0, (goal * tplN - s.fnp * (1 + f.d)) / Math.sqrt(1 + f.d) - ee + b); }
+      }
+      if (y >= 2026) er += opt.extra * 1e3 * share;
+      if (y === 2027 && opt.bond) s = {...s, fnp: s.fnp + opt.bond * share};
+      let n = stepF(f, s, er, r);
+      if (n.fnp < 0){ if (broke == null) broke = y; er += -n.fnp / Math.sqrt(1 + r); n.fnp = 0; }
+      rows.push({y, tpl: n.tpl, fnp: n.fnp, er, ds: y >= 2027 && y < 2027 + BOND_YEARS ? bondDS * share : 0});
+      if (y90 == null && n.fnp / n.tpl >= 0.899) y90 = y; if (y100 == null && n.fnp / n.tpl >= 0.999) y100 = y;
+      s = n;
+    }
+    out[key] = {rows, broke, y90, y100};
+  }
+  const years = out.MEABF.rows.map(r => r.y);
+  const tot = years.map((y, i) => { let tpl = 0, fnp = 0, er = 0, ds = 0; for (const k in out){ const r = out[k].rows[i]; tpl += r.tpl; fnp += r.fnp; er += r.er; ds += r.ds; } return {y, tpl, fnp, er, ds, fr: fnp / tpl}; });
+  return {funds: out, tot};
+}
+const money = x => { const a = Math.abs(x); return (x < 0 ? "−" : "") + (a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + "B" : "$" + Math.round(a / 1e3) + "M"); };   // x in $ thousands
+const pct = x => Math.round(x * 100) + "%";
+let BASE = null;
+function render(){
+  const R = run({...st, ret: RETS[st.ret][0]}), T = R.tot, B = BASE.tot;
+  const i25 = 0, fr25 = T[i25].fr;
+  const y90 = T.find(t => t.fr >= 0.899)?.y, yb90 = B.find(t => t.fr >= 0.899)?.y;
+  const cost = T.filter(t => t.y >= 2026 && t.y <= 2060).reduce((a, t) => a + (t.er + t.ds) / Math.pow(1 + INFL, t.y - 2026), 0);
+  const bcost = B.filter(t => t.y >= 2026 && t.y <= 2060).reduce((a, t) => a + t.er / Math.pow(1 + INFL, t.y - 2026), 0);
+  const peak = T.filter(t => t.y >= 2026).reduce((m, t) => t.er + t.ds > m.v ? {v: t.er + t.ds, y: t.y} : m, {v: 0, y: 0});
+  $("kFr").textContent = pct(fr25);
+  $("k90").textContent = y90 || "Not by 2070"; $("k90").className = y90 && y90 <= 2058 ? "ok" : "bad";
+  $("kCost").textContent = money(cost); $("kPeak").textContent = money(peak.v) + " in " + peak.y;
+  const broke = Object.entries(R.funds).filter(([, v]) => v.broke);
+  $("verdict").textContent = broke.length ? `${broke.map(([k]) => D.funds[k].name).join(" and ")} ${broke.length > 1 ? "run" : "runs"} out of money in ${Math.min(...broke.map(([, v]) => v.broke))}; the city would have to pay retirees straight from the budget.` :
+    !y90 ? "The funds never get to 90% by 2070." :
+    y90 === yb90 && Math.abs(cost - bcost) < 5e5 ? `On today's legal schedule, the funds reach 90% together in ${y90}.` :
+    `${!yb90 || y90 < yb90 ? "Faster" : y90 > yb90 ? "Slower" : "Same finish"}: 90% in ${y90} (state law: ${yb90 || "after 2070"}), for ${cost > bcost ? money(cost - bcost) + " more" : money(bcost - cost) + " less"} through 2060 in today's dollars.`;
+  chart("chFr", T, B, t => t.fr, v => Math.round(v * 100) + "%", 1.2, [0.9, "90%"]);
+  chart("chPay", T, B, t => t.er + t.ds, v => money(v), null, null, true);
+  const tot26 = T.filter(t => t.y >= 2026 && t.y <= 2060).reduce((a, t) => a + t.er + t.ds, 0);
+  $("stats").innerHTML = `<div><b>${money(T[1].er + T[1].ds)}</b><span>city payment in 2026${st.pay === "law" && !st.extra ? " (the 2026 budget has $2.64B before advance payments)" : ""}</span></div>
+    <div><b>${money(tot26)}</b><span>total 2026–2060, as budgeted each year</span></div>
+    <div><b>${money(cost)}</b><span>same, in today's dollars (2.5% inflation, an assumption)</span></div>
+    <div><b>${money(T.find(t => t.y === 2035).tpl - T.find(t => t.y === 2035).fnp)}</b><span>still owed in 2035 (unfunded)</span></div>`;
+  $("tFunds").innerHTML = `<tr><th>Fund</th><th class="n">Funded, 2025</th><th class="n">90% in</th><th class="n">100% in</th><th class="n">Owed, 2025</th></tr>` +
+    Object.entries(R.funds).map(([k, v]) => { const f = D.funds[k], r0 = v.rows[0];
+      return `<tr><td>${f.name}<br><span class="fine">State law: 90% by ${f.tgt}</span></td><td class="n">${pct(r0.fnp / r0.tpl)}</td><td class="n ${v.y90 && v.y90 <= f.tgt ? "" : "warn"}">${v.broke ? `<span class="warn">Broke in ${v.broke}</span>` : v.y90 || "After 2070"}</td><td class="n">${v.y100 || "After 2070"}</td><td class="n">${money(r0.tpl - r0.fnp)}</td></tr>`; }).join("");
+  save();
+}
+function chart(id, T, B, f, fmt, fixedMax, line, bars){
+  const W = 760, H = 260, P = {l:58, r:16, t:12, b:26};
+  const xs = T.filter(t => t.y >= 2025 && t.y <= 2065), bs = B.filter(t => t.y >= 2025 && t.y <= 2065);
+  const vals = xs.map(f).concat(bs.map(f));
+  const max = fixedMax ? Math.max(fixedMax, Math.min(1.6, Math.max(...vals))) : Math.max(...vals) * 1.08;
+  const x = y => P.l + (y - 2025) / 40 * (W - P.l - P.r), yv = v => H - P.b - Math.max(0, Math.min(v, max)) / max * (H - P.t - P.b);
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  for (let k = 0; k <= 4; k++){ const v = max * k / 4; g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(v)}" y2="${yv(v)}" stroke="#e6e9ed"/><text x="${P.l - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#5a6069">${fmt(v)}</text>`; }
+  for (let y = 2025; y <= 2065; y += 5) g += `<text x="${x(y)}" y="${H - 7}" text-anchor="middle" font-size="11" fill="#5a6069">${y}</text>`;
+  if (line) g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(line[0])}" y2="${yv(line[0])}" stroke="#1f7a45" stroke-dasharray="4 4"/><text x="${W - P.r}" y="${yv(line[0]) - 5}" text-anchor="end" font-size="11" fill="#1f7a45">${line[1]}</text>`;
+  if (bars){ const bw = (W - P.l - P.r) / 41 * 0.7;
+    for (const t of xs){ if (t.ds) g += `<rect x="${x(t.y) - bw / 2}" y="${yv(t.ds)}" width="${bw}" height="${H - P.b - yv(t.ds)}" fill="#e07a8b" opacity=".85"><title>${t.y} bond payment: ${money(t.ds)}</title></rect>`; } }
+  g += `<polyline points="${bs.map(t => x(t.y) + "," + yv(f(t))).join(" ")}" fill="none" stroke="#9aa4b0" stroke-width="2" stroke-dasharray="5 4"/>`;
+  g += `<polyline points="${xs.map(t => x(t.y) + "," + yv(f(t))).join(" ")}" fill="none" stroke="#2b5da0" stroke-width="2.6" stroke-linejoin="round"/>`;
+  for (const t of xs) if (t.y % 5 === 0) g += `<circle cx="${x(t.y)}" cy="${yv(f(t))}" r="3" fill="#2b5da0"><title>${t.y}: ${fmt(f(t))}</title></circle>`;
+  $(id).innerHTML = g + "</svg>";
+}
+function opts(id, list, key, cast){
+  $(id).innerHTML = list.map((o, i) => `<button data-i="${i}" aria-pressed="${cast(o, i) === st[key]}">${o[1]}</button>`).join("");
+  $(id).querySelectorAll("button").forEach(b => b.onclick = () => { st[key] = cast(list[+b.dataset.i], +b.dataset.i); syncCtl(); render(); });
+}
+function syncCtl(){
+  opts("oPay", PAYS, "pay", o => o[0]); opts("oBond", BONDS, "bond", o => o[0]); opts("oRet", RETS, "ret", (o, i) => i);
+  $("pPay").textContent = st.pay === "law" ? "Each year the funds set the payment that gets them to 90% on time, assuming their own investment returns. If returns fall short, later payments rise." :
+    st.pay === "full" ? "Same method, but aiming for 100% funded by the same years." : "The city keeps paying its 2026 amount, never more.";
+  $("rExtra").value = st.extra; $("vExtra").textContent = st.extra ? "+$" + st.extra + "M a year" : "$0";
+  $("crash").setAttribute("aria-checked", st.crash);
+}
+function save(){ try { history.replaceState(null, "", "#p1." + [PAYS.findIndex(p => p[0] === st.pay), st.extra, BONDS.findIndex(b => b[0] === st.bond), st.ret, +st.crash].join(".")); } catch (e){} }
+function load(){ const h = location.hash.match(/^#p1\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)$/); if (!h) return;
+  if (PAYS[+h[1]]) st.pay = PAYS[+h[1]][0]; st.extra = Math.min(1000, +h[2]); if (BONDS[+h[3]]) st.bond = BONDS[+h[3]][0]; if (RETS[+h[4]]) st.ret = +h[4]; st.crash = h[5] === "1"; }
+function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
+const INFO = {
+  pay: ["How much the city pays", `<p>State laws passed in 2015 and 2017 set the city's payments: an amount each year, as a steady share of payroll, that brings the police and fire funds to 90% funded by 2055 and the municipal and laborers' funds by 2058. The 2026 budget pays about $2.64 billion before the city's extra "advance" payments ($120 million in 2026, $364 million planned for 2027).</p><p>"Pay it off fully" aims for 100% by the same years. "Freeze" keeps paying the 2026 amount, which is what underfunding looked like before 2015: the debt keeps growing.</p><p class="src">Sources: ${src("ov26", "fc27")}</p>`],
+  extra: ["Extra money every year", `<p>Anything paid beyond the legal amount, split among the funds by how much each is owed. The city's own advance payments did this from 2023 to 2025 ($820.5 million in all), mostly from budget surpluses. Under state law, extra money now doesn't finish the job sooner: the funds still aim for 90% by the same years, so later required payments shrink instead, and the earlier dollars save more because they're invested longer. To finish sooner, pick \"Pay it off fully.\" Every extra dollar has to come from somewhere in the city budget.</p><p class="src">Source: ${src("fc27")}</p>`],
+  bond: ["Pension bonds", `<p>The city borrows now, puts the money in the funds in 2027, and repays the bond over 30 years at 6% (an assumption about Chicago's borrowing cost). It's a bet: if the funds earn more than the bond costs, it saves money; if not, it adds to the debt. Bond payments show in pink.</p>`],
+  ret: ["Investment returns", `<p>The funds assume they'll earn about 6.6% to 6.75% a year (the rates they use to value their debt in the 2024 report). Payments under state law are always set using those assumed returns, so if real returns come in lower, the funds fall behind and later payments jump. The crash switch drops all four funds' assets 25% in 2028, like 2008.</p><p class="src">Source: ${src("acfr")}</p>`],
+  cut: ["Why benefit cuts aren't here", `<p>The Illinois Constitution says membership in a public pension system is a contract whose benefits "shall not be diminished or impaired." The Illinois Supreme Court used it to strike down the state's pension cuts in 2015 and Chicago's own changes for the municipal and laborers' funds in 2016. Changing benefits for current workers would take a constitutional amendment.</p><p class="src">Source: ${src("ilcon")}</p>`],
+  how: ["How the model works", `<p>Each fund starts from its December 31, 2024 numbers in the city's financial report: what it owes, what it holds, the cost of benefits earned each year, payroll and the rate it uses to value its debt. Each year:</p><ul><li>Benefit payments stay the same share of what's owed as in 2024.</li><li>The cost of new benefits and worker contributions stay the same share of payroll, which grows 3% a year (an assumption).</li><li>What's owed grows a bit faster than that formula alone, by 0.7% to 1% a year depending on the fund. We set that so the city's actual 2026 payments, growing with payroll, reach 90% exactly in the years state law sets. It stands in for things the simple formula misses, like the 2025 Tier 2 law for police and fire (which the city says adds about $11 billion through 2055).</li></ul><p>The result: at the end of 2025 the four funds owe about ${money(BASE ? BASE.tot[0].tpl - BASE.tot[0].fnp : 0)} more than they hold (the city's own figure: $36.4 billion). It's a simple model, not an actuary's. Use it to compare choices, not to predict exact years.</p><p class="src">Sources: ${src("acfr", "ov26", "fc27", "wttw", "ctw")}</p>`],
+};
+document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
+$("rExtra").addEventListener("input", e => { st.extra = +e.target.value; $("vExtra").textContent = st.extra ? "+$" + st.extra + "M a year" : "$0"; render(); });
+$("crash").onclick = () => { st.crash = !st.crash; syncCtl(); render(); };
+$("reset").onclick = () => { Object.assign(st, {pay:"law", extra:0, bond:0, ret:2, crash:false}); syncCtl(); render(); };
+$("srcs").innerHTML = `A simple model of Chicago's four city pension funds, built on each fund's 2024 figures and calibrated so today's legal payment schedule reaches 90% on time. Sources: ${src("acfr", "ov26", "fc27", "wttw")}. Assumptions: payroll grows 3% a year; pension bonds cost 6%; "today's dollars" uses 2.5% inflation.`;
+load();
+fetch("data/pensions.json").then(r => r.json()).then(d => { D = d; BASE = run({pay:"law", extra:0, bond:0, ret:null, crash:false}); syncCtl(); render(); });
+</script>
+</body>
+</html>
