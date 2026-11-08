@@ -33,6 +33,36 @@ h1{font-size:25px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:
 .hint{font-size:13px;color:var(--sc-mute);margin:8px 0 0}
 .err{color:var(--sc-hard)}
 /* result */
+.jump{position:sticky;top:-1px;z-index:2;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:#fff;padding:8px 0;margin:4px 0 6px;border-bottom:1px solid var(--sc-line)}
+.jump a,.jump button{flex:none;font:inherit;font-size:13px;font-weight:600;color:var(--sc-ink2);text-decoration:none;padding:6px 11px;border-radius:14px;background:var(--sc-seg);border:0;cursor:pointer}
+.jump a:hover,.jump button:hover{background:#e6e9ee}
+.sec{padding-top:6px}
+.sec h2{margin:18px 0 10px}
+.cards2{display:grid;grid-template-columns:1fr;gap:8px}
+.c2{border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px}
+.c2 b{display:block;font-size:14.5px;font-weight:600;margin-bottom:2px}
+.c2 span{font-size:13px;color:var(--sc-ink2);line-height:1.45;display:block}
+.uses{display:grid;grid-template-columns:1fr;border:1px solid var(--sc-line);border-radius:12px;overflow:hidden}
+.uses div{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;font-size:13.5px;border-top:1px solid var(--sc-line)}
+.uses div:first-child{border-top:0}
+.uses b{font-size:12.5px;font-weight:600;white-space:nowrap}
+.uses .ok b{color:#1f7a45} .uses .maybe b{color:#8a5a00} .uses .no b{color:var(--sc-mute);font-weight:500}
+.recs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:12px;overflow:hidden;margin:0 0 10px}
+.recs div{background:#fff;padding:9px 11px}
+.recs b{display:block;font-size:15px;font-weight:600}
+.recs span{font-size:11.5px;color:var(--sc-mute);line-height:1.3;display:block}
+.recs a{font-size:13px;font-weight:600;color:var(--sc-navy)}
+.rl{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.rl div{font-size:13px;line-height:1.4;border-left:2px solid var(--sc-line);padding-left:10px}
+.rl span{color:var(--sc-mute);font-size:12px;margin-right:6px}
+.rl small{display:block;color:var(--sc-ink2)}
+.sec h3{font-size:14px;margin:12px 0 6px}
+.ald{display:flex;align-items:center;gap:12px;margin:0 0 10px}
+.ald img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:50% 20%}
+.ald b{display:block;font-size:15px} .ald span{font-size:13px;color:var(--sc-ink2)}
+.steps{margin:0 0 12px;padding-left:20px;font-size:13.5px;line-height:1.5;color:var(--sc-ink2)}
+.steps li{margin-bottom:6px} .steps b{color:var(--sc-ink)}
+@media print{ body *{visibility:hidden} #out, #out *{visibility:visible} #out{position:absolute;inset:0;overflow:visible;max-height:none} .jump{display:none} }
 .res{margin-top:16px;animation:rin .28s ease-out}
 @keyframes rin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .addr{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
@@ -333,9 +363,14 @@ function show(T, k, fly){
   if (UI && !I.pd) opts.push(`<div class="opt up"><div class="on">Rezone to ${up}</div><div class="od">${UI.name}. The most common next step people ask the City Council for.</div><div class="oh">${fmt(upHomes)}<small>homes</small></div></div>`);
   if (I.res && /^R[ST]/.test(I.z)) opts.push(`<div class="opt up"><div class="on">If Illinois passes the BUILD Act</div><div class="od">Two- and three-flats and backyard homes on lots now limited to houses, as Fix Chicago Housing models it.</div><div class="oh">${Math.max(allowed, 3)}<small>+ coach house</small></div></div>`);
   if (I.fam === "R" && /^RS/.test(I.z)) opts.push(`<div class="opt up"><div class="on">Like Minneapolis (2040 plan)</div><div class="od">Up to three homes on every residential lot, citywide.</div><div class="oh">3<small>homes</small></div></div>`);
+  const pAddr = parseAddr(addr);
+  const near = nearestStation(lon, lat);
+  const parking = near && near.m <= 805 ? `<b>No parking required for new homes here.</b> This lot is ${fmt(near.m / 1609.34 * 10) / 10} miles from ${esc(near.name)}, inside the transit-served area where Chicago dropped parking requirements in 2025.` : `<b>Parking may be required.</b> This lot is more than half a mile from an L or Metra station; Chicago's 2025 rules also cover busy bus corridors, so check with the Department of Buildings.`;
   $("out").innerHTML = `<div class="res">
     <p class="addr">${esc(addrTxt)}</p>
     <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}${pin ? " · PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") : ""}</p>
+    <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sBuild">Build more</a><a href="#sBiz">Businesses</a><a href="#sRec">City records</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print or save</button></nav>
+    <section id="sOver" class="sec">
     ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${/^(RS|RT)/.test(I.z) ? "#16324f" : "#fff"}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
     <div class="big"><div class="n">${bigN}</div><div class="t">${bigT}</div></div>
     ${verdict}
@@ -347,19 +382,110 @@ function show(T, k, fly){
       ${I.pd || I.nohomes ? "" : `<div><b>${I.h ? I.h + " ft" : "No set limit"}</b><span>Height limit${I.h ? ", about " + Math.floor(I.h / 10.5) + " stories" : ", floor area caps it"}</span></div>`}
       ${yr ? `<div><b>${yr}</b><span>Year built, Assessor</span></div>` : ""}
       ${stories ? `<div><b>${stories} ${stories === 1 ? "story" : "stories"}</b><span>Building height, city data</span></div>` : ""}
-      <div style="grid-column:1/-1"><b style="font-size:14.5px">${coach.t}</b><span>${coach.d}</span></div>
     </div>
-    ${opts.length ? `<h2>What would change it</h2><div class="opts">${opts.join("")}</div>` : ""}
-    <h2>How to get more homes here</h2>
-    <p class="how">Changing a lot's zoning takes a City Council vote, and in practice the local alderperson decides (that's aldermanic prerogative). Owners apply; neighbors can ask their alderperson to support it, or ask for a whole-block or whole-ward change.</p>
-    <div class="links">
-      <a href="https://www.chicago.gov/city/en/about/wards.html" target="_blank" rel="noopener">Contact Ward ${ward || "your"} alderperson</a>
-      <a href="/learn/#prerogative">How prerogative works</a>
-      <a href="/housing/">Try rezoning in Fix Chicago Housing</a>
-    </div>
-    <p class="fine">A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, parking, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked; ask the Department of Buildings or a zoning attorney before you build. The drawing assumes a ${lotDims(lot)[1]}-foot-deep lot. Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a> (City of Chicago), <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a>, <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">building characteristics</a> and <a href="https://datacatalog.cookcountyil.gov/d/3723-97qp" target="_blank" rel="noopener">addresses</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>.</p>
+    </section>
+    <section id="sBuild" class="sec"><h2>Build more homes here</h2>
+      <div class="cards2">
+        <div class="c2"><b>${I.pd ? "Set by the planned development" : I.nohomes ? "No homes allowed" : now !== null && allowed > now ? `Room for ${allowed - now} more ${allowed - now === 1 ? "home" : "homes"}` : "No extra homes under today's rules"}</b><span>${I.pd || I.nohomes ? "Any homes here need a zoning change." : now !== null && allowed > now ? "Without a zoning change: add a unit, convert, or rebuild bigger." : "More homes would need a zoning change (see below)."}</span></div>
+        <div class="c2"><b>${coach.t}</b><span>${coach.d}</span></div>
+        <div class="c2"><b>${I.upstairs ? "Homes go above a shop" : I.fam === "B" || I.fam === "C" ? "Homes on the ground floor" : "Parking"}</b><span>${I.fam === "B" || I.fam === "C" ? (/^B2/.test(I.z) ? "B2 allows homes on any floor, by right." : "Ground-floor homes need special use approval here (Zoning Code §17-3-0207); upstairs homes are by right.") : parking}</span></div>
+        ${I.fam === "B" || I.fam === "C" ? `<div class="c2"><b>Parking</b><span>${parking}</span></div>` : ""}
+      </div>
+      ${opts.length ? `<h3>What would change it</h3><div class="opts">${opts.join("")}</div>` : ""}
+      <p class="fine" style="margin-top:10px">Costs vary a lot: one Wicker Park coach house cost nearly $700,000 to build (<a href="https://chicago.suntimes.com/real-estate/2024/07/06/housing-advocates-support-expansion-chicago-adu-program-building-costs-high" target="_blank" rel="noopener">Sun-Times, 2024</a>). For grants and loans, see <a href="https://help.chicagocityscape.com/adufunding" target="_blank" rel="noopener">Chicago Cityscape's ADU funding guide</a>.</p>
+    </section>
+    <section id="sBiz" class="sec"><h2>Businesses allowed here</h2>${bizHtml(I)}</section>
+    <section id="sRec" class="sec"><h2>City records for this address</h2>
+      <div class="recs"><div><b id="rTif">…</b><span>Tax increment financing (TIF) district</span></div><div><b id="rViol">…</b><span>Open building violations</span></div><div><b id="rPerm">…</b><span>Building permits since 2006</span></div></div>
+      <div id="rList"></div>
+      <p class="fine">Live from the <a href="https://data.cityofchicago.org/d/ydr8-5enu" target="_blank" rel="noopener">permits</a>, <a href="https://data.cityofchicago.org/d/22u3-xenr" target="_blank" rel="noopener">violations</a> and <a href="https://data.cityofchicago.org/d/eejr-xtfb" target="_blank" rel="noopener">TIF</a> datasets on the City of Chicago Data Portal, matched by street address${pAddr ? "" : " (no address for this lot, so only the TIF check runs)"}.</p>
+    </section>
+    <section id="sNext" class="sec"><h2>Next steps</h2>
+      <div id="nAld" class="ald"></div>
+      <ol class="steps">
+        <li><b>Talk to your alderperson first.</b> Zoning changes need a City Council vote, and the Council almost always follows the local alderperson (aldermanic prerogative).</li>
+        <li><b>File the application.</b> A zoning change starts with an application and a narrative filed with the City Clerk, often with a zoning attorney or architect.</li>
+        <li><b>Committee hearing, then the Council.</b> <span id="nHear">The Committee on Zoning hears it, then the full City Council votes.</span></li>
+        <li><b>Permits.</b> <span id="nLag">After approval, the Department of Buildings reviews plans and issues permits.</span></li>
+      </ol>
+      <div class="recs" id="nNear"></div>
+      <div class="links">
+        <a href="https://www.chicago.gov/city/en/depts/bldgs.html" target="_blank" rel="noopener">Department of Buildings</a>
+        <a href="/wards/${ward ? "#" + ward : ""}">Ward ${ward || ""} housing record</a>
+        <a href="/learn/#prerogative">How prerogative works</a>
+        <a href="/housing/">Try rezoning in Fix Chicago Housing</a>
+      </div>
+    </section>
+    <p class="fine">A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked; ask the Department of Buildings or a zoning attorney before you build. The drawing assumes a ${lotDims(lot)[1]}-foot-deep lot. Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a> (City of Chicago), <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, <a href="${CODE_USE}" target="_blank" rel="noopener">use table §17-3-0207</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a>, <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">building characteristics</a> and <a href="https://datacatalog.cookcountyil.gov/d/3723-97qp" target="_blank" rel="noopener">addresses</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">parking rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>.</p>
   </div>`;
+  $("out").querySelectorAll(".jump a").forEach(a => a.onclick = e => { e.preventDefault(); const t = $(a.getAttribute("href").slice(1)); if (t) $("out").scrollTo({top: t.offsetTop - 60, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
+  $("lotPrint").onclick = () => window.print();
+  enrich(lon, lat, pAddr, ward ? +ward : null);
   $("out").scrollTop = 0;
+}
+
+const CODE_USE = "https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-49164";
+// Chicago Zoning Ordinance §17-3-0207, use table for B and C districts (P permitted, S special use, - not allowed)
+const USES = [
+  ["Shops (general retail)", "PPPPPP"], ["Small restaurant or carry-out (limited)", "PPPPPP"], ["Full restaurant (general)", "--PPPP"],
+  ["Bar or tavern", "--SPPP"], ["Liquor store", "--SPPP"], ["Offices", "PPPPPP"], ["Medical office", "PPPPPP"],
+  ["Salon, spa or other personal service", "PPPPPP"], ["Day care", "PPPPPP"], ["Gym or indoor recreation", "PPPPPP"],
+  ["Children's play center", "PPPPPP"], ["Artist studio or gallery", "PPPPPP"], ["Bank", "PPPPPP"], ["Catering or shared kitchen", "--PPPP"],
+  ["Hotel", "--SSSS"], ["Auto repair (no body work)", "--PPPP"], ["Tattoo or body art", "--SPPP"], ["Cannabis dispensary", "---SSS"],
+  ["Homes above the ground floor", "PPPPP-"], ["Homes on the ground floor", "SPSSS-"]];
+const UCOL = ["B1", "B2", "B3", "C1", "C2", "C3"];
+function bizHtml(I){
+  const z = (I.z || "").toUpperCase(), base = (z.match(/^(B[123]|C[123])/) || [])[1];
+  if (base){
+    const k = UCOL.indexOf(base), lab = {P:"Allowed", S:"Needs special use approval", "-":"Not allowed"}, cls = {P:"ok", S:"maybe", "-":"no"};
+    return `<p class="how">In <b>${esc(I.z)}</b> (${esc(base)} rules), from the city's use table. "Special use" means a hearing at the Zoning Board of Appeals.</p><div class="uses">${USES.map(([n, c]) => { const v = c[k] || "-"; return `<div class="${cls[v]}"><span>${n}</span><b>${lab[v]}</b></div>`; }).join("")}</div>`;
+  }
+  if (I.fam === "R") return `<p class="how">This is a residential district. It allows homes and a few community uses such as schools and places of worship; shops, restaurants and offices need a zoning change. Small businesses run from home are allowed within the home-occupation rules.</p>`;
+  if (/^D[CXRS]/.test(z)) return `<p class="how">This is a downtown district. DC and DX allow most shops, restaurants, offices, hotels and homes; DR is mainly residential; DS allows service and some industrial uses. See the downtown use table in the Zoning Ordinance (Chapter 17-4).</p>`;
+  if (/^(M|PMD)/.test(z)) return `<p class="how">This is a manufacturing district. It allows industrial uses and many commercial ones, but not homes.</p>`;
+  if (I.pd) return `<p class="how">This lot is in a planned development, so its own ordinance lists the uses allowed.</p>`;
+  return `<p class="how">We couldn't match this district to a use table.</p>`;
+}
+function parseAddr(a){ const m = (a || "").toUpperCase().match(/^(\d+)[A-Z-]*\s+([NSEW])\s+(.+)$/); return m ? {num:m[1], dir:m[2], street:m[3].replace(/\s+/g, " ").trim()} : null; }
+let STA = null;
+function nearestStation(lon, lat){
+  if (!STA) return null; let best = null;
+  for (const s of STA){ const m = Math.hypot((s.lon - lon) * KX, (s.lat - lat) * KY); if (!best || m < best.m) best = {name:s.name + (s.metra ? " (Metra)" : ""), m}; }
+  return best;
+}
+fetch("/meta.json").then(r => r.json()).then(m => { STA = [...(m.stations || []), ...(m.metra || []).map(s => ({...s, metra:true}))]; }).catch(() => {});
+const SODA = "https://data.cityofchicago.org/resource/";
+const sq = s => s.replace(/'/g, "''");
+async function enrich(lon, lat, A, ward){
+  const tok = (enrich.tok = (enrich.tok || 0) + 1), live = () => tok === enrich.tok;
+  const day = d => new Date(d).toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
+  fetch(SODA + "eejr-xtfb.json?$select=name,expiration&$where=" + encodeURIComponent(`intersects(the_geom,'POINT (${lon} ${lat})')`)).then(r => r.json()).then(d => { if (!live()) return; $("rTif").textContent = d && d[0] ? d[0].name + (d[0].expiration ? ", ends " + new Date(d[0].expiration).getFullYear() : "") : "None"; }).catch(() => { $("rTif").textContent = "Not available"; });
+  if (A){
+    const where = `street_number='${sq(A.num)}' AND street_direction='${sq(A.dir)}' AND street_name='${sq(A.street)}'`;
+    Promise.all([
+      fetch(SODA + "ydr8-5enu.json?$select=permit_type,issue_date,work_description,reported_cost&$order=issue_date%20DESC&$limit=200&$where=" + encodeURIComponent(where)).then(r => r.json()),
+      fetch(SODA + "22u3-xenr.json?$select=violation_date,violation_status,violation_description&$order=violation_date%20DESC&$limit=200&$where=" + encodeURIComponent(`address='${sq(A.num + " " + A.dir + " " + A.street)}'`)).then(r => r.json())
+    ]).then(([P, V]) => {
+      if (!live()) return;
+      P = Array.isArray(P) ? P : []; V = Array.isArray(V) ? V : [];
+      const open = V.filter(v => v.violation_status === "OPEN");
+      $("rPerm").textContent = P.length >= 200 ? "200+" : String(P.length); $("rViol").textContent = String(open.length);
+      const tidy = t => (t || "").toLowerCase().replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase()).slice(0, 140);
+      $("rList").innerHTML = (P.length ? `<h3>Latest permits</h3><div class="rl">${P.slice(0, 6).map(p => `<div><span>${day(p.issue_date)}</span><b>${esc(tidy((p.permit_type || "").replace(/^PERMIT - /, "")))}</b><small>${esc(tidy(p.work_description))}</small></div>`).join("")}</div>` : "") +
+        (open.length ? `<h3>Open violations</h3><div class="rl">${open.slice(0, 5).map(v => `<div><span>${day(v.violation_date)}</span><b>${esc(tidy(v.violation_description))}</b></div>`).join("")}</div>` : "");
+    }).catch(() => { if (!live()) return; $("rPerm").textContent = "Not available"; $("rViol").textContent = "Not available"; });
+  } else { $("rPerm").textContent = "–"; $("rViol").textContent = "–"; }
+  // alderperson, next zoning hearing, homes going up nearby
+  if (ward) fetch("/wards/data/wards.json").then(r => r.json()).then(W => { if (!live()) return; const w = W.wards[ward - 1]; if (!w) return; const a = w.ald, nm = a.name.replace(/^(.*?), (.*)$/, "$2 $1");
+    $("nAld").innerHTML = `${a.photo ? `<img src="${esc(a.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<div><b>Ald. ${esc(nm)}, Ward ${ward}</b><span>${[a.phone && "Ward office " + esc(a.phone), a.email && `<a href="mailto:${esc(a.email)}">${esc(a.email)}</a>`].filter(Boolean).join(" · ")}</span></div>`; }).catch(() => {});
+  fetch("/wards/data/meetings.json").then(r => r.json()).then(M => { if (!live()) return; const z = M.meetings.find(x => /Zoning/.test(x.b) && Date.parse(x.d) > Date.now() && !/cancel/i.test(x.st));
+    if (z) $("nHear").innerHTML = `The Committee on Zoning hears it, then the full City Council votes. Next Zoning Committee hearing: <a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(z.id)}" target="_blank" rel="noopener">${new Date(z.d).toLocaleDateString("en-US", {timeZone:"America/Chicago", weekday:"long", month:"long", day:"numeric"})}</a>.`; }).catch(() => {});
+  fetch("/tracker/data.json").then(r => r.json()).then(T => { if (!live()) return;
+    const y0 = T.ytd.year - 3; let n = 0, h = 0;
+    for (const p of T.points) if (p[3] >= y0 && Math.hypot((p[0] - lon) * KX, (p[1] - lat) * KY) <= 805){ n++; h += p[2]; }
+    const lag = T.zoning && T.zoning.lag_days_median;
+    if (lag) $("nLag").textContent = `After approval, the Department of Buildings reviews plans and issues permits. For recent Chicago rezonings, the median time from approval to a building permit was about ${Math.round(lag / 30)} months (Permit tracker).`;
+    $("nNear").innerHTML = `<div><b>${fmt(h)}</b><span>new homes permitted within ½ mile since ${y0}</span></div><div><b>${fmt(n)}</b><span>new buildings permitted within ½ mile since ${y0}</span></div><div><a href="/tracker/#near">See them on the Permit tracker</a></div>`; }).catch(() => {});
 }
 function coachText(I){
   if (I.nohomes || I.pd || I.unknown) return {t:"Coach house: no", d:"Only on lots where homes are allowed."};
