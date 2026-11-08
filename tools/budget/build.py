@@ -105,6 +105,40 @@ HIST = {2011: 450.5e6, 2012: 476.3e6, 2013: 479.5e6, 2014: 478.3e6, 2015: 798.0e
         2018: 1187.5e6, 2019: 1308.5e6, 2020: 1679.8e6, 2021: 1815.2e6, 2022: 2275.9e6, 2023: 2610.2e6}
 for y in years:
     if y in HIST: years[y]['pensions'] = round(HIST[y])
+# every department by year: Corporate Fund and all local funds (department number is the key; the newest name wins)
+dept = collections.defaultdict(lambda: collections.defaultdict(lambda: [0, 0])); dname = {}
+for y in range(2011, 2028):
+    rec = y == 2027; p = ds('Appropriations', y, rec)
+    if not p: continue
+    for r in rows(p):
+        num_ = re.sub(r'^0+', '', r.get('DEPARTMENT NUMBER') or r.get('DEPARTMENT CODE') or '') or '?'
+        nm = (r.get('DEPARTMENT DESCRIPTION') or r.get('DEPARTMENT') or '').strip()
+        if nm and (num_ not in dname or y >= dname[num_][0]): dname[num_] = (y, nm)
+        if (r.get('FUND TYPE') or '').upper() in ('GRANTS', 'CDBG'): continue
+        a = amount(r, y, rec); d = dept[num_][y]; d[1] += a
+        if fcode(r) == '100': d[0] += a
+depts = []
+for k, ys in dept.items():
+    if max(v[1] for v in ys.values()) < 5e6: continue
+    depts.append({'id': k, 'name': dname[k][1], 'y': {y: [round(v[0]), round(v[1])] for y, v in sorted(ys.items())}})
+depts.sort(key=lambda d: -(d['y'].get(2027, [0, 0])[1]))
+print('departments', len(depts), [d['name'] for d in depts[:12]])
+# average budgeted pay per Corporate Fund department, 2027 proposal
+dpay = collections.defaultdict(lambda: [0.0, 0.0])
+for r in rows(ds('Positions and Salaries', 2027, True)):
+    if fcode(r) == '100' and (r.get('BUDGETED UNIT') or '').upper().startswith('ANNUAL'):
+        k = re.sub(r'^0+', '', r.get('DEPARTMENT CODE') or ''); d = dpay[k]; d[0] += num(r.get('TOTAL BUDGETED AMOUNT') or '0'); d[1] += num(r.get('TOTAL BUDGETED UNIT') or '0')
+# share of each department's 2027 Corporate Fund money that pays people (accounts 0000-0099: salaries, overtime, etc.)
+dper = collections.defaultdict(lambda: [0.0, 0.0])
+for r in rows(ds('Appropriations', 2027, True)):
+    if fcode(r) != '100': continue
+    k = re.sub(r'^0+', '', r.get('DEPARTMENT NUMBER') or ''); a = amount(r, 2027, True); dper[k][1] += a
+    if int(re.sub(r'\D', '', r.get('APPROPRIATION ACCOUNT') or '9999') or 9999) < 100: dper[k][0] += a
+for d in depts:
+    q = dper.get(d['id'])
+    if q and q[1]: d['ps'] = round(q[0] / q[1], 3)
+    pp = dpay.get(d['id'])
+    if pp and pp[1]: d['pay'] = round(pp[0] / pp[1]); d['pos'] = round(pp[1])
 # average budgeted pay of a full-time Corporate Fund position in the 2027 proposal (salary only, no benefits)
 pay = n = 0
 for r in rows(ds('Positions and Salaries', 2027, True)):
@@ -115,4 +149,4 @@ print('avg corporate fund pay', avgPay, 'positions', n)
 # CPI-U, U.S. city average, annual averages (BLS series CUUR0000SA0); 2026 is the average of the months published so far
 CPI = {2011: 224.939, 2012: 229.594, 2013: 232.957, 2014: 236.736, 2015: 237.017, 2016: 240.007, 2017: 245.120, 2018: 251.107,
        2019: 255.657, 2020: 258.811, 2021: 270.970, 2022: 292.655, 2023: 304.702, 2024: 313.689, 2025: 321.943, 2026: 332.243}
-json.dump({'years': years, 'corp27': corp27, 'rev': rev, 'avgPay': avgPay, 'cpi': CPI}, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))
+json.dump({'years': years, 'corp27': corp27, 'rev': rev, 'avgPay': avgPay, 'cpi': CPI, 'depts': depts}, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))
