@@ -32,7 +32,7 @@ def block(x, y, w, d, floors, col, fh=3.0):
             box(x - w / 2 + w * (c + 0.5) / n, y - d / 2 - 0.03, 0.6 + f * fh, w / n * 0.55, 0.06, fh * 0.55, "glass", bevel=0.01)
 
 def coins(x, y, n, col="gold"):
-    for k in range(n): cyl(x, y, k * 0.42, 1.0, 0.38, mat(col, rough=0.3, metal=0.7), verts=24, bevel=0.04)
+    for k in range(n): cyl(x, y, k * 0.62, 1.6, 0.56, mat(col, rough=0.3, metal=0.7), verts=24, bevel=0.04)
 
 def bus(x, y, rot=0.0, L=10):
     c, s = math.cos(rot), math.sin(rot)
@@ -70,8 +70,8 @@ def illegal():
 def shortage():
     base()
     random.seed(5)
-    block(-22, 2, 16, 13, 6, "lt6")
-    crane(-12, 6, 0, 26, 16, ang=math.radians(-160), m=mat("star", rough=0.45))
+    block(-22, 2, 16, 13, 5, "lt6")
+    crane(-12, 6, 0, 19, 14, ang=math.radians(-160), m=mat("star", rough=0.45))
     for x in (6, 20, 34): bungalow(x, 1.5, w=9)
     for k in range(22): person(-12 + k * 1.75, -9.2 + (k % 2) * 0.5)
 
@@ -96,7 +96,7 @@ def prerogative():
 
 def aro():
     base()
-    W, D, F = 30, 14, 9
+    W, D, F = 30, 14, 6
     box(0, 2, 0, W, D, F * 3, mat("lt6", rough=0.6), bevel=0.1)
     random.seed(4)
     for f in range(F):
@@ -110,10 +110,10 @@ def megaprojects():
     base(d=26)
     box(0, 9, -0.02, 84, 6, 0.1, mat("lake", rough=0.1, spec=0.6), bevel=0)                 # the river
     random.seed(8)
-    for x, f in ((-26, 12), (-12, 20), (2, 9), (16, 26), (30, 14)):
+    for x, f in ((-26, 6), (-12, 9), (2, 5), (16, 11), (30, 7)):
         block(x, -1, 9, 9, f, random.choice(["lt6", "mid", "hi", "#8fa3b5"]), fh=2.4)
-    crane(-19, 3, 0, 40, 18, ang=math.radians(-150), m=mat("star", rough=0.45))
-    crane(23, 3, 0, 52, 18, ang=math.radians(-200), m=mat("star", rough=0.45))
+    crane(-19, 3, 0, 24, 14, ang=math.radians(-150), m=mat("star", rough=0.45))
+    crane(23, 3, 0, 30, 14, ang=math.radians(-200), m=mat("star", rough=0.45))
 
 def modes():
     base(d=26)
@@ -155,7 +155,7 @@ SCENES = {k: v for k, v in globals().items() if k in ("zoning", "illegal", "shor
 def build(name, out, style="ink", w=1500, h=500):
     reset(); random.seed(1)
     SCENES[name]()
-    rig(56, target=(0, 0, 5), elev=26, azim=-62, sun=(48, -30), sun_e=3.2 if style == "clay" else 2.2, world="#eef3f8", world_e=0.6 if style == "clay" else 1.1)
+    rig(56, target=(0, 0, 2), elev=26, azim=-62, sun=(48, -30), sun_e=3.2 if style == "clay" else 2.2, world="#eef3f8", world_e=0.6 if style == "clay" else 1.1)
     bpy.context.scene.camera.data.ortho_scale = 100
     shadow_catcher(z=-1.2)
     if style == "ink": ink_style()
