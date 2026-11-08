@@ -209,3 +209,4 @@ body.sc-gray{background:var(--sc-page)}
 .pkind.k-tall{background:#e3f1f2;color:#0b5f67} .pkind.k-mm{background:#e8f5fb;color:#14607f} .pkind.k-hood{background:#f1ecf8;color:#5b3e8c}
 .pkind.k-main{background:#fff3e0;color:#8a4b00} .pkind.k-pol{background:#eef7f1;color:#1f6b44} .pkind.k-all{background:#1a1d21;color:#fff} .pkind.k-cut{background:#fdecef;color:#a0001b}
 .psum{font-size:13.5px;color:var(--sc-ink2);line-height:1.35;margin-top:-4px}
+.sc-btn:disabled{opacity:.45;cursor:default}

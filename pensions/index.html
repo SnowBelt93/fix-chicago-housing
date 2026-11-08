@@ -172,7 +172,7 @@ const INFL = 0.025;                                               // assumption:
 const RETS = [[0.04, "4%"], [0.055, "5.5%"], [null, "What funds assume (about 6.7%)"], [0.08, "8%"]];
 const BYS = [[0, "The law's dates"], [2050, "2050"], [2045, "2045"], [2040, "2040"]];
 const POOLS = [[0, "No"], [0.0025, "+0.25% a year"], [0.005, "+0.5% a year"]];   // assumption: extra return from pooling the four funds' investments
-const st = {pay:"law", extra:0, bond:0, ret:2, crash:false, by:0, pool:0};
+const LAW = {pay:"law", extra:0, bond:0, ret:2, crash:false, by:0, pool:0}, st = {...LAW};
 const Y0 = 2025, Y1 = 2070;
 
 /* one fund, one year */
@@ -230,6 +230,7 @@ const money = x => { const a = Math.abs(x); return (x < 0 ? "−" : "") + (a >= 
 const pct = x => Math.round(x * 100) + "%";
 let BASE = null;
 function render(){
+  syncReset();
   const R = run({...st, ret: RETS[st.ret][0]}), T = R.tot, B = BASE.tot;
   const i25 = 0, fr25 = T[i25].fr;
   const y90 = T.find(t => t.fr >= 0.899)?.y, yb90 = B.find(t => t.fr >= 0.899)?.y;
@@ -337,7 +338,13 @@ const INFO = {
 document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
 $("rExtra").addEventListener("input", e => { st.extra = +e.target.value; $("vExtra").textContent = st.extra ? "+$" + st.extra + "M a year" : "$0"; render(); });
 $("crash").onclick = () => { st.crash = !st.crash; syncCtl(); render(); };
-$("reset").onclick = () => { Object.assign(st, {pay:"law", extra:0, bond:0, ret:2, crash:false, by:0, pool:0}); syncCtl(); render(); };
+// "Back to state law" only lights up when something differs from today's law, so a click always visibly changes the plan
+function syncReset(){ const same = Object.keys(LAW).every(k => st[k] === LAW[k]), b = $("reset");
+  b.disabled = same; b.title = same ? "You're already on today's state law" : "Undo your changes"; }
+$("reset").onclick = () => {
+  Object.assign(st, LAW); syncCtl(); render();
+  const pn = $("reset").closest(".panel") || document.querySelector(".panel"); if (pn) pn.scrollTo({top:0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+};
 $("srcs").innerHTML = `A simple model of Chicago's four city pension funds, built on each fund's 2024 figures and calibrated so today's legal payment schedule reaches 90% on time. Sources: ${src("acfr", "ov26", "fc27", "wttw")}. Assumptions: payroll grows 3% a year; pension bonds cost 6%; "today's dollars" uses 2.5% inflation.`;
 load();
 fetch("data/pensions.json").then(r => r.json()).then(d => { D = d; BASE = run({pay:"law", extra:0, bond:0, ret:null, crash:false}); syncCtl(); render(); renderInt(); });
