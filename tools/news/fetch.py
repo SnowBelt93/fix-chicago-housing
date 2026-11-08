@@ -2,7 +2,7 @@
 can't reach these sites). Reads each outlet's public RSS feed, keeps only stories about Chicago planning, housing,
 development, transit, the budget and city policy, and writes news/data/news.json: headline, link, outlet, date and topic
 tags. No article text is stored or shown; every item links to the outlet."""
-import urllib.request, json, os, re, time, html, email.utils, datetime as dt
+import urllib.request, urllib.parse, json, os, re, time, html, email.utils, datetime as dt
 import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, 'news', 'data', 'news.json'); os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -37,6 +37,12 @@ TOPICS = {
 STATEWIDE = {'Capitol News Illinois', 'Illinois Answers Project'}
 NOT = r'\b(shooting|shot|gunman|homicide|murder|carjack|stabb|arrest|police chase|charged|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
+# extra feeds read on top of each outlet's main feed: WordPress search feeds (?s=term&feed=rss2) reach further back on
+# the topics we keep, since a main feed only holds the latest 10 to 20 stories
+WP_TERMS = ['zoning', 'housing', 'development', 'apartments', 'CTA', 'budget', 'City Council', 'affordable']
+EXTRA = [(name, base + '/?s=' + urllib.parse.quote_plus(t) + '&feed=rss2') for name, base in
+         [('Block Club Chicago', 'https://blockclubchicago.org'), ('South Side Weekly', 'https://southsideweekly.com'),
+          ('Streetsblog Chicago', 'https://chi.streetsblog.org'), ('Chicago YIMBY', 'https://chicagoyimby.com')] for t in WP_TERMS]
 def get(u):
     try: return urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0 (compatible; ShapeChicagoNews/1.0)'}), timeout=60).read()
     except Exception as e: print('  fail', u, str(e)[:80], flush=True); return None
@@ -64,17 +70,21 @@ if os.path.exists(OUT):
 old = [o for o in old if not re.search(NOT, o['t'], re.I) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and [k for k, rx in TOPICS.items() if re.search(rx, o['t'], re.I if k != 'transit' else 0)]]   # re-check kept items against the current rules
 seen = {o['u'] for o in old}; items = list(old); status = {}
 now = dt.datetime.now(dt.timezone.utc)
-for name, local, urls in SOURCES:
+LOCAL = {n: l for n, l, _ in SOURCES}
+jobs = [(name, urls) for name, local, urls in SOURCES] + [(name, [u]) for name, u in EXTRA]
+for name, urls in jobs:
+    local = LOCAL[name]
     got = None
     for u in urls:
         b = get(u)
         if not b: continue
         try: got = parse(b); break
         except Exception as e: print('  parse fail', u, str(e)[:60], flush=True)
-    status[name] = len(got) if got is not None else -1
+    if got is not None: status[name] = max(status.get(name, 0), 0) + len(got)
+    else: status.setdefault(name, -1)
     for title, link, date, desc, cats in got or []:
         title = html.unescape(re.sub(r'<[^>]+>', '', title)).strip(); d = when(date)
-        if not title or not link or link in seen or not d or (now - d).days > 30: continue
+        if not title or not link or link in seen or not d or (now - d).days > 45: continue
         blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
         if re.search(NOT, title, re.I): continue
         tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
@@ -86,3 +96,13 @@ items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z'
 items.sort(key=lambda i: i['d'], reverse=True); items = items[:600]
 json.dump({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'sources': status, 'items': items}, open(OUT, 'w'), separators=(',', ':'))
 print('sources', status); print('items', len(items))
+# an Atom feed of the same list, for feed readers (and RSS-to-email services later)
+from xml.sax.saxutils import escape as xe
+feed = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom">',
+        '<title>Shape Chicago: Chicago planning news</title>', '<id>tag:shapechicago,2026:news</id>',
+        '<updated>' + now.strftime('%Y-%m-%dT%H:%M:%SZ') + '</updated>', '<author><name>Shape Chicago</name></author>']
+for i in items[:60]:
+    feed.append('<entry><title>%s</title><link href="%s"/><id>%s</id><updated>%s:00Z</updated><summary>%s</summary></entry>' % (
+        xe(i['t']), xe(i['u'], {'"': '&quot;'}), xe(i['u']), i['d'][:-1], xe(i['s'] + ' · ' + ', '.join(i['g']))))
+feed.append('</feed>')
+open(os.path.join(os.path.dirname(OUT), '..', 'feed.xml'), 'w').write('\n'.join(feed))

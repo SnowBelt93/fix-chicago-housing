@@ -20,12 +20,12 @@ jobs:
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add news/data
+          git add news/data news/feed.xml
           git commit -m "Update Chicago news feed" || true
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done
           # the preview site (shape-v1) shows the same feed
-          cp news/data/news.json /tmp/news.json
+          cp news/data/news.json /tmp/news.json; cp news/feed.xml /tmp/feed.xml
           git fetch -q origin shape-v1 && git checkout -q -B shape-v1 origin/shape-v1
-          mkdir -p news/data && cp /tmp/news.json news/data/news.json
-          git add news/data && git commit -m "Update Chicago news feed" || exit 0
+          mkdir -p news/data && cp /tmp/news.json news/data/news.json && cp /tmp/feed.xml news/feed.xml
+          git add news/data news/feed.xml && git commit -m "Update Chicago news feed" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin shape-v1 && git push origin HEAD:shape-v1 && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1

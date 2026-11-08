@@ -21,6 +21,23 @@ def ej(path, **params):
     try: return json.loads(b) if b else None
     except Exception: return None
 
+# 0) upcoming City Council and committee meetings (for the hearing calendar): the API's own description is saved, then
+#    every meeting path is tried with a date filter; whatever answers is kept raw in meetings.json
+import datetime as _dt
+sw = get(E + '/swagger.json')
+if sw: open(os.path.join(OUT, 'elms_swagger.json'), 'wb').write(sw)
+meet = {}
+try: paths = [k for k in json.loads(sw).get('paths', {}) if 'meeting' in k.lower() and '{' not in k] if sw else []
+except Exception: paths = []
+for path in paths or ['/meeting']:
+    since = (_dt.date.today() - _dt.timedelta(days=21)).isoformat()
+    for params in ({'filter': 'date ge %sT00:00:00Z' % since, 'top': '200', 'sort': 'date asc'},
+                   {'filter': 'meetingDate ge %sT00:00:00Z' % since, 'top': '200', 'sort': 'meetingDate asc'}, {'top': '200'}):
+        r = ej(path, **params)
+        if r: meet[path + ' ' + json.dumps(params)] = r; break
+json.dump(meet, open(os.path.join(OUT, 'meetings.json'), 'w'))
+print('meetings', {k: len((v or {}).get('data') or v) if isinstance(v, (dict, list)) else 0 for k, v in meet.items()}, flush=True)
+
 # 1) citywide housing legislation and its roll calls
 TERMS = ['"Additional Dwelling Unit"', '"accessory dwelling"', '"coach house"', '"Connected Communities"', '"Bring Chicago Home"',
          '"Affordable Requirements Ordinance"', '"Cut the Tape"', '"single stair"', '"single-stair"', '"Missing Middle"', '"Green Social Housing"',
