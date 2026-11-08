@@ -93,7 +93,7 @@ def classify(t):
     return None
 
 
-def land():
+def land(max_tiles=99):
     """In tiles, so no single Overpass query runs long; tiles already saved by an earlier run are kept."""
     s_, w_, n_, e_ = (float(v) for v in BBOX.split(','))
     NT = 4
@@ -109,6 +109,9 @@ def land():
             bb = f'{s_ + (n_ - s_) * i / NT:.4f},{w_ + (e_ - w_) * j / NT:.4f},{s_ + (n_ - s_) * (i + 1) / NT:.4f},{w_ + (e_ - w_) * (j + 1) / NT:.4f}'
             part = ''.join(f'way["{k}"="{v}"]({bb});relation["{k}"="{v}"]({bb});' for k, v in good + sorted(BAD))
             part += f'way["amenity"="parking"]["parking"!="street_side"]["parking"!="lane"]({bb});relation["amenity"="parking"]({bb});'
+            if max_tiles <= 0:
+                break
+            max_tiles -= 1
             d = overpass(f'[out:json][timeout:400][maxsize:1073741824];({part});out geom;')
             if d is None:
                 log('land tile failed', key); continue
@@ -221,6 +224,8 @@ if __name__ == '__main__':
     steps = sys.argv[1:] or ['blocks', 'places', 'refs', 'land']
     for s in steps:
         try:
+            if s.startswith('land') and s[4:].isdigit():
+                land(int(s[4:])); continue
             globals()[s]()
         except Exception as e:
             log('step failed', s, repr(e))
