@@ -24,7 +24,7 @@ html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-
 .bar .k b.ok{color:var(--sc-green)} .bar .k b.bad{color:var(--sc-hard)}
 .bar .btns{margin-left:auto;display:flex;gap:8px}
 main{display:grid;grid-template-columns:minmax(360px,420px) 1fr;gap:20px;padding:20px;max-width:1440px;margin:0 auto;align-items:start}
-.panel{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);padding:16px 18px 20px;position:sticky;top:calc(var(--sc-head) + 92px)}
+.panel{background:#fff;border-radius:18px;box-shadow:var(--sc-shadow2);padding:16px 18px 20px;position:sticky;top:calc(var(--sc-head) + var(--barH, 92px));max-height:calc(100vh - var(--sc-head) - var(--barH, 92px) - 20px);overflow-y:auto;overscroll-behavior:auto;scrollbar-width:thin}
 .ctl{border-top:1px solid var(--sc-line);padding:14px 0}
 .ctl:first-of-type{border-top:0;padding-top:4px}
 .ctl h3{margin:0 0 8px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
@@ -62,7 +62,7 @@ table.funds .warn{color:var(--sc-hard);font-weight:600}
 dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 @media (max-width:980px){
   main{grid-template-columns:1fr;padding:12px}
-  .panel{position:static}
+  .panel{position:static;max-height:none;overflow:visible}
   .bar{gap:14px;padding:10px 14px}
   .bar .k b{font-size:21px}
   .sc-fan{display:none}
@@ -81,7 +81,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/" aria-current="page">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Pensions<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/" aria-current="page">Pensions</a><a href="/lot/">Your lot</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <section class="bar" aria-label="Your pension plan">
@@ -342,5 +342,6 @@ load();
 fetch("data/pensions.json").then(r => r.json()).then(d => { D = d; BASE = run({pay:"law", extra:0, bond:0, ret:null, crash:false}); syncCtl(); render(); renderInt(); });
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("pensions", {title:"Pay Down Chicago's Pensions", body:"<p>Chicago's four city pension funds hold about 27 cents for every dollar they owe. State law makes the city pay more every year until they reach 90% funded in the 2050s.</p><p>Try paying more, paying sooner, borrowing, or investing differently, and see what it costs and when the funds get there.</p>", art:"/shape/art/pensions.webp"}));</script>
+<script>(function(){const b=document.querySelector(".bar");if(!b||!window.ResizeObserver)return;new ResizeObserver(()=>document.documentElement.style.setProperty("--barH",(b.offsetHeight+12)+"px")).observe(b);})();</script>
 </body>
 </html>

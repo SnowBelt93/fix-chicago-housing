@@ -58,7 +58,7 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .zrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;font-size:13.5px;padding:7px 0;border-top:1px solid var(--sc-line);align-items:baseline}
 .zrow .d{color:var(--sc-mute);font-size:12.5px}
 .zrow .k{font-size:12px;font-weight:600;white-space:nowrap}
-.zrow .k{color:var(--sc-ink2)} .zrow .k.na{color:var(--sc-mute);font-weight:500}
+.zrow .k{color:var(--sc-ink2)} .zrow .k.na{color:var(--sc-mute);font-weight:500} .zrow .k.up{color:var(--sc-navy)} .zrow .k.dn{color:var(--sc-ink2)}
 .zrow a{color:var(--sc-ink);text-decoration:none} .zrow a:hover{text-decoration:underline}
 .seg2{display:inline-flex;gap:2px;padding:3px;background:var(--sc-seg);border-radius:16px;font-size:13px;font-weight:600;margin-bottom:10px}
 .seg2 button{font:inherit;border:0;padding:6px 12px;border-radius:13px;background:transparent;color:var(--sc-ink2);cursor:pointer}
@@ -79,7 +79,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/" aria-current="page">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a></div></div><a href="/wards/" aria-current="page">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -106,9 +106,10 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     </section>
     <section class="card">
       <h2>Zoning changes in this ward <button class="ib" data-i="zoning" aria-label="About zoning changes">i</button></h2>
-      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. For this term, the alderperson's own vote on each one. Most rezonings pass together in one Council roll call, so nearly every alderperson votes yes on nearly all of them; the few No votes and the ones the alderperson introduced personally say more.</p>
+      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. Each one is marked by whether it allowed more or fewer homes on the lot. Most rezonings pass together in one Council roll call, so the alderperson's vote is nearly always yes; the ones they introduced personally say more.</p>
       <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">Since May 2023</button><button role="radio" aria-checked="false" data-k="all">Since 2013</button></div>
       <div class="nums" id="znums"></div>
+      <p class="fine" id="zby"></p>
       <div class="zlist" id="zlist"></div>
     </section>
   </div>
@@ -168,12 +169,15 @@ function render(){
 }
 function renderZ(){
   const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
-  const pd = rows.filter(z => z.k === "pd").length, yes = rows.filter(z => z.v === "Yea").length, no = rows.filter(z => z.v === "Nay").length;
-  $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div>` +
-    (span === "term" ? `<div><b>${yes}</b><span>the alderperson voted yes</span></div><div><b>${no}</b><span>voted no</span></div><div><b>${rows.filter(z => z.by).length}</b><span>introduced by the alderperson</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
+  const dir = z => z.hf != null && z.ht != null ? (z.ht > z.hf ? 1 : z.ht < z.hf ? -1 : 0) : null;   // homes allowed on a typical lot, before vs after
+  const more = L => L.filter(z => dir(z) === 1).length, fewer = L => L.filter(z => dir(z) === -1).length, by = rows.filter(z => z.by);
+  $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div><div><b>${more(rows)}</b><span>allowed more homes</span></div><div><b>${fewer(rows)}</b><span>allowed fewer homes</span></div>` +
+    (span === "term" ? `<div><b>${by.length}</b><span>introduced by the alderperson</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
+  $("zby").textContent = span === "term" && by.length ? `Of the ${by.length} the alderperson introduced, ${more(by)} allowed more homes on the lot, ${fewer(by)} allowed fewer, and ${by.length - more(by) - fewer(by)} kept the same number or couldn't be read.` : "";
   const lot = z => z.hf != null && z.ht != null ? `homes on a typical lot: ${z.hf} → ${z.ht}` : z.ht != null ? `up to ${z.ht} homes on a typical lot` : "";
-  const vote = z => z.v === "Yea" ? `<span class="k">Voted yes</span>` : z.v === "Nay" ? `<span class="k">Voted no</span>` : z.v ? `<span class="k">${VOTE[z.v] || z.v}</span>` : z.d >= "2023-05-15" ? `<span class="k na">No roll call on file</span>` : `<span class="k na"></span>`;
-  $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}<span class="fine"> · ${z.k === "pd" ? "Planned development" : z.f && z.t ? z.f + " → " + z.t : z.t ? "now " + z.t : "districts not readable in the filed document"}${lot(z) ? " · " + lot(z) : ""}${z.h ? ` · ${z.h} homes planned` : ""}${z.by ? " · introduced by the alderperson" : ""}</span></span>${vote(z)}</div>`).join("") : `<p class="fine">None in this period.</p>`;
+  const tag = z => dir(z) === 1 ? `<span class="k up">More homes</span>` : dir(z) === -1 ? `<span class="k dn">Fewer homes</span>` : z.k === "pd" ? `<span class="k">Planned development</span>` : dir(z) === 0 ? `<span class="k na">Same homes</span>` : `<span class="k na"></span>`;
+  const vote = z => z.v === "Yea" ? "voted yes" : z.v === "Nay" ? "voted no" : z.v ? (VOTE[z.v] || z.v).toLowerCase() : "";
+  $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}<span class="fine"> · ${z.k === "pd" ? "Planned development" : z.f && z.t ? z.f + " → " + z.t : z.t ? "now " + z.t : "districts not readable in the filed document"}${lot(z) ? " · " + lot(z) : ""}${z.h ? ` · ${z.h} homes planned` : ""}${z.by ? " · introduced by the alderperson" : ""}${vote(z) ? " · alderperson " + vote(z) : ""}</span></span>${tag(z)}</div>`).join("") : `<p class="fine">None in this period.</p>`;
 }
 function renderP(){
   const p = D.wards[W - 1].permits, all = D.wards.map(x => x.permits?.homes || 0).sort((a, b) => b - a);
@@ -181,11 +185,12 @@ function renderP(){
   $("pnums").innerHTML = p ? `<div><b>${p.homes.toLocaleString("en-US")}</b><span>homes permitted</span></div><div><b>${p.projects}</b><span>buildings</span></div><div><b>${p.last12}</b><span>homes in the last 12 months</span></div><div><b>#${all.indexOf(p.homes) + 1}</b><span>of 50 wards</span></div>` : `<p class="fine">No permit data.</p>`;
 }
 function renderAll(){
-  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["homes", "Homes permitted"]];
-  const rows = D.wards.map(w => { const t = w.z.filter(z => z.d >= "2023-05-15"); return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, pd: t.filter(z => z.k === "pd").length, homes: w.permits?.homes || 0}; });
+  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["up", "Allowed more homes"], ["down", "Allowed fewer homes"], ["homes", "Homes permitted"]];
+  const rows = D.wards.map(w => { const t = w.z.filter(z => z.d >= "2023-05-15"), ok = t.filter(z => z.hf != null && z.ht != null);
+    return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, up: ok.filter(z => z.ht > z.hf).length, down: ok.filter(z => z.ht < z.hf).length, homes: w.permits?.homes || 0}; });
   rows.sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
   $("all").innerHTML = `<tr>${cols.map(([k, t]) => `<th data-k="${k}">${t}${sortK === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr>` +
-    rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.up}</td><td>${r.down}</td><td>${r.pd}</td><td>${r.homes.toLocaleString("en-US")}</td><td>${r.etod === "Yea" ? "Yes" : r.etod === "Nay" ? "No" : r.etod}</td></tr>`).join("");
+    rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.n}</td><td>${r.up}</td><td>${r.down}</td><td>${r.homes.toLocaleString("en-US")}</td></tr>`).join("");
   $("all").querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "w" || k === "name" ? 1 : -1); sortK = k; renderAll(); });
   $("all").querySelectorAll("tr[data-w]").forEach(tr => tr.onclick = () => { go(+tr.dataset.w); window.scrollTo({top:0, behavior:"smooth"}); });
 }

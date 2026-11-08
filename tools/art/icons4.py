@@ -7,7 +7,7 @@ Each is modeled on a real building (simplified, no signs or logos):
   z_mid    Emmett Street Apartments, 2614 N. Emmett St., Logan Square (gray panels, colored window accents)
   z_high   1611 W. Division, Wicker Park (11 stories, striped glass curtain wall, concrete core)
   z_tower  860-880 N. Lake Shore Drive (Mies van der Rohe, 26 stories, black steel mullions, open lobby)
-  z_super  Marina City (65 stories, round tower with scalloped balconies, parking floors below)
+  z_super  Willis Tower / Sears Tower (108 stories, nine bundled tubes stepping back at floors 50, 66 and 90, two antennas)
 The tile's edge carries the level's map color, so the pictures still match the map key."""
 import sys, os, math, random
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -180,28 +180,27 @@ def tower():   # 860-880 N. Lake Shore Drive
     for sx in (-W / 2, W / 2): box(sx, 1.0 - D / 2, 1.3, 0.2, 0.2, N * FH, steel, bevel=0.01)
     box(0, 1.0, 1.3 + N * FH, W + 0.1, D + 0.1, 0.35, steel, bevel=0.02)
 
-def supertall():   # Marina City
-    tile(); walk(0, 0, T, T)
-    conc = mat("#e6e3dc", rough=0.8)
-    R, FH = 2.0, 0.62
-    cyl(0, 0.6, 0, R * 1.3, 0.6, conc, verts=40, bevel=0.03)                     # base
-    cyl(0, 0.6, 0.6, R * 0.95, 13 * FH, mat("#4a4f56", rough=0.8), verts=40, bevel=0)   # parking floors: open ramps
-    for f in range(13):
-        cyl(0, 0.6, 0.6 + f * FH, R * 1.08, 0.1, conc, verts=40, bevel=0)
-        for k in range(0, 16, 3):
-            a = k / 16 * 2 * math.pi + f * 0.2
-            box(math.cos(a) * R * 1.0, 0.6 + math.sin(a) * R * 1.0, 0.6 + f * FH + 0.07, 0.42, 0.18, 0.12, mat(random.choice(["#c0392b", "#2f6da3", "#e8e2d6", "#3a3f47"]), rough=0.5), bevel=0.03, rot=a + math.pi / 2)
-    z0 = 0.6 + 13 * FH
-    cyl(0, 0.6, z0, R * 1.18, 0.25, conc, verts=40, bevel=0.02)
-    NF, AF = 19, 0.92                                                         # fewer, taller floors so the scallops read at icon size
-    for f in range(NF):
-        z = z0 + 0.25 + f * AF
-        cyl(0, 0.6, z, R * 0.8, AF, mat("#26303b", rough=0.1, spec=0.6), verts=32, bevel=0)
-        for k in range(16):                                                  # scalloped balconies: the "corncob"
-            a = k / 16 * 2 * math.pi
-            cyl(math.cos(a) * R * 0.92, 0.6 + math.sin(a) * R * 0.92, z, 0.5, 0.16, conc, verts=14, bevel=0.03)
-        cyl(0, 0.6, z, R * 0.92, 0.16, conc, verts=40, bevel=0)
-    cyl(0, 0.6, z0 + 0.25 + NF * AF, R * 1.15, 0.35, conc, verts=40, bevel=0.03)
+def supertall():   # Willis Tower (Sears Tower): nine bundled square tubes, two ending at the 50th floor (NW, SE), two at the
+    # 66th (NE, SW), three at the 90th (N, E, S), and the west and center tubes going to the 108th, with two antennas on top
+    tile(); walk(0, -4.2, T, 2.0)
+    t, FH, y0 = 1.45, 0.15, 0.8
+    H = {(-1, 1): 50, (1, -1): 50, (1, 1): 66, (-1, -1): 66, (0, 1): 90, (1, 0): 90, (0, -1): 90, (-1, 0): 108, (0, 0): 108}
+    glass = mat("#24272c", rough=0.3, spec=0.5); line = mat("#5a6068", rough=0.4, metal=0.3); belt = mat("#121417", rough=0.6)
+    for (i, j), f in H.items():
+        cx, cy, h = i * t, y0 + j * t, f * FH
+        box(cx, cy, 0, t, t, h, glass, bevel=0.01)
+        for b0 in (29, 64, 88, 104):                                        # the dark louvered mechanical floors
+            if b0 + 2 <= f: box(cx, cy, b0 * FH, t + 0.03, t + 0.03, 2 * FH, belt, bevel=0)
+        # mullion lines on the two faces the camera sees, above whatever neighbor stands in front
+        lo_y = H.get((i, j - 1), 0) * FH; lo_x = H.get((i + 1, j), 0) * FH
+        for k in range(1, 6):
+            u = -t / 2 + k * t / 6
+            if h > lo_y: box(cx + u, cy - t / 2 - 0.02, lo_y, 0.035, 0.04, h - lo_y, line, bevel=0)
+            if h > lo_x: box(cx + t / 2 + 0.02, cy + u, lo_x, 0.04, 0.035, h - lo_x, line, bevel=0)
+    box(0, y0, 0, 3 * t + 0.6, 3 * t + 0.6, 0.12, "stone", bevel=0.03)
+    for i in (-1, 0):                                                        # the two antennas on the 108th-floor roofs
+        box(i * t, y0, 108 * FH, 0.5, 0.5, 0.35, "steel", bevel=0.02)
+        cyl(i * t, y0, 108 * FH + 0.35, 0.09, 4.2, mat("#e9ecef", rough=0.5), verts=10, bevel=0)
 
 ICONS = {"z_today": today, "z_3flat": threeflat, "z_6flat": sixflat, "z_mid": midrise, "z_high": highrise, "z_tower": tower, "z_super": supertall}
 

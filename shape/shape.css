@@ -133,3 +133,19 @@ dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
 .sc-intro p{margin:0 0 10px;font-size:15px;line-height:1.55;color:var(--sc-ink2)}
 .sc-intro ul{margin:0 0 10px;padding-left:20px;font-size:14.5px;line-height:1.55;color:var(--sc-ink2)}
 .sc-intro-go{display:flex;justify-content:flex-end;margin-top:14px}
+/* Simulators menu in the header (v61): Housing, Transit, Budget, Pensions, Your lot */
+.sc-sims{display:flex}
+.sc-simbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:0;border-radius:16px;background:transparent;color:var(--sc-mute);font:inherit;white-space:nowrap;cursor:pointer}
+.sc-simbtn svg{width:10px;height:6px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.sc-simbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.sc-simbtn[aria-current="page"]{background:#fff;color:var(--sc-ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sc-simbtn:not([aria-current]):hover,.sc-simbtn[aria-expanded="true"]:not([aria-current]){color:var(--sc-ink);background:rgba(255,255,255,.65)}
+.sc-simmenu{position:fixed;z-index:1000;min-width:190px;padding:6px;background:#fff;border:1px solid var(--sc-line,#e3e5e8);border-radius:12px;box-shadow:0 10px 30px rgba(20,30,50,.16);display:flex;flex-direction:column;gap:2px;font-size:15px}
+.sc-simmenu[hidden]{display:none}
+.sc-simhd{padding:6px 10px 4px;font-size:12px;color:var(--sc-mute)}
+.sc-simmenu a{padding:9px 10px;border-radius:8px;color:var(--sc-ink);text-decoration:none}
+.sc-simmenu a:hover,.sc-simmenu a:focus-visible{background:var(--sc-chip)}
+.sc-simmenu a[aria-current="page"]{font-weight:600;color:var(--sc-navy)}
+@media (max-width:860px){ .sc-simbtn{padding:7px 9px} }
+@media (max-width:440px){ .sc-simbtn{padding:7px 8px} }
+@media (prefers-reduced-motion:no-preference){ .sc-simmenu:not([hidden]){animation:scMenuIn .14s ease-out} @keyframes scMenuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}} }

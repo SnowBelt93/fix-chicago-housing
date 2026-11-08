@@ -95,7 +95,8 @@ h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
 .how{font-size:14px;line-height:1.55;color:var(--sc-ink2);margin:0 0 8px}
 .links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
 .links a{font-size:13.5px;font-weight:600;color:var(--sc-navy);text-decoration:none;padding:8px 12px;border-radius:16px;background:#eef3fa}
-.links a:hover{background:#e0eaf7}
+.links a:hover,.lnkbtn:hover{background:#e0eaf7}
+.lnkbtn{font:inherit;font-size:13.5px;font-weight:600;color:var(--sc-navy);padding:8px 12px;border-radius:16px;background:#eef3fa;border:0;cursor:pointer}
 .fine{font-size:12px;line-height:1.5;color:var(--sc-mute);margin:16px 0 0}
 .fine a{color:var(--sc-mute)}
 .empty .tryrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
@@ -128,7 +129,7 @@ h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Your lot<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/" aria-current="page">Your lot</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <div id="map" aria-label="Map of Chicago lots"></div>
@@ -137,7 +138,7 @@ h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
   <button class="grab" id="grab" aria-label="Show or hide the details"></button>
   <div class="pin">
     <h1>What can I build on my lot?</h1>
-    <p class="lede">Type a Chicago address or tap any lot on the map. You'll see its zoning, how many homes the rules allow there, and what would change that.</p>
+    <p class="lede">Type an address or tap a lot. See how many homes the rules allow, in 3D.</p>
     <div class="search">
       <input id="q" type="search" placeholder="Address, like 2150 N Milwaukee" autocomplete="off" aria-label="Chicago address" role="combobox" aria-expanded="false" aria-controls="sugg">
       <button class="sc-btn" id="loc" title="Use my location" aria-label="Use my location"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
@@ -268,9 +269,8 @@ async function initMap(){
   }
   const phone = matchMedia("(max-width:859px)").matches;
   map = new maplibregl.Map({container:"map", style, center:[-87.68, 41.89], zoom:phone ? 10.2 : 11, minZoom:9, maxZoom:19,
-    maxBounds:[[-88.3, 41.5], [-87.2, 42.2]], attributionControl:{compact:true, customAttribution:credit}, dragRotate:false, pitchWithRotate:false, fadeDuration:0});
-  map.touchZoomRotate.disableRotation();
-  map.addControl(new maplibregl.NavigationControl({showCompass:false}), "bottom-right");
+    maxBounds:[[-88.3, 41.5], [-87.2, 42.2]], attributionControl:{compact:true, customAttribution:credit}, maxPitch:70, fadeDuration:0});
+  map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "bottom-right");
   await new Promise(r => map.on("load", r));
   const first = map.getStyle().layers.find(l => l.type === "symbol");
   map.addSource("zones", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
@@ -278,14 +278,44 @@ async function initMap(){
   map.addSource("pick", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
   map.addLayer({id:"zones", type:"fill", source:"zones", minzoom:14, paint:{"fill-color":["get", "c"], "fill-opacity":["interpolate", ["linear"], ["zoom"], 14, 0, 14.6, 0.45, 17, 0.32]}}, first && first.id);
   map.addLayer({id:"zones-line", type:"line", source:"zones", minzoom:14, paint:{"line-color":"#5b6470", "line-width":0.8, "line-opacity":0.55}}, first && first.id);
-  map.addLayer({id:"blds", type:"fill", source:"blds", minzoom:15, paint:{"fill-color":"#d9dde2", "fill-outline-color":"#a9b0b8", "fill-opacity":ownDomain() ? 0.7 : 0.9}}, first && first.id);
-  map.addLayer({id:"pick-fill", type:"fill", source:"pick", filter:["==", ["geometry-type"], "Polygon"], paint:{"fill-color":"#2b5da0", "fill-opacity":0.35}});
-  map.addLayer({id:"pick-line", type:"line", source:"pick", filter:["==", ["geometry-type"], "Polygon"], paint:{"line-color":"#1d4580", "line-width":2.4}});
+  // 3D: every building at its height (stories x 3.4 m), the picked lot's outline, today's building and the biggest one allowed
+  ["env", "lotline", "nowB"].forEach(k => map.addSource(k, {type:"geojson", data:{type:"FeatureCollection", features:[]}}));
+  map.addLayer({id:"lotline", type:"line", source:"lotline", paint:{"line-color":"#1d4580", "line-width":2, "line-dasharray":[2, 1.5]}});
+  map.addLayer({id:"blds", type:"fill-extrusion", source:"blds", minzoom:15, paint:{"fill-extrusion-color":"#dfe2e6", "fill-extrusion-height":["*", ["max", ["get", "st"], 1], 3.4], "fill-extrusion-opacity":0.92}});
+  map.addLayer({id:"nowB", type:"fill-extrusion", source:"nowB", paint:{"fill-extrusion-color":"#7d8791", "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":0.8}});
+  map.addLayer({id:"env", type:"fill-extrusion", source:"env", paint:{"fill-extrusion-color":"#2b5da0", "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":0.4}});
   map.addLayer({id:"pick-pt", type:"circle", source:"pick", filter:["==", ["geometry-type"], "Point"], paint:{"circle-radius":7, "circle-color":"#e4002b", "circle-stroke-color":"#fff", "circle-stroke-width":2.5}});
   if (ownDomain() && first) map.addLayer({id:"zone-lbl", type:"symbol", source:"zones", minzoom:15.5, layout:{"text-field":["get", "z"], "text-size":11, "text-font":["Noto Sans Regular"], "symbol-placement":"point"}, paint:{"text-color":"#3d434b", "text-halo-color":"#fff", "text-halo-width":1.4}});
   map.on("moveend", drawZones);
   map.on("click", e => pickAt(e.lngLat.lng, e.lngLat.lat, true));
   map.getCanvas().style.cursor = "pointer";
+  // keyboard, same as the other tools: hold WASD / arrows to glide, Q/E spin, R/F tilt, +/- zoom (not while typing)
+  map.keyboard.disable();
+  const KEYS = new Set(); let keyRaf = 0, keyLast = 0;
+  const KEYMAP = {w:"up", arrowup:"up", s:"down", arrowdown:"down", a:"left", arrowleft:"left", d:"right", arrowright:"right", q:"spinL", e:"spinR", r:"tiltU", f:"tiltD", "+":"zoomIn", "=":"zoomIn", "-":"zoomOut", "_":"zoomOut"};
+  const keyLoop = now => {
+    const dt = Math.max(0, Math.min(0.05, (now - (keyLast || now)) / 1000)); keyLast = now;
+    if (!KEYS.size){ keyRaf = 0; keyLast = 0; return; }
+    let dx = 0, dy = 0; if (KEYS.has("left")) dx -= 1; if (KEYS.has("right")) dx += 1; if (KEYS.has("up")) dy -= 1; if (KEYS.has("down")) dy += 1;
+    const c = map.getCanvas(), speed = Math.min(c.clientWidth, c.clientHeight) * 0.9 * dt, opt = {};
+    if (dx || dy){ const q = map.project(map.getCenter()); opt.center = map.unproject([q.x + dx * speed, q.y + dy * speed]); }
+    if (KEYS.has("spinL")) opt.bearing = map.getBearing() - 60 * dt;
+    if (KEYS.has("spinR")) opt.bearing = map.getBearing() + 60 * dt;
+    if (KEYS.has("tiltU")) opt.pitch = Math.min(70, map.getPitch() + 40 * dt);
+    if (KEYS.has("tiltD")) opt.pitch = Math.max(0, map.getPitch() - 40 * dt);
+    if (KEYS.has("zoomIn")) opt.zoom = Math.min(map.getMaxZoom(), map.getZoom() + 1.2 * dt);
+    if (KEYS.has("zoomOut")) opt.zoom = Math.max(map.getMinZoom(), map.getZoom() - 1.2 * dt);
+    map.jumpTo(opt); keyRaf = requestAnimationFrame(keyLoop);
+  };
+  addEventListener("keydown", e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target, tag = (t.tagName || "").toLowerCase();
+    if (tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable || document.querySelector("dialog[open]") || (t.closest && t.closest(".sc-simmenu"))) return;
+    const a = KEYMAP[e.key.toLowerCase()]; if (!a) return;
+    e.preventDefault(); KEYS.add(a); if (!keyRaf) keyRaf = requestAnimationFrame(keyLoop);
+  });
+  addEventListener("keyup", e => { const a = KEYMAP[(e.key || "").toLowerCase()]; if (a) KEYS.delete(a); });
+  addEventListener("blur", () => KEYS.clear());
 }
 let drawTok = 0;
 async function drawZones(){
@@ -301,7 +331,7 @@ async function drawZones(){
       const zc = T.zn[z[0]]; fams.add(famKey(zc));
       zf.push({type:"Feature", properties:{z:zc, c:famColor(zc)}, geometry:{type:"Polygon", coordinates:z.slice(2).map(r => ringLL(T, r))}});
     }
-    for (const bl of T.b) bf.push({type:"Feature", properties:{}, geometry:{type:"Polygon", coordinates:[ringLL(T, bl[4])]}});
+    for (const bl of T.b) bf.push({type:"Feature", properties:{st: bl[1] || 1}, geometry:{type:"Polygon", coordinates:[ringLL(T, bl[4])]}});
   }
   map.getSource("zones").setData({type:"FeatureCollection", features:zf});
   map.getSource("blds").setData({type:"FeatureCollection", features:bf});
@@ -341,8 +371,9 @@ function show(T, k, fly){
   const feats = [{type:"Feature", geometry:{type:"Point", coordinates:[lon, lat]}}];
   if (B) feats.unshift({type:"Feature", geometry:{type:"Polygon", coordinates:[ringLL(T, B[4])]}});
   map.getSource("pick").setData({type:"FeatureCollection", features:feats});
-  if (fly) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 17), duration:matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 700, padding:padFor()});
-  else map.jumpTo({center:[lon, lat], zoom:17.2, padding:padFor()});
+  const tilt = map.getPitch() < 20 ? {pitch:55, bearing:-25} : {};
+  if (fly) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 17.6), ...tilt, duration:matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 800, padding:padFor()});
+  else map.jumpTo({center:[lon, lat], zoom:17.6, ...tilt, padding:padFor()});
   try { history.replaceState(null, "", "#" + lon.toFixed(5) + "," + lat.toFixed(5)); } catch (e){}
   $("panel").classList.remove("fresh", "min"); $("hint").textContent = "";
   // verdict
@@ -360,65 +391,62 @@ function show(T, k, fly){
     `${allowed === 1 ? "home" : "homes"} allowed on this lot by today's zoning${I.res && allowed === 1 && Math.floor(lot / I.mla) < 1 ? " (any existing lot can hold one house)" : ""}${I.upstairs ? ", above a ground-floor shop" : ""}${I.downtown ? ", estimated from its floor area" : ""}.`;
   const coach = coachText(I);
   const opts = [];
-  if (UI && !I.pd) opts.push(`<div class="opt up"><div class="on">Rezone to ${up}</div><div class="od">${UI.name}. The most common next step people ask the City Council for.</div><div class="oh">${fmt(upHomes)}<small>homes</small></div></div>`);
-  if (I.res && /^R[ST]/.test(I.z)) opts.push(`<div class="opt up"><div class="on">If Illinois passes the BUILD Act</div><div class="od">Two- and three-flats and backyard homes on lots now limited to houses, as Fix Chicago Housing models it.</div><div class="oh">${Math.max(allowed, 3)}<small>+ coach house</small></div></div>`);
-  if (I.fam === "R" && /^RS/.test(I.z)) opts.push(`<div class="opt up"><div class="on">Like Minneapolis (2040 plan)</div><div class="od">Up to three homes on every residential lot, citywide.</div><div class="oh">3<small>homes</small></div></div>`);
+  if (UI && !I.pd) opts.push(`<div class="opt up"><div class="on">Rezone to ${up}</div><div class="od">${UI.name}</div><div class="oh">${fmt(upHomes)}<small>homes</small></div></div>`);
+  if (I.res && /^R[ST]/.test(I.z)) opts.push(`<div class="opt up"><div class="on">If Illinois passes the BUILD Act</div><div class="od">Two- and three-flats plus a backyard home</div><div class="oh">${Math.max(allowed, 3)}<small>+ coach house</small></div></div>`);
+  if (I.fam === "R" && /^RS/.test(I.z)) opts.push(`<div class="opt up"><div class="on">Like Minneapolis (2040 plan)</div><div class="od">Three homes on every lot</div><div class="oh">3<small>homes</small></div></div>`);
   const pAddr = parseAddr(addr);
   const near = nearestStation(lon, lat);
   const parking = near && near.m <= 805 ? `<b>No parking required for new homes here.</b> This lot is ${fmt(near.m / 1609.34 * 10) / 10} miles from ${esc(near.name)}, inside the transit-served area where Chicago dropped parking requirements in 2025.` : `<b>Parking may be required.</b> This lot is more than half a mile from an L or Metra station; Chicago's 2025 rules also cover busy bus corridors, so check with the Department of Buildings.`;
+  const floorsOK = I.pd || I.nohomes || I.unknown ? 0 : envOf(I, lot).floors;
+  draw3d(T, B, stories, I, lot, lon, lat);
   $("out").innerHTML = `<div class="res">
     <p class="addr">${esc(addrTxt)}</p>
-    <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}${pin ? " · PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") : ""}</p>
-    <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sBuild">Build more</a><a href="#sBiz">Businesses</a><a href="#sRec">City records</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print or save</button></nav>
+    <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}</p>
+    <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sBuild">Build more</a><a href="#sBiz">Businesses</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print</button></nav>
     <section id="sOver" class="sec">
     ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${/^(RS|RT)/.test(I.z) ? "#16324f" : "#fff"}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
     <div class="big"><div class="n">${bigN}</div><div class="t">${bigT}</div></div>
     ${verdict}
-    ${I.pd || I.nohomes || I.unknown ? "" : massSvg(I, lot, B, stories, allowed) + `<div class="masskey"><span style="--k:#c7ccd2">Building there now</span><span style="--k:rgba(43,93,160,.35)">Largest building the rules allow</span></div>`}
+    ${floorsOK ? `<div class="masskey"><span style="--k:#9aa3ad">Building now</span><span style="--k:rgba(43,93,160,.45)">Biggest the rules allow: ${floorsOK} ${floorsOK === 1 ? "story" : "stories"}</span></div>` : ""}
     <div class="facts">
-      <div><b>${fmt(lot)} sq ft</b><span>Lot size, ${lotNote}</span></div>
-      <div><b>${now === null ? "Unknown" : fmt(now)}</b><span>Homes there now${now === null ? "" : ", " + nowNote}</span></div>
-      ${I.far ? `<div><b>${fmt(I.far * lot)} sq ft</b><span>Most floor area allowed (floor area ratio ${I.far})</span></div>` : ""}
-      ${I.pd || I.nohomes ? "" : `<div><b>${I.h ? I.h + " ft" : "No set limit"}</b><span>Height limit${I.h ? ", about " + Math.floor(I.h / 10.5) + " stories" : ", floor area caps it"}</span></div>`}
-      ${yr ? `<div><b>${yr}</b><span>Year built, Assessor</span></div>` : ""}
-      ${stories ? `<div><b>${stories} ${stories === 1 ? "story" : "stories"}</b><span>Building height, city data</span></div>` : ""}
+      <div><b>${fmt(lot)} sq ft</b><span>Lot${lotKnown && !lotEst ? "" : lotEst ? " (estimated)" : " (assumed)"}</span></div>
+      <div><b>${now === null ? "?" : fmt(now)}</b><span>Homes there now</span></div>
+      ${I.pd || I.nohomes ? "" : `<div><b>${I.h ? I.h + " ft" : "No limit"}</b><span>Height limit</span></div>`}
+      ${yr ? `<div><b>${yr}</b><span>Built</span></div>` : ""}
     </div>
     </section>
     <section id="sBuild" class="sec"><h2>Build more homes here</h2>
       <div class="cards2">
-        <div class="c2"><b>${I.pd ? "Set by the planned development" : I.nohomes ? "No homes allowed" : now !== null && allowed > now ? `Room for ${allowed - now} more ${allowed - now === 1 ? "home" : "homes"}` : "No extra homes under today's rules"}</b><span>${I.pd || I.nohomes ? "Any homes here need a zoning change." : now !== null && allowed > now ? "Without a zoning change: add a unit, convert, or rebuild bigger." : "More homes would need a zoning change (see below)."}</span></div>
+        <div class="c2"><b>${I.pd ? "Set by the planned development" : I.nohomes ? "No homes allowed" : now !== null && allowed > now ? `Room for ${allowed - now} more ${allowed - now === 1 ? "home" : "homes"}` : "No extra homes under today's rules"}</b><span>${I.pd || I.nohomes || !(now !== null && allowed > now) ? "Needs a zoning change." : "No zoning change needed."}</span></div>
         <div class="c2"><b>${coach.t}</b><span>${coach.d}</span></div>
-        <div class="c2"><b>${I.upstairs ? "Homes go above a shop" : I.fam === "B" || I.fam === "C" ? "Homes on the ground floor" : "Parking"}</b><span>${I.fam === "B" || I.fam === "C" ? (/^B2/.test(I.z) ? "B2 allows homes on any floor, by right." : "Ground-floor homes need special use approval here (Zoning Code §17-3-0207); upstairs homes are by right.") : parking}</span></div>
-        ${I.fam === "B" || I.fam === "C" ? `<div class="c2"><b>Parking</b><span>${parking}</span></div>` : ""}
+        <div class="c2"><b>${near && near.m <= 805 ? "No parking required" : "Parking may be required"}</b><span>${near && near.m <= 805 ? `${fmt(near.m / 1609.34 * 10) / 10} mi from ${esc(near.name)}.` : "More than ½ mile from the L or Metra."}</span></div>
+        ${I.fam === "B" || I.fam === "C" ? `<div class="c2"><b>${/^B2/.test(I.z) ? "Homes allowed on any floor" : "Homes go above the ground floor"}</b><span>${/^B2/.test(I.z) ? "B2 allows ground-floor homes." : "Ground-floor homes need special use approval."}</span></div>` : ""}
       </div>
       ${opts.length ? `<h3>What would change it</h3><div class="opts">${opts.join("")}</div>` : ""}
-      <p class="fine" style="margin-top:10px">Costs vary a lot: one Wicker Park coach house cost nearly $700,000 to build (<a href="https://chicago.suntimes.com/real-estate/2024/07/06/housing-advocates-support-expansion-chicago-adu-program-building-costs-high" target="_blank" rel="noopener">Sun-Times, 2024</a>). For grants and loans, see <a href="https://help.chicagocityscape.com/adufunding" target="_blank" rel="noopener">Chicago Cityscape's ADU funding guide</a>.</p>
     </section>
     <section id="sBiz" class="sec"><h2>Businesses allowed here</h2>${bizHtml(I)}</section>
-    <section id="sRec" class="sec"><h2>City records for this address</h2>
-      <div class="recs"><div><b id="rTif">…</b><span>Tax increment financing (TIF) district</span></div><div><b id="rViol">…</b><span>Open building violations</span></div><div><b id="rPerm">…</b><span>Building permits since 2006</span></div></div>
-      <div id="rList"></div>
-      <p class="fine">Live from the <a href="https://data.cityofchicago.org/d/ydr8-5enu" target="_blank" rel="noopener">permits</a>, <a href="https://data.cityofchicago.org/d/22u3-xenr" target="_blank" rel="noopener">violations</a> and <a href="https://data.cityofchicago.org/d/eejr-xtfb" target="_blank" rel="noopener">TIF</a> datasets on the City of Chicago Data Portal, matched by street address${pAddr ? "" : " (no address for this lot, so only the TIF check runs)"}.</p>
-    </section>
     <section id="sNext" class="sec"><h2>Next steps</h2>
       <div id="nAld" class="ald"></div>
       <ol class="steps">
-        <li><b>Talk to your alderperson first.</b> Zoning changes need a City Council vote, and the Council almost always follows the local alderperson (aldermanic prerogative).</li>
-        <li><b>File the application.</b> A zoning change starts with an application and a narrative filed with the City Clerk, often with a zoning attorney or architect.</li>
-        <li><b>Committee hearing, then the Council.</b> <span id="nHear">The Committee on Zoning hears it, then the full City Council votes.</span></li>
-        <li><b>Permits.</b> <span id="nLag">After approval, the Department of Buildings reviews plans and issues permits.</span></li>
+        <li><b>Talk to your alderperson.</b> The Council almost always follows them on zoning.</li>
+        <li><b>File with the City Clerk</b>, usually with a zoning attorney or architect. <span id="nHear"></span></li>
+        <li><b>Get permits</b> from the Department of Buildings. <span id="nLag"></span></li>
       </ol>
       <div class="recs" id="nNear"></div>
+      <div class="recs"><div><b id="rTif">…</b><span>TIF district</span></div><div><b id="rPerm">…</b><span>Permits here since 2006</span></div></div>
+      <div id="rList"></div>
       <div class="links">
-        <a href="https://www.chicago.gov/city/en/depts/bldgs.html" target="_blank" rel="noopener">Department of Buildings</a>
         <a href="/wards/${ward ? "#" + ward : ""}">Ward ${ward || ""} housing record</a>
-        <a href="/learn/#prerogative">How prerogative works</a>
         <a href="/housing/">Try rezoning in Fix Chicago Housing</a>
+        <button type="button" class="lnkbtn" id="srcBtn">Sources and limits</button>
       </div>
     </section>
-    <p class="fine">A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked; ask the Department of Buildings or a zoning attorney before you build. The drawing assumes a ${lotDims(lot)[1]}-foot-deep lot. Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a> (City of Chicago), <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, <a href="${CODE_USE}" target="_blank" rel="noopener">use table §17-3-0207</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a>, <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">building characteristics</a> and <a href="https://datacatalog.cookcountyil.gov/d/3723-97qp" target="_blank" rel="noopener">addresses</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">parking rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>.</p>
   </div>`;
-  $("out").querySelectorAll(".jump a").forEach(a => a.onclick = e => { e.preventDefault(); const t = $(a.getAttribute("href").slice(1)); if (t) $("out").scrollTo({top: t.offsetTop - 60, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
+  $("srcBtn").onclick = () => { const d = $("infoDlg"); d.innerHTML = `<h3>Sources and limits</h3><p>A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked. The 3D shape assumes a ${lotDims(lot)[1]}-foot-deep lot centered on the building. Lot size: ${esc(lotNote)}. Homes now: ${esc(nowNote)}.${pin ? " PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") + "." : ""}</p><p>Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a>, <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, <a href="${CODE_USE}" target="_blank" rel="noopener">use table §17-3-0207</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a> and <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">buildings</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">parking rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>, city <a href="https://data.cityofchicago.org/d/ydr8-5enu" target="_blank" rel="noopener">permits</a> and <a href="https://data.cityofchicago.org/d/eejr-xtfb" target="_blank" rel="noopener">TIF districts</a>. Coach houses can be costly: one in Wicker Park cost nearly $700,000 (<a href="https://chicago.suntimes.com/real-estate/2024/07/06/housing-advocates-support-expansion-chicago-adu-program-building-costs-high" target="_blank" rel="noopener">Sun-Times</a>); see <a href="https://help.chicagocityscape.com/adufunding" target="_blank" rel="noopener">Chicago Cityscape's ADU funding guide</a>.</p><form method="dialog"><button class="sc-btn">Close</button></form>`; d.showModal(); };
+  // jump links: scroll the panel so the section's heading lands just under the sticky bar
+  $("out").querySelectorAll(".jump a").forEach(a => a.onclick = e => { e.preventDefault(); const t = $(a.getAttribute("href").slice(1)), out = $("out"), bar = out.querySelector(".jump"); if (!t) return;
+    const y = t.getBoundingClientRect().top - out.getBoundingClientRect().top + out.scrollTop - (bar ? bar.offsetHeight : 0) - 4;
+    out.scrollTo({top: Math.max(0, y), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
   $("lotPrint").onclick = () => window.print();
   enrich(lon, lat, pAddr, ward ? +ward : null);
   $("out").scrollTop = 0;
@@ -437,13 +465,13 @@ const UCOL = ["B1", "B2", "B3", "C1", "C2", "C3"];
 function bizHtml(I){
   const z = (I.z || "").toUpperCase(), base = (z.match(/^(B[123]|C[123])/) || [])[1];
   if (base){
-    const k = UCOL.indexOf(base), lab = {P:"Allowed", S:"Needs special use approval", "-":"Not allowed"}, cls = {P:"ok", S:"maybe", "-":"no"};
-    return `<p class="how">In <b>${esc(I.z)}</b> (${esc(base)} rules), from the city's use table. "Special use" means a hearing at the Zoning Board of Appeals.</p><div class="uses">${USES.map(([n, c]) => { const v = c[k] || "-"; return `<div class="${cls[v]}"><span>${n}</span><b>${lab[v]}</b></div>`; }).join("")}</div>`;
+    const k = UCOL.indexOf(base), lab = {P:"Allowed", S:"Needs approval", "-":"No"}, cls = {P:"ok", S:"maybe", "-":"no"};
+    return `<p class="how">"Needs approval" means a Zoning Board of Appeals hearing.</p><div class="uses">${USES.map(([n, c]) => { const v = c[k] || "-"; return `<div class="${cls[v]}"><span>${n}</span><b>${lab[v]}</b></div>`; }).join("")}</div>`;
   }
-  if (I.fam === "R") return `<p class="how">This is a residential district. It allows homes and a few community uses such as schools and places of worship; shops, restaurants and offices need a zoning change. Small businesses run from home are allowed within the home-occupation rules.</p>`;
-  if (/^D[CXRS]/.test(z)) return `<p class="how">This is a downtown district. DC and DX allow most shops, restaurants, offices, hotels and homes; DR is mainly residential; DS allows service and some industrial uses. See the downtown use table in the Zoning Ordinance (Chapter 17-4).</p>`;
-  if (/^(M|PMD)/.test(z)) return `<p class="how">This is a manufacturing district. It allows industrial uses and many commercial ones, but not homes.</p>`;
-  if (I.pd) return `<p class="how">This lot is in a planned development, so its own ordinance lists the uses allowed.</p>`;
+  if (I.fam === "R") return `<p class="how">Homes only, plus schools, places of worship and small home businesses. Shops and offices need a zoning change.</p>`;
+  if (/^D[CXRS]/.test(z)) return `<p class="how">Downtown: most shops, restaurants, offices, hotels and homes are allowed (DR is mostly homes).</p>`;
+  if (/^(M|PMD)/.test(z)) return `<p class="how">Industry and many businesses. No homes.</p>`;
+  if (I.pd) return `<p class="how">Set by this site's planned development.</p>`;
   return `<p class="how">We couldn't match this district to a use table.</p>`;
 }
 function parseAddr(a){ const m = (a || "").toUpperCase().match(/^(\d+)[A-Z-]*\s+([NSEW])\s+(.+)$/); return m ? {num:m[1], dir:m[2], street:m[3].replace(/\s+/g, " ").trim()} : null; }
@@ -462,44 +490,40 @@ async function enrich(lon, lat, A, ward){
   fetch(SODA + "eejr-xtfb.json?$select=name,expiration&$where=" + encodeURIComponent(`intersects(the_geom,'POINT (${lon} ${lat})')`)).then(r => r.json()).then(d => { if (!live()) return; $("rTif").textContent = d && d[0] ? d[0].name + (d[0].expiration ? ", ends " + new Date(d[0].expiration).getFullYear() : "") : "None"; }).catch(() => { $("rTif").textContent = "Not available"; });
   if (A){
     const where = `street_number='${sq(A.num)}' AND street_direction='${sq(A.dir)}' AND street_name='${sq(A.street)}'`;
-    Promise.all([
-      fetch(SODA + "ydr8-5enu.json?$select=permit_type,issue_date,work_description,reported_cost&$order=issue_date%20DESC&$limit=200&$where=" + encodeURIComponent(where)).then(r => r.json()),
-      fetch(SODA + "22u3-xenr.json?$select=violation_date,violation_status,violation_description&$order=violation_date%20DESC&$limit=200&$where=" + encodeURIComponent(`address='${sq(A.num + " " + A.dir + " " + A.street)}'`)).then(r => r.json())
-    ]).then(([P, V]) => {
+    fetch(SODA + "ydr8-5enu.json?$select=permit_type,issue_date,work_description&$order=issue_date%20DESC&$limit=200&$where=" + encodeURIComponent(where)).then(r => r.json()).then(P => {
       if (!live()) return;
-      P = Array.isArray(P) ? P : []; V = Array.isArray(V) ? V : [];
-      const open = V.filter(v => v.violation_status === "OPEN");
-      $("rPerm").textContent = P.length >= 200 ? "200+" : String(P.length); $("rViol").textContent = String(open.length);
-      const tidy = t => (t || "").toLowerCase().replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase()).slice(0, 140);
-      $("rList").innerHTML = (P.length ? `<h3>Latest permits</h3><div class="rl">${P.slice(0, 6).map(p => `<div><span>${day(p.issue_date)}</span><b>${esc(tidy((p.permit_type || "").replace(/^PERMIT - /, "")))}</b><small>${esc(tidy(p.work_description))}</small></div>`).join("")}</div>` : "") +
-        (open.length ? `<h3>Open violations</h3><div class="rl">${open.slice(0, 5).map(v => `<div><span>${day(v.violation_date)}</span><b>${esc(tidy(v.violation_description))}</b></div>`).join("")}</div>` : "");
-    }).catch(() => { if (!live()) return; $("rPerm").textContent = "Not available"; $("rViol").textContent = "Not available"; });
-  } else { $("rPerm").textContent = "–"; $("rViol").textContent = "–"; }
+      P = Array.isArray(P) ? P : [];
+      $("rPerm").textContent = P.length >= 200 ? "200+" : String(P.length);
+      const tidy = t => (t || "").toLowerCase().replace(/(^|[.!?]\s+)([a-z])/g, (m, a, c) => a + c.toUpperCase()).slice(0, 110);
+      $("rList").innerHTML = P.length ? `<div class="rl">${P.slice(0, 3).map(p => `<div><span>${day(p.issue_date)}</span><b>${esc(tidy((p.permit_type || "").replace(/^PERMIT - /, "")))}</b><small>${esc(tidy(p.work_description))}</small></div>`).join("")}</div>` : "";
+    }).catch(() => { if (live()) $("rPerm").textContent = "Not available"; });
+  } else $("rPerm").textContent = "–";
   // alderperson, next zoning hearing, homes going up nearby
   if (ward) fetch("/wards/data/wards.json").then(r => r.json()).then(W => { if (!live()) return; const w = W.wards[ward - 1]; if (!w) return; const a = w.ald, nm = a.name.replace(/^(.*?), (.*)$/, "$2 $1");
     $("nAld").innerHTML = `${a.photo ? `<img src="${esc(a.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<div><b>Ald. ${esc(nm)}, Ward ${ward}</b><span>${[a.phone && "Ward office " + esc(a.phone), a.email && `<a href="mailto:${esc(a.email)}">${esc(a.email)}</a>`].filter(Boolean).join(" · ")}</span></div>`; }).catch(() => {});
   fetch("/wards/data/meetings.json").then(r => r.json()).then(M => { if (!live()) return; const z = M.meetings.find(x => /Zoning/.test(x.b) && Date.parse(x.d) > Date.now() && !/cancel/i.test(x.st));
-    if (z) $("nHear").innerHTML = `The Committee on Zoning hears it, then the full City Council votes. Next Zoning Committee hearing: <a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(z.id)}" target="_blank" rel="noopener">${new Date(z.d).toLocaleDateString("en-US", {timeZone:"America/Chicago", weekday:"long", month:"long", day:"numeric"})}</a>.`; }).catch(() => {});
+    if (z) $("nHear").innerHTML = `Next zoning hearing: <a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(z.id)}" target="_blank" rel="noopener">${new Date(z.d).toLocaleDateString("en-US", {timeZone:"America/Chicago", weekday:"long", month:"long", day:"numeric"})}</a>.`; }).catch(() => {});
   fetch("/tracker/data.json").then(r => r.json()).then(T => { if (!live()) return;
     const y0 = T.ytd.year - 3; let n = 0, h = 0;
     for (const p of T.points) if (p[3] >= y0 && Math.hypot((p[0] - lon) * KX, (p[1] - lat) * KY) <= 805){ n++; h += p[2]; }
     const lag = T.zoning && T.zoning.lag_days_median;
-    if (lag) $("nLag").textContent = `After approval, the Department of Buildings reviews plans and issues permits. For recent Chicago rezonings, the median time from approval to a building permit was about ${Math.round(lag / 30)} months (Permit tracker).`;
-    $("nNear").innerHTML = `<div><b>${fmt(h)}</b><span>new homes permitted within ½ mile since ${y0}</span></div><div><b>${fmt(n)}</b><span>new buildings permitted within ½ mile since ${y0}</span></div><div><a href="/tracker/#near">See them on the Permit tracker</a></div>`; }).catch(() => {});
+    if (lag) $("nLag").textContent = `Typically about ${Math.round(lag / 30)} months after a rezoning.`;
+    $("nNear").innerHTML = `<div><b>${fmt(h)}</b><span>homes permitted within ½ mile since ${y0}</span></div><div><b>${fmt(n)}</b><span>buildings</span></div><div><a href="/tracker/#near">See them</a></div>`; }).catch(() => {});
 }
 function coachText(I){
-  if (I.nohomes || I.pd || I.unknown) return {t:"Coach house: no", d:"Only on lots where homes are allowed."};
-  if (/^RS/.test(I.z)) return {t:"Coach house: depends on the block", d:"Since April 2026, RS lots can add a coach house or basement home only inside the areas alderpeople opted in (Zoning Code §17-7-0574)."};
-  return {t:"Coach house or basement home: allowed", d:"Since April 1, 2026, RT, RM, B and C lots can add one by right (rules on size and placement apply)."};
+  if (I.nohomes || I.pd || I.unknown) return {t:"Coach house: no", d:"Only where homes are allowed."};
+  if (/^RS/.test(I.z)) return {t:"Coach house: depends on the block", d:"Only where the alderperson opted in (since April 2026)."};
+  return {t:"Coach house: allowed", d:"Or a basement home, by right since April 2026."};
 }
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c])); }
 function padFor(){ const ph = matchMedia("(max-width:859px)").matches; return ph ? {top:20, bottom:Math.round(innerHeight * 0.5), left:20, right:20} : {left:440, top:40, right:40, bottom:40}; }
 
 /* ---------- the drawing: today's building and the biggest one the rules allow, on the lot ---------- */
 function lotDims(lot){ const D = lot <= 6250 ? 125 : Math.min(250, Math.round(Math.sqrt(lot * 2) / 5) * 5); return [lot / D, D]; }
-function massSvg(I, lot, B, stories, allowed){
+// the biggest building the rules allow (simplified setbacks): residential front 12% of depth up to 15 ft, rear 30% (RS 28%)
+// up to 50 ft, sides 20% of width (RS-1/2 30%); business and commercial rear 30% up to 30 ft. Feet.
+function envOf(I, lot){
   const [W, D] = lotDims(lot);
-  // setbacks (simplified): residential front 12% of depth up to 15 ft, rear 30% (RS 28%) up to 50 ft, sides 20% of width (RS-1/2 30%)
   let f = 0, r = 0, s = 0;
   if (I.fam === "R"){ f = Math.min(15, 0.12 * D); r = Math.min(50, (/^RS/.test(I.z) ? 0.28 : 0.3) * D); s = (/^RS-[12]/.test(I.z) ? 0.3 : 0.2) * W; if (/^RM-6/.test(I.z)) s = 0; }
   else if (I.fam === "B" || I.fam === "C"){ r = Math.min(30, 0.3 * D); }
@@ -507,38 +531,28 @@ function massSvg(I, lot, B, stories, allowed){
   const fh = 10.5, maxFl = I.h ? Math.floor(I.h / fh) : 99;
   const floors = Math.max(1, Math.min(maxFl, Math.ceil(I.far * lot / foot - 0.15)));
   const ed = Math.min(fd, I.far * lot / floors / fw);
-  const env = {x:s / 2, y:D - f - ed, w:fw, d:ed, h:floors * fh};   // the street is along y = D, nearest the viewer
-  // the building now: its footprint area drawn as a box at the front of the lot
-  let cur = null;
-  if (B && B[0]){ const bw = Math.min(W - 2, Math.max(14, Math.sqrt(B[0] * 0.45))), bd = Math.min(D - 4, B[0] / bw); cur = {x:(W - bw) / 2, y:Math.max(0, D - Math.min(f, D - bd) - bd), w:bw, d:bd, h:Math.max(1, stories || 1) * fh}; }
-  // isometric projection, fitted to the box
-  const c30 = Math.cos(Math.PI / 6), s30 = 0.5;
-  const P = (x, y, z) => [(x - y) * c30, (x + y) * s30 - z];
-  const pts = [[0, 0, 0], [W, 0, 0], [W, D + 6, 0], [0, D + 6, 0], [env.x, env.y, env.h], [env.x + env.w, env.y + env.d, env.h], [env.x + env.w, env.y, env.h], [env.x, env.y + env.d, env.h]];
-  if (cur) pts.push([cur.x, cur.y, cur.h]);
-  const pr = pts.map(p => P(...p)), minX = Math.min(...pr.map(p => p[0])), maxX = Math.max(...pr.map(p => p[0])), minY = Math.min(...pr.map(p => p[1])), maxY = Math.max(...pr.map(p => p[1]));
-  const VW = 360, VH = 210, sc = Math.min((VW - 30) / (maxX - minX), (VH - 24) / (maxY - minY));
-  const T = (x, y, z) => { const q = P(x, y, z); return ((q[0] - minX) * sc + (VW - (maxX - minX) * sc) / 2).toFixed(1) + "," + ((q[1] - minY) * sc + 12).toFixed(1); };
-  const poly = (ps, fill, stroke, sw = 1, dash = "") => `<polygon points="${ps.map(p => T(...p)).join(" ")}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash ? `stroke-dasharray="${dash}"` : ""} stroke-linejoin="round"/>`;
-  const boxF = (b, top, left, right, stroke, sw, dash) => {
-    const {x, y, w, d, h} = b;
-    // visible faces in this view: top, the front-left face (y = y), the front-right face (x = x + w)... the viewer is at +x,+y looking back, so draw y+d and x+w faces
-    return poly([[x, y + d, 0], [x + w, y + d, 0], [x + w, y + d, h], [x, y + d, h]], left, stroke, sw, dash)
-         + poly([[x + w, y, 0], [x + w, y + d, 0], [x + w, y + d, h], [x + w, y, h]], right, stroke, sw, dash)
-         + poly([[x, y, h], [x + w, y, h], [x + w, y + d, h], [x, y + d, h]], top, stroke, sw, dash);
-  };
-  let svg = `<svg class="mass" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Drawing of the lot, today's building and the largest building the rules allow">`;
-  svg += poly([[0, 0, 0], [W, 0, 0], [W, D, 0], [0, D, 0]], "#eef1ea", "#c9cec5", 1);
-  // the street side, so the drawing reads: a sidewalk strip at y = 0
-  svg += poly([[0, D, 0], [W, D, 0], [W, D + 6, 0], [0, D + 6, 0]], "#f7f8f5", "#d5d9de", 0.8);
-  // the allowed envelope's faces first, today's building over them, then the envelope's dashed outline on top of both
-  svg += boxF(env, "rgba(43,93,160,.14)", "rgba(43,93,160,.2)", "rgba(43,93,160,.26)", "none", 0);
-  if (cur) svg += boxF(cur, "#e3e6ea", "#b9c0c8", "#cdd2d8", "#7d8791", 1);
-  svg += boxF(env, "none", "none", "none", "#2b5da0", 1.5, "5 3");
-  svg += `<text x="${VW - 6}" y="${VH - 6}" text-anchor="end" font-size="11" fill="#5a6069" font-family="Instrument Sans,system-ui">${floors} ${floors === 1 ? "story" : "stories"} allowed</text>`;
-  return svg + "</svg>";
+  return {W, D, f, fw, ed, floors, fh};
 }
-
+// 3D on the map: the lot (dashed), today's building (dark) and the biggest building allowed (blue glass). The lot is drawn
+// around the building, its long side along the building's longest edge; the street side isn't known, so it's centered.
+function draw3d(T, B, stories, I, lot, lon, lat){
+  const empty = {type:"FeatureCollection", features:[]};
+  if (!map.getSource("env")) return;
+  const kx = 111320 * Math.cos(lat * Math.PI / 180), ky = 110574;
+  let cx = lon, cy = lat, ux = 0, uy = 1;                        // u = along the lot's depth
+  if (B){ const R = ringLL(T, B[4]); cx = R.reduce((t, p) => t + p[0], 0) / R.length; cy = R.reduce((t, p) => t + p[1], 0) / R.length; let best = 0;
+    for (let i = 0; i < R.length - 1; i++){ const dx = (R[i + 1][0] - R[i][0]) * kx, dy = (R[i + 1][1] - R[i][1]) * ky, L = Math.hypot(dx, dy); if (L > best){ best = L; ux = dx / L; uy = dy / L; } } }
+  const vx = uy, vy = -ux, ft = 0.3048;
+  const rect = (w, d, off) => { const pts = [[-w / 2, -d / 2], [w / 2, -d / 2], [w / 2, d / 2], [-w / 2, d / 2], [-w / 2, -d / 2]].map(([a, b2]) => [cx + (a * vx + (b2 + off) * ux) / kx, cy + (a * vy + (b2 + off) * uy) / ky]); return pts; };
+  const feat = (ring, props) => ({type:"Feature", properties:props || {}, geometry:{type:"Polygon", coordinates:[ring]}});
+  if (I.pd || I.nohomes || I.unknown){ ["env", "lotline"].forEach(k => map.getSource(k).setData(empty)); }
+  else {
+    const E = envOf(I, lot);
+    map.getSource("env").setData({type:"FeatureCollection", features:[feat(rect(E.fw * ft, E.ed * ft, 0), {h: E.floors * E.fh * ft})]});
+    map.getSource("lotline").setData({type:"FeatureCollection", features:[feat(rect(E.W * ft, E.D * ft, 0))]});
+  }
+  map.getSource("nowB").setData(B ? {type:"FeatureCollection", features:[feat(ringLL(T, B[4]), {h: Math.max(1, stories || 1) * 3.4})]} : empty);
+}
 /* ---------- address search: street names, then house numbers (tools/prep_lots.py) ---------- */
 let STREETS = null, SHARDS = new Map();
 const ABBR = {AVENUE:"AVE", AV:"AVE", STREET:"ST", BOULEVARD:"BLVD", ROAD:"RD", PLACE:"PL", DRIVE:"DR", COURT:"CT", PARKWAY:"PKWY", TERRACE:"TER", LANE:"LN", HIGHWAY:"HWY", SQUARE:"SQ", NORTH:"N", SOUTH:"S", EAST:"E", WEST:"W", SAINT:"ST", CIRCLE:"CIR", PLAZA:"PLZ", EXPRESSWAY:"EXPY", WAY:"WAY"};
