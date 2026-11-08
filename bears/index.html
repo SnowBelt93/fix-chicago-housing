@@ -118,6 +118,21 @@ dialog.sc-info{max-width:520px}
 .pk b{font-size:13.5px;font-weight:600} .pk span{font-size:12px;color:var(--sc-mute)}
 .pk:disabled{opacity:.45;cursor:default}
 @media (hover:hover){ .pk:not(:disabled){transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .pk:not(:disabled):hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+.ptile{border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px;margin-top:8px}
+.ptile > b{display:block;font-size:22px;font-weight:600;letter-spacing:-.01em} .ptile > b span{font-size:15px;font-weight:500;color:var(--sc-mute)}
+.ptile > span{display:block;font-size:13px;color:var(--sc-ink2);margin-top:2px} .ptile.bad{border-color:#f4c3cc;background:#fff7f8}
+.ptile .small{margin-top:6px}
+.pbar{display:flex;height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:8px}
+.tradeoff{font-size:14px;line-height:1.45;background:var(--sc-chip);border-radius:12px;padding:10px 12px;margin:10px 0}
+.ppop b{display:block;font-size:14px;margin-bottom:6px} .ppop p{font-size:13px;margin:0 0 8px}
+.pchoice{display:flex;flex-direction:column;gap:4px}
+.pchoice button{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;text-align:left;font:inherit;font-size:13.5px;padding:7px 8px;border:1px solid var(--sc-line);border-radius:10px;background:#fff;cursor:pointer;color:var(--sc-ink)}
+.pchoice button i{width:12px;height:12px;border-radius:3px;border:1px solid #c3c8ce}
+.pchoice button span{font-size:12px;color:var(--sc-mute)}
+.pchoice button[aria-pressed="true"]{border-color:var(--sc-navy);box-shadow:inset 0 0 0 1.5px var(--sc-navy)}
+.maplibregl-popup-content{border-radius:14px;padding:12px 14px 10px;box-shadow:var(--sc-shadow)}
+.satbtn{width:auto !important;padding:0 10px !important;font:600 12.5px var(--sc-font) !important;color:var(--sc-ink2)}
+.satbtn[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important}
 .mprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
 .mpseg{font-size:12.5px} .mpseg button{padding:6px 10px}
 .pkey{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--sc-mute);margin-top:6px}
@@ -395,6 +410,12 @@ async function initMap(){
     map.addSource("city", {type:"geojson", data:{type:"FeatureCollection", features:NET.cityOutline.map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))}});
     map.addLayer({id:"city", type:"line", source:"city", paint:{"line-color":"#9aa3ad", "line-width":1}});
   }
+  // satellite photos (USGS National Map orthoimagery, public domain), off until you turn them on
+  map.addSource("sat", {type:"raster", tiles:["https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}"], tileSize:256, maxzoom:16, attribution:"Imagery: USGS The National Map"});
+  map.addLayer({id:"sat", type:"raster", source:"sat", layout:{visibility:"none"}, paint:{"raster-fade-duration":0}});
+  // the buildings around every site, in 3D (base map data; our domain only)
+  if (map.getSource("openmaptiles")) map.addLayer({id:"bld3d", type:"fill-extrusion", source:"openmaptiles", "source-layer":"building", minzoom:13,
+    paint:{"fill-extrusion-color":"#d5d9de", "fill-extrusion-height":["coalesce", ["get", "render_height"], 6], "fill-extrusion-base":["coalesce", ["get", "render_min_height"], 0], "fill-extrusion-opacity":0.85}});
   // land that fits
   map.addSource("land", {type:"geojson", data:{type:"FeatureCollection", features:LAND.parts.map((p, i) => ({type:"Feature", id:i, properties:{a:p[0]}, geometry:{type:"Polygon", coordinates:p[3]}}))}});
   map.addLayer({id:"land", type:"fill", source:"land", paint:{"fill-color":"#3f9c5a", "fill-opacity":["interpolate", ["linear"], ["zoom"], 9, 0.32, 14, 0.18]}});
@@ -419,9 +440,14 @@ async function initMap(){
   map.addLayer({id:"trains", type:"line", source:"trains", layout:{"line-cap":"round"}, paint:{"line-color":"#2b5da0", "line-width":["interpolate", ["linear"], ["zoom"], 9, 4, 14, 9]}});
   map.addLayer({id:"traffic", type:"line", source:"traffic", layout:{"line-cap":"round"}, paint:{"line-color":["step", ["get", "v"], "#3f9c5a", 0.7, "#e0a100", 1, "#d9531e", 1.4, "#b3001e"], "line-width":["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "mw"], 1], 3, 1.6], 14, ["case", ["==", ["get", "mw"], 1], 8, 4]], "line-opacity":0.85}});
   map.addLayer({id:"fp", type:"fill-extrusion", source:"fp", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-base":["get", "b"], "fill-extrusion-opacity":0.95}});
-  for (const id of ["plan", "planpts", "planln"]) map.addSource(id, {type:"geojson", data:{type:"FeatureCollection", features:[]}});
-  map.addLayer({id:"plan-x", type:"fill-extrusion", source:"plan", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":0.92}});
-  map.addLayer({id:"plan-l", type:"line", source:"plan", paint:{"line-color":["case", ["get", "bad"], "#c8102e", ["get", "sel"], "#1a1d21", "#ffffff"], "line-width":["case", ["any", ["get", "bad"], ["get", "sel"]], 3, 1.5]}});
+  for (const id of ["plan", "planpts", "planln", "planst"]) map.addSource(id, {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  const W = (a, b) => ["interpolate", ["exponential", 2], ["zoom"], 12, a, 17, b];   // a ~20 m street, in pixels by zoom
+  map.addLayer({id:"planst-c", type:"line", source:"planst", layout:{"line-cap":"round"}, paint:{"line-color":"#c9ced4", "line-width":W(1.6, 50)}});
+  map.addLayer({id:"planst", type:"line", source:"planst", layout:{"line-cap":"round"}, paint:{"line-color":"#ffffff", "line-width":W(1.1, 40)}});
+  map.addLayer({id:"plan-ef", type:"fill", source:"plan", filter:["==", ["get", "k"], "empty"], paint:{"fill-color":"#ffffff", "fill-opacity":0.35}});
+  map.addLayer({id:"plan-e", type:"line", source:"plan", filter:["==", ["get", "k"], "empty"], paint:{"line-color":"#8a93a0", "line-width":1.5, "line-dasharray":[2, 2]}});
+  map.addLayer({id:"plan-x", type:"fill-extrusion", source:"plan", filter:["!=", ["get", "k"], "empty"], paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":0.95}});
+  map.addLayer({id:"plan-l", type:"line", source:"plan", filter:["!=", ["get", "k"], "empty"], paint:{"line-color":["case", ["get", "bad"], "#c8102e", "#ffffff"], "line-width":["case", ["get", "bad"], 3, 1.2]}});
   map.addLayer({id:"planln", type:"line", source:"planln", paint:{"line-color":"#d9822b", "line-width":2.5, "line-dasharray":[2, 1.5]}});
   map.addLayer({id:"planpts", type:"circle", source:"planpts", paint:{"circle-radius":9, "circle-color":["match", ["get", "t"], "stop", "#2b5da0", "#d9822b"], "circle-stroke-color":["case", ["get", "bad"], "#c8102e", ["get", "sel"], "#1a1d21", "#ffffff"], "circle-stroke-width":3}});
   map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 2.6, 11, 3.6, 15, 6], "circle-stroke-color":"#fff", "circle-stroke-width":0.8, "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
@@ -437,9 +463,16 @@ async function initMap(){
   map.on("click", "sites", e => { if (mode === "plan") return; const id = e.features[0].properties.id; if (id === "pin") openPin(); else openSite(id); });
   map.on("mouseenter", "sites", () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", "sites", () => map.getCanvas().style.cursor = "");
   map.on("click", e => { if (mode !== "pin") return; if (map.queryRenderedFeatures(e.point, {layers:["sites"]}).length) return; placePin(e.lngLat.lng, e.lngLat.lat); });
+  // satellite on or off (remembered)
+  class SatCtl { onAdd(){ const d = document.createElement("div"); d.className = "maplibregl-ctrl maplibregl-ctrl-group"; d.innerHTML = '<button type="button" class="satbtn" aria-pressed="false" title="Satellite view">Satellite</button>'; this.b = d.firstChild; this.b.onclick = () => setSat(this.b.getAttribute("aria-pressed") !== "true"); return d; } onRemove(){} }
+  map.addControl(new SatCtl(), "top-right");
+  try { if (localStorage.getItem("sc-bears-sat") === "1") setSat(true); } catch (e) {}
   bindPlanDrag(); drawSites(); legend();
   const keys = () => window.scKeyCam && scKeyCam(scKeyCam.maplibre(map)); if (window.scKeyCam) keys(); else addEventListener("DOMContentLoaded", keys);
 }
+function setSat(on){ map.setLayoutProperty("sat", "visibility", on ? "visible" : "none"); const b = document.querySelector(".satbtn"); if (b) b.setAttribute("aria-pressed", String(on));
+  if (map.getLayer("bld3d")) map.setPaintProperty("bld3d", "fill-extrusion-opacity", on ? 0.55 : 0.85);
+  try { localStorage.setItem("sc-bears-sat", on ? "1" : "0"); } catch (e) {} }
 function drawSites(){
   const f = SITES.map(s => ({type:"Feature", properties:{id:s.id, n:s.name, c:s.c, on:cur === s.id}, geometry:{type:"Point", coordinates:s.ll}}));
   if (pin) f.push({type:"Feature", properties:{id:"pin", n:"Your pin", c:"#1a1d21", on:cur === "pin"}, geometry:{type:"Point", coordinates:[pin.lon, pin.lat]}});
@@ -557,21 +590,24 @@ function placePin(lon, lat, quiet){
   setPinMode(false); openPin(); if (!quiet) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 13.5), pitch:45, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
 }
 
-/* ---------- plan the site: move the stadium, add parking, homes, a plaza, a train stop or shuttle buses ---------- */
-// Sizes are typical, not from any team's plan. Spaces: surface lots at A.sqm a space; garages 6 levels at the same.
-// Homes: 5 floors over shops at 1,026 sq ft (95.3 m²) a home, the housing simulator's assumption. All listed under How we measure.
-const SQM_HOME = 95.3;
+/* ---------- plan the site: a master plan of streets and blocks around the stadium ---------- */
+// The surrounding streets are carried into the site; where they're more than ~260 m apart, new streets split the land into
+// blocks about 160 m apart. Each block gets one use. Sizes and densities are assumptions, listed under How we measure.
+const SQM_HOME = 95.3;          // 1,026 sq ft a home (the housing simulator's assumption)
 const KINDS = {
-  lot:   {n:"Surface lot", w:300, h:180, c:"#aeb5bd", ht:0.6, sp:a => a / A.sqm, code:"l"},
-  gar:   {n:"Parking garage", w:90, h:60, c:"#6b7280", ht:18, sp:a => a * 6 / A.sqm, code:"g"},
-  home:  {n:"Homes over shops", w:80, h:40, c:"#1f7a8c", ht:21, homes:a => a * 5 / SQM_HOME, code:"h"},
-  plaza: {n:"Tailgate plaza", w:120, h:80, c:"#8cbf7a", ht:0.4, code:"z"},
+  gar:   {n:"Parking garage", c:"#6b7280", ht:16, sp:a => a * 0.9 * 5 / A.sqm, code:"g"},          // 5 levels over 90% of the block
+  lot:   {n:"Surface lot", c:"#aeb5bd", ht:0.6, sp:a => a / A.sqm, code:"l"},
+  home:  {n:"Homes over shops", c:"#1f7a8c", ht:21, homes:a => a * 0.6 * 5 / SQM_HOME, code:"h"},  // 60% of the block, 5 floors over shops
+  plaza: {n:"Tailgate plaza", c:"#8cbf7a", ht:0.4, code:"z"},
+  empty: {n:"Empty for now", c:null, ht:0, code:"e"},
   stop:  {n:"Game-day train stop", code:"s"},
   bus:   {n:"Shuttle buses", code:"b"},
 };
+const BLOCK = {gap:260, step:160, half:10};   // new streets where existing ones are > 260 m apart, about every 160 m; 20 m-wide streets
 const BUS = {fleet:40, seats:60, v:8, load:600};   // assumptions: 40 buses of 60 fans, ~29 km/h on game day, 10 minutes to load and unload
-const PLAN_R = 1609;                               // pieces count within a mile of the stadium (the parking measure's radius)
-let PLAN = null, PLANS = {}, SEGS = [], SEGG = new Map(), SEGAT = null, PSEL = -1;
+const PLAN_R = 1609;                               // the plan reaches a mile from the stadium (the parking measure's radius)
+const MP = {park:[1, 0.5, 0.25], parkN:["Every car", "Half the cars", "A quarter"], homes:[0, 2, 6], homesN:["None", "A few blocks", "A neighborhood"]};
+let PLAN = null, PLANS = {}, SEGS = [], SEGG = new Map(), SEGAT = null, MASK = null, POP = null;
 const allLines = () => NET ? [...NET.lLines.map(l => ({l, kind:"L"})), ...NET.metraLines.map(l => ({l, kind:"Metra"})), ...NET.southShore.lines.map(l => ({l, kind:"South Shore"}))] : [];
 
 // streets and tracks around the plan, as [ax, ay, bx, by, half width, major] in meters
@@ -581,8 +617,8 @@ async function planSegs(x, y){
   await loadRoads();
   const out = [], R2 = 2600 ** 2, near = (ax, ay, bx, by) => (ax - x) ** 2 + (ay - y) ** 2 < R2 || (bx - x) ** 2 + (by - y) ** 2 < R2;
   const R = ROAD; for (let e = 0; e < R.E.a.length; e++){ const a = R.E.a[e], b = R.E.b[e]; if (near(R.X[a], R.Y[a], R.X[b], R.Y[b])) out.push([R.X[a], R.Y[a], R.X[b], R.Y[b], R.E.mw[e] ? 18 : 11, 1]); }
-  for (const {l} of allLines()) for (const p of l.paths) for (let i = 1; i < p.length; i++){ const [ax, ay] = xy(p[i - 1][0], p[i - 1][1]), [bx, by] = xy(p[i][0], p[i][1]); if (near(ax, ay, bx, by)) out.push([ax, ay, bx, by, 8, 1]); }
-  // Chicago's local streets: the street simulator's OpenStreetMap tiles (0.01° each; none outside the city)
+  for (const {l} of allLines()) for (const p of l.paths) for (let i = 1; i < p.length; i++){ const [ax, ay] = xy(p[i - 1][0], p[i - 1][1]), [bx, by] = xy(p[i][0], p[i][1]); if (near(ax, ay, bx, by)) out.push([ax, ay, bx, by, 8, 1, 1]); }
+  // Chicago's side streets: the street simulator's OpenStreetMap tiles (0.01° each; none outside the city)
   const [lon, lat] = llOf(x, y), i0 = Math.floor((lon + 88) * 100), j0 = Math.floor((lat - 41) * 100), jobs = [];
   if (lon > -87.95 && lon < -87.5 && lat > 41.63 && lat < 42.03) for (let i = i0 - 3; i <= i0 + 3; i++) for (let j = j0 - 2; j <= j0 + 2; j++) jobs.push(streetTile(i, j).then(t => [i, j, t]));
   const HW = [0, 12, 10, 9, 7, 6];
@@ -597,7 +633,7 @@ function baseSegs(x, y){
   let fs = []; try { fs = map.querySourceFeatures("openmaptiles", {sourceLayer:"transportation"}); } catch (e) {}
   for (const f of fs){ const hw = HW[f.properties.class]; if (!hw || f.properties.brunnel === "tunnel") continue;
     const g = f.geometry, L = g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : [];
-    for (const c of L) for (let k = 1; k < c.length; k++){ const [ax, ay] = xy(c[k - 1][0], c[k - 1][1]), [bx, by] = xy(c[k][0], c[k][1]); if ((ax - x) ** 2 + (ay - y) ** 2 < 2600 ** 2) out.push([ax, ay, bx, by, hw, hw >= 9 ? 1 : 0]); } }
+    for (const c of L) for (let k = 1; k < c.length; k++){ const [ax, ay] = xy(c[k - 1][0], c[k - 1][1]), [bx, by] = xy(c[k][0], c[k][1]); if ((ax - x) ** 2 + (ay - y) ** 2 < 2600 ** 2) out.push([ax, ay, bx, by, hw, hw >= 9 ? 1 : 0, f.properties.class === "rail" ? 1 : 0]); } }
   return out;
 }
 async function loadSegs(x, y, force){
@@ -606,95 +642,55 @@ async function loadSegs(x, y, force){
   SEGS.forEach((g, i) => { const x0 = Math.floor(Math.min(g[0], g[2]) / 100), x1 = Math.floor(Math.max(g[0], g[2]) / 100), y0 = Math.floor(Math.min(g[1], g[3]) / 100), y1 = Math.floor(Math.max(g[1], g[3]) / 100);
     for (let a = x0; a <= x1; a++) for (let b = y0; b <= y1; b++){ const k = a + "," + b; let l = SEGG.get(k); if (!l) SEGG.set(k, l = []); l.push(i); } });
 }
-function segsNear(x, y, r){ const out = []; for (let a = Math.floor((x - r) / 100); a <= Math.floor((x + r) / 100); a++) for (let b = Math.floor((y - r) / 100); b <= Math.floor((y + r) / 100); b++){ const l = SEGG.get(a + "," + b); if (l) for (const i of l) out.push(SEGS[i]); } return out; }
+function segsNear(x, y, r, uniq){ const out = [], seen = uniq ? new Set() : null;
+  for (let a = Math.floor((x - r) / 100); a <= Math.floor((x + r) / 100); a++) for (let b = Math.floor((y - r) / 100); b <= Math.floor((y + r) / 100); b++){ const l = SEGG.get(a + "," + b); if (l) for (const i of l){ if (seen){ if (seen.has(i)) continue; seen.add(i); } out.push(SEGS[i]); } }
+  return out; }
 // which way the street grid runs here: the length-weighted average of street directions, folded onto a quarter turn
 function gridRot(x, y){ let c = 0, s = 0;
-  for (const g of segsNear(x, y, 350)){ const dx = g[2] - g[0], dy = g[3] - g[1], L = Math.hypot(dx, dy); if (L < 1) continue; const t = Math.atan2(dy, dx) * 4, w = L * (g[5] ? 2 : 1); c += w * Math.cos(t); s += w * Math.sin(t); }
+  for (const g of segsNear(x, y, 400, true)){ if (g[6]) continue; const dx = g[2] - g[0], dy = g[3] - g[1], L = Math.hypot(dx, dy); if (L < 1) continue; const t = Math.atan2(dy, dx) * 4, w = L * (g[5] ? 2 : 1); c += w * Math.cos(t); s += w * Math.sin(t); }
   return c || s ? Math.round(Math.atan2(s, c) / 4 * 180 / Math.PI) : 0; }
 
-// geometry: a piece is a rectangle {x, y, w, h, rot}; the stadium counts as the rectangle inside its oval
+// geometry: rectangles {x, y, w, h, rot}; the stadium counts as the rectangle inside its oval
 const stRect = P => ({x:P.x, y:P.y, w:A.foot[0] * 0.9, h:A.foot[1] * 0.9, rot:P.rot});
-function corners(p){ const t = p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t); return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([u, v]) => [p.x + u * p.w / 2 * c - v * p.h / 2 * s, p.y + u * p.w / 2 * s + v * p.h / 2 * c]); }
+function corners(p, inset){ const t = p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), w = p.w / 2 - (inset || 0), h = p.h / 2 - (inset || 0);
+  return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([u, v]) => [p.x + u * w * c - v * h * s, p.y + u * w * s + v * h * c]); }
 function clipSeg(ax, ay, bx, by, hx, hy){ let t0 = 0, t1 = 1; const dx = bx - ax, dy = by - ay;
   for (const [p, q] of [[-dx, ax + hx], [dx, hx - ax], [-dy, ay + hy], [dy, hy - ay]]){ if (p === 0){ if (q < 0) return false; } else { const r = q / p; if (p < 0){ if (r > t1) return false; if (r > t0) t0 = r; } else { if (r < t0) return false; if (r < t1) t1 = r; } } }
   return true; }
-function onStreet(p, minorToo){ const t = -p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
+function onStreet(p, minorToo, noPad){ const t = -p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
   for (const g of segsNear(p.x, p.y, Math.hypot(p.w, p.h) / 2 + 20)){ if (!minorToo && !g[5]) continue;
-    const L = (X, Y) => { const dx = X - p.x, dy = Y - p.y; return [dx * c - dy * s, dx * s + dy * c]; }, [ax, ay] = L(g[0], g[1]), [bx, by] = L(g[2], g[3]);
-    if (clipSeg(ax, ay, bx, by, p.w / 2 + g[4], p.h / 2 + g[4])) return true; }
+    const L = (X, Y) => { const dx = X - p.x, dy = Y - p.y; return [dx * c - dy * s, dx * s + dy * c]; }, [ax, ay] = L(g[0], g[1]), [bx, by] = L(g[2], g[3]), pad = noPad ? 0 : g[4];
+    if (clipSeg(ax, ay, bx, by, p.w / 2 + pad, p.h / 2 + pad)) return true; }
   return false; }
 function overlap(a, b, pad){ const A1 = corners({...a, w:a.w + pad, h:a.h + pad}), B1 = corners({...b, w:b.w + pad, h:b.h + pad});
   for (const R of [a, b]){ const t = R.rot * Math.PI / 180; for (const [nx, ny] of [[Math.cos(t), Math.sin(t)], [-Math.sin(t), Math.cos(t)]]){
     const pa = A1.map(([x, y]) => x * nx + y * ny), pb = B1.map(([x, y]) => x * nx + y * ny); if (Math.max(...pa) < Math.min(...pb) || Math.max(...pb) < Math.min(...pa)) return false; } }
   return true; }
-function okAt(p, i){
-  if (i < 0) return !onStreet(stRect(p), false);                       // the stadium: off expressways, main streets and tracks (side streets can close)
-  if (Math.hypot(p.x - PLAN.x, p.y - PLAN.y) > PLAN_R) return false;
-  if (onStreet(p, true) || overlap(p, stRect(PLAN), 10)) return false;
-  return !PLAN.items.some((q, j) => j !== i && q.w && overlap(p, q, 6));
-}
-// drop a piece where you let go, then line it up with the streets and slide it to the nearest spot that's off every street
-function fit(p, i, reach){
-  const g = gridRot(p.x, p.y), rots = [g, g + 90], step = reach > 300 ? 15 : 8, t = g * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), cand = [];
-  for (let u = -reach; u <= reach; u += step) for (let v = -reach; v <= reach; v += step) if (u * u + v * v <= reach * reach) cand.push([u * u + v * v, u, v]);
+// place the stadium: turn it to the grid and slide it to the nearest spot off expressways, main streets and tracks
+function fitStadium(P){
+  const g = gridRot(P.x, P.y), t = g * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), cand = [];
+  for (let u = -260; u <= 260; u += 15) for (let v = -260; v <= 260; v += 15) if (u * u + v * v <= 260 * 260) cand.push([u * u + v * v, u, v]);
   cand.sort((a, b) => a[0] - b[0]);
-  const x0 = p.x, y0 = p.y, keep = ((p.rot - g) % 180 + 180) % 180 > 45 && ((p.rot - g) % 180 + 180) % 180 < 135 ? [rots[1], rots[0]] : rots;
-  for (const [, u, v] of cand) for (const r of keep){ const q = {...p, x:x0 + u * c - v * s, y:y0 + u * s + v * c, rot:r}; if (okAt(q, i)){ Object.assign(p, {x:q.x, y:q.y, rot:r, bad:false}); return true; } }
-  Object.assign(p, {x:x0, y:y0, rot:keep[0], bad:true}); return false;
+  for (const [, u, v] of cand) for (const r of [g, g + 90]){ const q = {x:P.x + u * c - v * s, y:P.y + u * s + v * c, rot:r}; if (!onStreet(stRect(q), false)){ Object.assign(P, q, {bad:false}); return; } }
+  P.rot = g; P.bad = true;
 }
-// homes now standing where a piece would go: Census blocks whose center falls inside it
+// homes now standing where a block would go: Census blocks whose center falls inside it
 function homesUnder(p){ let h = 0; if (!BLK) return 0; const r2 = ((p.w + p.h) / 2 + 200) ** 2, t = -p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
   for (let i = 0; i < BLK.n; i++){ const dx = BLK.X[i] * 10 - p.x, dy = BLK.Y[i] * 10 - p.y; if (dx * dx + dy * dy > r2) continue; const u = dx * c - dy * s, v = dx * s + dy * c; if (Math.abs(u) <= p.w / 2 && Math.abs(v) <= p.h / 2) h += BLK.H[i]; }
   return h; }
-// a train stop sits on the nearest track; shuttles run from the nearest station that's too far to walk to
+// a train stop sits on the nearest track; shuttles run from the nearest station beyond a walk, on a line fans can't walk to
 function nearestTrack(x, y, maxD){ let best = null;
   allLines().forEach(({l, kind}, li) => { for (const p of l.paths) for (let k = 1; k < p.length; k++){ const [ax, ay] = xy(p[k - 1][0], p[k - 1][1]), [bx, by] = xy(p[k][0], p[k][1]), dx = bx - ax, dy = by - ay;
     const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1))), qx = ax + t * dx, qy = ay + t * dy, d = Math.hypot(qx - x, qy - y);
     if (d < maxD && (!best || d < best.d)) best = {d, x:qx, y:qy, li, line:l.id, kind}; } });
   return best; }
-function busStation(have){ let best = null;   // the nearest station beyond a walk on a line you don't already reach on foot
+function busStation(have){ let best = null;
   const cands = PL.rail.map(r => ({x:r.x, y:r.y, name:r[2], kind:r[3], tph:r[4] / Math.max(1, (r[5] || []).length) / 18 / 2, lines:r[5] || [r[3]]}));
   for (const it of PLAN.items) if (it.k === "stop") cands.push({x:it.x, y:it.y, name:"your new stop", kind:it.kind, tph:A.maxTph[it.kind] / 2, lines:[it.line]});
   for (const c of cands){ const d = Math.hypot(c.x - PLAN.x, c.y - PLAN.y); if (d <= A.walk || d > 10000 || c.lines.every(l => have.some(q => q.line === l))) continue; if (!best || d < best.d) best = {...c, d}; }
   return best; }
 
-// the plan's numbers: the spot measured like any site, plus what you added
-function planMeasure(){
-  const P = PLAN, [lon, lat] = llOf(P.x, P.y), s = SITES.find(q => q.id === P.base);
-  const moved = !s || Math.hypot(...xy(s.ll[0], s.ll[1]).map((v, i) => v - [P.x, P.y][i])) > 150;
-  const m = measure(lon, lat, P.rot, moved ? null : s);
-  m.nearby = m.parking; m.yourSpaces = 0; m.newHomes = 0; m.inWay = m.hIn; m.planAcres = Math.PI * A.foot[0] / 2 * A.foot[1] / 2 / 4046.86;
-  for (const it of P.items){ if (!it.w) continue; const K = KINDS[it.k], a = it.w * it.h; m.planAcres += a / 4046.86;
-    if (K.sp) m.yourSpaces += K.sp(a); if (K.homes) m.newHomes += K.homes(a); it.under = homesUnder(it); m.inWay += it.under; }
-  m.parking += m.yourSpaces;
-  for (const it of P.items) if (it.k === "stop"){ const d = Math.hypot(it.x - P.x, it.y - P.y); it.walk = d <= A.walk;
-    if (it.walk && !m.lines.some(l => l.line === it.line)){ m.lines.push({kind:it.kind, line:it.line, d, tph:A.maxTph[it.kind] / 2, at:[it.x, it.y]}); m.stations.unshift({name:"Your new " + it.kind + " stop", kind:it.kind, d}); } }
-  const bus = P.items.find(i => i.k === "bus");
-  if (bus){ const st = busStation(m.lines); bus.st = st;
-    if (st){ const trip = 2 * st.d * 1.3 / BUS.v + BUS.load; m.busMax = BUS.fleet * BUS.seats * A.hours * 3600 / trip; m.busFrom = st;
-      for (const l of st.lines) if (!m.lines.some(q => q.line === l)) m.lines.push({kind:st.kind, line:l, d:st.d, tph:st.tph, at:[st.x, st.y], bus:true}); } }
-  trains(m);
-  return m;
-}
-
-// on the map
-function drawPlan(){
-  if (!map.getSource("plan")) return;
-  const P = PLAN, f = [], pts = [], ln = [];
-  if (P){ P.items.forEach((it, i) => {
-    if (it.w){ const r = corners(it).map(q => llOf(q[0], q[1])); r.push(r[0]); f.push({type:"Feature", properties:{c:KINDS[it.k].c, h:KINDS[it.k].ht, bad:!!it.bad || it.under > 0, sel:i === PSEL}, geometry:{type:"Polygon", coordinates:[r]}}); }
-    else if (it.k === "stop") pts.push({type:"Feature", properties:{t:"stop", bad:!it.walk, sel:i === PSEL}, geometry:{type:"Point", coordinates:llOf(it.x, it.y)}});
-    else if (it.k === "bus" && it.st){ pts.push({type:"Feature", properties:{t:"bus", bad:false, sel:i === PSEL}, geometry:{type:"Point", coordinates:llOf(it.st.x, it.st.y)}}); ln.push({type:"Feature", properties:{}, geometry:{type:"LineString", coordinates:[llOf(it.st.x, it.st.y), llOf(P.x, P.y)]}}); } }); }
-  map.getSource("plan").setData({type:"FeatureCollection", features:f});
-  map.getSource("planpts").setData({type:"FeatureCollection", features:pts});
-  map.getSource("planln").setData({type:"FeatureCollection", features:ln});
-  if (P){ const [lon, lat] = llOf(P.x, P.y); showStadium(lon, lat, P.rot, P.bad ? "#f6c9d0" : null); }
-}
-
-// ---- the automatic master plan ----
-const MP = {park:[1, 0.5, 0.25], parkN:["Every car", "Half the cars", "A quarter"], homes:[0, 4, 10], homesN:["None", "A few blocks", "A neighborhood"]};
-let MASK = null;
-// where pieces may go: usable land, the proposed site itself (a circle of its published acreage, or 120 acres), not the lake,
+// where blocks may go: usable land, the proposed site itself (a circle of its published acreage, or 120 acres), not the lake,
 // and not on top of homes (cells near Census blocks with homes are cleared)
 function buildMask(){
   const P = PLAN, cell = 20, Rr = PLAN_R + 160, n = Math.ceil(2 * Rr / cell), x0 = P.x - Rr, y0 = P.y - Rr, a = new Uint8Array(n * n);
@@ -711,78 +707,188 @@ function buildMask(){
   MASK = {x0, y0, n, cell, a};
 }
 function maskAt(x, y){ const M2 = MASK, i = Math.floor((x - M2.x0) / M2.cell), j = Math.floor((y - M2.y0) / M2.cell); return i >= 0 && j >= 0 && i < M2.n && j < M2.n && M2.a[j * M2.n + i] === 1; }
-function onMask(p){ const t = p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
-  for (const u of [-0.48, -0.16, 0.16, 0.48]) for (const v of [-0.46, 0, 0.46]){ const dx = u * p.w, dy = v * p.h; if (!maskAt(p.x + dx * c - dy * s, p.y + dx * s + dy * c)) return false; }
-  return true; }
-// lay out the district: transit first, a plaza, garages close in, surface lots out to a mile, homes over shops on the side
-// people walk in from (toward the station, or the nearest neighborhood). Everything shares the street grid's direction.
-function autoPlan(){
-  const P = PLAN; P.items = []; PSEL = -1; buildMask();
-  const m0 = planMeasure();
-  const tr = nearestTrack(P.x, P.y, 8000);
-  if (tr && tr.d <= A.walk){ if (!m0.lines.some(l => l.line === tr.line)) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); }
-  else if (!m0.lines.length){ if (tr) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); P.items.push({k:"bus"}); }
+
+// ---- streets and blocks ----
+// existing streets that run with the grid (within 10°), as lines at a fixed offset; tracks count too (blocks stop at them)
+function gridLines(P, g){
+  const t = g * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), loc = (x, y) => { const dx = x - P.x, dy = y - P.y; return [dx * c + dy * s, -dx * s + dy * c]; };
+  const U = [], V = [];
+  for (const sg of segsNear(P.x, P.y, PLAN_R + 300, true)){ const [au, av] = loc(sg[0], sg[1]), [bu, bv] = loc(sg[2], sg[3]), du = bu - au, dv = bv - av, L = Math.hypot(du, dv); if (L < 8) continue;
+    const a = Math.abs(Math.atan2(dv, du)), along = Math.min(a, Math.PI - a) < 0.17, across = Math.abs(a - Math.PI / 2) < 0.17;
+    if (along) V.push([(av + bv) / 2, L]); else if (across) U.push([(au + bu) / 2, L]); }
+  const cluster = arr => { arr.sort((a, b) => a[0] - b[0]); const out = [];
+    for (const [p, w] of arr){ const o = out[out.length - 1]; if (o && p - o.p < 15){ o.p = (o.p * o.w + p * w) / (o.w + w); o.w += w; } else out.push({p, w}); }
+    return out.filter(o => o.w >= 80).map(o => o.p); };
+  return {c, s, U:cluster(U), V:cluster(V)};
+}
+// fill the gaps: inside [lo, hi], keep existing lines and add new ones where they're more than BLOCK.gap apart
+function fillLines(ex, lo, hi){
+  const pts = [lo, ...ex.filter(p => p > lo + 30 && p < hi - 30), hi], out = [];
+  for (let i = 0; i < pts.length; i++){ out.push({p:pts[i], old:i > 0 && i < pts.length - 1});
+    if (i < pts.length - 1){ const gap = pts[i + 1] - pts[i]; if (gap > BLOCK.gap){ const k = Math.ceil(gap / BLOCK.step) - 1; for (let j = 1; j <= k; j++) out.push({p:pts[i] + gap * j / (k + 1), old:false}); } } }
+  // the outer bounds are real streets when an existing one sits just outside
+  out[0].old = ex.some(p => Math.abs(p - lo) < 40); out[out.length - 1].old = ex.some(p => Math.abs(p - hi) < 40);
+  return out;
+}
+function layoutBlocks(P){
+  const g = gridRot(P.x, P.y), G = gridLines(P, g), {c, s} = G, toW = (u, v) => [P.x + u * c - v * s, P.y + u * s + v * c];
+  // how far the usable land reaches, in the grid's frame
+  let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9;
+  for (let j = 0; j < MASK.n; j++) for (let i = 0; i < MASK.n; i++){ if (!MASK.a[j * MASK.n + i]) continue; const x = MASK.x0 + (i + 0.5) * MASK.cell, y = MASK.y0 + (j + 0.5) * MASK.cell, dx = x - P.x, dy = y - P.y;
+    if (dx * dx + dy * dy > PLAN_R * PLAN_R) continue; const u = dx * c + dy * s, v = -dx * s + dy * c; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); }
+  if (u0 > u1) return {g, blocks:[], streets:[]};
+  const Us = fillLines(G.U, u0 - 10, u1 + 10), Vs = fillLines(G.V, v0 - 10, v1 + 10), st = stRect(P), blocks = [], grid = [];
+  for (let i = 0; i + 1 < Us.length; i++){ grid[i] = [];
+    for (let j = 0; j + 1 < Vs.length; j++){
+      const ua = Us[i].p + BLOCK.half, ub = Us[i + 1].p - BLOCK.half, va = Vs[j].p + BLOCK.half, vb = Vs[j + 1].p - BLOCK.half;
+      if (ub - ua < 40 || vb - va < 40){ grid[i][j] = null; continue; }
+      const [x, y] = toW((ua + ub) / 2, (va + vb) / 2), b = {x, y, w:ub - ua, h:vb - va, rot:g, i, j};
+      if (overlap(b, st, 30)){ grid[i][j] = "st"; continue; }
+      if (Math.hypot(x - P.x, y - P.y) > PLAN_R){ grid[i][j] = null; continue; }
+      let inn = 0; for (let a = 0; a < 5; a++) for (let q = 0; q < 5; q++){ const [px, py] = toW(ua + (a + 0.5) / 5 * (ub - ua), va + (q + 0.5) / 5 * (vb - va)); if (maskAt(px, py)) inn++; }
+      if (inn < 21 || onStreet({...b, w:b.w - 10, h:b.h - 10}, true, true)){ grid[i][j] = null; continue; }
+      grid[i][j] = blocks.length; blocks.push(b); } }
+  // new streets: grid lines that weren't streets already, wherever a kept block or the stadium sits beside them
+  const streetsFor = keep => {
+  const streets = [], side = (i, j) => !!grid[i] && (grid[i][j] === "st" || (typeof grid[i][j] === "number" && keep.has(grid[i][j])));
+  for (let i = 0; i < Us.length; i++){ if (Us[i].old) continue;
+    for (let j = 0; j + 1 < Vs.length; j++) if (side(i - 1, j) || side(i, j)){ if (grid[i - 1] && grid[i - 1][j] === "st" && grid[i] && grid[i][j] === "st") continue; streets.push([toW(Us[i].p, Vs[j].p), toW(Us[i].p, Vs[j + 1].p)]); } }
+  for (let j = 0; j < Vs.length; j++){ if (Vs[j].old) continue;
+    for (let i = 0; i + 1 < Us.length; i++) if (side(i, j - 1) || side(i, j)){ if (grid[i] && grid[i][j - 1] === "st" && grid[i][j] === "st") continue; streets.push([toW(Us[i].p, Vs[j].p), toW(Us[i + 1].p, Vs[j].p)]); } }
+  // a new street never runs through the stadium
+  const clean = streets.filter(([a, b]) => { const t2 = -st.rot * Math.PI / 180, cc = Math.cos(t2), ss = Math.sin(t2), L = ([X, Y]) => { const dx = X - st.x, dy = Y - st.y; return [dx * cc - dy * ss, dx * ss + dy * cc]; }, [ax, ay] = L(a), [bx, by] = L(b); return !clipSeg(ax, ay, bx, by, st.w / 2 + 25, st.h / 2 + 25); });
+  return clean; };
+  // neighbors on the block grid (to keep empty blocks only next to something)
+  const nextToBuilt = (b, used) => { for (let di = -1; di <= 1; di++) for (let dj = -1; dj <= 1; dj++){ const v = grid[b.i + di] && grid[b.i + di][b.j + dj]; if (v === "st" || (typeof v === "number" && used.has(v))) return true; } return false; };
+  return {g, blocks, streetsFor, nextToBuilt};
+}
+
+// lay out the district: transit first, then a plaza, homes over shops on the side fans walk in from, garages closest to the
+// stadium and surface lots outward until there's parking for the share of cars you picked; the rest stays empty for later
+// opt.keepItems: keep the train stop and shuttles as they are; opt.keepMine: keep the blocks you changed by hand
+function autoPlan(opt){
+  opt = opt || {}; const P = PLAN; POPclose(); if (P.gone){ P.blocks = []; P.streets = []; return; }
+  buildMask();
+  const L = layoutBlocks(P), old = opt.keepMine ? (P.blocks || []).filter(b => b.mine) : [];
+  P.blocks = L.blocks.map((b, n) => ({...b, n, k:"empty"}));
+  if (!opt.keepItems){
+    P.items = [];
+    const m0 = planMeasure(), tr = nearestTrack(P.x, P.y, 8000);
+    if (tr && tr.d <= A.walk){ if (!m0.lines.some(l => l.line === tr.line)) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); }
+    else if (!m0.lines.length){ if (tr) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); P.items.push({k:"bus"}); }
+  }
+  // blocks you set by hand (matched by place), or the ones a shared link carries
+  const B = P.blocks;
+  for (const f of old.concat(P.ov || [])){ let best = null, bd = 45; for (const b of B){ const d = Math.hypot(b.x - f.x, b.y - f.y); if (d < bd){ bd = d; best = b; } } if (best){ best.k = f.k; best.mine = true; } }
+  P.ov = [];
   const m1 = planMeasure();
   // the walk-in side: the station fans use, else where the neighbors are
   let ex = 0, ey = 0;
-  const st = P.items.find(i => i.k === "stop") || (m1.busFrom ? m1.busFrom : null) || PL.rail.filter(r => Math.hypot(r.x - P.x, r.y - P.y) <= A.walk).sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
+  const st = P.items.find(i => i.k === "stop") || m1.busFrom || PL.rail.filter(r => Math.hypot(r.x - P.x, r.y - P.y) <= A.walk).sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
   if (st){ ex = st.x - P.x; ey = st.y - P.y; }
   else if (BLK) for (let k = 0; k < BLK.n; k++){ const dx = BLK.X[k] * 10 - P.x, dy = BLK.Y[k] * 10 - P.y, d = Math.hypot(dx, dy); if (d > 300 && d < 2500 && BLK.H[k]){ ex += dx / d * BLK.H[k]; ey += dy / d * BLK.H[k]; } }
   const el = Math.hypot(ex, ey) || 1, hx = P.x + ex / el * 420, hy = P.y + ey / el * 420;
-  const g = gridRot(P.x, P.y), t = g * Math.PI / 180, c = Math.cos(t), s = Math.sin(t), cand = [];
-  for (let u = -PLAN_R; u <= PLAN_R; u += 20) for (let v = -PLAN_R; v <= PLAN_R; v += 20){ const d = Math.hypot(u, v); if (d <= PLAN_R - 40) cand.push({x:P.x + u * c - v * s, y:P.y + u * s + v * c, d, dh:0}); }
-  for (const q of cand) q.dh = Math.hypot(q.x - hx, q.y - hy);
-  const need = Math.max(0, (m1.cars - m1.nearby) * MP.park[P.pk]);
-  const nG = need ? Math.min(4, Math.ceil(need * 0.35 / 1080)) : 0, nL = Math.max(0, Math.min(18, Math.ceil((need - nG * 1080) / 1800)));
-  const byD = cand.slice().sort((a, b) => a.d - b.d), byH = cand.slice().sort((a, b) => a.dh - b.dh), byPlaza = cand.slice().sort((a, b) => (a.d + 0.6 * a.dh) - (b.d + 0.6 * b.dh));
-  P.missed = {};
-  for (const [k, n, list] of [["plaza", 1, byPlaza], ["home", MP.homes[P.hk], byH], ["gar", nG, byD], ["lot", nL, byD]]){
-    const K = KINDS[k]; let idx = 0;
-    for (let q = 0; q < n; q++){ let done = false;
-      for (; idx < list.length && !done; idx++){ const o = list[idx];
-        for (const r of [g, g + 90]){ const it = {k, w:K.w, h:K.h, x:o.x, y:o.y, rot:r}; if (onMask(it) && okAt(it, P.items.length)){ P.items.push(it); done = true; break; } } }
-      if (!done){ P.missed[k] = n - q; break; } } }
+  B.forEach(b => { b.d = Math.hypot(b.x - P.x, b.y - P.y); b.dh = Math.hypot(b.x - hx, b.y - hy); });
+  const free = () => B.filter(b => b.k === "empty" && !b.mine), mine = k => B.filter(b => b.mine && b.k === k);
+  if (!mine("plaza").length) free().sort((a, b) => (a.d + 0.6 * a.dh) - (b.d + 0.6 * b.dh)).slice(0, 1).forEach(b => b.k = "plaza");
+  free().sort((a, b) => a.dh - b.dh).slice(0, Math.max(0, MP.homes[P.hk] - mine("home").length)).forEach(b => b.k = "home");
+  let need = Math.max(0, (m1.cars - nearbyLeft(P)) * MP.park[P.pk]) - B.filter(b => b.mine && KINDS[b.k].sp).reduce((s, b) => s + KINDS[b.k].sp(b.w * b.h), 0), ng = mine("gar").length;
+  for (const b of free().sort((a, b) => a.d - b.d)){ if (need <= 0) break; const a = b.w * b.h; if (ng < 3){ b.k = "gar"; ng++; need -= KINDS.gar.sp(a); } else { b.k = "lot"; need -= KINDS.lot.sp(a); } }
+  P.missed = Math.max(0, Math.round(need));
+  // keep empty blocks only beside something built (or the stadium), then draw the new streets those blocks need
+  const used = new Set(B.filter(b => b.k !== "empty").map(b => b.n));
+  P.blocks = B.filter(b => b.k !== "empty" || L.nextToBuilt(b, used));
+  P.streets = L.streetsFor(new Set(P.blocks.map(b => b.n)));
 }
-async function redoPlan(){ await loadSegs(PLAN.x, PLAN.y); autoPlan(); planChanged(); }
+// parking already there that the plan doesn't build over
+function nearbyLeft(P){ let n = 0; const st = stRect(P);
+  for (const q of PL.lots){ if ((q.x - P.x) ** 2 + (q.y - P.y) ** 2 > PLAN_R * PLAN_R) continue; const pt = {x:q.x, y:q.y, w:1, h:1, rot:0};
+    if (overlap(pt, st, 0) || (P.blocks || []).some(b => b.k !== "empty" && overlap(pt, b, 0))) continue; n += q[2]; }
+  return n; }
+async function redoPlan(keep){ if (!PLAN.gone) await loadSegs(PLAN.x, PLAN.y); autoPlan(keep ? {keepItems:true, keepMine:true} : {}); planChanged(); }
+
+// the plan's numbers: the spot measured like any site, plus what's built
+function planMeasure(){
+  const P = PLAN, [lon, lat] = llOf(P.x, P.y), s = SITES.find(q => q.id === P.base);
+  const moved = !s || Math.hypot(...xy(s.ll[0], s.ll[1]).map((v, i) => v - [P.x, P.y][i])) > 150;
+  const m = measure(lon, lat, P.rot, moved ? null : s);
+  m.nearby = nearbyLeft(P); m.yourSpaces = 0; m.newHomes = 0; m.inWay = m.hIn; m.parkAcres = 0; m.devAcres = Math.PI * A.foot[0] / 2 * A.foot[1] / 2 / 4046.86; m.emptyAcres = 0;
+  for (const b of P.blocks || []){ const K = KINDS[b.k], a = b.w * b.h;
+    if (b.k === "empty"){ m.emptyAcres += a / 4046.86; continue; }
+    m.devAcres += a / 4046.86; if (K.sp){ m.yourSpaces += K.sp(a); m.parkAcres += a / 4046.86; } if (K.homes) m.newHomes += K.homes(a); b.under = homesUnder(b); m.inWay += b.under; }
+  m.couldHold = m.parkAcres * 4046.86 * 0.6 * 5 / SQM_HOME;   // the same land as homes over shops
+  m.parking = m.nearby + m.yourSpaces;
+  for (const it of P.items) if (it.k === "stop"){ const d = Math.hypot(it.x - P.x, it.y - P.y); it.walk = d <= A.walk;
+    if (it.walk && !m.lines.some(l => l.line === it.line)){ m.lines.push({kind:it.kind, line:it.line, d, tph:A.maxTph[it.kind] / 2, at:[it.x, it.y]}); m.stations.unshift({name:"Your new " + it.kind + " stop", kind:it.kind, d}); } }
+  const bus = P.items.find(i => i.k === "bus");
+  if (bus){ const st = busStation(m.lines); bus.st = st;
+    if (st){ const trip = 2 * st.d * 1.3 / BUS.v + BUS.load; m.busMax = BUS.fleet * BUS.seats * A.hours * 3600 / trip; m.busFrom = st;
+      for (const l of st.lines) if (!m.lines.some(q => q.line === l)) m.lines.push({kind:st.kind, line:l, d:st.d, tph:st.tph, at:[st.x, st.y], bus:true}); } }
+  trains(m);
+  return m;
+}
+
+// on the map
+function ringPoly(b){ const r = corners(b).map(q => llOf(q[0], q[1])); r.push(r[0]); return r; }
+function drawPlan(){
+  if (!map.getSource("plan")) return;
+  const P = PLAN, f = [], pts = [], ln = [], sts = [];
+  if (P && !P.gone){
+    (P.blocks || []).forEach((b, i) => { const K = KINDS[b.k];
+      if (b.k === "home"){ const inner = corners(b, Math.min(b.w, b.h) * 0.2).map(q => llOf(q[0], q[1])); inner.push(inner[0]);
+        f.push({type:"Feature", properties:{i, k:b.k, c:K.c, h:K.ht, bad:b.under > 0}, geometry:{type:"Polygon", coordinates:[ringPoly({...b, w:b.w - 6, h:b.h - 6}), inner.reverse()]}}); }
+      else f.push({type:"Feature", properties:{i, k:b.k, c:K.c || "#ffffff", h:K.ht, bad:b.under > 0}, geometry:{type:"Polygon", coordinates:[ringPoly(b.k === "gar" ? {...b, w:b.w * 0.95, h:b.h * 0.95} : b)]}}); });
+    for (const [a, b] of P.streets || []) sts.push({type:"Feature", properties:{}, geometry:{type:"LineString", coordinates:[llOf(a[0], a[1]), llOf(b[0], b[1])]}});
+    P.items.forEach(it => {
+      if (it.k === "stop") pts.push({type:"Feature", properties:{t:"stop", bad:!it.walk}, geometry:{type:"Point", coordinates:llOf(it.x, it.y)}});
+      else if (it.k === "bus" && it.st){ pts.push({type:"Feature", properties:{t:"bus", bad:false}, geometry:{type:"Point", coordinates:llOf(it.st.x, it.st.y)}}); ln.push({type:"Feature", properties:{}, geometry:{type:"LineString", coordinates:[llOf(it.st.x, it.st.y), llOf(P.x, P.y)]}}); } }); }
+  map.getSource("plan").setData({type:"FeatureCollection", features:f});
+  map.getSource("planst").setData({type:"FeatureCollection", features:sts});
+  map.getSource("planpts").setData({type:"FeatureCollection", features:pts});
+  map.getSource("planln").setData({type:"FeatureCollection", features:ln});
+  if (P && !P.gone){ const [lon, lat] = llOf(P.x, P.y); showStadium(lon, lat, P.rot, P.bad ? "#f6c9d0" : null); }
+  else if (P) clearStadium();
+}
 
 // the panel while planning
 const pc = (n, k) => fmt(n) + " " + k + (Math.round(n) === 1 ? "" : "s");
 function renderPlan(){
-  const P = PLAN, m = M.plan = planMeasure(), s = SITES.find(q => q.id === P.base);
-  const need = m.cars, have = m.parking, sel = PLAN.items[PSEL];
+  const P = PLAN, s = SITES.find(q => q.id === P.base);
+  const head = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button><h2>Plan the site</h2>`;
+  if (P.gone){
+    $("detail").innerHTML = head + `<div class="okbox"><b>Tap the map where the stadium should go.</b> Green areas are land big enough for it; the plan lays itself out around it.</div><div class="btns"><button class="sc-btn" type="button" id="pBackSpot">Put it back where it was</button></div>`;
+    $("planBack").onclick = endPlan; $("pBackSpot").onclick = () => { const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat); placeStadium(at[0], at[1]); };
+    for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
+    return; }
+  const m = M.plan = planMeasure(), need = m.cars, have = m.parking, short = Math.max(0, need - have);
   const seg = (key, names) => `<div class="sc-seg mpseg" role="radiogroup">${names.map((t, i) => `<button type="button" role="radio" aria-checked="${P[key] === i}" data-key="${key}" data-v="${i}">${t}</button>`).join("")}</div>`;
-  const cnt = k => P.items.filter(i => i.k === k).length, got = [];
-  if (cnt("gar")) got.push(pc(cnt("gar"), "garage")); if (cnt("lot")) got.push(pc(cnt("lot"), "surface lot")); if (cnt("plaza")) got.push("a tailgate plaza");
-  if (cnt("home")) got.push(pc(cnt("home"), "block") + " of homes over shops"); if (cnt("stop")) got.push("a game-day train stop"); if (cnt("bus")) got.push("shuttle buses");
-  const miss = P.missed || {}, short = (miss.lot || 0) * 1800 + (miss.gar || 0) * 1080;
-  const key = Object.entries(KINDS).filter(([, K]) => K.c).map(([, K]) => `<span><i style="background:${K.c}"></i>${K.n}</span>`).join("") + '<span><i style="background:#2b5da0;border-radius:50%"></i>Train stop</span><span><i style="background:#d9822b;border-radius:50%"></i>Shuttle station</span>';
-  const stopNote = P.items.filter(i => i.k === "stop" && !i.walk).length && !(m.busFrom && m.busFrom.name === "your new stop") ? `<p class="small warnline">Your train stop is more than a 15-minute walk from the stadium. Move it closer, or add shuttle buses.</p>` : "";
-  const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : P.items.some(i => i.k === "bus") ? `<p class="small warnline">No station within about 6 miles is on a line that fans can't already walk to, so shuttles wouldn't add anyone.</p>` : "";
-  const bad = P.items.filter(i => i.bad).length;
-  $("detail").innerHTML = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button>
-    <h2>Plan the site</h2>
-    <p class="small">The plan lays itself out on open land around the stadium, lined up with the streets and off them. Drag the stadium and it redoes the plan; drag a piece to adjust it, or tap one to remove it.</p>
-    <div class="tiles">
-      ${tile(fmt(have), `parking spaces: ${fmt(m.yourSpaces)} yours, ${fmt(m.nearby)} nearby, for ${fmt(need)} cars`, grade(have / Math.max(1, need), 0.9, 0.4), "")}
-      ${tile(fmt(m.byTrain), `fans by train${m.busFrom ? " and shuttle" : ""} (${Math.round(m.byTrain / A.seats * 100)}%)`, grade(m.trainCap, 30000, 5000), "trains")}
+  const cnt = k => (P.blocks || []).filter(b => b.k === k).length, got = [];
+  for (const [k, one, many] of [["gar", "garage", "garages"], ["lot", "surface lot", "surface lots"], ["plaza", "plaza", "plazas"], ["home", "block of homes over shops", "blocks of homes over shops"]]) if (cnt(k)) got.push(fmt(cnt(k)) + " " + (cnt(k) === 1 ? one : many));
+  if (P.items.some(i => i.k === "stop")) got.push("a game-day train stop"); if (P.items.some(i => i.k === "bus")) got.push("shuttle buses");
+  const stopNote = P.items.filter(i => i.k === "stop" && !i.walk).length && !(m.busFrom && m.busFrom.name === "your new stop") ? `<p class="small warnline">Your train stop is more than a 15-minute walk from the stadium.</p>` : "";
+  const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : "";
+  const key = ["gar", "lot", "home", "plaza"].map(k => `<span><i style="background:${KINDS[k].c}"></i>${KINDS[k].n}</span>`).join("") + '<span><i style="background:#fff;border:1.5px dashed #8a93a0"></i>Empty for now</span><span><i style="background:#fff;border:2px solid #c9ced4"></i>New street</span><span><i style="background:#2b5da0;border-radius:50%"></i>Train stop</span>';
+  $("detail").innerHTML = head + `
+    <p class="small">The streets around the site carry into it, and every block gets a use. <b>Tap a block</b> to change it, tap the stadium to remove it, or drag the stadium somewhere else.</p>
+    <div class="ptile ${short ? "bad" : "good"}"><b>${fmt(have)} <span>of ${fmt(need)}</span></b><span>parking spaces for the cars that drive in${short ? ` · <b class="red">${fmt(short)} short</b>` : " · enough"}</span>
+      <div class="pbar"><i style="width:${Math.min(100, m.yourSpaces / Math.max(1, need) * 100)}%;background:#6b7280"></i><i style="width:${Math.min(100, m.nearby / Math.max(1, need) * 100)}%;background:#c3c8ce"></i></div>
+      <span class="small">${fmt(m.yourSpaces)} in the plan, ${fmt(m.nearby)} in lots already within a mile. ${fmt(m.byTrain)} of ${fmt(A.seats)} fans come by train${m.busFrom ? " or shuttle" : ""}, so ${fmt(need)} cars drive in.</span></div>
+    <div class="tiles" style="margin-top:8px">
+      ${tile(fmt(m.parkAcres), `acres of parking (${fmt(m.devAcres)} acres built in all)`, "", "")}
       ${tile(fmt(m.newHomes), `new homes${m.inWay ? `; <b class="red">${fmt(m.inWay)}</b> torn down` : ", none torn down"}`, m.inWay ? "bad" : "", "")}
-      ${tile(fmt(m.planAcres), "acres, stadium included", "", "")}
     </div>
-    ${bad ? `<p class="small warnline">${bad === 1 ? "One piece doesn't" : bad + " pieces don't"} fit where ${bad === 1 ? "it is" : "they are"} (on a street, over another piece or more than a mile out). It's outlined in red; drag it somewhere open.</p>` : ""}
+    ${m.parkAcres > 1 ? `<p class="tradeoff">That parking covers <b>${fmt(m.parkAcres)} acres</b>, used about ten days a year. Built like the homes blocks here, the same land would hold about <b>${fmt(m.couldHold)} homes</b>.</p>` : ""}
     ${P.bad ? `<p class="small warnline">The stadium sits on a main street or a track. Drag it onto open land.</p>` : ""}
     ${stopNote}${busNote}
     <h3>Master plan</h3>
     <div class="mprow"><span>Parking for</span>${seg("pk", MP.parkN)}</div>
     <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
-    <p class="small">${got.length ? "Laid out: " + got.join(", ") + "." : "Nothing to add here."}${short ? ` <span class="warnline">No open land left within a mile for about ${fmt(short)} more spaces.</span>` : ""}${miss.home ? ` <span class="warnline">Room for only ${cnt("home")} of the ${MP.homes[P.hk]} blocks of homes.</span>` : ""}</p>
+    <p class="small">${got.length ? "Laid out: " + got.join(", ") + "." : "No open blocks within a mile."}${P.missed ? ` <span class="warnline">Out of open land within a mile, about ${fmt(P.missed)} spaces short of the target.</span>` : ""}</p>
     <div class="pkey">${key}</div>
-    ${sel ? `<div class="selrow"><span>Selected: <b>${esc(KINDS[sel.k].n)}</b>${sel.under ? ` (${fmt(sel.under)} homes under it)` : ""}</span><button class="sc-btn" type="button" id="pRemove">Remove</button></div>` : ""}
     <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pRedo">Redo the plan</button></div>`;
   $("planBack").onclick = endPlan;
-  $("detail").querySelectorAll(".mpseg button").forEach(b => b.onclick = () => { PLAN[b.dataset.key] = +b.dataset.v; redoPlan(); });
-  $("pRedo").onclick = redoPlan;
-  $("detail").querySelectorAll("[data-info]").forEach(b => b.onclick = () => info(b.dataset.info));
-  if ($("pRemove")) $("pRemove").onclick = () => { PLAN.items.splice(PSEL, 1); PSEL = -1; PLAN.touched = true; planChanged(); };
+  $("detail").querySelectorAll(".mpseg button").forEach(b => b.onclick = () => { PLAN[b.dataset.key] = +b.dataset.v; redoPlan(true); });
+  $("pRedo").onclick = () => redoPlan(false);
   $("pKick").onclick = () => kickoff(M.plan, (s ? s.name : "your site") + " (your plan)");
   $("pPick").onclick = () => pickIt(PLAN.base, M.plan, planCode());
   $("pLink").onclick = async () => { const u = location.origin + location.pathname + "#plan=" + planCode(); try { await navigator.clipboard.writeText(u); toast("Link copied"); } catch (e) { toast(u); } };
@@ -793,62 +899,71 @@ function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() =
 async function startPlan(base, fromCode){
   const s = SITES.find(q => q.id === base);
   const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat);
-  PLAN = fromCode || PLANS[base] || {base, x:at[0], y:at[1], rot:s ? s.rot : (pin ? pin.rot : 0), items:[], pk:0, hk:1, fresh:true};
-  PLANS[base] = PLAN; PSEL = -1; cur = base; mode = "plan"; stopKick(); document.body.classList.add("planning");
+  PLAN = fromCode || PLANS[base] || {base, x:at[0], y:at[1], rot:s ? s.rot : (pin ? pin.rot : 0), items:[], blocks:[], streets:[], pk:0, hk:1, fresh:true};
+  PLANS[base] = PLAN; cur = base; mode = "plan"; stopKick(); document.body.classList.add("planning");
   for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
   $("list").hidden = true; $("detail").hidden = false; $("detail").innerHTML = '<p class="small">Loading the streets around the site…</p>';
   for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "none");
   const [lon, lat] = llOf(PLAN.x, PLAN.y);
-  map.easeTo({center:[lon, lat], zoom:phone() ? 14.2 : 14.9, pitch:40, bearing:0, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
+  map.easeTo({center:[lon, lat], zoom:phone() ? 14 : 14.7, pitch:50, bearing:-15, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
   await loadSegs(PLAN.x, PLAN.y);
-  if (PLAN.fresh){ PLAN.fresh = false; autoPlan(); } else buildMask();
-  // on our domain the base map's streets arrive once its tiles load: lay the plan out again with them
-  if (map.getSource("openmaptiles")) map.once("idle", async () => { if (PLAN){ await loadSegs(PLAN.x, PLAN.y, true); if (!PLAN.touched) autoPlan(); planChanged(); } });
+  const fresh = PLAN.fresh; PLAN.fresh = false; autoPlan(fresh ? {} : {keepItems:true, keepMine:true});
+  // on our domain the base map's streets arrive once its tiles load: lay the plan out again with them, keeping your changes
+  if (map.getSource("openmaptiles")) map.once("idle", async () => { if (PLAN && !PLAN.gone){ await loadSegs(PLAN.x, PLAN.y, true); autoPlan({keepItems:true, keepMine:true}); planChanged(); } });
   renderPlan(); drawPlan(); setHash(); $("scroll").scrollTop = 0;
 }
-function endPlan(){ const b = PLAN ? PLAN.base : cur; PLAN = null; PSEL = -1; mode = "site"; document.body.classList.remove("planning"); drawPlan();
-  for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
+function endPlan(){ const b = PLAN ? PLAN.base : cur; POPclose(); PLAN = null; mode = "site"; document.body.classList.remove("planning"); drawPlan();
   if ($("landChk").checked) for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
+  for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
   if (b === "pin") openPin(); else openSite(b); }
-// dragging on the map while planning
-function planHit(x, y, px){
-  const P = PLAN; for (let i = P.items.length - 1; i >= 0; i--){ const it = P.items[i];
-    if (it.w){ const t = -it.rot * Math.PI / 180, dx = x - it.x, dy = y - it.y, u = dx * Math.cos(t) - dy * Math.sin(t), v = dx * Math.sin(t) + dy * Math.cos(t); if (Math.abs(u) <= it.w / 2 && Math.abs(v) <= it.h / 2) return i; }
-    else { const q = it.k === "stop" ? it : it.st; if (q && Math.hypot(q.x - x, q.y - y) < 18 * px) return i; } }
-  return inEllipse(x, y, P.x, P.y, P.rot) ? -2 : -1;
+async function placeStadium(x, y){ const P = PLAN; P.gone = false; P.x = x; P.y = y; await loadSegs(x, y); fitStadium(P); P.blocks = []; autoPlan(); for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "none"); planChanged(); }
+
+// tapping: a block opens its choices, the stadium can be removed, a stop or the shuttles can be removed
+function POPclose(){ if (POP){ POP.remove(); POP = null; } }
+function popAt(x, y, html, bind){ POPclose(); const el = document.createElement("div"); el.className = "ppop"; el.innerHTML = html; bind(el);
+  POP = new maplibregl.Popup({closeButton:true, closeOnClick:false, maxWidth:"260px", offset:8}).setLngLat(llOf(x, y)).setDOMContent(el).addTo(map); }
+function planTap(x, y, px){
+  const P = PLAN;
+  if (P.gone){ placeStadium(x, y); return; }
+  for (let i = P.items.length - 1; i >= 0; i--){ const it = P.items[i], q = it.k === "stop" ? it : it.st; if (q && Math.hypot(q.x - x, q.y - y) < 20 * px){
+    popAt(q.x, q.y, `<b>${it.k === "stop" ? "Game-day " + esc(it.kind) + " stop" : "Shuttles from " + esc(it.st.name)}</b><button class="sc-btn" type="button" data-a="rm">Remove</button>`, el => el.querySelector("[data-a=rm]").onclick = () => { P.items.splice(i, 1); POPclose(); planChanged(); }); return; } }
+  if (inEllipse(x, y, P.x, P.y, P.rot)){
+    popAt(P.x, P.y, `<b>The stadium</b><p>Drag it to move it; the plan redoes itself around it.</p><button class="sc-btn" type="button" data-a="rm">Remove the stadium</button>`, el => el.querySelector("[data-a=rm]").onclick = () => { P.gone = true; POPclose(); planChanged(); }); return; }
+  const bi = (P.blocks || []).findIndex(b => { const t = -b.rot * Math.PI / 180, dx = x - b.x, dy = y - b.y, u = dx * Math.cos(t) - dy * Math.sin(t), v = dx * Math.sin(t) + dy * Math.cos(t); return Math.abs(u) <= b.w / 2 && Math.abs(v) <= b.h / 2; });
+  if (bi < 0){ POPclose(); return; }
+  const b = P.blocks[bi], a = b.w * b.h, what = k => { const K = KINDS[k]; return K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : k === "plaza" ? "open space" : "nothing yet"; };
+  popAt(b.x, b.y, `<b>This block: ${(a / 4046.86).toFixed(1)} acres</b><div class="pchoice">${["gar", "lot", "home", "plaza", "empty"].map(k => `<button type="button" data-k="${k}" aria-pressed="${b.k === k}"><i style="background:${KINDS[k].c || "#fff"}"></i>${KINDS[k].n}<span>${what(k)}</span></button>`).join("")}</div>`,
+    el => el.querySelectorAll("[data-k]").forEach(btn => btn.onclick = () => { b.k = btn.dataset.k; b.mine = true; POPclose(); planChanged(); }));
 }
 function bindPlanDrag(){
   let D = null;
   const mpp = () => 40075016 * Math.cos(map.getCenter().lat * Math.PI / 180) / (512 * 2 ** map.getZoom());
-  const down = e => { if (mode !== "plan" || !PLAN || (e.originalEvent.touches && e.originalEvent.touches.length > 1)) return;
-    const [x, y] = xy(e.lngLat.lng, e.lngLat.lat), h = planHit(x, y, mpp()); if (h === -1) return;
-    e.preventDefault(); map.dragPan.disable(); D = {h, x, y, moved:false, ox:h === -2 ? PLAN.x : PLAN.items[h].x, oy:h === -2 ? PLAN.y : PLAN.items[h].y, items:PLAN.items.map(i => [i.x, i.y])}; };
-  const move = e => { if (!D) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat), dx = x - D.x, dy = y - D.y; if (Math.hypot(dx, dy) > 3 * mpp()) D.moved = true; if (!D.moved) return;
-    if (D.h === -2){ PLAN.x = D.ox + dx; PLAN.y = D.oy + dy; PLAN.items.forEach((it, i) => { if (it.x != null && it.k !== "stop"){ it.x = D.items[i][0] + dx; it.y = D.items[i][1] + dy; } }); }
-    else { const it = PLAN.items[D.h]; if (it.k === "bus") return; it.x = D.ox + dx; it.y = D.oy + dy; }
-    drawPlan(); };
+  const down = e => { if (mode !== "plan" || !PLAN || PLAN.gone || (e.originalEvent.touches && e.originalEvent.touches.length > 1)) return;
+    const [x, y] = xy(e.lngLat.lng, e.lngLat.lat); if (!inEllipse(x, y, PLAN.x, PLAN.y, PLAN.rot)) return;
+    e.preventDefault(); map.dragPan.disable(); D = {x, y, moved:false, ox:PLAN.x, oy:PLAN.y}; };
+  const move = e => { if (!D) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat), dx = x - D.x, dy = y - D.y; if (Math.hypot(dx, dy) > 4 * mpp()) D.moved = true; if (!D.moved) return;
+    POPclose(); PLAN.x = D.ox + dx; PLAN.y = D.oy + dy; PLAN.blocks = []; PLAN.streets = []; drawPlan(); };
   const up = async () => { if (!D) return; const d = D; D = null; map.dragPan.enable();
-    if (!d.moved){ PSEL = d.h >= 0 ? d.h : -1; planChanged(); return; }
-    if (d.h === -2){ await loadSegs(PLAN.x, PLAN.y); const st = {x:PLAN.x, y:PLAN.y, rot:PLAN.rot}; PLAN.bad = !fit(Object.assign(st, {w:0, h:0}), -1, 260); PLAN.x = st.x; PLAN.y = st.y; PLAN.rot = st.rot;
-      PLAN.touched = false; autoPlan(); }
-    else { const it = PLAN.items[d.h]; PSEL = d.h; PLAN.touched = true;
-      if (it.k === "stop"){ const t = nearestTrack(it.x, it.y, 1500); if (t) Object.assign(it, {x:t.x, y:t.y, line:t.line, li:t.li, kind:t.kind}); else { it.x = d.ox; it.y = d.oy; toast("A stop has to sit on a train track."); } }
-      else if (it.w) fit(it, d.h, 160); }
-    planChanged(); };
+    if (!d.moved){ planTap(d.x, d.y, mpp()); return; }
+    await loadSegs(PLAN.x, PLAN.y); fitStadium(PLAN); autoPlan(); planChanged(); };
   map.on("mousedown", down); map.on("touchstart", down); map.on("mousemove", move); map.on("touchmove", move); map.on("mouseup", up); map.on("touchend", up);
+  map.on("click", e => { if (mode !== "plan" || !PLAN) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat); if (!PLAN.gone && inEllipse(x, y, PLAN.x, PLAN.y, PLAN.rot)) return; planTap(x, y, mpp()); });
 }
-// share it: "#plan=" base ~ x,y,rot ~ pieces (meters from the map origin), letters and digits only
-function planCode(){ const P = PLAN, r = Math.round;
-  return P.base + "~" + [r(P.x), r(P.y), r(P.rot)].join(",") + "~k" + (P.pk || 0) + (P.hk == null ? 1 : P.hk) + (P.items.length ? ";" : "") + P.items.map(it => KINDS[it.k].code + (it.k === "bus" ? "" : it.k === "stop" ? [r(it.x), r(it.y), it.li].join(",") : [r(it.x), r(it.y), r(it.rot)].join(","))).join(";"); }
+// share it: "#plan=" base ~ x,y,rot ~ k<parking><homes>; stop/bus; o<x>,<y>,<use> for blocks you changed (meters from the map origin)
+function planCode(){ const P = PLAN, r = Math.round, parts = ["k" + (P.pk || 0) + (P.hk == null ? 1 : P.hk)];
+  for (const it of P.items) parts.push(it.k === "bus" ? "b" : "s" + [r(it.x), r(it.y), it.li].join(","));
+  for (const b of P.blocks || []) if (b.mine) parts.push("o" + [r(b.x), r(b.y)].join(",") + KINDS[b.k].code);
+  if (P.gone) parts.push("x");
+  return P.base + "~" + [r(P.x), r(P.y), r(P.rot)].join(",") + "~" + parts.join(";"); }
 function planDecode(code){
   const [base, st, items] = code.split("~"); if (!base || !st) return null; const [x, y, rot] = st.split(",").map(Number); if (![x, y, rot].every(Number.isFinite)) return null;
-  const byCode = Object.fromEntries(Object.entries(KINDS).map(([k, K]) => [K.code, k])), L = allLines(), out = {base, x, y, rot, items:[]};
-  out.pk = 0; out.hk = 1; out.touched = true;
-  for (const t of (items || "").split(";").filter(Boolean)){ if (/^k\d\d$/.test(t)){ out.pk = Math.min(2, +t[1]); out.hk = Math.min(2, +t[2]); continue; }
-    const k = byCode[t[0]], v = t.slice(1).split(",").map(Number); if (!k) continue; const K = KINDS[k];
-    if (k === "bus") out.items.push({k});
-    else if (k === "stop"){ const l = L[v[2]]; if (l) out.items.push({k, x:v[0], y:v[1], li:v[2], line:l.l.id, kind:l.kind}); }
-    else if (v.length === 3 && v.every(Number.isFinite)) out.items.push({k, x:v[0], y:v[1], rot:v[2], w:K.w, h:K.h}); }
+  const byCode = Object.fromEntries(Object.entries(KINDS).map(([k, K]) => [K.code, k])), L = allLines(), out = {base, x, y, rot, items:[], blocks:[], streets:[], ov:[], pk:0, hk:1};
+  for (const t of (items || "").split(";").filter(Boolean)){
+    if (/^k\d\d$/.test(t)){ out.pk = Math.min(2, +t[1]); out.hk = Math.min(2, +t[2]); }
+    else if (t === "b") out.items.push({k:"bus"});
+    else if (t === "x") out.gone = true;
+    else if (t[0] === "s"){ const v = t.slice(1).split(",").map(Number), l = L[v[2]]; if (l) out.items.push({k:"stop", x:v[0], y:v[1], li:v[2], line:l.l.id, kind:l.kind}); }
+    else if (t[0] === "o"){ const mm = t.match(/^o(-?\d+),(-?\d+)([a-z])$/); if (mm && byCode[mm[3]]) out.ov.push({x:+mm[1], y:+mm[2], k:byCode[mm[3]]}); } }
   return out; }
 
 /* ---------- game day: fans drive the real roads and ride the real lines ---------- */
@@ -1124,7 +1239,8 @@ const HOW = `<ul class="facts">
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
 <li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
-<li><b>Your site plan:</b> laid out automatically. It goes on usable land within a mile of the stadium (for the proposed sites, also a circle the size of the site's published acreage, or 120 acres when none is published), never on the lake or on blocks with homes. Transit comes first: a game-day stop on the nearest track if it's within a walk, or, with no train within a walk, a stop on the nearest track plus shuttle buses. Then a plaza on the side fans walk in from, homes over shops toward the station (or the nearest neighborhood), garages closest to the stadium and surface lots out to a mile, until there's parking for every car, half or a quarter (your choice), counting lots already there. Typical sizes, not anyone's plan. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
+<li><b>Streets and blocks:</b> the streets around the site that run with the local grid are carried into it; where they're more than 260 m apart, new streets (20 m wide) are added about every 160 m. Blocks that are mostly usable land, aren't crossed by another street or track and lie within a mile become the plan's blocks; the stadium takes the blocks under it. A garage covers 90% of its block with 5 levels; homes over shops cover 60% of a block with 5 floors of homes over shops at 1,026 sq ft a home. "Would hold" uses that same density. Assumptions.</li>
+<li><b>Your site plan:</b> laid out automatically. It goes on usable land within a mile of the stadium (for the proposed sites, also a circle the size of the site's published acreage, or 120 acres when none is published), never on the lake or on blocks with homes. Transit comes first: a game-day stop on the nearest track if it's within a walk, or, with no train within a walk, a stop on the nearest track plus shuttle buses. Then a plaza on the side fans walk in from, homes over shops toward the station (or the nearest neighborhood), up to three garage blocks closest to the stadium and surface lots outward, until there's parking for every car, half or a quarter (your choice), counting lots already there that the plan doesn't build over. Remaining blocks stay empty. Not anyone's actual plan. Satellite photos: USGS The National Map; 3D buildings around the site: OpenStreetMap through OpenFreeMap. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
 <li><b>Your ranking:</b> each measure is scaled from the lowest to the highest site, multiplied by your weight and added up. Money isn't scored: the public costs aren't comparable yet.</li>
@@ -1173,7 +1289,7 @@ addEventListener("keydown", e => { if (e.key === "Escape") stopKick(); });
   if ((m = h.match(/^#plan=([A-Za-z0-9,;~.-]+)/))) openPlanCode(m[1]);
   else if ((m = h.match(/^#s=(\w+)/))) openSite(m[1]);
   else if ((m = h.match(/^#p=(-?[\d.]+),(-?[\d.]+),?(\d*)/))){ pin = {lon:+m[1], lat:+m[2], rot:+m[3] || 0}; openPin(); map.jumpTo({center:[pin.lon, pin.lat], zoom:13.5, pitch:45}); }
-  window.__bears = {road: () => ROAD, kick: () => KICK, plan: () => PLAN, startPlan, autoPlan, planCode, renderPlan, fit, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
+  window.__bears = {road: () => ROAD, kick: () => KICK, plan: () => PLAN, startPlan, autoPlan, planCode, renderPlan, fitStadium, planTap, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
 })();
 </script>
 </body>
