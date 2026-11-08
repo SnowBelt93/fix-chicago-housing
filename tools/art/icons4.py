@@ -193,14 +193,15 @@ def supertall():   # Marina City
             box(math.cos(a) * R * 1.0, 0.6 + math.sin(a) * R * 1.0, 0.6 + f * FH + 0.07, 0.42, 0.18, 0.12, mat(random.choice(["#c0392b", "#2f6da3", "#e8e2d6", "#3a3f47"]), rough=0.5), bevel=0.03, rot=a + math.pi / 2)
     z0 = 0.6 + 13 * FH
     cyl(0, 0.6, z0, R * 1.18, 0.25, conc, verts=40, bevel=0.02)
-    for f in range(28):
-        z = z0 + 0.25 + f * FH
-        cyl(0, 0.6, z, R * 0.86, FH, mat("#2c3540", rough=0.1, spec=0.6), verts=32, bevel=0)
+    NF, AF = 19, 0.92                                                         # fewer, taller floors so the scallops read at icon size
+    for f in range(NF):
+        z = z0 + 0.25 + f * AF
+        cyl(0, 0.6, z, R * 0.8, AF, mat("#26303b", rough=0.1, spec=0.6), verts=32, bevel=0)
         for k in range(16):                                                  # scalloped balconies: the "corncob"
             a = k / 16 * 2 * math.pi
-            cyl(math.cos(a) * R * 0.88, 0.6 + math.sin(a) * R * 0.88, z, 0.42, 0.1, conc, verts=12, bevel=0.02)
-        cyl(0, 0.6, z, R * 0.88, 0.1, conc, verts=40, bevel=0)
-    cyl(0, 0.6, z0 + 0.25 + 28 * FH, R * 1.1, 0.3, conc, verts=40, bevel=0.03)
+            cyl(math.cos(a) * R * 0.92, 0.6 + math.sin(a) * R * 0.92, z, 0.5, 0.16, conc, verts=14, bevel=0.03)
+        cyl(0, 0.6, z, R * 0.92, 0.16, conc, verts=40, bevel=0)
+    cyl(0, 0.6, z0 + 0.25 + NF * AF, R * 1.15, 0.35, conc, verts=40, bevel=0.03)
 
 ICONS = {"z_today": today, "z_3flat": threeflat, "z_6flat": sixflat, "z_mid": midrise, "z_high": highrise, "z_tower": tower, "z_super": supertall}
 
