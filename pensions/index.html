@@ -28,6 +28,7 @@ main{display:grid;grid-template-columns:minmax(360px,420px) 1fr;gap:20px;padding
 .ctl{border-top:1px solid var(--sc-line);padding:14px 0}
 .ctl:first-of-type{border-top:0;padding-top:4px}
 .ctl h3{margin:0 0 8px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.ctl h3 img{width:40px;height:40px;flex:none;margin:-8px 2px -8px -6px}
 .ctl p{margin:6px 0 0;font-size:12.5px;color:var(--sc-mute);line-height:1.45}
 .opts{display:flex;flex-wrap:wrap;gap:6px}
 .opts button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);cursor:pointer}
@@ -84,16 +85,16 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 </section>
 <main>
   <section class="panel" aria-label="Your choices">
-    <div class="ctl"><h3>How much the city pays <button class="ib" data-i="pay" aria-label="About payments">i</button></h3>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_pay.webp" width="40" height="40" alt="">How much the city pays <button class="ib" data-i="pay" aria-label="About payments">i</button></h3>
       <div class="opts" id="oPay"></div><p id="pPay"></p></div>
-    <div class="ctl"><h3>Extra money every year <button class="ib" data-i="extra" aria-label="About extra payments">i</button></h3>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_extra.webp" width="40" height="40" alt="">Extra money every year <button class="ib" data-i="extra" aria-label="About extra payments">i</button></h3>
       <input type="range" id="rExtra" min="0" max="1000" step="25" value="0" aria-label="Extra payment each year"><div class="rrow"><span>$0</span><b id="vExtra">$0</b><span>$1B a year</span></div></div>
-    <div class="ctl"><h3>Borrow now with a pension bond <button class="ib" data-i="bond" aria-label="About pension bonds">i</button></h3>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_bond.webp" width="40" height="40" alt="">Borrow now with a pension bond <button class="ib" data-i="bond" aria-label="About pension bonds">i</button></h3>
       <div class="opts" id="oBond"></div></div>
-    <div class="ctl"><h3>What the investments earn <button class="ib" data-i="ret" aria-label="About returns">i</button></h3>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_returns.webp" width="40" height="40" alt="">What the investments earn <button class="ib" data-i="ret" aria-label="About returns">i</button></h3>
       <div class="opts" id="oRet"></div>
       <div class="swrow" style="margin-top:10px"><span style="font-size:13.5px">A market crash in 2028 (−25%)</span><button class="sc-switch" id="crash" role="switch" aria-checked="false" aria-label="A market crash in 2028"></button></div></div>
-    <div class="ctl"><h3>Cut benefits? <button class="ib" data-i="cut" aria-label="Why benefit cuts aren't here">i</button></h3>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_cut.webp" width="40" height="40" alt="">Cut benefits? <button class="ib" data-i="cut" aria-label="Why benefit cuts aren't here">i</button></h3>
       <p>Not an option here: the Illinois Constitution protects the benefits of current workers and retirees, and the state Supreme Court struck down Chicago's attempt in 2016.</p></div>
   </section>
   <div class="right">

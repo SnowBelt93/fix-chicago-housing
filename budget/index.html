@@ -103,7 +103,8 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .pc ul{margin:6px 0 0;padding-left:18px} .pc li{margin:3px 0;line-height:1.4}
 @media (max-width:560px){.pc{grid-template-columns:1fr}}
 /* v2 */
-.subh{margin:16px 2px 8px;font-size:13px;font-weight:600;color:var(--sc-mute)}
+.subh{margin:16px 2px 8px;font-size:13px;font-weight:600;color:var(--sc-mute);display:flex;align-items:center;gap:8px}
+.subh img{width:40px;height:40px;flex:none;margin:-6px 0 -6px -4px}
 .subh:first-of-type{margin-top:4px}
 .lv .top{grid-template-columns:1fr auto auto;align-items:center}
 .lv h3 .ib{margin-left:5px;vertical-align:1px}
@@ -441,6 +442,8 @@ const DEPT_INFO = {"57":"Patrol, detectives and 911 response. About 93% of its m
   "39":"Runs elections.", "15":"Alderpeople's offices and committees.", "6":"City technology and data.", "1":"The Mayor's office.", "25":"City vehicle stickers, records and Council files.",
   "35":"Buys goods and services for the city.", "3":"Investigates waste and fraud in city government.", "33":"Hiring, testing and labor relations.", "30":"Hearings on city tickets and violations.",
   "28":"Invests the city's cash.", "5":"Writes the budget."};
+const SUBICON = {"Property tax":"b_property", "Sales tax":"b_sales", "Taxes on businesses":"b_biz", "Taxes on what people buy":"b_buy", "Cars and driving":"b_drive", "Savings ideas":"b_savings", "The city could do it":"b_people", "Needs a state law":"b_state", "Public safety":"b_safety", "City services":"b_services", "Running the city":"b_civic"};
+const subh = t => `<h4 class="subh">${SUBICON[t] ? `<img src="/shape/art/icons/${SUBICON[t]}.webp" width="40" height="40" alt="" loading="lazy">` : ""}${t}</h4>`;
 const DGROUPS = [["Public safety", ["57", "59", "51", "58", "60"]], ["City services", ["81", "50", "84", "41", "21", "54", "67", "70", "73", "72"]],
   ["Running the city", ["38", "27", "31", "39", "15", "6", "1", "25", "35", "3", "33", "30", "28", "5"]]];
 const st = {}; const dpct = {};
@@ -500,10 +503,10 @@ const pctTxt = p => (p > 0 ? "+" : p < 0 ? "−" : "") + Math.abs(p) + "%";
 function dNote(d, p, n){ return p ? `${p < 0 ? "About " + n.toLocaleString("en-US") + " fewer" : "About " + n.toLocaleString("en-US") + " more"} positions if spread evenly` : `${m(corp27(d))} in 2027`; }
 function renderLevers(){
   let h = `<p class="lead">${LEAD[tab]}</p>`, sub = null;
-  for (const l of L.filter(l => l.g === tab)){ if (l.sub && l.sub !== sub){ sub = l.sub; h += `<h4 class="subh">${sub}</h4>`; } h += leverHtml(l); }
+  for (const l of L.filter(l => l.g === tab)){ if (l.sub && l.sub !== sub){ sub = l.sub; h += subh(sub); } h += leverHtml(l); }
   if (tab === "dept"){
     if (!DATA) h += `<p class="lead">Loading departments…</p>`;
-    else for (const [g, ids] of DGROUPS){ const ds = ids.map(deptById).filter(d => d && corp27(d) >= 4); h += `<h4 class="subh">${g}</h4>` + ds.map(deptHtml).join(""); }
+    else for (const [g, ids] of DGROUPS){ const ds = ids.map(deptById).filter(d => d && corp27(d) >= 4); h += subh(g) + ds.map(deptHtml).join(""); }
   }
   $("levers").innerHTML = h;
   $("levers").querySelectorAll(".lv[data-id]").forEach(el => {
