@@ -6,7 +6,7 @@
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
 const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-6]{77}[0-6][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-4][0-4][0-3]{10})$/;
-const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff";
+const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff, nm";
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
@@ -27,6 +27,8 @@ export default {
     const im = url.pathname.match(/^\/api\/card\/([0-9a-f]{12})\.png$/);
     if (im) return cardImage(im[1], url, env, ctx);
     if (url.pathname === "/api/calendar.ics") return calendar(url, env);
+    const wf = url.pathname.match(/^\/api\/ward\/(\d{1,2})\.xml$/);
+    if (wf && +wf[1] >= 1 && +wf[1] <= 50) return wardFeed(+wf[1], url, env);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
     if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || url.searchParams.get("key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
@@ -56,6 +58,30 @@ async function calendar(url, env){
   }
   L.push("END:VCALENDAR");
   return new Response(L.join("\r\n") + "\r\n", {headers: {"content-type": "text/calendar; charset=utf-8", "cache-control": "public, max-age=3600", "content-disposition": "inline; filename=chicago-city-hall.ics"}});
+}
+
+// one ward's news and zoning changes as an Atom feed, for feed readers and RSS-to-email services
+async function wardFeed(n, url, env){
+  const get = async p => { try { return await (await env.ASSETS.fetch(new Request(url.origin + p))).json(); } catch (e) { return null; } };
+  const [N, D] = await Promise.all([get("/news/data/news.json"), get("/wards/data/wards.json")]);
+  const x = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const iso = d => { const t = Date.parse(String(d).length > 10 ? String(d).replace("Z", ":00Z") : d + "T12:00:00Z"); return new Date(t || Date.now()).toISOString(); };
+  const E = [];
+  for (const i of (N && N.items) || []) if ((i.w || []).includes(n))
+    E.push({id: i.u, t: i.t, u: i.u, d: iso(i.d), s: (i.x ? i.x + " " : "") + "(" + i.s + ")"});
+  const W = D && D.wards.find(w => w.w === n);
+  const cut = new Date(Date.now() - 180 * 864e5).toISOString().slice(0, 10);
+  for (const z of (W && W.z) || []) if (z.d >= cut){
+    const what = z.k === "pd" ? "Planned development" : z.hf != null && z.ht != null ? (z.ht > z.hf ? "More homes allowed" : z.ht < z.hf ? "Fewer homes allowed" : "Same number of homes") : "Zoning change";
+    E.push({id: "zoning:" + z.r, t: "Zoning change passed: " + z.a, u: url.origin + "/wards/#" + n, d: iso(z.d),
+      s: what + (z.f && z.t ? ": " + z.f + " to " + z.t : "") + (z.hf != null && z.ht != null ? " (homes on a typical lot " + z.hf + " to " + z.ht + ")" : "") + ". Passed by City Council."});
+  }
+  E.sort((a, b) => b.d.localeCompare(a.d));
+  const upd = (E[0] && E[0].d) || new Date().toISOString();
+  const xml = '<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom"><title>Ward ' + n + ' · Shape Chicago</title><subtitle>News and zoning changes in Chicago\'s Ward ' + n + '. Not affiliated with the City of Chicago.</subtitle>'
+    + '<link rel="alternate" href="' + url.origin + '/wards/#' + n + '"/><link rel="self" href="' + url.href + '"/><id>' + url.origin + '/api/ward/' + n + '.xml</id><updated>' + upd + '</updated>'
+    + E.slice(0, 60).map(e => '<entry><title>' + x(e.t) + '</title><link href="' + x(e.u) + '"/><id>' + x(e.id) + '</id><updated>' + e.d + '</updated><summary>' + x(e.s) + '</summary></entry>').join("") + '</feed>';
+  return new Response(xml, {headers: {"content-type": "application/atom+xml; charset=utf-8", "cache-control": "public, max-age=1800"}});
 }
 
 function features(code){
@@ -142,7 +168,7 @@ export class Community {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT NOT NULL, page TEXT NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS cards (id TEXT PRIMARY KEY, code TEXT NOT NULL, homes INTEGER NOT NULL, grade TEXT NOT NULL, goal INTEGER NOT NULL,
       rent INTEGER NOT NULL, rentno INTEGER NOT NULL, mode INTEGER NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
-    for (const c of ["rent INTEGER", "rentno INTEGER", "aff INTEGER"]) try { this.sql.exec("ALTER TABLE plans ADD COLUMN " + c); } catch (e) {}   // added Nov 8; old rows stay null
+    for (const c of ["rent INTEGER", "rentno INTEGER", "aff INTEGER", "nm INTEGER"]) try { this.sql.exec("ALTER TABLE plans ADD COLUMN " + c); } catch (e) {}   // added Nov 8; old rows stay null
     this.sql.exec(`CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS imports (old INTEGER PRIMARY KEY, id INTEGER NOT NULL, likes INTEGER NOT NULL)`);
     this.env = env;
@@ -205,14 +231,14 @@ export class Community {
     const code = String(b.code || ""), homes = Math.round(+b.homes), grade = String(b.grade || ""), hood = Math.round(+b.hood || 0), gallery = b.gallery ? 1 : 0;
     if (!CODE_RE.test(code) || !(homes >= 0 && homes <= 3000000) || !GRADES.has(grade) || !(hood >= 0 && hood <= 77)) return json({error: "invalid plan"}, 400);
     const num = (v, lo, hi) => { v = Math.round(+v); return v >= lo && v <= hi ? v : null; };
-    const rent = num(b.rent, 300, 20000), rentno = num(b.rentNo, 300, 20000), aff = num(b.aff, 0, 3000000);
+    const rent = num(b.rent, 300, 20000), rentno = num(b.rentNo, 300, 20000), aff = num(b.aff, 0, 3000000), nm = num(b.nm, 0, 999);   // nm: index into the plan-name list in shape/plans.js
     const n = this.sql.exec("SELECT COUNT(*) AS n FROM plans WHERE who = ?", who).one().n;
     if (n >= 40) return json({error: "slow down"}, 429);
     // the same person re-running the same plan updates their row instead of stacking duplicates
     const dup = this.sql.exec("SELECT id, gallery FROM plans WHERE who = ? AND code = ?", who, code).toArray()[0];
     let id;
-    if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, rent = ?, rentno = ?, aff = ?, ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, rent, rentno, aff, Date.now(), dup.id); id = dup.id; }
-    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, rent, rentno, aff, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, rent, rentno, aff, who, Date.now()).one().id;
+    if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, rent = ?, rentno = ?, aff = ?, nm = COALESCE(?, nm), ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, rent, rentno, aff, nm, Date.now(), dup.id); id = dup.id; }
+    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, rent, rentno, aff, nm, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, rent, rentno, aff, nm, who, Date.now()).one().id;
     this.cache = null;
     return json({ok: true, id});
   }

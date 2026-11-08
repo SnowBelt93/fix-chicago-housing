@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/ward.js"></script>
 <style>
 html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 .sc-head{position:sticky;top:0}
@@ -85,21 +86,22 @@ function pic(i){
   if (i.i) return `<img src="${esc(i.i)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=ini>${esc(ini(i.s))}</span>'">`;
   return `<img class="logo" src="${esc(host(i.u))}/favicon.ico" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<span class=ini>${esc(ini(i.s))}</span>'">`;
 }
+const myWard = window.SCWard ? SCWard.get() : 0;
 function render(){
-  const items = D.items.filter(i => (topic === "all" || i.g.includes(topic)) && (!src || i.s === src) && (!q || (i.t + " " + i.s).toLowerCase().includes(q)) && (!since || i.d > since));
+  const items = D.items.filter(i => (topic === "all" || (topic === "ward" ? (i.w || []).includes(myWard) : i.g.includes(topic))) && (!src || i.s === src) && (!q || (i.t + " " + i.s).toLowerCase().includes(q)) && (!since || i.d > since));
   if (!items.length){ $("list").innerHTML = `<p class="empty">${since ? "Nothing new since your last visit." : "No stories match."}</p>`; return; }
   let h = "", day = "";
   items.forEach((i, n) => {
     const d = new Date(i.d.replace("Z", ":00Z")), k = d.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric"});
     if (k !== day){ day = k; h += `<div class="day">${k}</div>`; }
-    h += `<a class="item${n === 0 && !q && !since ? " lead" : ""}" href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${pic(i)}</div><div class="tx"><b>${esc(i.t)}</b>${i.x ? `<p class="sm">${esc(i.x)}</p>` : ""}<span>${esc(i.s)}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></div></a>`;
+    h += `<a class="item${n === 0 && !q && !since ? " lead" : ""}" href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${pic(i)}</div><div class="tx"><b>${esc(i.t)}</b>${i.x ? `<p class="sm">${esc(i.x)}</p>` : ""}<span>${esc(i.s)}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${myWard && (i.w || []).includes(myWard) ? ` <span class="t" style="background:#eef3fa;color:#1d4580">Ward ${myWard}</span>` : ""}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></div></a>`;
     if (items.length >= 4 && n === Math.min(7, items.length - 1)) h += `<div data-ad="news"></div>`;
   });
   $("list").innerHTML = h;
   window.scShowAds && window.scShowAds();
 }
 function chips(){
-  $("chips").innerHTML = TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<select class="srcsel" id="src" aria-label="Filter by outlet"><option value="">Every outlet</option>${[...new Set(D.items.map(i => i.s))].sort().map(n => `<option${n === src ? " selected" : ""}>${esc(n)}</option>`).join("")}</select><input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
+  $("chips").innerHTML = (myWard ? `<button class="chip" data-k="ward" aria-pressed="${topic === "ward"}">Ward ${myWard}</button>` : "") + TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<select class="srcsel" id="src" aria-label="Filter by outlet"><option value="">Every outlet</option>${[...new Set(D.items.map(i => i.s))].sort().map(n => `<option${n === src ? " selected" : ""}>${esc(n)}</option>`).join("")}</select><input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
   $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => { topic = b.dataset.k; chips(); render(); });
   $("src").onchange = e => { src = e.target.value; render(); };
   $("q").value = q; $("q").oninput = e => { q = e.target.value.toLowerCase(); render(); };

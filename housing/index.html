@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js" defer></script>
 <style>
 /* Layout: full-bleed 3D model of the city; civic goal meter on top, tool sheet at the bottom on phones / left rail on desktop.
    Default look "City Hall": Chicago flag blue + red six-point stars, city-website blue bands, condensed Big Shoulders headlines, square corners.
@@ -1465,6 +1466,8 @@ body.playing #sky{opacity:1}
 /* Nov 8: selected options solid navy */
 .seg2 button[aria-pressed="true"],.btn[aria-pressed="true"]{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
 .target[aria-pressed="true"]{border-color:var(--sc-navy) !important;box-shadow:inset 0 0 0 2px var(--sc-navy) !important;background:#eef3fa !important}
+.pname{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:8px 0 0;font-size:14px}
+.pname b{font-weight:600}
 </style>
 
 <div id="app">
@@ -1976,7 +1979,8 @@ body.playing #sky{opacity:1}
       <section class="rsec rcomm">
         <div class="eyebrow">Add it to the community</div>
         <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select><button class="btn" id="resPublish" type="button">Share with neighbors</button></div>
-        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Posting adds yours to the public gallery; your neighborhood shows what neighbors chose.</p>
+        <div class="pname"><span>Its name: <b id="pnName">–</b></span><button type="button" class="linkbtn" id="pnShuffle">Pick another name</button></div>
+        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Sharing adds yours to Neighbors' plans under the name above, where people can endorse it; your neighborhood shows what neighbors chose.</p>
       </section>
 
       <p class="small whyhard" id="resHard" hidden><b>Too easy?</b> That beat Chicago's share of the region's shortage. <button type="button" class="linkbtn" id="resHardBtn">Try hard mode</button>: the city builds the whole region's 297,087 homes, the way it would if Chicago grew back toward its 1950 size.</p>
@@ -4358,6 +4362,7 @@ function showResult(){
   personaRows($("resPersonas"), homes[end]);
   $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Every ward edition" : "Final edition";
   lastResult = {code: encodePlan(plan), hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
+  try { nameFor(lastResult.code); } catch (e) {}
   prepPlanLink();
   $("result").hidden = false;
 }
@@ -4742,12 +4747,20 @@ async function loadCommunity(){
   try { communityStats = await api("/api/stats" + (homeHood ? "?hood=" + homeHood : "")); } catch (e) { communityStats = null; }
   renderStats(); renderGallery(); renderPolicies();
 }
+// the plan's public name: picked from Chicago streets and Chicago-isms (shape/plans.js NAMES), never typed
+const planName = {i:0, code:""};
+function nameFor(code){
+  const S = window.SCPlans; if (!S) return;
+  if (planName.code !== code){ planName.code = code; planName.i = S.hashN(code) % S.NAMES.length; }
+  $("pnName").textContent = "The " + S.NAMES[planName.i] + " Plan";
+}
+$("pnShuffle").addEventListener("click", () => { const S = window.SCPlans; if (!S) return; planName.i = (planName.i + 1 + Math.floor(Math.random() * (S.NAMES.length - 1))) % S.NAMES.length; $("pnName").textContent = "The " + S.NAMES[planName.i] + " Plan"; });
 async function submitPlan(gallery){
   const code = encodePlan(plan), t = totals(false), key = code + (gallery ? "g" : "");
   if (!API_OK || key === lastSubmitted || t.total < 1) return false;
   try {
     const r = await api("/api/plan", {code, homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood, gallery: gallery ? 1 : 0,
-      rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0))});
+      rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0)), nm: planName.i});
     if (gallery && r && r.id){ const M = lsGet("fch-my-plans", []); if (!M.includes(r.id)) M.push(r.id); lsSet("fch-my-plans", M.slice(-40)); }   // so the home page and /plans/ can show your plans' endorsements
     lastSubmitted = key; return true;
   } catch (e) { return false; }

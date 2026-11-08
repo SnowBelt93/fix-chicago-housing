@@ -47,7 +47,8 @@ h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:
 .dtop{display:flex;gap:14px;align-items:flex-start}
 .dtop .pgr{position:relative;left:auto;top:auto;flex:none;width:58px;height:58px}
 .dtop .pgr i{font-size:17px}
-.dtop h1{font-size:28px;margin:2px 0 4px}
+.dtop h1{font-size:28px;margin:6px 0 6px}
+.dtop .psum{margin:0 0 6px;font-size:15px}
 .dtop .pwho{margin:0}
 .nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0 0}
 .nums div{background:#f6f7f9;border-radius:12px;padding:10px 12px}
@@ -124,7 +125,7 @@ async function mine(){
   const N = await S.myNews(), el = $("mine"); if (!N || !N.plans.length) return;
   const fresh = N.plans.reduce((s, x) => s + x.fresh, 0), total = N.plans.reduce((s, x) => s + x.P.likes, 0);
   el.innerHTML = '<span>You\'ve shared <b>' + N.plans.length + (N.plans.length === 1 ? " plan" : " plans") + '</b> with <b>' + S.fmt(total) + '</b> ' + (total === 1 ? "endorsement" : "endorsements") + '.</span>'
-    + (fresh ? '<span class="new">' + S.fmt(fresh) + ' new since you last looked</span>' : "") + N.plans.map(x => '<a href="#' + x.P.id + '">' + S.esc(S.title(S.decode(x.P.code) || {areas:{}, on:{}})) + '</a>').slice(0, 3).join("");
+    + (fresh ? '<span class="new">' + S.fmt(fresh) + ' new since you last looked</span>' : "") + N.plans.map(x => '<a href="#' + x.P.id + '">' + S.esc(S.nameOf(x.P)) + '</a>').slice(0, 3).join("");
   el.hidden = false; N.mark();
 }
 
@@ -140,10 +141,10 @@ async function one(id){
     const used = new Set([p.tod, p.metra, p.corr, ...Object.values(p.areas)].filter(Boolean));
     const group = (k, h) => { const L = c.filter(x => x.kind === k); return L.length ? '<h3>' + h + '</h3><ul class="pchips">' + L.map(x => '<li class="' + k + '">' + S.esc(x.t) + '</li>').join("") + '</ul>' : ""; };
     const rentLine = P.rent && P.rentno ? [("$" + S.fmt(P.rent)), "median rent in 2041 ($" + S.fmt(P.rentno) + " with no change)"] : null;
-    document.title = S.title(p) + " · Neighbors' Plans · Shape Chicago";
+    const K = S.kind(p); document.title = S.nameOf(P) + " · Neighbors' Plans · Shape Chicago";
     el.innerHTML = '<a class="back" href="#">← All plans</a><div class="det"><div class="dmap">' + S.map(p, G, "big")
       + '<div class="key">' + [...used].sort().map(t => '<span><i style="background:' + COLORS[t] + '"></i>' + TIERN[t] + '</span>').join("") + (used.size ? "" : '<span>No rezoning in this plan</span>') + '</div></div>'
-      + '<div class="dside"><div class="dcard"><div class="dtop"><span class="pgr" data-g="' + S.esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + S.STAR + '"/></svg><i>' + S.esc(g) + '</i></span><div><h1>' + S.esc(S.title(p)) + '</h1><p class="pwho">' + (P.hood && S.AREAS[P.hood] ? "From " + S.esc(S.AREAS[P.hood]) : "From a neighbor") + ' · shared ' + S.ago(P.ts) + ' · ' + S.MODE(p.g) + '</p></div></div>'
+      + '<div class="dside"><div class="dcard"><div class="dtop"><span class="pgr" data-g="' + S.esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + S.STAR + '"/></svg><i>' + S.esc(g) + '</i></span><div><span class="pkind k-' + K.c + '">' + K.t + '</span><h1>' + S.esc(S.nameOf(P)) + '</h1><p class="psum">' + S.esc(S.title(p)) + '</p><p class="pwho">' + (P.hood && S.AREAS[P.hood] ? "From " + S.esc(S.AREAS[P.hood]) : "From a neighbor") + ' · shared ' + S.ago(P.ts) + ' · ' + S.MODE(p.g) + '</p></div></div>'
       + '<div class="nums"><div><b>' + S.fmt(P.homes) + '</b><span>new homes by 2041</span></div>' + (rentLine ? '<div><b>' + rentLine[0] + '</b><span>' + rentLine[1] + '</span></div>' : '<div><b>' + S.esc(g) + '</b><span>grade against the ' + (p.g === 4 ? "every-ward" : p.g < 3 ? "hard mode" : "city") + ' goal</span></div>')
       + (P.aff ? '<div><b>' + S.fmt(P.aff) + '</b><span>affordable homes</span></div>' : "") + '<div><b>' + S.fmt(P.likes) + '</b><span>' + (P.likes === 1 ? "endorsement" : "endorsements") + '</span></div></div>'
       + '<div class="acts" id="acts"><a class="sc-btn primary" href="/housing/#' + P.code + '">Open it in the simulator</a><button class="sc-btn" type="button" id="copy">Copy link</button></div></div>'

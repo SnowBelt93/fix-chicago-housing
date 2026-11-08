@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
 <script src="/shape/plans.js"></script>
+<script src="/shape/ward.js"></script>
 <style>
 /* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted. */
 *{box-sizing:border-box}
@@ -65,7 +66,7 @@ a{color:var(--sc-navy)}
 @media (max-width:640px){ .hero2 h1{font-size:32px} .hero2 .hl>p{font-size:15.5px;margin-bottom:16px} .quick a{padding:8px 10px 8px 6px;gap:8px;font-size:12.5px} .quick img{width:44px;height:44px} .quick b{font-size:15px} .ftx b{font-size:18px} .pulse b{font-size:17px} .pulse a{padding:8px 10px;font-size:11.5px} }
 @media (max-width:360px){ .quick a{flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px} .quick img{width:38px;height:38px} }
 .band{padding-block:56px}
-.band.alt{background:var(--sc-chip)}
+.band.alt{background:transparent}
 .sh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:22px}
 .sh h2{margin:0;font-size:28px;letter-spacing:-.02em;font-weight:600}
 .sh span{font-size:14px;color:var(--sc-mute)}
@@ -162,6 +163,46 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (hover:hover){ .quick a,.feature,.pulse a,.tool,.plan,.learn a,.wnews a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
 @media (prefers-reduced-motion:reduce){ .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:none} }
 .mine{margin:-6px 0 14px;font-size:15px;color:var(--sc-ink2)} .mine b{color:#1f6b44}
+/* your ward (shape/ward.js) */
+.yw{padding-top:8px}
+.ywcard{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:22px 24px}
+.ywlede{margin:0 0 14px;font-size:16px;line-height:1.5;color:var(--sc-ink2);max-width:44em}
+.wpick{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.wpick .wpaddr{display:flex;flex-direction:column;gap:4px;flex:1 1 260px;font-size:13px;font-weight:600;color:var(--sc-mute)}
+.wpick input,.wpick select{font:inherit;font-size:15px;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.wpick .sc-btn{min-height:42px}
+.wpick .wmsg{flex-basis:100%;margin:2px 0 0;font-size:14px;color:var(--sc-mute);min-height:1em}
+.ywgrid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:28px}
+.ywwho{display:flex;flex-direction:column;gap:10px}
+.ywwho .wn{font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.ywwho .al{display:flex;align-items:center;gap:12px}
+.ywwho img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--sc-seg)}
+.ywwho .al b{display:block;font-size:16px} .ywwho .al span{font-size:13px;color:var(--sc-mute)}
+.ywwho .ct{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.ywwho .ct a{text-decoration:none;font-weight:500}
+.ywwho .chg{font:inherit;font-size:13px;color:var(--sc-mute);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;align-self:flex-start}
+.ywnew{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.ywnew span{font-size:13.5px;font-weight:600;padding:5px 10px;border-radius:10px;background:#eef7f1;color:#1f6b44}
+.ywnew span.z{background:var(--sc-seg);color:var(--sc-mute)}
+.ywcols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+.ywcols h3{font-size:14px;font-weight:600;color:var(--sc-mute);margin:0 0 8px}
+.ywlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ywlist li{font-size:15px;line-height:1.35}
+.ywlist a{color:var(--sc-ink);text-decoration:none;font-weight:500}
+.ywlist a:hover{color:var(--sc-navy);text-decoration:underline}
+.ywlist small{display:block;font-size:12.5px;color:var(--sc-mute);margin-top:2px}
+.ywlist .nw{font-size:11px;font-weight:600;background:#e3f3e8;color:#1f7a45;border-radius:7px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.ywlist .tg{font-size:11.5px;font-weight:600;border-radius:7px;padding:1px 6px;margin-right:6px;background:#eef3fa;color:#1d4580}
+.ywlist .tg.dn{background:#fdecef;color:#a0001b} .ywlist .tg.pd{background:#f1ecf8;color:#5b3e8c} .ywlist .tg.eq{background:var(--sc-seg);color:var(--sc-mute)}
+.ywempty{font-size:14.5px;color:var(--sc-mute);margin:0}
+.ywact{margin-top:20px;padding-top:18px;border-top:1px solid var(--sc-line)}
+.ywact h3{font-size:14px;font-weight:600;color:var(--sc-mute);margin:0 0 10px}
+.ywbtns{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.ywbtns a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--sc-line);border-radius:14px;text-decoration:none;color:var(--sc-ink);background:#fff}
+.ywbtns a b{font-size:14.5px;font-weight:600} .ywbtns a span{font-size:13px;color:var(--sc-mute);line-height:1.35}
+@media (hover:hover){ .ywbtns a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .ywbtns a:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (max-width:900px){ .ywgrid,.ywcols{grid-template-columns:1fr} .ywgrid{gap:18px} .ywwho{flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 20px} .ywwho .wn{font-size:34px} }
+@media (max-width:640px){ .ywcard{padding:18px 16px} }
 </style>
 </head>
 <body>
@@ -173,8 +214,8 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <main>
   <section class="wrap hero2">
     <div class="hl">
-      <h1>Think you could fix Chicago? Prove it.</h1>
-      <p>Rezone a neighborhood, draw a new train line or close the budget gap. Real city data shows what your plan would actually do.</p>
+      <h1>See how Chicago works. Then try changing it.</h1>
+      <p>Daily news on housing, transit and the budget. Your ward's votes, rezonings and permits. Plain-English explainers. And simulators that show what a change would really do, with every number sourced.</p>
       <div class="quick">
         <a href="/housing/"><img src="/shape/art/icons/build.webp" alt="" width="56" height="56"><span><b>Housing</b>Zone for more homes</span></a>
         <a href="/transit/"><img src="/shape/art/icons/subway.webp" alt="" width="56" height="56"><span><b>Transit</b>Draw a new line</span></a>
@@ -193,6 +234,10 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
       </div>
     </div>
   </section>
+  <section class="band yw" id="ywSec" aria-labelledby="ywH"><div class="wrap">
+    <div class="sh"><h2 id="ywH">Your ward</h2><span id="ywNote"></span></div>
+    <div id="yw"><div class="ywcard"><p class="ywlede">Loading…</p></div></div>
+  </div></section>
   <section class="band" aria-labelledby="weekH"><div class="wrap">
     <div class="sh"><h2 id="weekH">This week in Chicago</h2><span id="weekNote">What changed since you last looked</span></div>
     <div class="wnews" id="wkNews"></div>
@@ -286,6 +331,52 @@ loadPlans();
     document.getElementById("pMeet").textContent = d.toLocaleDateString("en-US", {timeZone:"America/Chicago", month:"short", day:"numeric"});
     document.getElementById("pMeetL").textContent = "next " + (up.b === "City Council" ? "City Council meeting" : up.b.replace(/^Committee on /, "").replace(/,.*$/, "") + " hearing");
   }).catch(() => {});
+})();
+
+/* Your ward: pick it once (no account), then its news, zoning, permits, alderperson and ways to weigh in */
+(function(){
+  const S = window.SCWard, box = document.getElementById("yw"), note = document.getElementById("ywNote"), esc = S.esc;
+  const day = d => new Date(String(d).length > 10 ? String(d).replace("Z", ":00Z") : d + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  const fmt = n => Number(n).toLocaleString("en-US");
+  const name = a => (a.name || "").split(",").reverse().join(" ").trim();
+  const last = a => (a.name || "").split(",")[0].trim();
+  function ask(){
+    note.textContent = "";
+    box.innerHTML = '<div class="ywcard"><p class="ywlede"><b>Follow your ward.</b> Every time you come back, see its news, the zoning changes it passed, the homes it permitted, your alderperson\'s votes, and the next chance to weigh in. No account: it stays in this browser.</p><div id="ywPick"></div></div>';
+    S.picker(document.getElementById("ywPick"), show);
+  }
+  async function show(n){
+    const since = S.seen();
+    let D; try { D = await S.summary(n, since); } catch (e) { box.innerHTML = '<div class="ywcard"><p class="ywempty">Couldn\'t load your ward right now.</p></div>'; return; }
+    const A = D.ald, f = D.fresh, origin = location.origin.replace(/^https?:/, "");
+    note.textContent = since ? "Since you last looked " + day(since) : "";
+    const chips = since ? [f.news ? f.news + " new " + (f.news === 1 ? "story" : "stories") : "", f.z ? f.z + " zoning " + (f.z === 1 ? "change" : "changes") + " passed" : "", f.homes ? fmt(f.homes) + " homes permitted" : ""].filter(Boolean) : [];
+    const news = D.news.slice(0, 5).map(i => '<li>' + (since && i.d > since ? '<span class="nw">New</span>' : "") + '<a href="' + esc(i.u) + '" target="_blank" rel="noopener">' + esc(i.t) + '</a><small>' + esc(i.s) + ' · ' + day(i.d) + (i.exact ? "" : " · nearby") + '</small></li>').join("");
+    const tag = z => z.k === "pd" ? '<span class="tg pd">Planned development</span>' : z.hf != null && z.ht != null ? (z.ht > z.hf ? '<span class="tg">More homes</span>' : z.ht < z.hf ? '<span class="tg dn">Fewer homes</span>' : '<span class="tg eq">Same homes</span>') : "";
+    const zs = D.z.slice(0, 3).map(z => '<li>' + tag(z) + '<a href="/wards/#' + n + '">' + esc(z.a) + '</a><small>' + (z.f && z.t ? esc(z.f) + " → " + esc(z.t) + " · " : "") + "passed " + day(z.d) + '</small></li>').join("");
+    const ps = D.permits.filter(p => +p.homes >= 2).slice(0, 2).map(p => '<li><a href="/tracker/#near">' + esc(p.addr) + '</a><small>' + fmt(p.homes) + ' homes permitted · ' + day(p.date) + '</small></li>').join("");
+    const zm = D.zoningMeet, tz = {timeZone:"America/Chicago"};
+    const meetTxt = zm ? new Date(zm.d).toLocaleDateString("en-US", {...tz, weekday:"short", month:"short", day:"numeric"}) + (zm.c ? ". Written comments by " + esc(zm.c.replace(/, \d{4}/, "")) : "") : "";
+    box.innerHTML = '<div class="ywcard"><div class="ywgrid"><div class="ywwho"><span class="wn">Ward ' + n + '</span>'
+      + (A.name ? '<div class="al">' + (A.photo ? '<img src="' + esc(A.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : "") + '<div><b>' + esc(name(A)) + '</b><span>Alderperson</span></div></div>' : "")
+      + '<div class="ct">' + (A.email ? '<a href="mailto:' + esc(A.email) + '">' + esc(A.email) + '</a>' : "") + (A.phone ? '<a href="tel:' + esc(A.phone.replace(/[^\d+]/g, "")) + '">' + esc(A.phone) + '</a>' : "") + (A.web ? '<a href="' + esc(A.web) + '" target="_blank" rel="noopener">Ward website</a>' : "") + '</div>'
+      + '<button type="button" class="chg" id="ywChange">Change ward</button></div><div>'
+      + (chips.length ? '<div class="ywnew">' + chips.map(c => '<span>' + c + '</span>').join("") + '</div>' : (since ? '<div class="ywnew"><span class="z">Nothing new since ' + day(since) + '</span></div>' : ""))
+      + '<div class="ywcols"><div><h3>News from your ward</h3>' + (news ? '<ul class="ywlist">' + news + '</ul>' : '<p class="ywempty">No stories about Ward ' + n + ' in the last few weeks.</p>') + '</div>'
+      + '<div><h3>Zoning and building</h3>' + (zs || ps ? '<ul class="ywlist">' + zs + ps + '</ul>' : '<p class="ywempty">No zoning changes or permits yet.</p>') + '</div></div></div></div>'
+      + '<div class="ywact"><h3>Weigh in</h3><div class="ywbtns">'
+      + (zm ? '<a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=' + esc(zm.id) + '" target="_blank" rel="noopener"><b>Next zoning hearing</b><span>' + meetTxt + '</span></a>' : "")
+      + (A.email ? '<a href="mailto:' + esc(A.email) + '?subject=' + encodeURIComponent("From a Ward " + n + " resident") + '"><b>Email Ald. ' + esc(last(A)) + '</b><span>Say what you want built, or how they should vote</span></a>' : "")
+      + '<a href="/wards/#' + n + '"><b>Ward ' + n + '\'s full record</b><span>Votes on housing laws, every rezoning, permits</span></a>'
+      + '<a href="webcal://' + esc(origin.replace(/^\/\//, "")) + '/api/calendar.ics"><b>City Hall in your calendar</b><span>Every Council and committee meeting, kept up to date</span></a>'
+      + '<a href="/api/ward/' + n + '.xml"><b>Ward ' + n + ' news feed</b><span>For a feed reader. New stories and zoning changes</span></a>'
+      + '</div></div></div>';
+    document.getElementById("ywChange").addEventListener("click", () => { S.clear(); ask(); });
+    S.markSeen();
+  }
+  const sec = document.getElementById("ywSec");
+  const go = () => { const n = S.get(); if (n) show(n); else ask(); };
+  if ("IntersectionObserver" in window){ const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); go(); } }, {rootMargin:"600px"}); io.observe(sec); } else go();
 })();
 </script>
 </body>

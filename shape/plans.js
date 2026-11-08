@@ -51,11 +51,41 @@
     for (const k of BIT_KEYS) if (p.on[k] && CUT.has(k)) out.push({t: SHORT[k], kind:"cut"});
     return out;
   }
-  // a name made from the plan itself (nothing typed)
+  // Plan names: the person who shares a plan picks one from this list (Chicago streets and Chicago-isms), so names are
+  // memorable and nobody types anything. Index stored as `nm`; plans shared before names existed get one from their id.
+  // Append only: changing the order renames shared plans.
+  const NAMES = ["Kedzie", "Milwaukee Avenue", "Halsted", "Ashland", "Western Avenue", "Cicero", "Pulaski", "Damen", "Clark Street", "Broadway",
+    "Sheridan Road", "Archer Avenue", "Ogden", "Cermak", "Roosevelt Road", "Division Street", "Belmont", "Fullerton", "Diversey", "Lawrence Avenue",
+    "Irving Park", "Devon Avenue", "Howard Street", "Wacker", "State Street", "LaSalle", "Lake Shore", "King Drive", "Stony Island", "Cottage Grove",
+    "Garfield Boulevard", "63rd Street", "79th Street", "95th Street", "47th Street", "18th Street", "26th Street", "Harlem Avenue", "Central Park", "California Avenue",
+    "Kostner", "Narragansett", "Elston", "Lincoln Avenue", "Grand Avenue", "Chicago Avenue", "North Avenue", "Madison Street", "Racine", "Wentworth",
+    "Vincennes", "Commercial Avenue", "Jeffery", "Lake Park", "Wabash", "Dearborn", "Montrose", "Foster", "Touhy", "Addison",
+    "Three-Flat", "Two-Flat", "Greystone", "Bungalow Belt", "Six-Flat", "Courtyard Building", "Coach House", "Garden Unit", "Back Porch", "Gangway",
+    "Corner Store", "Big Shoulders", "Lakefront", "Riverwalk", "Prairie", "Elevated", "Loop", "Lake Effect", "Third Coast", "Second City",
+    "Windy City", "Hawk", "Dibs", "Polar Vortex", "Hot Dog Stand", "Italian Beef", "Tavern Cut", "Brown Line", "Pink Line", "Blue Line",
+    "Red Line", "Green Line", "Orange Line", "Purple Line", "Yellow Line", "Metra", "Bike Lane", "Block Party", "Street Festival", "Six Corners"];
+  const hashN = s => { let h = 2166136261; for (const ch of String(s)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return Math.abs(h); };
+  const nameOf = P => "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN("p" + (P.id || P.code)) % NAMES.length] + " Plan";
+  // what kind of plan it is, from its biggest moves
+  function kind(p){
+    const c = choices(p), z = c.filter(x => x.kind === "zone"), pol = c.filter(x => x.kind === "policy").length, ar = Object.values(p.areas).filter(Boolean);
+    if (c.some(x => x.kind === "cut")) return {t:"Cuts housing", c:"cut"};
+    if (!z.length) return {t:pol ? "Policies only" : "No changes", c:"pol"};
+    if (c.length >= 12) return {t:"Everything at once", c:"all"};
+    if (p.tod >= 5 || ar.some(t => t >= 5)) return {t:"Towers", c:"tall"};
+    const mm = p.on.build || p.on.camb || p.on.mpls || p.on.small || p.on.adu;
+    if (mm && Math.max(p.tod, p.corr, p.metra, ...ar, 0) <= 2) return {t:"Missing middle", c:"mm"};
+    if (ar.length >= 3 && ar.length * 1 > (p.tod ? 3 : 0)) return {t:"Neighborhood by neighborhood", c:"hood"};
+    if (p.corr >= 3 && p.corr >= p.tod) return {t:"Main streets", c:"main"};
+    if (p.tod) return {t:"Transit-first", c:"tod"};
+    return {t:"Mixed", c:"all"};
+  }
+  // one line under the name: the main zoning moves and how many policies
   function title(p){
-    const c = choices(p), z = c.filter(x => x.kind === "zone"), n = c.length - z.length;
-    if (!c.length) return "No changes";
-    return z.length ? z[0].t : n + (n === 1 ? " policy" : " policies") + ", no rezoning";
+    const c = choices(p), z = c.filter(x => x.kind === "zone").map(x => x.t), n = c.length - z.length;
+    if (!c.length) return "No changes from today";
+    const head = z.slice(0, 2).join(", ");
+    return head ? head + (n ? ", " + n + (n === 1 ? " policy" : " policies") : "") : n + (n === 1 ? " policy" : " policies") + ", no rezoning";
   }
 
   let GEO = null;
@@ -100,12 +130,12 @@
   function card(P, G, opt){
     opt = opt || {};
     const p = decode(P.code); if (!p) return null;
-    const c = choices(p), a = document.createElement("a");
+    const c = choices(p), a = document.createElement("a"), K = kind(p);
     a.className = "pcard"; a.href = "/plans/#" + P.id;
     const g = String(P.grade || "–"), cut = c.some(x => x.kind === "cut");
     const rent = P.rent && P.rentno ? (P.rent < P.rentno ? "$" + fmt(P.rentno - P.rent) + " less rent a month" : P.rent > P.rentno ? "$" + fmt(P.rent - P.rentno) + " more rent a month" : "Rent about the same") : "";
     a.innerHTML = '<div class="pmapw">' + map(p, G) + '<span class="pgr" data-g="' + esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR + '"/></svg><i>' + esc(g) + '</i></span>' + (p.g !== 3 ? '<span class="pmode' + (p.g < 3 ? " hard" : "") + '">' + MODE(p.g) + '</span>' : "") + '</div>'
-      + '<div class="pbody"><b class="pt">' + esc(title(p)) + '</b><span class="pwho">' + (P.hood && AREAS[P.hood] ? "From " + esc(AREAS[P.hood]) : "From a neighbor") + ' · ' + ago(P.ts) + '</span>'
+      + '<div class="pbody"><span class="pkind k-' + K.c + '">' + K.t + '</span><b class="pt">' + esc(nameOf(P)) + '</b><span class="psum">' + esc(title(p)) + '</span><span class="pwho">' + (P.hood && AREAS[P.hood] ? "From " + esc(AREAS[P.hood]) : "From a neighbor") + ' · ' + ago(P.ts) + '</span>'
       + '<div class="pnums"><span><b>' + fmt(P.homes) + '</b> homes by 2041</span>' + (rent ? '<span>' + rent + ' by 2041</span>' : "") + '</div>'
       + '<ul class="pchips">' + c.slice(0, opt.all ? 99 : 5).map(x => '<li class="' + x.kind + '">' + esc(x.t) + '</li>').join("") + (!opt.all && c.length > 5 ? '<li class="more">+' + (c.length - 5) + ' more</li>' : "") + '</ul>'
       + (cut ? '<span class="pwarn">Includes policies that cut housing</span>' : "") + '<div class="pfoot"><span class="popen">See the plan</span></div></div>';
@@ -126,5 +156,5 @@
     } catch (e) { return null; }
   }
 
-  window.SCPlans = {decode, choices, title, map, card, geo, endorseBtn, myNews, mine, AREAS, MODE, fmt, esc, ago, STAR};
+  window.SCPlans = {decode, choices, title, kind, nameOf, NAMES, hashN, map, card, geo, endorseBtn, myNews, mine, AREAS, MODE, fmt, esc, ago, STAR};
 })();

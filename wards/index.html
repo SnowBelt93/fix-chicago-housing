@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/ward.js"></script>
 <style>
 html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 .sc-head{position:sticky;top:0}
@@ -79,6 +80,8 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .subcal{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--sc-line);font-size:14px;color:var(--sc-ink2)}
 .subcal span{flex:1 1 220px}
 .subcal .sc-btn{display:inline-flex;align-items:center;text-decoration:none}
+.follow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px;font-size:13.5px;color:var(--sc-mute)}
+.follow .sc-btn{min-height:36px}
 </style>
 </head>
 <body>
@@ -100,6 +103,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
       </div>
       <div class="hint" id="hint"></div>
       <div class="contact" id="contact"></div>
+      <div class="follow"><button class="sc-btn" type="button" id="followBtn">Follow this ward</button><span id="followNote">See its news and zoning on the home page each time you visit.</span></div>
     </div>
     <div id="map" aria-hidden="true"></div>
   </section>
@@ -171,8 +175,14 @@ function render(){
   $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
     const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Voted yes" : x === "Nay" ? "Voted no" : x ? VOTE[x] || x : "Not on the Council then";
     return `<div class="vote"><b>${v.t}</b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
-  renderZ(); renderP(); wmap(); renderAll();
+  renderZ(); renderP(); wmap(); renderAll(); followUI();
 }
+function followUI(){
+  const f = window.SCWard && SCWard.get() === W, b = $("followBtn");
+  b.textContent = f ? "Following Ward " + W : "Follow Ward " + W; b.classList.toggle("primary", f); b.setAttribute("aria-pressed", String(f));
+  $("followNote").innerHTML = f ? 'Its news and zoning show on the <a href="/">home page</a>. <a href="/api/ward/' + W + '.xml">News feed</a>' : "See its news and zoning on the home page each time you visit.";
+}
+$("followBtn").addEventListener("click", () => { if (SCWard.get() === W) SCWard.clear(); else SCWard.set(W); followUI(); });
 function renderZ(){
   const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
   const dir = z => z.hf != null && z.ht != null ? (z.ht > z.hf ? 1 : z.ht < z.hf ? -1 : 0) : null;   // homes allowed on a typical lot, before vs after
