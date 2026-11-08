@@ -94,6 +94,12 @@ table.cmp th{font-size:12px;color:var(--sc-mute);font-weight:600}
 .kick .meter .t{height:10px;border-radius:5px;background:var(--sc-seg);overflow:hidden}
 .kick .meter .t i{display:block;height:100%;width:0;border-radius:5px;transition:width .2s linear}
 .kick .verdict{font-size:14px;line-height:1.45;margin-top:10px;color:var(--sc-ink2)}
+.gdset{margin-top:10px;border-top:1px solid var(--sc-line);padding-top:8px}
+.gdset summary{font-size:13.5px;font-weight:600;color:var(--sc-navy);cursor:pointer}
+.gds{display:grid;grid-template-columns:96px 1fr 92px;gap:8px;align-items:center;font-size:13px;margin:8px 0}
+.gds input{width:100%;accent-color:var(--sc-navy)} .gds b{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.kick .tlegend{display:flex;gap:10px;font-size:12px;color:var(--sc-mute);margin-top:8px;flex-wrap:wrap}
+.kick .tlegend i{display:inline-block;width:14px;height:4px;border-radius:2px;vertical-align:middle;margin-right:4px}
 .kick .x{position:absolute;right:10px;top:10px;border:0;background:none;font-size:20px;color:var(--sc-mute);cursor:pointer;line-height:1}
 .legend{position:absolute;z-index:2;right:14px;bottom:28px;background:rgba(255,255,255,.95);border-radius:12px;box-shadow:var(--sc-shadow2);padding:8px 12px;font-size:12.5px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:4px}
 .legend span{display:flex;align-items:center;gap:7px}
@@ -113,6 +119,14 @@ dialog.sc-info{max-width:520px}
   .kick{left:10px;right:10px;width:auto;top:calc(var(--sc-head) + 8px)}
   .legend{display:none}
   #map{bottom:50vh}
+  body.gameday .panel{height:64px} body.gameday .panel .scroll,body.gameday .panel .tabs{display:none}
+  body.gameday #map{bottom:64px}
+  body.gameday .ptop{cursor:pointer}
+  body.gameday .ptop h1::after{content:" · tap for details";font-size:13px;font-weight:500;color:var(--sc-mute)}
+  .kick{padding:10px 12px;max-height:46vh;overflow:auto}
+  .kick h2{font-size:15px;padding-right:22px} .kick .clock{margin-bottom:4px}
+  .kick .meter{margin:4px 0} .kick .meter .t{height:7px}
+  .kick .verdict{font-size:13.5px;margin-top:6px}
 }
 @media (prefers-reduced-motion:reduce){ .kick .meter .t i{transition:none} }
 </style>
@@ -137,7 +151,7 @@ dialog.sc-info{max-width:520px}
       <div id="list">
         <div class="sites" id="sites"></div>
         <h3>Your own site</h3>
-        <p>Tap <b>Drop a pin</b>, then tap the map. Green areas are land big enough for a domed stadium that isn't homes, parks or water.</p>
+        <p>Tap <b>Drop a pin</b>, then tap the map. Drag the pin to try other spots. Green areas are land big enough for a domed stadium that isn't homes, parks or water.</p>
         <div class="pinrow"><button class="sc-btn primary" type="button" id="pinBtn">Drop a pin</button><label class="chk"><input type="checkbox" id="landChk" checked> Show land that fits</label></div>
       </div>
       <div id="detail" hidden></div>
@@ -173,7 +187,13 @@ dialog.sc-info{max-width:520px}
   <div class="meter"><div><span>Fans by train</span><b id="kmTrain">0</b></div><div class="t"><i id="kbTrain" style="background:#2b5da0"></i></div></div>
   <div class="meter"><div><span>Fans by car</span><b id="kmCar">0</b></div><div class="t"><i id="kbCar" style="background:#d9822b"></i></div></div>
   <div class="meter"><div><span>Parking spaces used</span><b id="kmPark">0</b></div><div class="t"><i id="kbPark" style="background:#6b7280"></i></div></div>
+  <div class="tlegend"><span><i style="background:#2b5da0;height:8px;width:8px;border-radius:50%"></i>train fan</span><span><i style="background:#d9822b;height:8px;width:8px;border-radius:50%"></i>car</span><span><i style="background:#3f9c5a"></i>roads OK</span><span><i style="background:#e0a100"></i>busy</span><span><i style="background:#b3001e"></i>jammed</span></div>
   <div class="verdict" id="kickV"></div>
+  <details class="gdset"><summary>Change the game</summary>
+    <label class="gds"><span>Fans</span><input type="range" id="gdSeats" min="50000" max="80000" step="1000"><b id="gdSeatsV"></b></label>
+    <label class="gds"><span>Take the train</span><input type="range" id="gdShare" min="0" max="60" step="1"><b id="gdShareV"></b></label>
+    <button class="sc-btn primary" type="button" id="gdRun">Run it again</button>
+  </details>
 </div>
 <div class="legend" id="legend"></div>
 <div class="toast" id="toast"></div>
@@ -368,10 +388,19 @@ async function initMap(){
   map.addLayer({id:"ref-l", type:"line", source:"ref", paint:{"line-color":["match", ["get", "t"], "stadium", "#c8102e", "#6b7280"], "line-width":1.2}});
   map.addLayer({id:"near", type:"circle", source:"near", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 11, 2.5, 15, 6], "circle-color":["match", ["get", "t"], "hotel", "#7a4bb3", "lot", "#6b7280", "#1a1d21"], "circle-stroke-color":"#fff", "circle-stroke-width":1}});
   map.addLayer({id:"heat", type:"heatmap", source:"heat", paint:{"heatmap-weight":["get", "n"], "heatmap-radius":["interpolate", ["linear"], ["zoom"], 8, 18, 14, 50], "heatmap-opacity":0.7}});
+  map.addSource("traffic", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  map.addLayer({id:"traffic", type:"line", source:"traffic", layout:{"line-cap":"round"}, paint:{"line-color":["step", ["get", "v"], "#3f9c5a", 0.7, "#e0a100", 1, "#d9531e", 1.4, "#b3001e"], "line-width":["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "mw"], 1], 3, 1.6], 14, ["case", ["==", ["get", "mw"], 1], 8, 4]], "line-opacity":0.85}});
   map.addLayer({id:"fp", type:"fill-extrusion", source:"fp", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-base":["get", "b"], "fill-extrusion-opacity":0.95}});
-  map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 1.4, 15, 3.5], "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
+  map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 2.6, 11, 3.6, 15, 6], "circle-stroke-color":"#fff", "circle-stroke-width":0.8, "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
   map.addLayer({id:"sites", type:"circle", source:"sites", paint:{"circle-radius":["case", ["get", "on"], 10, 7], "circle-color":["get", "c"], "circle-stroke-color":"#fff", "circle-stroke-width":2.5}});
   if (ownDomain()) map.addLayer({id:"sites-t", type:"symbol", source:"sites", layout:{"text-field":["get", "n"], "text-font":["Noto Sans Bold"], "text-size":12.5, "text-offset":[0, 1.3], "text-anchor":"top"}, paint:{"text-color":"#1a1d21", "text-halo-color":"#fff", "text-halo-width":1.6}});
+  // drag your pin to a new spot
+  let drag = false;
+  const startDrag = e => { const f = e.features && e.features[0]; if (!f || f.properties.id !== "pin") return; e.preventDefault(); drag = true; map.dragPan.disable(); map.getCanvas().style.cursor = "grabbing"; };
+  map.on("mousedown", "sites", startDrag); map.on("touchstart", "sites", e => { if (e.points && e.points.length === 1) startDrag(e); });
+  const moveDrag = e => { if (!drag) return; pin.lon = e.lngLat.lng; pin.lat = e.lngLat.lat; drawSites(); showStadium(pin.lon, pin.lat, pin.rot, "#e6e9ed"); };
+  const endDrag = e => { if (!drag) return; drag = false; map.dragPan.enable(); map.getCanvas().style.cursor = ""; placePin(e.lngLat.lng, e.lngLat.lat, true); };
+  map.on("mousemove", moveDrag); map.on("touchmove", moveDrag); map.on("mouseup", endDrag); map.on("touchend", endDrag);
   map.on("click", "sites", e => { const id = e.features[0].properties.id; if (id === "pin") openPin(); else openSite(id); });
   map.on("mouseenter", "sites", () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", "sites", () => map.getCanvas().style.cursor = "");
   map.on("click", e => { if (mode !== "pin") return; if (map.queryRenderedFeatures(e.point, {layers:["sites"]}).length) return; placePin(e.lngLat.lng, e.lngLat.lat); });
@@ -487,60 +516,155 @@ function showRef(i, m, none){
 
 /* ---------- your own pin ---------- */
 function setPinMode(on){ mode = on ? "pin" : (cur ? "site" : "list"); $("pinBtn").textContent = on ? "Tap the map…" : "Drop a pin"; map.getCanvas().style.cursor = on ? "crosshair" : ""; }
-function placePin(lon, lat){
+function placePin(lon, lat, quiet){
   const [x, y] = xy(lon, lat), part = landAt(x, y);
   pin = {lon, lat, rot:pin ? pin.rot : 0};
   if (!part) toast("That spot isn't on land that fits. See what would have to go:");
-  setPinMode(false); openPin(); map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 13.5), pitch:45, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
+  setPinMode(false); openPin(); if (!quiet) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 13.5), pitch:45, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
 }
 
-/* ---------- game day ---------- */
-let kickT = null;
-function stopKick(){ if (kickT) cancelAnimationFrame(kickT); kickT = null; $("kick").classList.remove("on"); map && map.getSource("fans") && map.getSource("fans").setData({type:"FeatureCollection", features:[]}); }
-function kickoff(m, name){
-  stopKick();
-  const [x, y] = xy(m.lon, m.lat), K2 = $("kick"); K2.classList.add("on"); $("kickT").textContent = "Game day at " + name;
-  // where fans come from: train dots ride in along the lines near the site; car dots come in along the nearest exits
-  const trainSrc = [], carSrc = [];
-  if (NET) for (const l of [...NET.lLines, ...NET.metraLines, ...NET.southShore.lines]) for (const p of l.paths){ for (let i = 0; i < p.length; i += 3){ const [px, py] = xy(p[i][0], p[i][1]), d = Math.hypot(px - x, py - y); if (d > 2500 && d < 14000 && m.lines.length) trainSrc.push([px, py]); } }
-  const ex = PL.exits.filter(q => Math.hypot(q.x - x, q.y - y) < 6000);
-  for (const q of (ex.length ? ex : [{x:x + 4000, y}, {x:x - 4000, y}])) for (let k = 0; k < 6; k++){ const a = Math.atan2(q.y - y, q.x - x) + (Math.random() - 0.5) * 0.9, r = Math.hypot(q.x - x, q.y - y) + 2500 + Math.random() * 5000; carSrc.push([x + r * Math.cos(a), y + r * Math.sin(a), q.x, q.y]); }
-  const N = 900, trainN = Math.round(N * m.byTrain / A.seats), dots = [];
-  for (let i = 0; i < N; i++){
-    const t = i < trainN && trainSrc.length ? "t" : "c";
-    let from, via;
-    if (t === "t"){ from = trainSrc[(Math.random() * trainSrc.length) | 0]; const st = nearestStation(m); via = st || [x, y]; }
-    else { const c = carSrc[(Math.random() * carSrc.length) | 0]; from = [c[0], c[1]]; via = [c[2], c[3]]; }
-    dots.push({t, from, via, start:Math.random() * 0.75, speed:0.18 + Math.random() * 0.12});
-  }
-  const dur = reduce ? 1 : 14000, t0 = performance.now();
-  const step = now => {
-    const f = Math.min(1, (now - t0) / dur), feats = [];
-    for (const d of dots){ const u = Math.max(0, Math.min(1, (f - d.start) / d.speed)); if (u <= 0 || u >= 1) continue;
-      const [a, b] = u < 0.75 ? [d.from, d.via] : [d.via, [x, y]], w = u < 0.75 ? u / 0.75 : (u - 0.75) / 0.25;
-      const jx = (Math.sin(d.start * 999) * 40), jy = (Math.cos(d.start * 777) * 40);
-      feats.push({type:"Feature", properties:{m:d.t}, geometry:{type:"Point", coordinates:llOf(a[0] + (b[0] - a[0]) * w + jx, a[1] + (b[1] - a[1]) * w + jy)}}); }
-    map.getSource("fans").setData({type:"FeatureCollection", features:feats});
-    const arrived = Math.min(1, f / 0.95);
-    const tr = m.byTrain * arrived, car = m.byCar * arrived, used = Math.min(m.parking, m.cars * arrived);
-    $("kmTrain").textContent = fmt(tr); $("kmCar").textContent = fmt(car); $("kmPark").textContent = fmt(used) + " of " + fmt(m.parking);
-    $("kbTrain").style.width = (tr / A.seats * 100) + "%"; $("kbCar").style.width = (car / A.seats * 100) + "%"; $("kbPark").style.width = (m.parking ? Math.min(1, m.cars * arrived / m.parking) * 100 : 100) + "%";
-    const mins = Math.round(150 * (1 - f)); $("kickClock").textContent = f < 1 ? `${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, "0")} to kickoff · ${fmt(A.seats)} fans` : `Kickoff · ${fmt(A.seats)} fans`;
-    if (f < 1) kickT = requestAnimationFrame(step); else { kickT = null; $("kickV").innerHTML = verdict(m); }
-  };
-  $("kickV").innerHTML = ""; kickT = requestAnimationFrame(step);
+/* ---------- game day: fans drive the real roads and ride the real lines ---------- */
+// roads: the transit simulator's OpenStreetMap expressways and main streets (transit/data/geo.json, meters from State & Madison)
+const RS = {motorway:{v:24, cap:4000}, arterial:{v:10, cap:1100}};   // assumptions: free-flow speed (m/s) and cars an hour each way
+let ROAD = null, ROADP = null;
+function loadRoads(){
+  return ROADP || (ROADP = fetch("../transit/data/geo.json").then(r => r.json()).then(g => {
+    const TK = 111320 * Math.cos(41.85 * Math.PI / 180), TY = 110574, TO = [41.8819, -87.6278];
+    const id = new Map(), X = [], Y = [], adj = [], E = {a:[], b:[], len:[], t0:[], cap:[], name:[], mw:[]};
+    const node = (x, y) => { const k = Math.round(x / 8) + "," + Math.round(y / 8); let i = id.get(k); if (i == null){ i = X.length; id.set(k, i); const lon = TO[1] + x / TK, lat = TO[0] + y / TY, q = xy(lon, lat); X.push(q[0]); Y.push(q[1]); adj.push([]); } return i; };
+    for (const cls of ["motorway", "arterial"]) for (const [nm, c] of g[cls] || []) for (let i = 0; i + 3 < c.length; i += 2){
+      const a = node(c[i], c[i + 1]), b = node(c[i + 2], c[i + 3]); if (a === b) continue;
+      const L = Math.hypot(X[b] - X[a], Y[b] - Y[a]), e = E.a.length;
+      E.a.push(a); E.b.push(b); E.len.push(L); E.t0.push(L / RS[cls].v); E.cap.push(RS[cls].cap); E.name.push(nm || ""); E.mw.push(cls === "motorway" ? 1 : 0);
+      adj[a].push(e); adj[b].push(e);
+    }
+    const G = new Map(), cell = 400; X.forEach((x, i) => { const k = Math.floor(x / cell) + "," + Math.floor(Y[i] / cell); let l = G.get(k); if (!l) G.set(k, l = []); l.push(i); });
+    ROAD = {X, Y, adj, E, G, cell}; return ROAD;
+  }));
 }
-function nearestStation(m){ const [x, y] = xy(m.lon, m.lat); let b = null, bd = 1e12; for (const s of PL.rail){ const d = (s.x - x) ** 2 + (s.y - y) ** 2; if (d < bd){ bd = d; b = [s.x, s.y]; } } return bd < A.walk ** 2 ? b : null; }
-function verdict(m){
-  const short = Math.max(0, m.cars - m.parking), acres = short * A.sqm / 4046.86;
-  const parts = [];
-  parts.push(m.lines.length ? `<b>${fmt(m.byTrain)}</b> fans came by train${m.byTrain >= m.trainCap - 1 ? ", as many as the lines here could carry" : ""}.` : "<b>No train</b> stops within a 15-minute walk, so nearly everyone drove.");
-  parts.push(short > 0 ? `<b>${fmt(short)} cars</b> had nowhere to park within a mile: about <b>${fmt(acres)} acres</b> of new parking.` : "Parking within a mile covered every car.");
-  if (m.exits) parts.push(m.rampLoad > 1 ? `The ${m.exits} nearby expressway ${m.exits === 1 ? "exit ran" : "exits ran"} at <b>${Math.round(m.rampLoad * 100)}%</b> of capacity: expect backups onto the expressway.` : `The nearby expressway exits handled it (${Math.round(m.rampLoad * 100)}% of capacity).`);
-  else parts.push("No expressway exit within 2 miles: every car came through local streets.");
+function roadNear(x, y, r){ const R = ROAD, c = R.cell; let best = -1, bd = r;
+  for (let a = Math.floor((x - r) / c); a <= Math.floor((x + r) / c); a++) for (let b = Math.floor((y - r) / c); b <= Math.floor((y + r) / c); b++){ const l = R.G.get(a + "," + b); if (l) for (const i of l){ const d = Math.hypot(R.X[i] - x, R.Y[i] - y); if (d < bd){ bd = d; best = i; } } }
+  return best; }
+// fastest routes from every road within reach to the stadium (one search, then each fan follows the tree home)
+function routeTree(s, maxT){
+  const R = ROAD, n = R.X.length, T = new Float64Array(n).fill(Infinity), pe = new Int32Array(n).fill(-1), h = [[0, s]]; T[s] = 0;
+  const push = it => { h.push(it); let i = h.length - 1; while (i > 0){ const p = (i - 1) >> 1; if (h[p][0] <= h[i][0]) break; [h[p], h[i]] = [h[i], h[p]]; i = p; } };
+  const pop = () => { const top = h[0], last = h.pop(); if (h.length){ h[0] = last; let i = 0; for (;;){ const l = 2 * i + 1, r = l + 1; let m = i; if (l < h.length && h[l][0] < h[m][0]) m = l; if (r < h.length && h[r][0] < h[m][0]) m = r; if (m === i) break; [h[m], h[i]] = [h[i], h[m]]; i = m; } } return top; };
+  while (h.length){ const [t, u] = pop(); if (t > T[u] || t > maxT) continue;
+    for (const e of R.adj[u]){ const v = R.E.a[e] === u ? R.E.b[e] : R.E.a[e], nt = t + R.E.t0[e]; if (nt < T[v]){ T[v] = nt; pe[v] = e; push([nt, v]); } } }
+  return {T, pe};
+}
+function pathFrom(o, tree){ const R = ROAD, nodes = [o], edges = []; let u = o, guard = 0;
+  while (tree.pe[u] >= 0 && guard++ < 5000){ const e = tree.pe[u]; edges.push(e); u = R.E.a[e] === u ? R.E.b[e] : R.E.a[e]; nodes.push(u); }
+  return {nodes, edges}; }
+// a stretch of a rail line ending at a station, km long, as [x, y] points (fans ride it in)
+function railIn(lineIds, sx, sy, km){
+  const out = []; if (!NET) return out;
+  const all = [...NET.lLines, ...NET.metraLines, ...NET.southShore.lines];
+  for (const id of lineIds){ const L = all.find(l => l.id === id); if (!L) continue;
+    let best = null; for (const p of L.paths){ const P = p.map(q => xy(q[0], q[1])); let bi = -1, bd = 1e12; P.forEach(([x, y], i) => { const d = (x - sx) ** 2 + (y - sy) ** 2; if (d < bd){ bd = d; bi = i; } }); if (!best || bd < best.d) best = {P, i:bi, d:bd}; }
+    if (!best || best.d > 1500 ** 2) continue;
+    for (const dir of [-1, 1]){ const pts = [best.P[best.i]]; let L2 = 0, i = best.i;
+      while (L2 < km * 1000){ const j = i + dir; if (j < 0 || j >= best.P.length) break; L2 += Math.hypot(best.P[j][0] - best.P[i][0], best.P[j][1] - best.P[i][1]); pts.push(best.P[j]); i = j; }
+      if (L2 > 2000) out.push(pts.reverse()); } }
+  return out;
+}
+const along = (P, cum, d) => { let i = 1; while (i < cum.length - 1 && cum[i] < d) i++; const f = Math.max(0, Math.min(1, (d - cum[i - 1]) / ((cum[i] - cum[i - 1]) || 1))); return [P[i - 1][0] + (P[i][0] - P[i - 1][0]) * f, P[i - 1][1] + (P[i][1] - P[i - 1][1]) * f]; };
+const cumOf = P => { const c = [0]; for (let i = 1; i < P.length; i++) c.push(c[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1])); return c; };
+
+let kickT = null, KICK = null;
+const GD = {seats:A.seats, share:null, perCar:A.perCar};   // what you can change for game day
+function stopKick(){ if (kickT) cancelAnimationFrame(kickT); kickT = null; $("kick").classList.remove("on"); document.body.classList.remove("gameday");
+  if (map && map.getLayer("land")){ const v = $("landChk").checked ? "visible" : "none"; for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", v); map.setLayoutProperty("near", "visibility", "visible"); }
+  if (map && map.getSource("fans")){ map.getSource("fans").setData({type:"FeatureCollection", features:[]}); map.getSource("traffic").setData({type:"FeatureCollection", features:[]}); }
+  if (phone()) setTimeout(() => map && map.resize(), 50); }
+// the numbers for one game day with your settings
+function plan(m){
+  const share = GD.share == null ? m.share : GD.share, seats = GD.seats;
+  const byTrain = Math.min(seats * share, m.trainCap), byCar = seats - byTrain, cars = byCar / GD.perCar;
+  return {seats, share, byTrain, byCar, cars, short:Math.max(0, cars - m.parking)};
+}
+async function kickoff(m, name){
+  stopKick(); KICK = {m, name};
+  document.body.classList.add("gameday"); $("kick").classList.add("on"); $("kickT").textContent = "Game day at " + name; $("kickV").innerHTML = "";
+  $("kickClock").textContent = "Finding the routes fans would take…";
+  if (phone()) setTimeout(() => map.resize(), 60);
+  syncGD(m);
+  await loadRoads();
+  const P = plan(m), [x, y] = xy(m.lon, m.lat), R = ROAD;
+  const s = roadNear(x, y, 2500);
+  const tree = s >= 0 ? routeTree(s, 2400) : null;
+  // car fans start where people live, 5 to 18 km out, weighted by population, on the nearest road
+  const NC = 520, NT = P.byTrain > 0 ? Math.max(40, Math.round(700 * P.byTrain / P.seats)) : 0, dots = [], load = new Float64Array(R.E.a.length);
+  if (tree && BLK){
+    const cand = [], w = []; let tot = 0;
+    for (let i = 0; i < BLK.n; i += 3){ const bx = BLK.X[i] * 10, by = BLK.Y[i] * 10, d = Math.hypot(bx - x, by - y); if (d > 5000 && d < 18000 && BLK.P[i]){ cand.push(i); tot += BLK.P[i]; w.push(tot); } }
+    const carsPerDot = P.cars / NC;
+    for (let k = 0; k < NC && cand.length; k++){
+      const r = Math.random() * tot; let lo = 0, hi = w.length - 1; while (lo < hi){ const mid = (lo + hi) >> 1; if (w[mid] < r) lo = mid + 1; else hi = mid; }
+      const bi = cand[lo], o = roadNear(BLK.X[bi] * 10, BLK.Y[bi] * 10, 1500); if (o < 0 || !isFinite(tree.T[o])) continue;
+      const pth = pathFrom(o, tree); if (pth.edges.length < 2) continue;
+      for (const e of pth.edges) load[e] += carsPerDot;
+      dots.push({t:"c", nodes:pth.nodes, edges:pth.edges, dep:Math.random() * 120 * 60});
+    }
+  }
+  // congestion on each road: cars over the 2.5 hours vs what it carries (BPR curve: travel time grows with load^4)
+  const vc = new Float64Array(R.E.a.length); for (let e = 0; e < vc.length; e++) if (load[e]) vc[e] = load[e] / (R.E.cap[e] * A.hours);
+  const slow = e => 1 + 0.15 * Math.pow(Math.min(vc[e], 3), 4);
+  for (const d of dots){ const ct = [0]; for (const e of d.edges) ct.push(ct[ct.length - 1] + R.E.t0[e] * slow(e)); d.ct = ct; d.P = d.nodes.map(i => [R.X[i], R.Y[i]]); }
+  // train fans ride in on each line serving a station within a 15-minute walk, then walk over
+  if (NT){
+    const lines = [];
+    for (const l of m.lines){ const sr = PL.rail.filter(r => r[3] === l.kind && (r[5] || []).includes(l.line)).map(r => ({r, d:Math.hypot(r.x - x, r.y - y)})).sort((a, b) => a.d - b.d)[0]; if (!sr) continue;
+      for (const P2 of railIn([l.line], sr.r.x, sr.r.y, 12)) lines.push({P:P2.concat([[x, y]]), kind:l.kind}); }
+    for (let k = 0; k < NT && lines.length; k++){ const L = lines[k % lines.length], c = cumOf(L.P), ride = c[c.length - 2], walk = c[c.length - 1] - ride, v = L.kind === "L" ? 13 : 18;
+      dots.push({t:"t", P:L.P, cum:c, ct:[0, ride / v, ride / v + walk / 1.4], dep:Math.random() * 110 * 60}); }
+  }
+  // traffic layer: roads fans used, colored by how full they get
+  const feats = []; for (let e = 0; e < vc.length; e++) if (vc[e] > 0.05) feats.push({type:"Feature", properties:{v:+vc[e].toFixed(2), mw:R.E.mw[e]}, geometry:{type:"LineString", coordinates:[llOf(R.X[R.E.a[e]], R.Y[R.E.a[e]]), llOf(R.X[R.E.b[e]], R.Y[R.E.b[e]])]}});
+  let worst = -1; for (let e = 0; e < vc.length; e++) if (R.E.name[e] && (worst < 0 || vc[e] > vc[worst])) worst = e;
+  KICK.worst = worst >= 0 ? {name:R.E.name[worst], v:vc[worst]} : null;
+  // frame the stadium and the roads coming in
+  map.easeTo({center:[m.lon, m.lat], zoom:phone() ? 11.2 : 11.9, pitch:35, bearing:0, duration:reduce ? 0 : 900, padding:phone() ? {top:170, bottom:0, left:0, right:0} : {top:0, bottom:0, left:440, right:340}});
+  for (const id of ["land", "land-l", "near"]) map.setLayoutProperty(id, "visibility", "none");
+  // run: 150 minutes before kickoff in about 15 seconds
+  const SIM = 150 * 60, dur = reduce ? 1 : 15000, t0 = performance.now() + (reduce ? 0 : 700);
+  let trafficShown = false;
+  const step = now => {
+    const f = Math.max(0, Math.min(1, (now - t0) / dur)), T = f * SIM, out = [];
+    let carIn = 0, trainIn = 0;
+    for (const d of dots){ const tt = T - d.dep; const end = d.ct[d.ct.length - 1];
+      if (tt >= end){ if (d.t === "c") carIn++; else trainIn++; continue; }
+      if (tt <= 0) continue;
+      let pos;
+      if (d.t === "c"){ let i = 1; while (i < d.ct.length - 1 && d.ct[i] < tt) i++; const a = d.P[i - 1], b = d.P[i], g = (tt - d.ct[i - 1]) / ((d.ct[i] - d.ct[i - 1]) || 1); pos = [a[0] + (b[0] - a[0]) * g, a[1] + (b[1] - a[1]) * g]; }
+      else { const ride = d.ct[1], dist = tt < ride ? tt / ride * d.cum[d.cum.length - 2] : d.cum[d.cum.length - 2] + (tt - ride) / (d.ct[2] - ride) * (d.cum[d.cum.length - 1] - d.cum[d.cum.length - 2]); pos = along(d.P, d.cum, dist); }
+      out.push({type:"Feature", properties:{m:d.t}, geometry:{type:"Point", coordinates:llOf(pos[0], pos[1])}}); }
+    map.getSource("fans").setData({type:"FeatureCollection", features:out});
+    if (!trafficShown && f > 0.25){ trafficShown = true; map.getSource("traffic").setData({type:"FeatureCollection", features:feats}); }
+    const nc = dots.filter(d => d.t === "c").length || 1, nt = dots.filter(d => d.t === "t").length || 1;
+    const tr = P.byTrain * Math.min(1, trainIn / nt), car = P.byCar * Math.min(1, carIn / nc), used = Math.min(m.parking, P.cars * Math.min(1, carIn / nc));
+    $("kmTrain").textContent = fmt(tr); $("kmCar").textContent = fmt(car); $("kmPark").textContent = fmt(used) + " of " + fmt(m.parking);
+    $("kbTrain").style.width = (tr / P.seats * 100) + "%"; $("kbCar").style.width = (car / P.seats * 100) + "%"; $("kbPark").style.width = (m.parking ? Math.min(1, P.cars * Math.min(1, carIn / nc) / m.parking) * 100 : 100) + "%";
+    const mins = Math.round(150 * (1 - f)); $("kickClock").textContent = f < 1 ? `${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, "0")} to kickoff · ${fmt(P.seats)} fans` : `Kickoff · ${fmt(P.seats)} fans`;
+    if (f < 1) kickT = requestAnimationFrame(step); else { kickT = null; map.getSource("traffic").setData({type:"FeatureCollection", features:feats}); P.lateCar = P.byCar * (1 - Math.min(1, carIn / nc)); P.lateTrain = P.byTrain * (1 - Math.min(1, trainIn / nt)); $("kickV").innerHTML = verdict(m, P); }
+  };
+  kickT = requestAnimationFrame(step);
+}
+function verdict(m, P){
+  const acres = P.short * A.sqm / 4046.86, W = KICK && KICK.worst, parts = [];
+  parts.push(m.lines.length ? `<b>${fmt(P.byTrain)}</b> fans came by train${P.byTrain >= m.trainCap - 1 ? ", as many as the lines here could carry" : ""}.` : "<b>No train</b> stops within a 15-minute walk, so nearly everyone drove.");
+  parts.push(P.short > 0 ? `<b>${fmt(P.short)} cars</b> had nowhere to park within a mile: about <b>${fmt(acres)} acres</b> of new parking.` : "Parking within a mile covered every car.");
+  if (P.lateCar > 500) parts.push(`<b>${fmt(P.lateCar)} fans</b> were still stuck in traffic at kickoff.`);
+  if (W) parts.push(W.v > 1 ? `Worst jam: <b>${esc(W.name)}</b>, at <b>${Math.round(W.v * 100)}%</b> of what it can carry. Red roads back up.` : `The roads coped: the busiest, ${esc(W.name)}, ran at ${Math.round(W.v * 100)}% of what it can carry.`);
   return parts.join(" ") + ` <button class="ib" type="button" onclick="info('kick')" aria-label="How this is measured">i</button>`;
 }
-
+// your game-day settings (in the game-day card)
+function syncGD(m){
+  const sh = GD.share == null ? m.share : GD.share;
+  $("gdSeats").value = GD.seats; $("gdSeatsV").textContent = fmt(GD.seats);
+  $("gdShare").value = Math.round(sh * 100); $("gdShareV").textContent = Math.round(sh * 100) + "%" + (GD.share == null ? " (typical here)" : "");
+}
 /* ---------- your ranking ---------- */
 const W = [["trains", "Trains"], ["drive", "Driving and parking"], ["fans", "Fans nearby"], ["hotels", "Hotels"], ["neighbors", "Fewer neighbors affected"], ["land", "Land to spare"]];
 let WT = {trains:2, drive:1, fans:1, hotels:1, neighbors:1, land:1};
@@ -603,6 +727,7 @@ const HOW = `<ul class="facts">
 <li><b>Who takes the train:</b> 30% of fans where both the L and commuter rail are within a walk, 25% with the L only, 15% with commuter rail only, 5% with neither (shuttles). Assumptions; no public count of how fans get to Soldier Field exists.</li>
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
+<li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Side streets aren't in the map, so real traffic spreads out more. Train fans ride their line in, then walk. The run shows 2½ hours before kickoff in about 15 seconds.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
 <li><b>Your ranking:</b> each measure is scaled from the lowest to the highest site, multiplied by your weight and added up. Money isn't scored: the public costs aren't comparable yet.</li>
@@ -631,6 +756,10 @@ $("pinBtn").onclick = () => { setPinMode(mode !== "pin"); if (mode === "pin") to
 $("landChk").onchange = e => { for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", e.target.checked ? "visible" : "none"); };
 $("heatChk").onchange = e => map.setLayoutProperty("heat", "visibility", e.target.checked ? "visible" : "none");
 $("kickX").onclick = stopKick;
+document.querySelector(".ptop").addEventListener("click", e => { if (document.body.classList.contains("gameday") && phone() && !e.target.closest(".tabs")){ document.body.classList.remove("gameday"); setTimeout(() => map.resize(), 60); } });
+$("gdSeats").oninput = e => { GD.seats = +e.target.value; $("gdSeatsV").textContent = fmt(GD.seats); };
+$("gdShare").oninput = e => { GD.share = +e.target.value / 100; $("gdShareV").textContent = e.target.value + "%"; };
+$("gdRun").onclick = () => { if (KICK) kickoff(KICK.m, KICK.name); };
 addEventListener("keydown", e => { if (e.key === "Escape") stopKick(); });
 
 (async function boot(){
