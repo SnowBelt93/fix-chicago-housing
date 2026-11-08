@@ -14,9 +14,13 @@ def get(url, tries=4):
     return None
 
 meta = json.load(open(os.path.join(ROOT, 'meta.json')))
-pops = {}
+PF = os.path.join(OUT, 'ca_population.json')
+pops = json.load(open(PF)) if os.path.exists(PF) else {}       # resume: keep areas already found
+FIXNAME = {'Mckinley Park': 'McKinley Park', 'Ohare': "O'Hare"}
 for a in meta['areas']:
-    name = a['name']
+    if str(a['num']) in pops: continue
+    name = FIXNAME.get(a['name'], a['name'])
+    time.sleep(2)   # Wikipedia rate-limits fast clients
     for title in (f"{name}, Chicago", name):
         u = 'https://en.wikipedia.org/w/api.php?' + urllib.parse.urlencode({'action': 'parse', 'page': title, 'prop': 'wikitext', 'format': 'json', 'redirects': 1})
         b = get(u)
@@ -32,18 +36,20 @@ for a in meta['areas']:
         if not vals:   # Historical populations style: | 1930 | 46,746 |
             for y, v in re.findall(r'\|\s*(1[89]\d0|20[0-2]0)\s*\|\s*([\d,]+)', body): vals[int(y)] = int(v.replace(',', ''))
         if vals:
-            pops[a['num']] = {'name': name, 'page': d['parse'].get('title'), 'pop': vals}; break
+            pops[str(a['num'])] = {'name': name, 'page': d['parse'].get('title'), 'pop': vals}; break
     time.sleep(0.3)
 print('areas with populations', len(pops), flush=True)
 json.dump(pops, open(os.path.join(OUT, 'ca_population.json'), 'w'), indent=1)
 
 items, page = [], 1
 while page < 60:
-    u = 'https://www.loc.gov/collections/historic-american-buildings-landscapes-and-engineering-records/?' + urllib.parse.urlencode({'fa': 'location_city:chicago', 'fo': 'json', 'c': 100, 'sp': page})
+    u = 'https://www.loc.gov/collections/historic-american-buildings-landscapes-and-engineering-records/?' + urllib.parse.urlencode({'q': 'chicago cook county illinois', 'fo': 'json', 'c': 100, 'sp': page})
     b = get(u)
     if not b: break
     d = json.loads(b)
+    print('loc keys', list(d.keys())[:12], flush=True)
     for r in d.get('results', []):
+        if not any('chicago' in str(x).lower() for x in (r.get('location') or []) + [r.get('title') or '']): continue
         items.append({'title': r.get('title'), 'date': r.get('date'), 'url': r.get('url') or r.get('id'), 'images': r.get('image_url') or [],
                       'subjects': r.get('subject') or [], 'location': r.get('location') or []})
     print('loc page', page, len(d.get('results', [])), flush=True)
