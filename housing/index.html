@@ -138,6 +138,9 @@ body.playing #hoodBanner{display:none}
 .tier{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .tier .sw{width:100%;max-width:44px;height:22px;display:flex;align-items:flex-end;justify-content:center;gap:2px}
 .tier .sw s{display:block;width:9px;background:var(--c,var(--line));border-radius:1px 1px 0 0}
+.tier .sw.img{height:50px;max-width:56px;align-items:center}
+.tier .sw.img img{height:100%;width:auto;display:block;transition:transform .15s}
+.tier:hover .sw.img img{transform:translateY(-2px)}
 .tier em{font-style:normal;font-weight:650;font-size:11.5px;font-stretch:82%;line-height:1.1;text-align:center}
 .tier small{font-family:var(--f-data);font-size:10px;color:var(--ink-3)}
 .tier[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--paper-2)}
@@ -1125,6 +1128,7 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .tier em{font:600 12.5px/1.15 var(--sc-font) !important}
 .tier small{font:500 11px var(--sc-font) !important;color:var(--sc-mute) !important}
 .tier .sw{height:22px}
+.tier .sw.img{height:50px}
 .tier[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
 .tier[aria-pressed="true"] small{color:#d6e3f5 !important}
 .tiers{gap:5px !important}
@@ -3719,7 +3723,8 @@ function tierButtons(el, getT, setT, max = 4){
     const b = document.createElement("button");
     b.className = "tier"; b.type = "button"; b.dataset.t = t; b.setAttribute("aria-pressed", "false");
     b.style.setProperty("--c", T.css || "var(--line)");
-    b.innerHTML = '<span class="sw">' + T.bars.map(h => '<s style="height:' + Math.round(Math.max(h,3) / 30 * 100) + '%"></s>').join("") + '</span><em></em><small></small>';
+    const ICO = ["z_today", "z_3flat", "z_6flat", "z_mid", "z_high", "z_tower", "z_super"][t];   // clay models of real Chicago buildings (tools/art/icons4.py)
+    b.innerHTML = '<span class="sw img"><img src="../shape/art/icons/' + ICO + '.webp" alt="" width="52" height="52" loading="lazy"></span><em></em><small></small>';
     b.querySelector("em").textContent = T.name;
     b.querySelector("small").textContent = t ? T.h + " fl" : "no change";
     b.addEventListener("click", () => { el.querySelectorAll(".tier").forEach(x => x.setAttribute("aria-pressed", String(x === b))); later(() => setT(t)); });
