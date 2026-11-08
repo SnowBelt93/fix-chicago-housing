@@ -276,13 +276,12 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .toast.on{opacity:1}
 /* public comment bubble */
 .comment{position:absolute;z-index:7;left:12px;right:12px;top:var(--hud-h,210px);margin-top:8px;max-width:380px;pointer-events:none;display:flex;flex-direction:column;gap:8px}
-@media (max-width:859px){
-  .cbox{transition:transform .38s cubic-bezier(.16,1,.3,1)}
-  .cbox > *{transition:opacity .2s}
-  .cbox + .cbox{position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;transform-origin:50% 100%;transform:translateY(9px) scale(.95);pointer-events:none}
-  .cbox + .cbox + .cbox{z-index:-2;transform:translateY(18px) scale(.9)}
-  .cbox + .cbox > *{opacity:0}
-}
+/* one comment at a time: older ones tuck in behind the newest as a stack (all screen sizes) */
+.cbox{transition:transform .38s cubic-bezier(.16,1,.3,1)}
+.cbox > *{transition:opacity .2s}
+.cbox + .cbox{position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;transform-origin:50% 100%;transform:translateY(8px) scale(.96);pointer-events:none}
+.cbox + .cbox + .cbox{z-index:-2;transform:translateY(16px) scale(.92)}
+.cbox + .cbox > *{opacity:0}
 @media (min-width:860px){
   .comment{left:calc(432px + (100% - 432px) / 2);right:auto;top:28px;margin:0;width:max-content;max-width:440px;transform:translateX(-50%);text-align:center}
   body.wide .comment{left:16px;width:400px;max-width:400px;transform:none;top:auto;bottom:16px}   /* expanded panel: comments sit over the map strip under the score card */
@@ -1790,7 +1789,7 @@ body.playing #sky{opacity:1}
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Affordable requirement: a middle estimate between Terner's Los Angeles model and studies of real cities: None ×1.2, 10% ×1.1, 20% ×1.0, 30% ×0.95 on projects of 10+ homes.</li>
                 <li>Normal mode spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago). Hard mode asks the city to close the whole regional shortage, as if the suburbs only kept building at today's pace.</li>
-                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure. On the map, each project's buildings are traced from its own published site plan, with the plan's heights: <a href="https://chicagoyimby.com/2025/09/chicago-plan-commission-approves-rezoning-for-chicago-fire-fc-stadium-at-the-78.html" target="_blank" rel="noopener">The 78</a> (Plan Commission master plan, 2025; no heights were published, so they are set to hold the 10,000 homes the zoning allows), <a href="https://chicagoyimby.com/2026/01/foundry-park-defined-as-it-heads-to-plan-commission.html" target="_blank" rel="noopener">Foundry Park</a> (planned-development site plan, 2026), <a href="https://www.chicago.gov/content/dam/city/depts/zlup/Planning_and_Policy/Agendas/cpc_materials/01_2025/3_1901_W_Madison_St_PD_522_Presentation-DRAFT_2.pdf" target="_blank" rel="noopener">the 1901 Project</a> (subarea height limits and phases; buildings placed within each subarea), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/bronzeville_lakefront_cpc_final.pdf" target="_blank" rel="noopener">Bronzeville Lakefront</a> (illustrative site plan and phase massing), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/north_union_pres_032421_final.pdf" target="_blank" rel="noopener">North Union</a> (site plan with each building's stories; the two finished towers on Wells stand from the start) and <a href="https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html" target="_blank" rel="noopener">Cabrini-Green</a> (CHA's massing diagrams, homes per building). Buildings go up in each plan's phase order as the homes are counted; the rest show see-through at their planned height. The Fire stadium and the 1901 music hall appear from 2028. Empty lots inside those areas leave the zoning model while the policy is on, so the same land isn't counted twice; at Cabrini-Green the vacant rowhouses are drawn as replaced, and at North Union the one- to three-story buildings west of Wells.</li>
+                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure. On the map, each project's buildings are traced from its own published site plan, with the plan's heights: <a href="https://chicagoyimby.com/2025/09/chicago-plan-commission-approves-rezoning-for-chicago-fire-fc-stadium-at-the-78.html" target="_blank" rel="noopener">The 78</a> (Plan Commission master plan, 2025; no heights were published, so they are set to hold the 10,000 homes the zoning allows), <a href="https://chicagoyimby.com/2026/01/foundry-park-defined-as-it-heads-to-plan-commission.html" target="_blank" rel="noopener">Foundry Park</a> (planned-development site plan, 2026), <a href="https://www.chicago.gov/content/dam/city/depts/zlup/Planning_and_Policy/Agendas/cpc_materials/01_2025/3_1901_W_Madison_St_PD_522_Presentation-DRAFT_2.pdf" target="_blank" rel="noopener">the 1901 Project</a> (subarea height limits and phases; buildings placed within each subarea), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/bronzeville_lakefront_cpc_final.pdf" target="_blank" rel="noopener">Bronzeville Lakefront</a> (illustrative site plan and phase massing), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/north_union_pres_032421_final.pdf" target="_blank" rel="noopener">North Union</a> (site plan with each building's stories; the two finished towers on Wells stand from the start) and <a href="https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html" target="_blank" rel="noopener">Cabrini-Green</a> (CHA's massing diagrams, homes per building). The map builds each plan out in full by 2041, in its phase order, so you can see the whole project; the home count is more cautious and assumes half of the remaining homes are finished by then. The Fire stadium and the 1901 music hall appear from 2028. Empty lots inside those areas leave the zoning model while the policy is on, so the same land isn't counted twice; at Cabrini-Green the vacant rowhouses are drawn as replaced, and at North Union the one- to three-story buildings west of Wells.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you change the map.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
@@ -1826,9 +1825,8 @@ body.playing #sky{opacity:1}
     <div id="lgTower" hidden><i style="--c:#0f7c86"></i><span>Tower</span><em>DX-12</em></div>
     <div id="lgSuper" hidden><i style="--c:#161820"></i><span>Supertall</span><em>DX-16+</em></div>
     <div id="lgMega" hidden><i style="--c:#765caa"></i><span>Big project (from its site plan)</span></div>
-    <div id="lgMegaG" hidden><i style="--c:rgba(150,128,205,.35)"></i><span>Big project, not built yet</span></div>
-    <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot / new two-flat</span></div>
-    <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>City-owned lot / new two-flat</span></div>
+    <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>New two-flat on a vacant lot</span></div>
+    <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>New two-flat on a city-owned lot</span></div>
     <div><i class="lo"></i><span>Offices to homes</span></div>
     <div id="lgIll" hidden><i class="ill"></i><span>Illegal to build today</span></div>
     <div id="lgRing" hidden><i class="ring"></i><span>Half mile of a station</span></div>
@@ -3219,7 +3217,7 @@ const CMAX = 3, deskMQ = window.matchMedia("(min-width:860px)");
 const liveCards = () => [...$("comment").querySelectorAll(".cbox:not(.closing)")];
 function flipCards(mutate){
   // slide the cards that stay from where they were to where they end up
-  if (reduceMotion || !deskMQ.matches){ mutate(); return; }
+  if (true){ mutate(); return; }   // cards stack in place now (CSS), nothing to slide
   const cards = liveCards(), before = new Map(cards.map(c => [c, c.getBoundingClientRect().top]));
   mutate();
   cards.forEach(c => { if (!c.isConnected) return; const dy = before.get(c) - c.getBoundingClientRect().top;
@@ -3734,20 +3732,14 @@ function layers(){
       material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
       transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}}));
   }
-  if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
-  if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
-  if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year), up = d => d.built || (d.anchor ? year >= 2 : d.at < f * MEGA_BUILT);
+  if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year), up = d => d.built || (d.anchor ? year >= 2 : d.at < f);   // the map builds out each whole plan by 2041, in phase order
     L.push(new deck.SolidPolygonLayer({id:"megaB", data:MEGA_BLD, extruded:true,
     getPolygon:d => d.p, getElevation:d => up(d) ? d.full : 0,
     getFillColor:d => d.built || d.anchor ? [140,118,186] : [118,92,170],
     updateTriggers:{getElevation:[f, year >= 2]},
     material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
     transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}}));
-    // the rest of each plan, at its planned height, as see-through glass until it's built (most of it after 2041)
-    L.push(new deck.SolidPolygonLayer({id:"megaG", data:MEGA_BLD, extruded:true, wireframe:false,
-    getPolygon:d => d.p, getElevation:d => up(d) ? 0 : d.full, getFillColor:d => up(d) ? [0,0,0,0] : [150,128,205,72],
-    updateTriggers:{getElevation:[f, year >= 2], getFillColor:[f, year >= 2]}, parameters:{depthWriteEnabled:false},
-    material:{ambient:0.8, diffuse:0.3, shininess:0, specularColor:[0,0,0]}})); } }
+ } }
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
@@ -3871,7 +3863,7 @@ function render(){
   if (loaded === 77) lastGrade = g;
   $("loadTxt").textContent = loaded < 77 ? loaded + " / 77 neighborhoods" : ""; $("loadTxt").hidden = loaded >= 77;
   $("yrTxt").textContent = START + year;
-  { const tall = Object.values(plan.areas); $("lgTower").hidden = plan.tod < 5 && !tall.some(v => v >= 5); $("lgSuper").hidden = plan.tod < 6 && !tall.includes(6); $("lgMega").hidden = !plan.p.mega; $("lgMegaG").hidden = !plan.p.mega; $("todNote").hidden = plan.tod < 5; }
+  { const tall = Object.values(plan.areas); $("lgTower").hidden = plan.tod < 5 && !tall.some(v => v >= 5); $("lgSuper").hidden = plan.tod < 6 && !tall.includes(6); $("lgMega").hidden = !plan.p.mega; $("todNote").hidden = plan.tod < 5; }
   $("lgVacP").hidden = !plan.p.vland; $("lgVacC").hidden = !plan.p.lots;
   if ((plan.p.vland || plan.p.lots) && !VACANT) loadVacant();
   { const r = $("yrRange"); r.value = year; r.disabled = playing; r.style.setProperty("--p", (year / YEARS * 100) + "%"); }
