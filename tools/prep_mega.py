@@ -6,7 +6,8 @@ Chicago Data Portal dj47-wfun), trimmed as noted in SITES. Inside it, the script
 the local street grid, around the buildings that stand there today (from b/<area>.wasm minus the "gone" bit in
 b/extra.wasm), off street rights-of-way (b/streets.wasm) and out of parks (POS zoning). The game sets each footprint's
 height at run time so the floor area holds the homes it counts (1,026 sq ft per home), so this file holds no home counts.
-The layout is illustrative: the real site plans differ.
+The game now draws the buildings from each published site plan (tools/mega/build.py, run after this);
+this script still supplies the site origins and "land".
 
 Output: meta.json "megaSites": {name: {"lon", "lat" (origin), "fp": [[x1, y1, ..., x4, y4], ...] in metres east/north of
 the origin (deck.gl scale, 111,319.49 m per degree), nearest the site's middle first, "land": {area: [indices]}}}.
@@ -186,6 +187,7 @@ def main():
             fps.append([round(v, 1) for xy in c for v in xy])
         area = sum(r.area for r in placed)
         out[S['n']] = {'lon': lon, 'lat': lat, 'fp': fps, 'land': {str(k): v for k, v in land.items()}}
+        if 'bld' in meta.get('megaSites', {}).get(S['n'], {}): out[S['n']]['bld'] = meta['megaSites'][S['n']]['bld']   # tools/mega/build.py
         print(f"{S['n']:22s} site {site.area / 4047:5.1f} ac, free {free.area / 4047:5.1f} ac, grid {math.degrees(ang):5.1f}°, "
               f"{len(fps)} footprints, {area:,.0f} m² ({area / 4047:.1f} ac), land taken from zoning {sum(len(v) for v in land.values())}")
     meta['megaSites'] = out

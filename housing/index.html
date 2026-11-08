@@ -1790,7 +1790,7 @@ body.playing #sky{opacity:1}
                 <li>Affordable homes count the affordable requirement on new buildings of 10+ homes, 30% of social-housing homes, and 20% of megaproject homes (the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to). Other levers are counted as market-rate.</li>
                 <li>Affordable requirement: a middle estimate between Terner's Los Angeles model and studies of real cities: None ×1.2, 10% ×1.1, 20% ×1.0, 30% ×0.95 on projects of 10+ homes.</li>
                 <li>Normal mode spreads the metro shortage and its growth in proportion to homes (32.7% in Chicago). Hard mode asks the city to close the whole regional shortage, as if the suburbs only kept building at today's pace.</li>
-                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure. On the map they're drawn inside each project's planned-development area on the <a href="https://data.cityofchicago.org/api/geospatial/dj47-wfun?method=export&amp;format=GeoJSON" target="_blank" rel="noopener">zoning map</a>, around today's buildings and streets and out of parks, built from the middle out over the years. The buildings are illustrative: their floor area holds the homes the simulation counts (1,026 sq ft each), but the footprints and heights (mostly 5–12-story blocks with some 15–50-story towers) are made up, not the real site plans. Empty lots inside those areas leave the zoning model while the policy is on, so the same land isn't counted twice; at Cabrini-Green the vacant rowhouses are drawn as replaced, and at North Union the one- to three-story buildings west of Wells.</li>
+                <li>Megaprojects: half of the remaining planned homes get built by 2041 once the city funds the infrastructure. On the map, each project's buildings are traced from its own published site plan, with the plan's heights: <a href="https://chicagoyimby.com/2025/09/chicago-plan-commission-approves-rezoning-for-chicago-fire-fc-stadium-at-the-78.html" target="_blank" rel="noopener">The 78</a> (Plan Commission master plan, 2025; no heights were published, so they are set to hold the 10,000 homes the zoning allows), <a href="https://chicagoyimby.com/2026/01/foundry-park-defined-as-it-heads-to-plan-commission.html" target="_blank" rel="noopener">Foundry Park</a> (planned-development site plan, 2026), <a href="https://www.chicago.gov/content/dam/city/depts/zlup/Planning_and_Policy/Agendas/cpc_materials/01_2025/3_1901_W_Madison_St_PD_522_Presentation-DRAFT_2.pdf" target="_blank" rel="noopener">the 1901 Project</a> (subarea height limits and phases; buildings placed within each subarea), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/bronzeville_lakefront_cpc_final.pdf" target="_blank" rel="noopener">Bronzeville Lakefront</a> (illustrative site plan and phase massing), <a href="https://www.chicago.gov/content/dam/city/depts/dcd/general/mega/north_union_pres_032421_final.pdf" target="_blank" rel="noopener">North Union</a> (site plan with each building's stories; the two finished towers on Wells stand from the start) and <a href="https://chicagoyimby.com/2024/12/updated-master-plan-revealed-for-cabrini-green-redevelopment.html" target="_blank" rel="noopener">Cabrini-Green</a> (CHA's massing diagrams, homes per building). Buildings go up in each plan's phase order as the homes are counted; the rest show as low pads. The Fire stadium and the 1901 music hall appear from 2028. Empty lots inside those areas leave the zoning model while the policy is on, so the same land isn't counted twice; at Cabrini-Green the vacant rowhouses are drawn as replaced, and at North Union the one- to three-story buildings west of Wells.</li>
                 <li>Policy ranks ("Big" 15,000+ homes, "Medium" 4,000+) are based on your current map, so they shift as you change the map.</li>
                 <li>Neighborhood types come from the city's building data: the downtown core is the Loop, Near North, Near West and Near South Sides; single-family areas are where at least 70% of residential buildings hold one home; the rest are mixed. A policy set to one type only applies there; for supply-cutting policies the lost "built anyway" homes are scaled by that type's share of buildings built recently.</li>
                 <li>Build timing ramps up: about 6% of a plan's 15-year homes arrive in the first two years (approvals and design), 68% in years 3–10 and 26% after.</li>
@@ -1825,7 +1825,7 @@ body.playing #sky{opacity:1}
     <div><i class="lt"></i><span>High-rise</span><em>RM-6.5</em></div>
     <div id="lgTower" hidden><i style="--c:#0f7c86"></i><span>Tower</span><em>DX-12</em></div>
     <div id="lgSuper" hidden><i style="--c:#161820"></i><span>Supertall</span><em>DX-16+</em></div>
-    <div id="lgMega" hidden><i style="--c:#765caa"></i><span>Big project (illustrative)</span></div>
+    <div id="lgMega" hidden><i style="--c:#765caa"></i><span>Big project (from its site plan)</span></div>
     <div id="lgVacP" hidden><i style="--c:#6f9a3a"></i><span>Private vacant lot</span></div>
     <div id="lgVacC" hidden><i style="--c:#7a4fb3"></i><span>City-owned lot</span></div>
     <div><i class="lo"></i><span>Offices to homes</span></div>
@@ -2048,19 +2048,13 @@ const ARO_SHARE = [0.10, 0.20, 0.30, 0], ARO_FACTOR = [1.10, 1.0, 0.95, 1.20];  
 const PARK_BOOST = 0.10, SMALL_BOOST = 0.20;                 // assumptions (see policy cards)
 const MEGA_BUILT = 0.5;                                     // assumption: half the remaining planned homes get built by 2041 once unstuck
 const MEGA = [  // big master-planned projects (homes = planned homes not yet built; sources in the policy card and The math)
-  // fl: stories drawn on the map [mid-rise low, high, tower low, high], from each plan's published heights (sources beside each)
-  {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet", fl:[7, 12, 25, 50]},
-  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3737, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; no new river bridge in the plan", fl:[8, 13, 22, 40]},   // phase one 8, 13 and 38 stories; later towers 250–450 ft (Chicago YIMBY, Jan 2026)
-  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases", fl:[6, 12, 20, 55]},   // tallest allowed 660 ft (Chicago YIMBY, Jan 2025)
-  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans", fl:[6, 12, 18, 30]},   // phase one up to 350 ft (City of Chicago PD presentation)
-  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started", fl:[10, 20, 30, 60]},   // up to 695 ft (City of Chicago presentation, 2021)
-  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Plan finalized 2026; first sites go to developers in 2027", fl:[3, 6, 12, 20]},   // six-flats, townhomes, mid-rises, one high-rise per site (CHA plan via Chicago YIMBY)
-];
-// non-housing anchors already under way, drawn in gray so the sites read like their plans (open by about 2028):
-// the Fire's stadium at The 78 (9 acres, groundbreaking March 2026, opening 2028) and the 1901 Project's 6,000-seat music hall at Adams and Damen
-const MEGA_ANCHORS = [
-  {site:"The 78", dx:-125, dy:185, w:175, h:140, m:30},
-  {site:"1901 Project", dx:-140, dy:-110, w:80, h:62, m:26},
+  // the map draws each project's buildings from its published site plan (meta.json megaSites[].bld, tools/mega/build.py)
+  {n:"The 78", lon:-87.6322, lat:41.8647, homes:10000, side:1, st:"Fire stadium under construction; no housing scheduled yet"},
+  {n:"Foundry Park", lon:-87.660, lat:41.917, homes:3737, side:0, st:"Approved Feb 2026; TIF cleared Finance Committee Sep 2026; no new river bridge in the plan"},   // phase one 8, 13 and 38 stories; later towers 250–450 ft (Chicago YIMBY, Jan 2026)
+  {n:"1901 Project", lon:-87.6742, lat:41.8807, homes:5000, side:2, st:"Music hall under construction; homes come in later phases"},   // tallest allowed 660 ft (Chicago YIMBY, Jan 2025)
+  {n:"Bronzeville Lakefront", lon:-87.613, lat:41.843, homes:6800, side:3, st:"Stalled; developer reviewing plans"},   // phase one up to 350 ft (City of Chicago PD presentation)
+  {n:"North Union", lon:-87.6345, lat:41.8995, homes:2007, side:1, st:"About 650 of 2,656 homes built; later towers not started"},   // up to 695 ft (City of Chicago presentation, 2021)
+  {n:"Cabrini-Green (CHA)", lon:-87.641, lat:41.902, homes:4080, side:1, st:"Plan finalized 2026; first sites go to developers in 2027"},   // six-flats, townhomes, mid-rises, one high-rise per site (CHA plan via Chicago YIMBY)
 ];
 const MEGA_TOTAL = MEGA.reduce((a, m) => a + m.homes, 0);
 const MEGA_AFF = 0.2;                                      // 20% affordable: the share Foundry Park, the 1901 Project and Bronzeville Lakefront commit to
@@ -2370,37 +2364,30 @@ function siteShape(A, pr){
   const floors = Math.max(1, Math.ceil(area / (tw * td)));
   return [{p: rect(b.cu, pc, W, PD), full: 4 * FLOOR_M, c, pod: 1}, {p: rect(b.cu, pc, tw, td), full: (floors + 4) * FLOOR_M, c, g: pr.gross, hf: floors}];   // hf: floors holding homes, above the podium
 }
-// Megaprojects on the map: footprints laid out inside each project's planned-development area (meta.json megaSites, from
-// tools/prep_mega.py), with heights set so the floor area holds the homes the game counts (SQFT_HOME each). Illustrative.
+// Megaprojects on the map: each project's buildings traced from its published site plan (meta.json megaSites[].bld, from
+// tools/mega/build.py; sources at the top of each tools/mega/<project>.py), with the plan's heights. Buildings go up in the
+// plan's phase order; one appears once the homes the game counts by that year reach the share of the plan's home floor area
+// built before it (MEGA_BUILT of the plan by 2041). Later buildings show as low pads. Anchors (the Fire stadium, the music
+// hall) appear from 2028; finished buildings (two at North Union) stand from the start.
 let MEGA_BLD = null, MEGA_LAND = null;
 function megaPrep(){
   if (MEGA_BLD || !META || !META.megaSites) return;
   MEGA_BLD = []; MEGA_LAND = {};
   MEGA.forEach((m, si) => {
-    const S = META.megaSites[m.n]; if (!S) return;
+    const S = META.megaSites[m.n]; if (!S || !S.bld) return;
     for (const k in S.land){ const L = MEGA_LAND[k] || (MEGA_LAND[k] = new Set()); S.land[k].forEach(i => L.add(i)); }
-    const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180), need = m.homes * MEGA_BUILT * SQFT_HOME * 0.0929;   // m² of floor area
-    const anc = MEGA_ANCHORS.filter(a => a.site === m.n), inAnc = f => { const cx = (f[0] + f[4]) / 2, cy = (f[1] + f[5]) / 2; return anc.some(a => Math.abs(cx - a.dx) < a.w / 2 + 14 && Math.abs(cy - a.dy) < a.h / 2 + 14); };
-    const fps = S.fp.filter(f => !inAnc(f)).map(f => { const p = []; for (let j = 0; j < 8; j += 2) p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]);
-      const a = Math.abs((f[2] - f[0]) * (f[5] - f[1]) - (f[4] - f[0]) * (f[3] - f[1])); return {p, a, tower: Math.abs(Math.hypot(f[2] - f[0], f[3] - f[1]) - Math.hypot(f[4] - f[2], f[5] - f[3])) < 2 && a > 600}; });
-    const [lo, hi, tlo, thi] = m.fl, out = [];
-    let sum = 0, k = 0;
-    for (; k < fps.length && sum < need; k++){
-      const f = fps[k], r = hash01(k, 911 + si * 37), tw = f.a > 600 && (f.tower || hash01(k, 577 + si) < 0.2), st = tw ? tlo + Math.floor(r * (thi - tlo + 1)) : lo + Math.floor(r * (hi - lo + 1));
-      out.push({p: f.p, a: f.a, st}); sum += f.a * st;
-    }
-    if (sum < need) out.forEach(b => b.st = Math.min(80, Math.ceil(b.st * need / sum)));   // ran out of ground: go taller
-    else if (out.length){ const b = out[out.length - 1], rest = need - (sum - b.a * b.st); b.st = Math.max(3, Math.ceil(rest / b.a)); }
-    // the rest of the site: later phases (the model counts half the remaining homes by 2041), drawn as low pads so the
-    // project's whole footprint shows
-    for (; k < fps.length; k++) MEGA_BLD.push({p: fps[k].p, full: 1.2, at: 0, site: si, later: true});
-    let cum = 0;
-    const tot = out.reduce((t, b) => t + b.a * b.st, 0);
-    out.forEach(b => { MEGA_BLD.push({p: b.p, full: b.st * FLOOR_M, at: cum / tot, site: si}); cum += b.a * b.st; });
+    const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180);
+    const ringOf = f => { const p = []; let a = 0;
+      for (let j = 0; j < f.length; j += 2){ p.push([S.lon + f[j] / kx, S.lat + f[j + 1] / 111319.49]); const k2 = (j + 2) % f.length; a += f[j] * f[k2 + 1] - f[k2] * f[j + 1]; }
+      return [p, Math.abs(a) / 2]; };
+    const B = S.bld.map(([f, st, use, ph, hole], i) => { const [p, a] = ringOf(f), h = hole ? ringOf(hole) : null;   // hole: a courtyard
+      return {p: h ? [p, h[0]] : p, a: h ? a - h[1] : a, st, use, ph, i}; });
+    const homes = B.filter(b => b.use === 0).sort((x, y) => x.ph - y.ph || x.i - y.i), tot = homes.reduce((t, b) => t + b.a * b.st, 0) || 1;
+    let cum = 0; homes.forEach(b => { b.at = cum / tot; cum += b.a * b.st; });
+    B.forEach(b => {
+      if (b.use === 1){ const nx = homes.find(h => h.ph >= b.ph); b.at = nx ? nx.at : 1; }   // offices and hotels go up with their phase
+      MEGA_BLD.push({p: b.p, full: b.st * FLOOR_M, at: b.use >= 2 ? -1 : b.at, site: si, anchor: b.use === 2, built: b.use === 3}); });
   });
-  MEGA_ANCHORS.forEach(a => { const S = META.megaSites[a.site]; if (!S) return;
-    const kx = 111319.49 * Math.cos(S.lat * Math.PI / 180), c = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
-    MEGA_BLD.push({p: c.map(([u, v]) => [S.lon + (a.dx + u * a.w / 2) / kx, S.lat + (a.dy + v * a.h / 2) / 111319.49]), full: a.m, at: -1, anchor: true}); });
 }
 // per-building inputs that don't depend on the plan: a 6-bit tier key (L distance, Metra, corridor, busy station, small lot),
 // whether it can be rebuilt (0 no, 1 building, 2 empty land, 255 replaced since 2013: skip), and its lot size
@@ -3703,8 +3690,9 @@ function layers(){
   if (VACANT && plan.p.vland) L.push(new deck.ScatterplotLayer({id:"vacPriv", data:VACANT.priv, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[111,154,58,190]}));
   if (VACANT && plan.p.lots) L.push(new deck.ScatterplotLayer({id:"vacCity", data:VACANT.city, parameters:FLAT, getRadius:4, radiusUnits:"meters", radiusMinPixels:1.1, getFillColor:[122,79,179,190]}));
   if (plan.p.mega){ megaPrep(); if (MEGA_BLD){ const f = rampFrac(year); L.push(new deck.SolidPolygonLayer({id:"megaB", data:MEGA_BLD, extruded:true,
-    getPolygon:d => d.p, getElevation:d => (d.anchor ? year >= 2 : d.at < f) ? d.full : 0, getFillColor:d => d.anchor ? [140,118,186] : d.later ? [196,184,222] : [118,92,170],
-    updateTriggers:{getElevation:[f, year >= 2]},
+    getPolygon:d => d.p, getElevation:d => d.built ? d.full : d.anchor ? (year >= 2 ? d.full : 1.2) : d.at < f * MEGA_BUILT ? d.full : 1.2,
+    getFillColor:d => d.built || d.anchor ? [140,118,186] : d.at < f * MEGA_BUILT ? [118,92,170] : [158,138,208],
+    updateTriggers:{getElevation:[f, year >= 2], getFillColor:[f, year >= 2]},
     material: P ? {ambient:0.55, diffuse:0.55, shininess:8, specularColor:[30,30,30]} : {ambient:0.42, diffuse:0.62, shininess:18, specularColor:[50,50,50]},
     transitions: reduceMotion ? {} : {getElevation:{duration: playing ? YEAR_MS - 40 : 900, easing: playing ? (t => t) : (t => 1 - Math.pow(1 - t, 3))}}})); } }
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
@@ -4846,7 +4834,7 @@ document.querySelectorAll("#pane-missions > .group, #pane-impact > .group, #pane
   }); }
 
 
-if (/[?&]qa/.test(location.search)) window.__fch = {selectArea, showTab, showMyth, showComment, showTown, setMode, render, plan, openInfo, sheetState};   // test hooks
+if (/[?&]qa/.test(location.search)) window.__fch = {selectArea, showTab, showMyth, showComment, showTown, setMode, render, plan, openInfo, sheetState, flyTo, scrubTo, deckgl};   // test hooks
 boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load the map data. Reload to try again."; });
 })();
 
