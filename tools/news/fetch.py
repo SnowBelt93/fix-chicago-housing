@@ -1,0 +1,85 @@
+"""Chicago planning and policy news feed for Shape Chicago (runs in GitHub Actions every few hours; the cloud workspace
+can't reach these sites). Reads each outlet's public RSS feed, keeps only stories about Chicago planning, housing,
+development, transit, the budget and city policy, and writes news/data/news.json: headline, link, outlet, date and topic
+tags. No article text is stored or shown; every item links to the outlet."""
+import urllib.request, json, os, re, time, html, email.utils, datetime as dt
+import xml.etree.ElementTree as ET
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+OUT = os.path.join(ROOT, 'news', 'data', 'news.json'); os.makedirs(os.path.dirname(OUT), exist_ok=True)
+# outlet, Chicago-only outlet?, candidate feed URLs (first one that parses wins)
+SOURCES = [
+ ('Block Club Chicago', True, ['https://blockclubchicago.org/feed/']),
+ ('Chicago Sun-Times', False, ['https://chicago.suntimes.com/rss/index.xml', 'https://chicago.suntimes.com/feed/', 'https://chicago.suntimes.com/arc/outboundfeeds/rss/?outputType=xml']),
+ ('Chicago Tribune', False, ['https://www.chicagotribune.com/feed/', 'https://www.chicagotribune.com/news/feed/', 'https://www.chicagotribune.com/arc/outboundfeeds/rss/?outputType=xml']),
+ ('WBEZ', False, ['https://www.wbez.org/feed/', 'https://www.wbez.org/rss/index.xml', 'https://www.wbez.org/index.rss']),
+ ('WTTW News', False, ['https://news.wttw.com/rss.xml', 'https://news.wttw.com/feed']),
+ ("Crain's Chicago Business", False, ['https://www.chicagobusiness.com/rss', 'https://www.chicagobusiness.com/section/rss', 'https://www.chicagobusiness.com/feed']),
+ ('Chicago Reader', True, ['https://chicagoreader.com/feed/']),
+ ('Urbanize Chicago', True, ['https://chi.urbanize.city/rss.xml', 'https://chi.urbanize.city/feed']),
+ ('Chicago YIMBY', True, ['https://chicagoyimby.com/feed', 'https://chicagoyimby.com/feed/']),
+ ('Streetsblog Chicago', True, ['https://chi.streetsblog.org/feed', 'https://chi.streetsblog.org/feed/']),
+ ('The Real Deal', True, ['https://therealdeal.com/chicago/feed/']),
+ ('South Side Weekly', True, ['https://southsideweekly.com/feed/']),
+ ('Capitol News Illinois', False, ['https://capitolnewsillinois.com/feed/']),
+ ('Illinois Answers Project', False, ['https://illinoisanswers.org/feed/']),
+ ('The Daily Line', True, ['https://www.thedailyline.com/feed', 'https://www.thedailyline.com/feed/']),
+ ('Axios Chicago', False, ['https://api.axios.com/feed/local/chicago', 'https://www.axios.com/local/chicago/feed']),
+ ('Chicago Magazine', False, ['https://www.chicagomag.com/feed/']),
+]
+TOPICS = {
+ 'housing': r'\b(housing|homes?\b|apartment|condo|rent(s|al|ers)?\b|landlord|tenant|affordable|homeless|eviction|ADU|coach house|two-flat|three-flat|CHA\b|single.stair)',
+ 'development': r'\b(develop(er|ment)|construction|tower|high-rise|skyscraper|redevelop|megaproject|groundbreak|demolition|demolish|vacant lot|stadium|mixed-use|planned development|Plan Commission|landmark)',
+ 'zoning': r'\b(zoning|rezon|upzon|downzon|setback|parking minimum|by.right|aldermanic prerogative|Zoning Committee)',
+ 'transit': r'\b(CTA|Metra|\bPace\b|NITA|transit|bus(es)?\b|Red Line|Blue Line|Brown Line|Green Line|Orange Line|L train|bike lane|Divvy|streetscape|traffic|congestion)',
+ 'budget': r'\b(budget|property tax|pension|TIF|bond rating|revenue|deficit|head tax|tax levy|city finances|Corporate Fund|credit rating)',
+ 'policy': r'\b(City Council|alderperson|alderman|alder|ordinance|mayor Johnson|Johnson administration|ward\b|Planning and Development|DPD|Department of Housing|zoning board)',
+}
+NOT = r'\b(shooting|shot|homicide|murder|carjack|stabb|arrest|police chase|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|restaurant review|recipe|obituar)'
+CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
+def get(u):
+    try: return urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0 (compatible; ShapeChicagoNews/1.0)'}), timeout=60).read()
+    except Exception as e: print('  fail', u, str(e)[:80], flush=True); return None
+def text(el, *names):
+    for n in names:
+        x = el.find(n)
+        if x is not None and (x.text or x.get('href')): return (x.text or x.get('href') or '').strip()
+    return ''
+def parse(b):
+    root = ET.fromstring(b); ns = {'a': 'http://www.w3.org/2005/Atom'}; out = []
+    for it in root.iter('item'):
+        out.append((text(it, 'title'), text(it, 'link'), text(it, 'pubDate', '{http://purl.org/dc/elements/1.1/}date'), text(it, 'description'), [c.text or '' for c in it.findall('category')]))
+    for it in root.iter('{http://www.w3.org/2005/Atom}entry'):
+        link = it.find('a:link', ns); out.append((text(it, '{http://www.w3.org/2005/Atom}title'), link.get('href') if link is not None else '', text(it, '{http://www.w3.org/2005/Atom}updated', '{http://www.w3.org/2005/Atom}published'), text(it, '{http://www.w3.org/2005/Atom}summary'), []))
+    return out
+def when(s):
+    try: return email.utils.parsedate_to_datetime(s).astimezone(dt.timezone.utc)
+    except Exception:
+        try: return dt.datetime.fromisoformat(s.replace('Z', '+00:00')).astimezone(dt.timezone.utc)
+        except Exception: return None
+old = []
+if os.path.exists(OUT):
+    try: old = json.load(open(OUT)).get('items', [])
+    except Exception: old = []
+seen = {o['u'] for o in old}; items = list(old); status = {}
+now = dt.datetime.now(dt.timezone.utc)
+for name, local, urls in SOURCES:
+    got = None
+    for u in urls:
+        b = get(u)
+        if not b: continue
+        try: got = parse(b); break
+        except Exception as e: print('  parse fail', u, str(e)[:60], flush=True)
+    status[name] = len(got) if got is not None else -1
+    for title, link, date, desc, cats in got or []:
+        title = html.unescape(re.sub(r'<[^>]+>', '', title)).strip(); d = when(date)
+        if not title or not link or link in seen or not d or (now - d).days > 30: continue
+        blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
+        if re.search(NOT, title, re.I): continue
+        tags = [k for k, rx in TOPICS.items() if re.search(rx, blob, re.I if k != 'transit' else 0)]
+        if not tags: continue
+        if not local and not re.search(CHI, blob): continue
+        seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags})
+items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z', '+00:00'))).days <= 45]
+items.sort(key=lambda i: i['d'], reverse=True); items = items[:600]
+json.dump({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'sources': status, 'items': items}, open(OUT, 'w'), separators=(',', ':'))
+print('sources', status); print('items', len(items))
