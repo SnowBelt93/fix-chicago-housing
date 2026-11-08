@@ -10,15 +10,15 @@ OUT = os.path.join(ROOT, 'news', 'data', 'news.json'); os.makedirs(os.path.dirna
 SOURCES = [
  ('Block Club Chicago', True, ['https://blockclubchicago.org/feed/']),
  ('Chicago Sun-Times', False, ['https://chicago.suntimes.com/rss/index.xml', 'https://chicago.suntimes.com/feed/', 'https://chicago.suntimes.com/arc/outboundfeeds/rss/?outputType=xml']),
- ('Chicago Tribune', False, ['https://www.chicagotribune.com/feed/', 'https://www.chicagotribune.com/news/feed/', 'https://www.chicagotribune.com/arc/outboundfeeds/rss/?outputType=xml']),
+ ('Chicago Tribune', False, ['https://www.chicagotribune.com/feed/', 'https://www.chicagotribune.com/news/feed/', 'https://www.chicagotribune.com/news/chicago/feed/', 'https://www.chicagotribune.com/business/real-estate/feed/', 'https://www.chicagotribune.com/arc/outboundfeeds/rss/?outputType=xml']),
  ('WBEZ', False, ['https://www.wbez.org/feed/', 'https://www.wbez.org/rss/index.xml', 'https://www.wbez.org/index.rss']),
  ('WTTW News', False, ['https://news.wttw.com/rss.xml', 'https://news.wttw.com/feed']),
  ("Crain's Chicago Business", False, ['https://www.chicagobusiness.com/rss', 'https://www.chicagobusiness.com/section/rss', 'https://www.chicagobusiness.com/feed']),
- ('Chicago Reader', True, ['https://chicagoreader.com/feed/']),
- ('Urbanize Chicago', True, ['https://chi.urbanize.city/rss.xml', 'https://chi.urbanize.city/feed']),
+ ('Chicago Reader', False, ['https://chicagoreader.com/feed/']),
+ ('Urbanize Chicago', True, ['https://chi.urbanize.city/rss.xml', 'https://chi.urbanize.city/feed', 'https://chi.urbanize.city/rss', 'https://urbanize.city/chi/rss.xml']),
  ('Chicago YIMBY', True, ['https://chicagoyimby.com/feed', 'https://chicagoyimby.com/feed/']),
  ('Streetsblog Chicago', True, ['https://chi.streetsblog.org/feed', 'https://chi.streetsblog.org/feed/']),
- ('The Real Deal', True, ['https://therealdeal.com/chicago/feed/']),
+ ('The Real Deal', True, ['https://therealdeal.com/chicago/feed/', 'https://therealdeal.com/chicago/feed', 'https://therealdeal.com/feed/?region=chicago']),
  ('South Side Weekly', True, ['https://southsideweekly.com/feed/']),
  ('Capitol News Illinois', False, ['https://capitolnewsillinois.com/feed/']),
  ('Illinois Answers Project', False, ['https://illinoisanswers.org/feed/']),
@@ -27,14 +27,14 @@ SOURCES = [
  ('Chicago Magazine', False, ['https://www.chicagomag.com/feed/']),
 ]
 TOPICS = {
- 'housing': r'\b(housing|homes?\b|apartment|condo|rent(s|al|ers)?\b|landlord|tenant|affordable|homeless|eviction|ADU|coach house|two-flat|three-flat|CHA\b|single.stair)',
+ 'housing': r'\b(housing|new homes|apartments?\b|condos?\b|rents?\b|rental|renters|landlords?|tenants?|affordable|homeless|evictions?|ADUs?\b|coach houses?|two-flats?|three-flats?|CHA\b|single.stair|residential)',
  'development': r'\b(develop(er|ment)|construction|tower|high-rise|skyscraper|redevelop|megaproject|groundbreak|demolition|demolish|vacant lot|stadium|mixed-use|planned development|Plan Commission|landmark)',
  'zoning': r'\b(zoning|rezon|upzon|downzon|setback|parking minimum|by.right|aldermanic prerogative|Zoning Committee)',
  'transit': r'\b(CTA|Metra|\bPace\b|NITA|transit|bus(es)?\b|Red Line|Blue Line|Brown Line|Green Line|Orange Line|L train|bike lane|Divvy|streetscape|traffic|congestion)',
  'budget': r'\b(budget|property tax|pension|TIF|bond rating|revenue|deficit|head tax|tax levy|city finances|Corporate Fund|credit rating)',
  'policy': r'\b(City Council|alderperson|alderman|alder|ordinance|mayor Johnson|Johnson administration|ward\b|Planning and Development|DPD|Department of Housing|zoning board)',
 }
-NOT = r'\b(shooting|shot|homicide|murder|carjack|stabb|arrest|police chase|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|restaurant review|recipe|obituar)'
+NOT = r'\b(shooting|shot|gunman|homicide|murder|carjack|stabb|arrest|police chase|charged|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
 def get(u):
     try: return urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0 (compatible; ShapeChicagoNews/1.0)'}), timeout=60).read()
@@ -60,6 +60,7 @@ old = []
 if os.path.exists(OUT):
     try: old = json.load(open(OUT)).get('items', [])
     except Exception: old = []
+old = [o for o in old if not re.search(NOT, o['t'], re.I) and [k for k, rx in TOPICS.items() if re.search(rx, o['t'], re.I if k != 'transit' else 0)]]   # re-check kept items against the current rules
 seen = {o['u'] for o in old}; items = list(old); status = {}
 now = dt.datetime.now(dt.timezone.utc)
 for name, local, urls in SOURCES:
@@ -75,7 +76,7 @@ for name, local, urls in SOURCES:
         if not title or not link or link in seen or not d or (now - d).days > 30: continue
         blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
         if re.search(NOT, title, re.I): continue
-        tags = [k for k, rx in TOPICS.items() if re.search(rx, blob, re.I if k != 'transit' else 0)]
+        tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
         if not tags: continue
         if not local and not re.search(CHI, blob): continue
         seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags})
