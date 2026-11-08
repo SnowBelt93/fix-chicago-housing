@@ -1,0 +1,29 @@
+# Downloads City Clerk records for the ward housing record (tools/wards/fetch.py). Hourly until the zoning ordinance
+# backfill is done (each run skips what it already has), on changes to its script, or by hand.
+name: Fetch ward records
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 * * * *'
+  push:
+    branches: [main]
+    paths: ['tools/wards/fetch.py', '.github/workflows/fetch-wards.yml']
+permissions:
+  contents: write
+concurrency: wards
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils >/dev/null
+      - name: Download
+        run: python3 tools/wards/fetch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/wards
+          git commit -m "Ward records $(date -u +%F-%H)" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
