@@ -38,6 +38,17 @@ for path in paths or ['/meeting']:
 json.dump(meet, open(os.path.join(OUT, 'meetings.json'), 'w'))
 print('meetings', {k: len((v or {}).get('data') or v) if isinstance(v, (dict, list)) else 0 for k, v in meet.items()}, flush=True)
 
+# 0b) alderpersons as the City Clerk lists them (name, ward, contact, official photo)
+people = []
+for skip in (0, 500):
+    r = ej('/person', top='500', skip=skip)
+    data = (r or {}).get('data') if isinstance(r, dict) else r
+    if not data: break
+    people += data
+    if len(data) < 500: break
+json.dump(people, open(os.path.join(OUT, 'persons.json'), 'w'))
+print('persons', len(people), 'with photo', sum(1 for p in people if p.get('photo')), flush=True)
+
 # 1) citywide housing legislation and its roll calls
 TERMS = ['"Additional Dwelling Unit"', '"accessory dwelling"', '"coach house"', '"Connected Communities"', '"Bring Chicago Home"',
          '"Affordable Requirements Ordinance"', '"Cut the Tape"', '"single stair"', '"single-stair"', '"Missing Middle"', '"Green Social Housing"',

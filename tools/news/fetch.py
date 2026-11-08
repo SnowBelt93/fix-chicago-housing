@@ -25,6 +25,22 @@ SOURCES = [
  ('The Daily Line', True, ['https://www.thedailyline.com/feed', 'https://www.thedailyline.com/feed/']),
  ('Axios Chicago', False, ['https://api.axios.com/feed/local/chicago', 'https://www.axios.com/local/chicago/feed']),
  ('Chicago Magazine', False, ['https://www.chicagomag.com/feed/']),
+ ('CBS Chicago', True, ['https://www.cbsnews.com/chicago/latest/rss/main', 'https://www.cbsnews.com/chicago/latest/rss/local-news']),
+ ('NBC Chicago', True, ['https://www.nbcchicago.com/?rss=y', 'https://www.nbcchicago.com/news/local/?rss=y']),
+ ('ABC7 Chicago', True, ['https://abc7chicago.com/feed/']),
+ ('WGN News', True, ['https://wgntv.com/feed/', 'https://wgntv.com/news/feed/']),
+ ('FOX 32 Chicago', True, ['https://www.fox32chicago.com/rss/category/news', 'https://www.fox32chicago.com/rss/category/local-news']),
+ ('Chicago Business Journal', True, ['https://feeds.bizjournals.com/bizj_chicago']),
+ ('Chicago Defender', True, ['https://chicagodefender.com/feed/']),
+ ('Hyde Park Herald', True, ['https://www.hpherald.com/search/?f=rss&t=article&l=50&s=start_time&sd=desc']),
+ ('The TRiiBE', True, ['https://thetriibe.com/feed/']),
+ ('Chicago Cityscape', True, ['https://www.chicagocityscape.com/blog/feed', 'https://chicagocityscape.com/blog/?feed=rss2']),
+ ('Bisnow Chicago', True, ['https://www.bisnow.com/rss/chicago']),
+ ('Chicago Agent', True, ['https://chicagoagentmagazine.com/feed/']),
+ ('Austin Weekly News', True, ['https://www.austinweeklynews.com/feed/']),
+ ('Metropolitan Planning Council', True, ['https://metroplanning.org/feed/']),
+ ('Better Government Association', False, ['https://www.bettergov.org/feed/']),
+ ('Chicago Tribune', False, ['https://www.chicagotribune.com/arcio/rss/category/news/', 'https://www.chicagotribune.com/news/chicago/feed/']),
 ]
 TOPICS = {
  'housing': r'\b(housing|new homes|apartments?\b|condos?\b|rents?\b|rental|renters|landlords?|tenants?|affordable|homeless|evictions?|ADUs?\b|coach houses?|two-flats?|three-flats?|CHA\b|single.stair|residential)',
@@ -41,7 +57,7 @@ CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|
 # the topics we keep, since a main feed only holds the latest 10 to 20 stories
 WP_TERMS = ['zoning', 'housing', 'development', 'apartments', 'CTA', 'budget', 'City Council', 'affordable']
 EXTRA = [(name, base + '/?s=' + urllib.parse.quote_plus(t) + '&feed=rss2') for name, base in
-         [('Block Club Chicago', 'https://blockclubchicago.org'), ('South Side Weekly', 'https://southsideweekly.com'),
+         [('Block Club Chicago', 'https://blockclubchicago.org'), ('South Side Weekly', 'https://southsideweekly.com'), ('Chicago Defender', 'https://chicagodefender.com'), ('The TRiiBE', 'https://thetriibe.com'),
           ('Streetsblog Chicago', 'https://chi.streetsblog.org'), ('Chicago YIMBY', 'https://chicagoyimby.com')] for t in WP_TERMS]
 def get(u):
     try: return urllib.request.urlopen(urllib.request.Request(u, headers={'User-Agent': 'Mozilla/5.0 (compatible; ShapeChicagoNews/1.0)'}), timeout=60).read()
@@ -70,6 +86,19 @@ def parse(b):
         out.append((text(it, 'title'), text(it, 'link'), text(it, 'pubDate', '{http://purl.org/dc/elements/1.1/}date'), text(it, 'description'), [c.text or '' for c in it.findall('category')], feed_img(it)))
     for it in root.iter('{http://www.w3.org/2005/Atom}entry'):
         link = it.find('a:link', ns); out.append((text(it, '{http://www.w3.org/2005/Atom}title'), link.get('href') if link is not None else '', text(it, '{http://www.w3.org/2005/Atom}updated', '{http://www.w3.org/2005/Atom}published'), text(it, '{http://www.w3.org/2005/Atom}summary'), [], feed_img(it)))
+    return out
+def dek(desc):
+    """The outlet's own short description of the story (its feed summary), cut to two or three sentences."""
+    t = html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))
+    t = re.sub(r'The post .*? appeared first on .*$', '', t, flags=re.S)
+    t = re.sub(r'\s*(Continue reading|Read more|\[…\]|\[\.\.\.\]).*$', '', t, flags=re.S | re.I)
+    t = re.sub(r'\s+', ' ', t).strip()
+    if len(t) < 40: return ''
+    parts = re.split(r'(?<=[.!?])\s+(?=[A-Z"“])', t); out = ''
+    for p_ in parts[:3]:
+        if len(out) + len(p_) > 330 and out: break
+        out = (out + ' ' + p_).strip()
+    if len(out) > 340: out = out[:330].rsplit(' ', 1)[0] + '…'
     return out
 def when(s):
     try: return email.utils.parsedate_to_datetime(s).astimezone(dt.timezone.utc)
@@ -104,20 +133,23 @@ for name, urls in jobs:
         if not tags: continue
         if name in STATEWIDE and not re.search(CHI, title): continue          # statewide outlets: Chicago must be in the headline
         if not local and not re.search(CHI, blob): continue
-        seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags, **({'i': img} if img.startswith('http') else {})})
+        seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags, **({'i': img} if img.startswith('http') else {}), **({'x': dek(desc)} if dek(desc) else {})})
 items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z', '+00:00'))).days <= 45]
 items.sort(key=lambda i: i['d'], reverse=True); items = items[:600]
 # stories with no picture in the feed: read the share image the outlet sets for link previews (og:image), once per story;
 # 'i': '' means we looked and found none. Only the image's address is kept; readers' browsers load it from the outlet.
 tries = 0
 for it in items:
-    if 'i' in it or tries >= 80: continue
-    tries += 1; b = get(it['u']); it['i'] = ''
+    if ('i' in it and ('x' in it or it.get('xd'))) or tries >= 120: continue
+    tries += 1; b = get(it['u']); it.setdefault('i', ''); it['xd'] = 1
     if not b: continue
     h = b[:200000].decode('utf-8', 'ignore')
     m = (re.search(r'<meta[^>]+property=["\']og:image(?::secure_url)?["\'][^>]+content=["\']([^"\']+)', h, re.I) or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', h, re.I)
          or re.search(r'<meta[^>]+name=["\']twitter:image["\'][^>]+content=["\']([^"\']+)', h, re.I))
-    if m and m.group(1).startswith('http'): it['i'] = html.unescape(m.group(1))
+    if m and m.group(1).startswith('http') and not it['i']: it['i'] = html.unescape(m.group(1))
+    if 'x' not in it:
+        m2 = re.search(r'<meta[^>]+(?:property|name)=["\'](?:og:description|description)["\'][^>]+content=["\']([^"\']+)', h, re.I) or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:property|name)=["\'](?:og:description|description)["\']', h, re.I)
+        if m2 and dek(m2.group(1)): it['x'] = dek(m2.group(1))
 print('images', sum(1 for i in items if i.get('i')), 'of', len(items), '; looked up', tries)
 json.dump({'updated': now.strftime('%Y-%m-%dT%H:%MZ'), 'sources': status, 'items': items}, open(OUT, 'w'), separators=(',', ':'))
 print('sources', status); print('items', len(items))
