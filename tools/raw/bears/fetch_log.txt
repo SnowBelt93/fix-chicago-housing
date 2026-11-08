@@ -1,0 +1,36 @@
+indiana blocks 14689 people 671915 jobs year 2022
+overpass ok https://overpass-api.de/api/interpreter 35857 elements
+places 35857
+overpass ok https://overpass-api.de/api/interpreter 229 elements
+ref Mercedes-Benz Stadium 229
+overpass ok https://overpass-api.de/api/interpreter 60 elements
+ref SoFi Stadium 60
+overpass ok https://overpass-api.de/api/interpreter 68 elements
+ref Highmark Stadium (2026) 68
+overpass ok https://overpass-api.de/api/interpreter 142 elements
+ref Nissan Stadium (new) 142
+overpass failed https://overpass-api.de/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass ok https://overpass-api.de/api/interpreter 3681 elements
+land tile 2_2 3679
+overpass ok https://overpass-api.de/api/interpreter 0 elements
+land tile 2_3 0
+overpass ok https://overpass-api.de/api/interpreter 0 elements
+land tile 3_2 0
+overpass failed https://overpass-api.de/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass ok https://overpass-api.de/api/interpreter 7716 elements
+land tile 0_2 7712
+overpass ok https://overpass-api.de/api/interpreter 1816 elements
+land tile 1_3 1816
+overpass ok https://overpass-api.de/api/interpreter 0 elements
+land tile 3_3 0
+overpass failed https://overpass-api.de/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass failed https://overpass-api.de/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass failed https://overpass.private.coffee/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass failed https://overpass.private.coffee/api/interpreter <HTTPError 502: 'Bad Gateway'>
+overpass failed https://maps.mail.ru/osm/tools/overpass/api/interpreter <HTTPError 504: 'Gateway Timeout'>
+overpass failed https://maps.mail.ru/osm/tools/overpass/api/interpreter <HTTPError 504: 'Gateway Time-out'>
+land tile failed 0_1
+overpass ok https://overpass-api.de/api/interpreter 7741 elements
+land tile 0_3 7740
+land rows 105374 tiles 15 of 16
+done 2026-11-08T21:04Z
