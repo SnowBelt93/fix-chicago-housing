@@ -1,0 +1,25 @@
+# Downloads OpenStreetMap streets and city crash data for Redesign my street (tools/street/fetch.py).
+
+name: Fetch street data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/street/fetch.py', '.github/workflows/fetch-street.yml']
+permissions:
+  contents: write
+concurrency: street
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: python3 tools/street/fetch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/street
+          git commit -m "Street data" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
