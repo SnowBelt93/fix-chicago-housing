@@ -201,3 +201,34 @@ inc = build_income()
 if inc:
     d = json.load(open(os.path.join(OUT, 'budget.json'))); d['inc'] = inc
     json.dump(d, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))
+
+# ---- "Would it pass?": alderpeople grouped by their votes on the 2025 budget (Dec. 2024) and the 2026 budget (Dec. 2025)
+def build_votes():
+    vp = os.path.join(RAW, 'votes.json'); wp = os.path.join(ROOT, 'tools', 'raw', 'wards', 'ward_offices.csv')
+    if not os.path.exists(vp): return None
+    V = json.load(open(vp)); rec = {r['recordNumber']: r for r in V}
+    def roll(num):
+        r = rec.get(num); acts = [a for a in (r or {}).get('actions') or [] if a.get('votes')]
+        return {v['voterName']: v['vote'] for v in acts[-1]['votes']} if acts else {}
+    b26, b25 = roll('SO2025-0020516'), roll('SO2024-0013682')
+    norm = lambda n: re.sub(r'[^a-z]', '', n.lower().split(',')[0])
+    ward = {}
+    if os.path.exists(wp):
+        for r in csv.DictReader(open(wp, encoding='utf-8-sig')): ward[norm(r['ALDERMAN'])] = int(r['WARD'])
+    mem = []
+    for name, v26 in b26.items():
+        v25 = b25.get(name)
+        y26 = v26 == 'Yea' if v26 in ('Yea', 'Nay') else (v25 == 'Yea')
+        y25 = (v25 == 'Yea') if v25 in ('Yea', 'Nay') else y26          # members new since 2024 take their 2026 vote
+        g = 'A' if y25 and y26 else 'B' if y26 else 'C' if y25 else 'D'
+        mem.append({'name': name, 'ward': ward.get(norm(name)), 'g': g, 'v25': v25, 'v26': v26})
+    mem.sort(key=lambda m: m['ward'] or 99)
+    cnt = collections.Counter(m['g'] for m in mem)
+    print('vote groups', dict(cnt), 'members', len(mem), 'no ward', [m['name'] for m in mem if not m['ward']])
+    E = 'https://chicityclerkelms.chicago.gov/Matter/?matterId='
+    return {'members': mem, 'counts': dict(cnt), 'sources': [['2026 budget, Dec. 20, 2025 (30–18)', E + rec['SO2025-0020516']['matterId']],
+            ['2025 budget, Dec. 16, 2024 (27–23)', E + rec['SO2024-0013682']['matterId']]]}
+vt = build_votes()
+if vt:
+    d = json.load(open(os.path.join(OUT, 'budget.json'))); d['votes'] = vt
+    json.dump(d, open(os.path.join(OUT, 'budget.json'), 'w'), separators=(',', ':'))

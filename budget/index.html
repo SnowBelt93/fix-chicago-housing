@@ -11,7 +11,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@800&family=Source+Serif+4:wght@400;600&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
 <style>
@@ -130,6 +130,52 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .crow small{display:block;color:var(--sc-mute);font-size:11.5px}
 .ckey{display:flex;gap:14px;font-size:12px;color:var(--sc-mute);margin-bottom:6px}
 .ckey span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--k)}
+/* v3: personal cost, votes, next years, ratings, missions, front page */
+.finrow{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.card h2 .ib{margin-left:6px;vertical-align:3px}
+.meform{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.meform .seg2{margin:0}
+.meinc{font-size:13px;color:var(--sc-mute);display:flex;align-items:center;gap:6px}
+.meinc select{font:inherit;font-size:14px;padding:6px 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.metotal{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:14px 0 6px}
+.metotal.up{color:var(--sc-hard)} .metotal.down{color:var(--sc-green)}
+.melist div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--sc-line)}
+.melist em{font-style:normal;font-weight:600;white-space:nowrap} .melist small{color:var(--sc-mute);margin-left:4px}
+.seats{display:grid;grid-template-columns:repeat(25,1fr);gap:4px;margin:8px 0 10px;max-width:520px}
+.seats i{aspect-ratio:1;border-radius:50%;background:#d6dbe1}
+.seats i.y{background:var(--sc-green)} .seats i.n{background:var(--sc-hard)} .seats i.m{background:#e8b23a}
+.vtally{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:4px 0}
+.vtally.ok{color:var(--sc-green)} .vtally.bad{color:var(--sc-hard)}
+.vwhy{font-size:13.5px;color:var(--sc-ink2);margin:6px 0 0;padding-left:18px} .vwhy li{margin:3px 0}
+.nexty{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden}
+.nexty div{background:#fff;padding:12px 14px} .nexty b{display:block;font-size:20px;font-weight:600} .nexty b.ok{color:var(--sc-green)} .nexty b.bad{color:var(--sc-hard)}
+.nexty span{font-size:12.5px;color:var(--sc-mute);display:block;line-height:1.4}
+.rflags{display:flex;flex-direction:column;gap:8px}
+.rflag{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:13.5px;line-height:1.45}
+.rflag i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:12px;color:#fff}
+.rflag.good i{background:var(--sc-green)} .rflag.bad i{background:var(--sc-hard)}
+.rverdict{font-size:18px;font-weight:600;margin:0 0 10px}
+.missions{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.mis{border:1px solid var(--sc-line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.mis .medal{width:26px;height:26px;border-radius:50%;background:var(--sc-seg);display:grid;place-items:center;color:#fff;font-size:13px}
+.mis.done{border-color:#b6dcc3;background:#f3faf5} .mis.done .medal{background:var(--sc-green)}
+.mis b{font-size:14px;display:block} .mis span{font-size:12.5px;color:var(--sc-mute);line-height:1.4;display:block}
+dialog.paperdlg{border:0;padding:0;max-width:min(980px,96vw);width:100%;background:transparent}
+dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
+.paper{background:#fbfaf6;color:#15181c;padding:26px 32px 30px;font-family:"Source Serif 4",Georgia,serif;border-radius:4px}
+.paper .pbar{display:flex;justify-content:space-between;font-family:var(--sc-font);font-size:12px;color:#555;border-bottom:1px solid #1a1d21;padding-bottom:6px;gap:10px}
+.paper .nameplate{font-family:"Big Shoulders Display",var(--sc-font);font-weight:800;font-size:clamp(34px,6vw,64px);letter-spacing:.01em;text-align:center;margin:8px 0 2px;line-height:1}
+.paper .rules{height:6px;border-top:2px solid #41b6e6;border-bottom:2px solid #41b6e6;margin:6px 0 14px}
+.paper h1{font-family:"Big Shoulders Display",var(--sc-font);font-size:clamp(28px,4.4vw,46px);line-height:1.02;margin:6px 0 8px;font-weight:800}
+.paper .deck{font-size:18px;line-height:1.4;margin:0 0 16px;color:#333}
+.paper .pcols{display:grid;grid-template-columns:1.4fr 1fr;gap:24px}
+.paper .pstory p{font-size:15.5px;line-height:1.6;margin:0 0 10px}
+.paper .box{border-top:3px solid #1a1d21;font-family:var(--sc-font)}
+.paper .box h3{font-size:13px;margin:8px 0;font-weight:700}
+.paper .box table{width:100%;border-collapse:collapse;font-size:13.5px}
+.paper .box td{padding:5px 0;border-bottom:1px solid #d8d4c8} .paper .box td:last-child{text-align:right;font-weight:600}
+.paper .pbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;font-family:var(--sc-font);flex-wrap:wrap}
+@media (max-width:700px){.paper{padding:18px 16px}.paper .pcols{grid-template-columns:1fr}.seats{grid-template-columns:repeat(10,1fr)}.nexty{grid-template-columns:1fr}}
 @media (max-width:980px){
   main{grid-template-columns:1fr;padding:12px}
   .panel{position:static;max-height:none}
@@ -179,6 +225,39 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
       <div class="wholist" id="wholist"></div>
       <p class="gave" id="gave"></p>
       <div class="stats" id="stats"></div>
+      <div class="finrow"><button class="sc-btn sc-primary" id="finish">Send it to the Council</button><span class="fine" id="finNote">See the front page and share your budget.</span></div>
+    </section>
+    <section class="card" id="meCard">
+      <h2>What it costs you <button class="ib" id="meInfo" aria-label="How this is estimated">i</button></h2>
+      <p class="sub">A rough yearly estimate for one household, from the choices on the left.</p>
+      <div class="meform">
+        <div class="seg2" role="radiogroup" id="meHome"><button role="radio" aria-checked="false" data-k="own">I own</button><button role="radio" aria-checked="true" data-k="rent">I rent</button></div>
+        <div class="seg2" role="radiogroup" id="meCar"><button role="radio" aria-checked="true" data-k="0">No car</button><button role="radio" aria-checked="false" data-k="1">A car</button></div>
+        <div class="seg2" role="radiogroup" id="meBldg"><button role="radio" aria-checked="true" data-k="1">City garbage pickup</button><button role="radio" aria-checked="false" data-k="0">Big building</button></div>
+        <label class="meinc">Household income <select id="meInc"><option value="25000">$25,000</option><option value="50000">$50,000</option><option value="75000" selected>$75,000</option><option value="125000">$125,000</option><option value="250000">$250,000</option><option value="1000000">$1 million</option><option value="5000000">$5 million</option></select></label>
+      </div>
+      <p class="metotal" id="meTotal"></p>
+      <div class="melist" id="meList"></div>
+    </section>
+    <section class="card" id="voteCard">
+      <h2>Would it pass? <button class="ib" id="voteInfo" aria-label="How votes are estimated">i</button></h2>
+      <p class="sub">A budget needs 26 of 50 votes in the City Council.</p>
+      <div id="voteBody"><p class="fine">Loading how alderpeople voted on recent budgets…</p></div>
+    </section>
+    <section class="card" id="nextCard">
+      <h2>The next two years <button class="ib" id="nextInfo" aria-label="How this is estimated">i</button></h2>
+      <p class="sub">The city's own forecast says the gap keeps growing. One-time money doesn't help next year; lasting fixes do.</p>
+      <div id="nextBody"></div>
+    </section>
+    <section class="card" id="rateCard">
+      <h2>What the rating agencies would notice <button class="ib" id="rateInfo" aria-label="About credit ratings">i</button></h2>
+      <p class="sub">Chicago's bonds sit a few steps above junk, and the agencies have been cutting them. Lower ratings mean more interest on every dollar the city borrows.</p>
+      <div id="rateBody"></div>
+    </section>
+    <section class="card" id="misCard">
+      <h2>Missions</h2>
+      <p class="sub">Balance it, then try it the hard way.</p>
+      <div class="missions" id="misBody"></div>
     </section>
     <section class="card">
       <h2>Where the money goes</h2>
@@ -207,6 +286,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   </div>
 </main>
 <dialog class="sc-info" id="infoDlg"></dialog>
+<dialog class="paperdlg" id="paperDlg"><div class="paper" id="paper"></div></dialog>
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -233,6 +313,21 @@ const S = {
   irs:["IRS Statistics of Income: individual income by ZIP code, 2022", "https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-2022-zip-code-data-soi"],
   irs_t2:["IRS Statistics of Income: Historic Table 2 (by state), 2022", "https://www.irs.gov/statistics/soi-tax-stats-historic-table-2"],
   stl:["City of St. Louis: U.S. cities that tax earnings", "https://www.stlouis-mo.gov/government/departments/comptroller/initiatives/us-cities-that-levy-earnings-taxes.cfm"],
+  hrot_law:["Illinois law: home rule sales tax, 65 ILCS 5/8-11-1", "https://ilga.gov/legislation/ilcs/documents/006500050K8-11-1.htm"],
+  telecom_law:["Illinois law: telecommunications tax cap, 35 ILCS 636/5-15", "https://ilga.gov/legislation/ilcs/documents/003506360K5-15.htm"],
+  util_law:["Illinois law: gas and electricity tax caps, 65 ILCS 5/8-11-2", "https://ilga.gov/legislation/ilcs/documents/006500050K8-11-2.htm"],
+  rett_law:["Illinois law: transfer tax referendum, 65 ILCS 5/8-3-19", "https://witnessslips.ilga.gov/legislation/ilcs/documents/006500050K8-3-19.htm"],
+  cf_cons:["Civic Federation: consumer taxes in Chicago, 2024", "https://civicfed.org/sites/default/files/2024-04/Consumer%20Taxes%20in%20Chicago%202024.pdf"],
+  betlaw:["Capitol News Illinois: the fight over Chicago's betting tax (Mar. 2026)", "https://capitolnewsillinois.com/news/sports-betting-tax-becomes-battleground-between-chicago-and-state-lawmakers"],
+  mpc_cong:["Metropolitan Planning Council: urban core congestion pricing (Jan. 2025)", "https://metroplanning.org/wp-content/uploads/2025/02/CongestionPricingProgram-IB.pdf"],
+  ilcon:["Illinois Constitution, Article VII, Section 6(e) (home rule limits)", "https://law.counselstack.com/constitution/il/VII/6"],
+  fc27:["City of Chicago 2027 Budget Forecast (Aug. 2026)", "https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Forecast/2027_Chicago_Budget_Forecast.pdf"],
+  acs_units:["Census ACS 2024: Chicago homes and vacant homes", "https://data.census.gov/table/ACSDT1Y2024.B25004?g=160XX00US1714000"],
+  dss:["City of Chicago: residential garbage collection (about 600,000 households)", "https://chicago.gov/city/en/depts/streets/provdrs/streets_san/svcs/residential_garbagecollection.html"],
+  sp_out:["WTTW: S&P revises Chicago's outlook to negative", "https://news.wttw.com/node/52432"],
+  kbra:["KBRA: Chicago downgrade and what could change it (Jan. 2025)", "https://www.kbra.com/publications/KxSPjngZ/kbra-downgrades-the-city-of-chicago-il-g-o-rating-to-a-outlook-is-negative"],
+  fitch:["CBS Chicago: Fitch downgrades Chicago to BBB+ (Feb. 2026)", "https://www.cbsnews.com/chicago/news/chicago-credit-rating-downgraded-operating-deficits"],
+  wttw26:["WTTW: Council approves 2026 budget, 30–18 (Dec. 20, 2025)", "https://news.wttw.com/2025/12/20/city-council-votes-30-18-approve-final-part-2026-budget-will-mayor-veto-it"],
   tf:["Chicago Financial Future Task Force, interim report (Sept. 2025)", "https://www.ingame.com/wp-content/uploads/2025/09/68c9742e20efecbd01ee5692_CFFTF_Interim-Report_2025.pdf"],
   tfip:["Illinois Policy on the task force's options (Sept. 2025)", "https://www.illinoispolicy.org/?p=76385"],
   tffinal:["Sun-Times: task force final report, June 2026", "https://chicago.suntimes.com/city-hall/2026/06/25/mayor-financial-task-force-chicago-fiscal-outlook-downtown-congestion-fee-service-tax"],
@@ -244,19 +339,20 @@ const S = {
 const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
 /* Every option, in millions of 2027 dollars. amt > 0 closes the gap (a tax raised, a cut); amt < 0 widens it (a tax cut).
    kind: rec = counts every year, one = this year only, cost = new spending. sub = the heading it sits under in its tab. */
-const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], ["else", "Ideas"], ["add", "Spending"]];
+const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], ["else", "Ideas"], ["state", "Ask Springfield"], ["add", "Spending"]];
 const LEAD = {tax:"Raise or cut each one. Changes count every year.", dept:"Fund each department more or less, or take a savings idea. Cuts count every year.",
-  one:"Money for this year only. Next year's budget starts that much further behind.", else:"From the Mayor's own task force and from other cities and states.",
+  one:"Money for this year only. Next year's budget starts that much further behind.", else:"From the Mayor's own task force and other cities. The City Council can pass all of these on its own.",
+  state:"The city can't do these alone: each needs a new state law, or a citywide vote. They count toward your budget, but it only balances if Springfield or the voters say yes.",
   add:"New spending in the Mayor's plan. Turning it on makes the gap bigger."};
 const L = [
   {id:"ptax", g:"tax", sub:"Property tax", kind:"rec", who:"home", t:"City property tax levy", type:"range", min:-300, max:400, step:25, mayor:0,
    info:"The city's part is about a fifth of a property tax bill; renters pay much of it through rent. The 2027 levy is $1.87 billion. The Mayor proposed +$300 million for 2025 and the Council voted it down 50 to 0. The 2027 plan has no increase. The Mayor's task force suggested raising it with inflation every year (about $56 million for 2026).", pro:["The biggest, steadiest money the city has", "Owners of expensive property pay more"], con:["Hits homeowners directly and renters through rent", "The Council voted a $300M increase down 50 to 0 in 2024"], s:["forecast", "treas", "nbc", "tfip"]},
   {id:"sales", g:"tax", sub:"Sales tax", kind:"rec", who:"cons", t:"City sales tax", type:"opts", opts:[["1%", -54.7], ["1.25% today", 0], ["1.5%", 54.7], ["1.75%", 109.4]], start:1, mayor:1,
-   info:"The city's own sales tax is 1.25%, on top of the state, county and transit taxes, which already make Chicago's combined rate one of the highest of any big U.S. city. The city also gets 1% of the state's 6.25%. The two together bring in about $492.7 million (2026 projection); a quarter point is about $54.7 million, assuming both apply to the same purchases (an assumption: the city's tax skips some items, like groceries). The city sold its sales tax to a bond corporation in 2017; what's left after bond payments comes back to the budget, so new money flows through.",
-   pro:["Spread across everyone who shops here, including visitors and commuters", "The city can change it by ordinance, a quarter point at a time"], con:["Falls hardest on lower-income households, who spend more of what they earn", "Big purchases can move to the suburbs or online sellers that don't collect the city's part"], s:["ov26", "ipi_sales"]},
-  {id:"inc", g:"tax", sub:"A city income tax (needs a state law)", kind:"rec", who:"mid", t:"City income tax by income", type:"income", mayor:0,
+   info:"The city's own sales tax is 1.25%, on top of the state, county and transit taxes, which already add up to 10.5% since the 2025 transit law, one of the highest combined rates of any big U.S. city. The city also gets 1% of the state's 6.25%. The two together bring in about $492.7 million (2026 projection); this tool counts a quarter point as about $54.7 million, as if both taxes covered the same purchases (an assumption; the city's tax skips cars and other titled vehicles, so the real figure is likely a bit lower). State law lets the city change its rate by ordinance in quarter-point steps, with no maximum. The city sold its sales tax to a bond corporation in 2017; what's left after bond payments comes back to the budget, so new money flows through.",
+   pro:["Spread across everyone who shops here, including visitors and commuters", "The city can change it by ordinance, a quarter point at a time"], con:["Falls hardest on lower-income households, who spend more of what they earn", "Big purchases can move to the suburbs or online sellers that don't collect the city's part"], s:["ov26", "hrot_law", "ipi_sales"]},
+  {id:"inc", g:"state", sub:"Needs a state law", kind:"rec", who:"mid", t:"City income tax by income", type:"income", mayor:0,
    info:"Illinois' constitution bars cities from taxing income unless the state passes a law allowing it. New York City (3.078% to 3.876%), Philadelphia, Detroit (2.4%), Baltimore (3.2%), St. Louis and Kansas City (1% each) all tax income (rates as listed by St. Louis in 2021). Set a rate for each slice of income: like the federal tax, a rate only applies to the part of income inside its slice, so someone making $120,000 pays the first rate on their first $50,000, and so on. Estimates use the IRS's 2022 count of income (adjusted gross income) by ZIP code: 1.23 million tax returns and $120 billion. ZIP codes that cross the city line count by the share of their land inside Chicago, and income over $1 million is estimated from Illinois' mix (both assumptions). Nobody moves or changes how they earn in this estimate (a static estimate), and people who work here but live in the suburbs aren't taxed.",
-   pro:["Can ask the most from people who earn the most", "Big: 1% on all residents' income would raise about $1.2 billion, more than the whole gap"], con:["Needs Springfield, where it has never passed", "Some high earners and businesses could move to the suburbs, where there's no such tax"], s:["irs", "irs_t2", "stl"]},
+   pro:["Can ask the most from people who earn the most", "Big: 1% on all residents' income would raise about $1.2 billion, more than the whole gap"], con:["Needs Springfield, where it has never passed", "Some high earners and businesses could move to the suburbs, where there's no such tax"], s:["ilcon", "irs", "irs_t2", "stl"]},
   {id:"lease", g:"tax", sub:"Taxes on businesses", kind:"rec", who:"biz", t:"Cloud and equipment lease tax", type:"opts", opts:[["Back to 11%", -187.2], ["15% today", 0], ["17.5%", 117], ["20%", 234]], start:1, mayor:3,
    info:"Taxes businesses' software, cloud services and equipment leases. It was 9% in 2024, 11% in 2025 and 15% in 2026. +$234 million at 20% is the Mayor's estimate (car leases stay where they are); 17.5% and the cut back to 11% use the same $46.8 million per point (an assumption: businesses may move or cut back).", pro:["Mostly paid by businesses, not households", "Raised quickly and reliably since 2024"], con:["Already among the highest such taxes in the country", "Businesses can buy software and cloud services through offices outside the city"], s:["release", "bga", "data"]},
   {id:"head", g:"tax", sub:"Taxes on businesses", kind:"rec", who:"biz", t:"Big employers: $25 a month per worker", type:"sw", amt:113.8, mayor:1,
@@ -267,11 +363,11 @@ const L = [
    info:"9% on tickets, cable and streaming, $312.4 million in 2027. Other rates scale that in proportion (an assumption).", s:["data"]},
   {id:"soda", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Repeal the soft drink tax", type:"sw", amt:-37.2, mayor:0,
    info:"The city's non-alcoholic beverage tax brings in $37.2 million in 2027. Cook County repealed its own penny-an-ounce soda tax in 2017, four months after it started.", s:["data", "soda"]},
-  {id:"util", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"home", t:"Utility, phone and cable taxes", type:"opts", opts:[["A tenth lower", -39.1], ["Today", 0], ["A tenth higher", 39.1]], start:1, mayor:1,
-   info:"Taxes on gas and electric bills, phones and cable bring in $391.2 million in 2027. A tenth more or less scales that (an assumption). The Mayor's task force suggested charging big electricity users more while keeping homes and small businesses the same; that needs a state law.",
-   pro:["Steady money that doesn't swing with the economy", "Paid by businesses as well as homes"], con:["Heating and power aren't optional, so it takes a bigger bite from low-income households", "Cable taxes shrink every year as people cut the cord"], s:["data", "tffinal"]},
+  {id:"util", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"home", t:"Utility, phone and cable taxes", type:"opts", opts:[["A tenth lower", -39.1], ["Today", 0]], start:1, mayor:1,
+   info:"Taxes on gas and electric bills, phones and cable bring in $391.2 million in 2027; a tenth less scales that (an assumption). The city can only cut them: state law caps them, and Chicago is already at the caps (phones 7%, gas 8% of the bill, electricity at the state's per-kilowatt-hour rates). Charging big electricity users more, as the Mayor's task force suggested, would take a new state law.",
+   pro:["Heating, power and phones aren't optional, so a cut helps low-income households most"], con:["Gives up steady money that doesn't swing with the economy"], s:["data", "telecom_law", "util_law", "cf_cons"]},
   {id:"bag", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Repeal the checkout bag tax", type:"sw", amt:-28.5, mayor:0, info:"The 7¢ bag tax brings in $28.5 million in 2027.", s:["data"]},
-  {id:"bet", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Sports betting tax to 20%", type:"sw", amt:37, mayor:1, info:"From 10.25% on online sportsbooks' Chicago bets.", s:["release"]},
+  {id:"bet", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Sports betting tax to 20%", type:"sw", amt:37, mayor:1, info:"From 10.25% of sportsbooks' revenue on Chicago bets, which the city started collecting in 2026. The sportsbooks sued in December 2025, saying only the state can tax betting, and bills in Springfield would ban it; neither had ended the tax as of the city's 2027 proposal, which counts on it.", pro:["Paid by sportsbook companies", "Already being collected"], con:["A court or the legislature could wipe it out", "Sportsbooks may pass it on with worse odds"], s:["release", "betlaw"]},
   {id:"liq", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Liquor tax to 3% on store sales", type:"sw", amt:13.8, mayor:1, info:"From 2.38% on alcohol bought to take home.", s:["ipi"]},
   {id:"pack", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"15¢ packaging tax", type:"sw", amt:9, mayor:1, info:"On each non-food, non-medical package, like the bag tax.", s:["release"]},
   {id:"other", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Other fees in the Mayor's plan", type:"sw", amt:20.8, mayor:1, info:"The rest of the $447.2 million in new revenue in the Mayor's plan, not itemized in the overview.", s:["forecast"]},
@@ -302,27 +398,28 @@ const L = [
   {id:"freeze", g:"one", kind:"one", who:"svc", t:"Freeze hiring for a year", type:"opts", opts:[["No", 0], ["Low", 143.7], ["High", 161.7]], mayor:0,
    info:"Leave open jobs empty for a year. Services slow where those jobs are. Overlaps with the Mayor's smaller version under Departments. Task force estimate.", s:["tf"]},
   {id:"ot", g:"one", kind:"one", who:"svc", t:"Cut overtime", type:"opts", opts:[["No", 0], ["Low", 52.1], ["High", 69.5]], mayor:0, info:"Mostly police and fire overtime. Task force estimate.", s:["tf"]},
-  {id:"furl", g:"one", kind:"one", who:"workers", t:"Unpaid furlough days", type:"opts", opts:[["No", 0], ["Low", 9.4], ["High", 18.8]], mayor:0, info:"Flexible unpaid days off for city workers. Task force estimate.", s:["tf"]},
+  {id:"furl", g:"one", kind:"one", who:"workers", t:"Unpaid furlough days", type:"opts", opts:[["No", 0], ["Low", 9.4], ["High", 18.8]], mayor:0, info:"Flexible unpaid days off for city workers. Unions have to agree; the city used furlough days during the last recession. Task force estimate.", s:["tf"]},
   {id:"resv", g:"one", kind:"one", who:"cushion", t:"Spend some of the reserves", type:"opts", opts:[["No", 0], ["$100M", 100], ["$250M", 250]], mayor:0,
    info:"The city's reserves are a little over $700 million, including money left from the Skyway and parking meter deals, down from $1.9 billion during federal pandemic aid (Chicago Tribune, July 2026). Spending them closes this year's gap once and leaves less for a recession.",
    pro:["No new tax and no cut this year", "The money is already in the bank"], con:["Gone next year, so 2028 starts this far behind", "Ratings agencies watch reserves; thinner reserves can raise borrowing costs"], s:["reserves"]},
   {id:"land", g:"one", kind:"one", who:"none", t:"Sell surplus city property", type:"sw", amt:29.5, mayor:0, info:"The task force estimated $29.5 million in the first year from selling or leasing city buildings and land it doesn't need.", s:["tf"]},
   {id:"bonds", g:"one", kind:"one", who:"future", t:"Borrow for police misconduct settlements", type:"sw", amt:266, mayor:1, info:"Sell $480 million in bonds instead of paying settlements this year. Future taxpayers repay it with interest; 2026 already borrowed $283 million for settlements.", pro:["Spreads a big one-time cost over years"], con:["Borrowing to pay bills that come every year", "Interest makes it cost more in the end"], s:["forecast", "budgit"]},
-  {id:"pens", g:"one", kind:"one", who:"future", t:"Skip the extra pension payment", type:"opts", opts:[["Make it", 0], ["Half", 181.5], ["Skip it", 363]], mayor:0,
-   info:"The city plans $363 million beyond what state law requires. When the Mayor proposed cutting it for 2026, S&P lowered the city's outlook and the Council restored it. Skipping payments is how the pension hole was dug.", pro:["Frees up to $363 million this year"], con:["The pension debt grows, and costs more later", "Ratings agencies treat it as a warning sign"], s:["release", "budgit"]},
+  {id:"pens", g:"one", kind:"one", who:"future", t:"Skip the extra pension payment", type:"opts", opts:[["Make it", 0], ["Half", 162.2], ["Skip it", 324.3]], mayor:0,
+   info:"Under its own 2022 policy the city pays extra into the pensions beyond what state law requires: $364 million planned for 2027, of which $324.3 million comes from the main budget (the part this tool counts). When the Mayor proposed cutting it for 2026, S&P lowered the city's outlook and the Council restored it. Skipping payments is how the pension hole was dug.", pro:["Frees up to $324 million in the main budget this year"], con:["The pension debt grows, and costs more later", "Ratings agencies treat it as a warning sign"], s:["fc27", "release", "budgit"]},
   {id:"garb", g:"else", sub:"The city could do it", kind:"rec", who:"home", t:"Garbage fee that covers the cost", type:"opts", opts:[["$9.50 today", 0], ["Phase in", 19.6], ["Full cost", 296.9]], mayor:0,
    info:"Chicago charges $9.50 a month per home for city pickup; the fee brings in about $60 million and doesn't cover the cost. Los Angeles, Philadelphia, Phoenix and San Antonio charge more. Task force estimates for 2026.", s:["tf", "tfip"]},
   {id:"ride", g:"else", sub:"The city could do it", kind:"rec", who:"cons", t:"Bigger rideshare surcharge downtown and at the airports", type:"opts", opts:[["No", 0], ["Low", 26], ["High", 103]], mayor:0, info:"A larger congestion fee on Uber and Lyft trips in busy zones. Task force estimate.", s:["tf"]},
   {id:"pilot", g:"else", sub:"The city could do it", kind:"rec", who:"biz", t:"Ask big nonprofits to pay in lieu of taxes", type:"sw", amt:52, mayor:0,
    info:"Boston, Baltimore and Providence ask universities and hospitals, which pay no property tax, to pay something for city services. Payments are voluntary, so the task force's range runs from $0 to $52 million; this uses the top.", s:["tf"]},
-  {id:"cong", g:"else", sub:"Needs a state law", kind:"rec", who:"drive", t:"Downtown congestion charge, like New York", type:"sw", amt:171, mayor:0,
-   info:"New York's charge raised about $550 million in its first year (2025) and cut traffic into the zone 11%. The same per resident in Chicago is about $171 million (a rough estimate: 2.75M vs 8.8M people). The Mayor's task force recommended a downtown rush-hour fee in 2026 without an estimate.", s:["nyc", "tffinal"]},
-  {id:"svct", g:"else", sub:"Needs a state law", kind:"rec", who:"cons", t:"Sales tax on services", type:"opts", opts:[["No", 0], ["Low", 78], ["High", 305]], mayor:0,
+  {id:"cong", g:"state", sub:"Needs a state law", kind:"rec", who:"drive", t:"Downtown congestion charge, like New York", type:"opts", opts:[["No", 0], ["$3 fee", 750]], mayor:0,
+   info:"A fee to drive into the central area at busy times. New York's raised about $550 million in its first year (2025) and cut traffic into the zone 11%. The Metropolitan Planning Council estimates a $3 fee to enter Chicago's urban core could raise about $750 million a year, and says the state would need to authorize it (with federal approval where highways are involved). MPC proposed spending it on transit and roads; counting it toward the city budget assumes the state law would allow that. The Mayor's task force recommended a downtown rush-hour fee in 2026.",
+   pro:["Cuts traffic and pollution downtown", "Visitors and suburban drivers pay, not just residents"], con:["Needs Springfield and federal sign-off", "Businesses downtown worry it keeps shoppers away"], s:["mpc_cong", "nyc", "tffinal"]},
+  {id:"svct", g:"state", sub:"Needs a state law", kind:"rec", who:"cons", t:"Sales tax on services", type:"opts", opts:[["No", 0], ["Low", 78], ["High", 305]], mayor:0,
    info:"Illinois taxes goods but few services (haircuts, repairs, streaming). Most states tax more services. The city's share if the state widened the tax, from the task force.", s:["tf"]},
-  {id:"lgdf", g:"else", sub:"Needs a state law", kind:"rec", who:"state", t:"Get back the state's old income tax share", type:"opts", opts:[["No", 0], ["Low", 35], ["High", 250]], mayor:0,
+  {id:"lgdf", g:"state", sub:"Needs a state law", kind:"rec", who:"state", t:"Get back the state's old income tax share", type:"opts", opts:[["No", 0], ["Low", 35], ["High", 250]], mayor:0,
    info:"Illinois shared 10% of its income tax with cities before 2011; it shares 6.47% of individual income tax now. Restoring it would pay Chicago up to $250 million, from other state spending. Task force estimate.", s:["tf"]},
-  {id:"bch", g:"else", sub:"Needs a state law", kind:"rec", who:"home", t:"Higher transfer tax on $1M+ sales (Bring Chicago Home)", type:"sw", amt:100, mayor:0,
-   info:"Supporters expected more than $100 million a year. Voters rejected it 53% to 47% in 2024. Big-sale taxes like it slowed apartment building in Los Angeles, so it trades budget money for fewer homes.", s:["globest"]},
+  {id:"bch", g:"state", kind:"rec", who:"home", sub:"Needs a citywide vote", t:"Higher transfer tax on $1M+ sales (Bring Chicago Home)", type:"sw", amt:100, mayor:0,
+   info:"State law says a city can only raise its transfer tax if voters approve it in a referendum. Supporters expected more than $100 million a year. Voters rejected it 53% to 47% in 2024. Big-sale taxes like it slowed apartment building in Los Angeles, so it trades budget money for fewer homes.", s:["globest", "rett_law"]},
   {id:"inv", g:"add", kind:"cost", who:"none", t:"Fund the Mayor's new programs", type:"sw", amt:131.5, mayor:1, info:"Homelessness prevention ($30M), library subsidy ($30.9M), 40,000 summer youth jobs ($24M), streets and sanitation ($14.5M) and others ($32.1M).", s:["forecast", "release"]},
   {id:"adj", g:"add", kind:"cost", who:"none", t:"Cost changes since the forecast", type:"sw", amt:36.1, mayor:1, info:"Budget adjustments the Mayor's plan made after the September forecast.", s:["forecast"]},
 ];
@@ -453,13 +550,14 @@ function deptInfo(d){
   $("toCmp").onclick = () => { $("infoDlg").close(); cmpMode = "one"; cmpDept = d.id; $("cmpSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x.dataset.k === "one")); renderCmp(); $("cmpCard").scrollIntoView({behavior:"smooth", block:"start"}); };
 }
 function totals(){
-  let rec = 0, one = 0, cost = 0, back = 0, more = 0; const by = {}, gave = {};
+  let rec = 0, one = 0, cost = 0, back = 0, more = 0, state = 0; const by = {}, gave = {};
+  for (const l of L) if (l.g === "state"){ const a = amt(l); if (a > 0) state += a; }
   const add = (a, kind, who) => { if (!a) return; if (kind === "cost"){ cost += a; more += a; return; }
     if (a < 0){ cost -= a; back -= a; gave[who] = (gave[who] || 0) - a; return; }
     if (kind === "rec") rec += a; else one += a; by[who] = (by[who] || 0) + a; };
   for (const l of L){ if (l.type === "income"){ const b = incBy(); add(b.mid, "rec", "mid"); add(b.rich, "rec", "rich"); } else add(amt(l), l.kind, l.who); }
   if (DATA) for (const id in dpct){ const a = dAmt(id); if (a < 0){ cost -= a; more -= a; } else add(a, "rec", "svc"); }
-  return {rec, one, cost, back, more, by, gave, need:GAP + cost, left:GAP + cost - rec - one};
+  return {rec, one, cost, back, more, by, gave, state, need:GAP + cost, left:GAP + cost - rec - one};
 }
 function update(){ renderTabs(); renderLevers(); renderBar(); renderResult(); save(); }
 function renderBar(){
@@ -477,6 +575,7 @@ function renderResult(){
   const T = totals(), left = T.left;
   $("verdict").className = "verdict" + (left <= 0.05 ? " ok" : "");
   $("verdict").textContent = left > 0.05 ? `${m(left)} to go. The budget has to balance before the Council can pass it.` :
+    T.state > 0.05 && T.state > -left ? `Balanced on paper, but only if Springfield or the voters approve ${m(T.state)} of it.` :
     T.one > 0.05 ? `Balanced, but ${m(T.one)} of it disappears next year.` : "Balanced with lasting fixes. Next year starts even.";
   const tot = Object.values(T.by).reduce((a, b) => a + b, 0), rows = Object.entries(T.by).sort((a, b) => b[1] - a[1]);
   $("whoLead").innerHTML = tot ? "<b>Who pays for your plan</b>" : "Nothing picked yet. Start on the left, or load the Mayor's plan to see how the city proposes to do it.";
@@ -490,6 +589,7 @@ function renderResult(){
     <div><b>${m(T.one)}</b><span>one-time money: 2028 starts at least this far behind</span></div>
     <div><b>${hb ? (hb > 0 ? "+" : "") + money(hb) : "$0"}</b><span>a year for a typical homeowner (city part of a $4,457 bill)</span></div>
     <div><b>${T.back + T.more ? m(T.back + T.more) : "$0"}</b><span>tax cuts and new spending you added to the gap</span></div>`;
+  renderMe(); renderNext(); renderRate(); renderMis(); renderVotes();
 }
 /* where the 2027 Corporate Fund goes */
 let DATA = null;
@@ -579,6 +679,191 @@ function niceStep(mx){ const r = mx / 5, p = Math.pow(10, Math.floor(Math.log10(
 function axisM(v){ return v >= 1e9 ? "$" + (v / 1e9).toFixed(v % 1e9 ? 1 : 0) + "B" : "$" + Math.round(v / 1e6) + "M"; }
 $("cmpSeg").querySelectorAll("button").forEach(b => b.onclick = () => { cmpMode = b.dataset.k; $("cmpSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderCmp(); });
 $("cmpMoney").querySelectorAll("button").forEach(b => b.onclick = () => { cmpReal = b.dataset.k === "real"; $("cmpMoney").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderCmp(); });
+/* ---- What it costs you: a rough yearly estimate for one household ---- */
+const HH = 1282248 - 109793;          // Chicago households: homes minus vacant homes (Census ACS 2024)
+const PICKUP_HH = 600000;             // households in 1–4-unit buildings that get city garbage pickup (City of Chicago)
+const STICKER = 100.17;               // small passenger car city sticker, 2024 (Civic Federation)
+const GALLONS = 450;                  // gallons a year for one car: about 11,000 miles at 25 mpg (assumption)
+const RESIDENT_SHARE = 0.6;           // share of everyday consumer taxes paid by Chicago households, not visitors or businesses (assumption)
+const UTIL_HOME_SHARE = 0.5;          // share of utility taxes paid by households (assumption)
+const RENT_PASS = 0.5;                // share of a property tax change a renter sees in rent (assumption)
+const me = {home:"rent", car:0, bldg:1, inc:75000};
+function taxable(x){ return 0.3 * Math.min(x, 1e5) + 0.1 * Math.max(0, x - 1e5); }   // spending on things the sales tax covers (assumption)
+const CONSUMER = ["amuse", "soda", "bag", "bet", "liq", "pack", "other", "ride", "svct"];
+function meLines(){
+  const L_ = id => L.find(l => l.id === id), a = id => amt(L_(id)), out = [];
+  const pt = CITY_SHARE_BILL * a("ptax") / LEVY;
+  if (pt) out.push([me.home === "own" ? "Property tax (city part of a typical bill)" : "Property tax, passed on in rent (assumes half)", me.home === "own" ? pt : pt * RENT_PASS]);
+  if (st.inc.some(Boolean)) out.push(["City income tax", taxOn(me.inc), "needs Springfield"]);
+  const dS = [-0.25, 0, 0.25, 0.5][st.sales]; if (dS) out.push([`City sales tax (${dS > 0 ? "+" : ""}${dS} points)`, taxable(me.inc) * dS / 100]);
+  if (me.car){ const dG = [5, 8, 10, 13][st.fuel] - 8; if (dG) out.push([`Gas tax (${dG > 0 ? "+" : ""}${dG}¢ on about ${GALLONS} gallons)`, GALLONS * dG / 100]);
+    const dK = [-0.25, 0, 0.25, 0.5][st.stick]; if (dK) out.push(["City sticker", STICKER * dK]); }
+  if (me.bldg && a("garb")) out.push(["Garbage fee", a("garb") * 1e6 / PICKUP_HH]);
+  if (a("util")) out.push(["Utility and phone taxes", a("util") * 1e6 * UTIL_HOME_SHARE / HH]);
+  const c = CONSUMER.reduce((t, id) => t + a(id), 0); if (c) out.push(["Taxes on tickets, drinks, bags, bets and rides", c * 1e6 * RESIDENT_SHARE / HH, CONSUMER.some(id => L_(id).g === "state" && a(id)) ? "partly needs Springfield" : ""]);
+  return out;
+}
+function renderMe(){
+  const ls = meLines(), tot = ls.reduce((t, l) => t + l[1], 0);
+  $("meTotal").className = "metotal " + (tot > 0.5 ? "up" : tot < -0.5 ? "down" : "");
+  $("meTotal").textContent = Math.abs(tot) < 0.5 ? "About the same as today" : `${tot > 0 ? "About " + money(tot) + " more" : "About " + money(-tot) + " less"} a year`;
+  $("meList").innerHTML = ls.length ? ls.map(([t, v, n]) => `<div><span>${t}${n ? `<small>${n}</small>` : ""}</span><em>${v >= 0 ? "+" : ""}${money(v)}</em></div>`).join("") +
+    `<div><span class="fine">Taxes on businesses, hotels and parking aren't counted here, though some reach you through prices. Service cuts don't show up as dollars.</span></div>` : `<p class="fine">Nothing you've picked changes what a household like yours pays directly.</p>`;
+}
+function bindSeg(id, key, num){ $(id).querySelectorAll("button").forEach(b => b.onclick = () => { me[key] = num ? +b.dataset.k : b.dataset.k; $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderMe(); }); }
+bindSeg("meHome", "home"); bindSeg("meCar", "car", 1); bindSeg("meBldg", "bldg", 1);
+$("meInc").onchange = e => { me.inc = +e.target.value; renderMe(); };
+$("meInfo").onclick = () => info("How this is estimated", `<p>Every number here is rough. It applies your choices to one household:</p><ul>
+  <li>Property tax: the city's part of a typical bill is about a fifth of the $4,457 median (Cook County Treasurer). Renters are assumed to see half of a change in rent (an assumption).</li>
+  <li>Income tax: your income, run through the rates you set.</li>
+  <li>Sales tax: assumes 30% of income up to $100,000, and 10% above, goes to things the sales tax covers (an assumption).</li>
+  <li>Gas: about ${GALLONS} gallons a year (an assumption: 11,000 miles at 25 mpg). Sticker: $100.17 for a small car (Civic Federation, 2024).</li>
+  <li>Garbage fee: the change spread over the city's ~600,000 pickup households (City of Chicago).</li>
+  <li>Utility and everyday taxes: the change spread over Chicago's ${HH.toLocaleString("en-US")} households (Census ACS 2024), with households paying half of utility taxes and 60% of everyday taxes (assumptions; businesses and visitors pay the rest).</li></ul>
+  <p class="src">Sources: ${src("treas", "cf_cons", "dss", "acs_units")}</p>`);
+
+/* ---- The next two years: the city's base forecast gaps, minus your lasting fixes ---- */
+const FCST = {2027:882.4, 2028:942.7, 2029:1023.6}, FCST_GOOD = {2028:575.6, 2029:441.7};   // 2027 Budget Forecast, base and positive outlooks
+function renderNext(){
+  const T = totals(), lasting = T.rec - T.cost;   // recurring fixes minus tax cuts and new spending (one-time money drops out)
+  const cell = (y, g, sub) => `<div><b class="${g > 0.05 ? "bad" : "ok"}">${g > 0.05 ? m(g) + " short" : g < -0.05 ? m(-g) + " to spare" : "Balanced"}</b><span>${sub}</span></div>`;
+  $("nextBody").innerHTML = `<div class="nexty">${cell(2027, T.left, "2027, this budget")}${cell(2028, FCST[2028] - lasting, `2028 (city forecast: ${m(FCST[2028])} gap)`)}${cell(2029, FCST[2029] - lasting, `2029 (forecast: ${m(FCST[2029])})`)}</div>
+    <p class="fine" style="margin-top:8px">${T.one > 0.05 ? `Your ${m(T.one)} in one-time money is gone after 2027. ` : ""}${T.cost > 0.05 ? `Tax cuts and new spending cost ${m(T.cost)} every year. ` : ""}In a stronger economy the city expects ${m(FCST_GOOD[2028])} and ${m(FCST_GOOD[2029])} gaps instead.</p>`;
+}
+$("nextInfo").onclick = () => info("The next two years", `<p>The city's August 2026 forecast projects the main budget's gap before any fixes: $882.4 million in 2027, $942.7 million in 2028 and $1.02 billion in 2029 in its base case ($575.6 million and $441.7 million in a stronger economy). This card subtracts your lasting fixes from each year, assuming they hold their value, and adds back your tax cuts and new spending. One-time money counts only in 2027. Borrowing for settlements also adds interest in later years, which isn't counted here.</p><p class="src">Source: ${src("fc27")}</p>`);
+
+/* ---- What the rating agencies would notice: their own stated concerns, checked against your plan ---- */
+function rateFlags(){
+  const T = totals(), a = id => amt(L.find(l => l.id === id)), f = [];
+  if (T.left > 0.05) f.push(["bad", "It doesn't balance. Every agency watches whether the city can pass a budget on time."]);
+  if (T.one > 100) f.push(["bad", `Leans on ${m(T.one)} in one-time money. KBRA's downgrade cited "continued reliance on one-time budgetary fixes"; S&P cited the same.`]);
+  else if (T.one < 0.05 && T.left <= 0.05) f.push(["good", "No one-time money: every dollar keeps working next year."]);
+  if (a("resv")) f.push(["bad", "Spends reserves. KBRA lists using the Skyway and parking meter reserves to fill gaps as a reason it could downgrade."]);
+  if (a("bonds")) f.push(["bad", "Borrows to pay settlements. KBRA lists borrowing for things other than buildings and equipment as a downgrade risk."]);
+  if (a("pens")) f.push(["bad", "Cuts the extra pension payment. S&P pointed to exactly this when it turned Chicago's outlook negative."]);
+  if (T.rec - T.cost >= FCST[2028] - 0.05) f.push(["good", "Lasting fixes cover next year's gap too. KBRA says long-term revenue and spending reforms could lead to an upgrade."]);
+  if (T.state > 0.05) f.push(["bad", `Counts on ${m(T.state)} that needs Springfield or voters. Agencies rate what's law, not what's hoped for.`]);
+  return f;
+}
+function renderRate(){
+  const f = rateFlags(), bad = f.filter(x => x[0] === "bad").length, good = f.filter(x => x[0] === "good").length;
+  const v = bad >= 3 ? "Expect more downgrade pressure" : bad ? "More of the same: negative outlooks stay" : good ? "This is what the agencies have asked for" : "Nothing they'd flag either way";
+  $("rateBody").innerHTML = `<p class="rverdict">${v}</p><div class="rflags">${f.map(([k, t]) => `<div class="rflag ${k}"><i>${k === "good" ? "✓" : "!"}</i><span>${t}</span></div>`).join("")}</div>`;
+}
+$("rateInfo").onclick = () => info("Chicago's credit ratings", `<p>Early 2026: S&P rates Chicago's general obligation bonds BBB with a negative outlook (downgraded in January 2025); Fitch cut them to BBB+ in February 2026; KBRA cut them to BBB the same month, with negative outlooks. The city says it remains investment grade with all four major agencies. BBB is two steps above junk.</p><p>This card checks your plan against what the agencies themselves have said would hurt or help. It's our reading, not a prediction.</p><p class="src">Sources: ${src("sp_out", "fitch", "kbra")}</p>`);
+
+/* ---- Missions ---- */
+const MIS = [
+  ["bal", "Balance it", "Close the whole gap.", T => T.left <= 0.05],
+  ["noprop", "Leave property taxes alone", "Balance it without raising the property tax.", T => T.left <= 0.05 && amt(L[0]) <= 0],
+  ["noone", "No gimmicks", "Balance it with no one-time money at all.", T => T.left <= 0.05 && T.one < 0.05],
+  ["local", "No help needed", "Balance it with nothing from Springfield or the voters.", T => T.left <= 0.05 && T.state < 0.05],
+  ["cuts", "Cut your way there", "Balance it with no new taxes or fees.", T => T.left <= 0.05 && L.every(l => l.kind === "cost" || l.g === "dept" || l.g === "one" || amt(l) <= 0)],
+  ["rich", "Tax the top", "Balance it where every new tax falls on people earning over $200,000 or businesses.", T => T.left <= 0.05 && Object.keys(T.by).every(k => ["rich", "biz", "city", "svc", "none", "workers"].includes(k))],
+  ["cut", "Cut taxes and still balance", "Lower at least one tax, use no one-time money, and still balance.", T => T.left <= 0.05 && T.back > 0.05 && T.one < 0.05],
+  ["pass", "Get 26 votes", "Balance it with a plan that would likely pass the Council.", T => T.left <= 0.05 && voteCount() >= 26],
+  ["aaa", "Make the agencies happy", "Balance it with nothing the rating agencies would flag.", T => T.left <= 0.05 && !rateFlags().some(f => f[0] === "bad")],
+];
+let MDONE = {}; try { MDONE = JSON.parse(localStorage.getItem("sc-budget-missions") || "{}"); } catch (e){}
+function renderMis(){
+  const T = totals(); let changed = false;
+  for (const [k, , , ok] of MIS) if (!MDONE[k] && ok(T)){ MDONE[k] = 1; changed = true; }
+  if (changed) try { localStorage.setItem("sc-budget-missions", JSON.stringify(MDONE)); } catch (e){}
+  $("misBody").innerHTML = MIS.map(([k, t, d, ok]) => `<div class="mis ${MDONE[k] ? "done" : ""}"><span class="medal">${MDONE[k] ? "★" : ""}</span><div><b>${t}</b><span>${d}${MDONE[k] && !ok(T) ? " Done before; your current plan doesn't." : ""}</span></div></div>`).join("");
+}
+
+/* ---- Would it pass? Each alderperson starts from how they voted on the 2026 budget, then reacts to what they've voted against ---- */
+let VOTE = null;
+function voteCount(){ return VOTE ? voteEst().yes : 0; }
+const VGROUP = {A:"backed both the Mayor's 2025 budget and the Council's 2026 budget", B:"voted against the Mayor's tax-heavy 2025 budget but for the Council's 2026 budget without the head tax",
+  C:"backed the Mayor's 2025 budget but voted against the Council's 2026 budget without his head tax", D:"voted against both"};
+function voteEst(){
+  const T = totals(), a = id => amt(L.find(l => l.id === id)), pt = a("ptax"), head = a("head") > 0, inc = st.inc.some(Boolean);
+  const newTax = L.some(l => l.kind === "rec" && l.g !== "dept" && amt(l) > 0) || head;
+  const rule = {
+    A: [pt < 300, pt >= 300 ? "a $300M+ property tax hike, which all 50 voted down in 2024" : ""],
+    B: [pt <= 0 && !head, head ? "the head tax" : pt > 0 ? "a property tax increase" : ""],
+    C: [head || inc, head || inc ? "" : "no head tax or tax on high earners"],
+    D: [!newTax && pt <= 0, newTax ? "new taxes or fees" : ""],
+  };
+  if (pt >= 300) for (const k of "BCD") rule[k] = [false, "a $300M+ property tax hike, which all 50 voted down in 2024"];
+  const out = VOTE.members.map(mb => ({mb, y:rule[mb.g][0]}));
+  const why = Object.keys(VGROUP).map(g => { const n = VOTE.members.filter(x => x.g === g).length, y = rule[g][0];
+    return `<li><b>${n} ${y ? "likely yes" : "likely no"}</b>: they ${VGROUP[g]}${!y && rule[g][1] ? `; your plan has ${rule[g][1]}` : ""}.</li>`; });
+  return {yes: T.left > 0.05 ? 0 : out.filter(o => o.y).length, out, why};
+}
+function renderVotes(){
+  if (!VOTE){ $("voteBody").innerHTML = `<p class="fine">Roll call data isn't loaded yet.</p>`; return; }
+  const T = totals(), e = voteEst();
+  if (T.left > 0.05){ $("voteBody").innerHTML = `<p class="vtally bad">Not yet</p><p class="fine">The Council can't vote on a budget that doesn't balance.</p>`; return; }
+  $("voteBody").innerHTML = `<p class="vtally ${e.yes >= 26 ? "ok" : "bad"}">${e.yes >= 26 ? "Likely passes" : "Likely fails"}, about ${e.yes} to ${50 - e.yes}</p>
+    <div class="seats" aria-hidden="true">${e.out.slice().sort((x, y) => y.y - x.y).map(o => `<i class="${o.y ? "y" : "n"}" title="Ward ${o.mb.ward}: ${o.mb.name}"></i>`).join("")}</div>
+    <ul class="vwhy">${e.why.join("")}</ul>`;
+}
+$("voteInfo").onclick = () => info("How votes are estimated", VOTE ? `<p>Every alderperson is sorted by two real votes: the Mayor's 2025 budget (passed 27–23 in December 2024, with new taxes) and the Council's own 2026 budget (passed 30–18 in December 2025, after it threw out the Mayor's head tax). Then simple rules guess how each group treats your plan:</p><ul>
+  <li>Backed both: yes, unless the property tax goes up $300 million or more, which all 50 voted down in November 2024.</li>
+  <li>Against 2025, for 2026: yes, unless the plan has the head tax or raises the property tax.</li>
+  <li>For 2025, against 2026: yes only if the plan has the head tax or a tax on high earners.</li>
+  <li>Against both: yes only with no new taxes or fees.</li></ul>
+  <p>It's a rough guess built on how they voted, not on what they've said about your plan. Real votes turn on deals, ward projects and who's asking.</p>
+  <p class="src">Roll calls (City Clerk): ${VOTE.sources.map(x => `<a href="${x[1]}" target="_blank" rel="noopener">${x[0]}</a>`).join(", ")}; ${src("wttw26", "nbc")}</p>` : "<p>Loading.</p>");
+
+/* ---- Front page ---- */
+function topMoves(){
+  const T = totals(); const xs = L.filter(l => l.kind !== "cost" && amt(l) > 0).map(l => [l, amt(l)]).sort((a, b) => b[1] - a[1]);
+  return xs.slice(0, 4);
+}
+function frontPage(){
+  const T = totals(), bal = T.left <= 0.05, e = VOTE ? voteEst() : null, mvs = topMoves(), hb = CITY_SHARE_BILL * amt(L[0]) / LEVY;
+  const lasting = T.rec - T.cost, g28 = FCST[2028] - lasting;
+  const head = !bal ? `City still ${m(T.left)} short as budget deadline nears` : e && e.yes < 26 ? `Budget balances, but falls short in Council, ${e.yes}–${50 - e.yes}` :
+    `${e ? "Council passes" : "City balances"} ${T.state > 0.05 ? "a budget built on Springfield's help" : T.one < 0.05 ? "a budget with no one-time gimmicks" : "the 2027 budget"}${e ? `, ${e.yes}–${50 - e.yes}` : ""}`;
+  const taxes = T.rec + T.one, newTax = L.filter(l => (l.g === "tax" || l.g === "else" || l.g === "state") && amt(l) > 0).reduce((t, l) => t + amt(l), 0);
+  const deck = !bal ? `Even with the choices so far, the main budget can't pass until the last ${m(T.left)} is found.` :
+    `${newTax ? `${m(newTax)} in new taxes and fees` : "No new taxes"}, ${T.one ? `${m(T.one)} in one-time money` : "no one-time money"}${T.back ? `, and ${m(T.back)} in tax cuts` : ""}. Next year's gap: ${g28 > 0.05 ? m(g28) : "none"}.`;
+  const story = [
+    `The plan ${bal ? "closes" : "chips away at"} the $882.4 million hole in the city's main budget${mvs.length ? `, leaning hardest on ${mvs.slice(0, 3).map(([l, v]) => `“${l.t}” (${m(v)})`).join(", ")}` : ""}.`,
+    Object.keys(T.by).length ? `Who pays: ${Object.entries(T.by).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${WHO[k][0].toLowerCase()}, ${m(v)}`).join("; ")}.` : "",
+    `For a renter making $75,000 with no car, it works out to about ${(() => { const s0 = {...me}; Object.assign(me, {home:"rent", car:0, bldg:1, inc:75000}); const t = meLines().reduce((a, l) => a + l[1], 0); Object.assign(me, s0); return Math.abs(t) < 0.5 ? "nothing" : money(Math.abs(t)) + (t > 0 ? " more" : " less"); })()} a year.`,
+    rateFlags().filter(f => f[0] === "bad").length ? `What the rating agencies would notice: ${rateFlags().filter(f => f[0] === "bad").map(f => f[1].split(".")[0]).join(". ")}.` : `Rating agencies have asked for budgets like this one.`,
+  ].filter(Boolean);
+  $("paper").innerHTML = `<div class="pbar"><span>Chicago, ${new Date().toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"})}</span><span>Budget edition</span><span>Shape Chicago · not a real newspaper</span></div>
+    <div class="nameplate">The Chicago Budget</div><div class="rules"></div>
+    <h1>${head}</h1><p class="deck">${deck}</p>
+    <div class="pcols"><div class="pstory">${story.map(p => `<p>${p}</p>`).join("")}</div>
+    <div class="box"><h3>By the numbers</h3><table>
+      <tr><td>Gap to close (incl. new spending)</td><td>${m(T.need)}</td></tr><tr><td>Closed</td><td>${m(Math.min(T.need, T.rec + T.one))}</td></tr>
+      <tr><td>Lasting fixes</td><td>${m(T.rec)}</td></tr><tr><td>One-time money</td><td>${m(T.one)}</td></tr>
+      <tr><td>Tax cuts and new spending</td><td>${m(T.cost)}</td></tr>
+      <tr><td>Typical homeowner, per year</td><td>${hb ? (hb > 0 ? "+" : "") + money(hb) : "$0"}</td></tr>
+      <tr><td>2028 gap</td><td>${g28 > 0.05 ? m(g28) : "None"}</td></tr>
+      ${e && bal ? `<tr><td>Council vote (estimate)</td><td>${e.yes}–${50 - e.yes}</td></tr>` : ""}
+      ${T.state > 0.05 ? `<tr><td>Needs Springfield or voters</td><td>${m(T.state)}</td></tr>` : ""}</table></div></div>
+    <div class="pbtns"><button class="sc-btn" id="pCopy">Copy link</button><button class="sc-btn" id="pImg">Save image</button><button class="sc-btn sc-primary" id="pClose">Back to the budget</button></div>`;
+  $("pClose").onclick = () => $("paperDlg").close();
+  $("pCopy").onclick = async () => { try { await navigator.clipboard.writeText(location.href); $("pCopy").textContent = "Copied"; } catch (e){ $("pCopy").textContent = "Copy failed"; } };
+  $("pImg").onclick = () => shareCard(head, deck);
+  $("paperDlg").showModal();
+}
+function shareCard(head, deck){
+  const c = document.createElement("canvas"); c.width = 1200; c.height = 630; const x = c.getContext("2d");
+  x.fillStyle = "#fbfaf6"; x.fillRect(0, 0, 1200, 630);
+  x.fillStyle = "#15181c"; x.font = "800 64px 'Big Shoulders Display', sans-serif"; x.textAlign = "center"; x.fillText("The Chicago Budget", 600, 96);
+  x.strokeStyle = "#41b6e6"; x.lineWidth = 3; [118, 128].forEach(y => { x.beginPath(); x.moveTo(60, y); x.lineTo(1140, y); x.stroke(); });
+  x.textAlign = "left"; x.font = "800 56px 'Big Shoulders Display', sans-serif";
+  const wrap = (t, y, lh, max, font) => { x.font = font; const w = t.split(" "); let line = ""; for (const word of w){ const tt = line ? line + " " + word : word; if (x.measureText(tt).width > max){ x.fillText(line, 60, y); y += lh; line = word; } else line = tt; } x.fillText(line, 60, y); return y + lh; };
+  let y = wrap(head, 210, 60, 1080, "800 56px 'Big Shoulders Display', sans-serif");
+  x.fillStyle = "#333"; y = wrap(deck, y + 10, 36, 1080, "400 28px 'Source Serif 4', Georgia, serif");
+  x.fillStyle = "#2b5da0"; x.font = "600 24px 'Instrument Sans', sans-serif"; x.fillText("Balance it yourself: Shape Chicago", 60, 590);
+  x.fillStyle = "#e4002b"; x.font = "700 24px sans-serif"; x.textAlign = "right"; x.fillText("★", 1140, 590);
+  c.toBlob(async b => {
+    const file = new File([b], "chicago-budget.png", {type:"image/png"});
+    if (navigator.canShare && navigator.canShare({files:[file]})){ try { await navigator.share({files:[file], title:"My Chicago budget", url:location.href}); return; } catch (e){} }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "chicago-budget.png"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  });
+}
+$("finish").onclick = frontPage;
+
 /* save / share: the plan lives in the URL hash */
 function save(){
   const code = L.map(l => l.type === "income" ? "1" + st.inc.join("") : st[l.id]).join(".") + "~" + Object.entries(dpct).filter(([, p]) => p).map(([k, p]) => k + ":" + p).join(",");
@@ -598,7 +883,7 @@ L.forEach(l => st[l.id] = startOf(l));
 $("histSeg").querySelectorAll("button").forEach(b => b.onclick = () => { histMode = b.dataset.k; $("histSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderHist(); });
 $("srcs").innerHTML = `Numbers are millions of dollars for the 2027 Corporate Fund unless noted. Sources: ${src("forecast", "release", "data", "tf", "bga", "ipi", "budgit", "treas", "cf")}. Past budgets are what the City Council passed (Budget Ordinance data); pensions before 2024 are the city's own historic contribution figures. "Today's dollars" uses the U.S. consumer price index (BLS CPI-U). Position counts spread a change evenly over a department: the share of its Corporate Fund money that pays people, divided by its average 2027 salary (an assumption; benefits aren't counted). Task force figures are its 2025 estimates for 2026. This is a teaching tool, not the city's budget model: the options interact in ways it doesn't capture.`;
 load();
-fetch("data/budget.json").then(r => r.json()).then(d => { DATA = d; renderWhere(); renderHist(); renderCmp(); update(); });
+fetch("data/budget.json").then(r => r.json()).then(d => { DATA = d; VOTE = d.votes || null; renderWhere(); renderHist(); renderCmp(); update(); });
 update();
 </script>
 </body>
