@@ -1087,6 +1087,9 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 .hgo b{color:var(--sc-ink);font-weight:600}
 .hstat b{font-size:20px}
 .hacts{display:flex;align-items:center;gap:8px}
+#reset svg{display:none;width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:360px){ .secbtns{gap:5px !important;padding-inline:10px !important} .secbtns button{font-size:12.5px !important} }
+@media (max-width:380px){ .hacts #reset{padding:0 !important;width:34px;justify-content:center} .hacts #reset svg{display:block} .hacts #reset span{display:none} }
 .hbar .play{flex-direction:column;align-items:stretch;gap:4px;margin:0 !important;padding:0 !important;flex:none;width:208px}
 .hbar .play button{height:40px;border-radius:20px;background:var(--sc-navy);font:600 14.5px var(--sc-font);letter-spacing:0;gap:8px;padding:0 16px}
 .hbar .play button:hover{background:var(--sc-navy2)}
@@ -1187,6 +1190,12 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
   .hacts .sc-seg{order:3;font-size:12.5px} .hacts .sc-seg button{padding:6px 10px}
   #hardBtn{order:4;margin:0 auto 0 0}
   .hacts #reset{order:5;min-height:32px;padding:0 12px;font-size:13px}
+  /* one row for mode + Start over, so the map keeps the height (Nov 8) */
+  .hacts .ml{display:none}
+  .hacts #reset{margin-left:auto}
+  #hardBtn{margin:0 !important}
+  .secbtns button{height:58px !important;gap:3px !important;font-size:14px !important}
+  .secbtns button svg{width:22px !important;height:22px !important}
   .hsep,.hrent,.hpace,.hbar #affLine,.hbar .load{display:none !important}
 
 .intro .card{font-family:var(--sc-font);border-radius:20px}
@@ -1486,7 +1495,7 @@ body.playing #sky{opacity:1}
     <div class="sc-push hacts">
       <div class="sc-seg" role="radiogroup" aria-label="Difficulty"><button type="button" role="radio" aria-checked="true" id="modeNormal">Normal</button><button type="button" role="radio" aria-checked="false" id="modeWard">Ward<span class="ml"> mode</span></button><button type="button" role="radio" aria-checked="false" class="hard" id="modeHard">Hard<span class="ml"> mode</span></button></div>
       <button type="button" class="ib" id="hardBtn" aria-label="What's hard mode?">i</button>
-      <button class="sc-btn" id="reset" type="button">Start over</button>
+      <button class="sc-btn" id="reset" type="button" aria-label="Start over"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg><span>Start over</span></button>
     </div>
     <div class="play" id="playRow">
       <button type="button" id="playBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Simulate 15 years</span></button>

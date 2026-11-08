@@ -82,6 +82,7 @@ h2{font-family:var(--f-display);font-weight:800;font-size:30px;line-height:1.05;
 .split i{display:block;height:100%}
 /* map + tables */
 .two{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
+.two > *{min-width:0}
 #map{width:100%;aspect-ratio:3/4;display:block;background:var(--table);border:1px solid var(--line);touch-action:manipulation}
 .tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;font-size:12.5px;padding:6px 8px;max-width:260px;display:none;z-index:9;line-height:1.35}
 table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
@@ -115,7 +116,7 @@ footer{margin-top:40px;border-top:2px solid var(--line);padding:18px 0 40px;font
 .err{padding:40px 0;font-family:var(--f-serif)}
 @media (max-width:860px){
   .wrap{padding:0 16px}
-  .two{grid-template-columns:1fr}
+  .two{grid-template-columns:minmax(0,1fr)}
   .pipe{grid-template-columns:1fr}
   .step{border-right:0;border-bottom:1px solid var(--line)}
   .step:last-child{border-bottom:0}

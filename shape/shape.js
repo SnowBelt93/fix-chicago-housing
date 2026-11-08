@@ -84,7 +84,8 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     n.classList.toggle("more-r", over && n.scrollLeft + n.clientWidth < n.scrollWidth - 4); n.classList.toggle("more-l", over && n.scrollLeft > 4); }
   function f(){ const n = document.querySelector(".sc-nav"), a = n && n.querySelector('[aria-current="page"]'); if (!n) return;
     n.addEventListener("scroll", edges, {passive:true}); addEventListener("resize", edges);
-    if (a && n.scrollWidth > n.clientWidth) n.scrollLeft = a.offsetLeft - n.offsetLeft - (n.clientWidth - a.offsetWidth) / 2; edges(); }
+    // only scroll when the current tab would be cut off, and then just enough to show it (so "Simulators" stays in view when it can)
+    if (a && n.scrollWidth > n.clientWidth){ const L = a.offsetLeft - n.offsetLeft, R = L + a.offsetWidth; if (R > n.clientWidth - 8) n.scrollLeft = R - n.clientWidth + 16; } edges(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 
 /* Support and local sponsors. Settings live in /shape/site.json (no code change needed to switch them on):

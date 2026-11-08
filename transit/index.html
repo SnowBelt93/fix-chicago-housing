@@ -181,7 +181,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 .dlg table{border-collapse:collapse;width:100%;font-size:13.5px}
 .dlg td,.dlg th{text-align:left;padding:6px 8px 6px 0;border-bottom:1px solid #eef0f2;vertical-align:top}
 @media (max-width:859px){
-  aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
+  aside#panel{left:0;right:0;top:auto;bottom:0;width:auto;max-height:46vh;border-radius:22px 22px 0 0;padding-bottom:env(safe-area-inset-bottom)}
   aside#panel{transition:max-height .3s cubic-bezier(.2,.8,.2,1)}
   aside#panel.tall{max-height:78vh}
   aside#panel.peek{max-height:calc(64px + env(safe-area-inset-bottom))}
@@ -288,6 +288,7 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
   #tbar .sc-push{grid-column:3;justify-self:end}
   #tbar .sc-btn{min-height:34px;font-size:13px;padding:0 12px}
   #tbar .tempty{grid-column:1 / 3;font-size:13px}
+  #tbar.empty{display:none}   /* nothing to add up yet: give the map the room */
   #layers{top:calc(var(--topH) + 8px)}
   #legend{top:calc(var(--topH) + 56px)}
   #hint{top:calc(var(--topH) + 60px)}
@@ -2195,7 +2196,7 @@ function padMap(){ // on phones the sheet covers the bottom of the map: keep the
   const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
   document.documentElement.style.setProperty("--sheet", h + "px");
   // the layer pills sit 8 px under the metrics bar (they move a frame later, so measure the bar, not the pills)
-  const topH = ($("tbar").getBoundingClientRect().bottom || 110) + 8 + ($("layers") ? $("layers").offsetHeight : 0);
+  const topH = topEdge() + 8 + ($("layers") ? $("layers").offsetHeight : 0);
   const pad = phone ? {top:Math.round(topH + 8), bottom:Math.round(h), left:0, right:0} : {top:0, bottom:0, left:Math.round(($("panel").getBoundingClientRect().right || 400) + 0), right:0}, key = JSON.stringify(pad);
   if (key === padMap.last) return;
   // setPadding stops a camera move: while the map is flying somewhere, wait until it lands
@@ -2413,7 +2414,9 @@ function renderMyLines(){
   for (const b of el.querySelectorAll(".sw")) b.onclick = () => { const L = lines.find(x => x.id === b.dataset.id); L.off = !L.off; save(); renderPlan(); renderMyLines(); renderBar(); };
 }
 // the plan's combined effects: a bar along the map (desktop), a strip at the top of the sheet (phones)
-{ const bar = document.getElementById("tbar"), setTop = () => document.documentElement.style.setProperty("--topH", Math.round(bar.getBoundingClientRect().bottom) + "px");
+function topEdge(){ const b = document.getElementById("tbar"), r = b.getBoundingClientRect(); if (r.height) return r.bottom;
+  const h = document.querySelector(".sc-head"); return h ? h.getBoundingClientRect().bottom : 110; }   // phones hide the bar while the plan is empty
+{ const bar = document.getElementById("tbar"), setTop = () => document.documentElement.style.setProperty("--topH", Math.round(topEdge()) + "px");
   setTop(); if (window.ResizeObserver) new ResizeObserver(setTop).observe(bar); addEventListener("resize", setTop); }
 // the metrics bar grows a row once the plan has lines; keep the map's top padding clear of it
 { const rb = renderBar; renderBar = function(){ rb.apply(this, arguments); requestAnimationFrame(padMap); }; }
@@ -2443,8 +2446,10 @@ function renderFreshBar(bar){
 function renderBar(){   // the plan's effects, in the shared Shape Chicago metrics bar
   const A = active(), bar = $("tbar"), mini = $("planMini");
   mini.className = "hide"; mini.innerHTML = "";
+  bar.classList.remove("empty");
   if (FRESH && NET){ renderFreshBar(bar); return; }
   if (!A.length || !NET){
+    bar.classList.add("empty");
     bar.innerHTML = `<div class="sc-m tplan"><span>Your plan</span><b>No lines yet</b></div><span class="sc-sep"></span><span class="tempty">Your plan's riders, cost, cars and CO₂ add up here.</span><div class="sc-push">${NET ? modeSeg() : ""}<button class="sc-btn" type="button" disabled>Start over</button></div>`;
     bindMode(bar);
     return;
