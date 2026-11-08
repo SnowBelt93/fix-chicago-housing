@@ -73,7 +73,7 @@ def shortage():
     block(-22, 2, 16, 13, 5, "lt6")
     crane(-12, 6, 0, 19, 14, ang=math.radians(-160), m=mat("star", rough=0.45))
     for x in (6, 20, 34): bungalow(x, 1.5, w=9)
-    for k in range(22): person(-12 + k * 1.75, -9.2 + (k % 2) * 0.5)
+    for k in range(16): person(-12 + k * 2.4, -9.2 + (k % 2) * 0.5, h=1.4)
 
 def rents():
     base()
@@ -92,7 +92,7 @@ def prerogative():
     box(0, -5.5, 1.2, 26, 0.1, 0.12, "star", bevel=0); box(0, 8.5, 1.2, 26, 0.1, 0.12, "star", bevel=0)
     box(-6, -6.5, 0, 0.12, 0.12, 2.6, "steel", bevel=0); box(-6, -6.55, 2.2, 3.2, 0.06, 1.8, "navy", bevel=0.04)   # blank notice board
     crane(10, 3, 0, 18, 12, ang=math.radians(200), m=mat("#9aa3ad", rough=0.5))
-    person(4, -8.5, "navy", 1.3)
+    person(4, -8.5, "navy", 1.8)
 
 def aro():
     base()
@@ -147,23 +147,38 @@ def riders():
     box(-6, 1, 0, 40, 6, 1.1, "stone", bevel=0.1)                                            # platform
     for x in (-24, 12): box(x, 3.4, 1.1, 0.3, 0.3, 3.6, "steel", bevel=0)
     box(-6, 3.4, 4.6, 40, 2.6, 0.25, mat("navy", rough=0.5), bevel=0.05)                       # canopy
-    for k in range(26): person(-24 + random.random() * 36, -0.5 + random.random() * 2.5, h=0.95)
+    for k in range(18): person(-24 + random.random() * 36, -0.5 + random.random() * 2.5, h=1.5)
     train(-30, 6.3, 0.1, cars=3, stripe="star")
 
 SCENES = {k: v for k, v in globals().items() if k in ("zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders")}
 
-def build(name, out, style="ink", w=1500, h=500):
+def fit(cam, aspect, margin=1.06):
+    """Frame every mesh: ortho scale and lens shift from the scene's bounds in camera space."""
+    from mathutils import Vector
+    bpy.context.view_layer.update()
+    inv = cam.matrix_world.inverted(); xs, ys = [], []
+    for o in bpy.context.scene.objects:
+        if o.type != "MESH" or o.is_shadow_catcher: continue
+        for c in o.bound_box:
+            v = inv @ (o.matrix_world @ Vector(c)); xs.append(v.x); ys.append(v.y)
+    w, h = max(xs) - min(xs), max(ys) - min(ys)
+    scale = max(w, h * aspect) * margin
+    cam.data.ortho_scale = scale
+    cam.data.shift_x = (max(xs) + min(xs)) / 2 / scale
+    cam.data.shift_y = (max(ys) + min(ys)) / 2 / scale
+
+def build(name, out, style="clay", w=1500, h=500):
     reset(); random.seed(1)
     SCENES[name]()
-    rig(56, target=(0, 0, 2), elev=26, azim=-62, sun=(48, -30), sun_e=3.2 if style == "clay" else 2.2, world="#eef3f8", world_e=0.6 if style == "clay" else 1.1)
-    bpy.context.scene.camera.data.ortho_scale = 100
+    rig(56, target=(0, 0, 2), elev=24, azim=-74, sun=(48, -30), sun_e=3.2 if style == "clay" else 2.2, world="#eef3f8", world_e=0.6 if style == "clay" else 1.1)
+    fit(bpy.context.scene.camera, w / h)
     shadow_catcher(z=-1.2)
     if style == "ink": ink_style()
     render(os.path.abspath(out), w, h, samples=40)
 
 if __name__ == "__main__":
     name, outdir = sys.argv[1], sys.argv[2]
-    style = sys.argv[3] if len(sys.argv) > 3 else "ink"
+    style = sys.argv[3] if len(sys.argv) > 3 else "clay"
     w, h = (int(sys.argv[4]), int(sys.argv[5])) if len(sys.argv) > 5 else (1500, 500)
     os.makedirs(outdir, exist_ok=True)
     for n in (SCENES if name == "all" else [name]): build(n, os.path.join(outdir, n + ".png"), style, w, h)

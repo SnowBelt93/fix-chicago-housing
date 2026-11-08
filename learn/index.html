@@ -37,6 +37,7 @@ nav.toc{position:sticky;top:20px;align-self:start}
 .topic{padding:0 0 34px;margin:0 0 34px;border-bottom:1px solid var(--sc-line)}
 .topic:last-child{border-bottom:0}
 .topic h2{font-size:26px;letter-spacing:-.02em;font-weight:600;margin:0 0 10px}
+.topic .art{width:100%;height:auto;display:block;margin:2px 0 14px;border-radius:18px;background:linear-gradient(180deg,#f6f8f5,#e8ede7)}
 .topic .lead{font-size:19px;line-height:1.45;color:var(--sc-ink);font-weight:500}
 .topic p{font-size:16px;line-height:1.65;color:var(--sc-ink2);margin:0 0 12px}
 .try{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;background:var(--sc-chip);border-radius:12px;padding:12px 14px;margin:16px 0 12px !important}
@@ -117,7 +118,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   </div>
   <nav class="toc" aria-label="Topics"><h3>Housing</h3><ul><li><a href="#zoning">How many homes fit on a lot?</a></li><li><a href="#illegal">Legal or illegal?</a></li><li><a href="#shortage">How fast do we need to build?</a></li><li><a href="#rents">Does building lower rent?</a></li><li><a href="#prerogative">Who really decides?</a></li><li><a href="#aro">How much should be affordable?</a></li><li><a href="#megaprojects">How do megaprojects get paid for?</a></li></ul><h3>Transit</h3><ul><li><a href="#modes">What can $2 billion buy?</a></li><li><a href="#funding">Who pays for a new line?</a></li><li><a href="#nita">What did NITA prevent?</a></li><li><a href="#riders">Which line gets riders?</a></li></ul></nav>
   <div>
-<section class="topic" id="zoning"><h2>How many homes fit on a Chicago lot?</h2>
+<section class="topic" id="zoning"><h2>How many homes fit on a Chicago lot?</h2><img class="art" src="/shape/art/learn/zoning.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pZoning">
   <p class="q">A typical Chicago lot is 25 by 125 feet. Pick its zoning:</p>
   <div class="chips" role="radiogroup" aria-label="Zoning district"><button type="button" role="radio" data-d="RS-3">RS-3</button><button type="button" role="radio" data-d="RT-4">RT-4</button><button type="button" role="radio" data-d="RM-5">RM-5</button><button type="button" role="radio" data-d="RM-6">RM-6</button></div>
@@ -128,7 +129,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">Rezone the city yourself</a><span>Fix Chicago Housing's levels match real districts.</span></p>
 <p class="src">Sources: <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-49197" target="_blank" rel="noopener">Chicago Zoning Ordinance, §17-2-0303</a> · <a href="https://archive.metroplanning.org/news/10453/Data-Points-A-deep-dive-into-Chicagos-zoning-map-and-major-zoning-changes-in-the-last-two-decades" target="_blank" rel="noopener">Metropolitan Planning Council, 2023</a></p></section>
 
-<section class="topic" id="illegal"><h2>Legal or illegal to build today?</h2>
+<section class="topic" id="illegal"><h2>Legal or illegal to build today?</h2><img class="art" src="/shape/art/learn/illegal.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pIllegal">
   <p class="q">Each of these is a common Chicago building. Could you build it again on its lot under today's zoning?</p>
   <div class="cards3" id="ilCards"></div>
@@ -139,7 +140,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">See them on the map</a><span>Turn on “Show buildings that would be illegal to build today.”</span></p>
 <p class="src">Sources: <a href="https://findingspress.org/article/147490-downzoning-chicago-how-local-land-use-policy-has-reduced-housing-construction-and-reinforced-segregation" target="_blank" rel="noopener">Finding Press, downzoning in Chicago</a> · <a href="https://datacatalog.cookcountyil.gov/Property-Taxation/Assessor-Single-and-Multi-Family-Improvement-Chara/x54s-btds" target="_blank" rel="noopener">Cook County Assessor, building characteristics</a></p></section>
 
-<section class="topic" id="shortage"><h2>How fast does Chicago need to build?</h2>
+<section class="topic" id="shortage"><h2>How fast does Chicago need to build?</h2><img class="art" src="/shape/art/learn/shortage.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pShort">
   <p class="q">Chicago is about 54,141 homes short today, and the gap grows unless the city builds more than about 6,778 homes a year. Set the pace:</p>
   <label class="slide"><input type="range" id="shPace" min="2000" max="16000" step="100" value="3916"><span id="shVal"></span></label>
@@ -149,7 +150,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/tracker/">Check this year's pace</a><span>The Permit Tracker counts every permit, daily.</span></p>
 <p class="src">Sources: <a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, 2024</a> · <a href="https://www.mannpublications.com/mannreport/2026/07/15/americas-housing-deficit-held-steady-at-4-7-million-units-for-the-first-time-in-years/" target="_blank" rel="noopener">Zillow via Mann Report</a> · <a href="https://www.census.gov/construction/bps/" target="_blank" rel="noopener">Census Building Permits Survey</a> · <a href="https://censusreporter.org/profiles/31000US16980-chicago-naperville-elgin-il-in/" target="_blank" rel="noopener">Census ACS 2024 via Census Reporter</a></p></section>
 
-<section class="topic" id="rents"><h2>Does building more lower rent?</h2>
+<section class="topic" id="rents"><h2>Does building more lower rent?</h2><img class="art" src="/shape/art/learn/rents.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pRent">
   <p class="q">Today's median rent is about $1,440. Add new homes to Chicago's 1.28 million:</p>
   <label class="slide"><input type="range" id="rtN" min="0" max="200000" step="5000" value="50000"><span id="rtVal"></span></label>
@@ -159,7 +160,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">Try it with a real plan</a><span>Fix Chicago Housing shows the same range.</span></p>
 <p class="src">Sources: <a href="https://www.upjohn.org/research-highlights/new-apartment-buildings-low-income-areas-decrease-nearby-rents" target="_blank" rel="noopener">Asquith, Mast & Reed (Upjohn)</a> · <a href="https://eprints.lse.ac.uk/127192/" target="_blank" rel="noopener">Mense, 2025</a> · <a href="https://doodles.mountainmath.ca/posts/2024-04-11-what-if-recent-apartment-buildings-in-vancouver-were-20-taller/" target="_blank" rel="noopener">Lauster & von Bergmann, 2024</a></p></section>
 
-<section class="topic" id="prerogative"><h2>Who really decides what gets built on your block?</h2>
+<section class="topic" id="prerogative"><h2>Who really decides what gets built on your block?</h2><img class="art" src="/shape/art/learn/prerogative.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pPrer">
   <p class="q">A developer wants to build 40 apartments next to an L station in your ward. How many of the 50 alderpeople usually decide?</p>
   <div class="chips" id="prChips"><button type="button" data-a="50">All 50</button><button type="button" data-a="26">A majority, 26</button><button type="button" data-a="1">Just 1</button></div>
@@ -169,7 +170,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">Try ward mode</a><span>Every ward has to take its share.</span></p>
 <p class="src">Sources: <a href="https://news.wttw.com/2023/11/28/aldermanic-prerogative-fuels-segregation-and-violates-black-latino-chicagoans-civil" target="_blank" rel="noopener">WTTW, 2023</a> · <a href="https://insideclimatenews.org/news/07082025/trump-chicago-housing-environmental-racism/" target="_blank" rel="noopener">Inside Climate News, 2025</a></p></section>
 
-<section class="topic" id="aro"><h2>How much of a new building should be affordable?</h2>
+<section class="topic" id="aro"><h2>How much of a new building should be affordable?</h2><img class="art" src="/shape/art/learn/aro.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pAro">
   <p class="q">Chicago asks bigger buildings to rent some homes below market. Pick the share:</p>
   <div class="chips" id="aroChips"><button type="button" data-s="0">None</button><button type="button" data-s="10">10%</button><button type="button" data-s="20">20%</button><button type="button" data-s="30">30%</button></div>
@@ -179,7 +180,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">Turn the dial in Policies</a><span>And watch the homes and affordable homes change.</span></p>
 <p class="src">Sources: <a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago, ARO</a> · <a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Terner Center, 2024</a></p></section>
 
-<section class="topic" id="megaprojects"><h2>How do megaprojects get paid for?</h2>
+<section class="topic" id="megaprojects"><h2>How do megaprojects get paid for?</h2><img class="art" src="/shape/art/learn/megaprojects.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pTif">
   <p class="q">With tax increment financing, an area's property taxes are frozen at today's level for 23 years, and the growth pays for roads and utilities there. Say a site pays $10 million a year today. How fast will its taxes grow?</p>
   <label class="slide"><input type="range" id="tfG" min="0" max="12" step="0.5" value="5"><span id="tfVal"></span></label>
@@ -190,7 +191,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/housing/">Vote on the megaprojects</a><span>“Get the megaprojects built” in Policies.</span></p>
 <p class="src">Sources: <a href="https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-49197" target="_blank" rel="noopener">Chicago Zoning Ordinance</a> · <a href="https://chicagoyimby.com/2025/01/plan-commission-approves-united-center-redevelopment-the-1901-project.html" target="_blank" rel="noopener">Chicago YIMBY, 1901 Project</a> · <a href="https://chicago.gov/city/en/depts/dcd/supp_info/tax_increment_financingprogram.html" target="_blank" rel="noopener">City of Chicago, TIF</a> · <a href="https://chicago.suntimes.com/city-hall/2026/09/22/foundry-park-mega-project-tif-subsidy-finance-committee-approval" target="_blank" rel="noopener">Chicago Sun-Times, Sept. 2026</a></p></section>
 
-<section class="topic" id="modes"><h2>What can $2 billion of transit buy?</h2>
+<section class="topic" id="modes"><h2>What can $2 billion of transit buy?</h2><img class="art" src="/shape/art/learn/modes.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pModes">
   <p class="q">Set a budget and see how many miles of each you could build, at today's prices:</p>
   <label class="slide"><input type="range" id="mdB" min="250" max="10000" step="250" value="2000"><span id="mdVal"></span></label>
@@ -200,7 +201,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/transit/">Draw one of each</a><span>Expand Chicago Transit compares riders and cost.</span></p>
 <p class="src">Sources: <a href="/transit/" target="_blank" rel="noopener">Expand Chicago Transit: Sources</a></p></section>
 
-<section class="topic" id="funding"><h2>Who pays for a new line?</h2>
+<section class="topic" id="funding"><h2>Who pays for a new line?</h2><img class="art" src="/shape/art/learn/funding.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pFund">
   <p class="q">Set what a new line costs to build:</p>
   <label class="slide"><input type="range" id="fdC" min="50" max="6000" step="50" value="400"><span id="fdVal"></span></label>
@@ -210,7 +211,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/transit/">See your plan's split</a><span>“Who pays, and when” in the Learn tab.</span></p>
 <p class="src">Sources: <a href="https://transit.dot.gov/sites/fta.dot.gov/files/2022-01/Fact-Sheet-Capital-Investment-Grants-Program.pdf" target="_blank" rel="noopener">FTA, Capital Investment Grants fact sheet</a> · <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf" target="_blank" rel="noopener">FTA, Red Line Extension grant profile</a></p></section>
 
-<section class="topic" id="nita"><h2>What did NITA prevent?</h2>
+<section class="topic" id="nita"><h2>What did NITA prevent?</h2><img class="art" src="/shape/art/learn/nita.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pNita">
   <p class="q">In March 2025 the agencies warned of about 40% less service without new money. Drag service down and see what riders lose:</p>
   <label class="slide"><input type="range" id="ntS" min="40" max="100" step="5" value="60"><span id="ntVal"></span></label>
@@ -220,7 +221,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p class="try"><a href="/transit/">See the cuts on the map</a><span>The NITA card in Expand Chicago Transit.</span></p>
 <p class="src">Sources: <a href="https://www.enr.com/articles/61795-illinois-legislature-approves-15b-plan-to-overhaul-transit-governance" target="_blank" rel="noopener">ENR, 2025</a> · <a href="https://news.wttw.com/2025/03/21/transit-agencies-release-dire-warning-looming-service-cuts-bus-and-train-lines-overnight" target="_blank" rel="noopener">WTTW, March 2025</a> · <a href="https://metroplanning.org/wp-content/uploads/2026/04/NITA-Report_CompanionGuide_APR2026-1.pdf" target="_blank" rel="noopener">MPC guide to the law</a> · <a href="https://www.metro-magazine.com/news/nita-proposes-5b-operating-budget-97b-capital-program-for-2027" target="_blank" rel="noopener">Metro Magazine, Nov. 2026</a></p></section>
 
-<section class="topic" id="riders"><h2>Which new line gets more new riders?</h2>
+<section class="topic" id="riders"><h2>Which new line gets more new riders?</h2><img class="art" src="/shape/art/learn/riders.webp" width="1500" height="500" alt="" loading="lazy" decoding="async">
 <div class="play" id="pRid">
   <p class="q">Guess. Both are real tests from Expand Chicago Transit:</p>
   <div class="cards2"><button type="button" data-r="a"><b>A new L line right beside the Blue Line</b><span>Logan Square to Grand Avenue, 2 stations</span></button><button type="button" data-r="b"><b>The Red Line Extension</b><span>95th Street to 130th Street, 4 stations</span></button></div>

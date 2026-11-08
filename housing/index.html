@@ -1242,6 +1242,7 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 @media (max-width:400px){ .hlbl{display:none} }
 .hbar .load{display:none !important}
 .policy .t{display:block}
+.policy .picon{float:left;width:56px;height:56px;margin:-6px 8px 0 -6px}
 .policy .t h3{display:inline}
 .policy .t .ib{margin:-2px 0 0 6px;width:20px;height:20px;font-size:11px}
 .policy .t .status{display:table;margin-top:5px}
@@ -1591,10 +1592,10 @@ body.playing #sky{opacity:1}
           </details>
           <details class="pgroup"><summary><span class="eyebrow">Already law, built into today's numbers</span><span class="cnt">2 items</span></summary>
           <div class="group">
-            <div class="policy lawitem"><div class="top"><div class="t"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
+            <div class="policy lawitem"><div class="top"><div class="t"><img class="picon" src="../shape/art/icons/park.webp" width="56" height="56" alt="" loading="lazy"><h3>No parking minimums near transit</h3><span class="status law">Passed July 2025</span></div></div>
               <p>Parking mandates ended in transit-served areas, about 74% of the city, starting September 2025.</p>
               <span class="src"><a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">Chicago Cityscape</a></span></div>
-            <div class="policy lawitem"><div class="top"><div class="t"><h3>Green Social Housing fund</h3><span class="status law">Passed May 2025</span></div></div>
+            <div class="policy lawitem"><div class="top"><div class="t"><img class="picon" src="../shape/art/icons/social.webp" width="56" height="56" alt="" loading="lazy"><h3>Green Social Housing fund</h3><span class="status law">Passed May 2025</span></div></div>
               <p>A $135M revolving fund and a city-backed nonprofit developer for permanently affordable, mixed-income buildings.</p>
               <span class="src"><a href="https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Green-Social-Housing-Ordinance-Passes.html" target="_blank" rel="noopener">City of Chicago</a></span></div>
           </div>
@@ -2837,6 +2838,9 @@ function buildPolicies(){
       new MutationObserver(sync).observe(gn, {childList: true, characterData: true, subtree: true}); }
     { const more = d.querySelector(".more"); more.id = "more-" + P.key; d.querySelector(".t .ib").addEventListener("click", () => openInfo(P.title, more)); }
     d.querySelector("h3").textContent = P.title;
+    { const ic = document.createElement("img"); ic.className = "picon"; ic.alt = ""; ic.width = ic.height = 56; ic.loading = "lazy";   // clay icon (tools/art/icons2.py)
+      ic.src = "../shape/art/icons/" + ({adu:"coach_house", stair:"single_stair", str:"short_term_rentals", lots:"city_lots"}[P.key] || P.key) + ".webp";
+      ic.onerror = () => ic.remove(); d.querySelector(".t").prepend(ic); }
     const s = d.querySelector(".status"); s.textContent = P.status[1]; s.classList.add(P.status[0]);
     d.querySelector(".what").textContent = P.what;
     d.querySelector(".model").textContent = "How it's modeled: " + P.model;
