@@ -155,6 +155,34 @@ def housing():
     car(8, -8.6, 0.04, math.pi, mat("#c9473a", rough=0.35, metal=0.3))
     return dict(ortho=124, target=(6, 4, 24), elev=34, azim=-112, sun=(40, -160))
 
+def lot():
+    """What can I build on my lot: a block face of old flats and a bungalow; one lot picked with a red pin, and the
+    biggest building its zoning allows drawn over it as a glass ghost."""
+    random.seed(11)
+    ground(70, 30)
+    street(0, -10.5, 70, 8); sidewalk(0, -5.6, 70, 1.8)
+    box(0, -4.3, 0, 70, 0.9, 0.2, mat("#bfd6ad", rough=0.95), bevel=0.03)
+    x = -33
+    plan = [("brick", 2), ("buff", 3), ("grey", 0), ("brick2", 2), ("stone", 3), ("brick", 2), ("buff", 3)]
+    for i, (col, fl) in enumerate(plan):
+        w = 8.6
+        if fl == 0:   # the picked lot: today's bungalow, the ghost of what's allowed, a pin
+            box(x + w / 2, 2.5, 0.18, w - 1.2, 11, 4.0, "grey", bevel=0.06)
+            box(x + w / 2, 2.5, 4.18, w - 0.6, 11.6, 1.6, mat("roof", rough=0.85), bevel=0.6)
+            windows(x + w / 2, 2.5, 0.9, w - 1.2, 11, 2.6, 1, face="-y", glass="glass", cols=2, band=0.6)
+            box(x + w / 2, 3.2, 0.18, w - 0.6, 14.5, 13.2, mat("#7fb0e0", rough=0.1, alpha=0.28, spec=0.7), bevel=0.08)
+            for f in range(1, 4):
+                box(x + w / 2, 3.2, 0.18 + f * 3.3, w - 0.5, 14.6, 0.08, mat("navy", rough=0.5), bevel=0)
+            cyl(x + w / 2, -7.2, 0.2, 0.09, 5.2, "ink", verts=8, bevel=0)
+            sphere(x + w / 2, -7.2, 5.9, 0.9, mat("star", rough=0.4))
+            pick_x = x + w / 2
+        else:
+            flat(x + w / 2, 2.5, 0.18, w - 1.0, 11, fl, col, fh=3.2, cols=2, cornice="stone")
+        if i in (1, 4): tree(x + w - 0.1, -4.3, 0.2, 0.75, random.choice(["tree", "tree2"]))
+        x += w + 0.8
+    car(14, -12.4, 0.04, 0, mat("#e6e8eb", rough=0.35, metal=0.3))
+    return dict(ortho=74, target=(-1, 0, 2), elev=30, azim=-108, sun=(42, -150))
+
 def transit():
     """Draw your own line: today's L on its steel structure with a Red Line train, and a new line in flag blue curving off
     from a new station, its own train already running."""

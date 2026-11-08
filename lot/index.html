@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What Can I Build on My Lot?</title>
+<meta name="description" content="Type a Chicago address or tap a lot: see its zoning, how many homes the rules allow, whether today's building could be built today, and what would change that.">
+<meta property="og:title" content="What can I build on my lot?">
+<meta property="og:description" content="Any Chicago lot: its zoning, how many homes the rules allow, and what would change that.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;height:100%;background:var(--sc-map);font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+#map{position:fixed;inset:var(--sc-head) 0 0 0}
+.panel{position:absolute;z-index:3;top:calc(var(--sc-head) + 14px);left:14px;bottom:14px;width:410px;background:#fff;border-radius:18px;box-shadow:var(--sc-shadow);display:flex;flex-direction:column;overflow:hidden}
+.pin{padding:20px 22px 6px}
+.scroll{overflow:auto;padding:0 22px 22px;flex:1;overscroll-behavior:contain}
+h1{font-size:25px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:0 0 6px}
+.lede{font-size:14.5px;line-height:1.5;color:var(--sc-ink2);margin:0 0 14px}
+.search{position:relative;display:flex;gap:8px}
+.search input{flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 14px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.search input:focus{outline:2px solid var(--sc-navy);outline-offset:-1px;border-color:var(--sc-navy)}
+.search .sc-btn{min-height:44px;border-radius:12px;padding:0 12px}
+.sugg{position:absolute;left:0;right:0;top:48px;background:#fff;border:1px solid var(--sc-line2);border-radius:12px;box-shadow:var(--sc-shadow2);z-index:4;overflow:hidden;display:none}
+.sugg button{display:block;width:100%;text-align:left;font:inherit;font-size:14.5px;padding:10px 14px;border:0;background:#fff;color:var(--sc-ink);cursor:pointer}
+.sugg button:hover,.sugg button[aria-selected="true"]{background:var(--sc-seg)}
+.hint{font-size:13px;color:var(--sc-mute);margin:8px 0 0}
+.err{color:var(--sc-hard)}
+/* result */
+.res{margin-top:16px;animation:rin .28s ease-out}
+@keyframes rin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.addr{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
+.sub{font-size:13px;color:var(--sc-mute);margin:2px 0 12px}
+.big{background:var(--sc-chip);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.big .n{font-size:36px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.big .t{font-size:14.5px;color:var(--sc-ink2);margin-top:4px;line-height:1.45}
+.zchip{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:4px 10px 4px 4px;border-radius:14px;background:#fff;border:1px solid var(--sc-line2);margin-bottom:8px}
+.zchip i{font-style:normal;padding:2px 8px;border-radius:10px;color:#fff;background:var(--sc-navy)}
+.verdict{border-radius:14px;padding:12px 14px;margin:0 0 12px;font-size:14.5px;line-height:1.45}
+.verdict.no{background:#fdecee;color:#6e0f1c}
+.verdict.ok{background:var(--sc-greenbg);color:#174d32}
+.verdict.room{background:#eaf2fb;color:#163a66}
+.verdict b{font-weight:600}
+svg.mass{width:100%;height:auto;display:block;margin:0 0 4px}
+.masskey{display:flex;gap:14px;font-size:12px;color:var(--sc-mute);margin:0 0 12px;flex-wrap:wrap}
+.masskey span::before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--k)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden;margin:0 0 14px}
+.facts div{background:#fff;padding:10px 12px}
+.facts b{display:block;font-size:16px;font-weight:600;letter-spacing:-.01em}
+.facts span{font-size:12px;color:var(--sc-mute);line-height:1.35;display:block}
+h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px}
+.opt .on{font-size:14px;font-weight:600}
+.opt .od{font-size:12.5px;color:var(--sc-mute);line-height:1.4;grid-column:1}
+.opt .oh{grid-row:1/span 2;grid-column:2;text-align:right;font-size:20px;font-weight:600;letter-spacing:-.02em}
+.opt .oh small{display:block;font-size:11.5px;font-weight:500;color:var(--sc-mute);letter-spacing:0}
+.opt.up .oh{color:var(--sc-green)}
+.how{font-size:14px;line-height:1.55;color:var(--sc-ink2);margin:0 0 8px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+.links a{font-size:13.5px;font-weight:600;color:var(--sc-navy);text-decoration:none;padding:8px 12px;border-radius:16px;background:#eef3fa}
+.links a:hover{background:#e0eaf7}
+.fine{font-size:12px;line-height:1.5;color:var(--sc-mute);margin:16px 0 0}
+.fine a{color:var(--sc-mute)}
+.empty .tryrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.empty .tryrow button{font:inherit;font-size:13px;padding:6px 11px;border-radius:14px;border:1px solid var(--sc-line2);background:#fff;cursor:pointer;color:var(--sc-ink2)}
+.empty .tryrow button:hover{background:var(--sc-seg)}
+.zkey{position:absolute;z-index:2;right:14px;top:calc(var(--sc-head) + 14px);background:#fff;border-radius:14px;box-shadow:var(--sc-shadow2);padding:10px 12px;font-size:12px;color:var(--sc-ink2);display:none}
+.zkey.show{display:block}
+.zkey div{display:flex;align-items:center;gap:7px;margin:3px 0}
+.zkey i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.maplibregl-ctrl-bottom-right{bottom:6px}
+@media (max-width:859px){
+  #map{inset:var(--sc-head) 0 0 0}
+  .panel{top:auto;left:0;right:0;bottom:0;width:auto;max-height:58vh;border-radius:18px 18px 0 0;padding-bottom:env(safe-area-inset-bottom)}
+  .panel.min{max-height:none}
+  .panel.min .scroll{display:none}
+  .pin{padding:14px 16px 4px}
+  .scroll{padding:0 16px 18px}
+  h1{font-size:21px}
+  .lede{display:none}
+  .panel.fresh .lede{display:block;font-size:14px}
+  .sc-fan{display:none}
+  .zkey,.zkey.show{display:none}
+  .panel:not(.fresh) h1{display:none}
+  .grab{display:block;width:40px;height:5px;border-radius:3px;background:var(--sc-line2);margin:8px auto 0;border:0;padding:0}
+}
+.grab{display:none}
+@media (prefers-reduced-motion:reduce){ .res{animation:none} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<div id="map" aria-label="Map of Chicago lots"></div>
+<div class="zkey" id="zkey" aria-hidden="true"></div>
+<section class="panel fresh" id="panel">
+  <button class="grab" id="grab" aria-label="Show or hide the details"></button>
+  <div class="pin">
+    <h1>What can I build on my lot?</h1>
+    <p class="lede">Type a Chicago address or tap any lot on the map. You'll see its zoning, how many homes the rules allow there, and what would change that.</p>
+    <div class="search">
+      <input id="q" type="search" placeholder="Address, like 2150 N Milwaukee" autocomplete="off" aria-label="Chicago address" role="combobox" aria-expanded="false" aria-controls="sugg">
+      <button class="sc-btn" id="loc" title="Use my location" aria-label="Use my location"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+      <div class="sugg" id="sugg" role="listbox"></div>
+    </div>
+    <p class="hint" id="hint"></p>
+  </div>
+  <div class="scroll" id="out">
+    <div class="empty">
+      <p class="hint">Or try one:</p>
+      <div class="tryrow" id="tryrow"></div>
+    </div>
+  </div>
+</section>
+<dialog class="sc-info" id="infoDlg"></dialog>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+"use strict";
+/* ---------- zoning rules (Chicago Zoning Ordinance, Title 17) ----------
+   Residential: §17-2-0303 (lot area per home), §17-2-0304 (floor area ratio), §17-2-0311 (height).
+   Business/commercial: §17-3-0402, -0403, -0408 (height with ground-floor commercial, 50–99 ft frontage).
+   Downtown: floor area ratio is the number in the name; homes are estimated from floor area at 900 sq ft each. */
+const CODE_R = "https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48908";
+const CODE_B = "https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-48935";
+const RES = {
+  "RS-1":{mla:6250, far:0.5, h:30, name:"Detached houses on big lots"},
+  "RS-2":{mla:5000, far:0.65, h:30, name:"Detached houses"},
+  "RS-3":{mla:2500, far:0.9, h:30, name:"Houses, and two-flats on some blocks"},
+  "RT-3.5":{mla:1250, far:1.05, h:35, name:"Houses, two-flats and townhouses"},
+  "RT-4":{mla:1000, far:1.2, h:38, name:"Two-flats, three-flats, townhouses and small apartment buildings"},
+  "RT-4A":{mla:1000, far:1.2, h:38, name:"Two-flats, three-flats and small apartment buildings"},
+  "RM-4.5":{mla:700, far:1.7, h:45, name:"Small apartment buildings"},
+  "RM-5":{mla:400, far:2.0, h:47, name:"Apartment buildings"},
+  "RM-5.5":{mla:400, far:2.5, h:47, name:"Larger apartment buildings"},
+  "RM-6":{mla:300, far:4.4, h:0, name:"Mid-rise apartments"},
+  "RM-6.5":{mla:300, far:6.6, h:0, name:"High-rise apartments"}};
+const SUF = {"1":{mla:2500, far:1.2, h:38}, "1.5":{mla:1350, far:1.5, h:38}, "2":{mla:1000, far:2.2, h:50}, "3":{mla:400, far:3.0, h:65}, "5":{mla:200, far:5.0, h:70}};
+const BC = {B1:"Neighborhood shopping street, homes upstairs", B2:"Neighborhood mixed-use, homes allowed on any floor", B3:"Community shopping district, homes upstairs",
+            C1:"Neighborhood commercial, homes upstairs", C2:"Motor-vehicle commercial, homes upstairs", C3:"Commercial, no homes allowed"};
+function zoneInfo(raw){
+  const z = (raw || "").toUpperCase().replace(/^RM-?(\d)-?(\.5)?$/, "RM-$1$2").trim();
+  if (RES[z]) return {z, fam:"R", ...RES[z], code:CODE_R, res:true};
+  let m = z.match(/^(B[123]|C[123])-(1\.5|1|2|3|5)$/);
+  if (m){
+    const s = SUF[m[2]];
+    if (m[1] === "C3") return {z, fam:"C", name:BC.C3, mla:0, far:s.far, h:s.h, code:CODE_B, nohomes:true};
+    return {z, fam:"B", name:BC[m[1]], mla:s.mla, far:s.far, h:s.h, code:CODE_B, upstairs:m[1] !== "B2"};
+  }
+  m = z.match(/^D([XRCS])-(\d+)$/);
+  if (m){
+    const nm = {X:"Downtown mixed-use", R:"Downtown residential", C:"Downtown core", S:"Downtown service"}[m[1]];
+    if (m[1] === "S") return {z, fam:"D", name:nm + ", no new homes", far:+m[2], h:0, nohomes:true};
+    return {z, fam:"D", name:nm, far:+m[2], h:0, downtown:true};
+  }
+  if (/^PD/.test(z)) return {z, fam:"PD", name:"Planned development: its own ordinance sets what can be built", pd:true};
+  if (/^PMD/.test(z)) return {z, fam:"M", name:"Planned manufacturing district, no homes allowed", nohomes:true};
+  if (/^M[123]/.test(z)) return {z, fam:"M", name:"Manufacturing, no homes allowed", nohomes:true};
+  if (/^POS/.test(z)) return {z, fam:"P", name:"Park or open space", nohomes:true};
+  if (z === "T") return {z, fam:"M", name:"Transportation (rail and road land), no homes", nohomes:true};
+  return {z, fam:"?", name:"Zoning not recognized", unknown:true};
+}
+const FAM_COLOR = {R:"#7fb6d9", B:"#b48fd1", C:"#c99ad1", D:"#2b5da0", PD:"#e0a24a", M:"#9aa3ad", P:"#8cc084", "?":"#cfd4da"};
+function famColor(z){ const i = zoneInfo(z); if (i.fam === "R"){ return /^RS/.test(i.z) ? "#cfe3f1" : /^RT/.test(i.z) ? "#9fcbe8" : "#5ea2d4"; } return FAM_COLOR[i.fam]; }
+/* the next step up, as people usually ask for it in a zoning change */
+const UP = {"RS-1":"RT-4", "RS-2":"RT-4", "RS-3":"RT-4", "RT-3.5":"RT-4", "RT-4":"RM-5", "RT-4A":"RM-5", "RM-4.5":"RM-5", "RM-5":"RM-6", "RM-5.5":"RM-6", "RM-6":"RM-6.5"};
+function upOf(i){
+  if (UP[i.z]) return UP[i.z];
+  if (i.fam === "B" || i.fam === "C"){ const s = i.z.split("-")[1]; return s === "3" || s === "5" ? "B2-5" : "B2-3"; }
+  if (i.fam === "M") return "B2-3";
+  return null;
+}
+function homesFor(i, lot){
+  if (!i || i.nohomes || i.pd || i.unknown) return 0;
+  if (i.downtown) return Math.floor(i.far * lot / 900);
+  const n = Math.floor(lot / i.mla);
+  return i.res ? Math.max(1, n) : n;
+}
+/* Assessor property classes, in plain words (Cook County Assessor's classification code) */
+const CLS = {"100":"Vacant land", "190":"Vacant land", "241":"Vacant lot next to a home", "200":"Residential land", "201":"Residential garage", "202":"One-story house, small", "203":"One-story house",
+  "204":"One-story house, large", "205":"Two-story house, older", "206":"Two-story house, older, larger", "207":"Two-story house", "208":"Two-story house, large", "209":"Two-story house, very large",
+  "210":"Townhouse or row house", "211":"Apartment building, 2–6 homes", "212":"Mixed-use building, 6 homes or fewer", "234":"Split-level house", "278":"Two-story house, newer", "295":"Townhouse or row house",
+  "299":"Condo building", "313":"Apartment building, 7+ homes", "314":"Apartment building, 7+ homes", "315":"Apartment building, 7+ homes", "318":"Mixed-use building, 7+ homes", "391":"Apartment building, 7+ homes", "396":"Apartment building, 7+ homes", "399":"Condo building",
+  "517":"Commercial building", "522":"Commercial building", "523":"Commercial building", "529":"Commercial building", "530":"Commercial building", "531":"Commercial building", "590":"Commercial building", "592":"Commercial building",
+  "593":"Industrial building", "597":"Commercial building", "599":"Commercial building", "EX":"Exempt from property tax (public, church, school…)", "RR":"Railroad"};
+function clsName(c){ return CLS[c] || (c && c[0] === "5" ? "Commercial or industrial property" : c && c[0] === "3" ? "Apartment building, 7+ homes" : c && c[0] === "2" ? "Residential property" : "Property"); }
+
+/* ---------- data: 0.01° tiles (tools/prep_lots.py) ---------- */
+const TILES = new Map();
+function tkey(lon, lat){ return [Math.floor((lon + 88) * 100), Math.floor((lat - 41) * 100)]; }
+function corner(ix, iy){ return [ix / 100 - 88, iy / 100 + 41]; }
+function getTile(ix, iy){
+  const k = ix + "_" + iy;
+  if (!TILES.has(k)) TILES.set(k, fetch("data/t/" + k + ".json").then(r => r.ok ? r.json() : null).catch(() => null).then(T => { if (T) T.k = k, T.ix = ix, T.iy = iy; return T; }));
+  return TILES.get(k);
+}
+const KX = 111320 * Math.cos(41.85 * Math.PI / 180), KY = 110574;
+async function nearest(lon, lat, maxM = 45){
+  const [ix, iy] = tkey(lon, lat), want = [];
+  for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++){
+    const [x0, y0] = corner(ix + dx, iy + dy);
+    if (lon - (x0 + 0.01) > 0.0007 || x0 - lon > 0.0007 || lat - (y0 + 0.01) > 0.0007 || y0 - lat > 0.0007) continue;
+    want.push(getTile(ix + dx, iy + dy));
+  }
+  let best = null, bd = maxM;
+  for (const T of await Promise.all(want)){
+    if (!T) continue;
+    const [x0, y0] = corner(T.ix, T.iy);
+    // inside a building outline wins outright
+    for (let k = 0; k < T.p.length; k++){
+      const p = T.p[k], plon = x0 + p[1] / 1e6, plat = y0 + p[2] / 1e6;
+      let d = Math.hypot((plon - lon) * KX, (plat - lat) * KY);
+      if (p[8] >= 0 && inRing(T.b[p[8]][4], (lon - x0) * 1e6, (lat - y0) * 1e6)) d = Math.min(d, 0.5);
+      if (d < bd){ bd = d; best = {T, k}; }
+    }
+  }
+  return best;
+}
+function inRing(f, x, y){ let c = false; for (let i = 0, j = f.length - 2; i < f.length; j = i, i += 2){ const xi = f[i], yi = f[i + 1], xj = f[j], yj = f[j + 1]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; }
+function ringLL(T, f){ const [x0, y0] = corner(T.ix, T.iy), out = []; for (let i = 0; i < f.length; i += 2) out.push([x0 + f[i] / 1e6, y0 + f[i + 1] / 1e6]); return out; }
+
+/* ---------- map ---------- */
+let map;
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+async function initMap(){
+  let style = {version:8, sources:{}, layers:[{id:"bg", type:"background", paint:{"background-color":"#eef0ec"}}]}, credit = "City of Chicago, Cook County Assessor";
+  if (ownDomain()){
+    try { style = await fetch("https://tiles.openfreemap.org/styles/positron").then(r => r.json()); } catch (e){}
+  }
+  const phone = matchMedia("(max-width:859px)").matches;
+  map = new maplibregl.Map({container:"map", style, center:[-87.68, 41.89], zoom:phone ? 10.2 : 11, minZoom:9, maxZoom:19,
+    maxBounds:[[-88.3, 41.5], [-87.2, 42.2]], attributionControl:{compact:true, customAttribution:credit}, dragRotate:false, pitchWithRotate:false, fadeDuration:0});
+  map.touchZoomRotate.disableRotation();
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}), "bottom-right");
+  await new Promise(r => map.on("load", r));
+  const first = map.getStyle().layers.find(l => l.type === "symbol");
+  map.addSource("zones", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  map.addSource("blds", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  map.addSource("pick", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  map.addLayer({id:"zones", type:"fill", source:"zones", minzoom:14, paint:{"fill-color":["get", "c"], "fill-opacity":["interpolate", ["linear"], ["zoom"], 14, 0, 14.6, 0.45, 17, 0.32]}}, first && first.id);
+  map.addLayer({id:"zones-line", type:"line", source:"zones", minzoom:14, paint:{"line-color":"#5b6470", "line-width":0.8, "line-opacity":0.55}}, first && first.id);
+  map.addLayer({id:"blds", type:"fill", source:"blds", minzoom:15, paint:{"fill-color":"#d9dde2", "fill-outline-color":"#a9b0b8", "fill-opacity":ownDomain() ? 0 : 0.9}}, first && first.id);
+  map.addLayer({id:"pick-fill", type:"fill", source:"pick", filter:["==", ["geometry-type"], "Polygon"], paint:{"fill-color":"#2b5da0", "fill-opacity":0.35}});
+  map.addLayer({id:"pick-line", type:"line", source:"pick", filter:["==", ["geometry-type"], "Polygon"], paint:{"line-color":"#1d4580", "line-width":2.4}});
+  map.addLayer({id:"pick-pt", type:"circle", source:"pick", filter:["==", ["geometry-type"], "Point"], paint:{"circle-radius":7, "circle-color":"#e4002b", "circle-stroke-color":"#fff", "circle-stroke-width":2.5}});
+  if (ownDomain() && first) map.addLayer({id:"zone-lbl", type:"symbol", source:"zones", minzoom:15.5, layout:{"text-field":["get", "z"], "text-size":11, "text-font":["Noto Sans Regular"], "symbol-placement":"point"}, paint:{"text-color":"#3d434b", "text-halo-color":"#fff", "text-halo-width":1.4}});
+  map.on("moveend", drawZones);
+  map.on("click", e => pickAt(e.lngLat.lng, e.lngLat.lat, true));
+  map.getCanvas().style.cursor = "pointer";
+}
+let drawTok = 0;
+async function drawZones(){
+  if (map.getZoom() < 14){ document.getElementById("zkey").classList.remove("show"); return; }
+  const b = map.getBounds(), tok = ++drawTok, list = [];
+  const [ix0, iy0] = tkey(b.getWest(), b.getSouth()), [ix1, iy1] = tkey(b.getEast(), b.getNorth());
+  if ((ix1 - ix0 + 1) * (iy1 - iy0 + 1) > 16) return;
+  for (let ix = ix0; ix <= ix1; ix++) for (let iy = iy0; iy <= iy1; iy++) list.push(getTile(ix, iy));
+  const Ts = (await Promise.all(list)).filter(Boolean); if (tok !== drawTok) return;
+  const zf = [], bf = [], fams = new Set();
+  for (const T of Ts){
+    for (const z of T.z){
+      const zc = T.zn[z[0]]; fams.add(famKey(zc));
+      zf.push({type:"Feature", properties:{z:zc, c:famColor(zc)}, geometry:{type:"Polygon", coordinates:z.slice(2).map(r => ringLL(T, r))}});
+    }
+    for (const bl of T.b) bf.push({type:"Feature", properties:{}, geometry:{type:"Polygon", coordinates:[ringLL(T, bl[4])]}});
+  }
+  map.getSource("zones").setData({type:"FeatureCollection", features:zf});
+  map.getSource("blds").setData({type:"FeatureCollection", features:bf});
+  const key = document.getElementById("zkey"), KEYS = [["RS", "#cfe3f1", "Houses (RS)"], ["RT", "#9fcbe8", "Flats and townhouses (RT)"], ["RM", "#5ea2d4", "Apartments (RM)"], ["B", "#b48fd1", "Shops + homes (B, C)"], ["D", "#2b5da0", "Downtown (D)"], ["PD", "#e0a24a", "Planned development"], ["M", "#9aa3ad", "No homes allowed"], ["P", "#8cc084", "Parks"]];
+  key.innerHTML = "<b>Zoning</b>" + KEYS.filter(k => fams.has(k[0])).map(k => `<div><i style="background:${k[1]}"></i>${k[2]}</div>`).join("");
+  key.classList.toggle("show", fams.size > 0);
+}
+function famKey(zc){ const i = zoneInfo(zc); if (i.fam === "R") return i.z.slice(0, 2); if (i.fam === "C") return i.nohomes ? "M" : "B"; return i.fam === "?" ? "M" : i.fam; }
+
+/* ---------- picking a lot ---------- */
+const $ = id => document.getElementById(id);
+async function pickAt(lon, lat, fromTap){
+  const hit = await nearest(lon, lat, fromTap ? 40 : 120);
+  if (!hit){ $("hint").innerHTML = '<span class="err">No lot there. Tap closer to a building, inside Chicago.</span>'; return; }
+  show(hit.T, hit.k, fromTap);
+}
+function fmt(n){ return Math.round(n).toLocaleString("en-US"); }
+function title(s){ return (s || "").toLowerCase().replace(/\b([a-z])/g, c => c.toUpperCase()).replace(/\b(N|S|E|W)\b/gi, c => c.toUpperCase()).replace(/\b(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase()); }
+function show(T, k, fly){
+  const p = T.p[k], [x0, y0] = corner(T.ix, T.iy), lon = x0 + p[1] / 1e6, lat = y0 + p[2] / 1e6;
+  const [pin, , , cls, land, apts, yr, bsf, bi, zi, ward, condo, addr] = p;
+  const B = bi >= 0 ? T.b[bi] : null, zc = zi >= 0 ? T.zn[zi] : null, I = zoneInfo(zc);
+  // lot: the Assessor's land area, else estimated from the building, else a standard lot
+  let lot = land, lotNote = "Cook County Assessor";
+  let lotEst = false;
+  if (!lot && B){ lot = Math.max(2 * B[0], 3125); lotNote = "estimated as twice the building's footprint"; lotEst = true; }
+  let lotKnown = true;
+  if (!lot){ lot = 3125; lotNote = "unknown, so a standard 25 × 125 ft lot is assumed"; lotKnown = false; }
+  // homes there now
+  let now = apts >= 0 ? apts : null, nowNote = "Cook County Assessor";
+  if (condo){ now = condo; nowNote = "condo units on record"; }
+  else if (now === null && B && B[2]){ now = B[2]; nowNote = "City of Chicago, 2013"; }
+  if (now === null && /^(100|190|241)$/.test(cls)) { now = 0; nowNote = "vacant land"; }
+  const allowed = homesFor(I, lot), up = upOf(I), UI = up ? zoneInfo(up) : null, upHomes = UI ? homesFor(UI, lot) : 0;
+  const stories = B && B[1] ? B[1] : null;
+  // map
+  const feats = [{type:"Feature", geometry:{type:"Point", coordinates:[lon, lat]}}];
+  if (B) feats.unshift({type:"Feature", geometry:{type:"Polygon", coordinates:[ringLL(T, B[4])]}});
+  map.getSource("pick").setData({type:"FeatureCollection", features:feats});
+  if (fly) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 17), duration:matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 700, padding:padFor()});
+  else map.jumpTo({center:[lon, lat], zoom:17.2, padding:padFor()});
+  try { history.replaceState(null, "", "#" + lon.toFixed(5) + "," + lat.toFixed(5)); } catch (e){}
+  $("panel").classList.remove("fresh", "min"); $("hint").textContent = "";
+  // verdict
+  let verdict = "";
+  if (I.pd) verdict = `<div class="verdict room">This lot is inside <b>${zc}</b>, a planned development. The City Council approved a custom plan for this site, and that ordinance (not the usual district rules) sets what can be built. <a href="https://chicityclerkelms.chicago.gov/Search/Legislation?keywords=${encodeURIComponent(zc.replace(/\s+/g, " ").replace("PD ", "Planned Development No. "))}" target="_blank" rel="noopener">Look it up</a>.</div>`;
+  else if (I.nohomes) verdict = `<div class="verdict no">Homes aren't allowed in <b>${I.z}</b> at all. Building any would take a zoning change.</div>`;
+  else if (lotEst && (B[1] || 1) >= 5) verdict = `<div class="verdict room">We don't have this lot's real size, and for a building this tall an estimate isn't good enough to say whether it could be built today. ${I.mla ? `The rule here is one home per ${fmt(I.mla)} sq ft of lot.` : ""}</div>`;
+  else if (!lotKnown) verdict = `<div class="verdict room">We don't have this lot's size, so the count above is for a standard 3,125 sq ft lot. ${I.mla ? `The rule here is one home per ${fmt(I.mla)} sq ft of lot.` : ""}</div>`;
+  else if (now !== null && now > allowed && now >= 2) verdict = `<div class="verdict no"><b>This building ${lotEst ? "probably couldn't" : "couldn't"} be built today.</b> It has ${now} homes; today's zoning allows ${allowed} on a lot this size${lotEst ? " (lot size estimated)" : ""}.${I.z === "RS-3" && now === 2 ? " (A two-flat can still be allowed in RS-3 if most of the block already has them.)" : ""}</div>`;
+  else if (now !== null && allowed > now) verdict = `<div class="verdict room">Today's rules allow <b>${allowed - now} more ${allowed - now === 1 ? "home" : "homes"}</b> here than there are now.</div>`;
+  else if (now !== null) verdict = `<div class="verdict ok">The building fits today's rules: ${now} ${now === 1 ? "home" : "homes"}, and ${allowed} allowed.</div>`;
+  const addrTxt = addr ? title(addr) : "Lot at " + lat.toFixed(5) + ", " + lon.toFixed(5);
+  const bigN = I.pd ? "PD" : I.nohomes ? "0" : (I.downtown ? "≈" : "") + fmt(allowed);
+  const bigT = I.pd ? "Set by this site's own planned development ordinance." : I.nohomes ? "homes allowed here" :
+    `${allowed === 1 ? "home" : "homes"} allowed on this lot by today's zoning${I.res && allowed === 1 && Math.floor(lot / I.mla) < 1 ? " (any existing lot can hold one house)" : ""}${I.upstairs ? ", above a ground-floor shop" : ""}${I.downtown ? ", estimated from its floor area" : ""}.`;
+  const coach = coachText(I);
+  const opts = [];
+  if (UI && !I.pd) opts.push(`<div class="opt up"><div class="on">Rezone to ${up}</div><div class="od">${UI.name}. The most common next step people ask the City Council for.</div><div class="oh">${fmt(upHomes)}<small>homes</small></div></div>`);
+  if (I.res && /^R[ST]/.test(I.z)) opts.push(`<div class="opt up"><div class="on">If Illinois passes the BUILD Act</div><div class="od">Two- and three-flats and backyard homes on lots now limited to houses, as Fix Chicago Housing models it.</div><div class="oh">${Math.max(allowed, 3)}<small>+ coach house</small></div></div>`);
+  if (I.fam === "R" && /^RS/.test(I.z)) opts.push(`<div class="opt up"><div class="on">Like Minneapolis (2040 plan)</div><div class="od">Up to three homes on every residential lot, citywide.</div><div class="oh">3<small>homes</small></div></div>`);
+  $("out").innerHTML = `<div class="res">
+    <p class="addr">${esc(addrTxt)}</p>
+    <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}${pin ? " · PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") : ""}</p>
+    ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${/^(RS|RT)/.test(I.z) ? "#16324f" : "#fff"}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
+    <div class="big"><div class="n">${bigN}</div><div class="t">${bigT}</div></div>
+    ${verdict}
+    ${I.pd || I.nohomes || I.unknown ? "" : massSvg(I, lot, B, stories, allowed) + `<div class="masskey"><span style="--k:#c7ccd2">Building there now</span><span style="--k:rgba(43,93,160,.35)">Largest building the rules allow</span></div>`}
+    <div class="facts">
+      <div><b>${fmt(lot)} sq ft</b><span>Lot size, ${lotNote}</span></div>
+      <div><b>${now === null ? "Unknown" : fmt(now)}</b><span>Homes there now${now === null ? "" : ", " + nowNote}</span></div>
+      ${I.far ? `<div><b>${fmt(I.far * lot)} sq ft</b><span>Most floor area allowed (floor area ratio ${I.far})</span></div>` : ""}
+      ${I.pd || I.nohomes ? "" : `<div><b>${I.h ? I.h + " ft" : "No set limit"}</b><span>Height limit${I.h ? ", about " + Math.floor(I.h / 10.5) + " stories" : ", floor area caps it"}</span></div>`}
+      ${yr ? `<div><b>${yr}</b><span>Year built, Assessor</span></div>` : ""}
+      ${stories ? `<div><b>${stories} ${stories === 1 ? "story" : "stories"}</b><span>Building height, city data</span></div>` : ""}
+      <div style="grid-column:1/-1"><b style="font-size:14.5px">${coach.t}</b><span>${coach.d}</span></div>
+    </div>
+    ${opts.length ? `<h2>What would change it</h2><div class="opts">${opts.join("")}</div>` : ""}
+    <h2>How to get more homes here</h2>
+    <p class="how">Changing a lot's zoning takes a City Council vote, and in practice the local alderperson decides (that's aldermanic prerogative). Owners apply; neighbors can ask their alderperson to support it, or ask for a whole-block or whole-ward change.</p>
+    <div class="links">
+      <a href="https://www.chicago.gov/city/en/about/wards.html" target="_blank" rel="noopener">Contact Ward ${ward || "your"} alderperson</a>
+      <a href="/learn/#prerogative">How prerogative works</a>
+      <a href="/housing/">Try rezoning in Fix Chicago Housing</a>
+    </div>
+    <p class="fine">A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, parking, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked; ask the Department of Buildings or a zoning attorney before you build. The drawing assumes a ${lotDims(lot)[1]}-foot-deep lot. Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a> (City of Chicago), <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a>, <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">building characteristics</a> and <a href="https://datacatalog.cookcountyil.gov/d/3723-97qp" target="_blank" rel="noopener">addresses</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>.</p>
+  </div>`;
+  $("out").scrollTop = 0;
+}
+function coachText(I){
+  if (I.nohomes || I.pd || I.unknown) return {t:"Coach house: no", d:"Only on lots where homes are allowed."};
+  if (/^RS/.test(I.z)) return {t:"Coach house: depends on the block", d:"Since April 2026, RS lots can add a coach house or basement home only inside the areas alderpeople opted in (Zoning Code §17-7-0574)."};
+  return {t:"Coach house or basement home: allowed", d:"Since April 1, 2026, RT, RM, B and C lots can add one by right (rules on size and placement apply)."};
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c])); }
+function padFor(){ const ph = matchMedia("(max-width:859px)").matches; return ph ? {top:20, bottom:Math.round(innerHeight * 0.5), left:20, right:20} : {left:440, top:40, right:40, bottom:40}; }
+
+/* ---------- the drawing: today's building and the biggest one the rules allow, on the lot ---------- */
+function lotDims(lot){ const D = lot <= 6250 ? 125 : Math.min(250, Math.round(Math.sqrt(lot * 2) / 5) * 5); return [lot / D, D]; }
+function massSvg(I, lot, B, stories, allowed){
+  const [W, D] = lotDims(lot);
+  // setbacks (simplified): residential front 12% of depth up to 15 ft, rear 30% (RS 28%) up to 50 ft, sides 20% of width (RS-1/2 30%)
+  let f = 0, r = 0, s = 0;
+  if (I.fam === "R"){ f = Math.min(15, 0.12 * D); r = Math.min(50, (/^RS/.test(I.z) ? 0.28 : 0.3) * D); s = (/^RS-[12]/.test(I.z) ? 0.3 : 0.2) * W; if (/^RM-6/.test(I.z)) s = 0; }
+  else if (I.fam === "B" || I.fam === "C"){ r = Math.min(30, 0.3 * D); }
+  const fw = Math.max(10, W - s), fd = Math.max(20, D - f - r), foot = fw * fd;
+  const fh = 10.5, maxFl = I.h ? Math.floor(I.h / fh) : 99;
+  const floors = Math.max(1, Math.min(maxFl, Math.ceil(I.far * lot / foot - 0.15)));
+  const ed = Math.min(fd, I.far * lot / floors / fw);
+  const env = {x:s / 2, y:D - f - ed, w:fw, d:ed, h:floors * fh};   // the street is along y = D, nearest the viewer
+  // the building now: its footprint area drawn as a box at the front of the lot
+  let cur = null;
+  if (B && B[0]){ const bw = Math.min(W - 2, Math.max(14, Math.sqrt(B[0] * 0.45))), bd = Math.min(D - 4, B[0] / bw); cur = {x:(W - bw) / 2, y:Math.max(0, D - Math.min(f, D - bd) - bd), w:bw, d:bd, h:Math.max(1, stories || 1) * fh}; }
+  // isometric projection, fitted to the box
+  const c30 = Math.cos(Math.PI / 6), s30 = 0.5;
+  const P = (x, y, z) => [(x - y) * c30, (x + y) * s30 - z];
+  const pts = [[0, 0, 0], [W, 0, 0], [W, D + 6, 0], [0, D + 6, 0], [env.x, env.y, env.h], [env.x + env.w, env.y + env.d, env.h], [env.x + env.w, env.y, env.h], [env.x, env.y + env.d, env.h]];
+  if (cur) pts.push([cur.x, cur.y, cur.h]);
+  const pr = pts.map(p => P(...p)), minX = Math.min(...pr.map(p => p[0])), maxX = Math.max(...pr.map(p => p[0])), minY = Math.min(...pr.map(p => p[1])), maxY = Math.max(...pr.map(p => p[1]));
+  const VW = 360, VH = 210, sc = Math.min((VW - 30) / (maxX - minX), (VH - 24) / (maxY - minY));
+  const T = (x, y, z) => { const q = P(x, y, z); return ((q[0] - minX) * sc + (VW - (maxX - minX) * sc) / 2).toFixed(1) + "," + ((q[1] - minY) * sc + 12).toFixed(1); };
+  const poly = (ps, fill, stroke, sw = 1, dash = "") => `<polygon points="${ps.map(p => T(...p)).join(" ")}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" ${dash ? `stroke-dasharray="${dash}"` : ""} stroke-linejoin="round"/>`;
+  const boxF = (b, top, left, right, stroke, sw, dash) => {
+    const {x, y, w, d, h} = b;
+    // visible faces in this view: top, the front-left face (y = y), the front-right face (x = x + w)... the viewer is at +x,+y looking back, so draw y+d and x+w faces
+    return poly([[x, y + d, 0], [x + w, y + d, 0], [x + w, y + d, h], [x, y + d, h]], left, stroke, sw, dash)
+         + poly([[x + w, y, 0], [x + w, y + d, 0], [x + w, y + d, h], [x + w, y, h]], right, stroke, sw, dash)
+         + poly([[x, y, h], [x + w, y, h], [x + w, y + d, h], [x, y + d, h]], top, stroke, sw, dash);
+  };
+  let svg = `<svg class="mass" viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Drawing of the lot, today's building and the largest building the rules allow">`;
+  svg += poly([[0, 0, 0], [W, 0, 0], [W, D, 0], [0, D, 0]], "#eef1ea", "#c9cec5", 1);
+  // the street side, so the drawing reads: a sidewalk strip at y = 0
+  svg += poly([[0, D, 0], [W, D, 0], [W, D + 6, 0], [0, D + 6, 0]], "#f7f8f5", "#d5d9de", 0.8);
+  // the allowed envelope's faces first, today's building over them, then the envelope's dashed outline on top of both
+  svg += boxF(env, "rgba(43,93,160,.14)", "rgba(43,93,160,.2)", "rgba(43,93,160,.26)", "none", 0);
+  if (cur) svg += boxF(cur, "#e3e6ea", "#b9c0c8", "#cdd2d8", "#7d8791", 1);
+  svg += boxF(env, "none", "none", "none", "#2b5da0", 1.5, "5 3");
+  svg += `<text x="${VW - 6}" y="${VH - 6}" text-anchor="end" font-size="11" fill="#5a6069" font-family="Instrument Sans,system-ui">${floors} ${floors === 1 ? "story" : "stories"} allowed</text>`;
+  return svg + "</svg>";
+}
+
+/* ---------- address search: street names, then house numbers (tools/prep_lots.py) ---------- */
+let STREETS = null, SHARDS = new Map();
+const ABBR = {AVENUE:"AVE", AV:"AVE", STREET:"ST", BOULEVARD:"BLVD", ROAD:"RD", PLACE:"PL", DRIVE:"DR", COURT:"CT", PARKWAY:"PKWY", TERRACE:"TER", LANE:"LN", HIGHWAY:"HWY", SQUARE:"SQ", NORTH:"N", SOUTH:"S", EAST:"E", WEST:"W", SAINT:"ST", CIRCLE:"CIR", PLAZA:"PLZ", EXPRESSWAY:"EXPY", WAY:"WAY"};
+function norm(s){ return s.toUpperCase().replace(/[.,#]/g, " ").replace(/\b(\d+)(ST|ND|RD|TH)\b/g, "$1").replace(/\s+/g, " ").trim().split(" ").map(w => ABBR[w] || w).join(" "); }
+function streetNorm(s){ return s.replace(/\b(\d+)(ST|ND|RD|TH)\b/g, "$1"); }
+async function loadStreets(){
+  if (STREETS) return STREETS;
+  STREETS = fetch("data/streets.json").then(r => r.ok ? r.json() : []).catch(() => []).then(L => L.map(([s, c]) => ({s, c, n:streetNorm(s)})));
+  return STREETS;
+}
+function shardOf(name){ return (name.replace(/^[NSEW] /, "").replace(/[^A-Z0-9]/g, "").slice(0, 2)) || "_"; }
+async function suggest(){
+  const raw = $("q").value, q = norm(raw), m = q.match(/^(\d+)\s+(.+)$/), box = $("sugg");
+  const L = await loadStreets();
+  if (!L.length){ box.style.display = "none"; return; }
+  const words = (m ? m[2] : q).split(" ").filter(Boolean);
+  if (!words.length || q.length < 2){ box.style.display = "none"; $("q").setAttribute("aria-expanded", "false"); return; }
+  const scored = [];
+  for (const st of L){
+    const parts = st.n.split(" "); let ok = true, sc = 0;
+    for (const w of words){ const i = parts.findIndex(p => p.startsWith(w)); if (i < 0){ ok = false; break; } sc += parts[i] === w ? 2 : 1; }
+    if (ok) scored.push([sc + Math.log10(st.c + 1) - st.n.length / 100, st.s]);
+  }
+  scored.sort((a, b) => b[0] - a[0]);
+  const top = scored.slice(0, 6).map(x => x[1]);
+  box.innerHTML = top.map((s, i) => `<button role="option" data-s="${esc(s)}" aria-selected="${i === 0}">${m ? m[1] + " " : ""}${esc(title(s))}</button>`).join("");
+  box.style.display = top.length ? "block" : "none"; $("q").setAttribute("aria-expanded", top.length ? "true" : "false");
+  box.querySelectorAll("button").forEach(b => b.onclick = () => go(m ? +m[1] : null, b.dataset.s));
+}
+async function go(num, street){
+  $("sugg").style.display = "none";
+  const sh = shardOf(street);
+  if (!SHARDS.has(sh)) SHARDS.set(sh, fetch("data/a/" + sh + ".json").then(r => r.ok ? r.json() : {}).catch(() => ({})));
+  const L = (await SHARDS.get(sh))[street];
+  if (!L || !L.length){ $("hint").innerHTML = '<span class="err">Couldn\'t find that street.</span>'; return; }
+  let best = L[0];
+  if (num != null){ let bd = 1e9; for (const r of L){ const d = Math.abs(r[0] - num) + ((r[0] - num) % 2 ? 0.5 : 0); if (d < bd){ bd = d; best = r; } } }
+  const T = await getTile(best[1], best[2]);
+  if (!T){ $("hint").innerHTML = '<span class="err">Couldn\'t load that lot.</span>'; return; }
+  $("q").value = title((num != null ? best[0] + " " : "") + street);
+  show(T, best[3], true);
+  if (num != null && best[0] !== num) $("hint").textContent = `No record for ${num}; showing ${best[0]}, the closest number on that street.`;
+}
+function enterPick(){
+  const q = norm($("q").value), m = q.match(/^(\d+)\s+(.+)$/), b = $("sugg").querySelector('[aria-selected="true"]');
+  if (b) go(m ? +m[1] : null, b.dataset.s);
+}
+
+/* ---------- start ---------- */
+(async function(){
+  await initMap();
+  const tries = [["A three-flat in Avondale", -87.71582, 41.93989], ["A Lake View house", -87.65983, 41.94138], ["A Bronzeville two-flat", -87.61965, 41.82945], ["A shop on Milwaukee Ave", -87.678, 41.91992]];
+  $("tryrow").innerHTML = tries.map((t, i) => `<button data-i="${i}">${t[0]}</button>`).join("");
+  $("tryrow").querySelectorAll("button").forEach(b => b.onclick = () => { const t = tries[+b.dataset.i]; pickAt(t[1], t[2], false); });
+  let tm = 0;
+  $("q").addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(suggest, 120); });
+  $("q").addEventListener("focus", loadStreets, {once:true});
+  $("q").addEventListener("keydown", e => {
+    const bs = [...$("sugg").querySelectorAll("button")], i = bs.findIndex(b => b.getAttribute("aria-selected") === "true");
+    if (e.key === "ArrowDown" || e.key === "ArrowUp"){ e.preventDefault(); if (!bs.length) return; const j = (i + (e.key === "ArrowDown" ? 1 : -1) + bs.length) % bs.length; bs.forEach((b, k) => b.setAttribute("aria-selected", k === j)); }
+    if (e.key === "Enter"){ e.preventDefault(); enterPick(); }
+    if (e.key === "Escape") $("sugg").style.display = "none";
+  });
+  document.addEventListener("click", e => { if (!e.target.closest(".search")) $("sugg").style.display = "none"; });
+  $("loc").onclick = () => {
+    if (!navigator.geolocation){ $("hint").textContent = "Your browser can't share a location."; return; }
+    $("hint").textContent = "Finding you…";
+    navigator.geolocation.getCurrentPosition(p => pickAt(p.coords.longitude, p.coords.latitude, false), () => { $("hint").textContent = "Location is off. Type an address instead."; }, {timeout:10000});
+  };
+  $("grab").onclick = () => $("panel").classList.toggle("min");
+  loadStreets().then(L => { if (!L.length){ $("q").placeholder = "Address search is coming; tap the map"; } });
+  const h = location.hash.match(/^#(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (h) pickAt(+h[1], +h[2], false);
+})();
+</script>
+</body>
+</html>

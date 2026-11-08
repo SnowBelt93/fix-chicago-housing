@@ -1,0 +1,382 @@
+[
+ {
+  "fieldName": "keypin",
+  "name": "keypin",
+  "description": "Parcel identification number (PIN). Primary PIN used for valuing properties associated with multiple PINs."
+ },
+ {
+  "fieldName": "pins",
+  "name": "pins",
+  "description": "All PINs associated with primary PIN that should be valued collectively"
+ },
+ {
+  "fieldName": "year",
+  "name": "year",
+  "description": "Year"
+ },
+ {
+  "fieldName": "township",
+  "name": "township",
+  "description": "Township name"
+ },
+ {
+  "fieldName": "sheet",
+  "name": "modelgroup",
+  "description": "Sheet from associated excel workbook that contains row on assessor's website"
+ },
+ {
+  "fieldName": "class_es",
+  "name": "class(es)",
+  "description": "Class of key PIN or classes of key PIN and some or all associated PINs"
+ },
+ {
+  "fieldName": "studiounits",
+  "name": "studiounits",
+  "description": "Number of studio apartments"
+ },
+ {
+  "fieldName": "_1brunits",
+  "name": "1brunits",
+  "description": "Number of 1 bedroom apartments"
+ },
+ {
+  "fieldName": "_2brunits",
+  "name": "2brunits",
+  "description": "Number of 2 bedroom apartments"
+ },
+ {
+  "fieldName": "_3brunits",
+  "name": "3brunits",
+  "description": "Number of 3 bedroom apartments"
+ },
+ {
+  "fieldName": "_4brunits",
+  "name": "4brunits",
+  "description": "Number of 4 bedroom apartments"
+ },
+ {
+  "fieldName": "tot_units",
+  "name": "tot_units",
+  "description": "Total number of units (can include hotel rooms, nursing home rooms, residential apartments, commercial units etc.)"
+ },
+ {
+  "fieldName": "address",
+  "name": "address",
+  "description": "Address for keypin"
+ },
+ {
+  "fieldName": "adj_rent_sf",
+  "name": "adj_rent/sf",
+  "description": "Adjusted rent per square foot"
+ },
+ {
+  "fieldName": "aprx_comm_sf",
+  "name": "aprx_comm_sf",
+  "description": "Approximate commercial square footage for key PIN and all associated PINs"
+ },
+ {
+  "fieldName": "apt",
+  "name": "apt",
+  "description": "Total number of apartments"
+ },
+ {
+  "fieldName": "avgdailyrate",
+  "name": "avgdailyrate",
+  "description": "Average daily rate (hotel specific)"
+ },
+ {
+  "fieldName": "bldgsf",
+  "name": "bldgsf",
+  "description": "Building square footage for key PIN and all associated PINs"
+ },
+ {
+  "fieldName": "gross_building_area",
+  "name": "gross_building_area",
+  "description": "Gross building area"
+ },
+ {
+  "fieldName": "caprate",
+  "name": "caprate",
+  "description": "Capitalization rate"
+ },
+ {
+  "fieldName": "carwash",
+  "name": "carwash",
+  "description": "Car wash at location (gas station/convenience store specific) - A = \"Yes\", B = \"No\""
+ },
+ {
+  "fieldName": "category",
+  "name": "category",
+  "description": "Hotel category (hotel specific)"
+ },
+ {
+  "fieldName": "ceilingheight",
+  "name": "ceilingheight",
+  "description": "Ceiling height"
+ },
+ {
+  "fieldName": "cost_day_bed",
+  "name": "cost/day/bed",
+  "description": "Cost per day per bed (nursing home specific)"
+ },
+ {
+  "fieldName": "costapproach_sf",
+  "name": "costapproach/sf",
+  "description": "Cost approach value per square foot"
+ },
+ {
+  "fieldName": "covidadjvacancy",
+  "name": "covidadjvacancy",
+  "description": "Covid adjusted vacancy"
+ },
+ {
+  "fieldName": "ebitda",
+  "name": "ebitda%",
+  "description": "Earnings before interest taxes depreciation and amortization %"
+ },
+ {
+  "fieldName": "egi",
+  "name": "egi",
+  "description": "Effective gross income"
+ },
+ {
+  "fieldName": "excesslandarea",
+  "name": "excesslandarea",
+  "description": "Excess land area (land area above 4:1 land to building)"
+ },
+ {
+  "fieldName": "excesslandval",
+  "name": "excesslandval",
+  "description": "Value of excess land area"
+ },
+ {
+  "fieldName": "exp",
+  "name": "exp",
+  "description": "Expenses"
+ },
+ {
+  "fieldName": "f_r",
+  "name": "f/r",
+  "description": "Fast food operation / rental space (gas station/convenience store specific)"
+ },
+ {
+  "fieldName": "finalmarketvalue",
+  "name": "finalmarketvalue",
+  "description": "Final market value"
+ },
+ {
+  "fieldName": "finalmarketvalue_bed",
+  "name": "finalmarketvalue/bed",
+  "description": "Final market value per bed (nursing home specific)"
+ },
+ {
+  "fieldName": "finalmarketvalue_key",
+  "name": "finalmarketvalue/key",
+  "description": "Final market value per key (529 class specific)"
+ },
+ {
+  "fieldName": "finalmarketvalue_sf",
+  "name": "finalmarketvalue/sf",
+  "description": "Final market value per square foot"
+ },
+ {
+  "fieldName": "finalmarketvalue_unit",
+  "name": "finalmarketvalue/unit",
+  "description": "Final market value per unit (multifamily specific)"
+ },
+ {
+  "fieldName": "idphlicense",
+  "name": "idphlicense#",
+  "description": "Illinois department of health license number"
+ },
+ {
+  "fieldName": "incomemarketvalue",
+  "name": "incomemarketvalue",
+  "description": "Value derived from income approach"
+ },
+ {
+  "fieldName": "incomemarketvalue_sf",
+  "name": "incomemarketvalue/sf",
+  "description": "Value per square foot derived from income approach"
+ },
+ {
+  "fieldName": "investmentrating",
+  "name": "investmentrating",
+  "description": "Invesment rating"
+ },
+ {
+  "fieldName": "land_bldg",
+  "name": "land:bldg",
+  "description": "Land square footage to building square footage ratio for key PIN and all associated PINs"
+ },
+ {
+  "fieldName": "landsf",
+  "name": "landsf",
+  "description": "Land square footage for key PIN and all associated PINs"
+ },
+ {
+  "fieldName": "model",
+  "name": "model",
+  "description": "Commercial valuation modeling group"
+ },
+ {
+  "fieldName": "nbhd",
+  "name": "nbhd",
+  "description": "Assessor neighborhood number"
+ },
+ {
+  "fieldName": "netrentablesf",
+  "name": "netrentablesf",
+  "description": "Net rentable square footage"
+ },
+ {
+  "fieldName": "noi",
+  "name": "noi",
+  "description": "Net operating income"
+ },
+ {
+  "fieldName": "oiltankvalue_atypicaloby",
+  "name": "oiltankvalue/atypicaloby",
+  "description": "Oil tank value / atypical outbuilding"
+ },
+ {
+  "fieldName": "owner",
+  "name": "owner",
+  "description": "Owner name"
+ },
+ {
+  "fieldName": "parking",
+  "name": "parking",
+  "description": "Number of parking spaces"
+ },
+ {
+  "fieldName": "parkingsf",
+  "name": "parkingsf",
+  "description": "Parking square footage"
+ },
+ {
+  "fieldName": "pctownerinterest",
+  "name": "pctownerinterest",
+  "description": "Percent owner interest (condominium specific)"
+ },
+ {
+  "fieldName": "permit_partial_demovalue",
+  "name": "permit/partial/demovalue",
+  "description": "Partial value due to uncompleted new construction or demolition"
+ },
+ {
+  "fieldName": "permit_partial_demovalue_reason",
+  "name": "permit/partial/demovalue_reason",
+  "description": "Reason for partial value due to uncompleted new construction or demolition"
+ },
+ {
+  "fieldName": "pgi",
+  "name": "pgi",
+  "description": "Potential gross income"
+ },
+ {
+  "fieldName": "property_name_description",
+  "name": "property_name/description",
+  "description": "Property name/description"
+ },
+ {
+  "fieldName": "property_type_use",
+  "name": "property_type/use",
+  "description": "Property type/use (2023 and before)"
+ },
+ {
+  "fieldName": "reportedoccupancy",
+  "name": "reportedoccupancy",
+  "description": "Reported occupancy"
+ },
+ {
+  "fieldName": "revenuebed_day",
+  "name": "revenuebed/day",
+  "description": "Revenue per bed per day (nursing home specific)"
+ },
+ {
+  "fieldName": "revpar",
+  "name": "revpar",
+  "description": "Revenue per available room (hotel specific)"
+ },
+ {
+  "fieldName": "roomrev",
+  "name": "roomrev%",
+  "description": "Percentage of revenue from room rentals (hotel specific)"
+ },
+ {
+  "fieldName": "salecompmarketvalue_sf",
+  "name": "salecompmarketvalue/sf",
+  "description": "Value per square foot derived from comparables approach"
+ },
+ {
+  "fieldName": "sap",
+  "name": "sap",
+  "description": "In affordable housing special assessment program"
+ },
+ {
+  "fieldName": "sapdeduction",
+  "name": "sapdeduction",
+  "description": "Reduction from affordable housing special assessment program"
+ },
+ {
+  "fieldName": "saptier",
+  "name": "saptier",
+  "description": "Tier of affordable housing special assessment program"
+ },
+ {
+  "fieldName": "stories",
+  "name": "stories",
+  "description": "Number of stories"
+ },
+ {
+  "fieldName": "subclass2",
+  "name": "subclass2",
+  "description": "Property type/use (2024 and later)"
+ },
+ {
+  "fieldName": "taxdist",
+  "name": "taxdist",
+  "description": "Taxing district"
+ },
+ {
+  "fieldName": "taxpayer",
+  "name": "taxpayer",
+  "description": "Owner"
+ },
+ {
+  "fieldName": "totalrevreported",
+  "name": "totalrevreported",
+  "description": "Total revenue reported"
+ },
+ {
+  "fieldName": "totalexp",
+  "name": "totalexp",
+  "description": "Total expenses as a value"
+ },
+ {
+  "fieldName": "totallandval",
+  "name": "totallandval",
+  "description": "Total land value"
+ },
+ {
+  "fieldName": "totalrev",
+  "name": "totalrev",
+  "description": "Total revenue"
+ },
+ {
+  "fieldName": "townregion",
+  "name": "townregion",
+  "description": "Township region"
+ },
+ {
+  "fieldName": "vacancy",
+  "name": "vacancy",
+  "description": "Vacancy"
+ },
+ {
+  "fieldName": "yearbuilt",
+  "name": "yearbuilt",
+  "description": "Year built"
+ }
+]
