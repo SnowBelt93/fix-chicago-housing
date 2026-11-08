@@ -1,0 +1,25 @@
+# Downloads community area population history and Library of Congress photos for Chicago then and now (tools/history/fetch.py).
+
+name: Fetch history data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/history/fetch.py', '.github/workflows/fetch-history.yml']
+permissions:
+  contents: write
+concurrency: history
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: python3 tools/history/fetch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/history
+          git commit -m "History data" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
