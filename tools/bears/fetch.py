@@ -94,13 +94,34 @@ def classify(t):
 
 
 def land():
-    q_good = ''.join(f'way["{k}"="{v}"]({BBOX});relation["{k}"="{v}"]({BBOX});' for k, v in sorted(GOOD) if k != 'amenity')
-    q_park = f'way["amenity"="parking"]["parking"!="street_side"]["parking"!="lane"]({BBOX});relation["amenity"="parking"]({BBOX});'
-    q_bad = ''.join(f'way["{k}"="{v}"]({BBOX});relation["{k}"="{v}"]({BBOX});' for k, v in sorted(BAD))
-    rows = []
-    for name, part in (('good', q_good), ('parking', q_park), ('bad', q_bad)):
-        d = overpass(f'[out:json][timeout:900][maxsize:1073741824];({part});out geom;')
-        r = areas(d, classify); log('land', name, len(r)); rows += r
+    """In tiles, so no single Overpass query runs long; tiles already saved by an earlier run are kept."""
+    s_, w_, n_, e_ = (float(v) for v in BBOX.split(','))
+    NT = 4
+    path = os.path.join(OUT, 'land_tiles.json.gz')
+    done = json.load(gzip.open(path, 'rt')) if os.path.exists(path) else {}
+    good = sorted(k for k in GOOD if k[0] != 'amenity')
+    for i in range(NT):
+        for j in range(NT):
+            key = f'{i}_{j}'
+            if key in done:
+                continue
+            bb = f'{s_ + (n_ - s_) * i / NT:.4f},{w_ + (e_ - w_) * j / NT:.4f},{s_ + (n_ - s_) * (i + 1) / NT:.4f},{w_ + (e_ - w_) * (j + 1) / NT:.4f}'
+            part = ''.join(f'way["{k}"="{v}"]({bb});relation["{k}"="{v}"]({bb});' for k, v in good + sorted(BAD))
+            part += f'way["amenity"="parking"]["parking"!="street_side"]["parking"!="lane"]({bb});relation["amenity"="parking"]({bb});'
+            d = overpass(f'[out:json][timeout:400][maxsize:1073741824];({part});out geom;')
+            if d is None:
+                log('land tile failed', key); continue
+            done[key] = areas(d, classify); log('land tile', key, len(done[key]))
+            json.dump(done, gzip.open(path, 'wt'), separators=(',', ':'))
+            time.sleep(5)
+    rows, seen = [], set()
+    for k, rs in done.items():
+        for r in rs:
+            sig = (r[1], r[2], round(r[3][0][0][0], 5), round(r[3][0][0][1], 5), len(r[3][0]))
+            if sig in seen:
+                continue
+            seen.add(sig); rows.append(r)
+    log('land rows', len(rows), 'tiles', len(done), 'of', NT * NT)
     json.dump(rows, gzip.open(os.path.join(OUT, 'land.json.gz'), 'wt'), separators=(',', ':'))
 
 
