@@ -54,6 +54,7 @@ a{color:var(--sc-navy)}
 .ftx{padding:14px 18px 16px;display:flex;flex-direction:column;gap:5px}
 .ftx .fk{font-size:12.5px;font-weight:600;color:var(--sc-navy)}
 .ftx b{font-size:21px;line-height:1.25;letter-spacing:-.01em;font-weight:600;text-wrap:balance}
+.ftx .fx{font-size:14.5px;line-height:1.45;color:var(--sc-ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .ftx .fs{font-size:13px;color:var(--sc-mute)}
 .pulse{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .pulse a{border:1px solid var(--sc-line);border-radius:14px;padding:10px 12px;text-decoration:none;color:var(--sc-mute);font-size:12.5px;line-height:1.35;background:#fff}
@@ -178,7 +179,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
       </div>
     </div>
     <div class="hr">
-      <a class="feature" id="feat" href="/news/"><div class="fph"><img id="featImg" src="/shape/art/hero.webp" alt="" fetchpriority="high"></div><div class="ftx"><span class="fk" id="featK">Chicago planning news</span><b id="featT">The newest stories on housing, transit and the budget, in one list.</b><span class="fs" id="featS"></span></div></a>
+      <a class="feature" id="feat" href="/news/"><div class="fph"><img id="featImg" src="/shape/art/hero.webp" alt="" fetchpriority="high"></div><div class="ftx"><span class="fk" id="featK">Chicago planning news</span><b id="featT">The newest stories on housing, transit and the budget, in one list.</b><span class="fx" id="featX"></span><span class="fs" id="featS"></span></div></a>
       <div class="pulse">
         <a href="/tracker/"><b id="pHomes">–</b><span id="pHomesL">homes permitted so far this year</span></a>
         <a href="/wards/#calCard"><b id="pMeet">–</b><span id="pMeetL">next City Council meeting</span></a>
@@ -296,7 +297,7 @@ loadPlans();
     if (!f) return;
     const a = document.getElementById("feat"); a.href = f.u; a.target = "_blank"; a.rel = "noopener";
     document.getElementById("featK").textContent = "In the news";
-    document.getElementById("featT").textContent = f.t;
+    document.getElementById("featT").textContent = f.t; if (f.x) document.getElementById("featX").textContent = f.x;
     document.getElementById("featS").textContent = f.s + " · " + new Date(f.d.replace("Z", ":00Z")).toLocaleDateString("en-US", {month:"short", day:"numeric"}) + " · More in Chicago planning news";
     if (f.i){ const im = document.getElementById("featImg"); im.onerror = () => { im.src = "/shape/art/hero.webp"; im.className = "art"; }; im.referrerPolicy = "no-referrer"; im.src = f.i; }
   }).catch(() => {});

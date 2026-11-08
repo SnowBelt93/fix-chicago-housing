@@ -106,7 +106,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     </section>
     <section class="card">
       <h2>Zoning changes in this ward <button class="ib" data-i="zoning" aria-label="About zoning changes">i</button></h2>
-      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. For this term, the alderperson's own vote on each one.</p>
+      <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. For this term, the alderperson's own vote on each one. Most rezonings pass together in one Council roll call, so nearly every alderperson votes yes on nearly all of them; the few No votes and the ones the alderperson introduced personally say more.</p>
       <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">Since May 2023</button><button role="radio" aria-checked="false" data-k="all">Since 2013</button></div>
       <div class="nums" id="znums"></div>
       <div class="zlist" id="zlist"></div>
@@ -170,7 +170,7 @@ function renderZ(){
   const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
   const pd = rows.filter(z => z.k === "pd").length, yes = rows.filter(z => z.v === "Yea").length, no = rows.filter(z => z.v === "Nay").length;
   $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div>` +
-    (span === "term" ? `<div><b>${yes}</b><span>the alderperson voted yes</span></div><div><b>${no}</b><span>voted no</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
+    (span === "term" ? `<div><b>${yes}</b><span>the alderperson voted yes</span></div><div><b>${no}</b><span>voted no</span></div><div><b>${rows.filter(z => z.by).length}</b><span>introduced by the alderperson</span></div>` : `<div><b>${rows.filter(z => z.h).reduce((t, z) => t + z.h, 0).toLocaleString("en-US")}</b><span>homes planned, where stated</span></div>`);
   const lot = z => z.hf != null && z.ht != null ? `homes on a typical lot: ${z.hf} → ${z.ht}` : z.ht != null ? `up to ${z.ht} homes on a typical lot` : "";
   const vote = z => z.v === "Yea" ? `<span class="k">Voted yes</span>` : z.v === "Nay" ? `<span class="k">Voted no</span>` : z.v ? `<span class="k">${VOTE[z.v] || z.v}</span>` : z.d >= "2023-05-15" ? `<span class="k na">No roll call on file</span>` : `<span class="k na"></span>`;
   $("zlist").innerHTML = rows.length ? rows.map(z => `<div class="zrow"><span class="d">${z.d}</span><span>${z.m ? `<a href="${elms(z.m)}" target="_blank" rel="noopener">${z.a}</a>` : z.a}<span class="fine"> · ${z.k === "pd" ? "Planned development" : z.f && z.t ? z.f + " → " + z.t : z.t ? "now " + z.t : "districts not readable in the filed document"}${lot(z) ? " · " + lot(z) : ""}${z.h ? ` · ${z.h} homes planned` : ""}${z.by ? " · introduced by the alderperson" : ""}</span></span>${vote(z)}</div>`).join("") : `<p class="fine">None in this period.</p>`;
