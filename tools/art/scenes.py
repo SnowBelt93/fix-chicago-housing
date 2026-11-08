@@ -450,3 +450,41 @@ def jar():
         cyl(x, y, z, 0.7, 0.2, mat("gold", rough=0.3, metal=0.75), verts=32, bevel=0.03)
     star_pin(0, -2.0, 1.1, 0.7, rot=math.pi / 2)
     return dict(ortho=10, target=(0.4, 0, 2.1), elev=16, azim=-100, sun=(42, -140))
+
+def stadium():
+    """Where should the Bears play: a neutral domed stadium (no team colors or marks) on old industrial land, a train
+    pulling into a station on one side and a big parking lot on the other, a red pin asking 'here?'."""
+    random.seed(21)
+    ground(84, 52)
+    # the stadium: an oval bowl with ribs, a lighter roof dome
+    bowl = cyl(0, 2, 0.0, 15, 7.5, mat("#e9edf1", rough=0.55), verts=64, bevel=0.15)
+    bowl.scale = (1.0, 0.8, 1.0)
+    ring = cyl(0, 2, 7.2, 15.6, 1.1, mat("navy", rough=0.45), verts=64, bevel=0.1); ring.scale = (1.0, 0.8, 1.0)
+    for i in range(40):   # facade ribs
+        a = i / 40 * 2 * math.pi
+        box(15.15 * math.cos(a), 2 + 12.12 * math.sin(a), 0, 0.45, 0.45, 7.3, mat("#c9d1da", rough=0.5), bevel=0.04, rot=a)
+    sphere(0, 2, 7.9, 14.4, mat("#f6f8fa", rough=0.25, spec=0.6), sub=4, sx=1.0, sy=0.8, sz=0.33)
+    sphere(0, 2, 8.4, 7.5, mat("glass", rough=0.08), sub=4, sx=1.0, sy=0.8, sz=0.22)
+    # plaza
+    box(0, 2, -0.02, 38, 30, 0.08, mat("#dfe3e7", rough=0.8), bevel=0)
+    # rail on the north side with a station and a train
+    el_track([(-44, 22), (44, 22)], z=0.4, train="flag", train_at=0.62, cars=3, stripe="flag")
+    box(-10, 22, 0.4, 16, 6.0, 1.0, mat("#d6dbe0", rough=0.6), bevel=0.05)
+    box(-10, 22, 4.2, 16.6, 6.6, 0.3, mat("navy", rough=0.5), bevel=0.05)
+    for dx in (-7, 0, 7):
+        for dy in (-2.7, 2.7): box(-10 + dx, 22 + dy, 1.4, 0.25, 0.25, 2.8, "steel", bevel=0.02)
+    # parking lot on the south-east with cars
+    box(28, -12, -0.01, 24, 22, 0.05, mat("#8a9099", rough=0.9), bevel=0)
+    cols = ["#e6e8eb", "#2f3a46", "#b9c0c8", "#7a8794", "#c8102e", "#41b6e6"]
+    for r in range(5):
+        for c in range(9):
+            if random.random() < 0.82:
+                car(18.5 + c * 2.4, -20 + r * 4.2, 0.04, math.pi / 2, mat(random.choice(cols), rough=0.35, metal=0.3))
+    # old industrial sheds and a stack on the west edge
+    box(-34, -8, 0, 12, 18, 5.5, mat("brick2", rough=0.85), bevel=0.1)
+    box(-34, -8, 5.5, 12.4, 18.4, 0.5, mat("grey", rough=0.8), bevel=0.05)
+    cyl(-30, 6, 0, 1.1, 16, mat("brick", rough=0.85), verts=20)
+    # trees and a red pin
+    for x, y in [(-18, -18), (-22, -14), (16, 16), (22, 14), (-4, -17), (4, -18)]: tree(x, y, 0.05, 0.9, random.choice(["tree", "tree2"]))
+    star_pin(12, -6, 14.5, 1.3)
+    return dict(ortho=100, target=(2, 1, 4), elev=32, azim=-55, sun=(46, -140))

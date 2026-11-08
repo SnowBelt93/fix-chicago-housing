@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Where Should the Bears Play?</title>
+<meta name="description" content="Compare every proposed site for a new Chicago Bears stadium, or drop your own: transit, parking, hotels, neighbors, and a game-day test.">
+<meta property="og:title" content="Where should the Bears play?">
+<meta property="og:description" content="Compare the proposed stadium sites on transit, parking, hotels and neighbors, or pick your own and run game day.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<style>
+html,body{margin:0;height:100%;background:var(--sc-map);font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+#map{position:fixed;inset:var(--sc-head) 0 0 0}
+.panel{position:absolute;z-index:3;top:calc(var(--sc-head) + 14px);left:14px;bottom:14px;width:420px;background:#fff;border-radius:18px;box-shadow:var(--sc-shadow);display:flex;flex-direction:column;overflow:hidden}
+.ptop{padding:18px 20px 10px;border-bottom:1px solid var(--sc-line)}
+h1{font-size:24px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:0 0 4px}
+.lede{font-size:14px;line-height:1.45;color:var(--sc-ink2);margin:0 0 12px}
+.tabs{display:flex;gap:2px;padding:3px;background:var(--sc-seg);border-radius:14px}
+.tabs button{flex:1;font:600 13.5px var(--sc-font);border:0;background:transparent;color:var(--sc-ink2);padding:8px 4px;border-radius:11px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--sc-navy);color:#fff}
+.tabs button:not([aria-selected="true"]):hover{background:#e3e7ec;color:var(--sc-ink)}
+.scroll{overflow:auto;padding:14px 20px 22px;flex:1;overscroll-behavior:contain}
+.pane[hidden]{display:none}
+h2{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:4px 0 8px}
+h3{font-size:13px;font-weight:600;color:var(--sc-mute);margin:16px 0 8px}
+p{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0 0 10px}
+.small{font-size:12.5px;color:var(--sc-mute);line-height:1.45}
+a{color:var(--sc-navy)}
+.sites{display:flex;flex-direction:column;gap:8px}
+.site{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;text-align:left;width:100%;font:inherit;padding:11px 12px;border:1px solid var(--sc-line);border-radius:14px;background:#fff;cursor:pointer;color:var(--sc-ink)}
+.site .dot{grid-row:1 / 3;width:12px;height:12px;border-radius:50%;background:var(--c,#2b5da0)}
+.site b{font-size:15px;font-weight:600}
+.site span:not(.dot){grid-column:2 / 4;font-size:12.5px;color:var(--sc-mute)}
+.site i{grid-row:1;grid-column:3;font-style:normal;font-size:12px;font-weight:600;color:var(--sc-mute);background:var(--sc-seg);border-radius:8px;padding:3px 7px}
+.site[aria-pressed="true"]{border-color:var(--sc-navy);box-shadow:inset 0 0 0 2px var(--sc-navy);background:#eef3fa}
+@media (hover:hover){ .site{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .site:not([aria-pressed="true"]):hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+.pinrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--sc-ink2);cursor:pointer}
+.chk input{width:16px;height:16px;accent-color:var(--sc-navy)}
+.back{display:inline-flex;align-items:center;gap:6px;font:600 14px var(--sc-font);color:var(--sc-navy);background:none;border:0;padding:0;cursor:pointer;margin:0 0 10px}
+.dhead{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
+.dhead .dot{width:14px;height:14px;border-radius:50%;margin-top:6px;flex:none;background:var(--c,#2b5da0)}
+.dhead h2{margin:0}
+.who{font-size:13px;color:var(--sc-mute);margin:2px 0 0}
+.status{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:8px;background:var(--sc-warnbg);color:var(--sc-warn);margin-top:6px}
+.warnbox{background:#fdecef;border:1px solid #f4c3cc;color:#7d0016;border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;margin:10px 0}
+.warnbox b{color:#a0001b}
+.okbox{background:var(--sc-greenbg);border:1px solid #cfe6d8;color:var(--sc-green);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.45;margin:10px 0}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tile{border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px;position:relative}
+.tile b{display:block;font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.1}
+.tile span{display:block;font-size:12.5px;color:var(--sc-mute);line-height:1.35;margin-top:3px}
+.tile .g{position:absolute;right:10px;top:10px;width:8px;height:8px;border-radius:50%}
+.tile .g.good{background:#2e8b57} .tile .g.mid{background:#d9a400} .tile .g.bad{background:#c8102e}
+.ib{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);font:italic 600 12px Georgia,serif;cursor:pointer;vertical-align:1px;margin-left:4px;padding:0}
+.ib:hover{border-color:var(--sc-navy);color:var(--sc-navy)}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.facts li{font-size:14px;line-height:1.45;color:var(--sc-ink2);padding-left:14px;position:relative}
+.facts li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--sc-line2)}
+.src{font-size:12.5px;color:var(--sc-mute);line-height:1.5;margin-top:8px}
+.src a{color:var(--sc-mute)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.btns .sc-btn{min-height:40px}
+select.sel{font:inherit;font-size:14px;min-height:38px;padding:0 10px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.w{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:6px 10px;font-size:14px;margin:6px 0}
+.w input{width:100%;accent-color:var(--sc-navy)}
+.rank{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.rank li{display:grid;grid-template-columns:22px 1fr 54px;gap:10px;align-items:center;font-size:14px;cursor:pointer;padding:6px 8px;border-radius:10px}
+.rank li:hover{background:var(--sc-chip)}
+.rank .n{font-weight:600;color:var(--sc-mute);text-align:right}
+.rank .bar{height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:4px}
+.rank .bar i{display:block;height:100%;background:var(--sc-navy);border-radius:4px}
+.rank .s{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+table.cmp{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+table.cmp th,table.cmp td{padding:6px 4px;border-bottom:1px solid var(--sc-line);text-align:right;font-variant-numeric:tabular-nums}
+table.cmp th:first-child,table.cmp td:first-child{text-align:left}
+table.cmp th{font-size:12px;color:var(--sc-mute);font-weight:600}
+.myth{border:1px solid var(--sc-line);border-radius:14px;padding:12px 14px;margin:8px 0}
+.myth q{display:block;font-size:15px;font-weight:600;quotes:"\201C" "\201D";margin-bottom:6px}
+.myth .v{font-size:13.5px;font-weight:600;color:var(--sc-green);margin:0 0 6px}
+.kick{position:absolute;z-index:3;right:14px;top:calc(var(--sc-head) + 14px);width:320px;background:#fff;border-radius:16px;box-shadow:var(--sc-shadow);padding:14px 16px;display:none}
+.kick.on{display:block}
+.kick h2{font-size:16px;margin:0 0 2px}
+.kick .clock{font-size:13px;color:var(--sc-mute);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.kick .meter{margin:8px 0}
+.kick .meter div{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
+.kick .meter .t{height:10px;border-radius:5px;background:var(--sc-seg);overflow:hidden}
+.kick .meter .t i{display:block;height:100%;width:0;border-radius:5px;transition:width .2s linear}
+.kick .verdict{font-size:14px;line-height:1.45;margin-top:10px;color:var(--sc-ink2)}
+.kick .x{position:absolute;right:10px;top:10px;border:0;background:none;font-size:20px;color:var(--sc-mute);cursor:pointer;line-height:1}
+.legend{position:absolute;z-index:2;right:14px;bottom:28px;background:rgba(255,255,255,.95);border-radius:12px;box-shadow:var(--sc-shadow2);padding:8px 12px;font-size:12.5px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:4px}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1a1d21;color:#fff;border-radius:12px;padding:10px 14px;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}
+dialog.sc-info{max-width:520px}
+.picks{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.picks li{display:grid;grid-template-columns:1fr 46px;gap:10px;align-items:center;font-size:14px}
+.picks .bar{height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:4px}
+.picks .bar i{display:block;height:100%;background:var(--sc-star)}
+.picks b{font-weight:600;text-align:right}
+@media (max-width:859px){
+  .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:52vh;border-radius:18px 18px 0 0}
+  .ptop{padding:12px 16px 8px} h1{font-size:20px} .lede{display:none}
+  .scroll{padding:12px 16px 20px}
+  .kick{left:10px;right:10px;width:auto;top:calc(var(--sc-head) + 8px)}
+  .legend{display:none}
+  #map{bottom:50vh}
+}
+@media (prefers-reduced-motion:reduce){ .kick .meter .t i{transition:none} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Bears stadium<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/" aria-current="page">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/">Wards</a><a href="/tracker/">Permit<span class="sc-nl"> tracker</span></a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago or the Chicago Bears.</span></div>
+</header>
+<div id="map" aria-label="Map of the Chicago region"></div>
+<aside class="panel" aria-label="Stadium sites">
+  <div class="ptop">
+    <h1>Where should the Bears play?</h1>
+    <p class="lede">Every proposed site, measured the same way: trains, parking, hotels and neighbors. Or drop your own pin.</p>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-t="sites">Sites</button><button role="tab" aria-selected="false" data-t="rank">Ranking</button><button role="tab" aria-selected="false" data-t="picks">Readers</button><button role="tab" aria-selected="false" data-t="learn">Learn</button>
+    </div>
+  </div>
+  <div class="scroll" id="scroll">
+    <section class="pane" id="p-sites">
+      <div id="list">
+        <div class="sites" id="sites"></div>
+        <h3>Your own site</h3>
+        <p>Tap <b>Drop a pin</b>, then tap the map. Green areas are land big enough for a domed stadium that isn't homes, parks or water.</p>
+        <div class="pinrow"><button class="sc-btn primary" type="button" id="pinBtn">Drop a pin</button><label class="chk"><input type="checkbox" id="landChk" checked> Show land that fits</label></div>
+      </div>
+      <div id="detail" hidden></div>
+    </section>
+    <section class="pane" id="p-rank" hidden>
+      <h2>What matters to you?</h2>
+      <p>Slide each one. The ranking uses only the measured numbers, scored against the other sites. Nobody's choosing for you.</p>
+      <div id="weights"></div>
+      <ol class="rank" id="rank"></ol>
+      <h3>Side by side</h3>
+      <div style="overflow-x:auto"><table class="cmp" id="cmp"></table></div>
+    </section>
+    <section class="pane" id="p-picks" hidden>
+      <h2>Where readers put it</h2>
+      <p>Pick a site (or your own pin) from its page with <b>This is my pick</b>. One pick per person a day; nothing else is stored.</p>
+      <ul class="picks" id="picks"><li>Loading…</li></ul>
+      <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show readers' pins on the map</label>
+    </section>
+    <section class="pane" id="p-learn" hidden>
+      <h2>Stadium economics</h2>
+      <div id="myths"></div>
+      <h2 style="margin-top:18px">Why not just build on the lake?</h2>
+      <div id="lakeCard"></div>
+      <h2 style="margin-top:18px">How we measure</h2>
+      <div id="how"></div>
+    </section>
+  </div>
+</aside>
+<div class="kick" id="kick" role="status" aria-live="polite">
+  <button class="x" type="button" id="kickX" aria-label="Close">×</button>
+  <h2 id="kickT">Game day</h2>
+  <div class="clock" id="kickClock"></div>
+  <div class="meter"><div><span>Fans by train</span><b id="kmTrain">0</b></div><div class="t"><i id="kbTrain" style="background:#2b5da0"></i></div></div>
+  <div class="meter"><div><span>Fans by car</span><b id="kmCar">0</b></div><div class="t"><i id="kbCar" style="background:#d9822b"></i></div></div>
+  <div class="meter"><div><span>Parking spaces used</span><b id="kmPark">0</b></div><div class="t"><i id="kbPark" style="background:#6b7280"></i></div></div>
+  <div class="verdict" id="kickV"></div>
+</div>
+<div class="legend" id="legend"></div>
+<div class="toast" id="toast"></div>
+<dialog class="sc-info" id="infoDlg"></dialog>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const fmt = n => Math.round(n).toLocaleString("en-US");
+const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const phone = () => matchMedia("(max-width:859px)").matches;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- sources ---------- */
+const SRC = {
+  cbs: ["CBS Chicago: Related Midwest pitches South Works (Nov 6, 2026)", "https://www.cbsnews.com/chicago/news/related-midwest-pitches-bears-stadium-us-steel-south-works-site/"],
+  fox32: ["FOX 32: Every proposed Bears stadium site (July 2026)", "https://www.fox32chicago.com/sports/chicago-bears-stadium-every-proposed-site"],
+  fox59: ["FOX59: Hammond is the Bears' “sole focus”, two sites near Wolf Lake", "https://fox59.com/indiana-news/bears-president-and-ceo-kevin-warren-says-hammond-indiana-is-teams-sole-focus-for-new-stadium-project/"],
+  getin: ["Get Indiana: the Wolf Lake stadium deal explained (updated Aug 2026)", "https://getindiana.com/news/chicago-bears-indiana-wolf-lake-stadium-hammond"],
+  st27: ["Chicago Sun-Times: Indiana Gov. Braun signs Bears stadium bill (Feb 26, 2026)", "https://chicago.suntimes.com/bears/2026/02/26/bears-stadium-hammond-indiana-hammong-senate-passes-bill-27-arlington-heights-george-mccaaskey-kevin-warren-nfl"],
+  bdc: ["BD+C: Bears unveil preliminary master plan for Arlington Park (Sept 2022)", "https://www.bdcnetwork.com/chicago-bears-unveil-preliminary-master-plan-suburban-stadium-district"],
+  shaw: ["Shaw Local: Bears finalize $197.2 million purchase of Arlington Park (Feb 2023)", "https://shawlocal.com/bears/2023/02/15/chicago-bears-finalize-1972-million-purchase-of-arlington-park"],
+  st24: ["Chicago Sun-Times: why the Bears believe they'll succeed where Lucas failed (May 2024)", "https://chicago.suntimes.com/bears/bears-stadium/2024/05/17/new-bears-stadium-lakefront-site-obama-center-lucas-museum-friends-parks-legal-battle"],
+  stfop: ["Chicago Sun-Times: Friends of the Parks “prepared to fight for the lakefront” (May 2024)", "https://chicago.suntimes.com/bears/bears-stadium/2024/05/07/bears-new-stadium-lakefront-friends-parks-protection-ordinance-lucas-museum-legal-fight?p=22"],
+  bb22: ["The Bond Buyer: Chicago puts $2.2 billion price tag on a Soldier Field makeover (July 2022)", "https://www.bondbuyer.com/news/chicago-puts-2-2-billion-price-tag-on-high-end-makeover-of-soldier-field-to-keep-the-bears"],
+  trd: ["The Real Deal: Pritzker wants the Bears to pay $534 million in Soldier Field debt (Sept 2025)", "https://therealdeal.com/chicago/2025/09/11/governor-wants-chicago-bears-to-pay-534-million-stadium-debt"],
+  cbssp: ["CBS Sports: Bears widen the search beyond Arlington Heights (Dec 2025)", "https://www.cbssports.com/nfl/news/chicago-bears-new-stadium-soldier-field-arlington-heights-illinois-indiana"],
+  bch: ["Bradbury, Coates & Humphreys, “The impact of professional sports franchises and venues on local economies” (Journal of Economic Surveys, 2023)", "https://econpapers.repec.org/RePEc:bla:jecsur:v:37:y:2023:i:4:p:1389-1431"],
+  bchpdf: ["Same survey, free working-paper copy (Kennesaw State)", "https://www.kennesaw.edu/coles/centers/markets-economic-opportunity/docs/bradbury-coates-humphreys-01-30-2023.pdf"],
+  conv: ["Conversable Economist: professional sports and the lack of local economic payoffs (2024)", "https://conversableeconomist.com/2024/01/12/professional-sports-and-the-lack-of-local-economic-payoffs/"],
+  osm: ["OpenStreetMap contributors (land use, hotels, parking, expressway exits)", "https://www.openstreetmap.org/copyright"],
+  census: ["U.S. Census Bureau, 2020 Census blocks (people and homes)", "https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/"],
+  lodes: ["U.S. Census Bureau LEHD LODES (jobs by block)", "https://lehd.ces.census.gov/data/"],
+  transit: ["CTA, Metra and South Shore schedules (the transit simulator's data)", "/transit/"],
+};
+const src = (...k) => k.filter(x => SRC[x]).map(x => `<a href="${SRC[x][1]}" target="_blank" rel="noopener">${esc(SRC[x][0])}</a>`).join("<br>");
+
+/* ---------- the proposed sites (facts as reported; centers placed on the map by hand) ---------- */
+const SITES = [
+  {id:"hammond", name:"Hammond, Wolf Lake", c:"#c8102e", ll:[-87.5010, 41.6652], rot:20, where:"Hammond, Indiana", acres:null,
+   who:"The Bears", status:"The Bears' focus; due diligence on two sites near Wolf Lake",
+   facts:["The Bears' board voted in June 2026 to advance a stadium in Northwest Indiana; the team calls Hammond its focus.",
+     "Two sites near Wolf Lake are under study: the Wolf Lake Terminals industrial site west of the Skyway, and Lost Marsh Golf Course, built on old industrial fill. The pin is on Lost Marsh (1001 129th St.); no final site has been picked.",
+     "Indiana's Senate Bill 27 (signed Feb. 26, 2026) created a Northwest Indiana Stadium Authority."],
+   money:["The Bears say they'd put about $2 billion of private money into a stadium.", "The authority would be paid for by a Lake and Porter county food and beverage tax, a Lake County hotel tax, a Hammond admissions tax and renegotiated toll road fees.", "The Bears wouldn't pay property taxes on the site. Taxes from game days would go to Indiana, not Illinois or Chicago."],
+   src:["fox59", "getin", "st27", "cbs"]},
+  {id:"arlington", name:"Arlington Park", c:"#7a4bb3", ll:[-88.0062, 42.0915], rot:0, where:"Arlington Heights, Illinois", acres:326,
+   who:"The Bears (they own it)", status:"Still on the Bears' list",
+   facts:["The Bears bought the former Arlington International Racecourse, 326 acres, for $197.2 million in 2023.", "The 2022 master plan put a 120-acre stadium district on the west side and a mixed-use district on the rest, next to the existing Metra Arlington Park station."],
+   money:["The Bears said the stadium structure itself wouldn't need public money; they've asked for help with roads and utilities.", "They've sought a property tax deal: Illinois' “megaproject” bill would let them negotiate one. Property taxes go to Arlington Heights schools and local governments.", "Leaving Soldier Field early would leave the stadium's debt with Chicago taxpayers (see Soldier Field)."],
+   src:["shaw", "bdc", "st27", "cbssp", "trd"]},
+  {id:"southworks", name:"South Works", c:"#1f7a8c", ll:[-87.5395, 41.7375], rot:-10, where:"South Chicago, Chicago", acres:200, lake:true,
+   who:"Related Midwest (Nov 2026)", status:"Developer pitch; not a Bears proposal",
+   facts:["Related Midwest pitched a domed stadium on about 200 acres of the former U.S. Steel South Works site near 87th Street and Lake Shore Drive, next to the Illinois Quantum and Microelectronics Park.", "The developer cites existing roads and utilities, room for parking, Metra service and boat docks, and says it could open for the 2032 season."],
+   money:["Financing hasn't been set; the developer mentions a public-private partnership.", "Springfield's draft bill would let a city or village set up a stadium financing authority and own the stadium, so it would pay no property taxes. Hearings are set for Nov. 17–19, 2026."],
+   src:["cbs"]},
+  {id:"lakefront", name:"South of Soldier Field", c:"#2b5da0", ll:[-87.6168, 41.8565], rot:0, where:"Museum Campus, Chicago", acres:null,
+   who:"The Bears (April 2024)", status:"Shelved in 2025",
+   facts:["In April 2024 the Bears proposed a $4.7 billion domed stadium on the parking lots just south of Soldier Field, keeping the old colonnades inside 14 acres of new parkland.", "It's public lakefront land, so it drew a lawsuit threat from Friends of the Parks (see Learn)."],
+   money:["The Bears asked for about $900 million through an extension of the state hotel tax, plus $1.5 billion for roads and other infrastructure. Springfield didn't take it up."],
+   src:["st24", "stfop"]},
+  {id:"soldier", name:"Rebuild Soldier Field", c:"#4a6fa5", ll:[-87.6167, 41.8623], rot:0, where:"Museum Campus, Chicago", acres:null,
+   who:"City of Chicago (2022 options); Edward Peck Design (concept)", status:"Concepts only",
+   facts:["In 2022 the city floated three makeovers, from about $900 million to $2.2 billion, including a dome on new columns.", "The Bears' lease runs through 2033. Soldier Field holds about 61,500, the smallest in the NFL."],
+   money:["About $534 million was still owed on the 2003 renovation as of September 2025, paid from a state hotel tax; when that falls short, Chicago's share of state income taxes covers the gap.", "The governor has said the Bears should pay off that debt if they leave."],
+   src:["bb22", "trd", "bdc", "fox32"]},
+  {id:"reese", name:"Michael Reese site", c:"#b5651d", ll:[-87.6118, 41.8405], rot:-22, where:"Bronzeville, Chicago", acres:48,
+   who:"Farpoint Development (renderings, March 2025)", status:"Concept; the site is being developed either way",
+   facts:["The developer of the Bronzeville Lakefront site shared stadium renderings in March 2025, and says it will build its mixed-use plan with or without the Bears."],
+   money:["No public money figure has been published for this concept."],
+   src:["fox32"]},
+];
+
+/* ---------- assumptions (all listed under Learn → How we measure) ---------- */
+const A = {
+  seats: 65000,                 // assumption: a new dome's capacity hasn't been announced; Soldier Field holds about 61,500 (BD+C)
+  foot: [290, 240], h: 62,      // assumption: stadium footprint 290 x 240 m, roof about 62 m, like recent domes
+  walk: 1200,                   // a 15-minute walk to a station
+  perCar: 2.6,                  // assumption: fans per car
+  sqm: 30,                      // assumption: square meters per surface space incl. aisles (lots without a capacity tag)
+  ramp: 1500,                   // assumption: cars per hour one exit ramp lane can take
+  hours: 2.5,                   // fans arrive over 2.5 hours
+  perTrain: {L:800, Metra:1200, "South Shore":900},   // assumption: 8 L cars x ~100; 8 Metra cars x ~150 seats; South Shore ~6 cars x 150
+  maxTph: {L:20, Metra:6, "South Shore":4},          // assumption: game-day trains an hour each way a line could run
+  share: {LM:0.30, L:0.25, M:0.15, none:0.05},       // assumption: share of fans arriving by train, by what's within a 15-minute walk
+};
+
+/* ---------- data ---------- */
+let LAND = null, PL = null, BLK = null, REFS = [], NET = null, META = null;
+const K = 111319.49, O = [41.85, -87.65], KX = K * Math.cos(O[0] * Math.PI / 180);
+const xy = (lon, lat) => [(lon - O[1]) * KX, (lat - O[0]) * K];
+const llOf = (x, y) => [O[1] + x / KX, O[0] + y / K];
+async function loadAll(){
+  const j = u => fetch(u).then(r => { if (!r.ok) throw u; return r.json(); });
+  const [land, pl, blk, refs, net, meta] = await Promise.all([j("data/land.json").catch(() => ({parts:[]})), j("data/places.json").catch(() => ({hotels:[], lots:[], exits:[], rail:[]})),
+    fetch("data/blocks.bin").then(r => r.ok ? r.arrayBuffer() : null).catch(() => null), j("data/refs.json").catch(() => []), j("../transit/data/net.json").catch(() => null), j("../meta.json").catch(() => null)]);
+  LAND = land; PL = pl; REFS = refs; NET = net; META = meta;
+  LAND.parts.forEach(p => { p.xy = p[3].map(r => r.map(q => xy(q[0], q[1]))); let a = [1e9, 1e9, -1e9, -1e9]; for (const [x, y] of p.xy[0]){ a[0] = Math.min(a[0], x); a[1] = Math.min(a[1], y); a[2] = Math.max(a[2], x); a[3] = Math.max(a[3], y); } p.bb = a; });
+  for (const k of ["hotels", "lots", "exits", "rail"]) PL[k].forEach(q => { const [x, y] = xy(q[0], q[1]); q.x = x; q.y = y; });
+  if (blk){ const n = new Uint32Array(blk, 0, 1)[0], o = 4; const X = new Int16Array(blk, o, n), Y = new Int16Array(blk, o + 2 * n, n);
+    BLK = {n, X, Y, P: new Uint16Array(blk.slice(o + 4 * n, o + 6 * n)), H: new Uint16Array(blk.slice(o + 6 * n, o + 8 * n)), J: new Uint16Array(blk.slice(o + 8 * n, o + 10 * n))}; }
+}
+function inRing(x, y, R){ let c = false; for (let i = 0, j = R.length - 1; i < R.length; j = i++){ const [xi, yi] = R[i], [xj, yj] = R[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; }
+function ringDist(x, y, R){ let b = 1e12; for (let i = 1; i < R.length; i++){ const [ax, ay] = R[i - 1], [bx, by] = R[i], dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1))); b = Math.min(b, (ax + t * dx - x) ** 2 + (ay + t * dy - y) ** 2); } return Math.sqrt(b); }
+// the piece of usable land under a point (or within 150 m of it: mapped land use stops at fences and lot lines)
+function landAt(x, y){
+  const near = LAND.parts.filter(p => x >= p.bb[0] - 150 && x <= p.bb[2] + 150 && y >= p.bb[1] - 150 && y <= p.bb[3] + 150);
+  const inside = near.find(p => inRing(x, y, p.xy[0]) && !p.xy.slice(1).some(h => inRing(x, y, h)));
+  if (inside) return inside;
+  let best = null, bd = 150; for (const p of near){ const d = Math.min(...p.xy.map(r => ringDist(x, y, r))); if (d < bd){ bd = d; best = p; } } return best;
+}
+const inLand = (p, x, y) => (inRing(x, y, p.xy[0]) && !p.xy.slice(1).some(h => inRing(x, y, h))) || Math.min(...p.xy.map(r => ringDist(x, y, r))) < 60;
+
+/* stadium footprint: an ellipse turned by rot degrees */
+function footprint(x, y, rot){ const [a, b] = [A.foot[0] / 2, A.foot[1] / 2], t = rot * Math.PI / 180, pts = [];
+  for (let i = 0; i < 48; i++){ const u = i / 48 * 2 * Math.PI, ex = a * Math.cos(u), ey = b * Math.sin(u); pts.push([x + ex * Math.cos(t) - ey * Math.sin(t), y + ex * Math.sin(t) + ey * Math.cos(t)]); }
+  return pts; }
+const inEllipse = (px, py, x, y, rot) => { const t = -rot * Math.PI / 180, dx = px - x, dy = py - y, u = dx * Math.cos(t) - dy * Math.sin(t), v = dx * Math.sin(t) + dy * Math.cos(t); return (u * u) / (A.foot[0] * A.foot[0] / 4) + (v * v) / (A.foot[1] * A.foot[1] / 4) <= 1; };
+
+/* ---------- measure one spot ---------- */
+function measure(lon, lat, rot, site){
+  const [x, y] = xy(lon, lat), d2 = (q) => (q.x - x) ** 2 + (q.y - y) ** 2, R = r => r * r;
+  const m = {lon, lat, rot};
+  // trains: stations within a 15-minute walk, each line counted once at its nearest station
+  const lines = new Map(); m.stations = [];
+  for (const s of PL.rail){ const d = Math.sqrt(d2(s)); if (d > A.walk) continue; m.stations.push({name:s[2], kind:s[3], d});
+    const nl = Math.max(1, (s[5] || []).length);
+    for (const l of (s[5] || [s[3]])){ const key = s[3] + ":" + l, tph = s[4] / nl / 18 / 2; const cur = lines.get(key); if (!cur || cur.d > d) lines.set(key, {kind:s[3], line:l, d, tph}); } }
+  m.stations.sort((a, b) => a.d - b.d);
+  m.lines = [...lines.values()];
+  const hasL = m.lines.some(l => l.kind === "L"), hasM = m.lines.some(l => l.kind !== "L");
+  m.share = hasL && hasM ? A.share.LM : hasL ? A.share.L : hasM ? A.share.M : A.share.none;
+  // trains in the hours before kickoff: each line runs up to its game-day max, both directions toward the stadium
+  m.trainCap = m.lines.reduce((s, l) => s + Math.min(A.maxTph[l.kind] || 4, Math.max(2 * l.tph, 4)) * 2 * A.perTrain[l.kind] * A.hours, 0);
+  m.byTrain = Math.min(A.seats * m.share, m.trainCap);
+  m.byCar = A.seats - m.byTrain; m.cars = m.byCar / A.perCar;
+  m.parking = 0; for (const q of PL.lots) if (d2(q) <= R(1609)) m.parking += q[2];
+  m.exits = PL.exits.filter(q => d2(q) <= R(3000)).length;
+  m.rampLoad = m.exits ? m.cars / (m.exits * A.ramp * A.hours) : 9;
+  m.hotels1 = PL.hotels.filter(q => d2(q) <= R(1609)).length; m.hotels5 = PL.hotels.filter(q => d2(q) <= R(8047)).length;
+  // people and homes
+  let p10 = 0, p25 = 0, h05 = 0, hIn = 0, jIn = 0;
+  if (BLK) for (let i = 0; i < BLK.n; i++){ const bx = BLK.X[i] * 10, by = BLK.Y[i] * 10, dd = (bx - x) ** 2 + (by - y) ** 2;
+    if (dd <= R(40234)){ p25 += BLK.P[i]; if (dd <= R(16093)){ p10 += BLK.P[i]; if (dd <= R(805)){ h05 += BLK.H[i]; if (inEllipse(bx, by, x, y, rot)){ hIn += BLK.H[i]; jIn += BLK.J[i]; } } } } }
+  Object.assign(m, {p10, p25, h05, hIn, jIn});
+  // land
+  const part = landAt(x, y); m.land = part ? part[0] : 0; m.landName = part ? part[2] : "";
+  let inside = 0; const fp = footprint(x, y, rot); if (part) for (const [px, py] of fp) if (inLand(part, px, py)) inside++;
+  m.fits = part ? inside / fp.length : 0;
+  m.acres = site ? site.acres || null : (m.land ? Math.min(m.land, 120) : 0);   // proposed sites: the published acreage, or unknown
+  // where it is
+  const city = NET && NET.cityOutline ? NET.cityOutline.some(r => inRing(lon, lat, r)) : false;
+  m.place = lon > -87.5249 && lat < 41.762 ? "Indiana" : city ? "Chicago" : "Illinois suburbs";
+  m.lake = (site && site.lake) || (NET && NET.lake ? nearLake(lon, lat) : false);
+  const [lx, ly] = xy(-87.6278, 41.8819); m.loop = Math.hypot(x - lx, y - ly) / 1609;   // miles to State & Madison
+  return m;
+}
+function nearLake(lon, lat){ const [x, y] = xy(lon, lat); let best = 1e9;
+  for (const ring of NET.lake) for (let i = 1; i < ring.length; i++){ const [ax, ay] = xy(ring[i - 1][0], ring[i - 1][1]), [bx, by] = xy(ring[i][0], ring[i][1]);
+    const dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1))); best = Math.min(best, Math.hypot(ax + t * dx - x, ay + t * dy - y)); }
+  return best < 1000 || NET.lake.some(r => inRing(lon, lat, r)); }
+
+/* ---------- the map ---------- */
+let map, mode = "list", cur = null, pin = null, M = {};
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+async function initMap(){
+  let style = {version:8, glyphs:"https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf", sources:{}, layers:[{id:"bg", type:"background", paint:{"background-color":"#eef0ea"}}]};
+  if (ownDomain()) try { style = await fetch("https://tiles.openfreemap.org/styles/positron").then(r => r.json()); } catch (e) {}
+  map = new maplibregl.Map({container:"map", style, center:[-87.78, 41.86], zoom:phone() ? 8.6 : 9.3, minZoom:8, maxZoom:18, maxPitch:65, attributionControl:{compact:true}});
+  map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "top-right");
+  await new Promise(r => map.on("load", r));
+  if (!ownDomain() && NET){
+    map.addSource("lake", {type:"geojson", data:{type:"FeatureCollection", features:NET.lake.map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))}});
+    map.addLayer({id:"lake", type:"fill", source:"lake", paint:{"fill-color":"#cfe3f0"}});
+    map.addSource("city", {type:"geojson", data:{type:"FeatureCollection", features:NET.cityOutline.map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))}});
+    map.addLayer({id:"city", type:"line", source:"city", paint:{"line-color":"#9aa3ad", "line-width":1}});
+  }
+  // land that fits
+  map.addSource("land", {type:"geojson", data:{type:"FeatureCollection", features:LAND.parts.map((p, i) => ({type:"Feature", id:i, properties:{a:p[0]}, geometry:{type:"Polygon", coordinates:p[3]}}))}});
+  map.addLayer({id:"land", type:"fill", source:"land", paint:{"fill-color":"#3f9c5a", "fill-opacity":["interpolate", ["linear"], ["zoom"], 9, 0.32, 14, 0.18]}});
+  map.addLayer({id:"land-l", type:"line", source:"land", paint:{"line-color":"#2e7d46", "line-width":["interpolate", ["linear"], ["zoom"], 9, 0.4, 14, 1.4]}});
+  // rail
+  if (NET){
+    const lines = [...NET.lLines.map(l => ({...l, k:"L"})), ...NET.metraLines.map(l => ({...l, k:"M", color:"#6b7280"})), ...NET.southShore.lines.map(l => ({...l, k:"S", color:"#d9822b"}))];
+    map.addSource("rail", {type:"geojson", data:{type:"FeatureCollection", features:lines.flatMap(l => l.paths.map(p => ({type:"Feature", properties:{c:l.color || "#555", k:l.k}, geometry:{type:"LineString", coordinates:p}})))}});
+    map.addLayer({id:"rail", type:"line", source:"rail", paint:{"line-color":["get", "c"], "line-width":["interpolate", ["linear"], ["zoom"], 9, 1, 14, 3], "line-opacity":0.75}});
+  }
+  // selected stadium, its walk ring, nearby parking and hotels, a reference district, game-day dots
+  for (const id of ["ring", "near", "ref", "fp", "fans", "heat", "sites"]) map.addSource(id, {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+  map.addLayer({id:"ring", type:"line", source:"ring", paint:{"line-color":"#2b5da0", "line-width":1.4, "line-dasharray":[2, 2]}});
+  map.addLayer({id:"ref", type:"fill", source:"ref", paint:{"fill-color":["match", ["get", "t"], "parking", "#9aa3ad", "stadium", "#c8102e", "#6b7280"], "fill-opacity":["match", ["get", "t"], "parking", 0.45, 0.35]}});
+  map.addLayer({id:"ref-l", type:"line", source:"ref", paint:{"line-color":["match", ["get", "t"], "stadium", "#c8102e", "#6b7280"], "line-width":1.2}});
+  map.addLayer({id:"near", type:"circle", source:"near", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 11, 2.5, 15, 6], "circle-color":["match", ["get", "t"], "hotel", "#7a4bb3", "lot", "#6b7280", "#1a1d21"], "circle-stroke-color":"#fff", "circle-stroke-width":1}});
+  map.addLayer({id:"heat", type:"heatmap", source:"heat", paint:{"heatmap-weight":["get", "n"], "heatmap-radius":["interpolate", ["linear"], ["zoom"], 8, 18, 14, 50], "heatmap-opacity":0.7}});
+  map.addLayer({id:"fp", type:"fill-extrusion", source:"fp", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-base":["get", "b"], "fill-extrusion-opacity":0.95}});
+  map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 1.4, 15, 3.5], "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
+  map.addLayer({id:"sites", type:"circle", source:"sites", paint:{"circle-radius":["case", ["get", "on"], 10, 7], "circle-color":["get", "c"], "circle-stroke-color":"#fff", "circle-stroke-width":2.5}});
+  if (ownDomain()) map.addLayer({id:"sites-t", type:"symbol", source:"sites", layout:{"text-field":["get", "n"], "text-font":["Noto Sans Bold"], "text-size":12.5, "text-offset":[0, 1.3], "text-anchor":"top"}, paint:{"text-color":"#1a1d21", "text-halo-color":"#fff", "text-halo-width":1.6}});
+  map.on("click", "sites", e => { const id = e.features[0].properties.id; if (id === "pin") openPin(); else openSite(id); });
+  map.on("mouseenter", "sites", () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", "sites", () => map.getCanvas().style.cursor = "");
+  map.on("click", e => { if (mode !== "pin") return; if (map.queryRenderedFeatures(e.point, {layers:["sites"]}).length) return; placePin(e.lngLat.lng, e.lngLat.lat); });
+  drawSites(); legend();
+}
+function drawSites(){
+  const f = SITES.map(s => ({type:"Feature", properties:{id:s.id, n:s.name, c:s.c, on:cur === s.id}, geometry:{type:"Point", coordinates:s.ll}}));
+  if (pin) f.push({type:"Feature", properties:{id:"pin", n:"Your pin", c:"#1a1d21", on:cur === "pin"}, geometry:{type:"Point", coordinates:[pin.lon, pin.lat]}});
+  map.getSource("sites").setData({type:"FeatureCollection", features:f});
+}
+function showStadium(lon, lat, rot, color){
+  const [x, y] = xy(lon, lat), ring = footprint(x, y, rot).map(p => llOf(...p)), inner = footprint(x, y, rot).map(([px, py]) => llOf(x + (px - x) * 0.82, y + (py - y) * 0.82));
+  ring.push(ring[0]); inner.push(inner[0]);
+  map.getSource("fp").setData({type:"FeatureCollection", features:[
+    {type:"Feature", properties:{c:"#d7dbe0", h:A.h * 0.72, b:0}, geometry:{type:"Polygon", coordinates:[ring]}},
+    {type:"Feature", properties:{c:color || "#f4f6f8", h:A.h, b:A.h * 0.72}, geometry:{type:"Polygon", coordinates:[inner]}}]});
+  const walk = []; for (let i = 0; i <= 64; i++){ const u = i / 64 * 2 * Math.PI; walk.push(llOf(x + A.walk * Math.cos(u), y + A.walk * Math.sin(u))); }
+  map.getSource("ring").setData({type:"FeatureCollection", features:[{type:"Feature", geometry:{type:"LineString", coordinates:walk}}]});
+  const near = [];
+  for (const q of PL.hotels) if ((q.x - x) ** 2 + (q.y - y) ** 2 < 8047 ** 2) near.push({type:"Feature", properties:{t:"hotel"}, geometry:{type:"Point", coordinates:[q[0], q[1]]}});
+  for (const q of PL.lots) if ((q.x - x) ** 2 + (q.y - y) ** 2 < 1609 ** 2) near.push({type:"Feature", properties:{t:"lot"}, geometry:{type:"Point", coordinates:[q[0], q[1]]}});
+  map.getSource("near").setData({type:"FeatureCollection", features:near});
+}
+function clearStadium(){ for (const id of ["fp", "ring", "near", "ref"]) map.getSource(id).setData({type:"FeatureCollection", features:[]}); }
+function legend(){
+  $("legend").innerHTML = '<span><i style="background:rgba(63,156,90,.45);border:1px solid #2e7d46"></i>Land that fits a stadium</span><span><i style="background:#7a4bb3;border-radius:50%"></i>Hotel</span><span><i style="background:#6b7280;border-radius:50%"></i>Parking lot</span><span><i style="border:1.5px dashed #2b5da0;background:none;border-radius:50%"></i>15-minute walk</span>';
+}
+
+/* ---------- panel ---------- */
+const tile = (v, label, g, info) => `<div class="tile">${g ? `<span class="g ${g}"></span>` : ""}<b>${v}</b><span>${label}${info ? ` <button class="ib" type="button" data-info="${info}" aria-label="How this is measured">i</button>` : ""}</span></div>`;
+function renderList(){
+  $("sites").innerHTML = SITES.map(s => `<button class="site" type="button" data-id="${s.id}" aria-pressed="${cur === s.id}" style="--c:${s.c}"><span class="dot"></span><b>${esc(s.name)}</b><span>${esc(s.where)} · ${esc(s.who)}</span><i>${M[s.id] ? (M[s.id].lines.length ? M[s.id].lines.length + (M[s.id].lines.length === 1 ? " train line" : " train lines") : "No trains") : ""}</i></button>`).join("");
+  $("sites").querySelectorAll(".site").forEach(b => b.onclick = () => openSite(b.dataset.id));
+}
+function grade(v, good, bad){ return good > bad ? (v >= good ? "good" : v <= bad ? "bad" : "mid") : (v <= good ? "good" : v >= bad ? "bad" : "mid"); }
+function detailHtml(m, s){
+  const parkPct = m.cars ? m.parking / m.cars : 0;
+  let warn = "";
+  if (!s){
+    if (!m.land || m.fits < 0.7) warn = `<div class="warnbox"><b>This isn't land a stadium fits on.</b> ${m.hIn ? `About <b>${fmt(m.hIn)} homes</b>${m.jIn ? ` and <b>${fmt(m.jIn)} jobs</b>` : ""} sit where the stadium would go, and would have to be torn down.` : "Most of it is parks, water, a school or an airport, or the open land around it is too small."} Try a green area.</div>`;
+    else warn = `<div class="okbox">${m.land > 1000 ? `This is part of a big stretch of connected industrial, rail and commercial land (${fmt(m.land)} acres), with room for parking too.` : `This is ${m.landName ? esc(m.landName) + ", " : ""}${fmt(m.land)} acres of ${m.land >= 75 ? "land with room for parking too" : "land that fits a domed stadium, with little room for parking"}.`}${m.hIn ? ` About ${fmt(m.hIn)} homes sit inside the footprint.` : ""}</div>`;
+  } else if (m.hIn) warn = `<div class="warnbox">About <b>${fmt(m.hIn)} homes</b> sit where the stadium would go.</div>`;
+  const st = m.stations.slice(0, 4).map(x => `${esc(x.name)} (${x.kind}, ${(x.d / 1609).toFixed(1)} mi)`).join("; ");
+  return `${warn}
+  <div class="tiles">
+    ${tile(m.lines.length ? fmt(m.trainCap / 1000) + "k" : "0", `fans trains could bring in ${A.hours} hours${m.lines.length ? "" : " (no station within a 15-minute walk)"}`, grade(m.trainCap, 30000, 5000), "trains")}
+    ${tile(fmt(m.cars), `cars on game day (${Math.round((1 - m.byTrain / A.seats) * 100)}% of fans drive)`, grade(m.cars, 12000, 20000), "cars")}
+    ${tile(fmt(m.parking), `parking spaces within 1 mile (${Math.round(parkPct * 100)}% of what's needed)`, grade(parkPct, 0.9, 0.4), "parking")}
+    ${tile(m.exits ? Math.round(m.rampLoad * 100) + "%" : "None", m.exits ? `of the nearby expressway ramps' capacity (${m.exits} ${m.exits === 1 ? "exit" : "exits"} within 2 mi)` : "expressway exits within 2 miles", m.exits ? grade(m.rampLoad, 0.8, 1.3) : "bad", "ramps")}
+    ${tile(fmt(m.hotels5), `hotels within 5 miles (${m.hotels1} within 1)`, grade(m.hotels5, 60, 10), "hotels")}
+    ${tile(fmt(m.p25 / 1e6 * 10) / 10 + "M", `people within 25 miles (${(m.p10 / 1e6).toFixed(1)}M within 10)`, grade(m.p25, 4e6, 2e6), "people")}
+    ${tile(fmt(m.h05), "homes within half a mile, who'd live with game days", grade(m.h05, 1500, 8000), "neighbors")}
+    ${tile(m.loop.toFixed(0) + " mi", "from the Loop (State and Madison)", "", "")}
+  </div>
+  ${st ? `<p class="small" style="margin-top:8px">Stations within a 15-minute walk: ${st}.</p>` : ""}`;
+}
+function openSite(id){
+  const s = SITES.find(x => x.id === id); if (!s) return;
+  cur = id; mode = "site"; setPinMode(false); stopKick();
+  const m = M[id] || (M[id] = measure(s.ll[0], s.ll[1], s.rot, s));
+  $("list").hidden = true; const d = $("detail"); d.hidden = false;
+  d.innerHTML = `<button class="back" type="button" id="backBtn">← All sites</button>
+    <div class="dhead" style="--c:${s.c}"><span class="dot"></span><div><h2>${esc(s.name)}</h2><p class="who">${esc(s.where)} · Proposed by ${esc(s.who)}</p><span class="status">${esc(s.status)}</span></div></div>
+    <ul class="facts">${s.facts.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
+    ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
+    <h3>Measured the same way as every site</h3>${detailHtml(m, s)}
+    <h3>Who pays, and who gets the taxes</h3><ul class="facts">${s.money.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn">This is my pick</button></div>
+    <h3>Bring another stadium here, at real scale</h3>${refPicker()}
+    <p class="src">${src(...s.src)}</p>`;
+  bindDetail(m, s.c, s.name);
+  showStadium(s.ll[0], s.ll[1], s.rot, null);
+  fly(s.ll); drawSites(); renderList(); setHash();
+}
+function openPin(){
+  if (!pin) return; cur = "pin"; mode = "site"; setPinMode(false); stopKick();
+  const m = M.pin = measure(pin.lon, pin.lat, pin.rot, null);
+  $("list").hidden = true; const d = $("detail"); d.hidden = false;
+  d.innerHTML = `<button class="back" type="button" id="backBtn">← All sites</button>
+    <div class="dhead" style="--c:#1a1d21"><span class="dot"></span><div><h2>Your pin</h2><p class="who">${esc(m.place)} · ${m.lon.toFixed(4)}, ${m.lat.toFixed(4)}</p></div></div>
+    ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
+    ${detailHtml(m, null)}
+    <h3>Who would get the taxes</h3><p>${m.place === "Indiana" ? "Indiana, Lake County and the town it's in. Illinois and Chicago would lose game-day hotel, amusement and sales taxes." : m.place === "Chicago" ? "Chicago and Cook County, and the state through its hotel tax. Today, Chicago's amusement tax applies to tickets." : "The suburb it's in, its school districts and Cook County or the collar county, unless a property tax deal says otherwise."}</p>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn" type="button" id="rotBtn">Turn it</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button></div>
+    <h3>Bring another stadium here, at real scale</h3>${refPicker()}`;
+  bindDetail(m, "#1a1d21", "Your pin");
+  $("rotBtn").onclick = () => { pin.rot = (pin.rot + 30) % 180; openPin(); };
+  $("moveBtn").onclick = () => { setPinMode(true); toast("Tap the map to move your pin"); };
+  showStadium(pin.lon, pin.lat, pin.rot, "#e6e9ed"); drawSites(); setHash(); updateRank();
+}
+function refPicker(){ return `<select class="sel" id="refSel" aria-label="Stadium to compare"><option value="">Pick one</option>${REFS.map((r, i) => `<option value="${i}">${esc(r.name)}, ${esc(r.city)}</option>`).join("")}</select> <span class="small" id="refNote"></span>`; }
+function bindDetail(m, color, name){
+  $("backBtn").onclick = back;
+  $("kickBtn").onclick = () => kickoff(m, name);
+  $("pickBtn").onclick = () => pickIt(cur, m);
+  $("refSel").onchange = e => showRef(+e.target.value, m, e.target.value === "");
+  $("detail").querySelectorAll("[data-info]").forEach(b => b.onclick = () => info(b.dataset.info));
+  $("scroll").scrollTop = 0;
+}
+function back(){ cur = null; mode = "list"; $("detail").hidden = true; $("list").hidden = false; clearStadium(); drawSites(); renderList(); setHash(); stopKick(); map.easeTo({center:[-87.78, 41.86], zoom:phone() ? 8.6 : 9.3, pitch:0, bearing:0, duration:reduce ? 0 : 900}); }
+function fly(ll){ map.flyTo({center:ll, zoom:phone() ? 13.2 : 14.2, pitch:50, bearing:-20, duration:reduce ? 0 : 1600, padding:phone() ? {bottom:20} : {left:440}}); }
+
+/* reference stadium districts, moved onto the site */
+function showRef(i, m, none){
+  if (none){ map.getSource("ref").setData({type:"FeatureCollection", features:[]}); $("refNote").textContent = ""; return; }
+  const R = REFS[i], [x, y] = xy(m.lon, m.lat);
+  const f = R.els.filter(e => e.r).map(e => ({type:"Feature", properties:{t:e.t}, geometry:{type:"Polygon", coordinates:[e.r.map(([dx, dy]) => llOf(x + dx, y + dy)).concat([llOf(x + e.r[0][0], y + e.r[0][1])])]}}));
+  map.getSource("ref").setData({type:"FeatureCollection", features:f});
+  const park = R.els.filter(e => e.t === "parking").length, st = R.els.filter(e => e.t === "station").length;
+  $("refNote").textContent = `Red = the stadium, gray = its parking lots (${park}), as mapped in OpenStreetMap${st ? `; ${st} rail station${st === 1 ? "" : "s"} nearby there` : ""}.`;
+  map.easeTo({zoom:phone() ? 13 : 13.8, duration:reduce ? 0 : 700});
+}
+
+/* ---------- your own pin ---------- */
+function setPinMode(on){ mode = on ? "pin" : (cur ? "site" : "list"); $("pinBtn").textContent = on ? "Tap the map…" : "Drop a pin"; map.getCanvas().style.cursor = on ? "crosshair" : ""; }
+function placePin(lon, lat){
+  const [x, y] = xy(lon, lat), part = landAt(x, y);
+  pin = {lon, lat, rot:pin ? pin.rot : 0};
+  if (!part) toast("That spot isn't on land that fits. See what would have to go:");
+  setPinMode(false); openPin(); map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 13.5), pitch:45, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
+}
+
+/* ---------- game day ---------- */
+let kickT = null;
+function stopKick(){ if (kickT) cancelAnimationFrame(kickT); kickT = null; $("kick").classList.remove("on"); map && map.getSource("fans") && map.getSource("fans").setData({type:"FeatureCollection", features:[]}); }
+function kickoff(m, name){
+  stopKick();
+  const [x, y] = xy(m.lon, m.lat), K2 = $("kick"); K2.classList.add("on"); $("kickT").textContent = "Game day at " + name;
+  // where fans come from: train dots ride in along the lines near the site; car dots come in along the nearest exits
+  const trainSrc = [], carSrc = [];
+  if (NET) for (const l of [...NET.lLines, ...NET.metraLines, ...NET.southShore.lines]) for (const p of l.paths){ for (let i = 0; i < p.length; i += 3){ const [px, py] = xy(p[i][0], p[i][1]), d = Math.hypot(px - x, py - y); if (d > 2500 && d < 14000 && m.lines.length) trainSrc.push([px, py]); } }
+  const ex = PL.exits.filter(q => Math.hypot(q.x - x, q.y - y) < 6000);
+  for (const q of (ex.length ? ex : [{x:x + 4000, y}, {x:x - 4000, y}])) for (let k = 0; k < 6; k++){ const a = Math.atan2(q.y - y, q.x - x) + (Math.random() - 0.5) * 0.9, r = Math.hypot(q.x - x, q.y - y) + 2500 + Math.random() * 5000; carSrc.push([x + r * Math.cos(a), y + r * Math.sin(a), q.x, q.y]); }
+  const N = 900, trainN = Math.round(N * m.byTrain / A.seats), dots = [];
+  for (let i = 0; i < N; i++){
+    const t = i < trainN && trainSrc.length ? "t" : "c";
+    let from, via;
+    if (t === "t"){ from = trainSrc[(Math.random() * trainSrc.length) | 0]; const st = nearestStation(m); via = st || [x, y]; }
+    else { const c = carSrc[(Math.random() * carSrc.length) | 0]; from = [c[0], c[1]]; via = [c[2], c[3]]; }
+    dots.push({t, from, via, start:Math.random() * 0.75, speed:0.18 + Math.random() * 0.12});
+  }
+  const dur = reduce ? 1 : 14000, t0 = performance.now();
+  const step = now => {
+    const f = Math.min(1, (now - t0) / dur), feats = [];
+    for (const d of dots){ const u = Math.max(0, Math.min(1, (f - d.start) / d.speed)); if (u <= 0 || u >= 1) continue;
+      const [a, b] = u < 0.75 ? [d.from, d.via] : [d.via, [x, y]], w = u < 0.75 ? u / 0.75 : (u - 0.75) / 0.25;
+      const jx = (Math.sin(d.start * 999) * 40), jy = (Math.cos(d.start * 777) * 40);
+      feats.push({type:"Feature", properties:{m:d.t}, geometry:{type:"Point", coordinates:llOf(a[0] + (b[0] - a[0]) * w + jx, a[1] + (b[1] - a[1]) * w + jy)}}); }
+    map.getSource("fans").setData({type:"FeatureCollection", features:feats});
+    const arrived = Math.min(1, f / 0.95);
+    const tr = m.byTrain * arrived, car = m.byCar * arrived, used = Math.min(m.parking, m.cars * arrived);
+    $("kmTrain").textContent = fmt(tr); $("kmCar").textContent = fmt(car); $("kmPark").textContent = fmt(used) + " of " + fmt(m.parking);
+    $("kbTrain").style.width = (tr / A.seats * 100) + "%"; $("kbCar").style.width = (car / A.seats * 100) + "%"; $("kbPark").style.width = (m.parking ? Math.min(1, m.cars * arrived / m.parking) * 100 : 100) + "%";
+    const mins = Math.round(150 * (1 - f)); $("kickClock").textContent = f < 1 ? `${Math.floor(mins / 60)}:${String(mins % 60).padStart(2, "0")} to kickoff · ${fmt(A.seats)} fans` : `Kickoff · ${fmt(A.seats)} fans`;
+    if (f < 1) kickT = requestAnimationFrame(step); else { kickT = null; $("kickV").innerHTML = verdict(m); }
+  };
+  $("kickV").innerHTML = ""; kickT = requestAnimationFrame(step);
+}
+function nearestStation(m){ const [x, y] = xy(m.lon, m.lat); let b = null, bd = 1e12; for (const s of PL.rail){ const d = (s.x - x) ** 2 + (s.y - y) ** 2; if (d < bd){ bd = d; b = [s.x, s.y]; } } return bd < A.walk ** 2 ? b : null; }
+function verdict(m){
+  const short = Math.max(0, m.cars - m.parking), acres = short * A.sqm / 4046.86;
+  const parts = [];
+  parts.push(m.lines.length ? `<b>${fmt(m.byTrain)}</b> fans came by train${m.byTrain >= m.trainCap - 1 ? ", as many as the lines here could carry" : ""}.` : "<b>No train</b> stops within a 15-minute walk, so nearly everyone drove.");
+  parts.push(short > 0 ? `<b>${fmt(short)} cars</b> had nowhere to park within a mile: about <b>${fmt(acres)} acres</b> of new parking.` : "Parking within a mile covered every car.");
+  if (m.exits) parts.push(m.rampLoad > 1 ? `The ${m.exits} nearby expressway ${m.exits === 1 ? "exit ran" : "exits ran"} at <b>${Math.round(m.rampLoad * 100)}%</b> of capacity: expect backups onto the expressway.` : `The nearby expressway exits handled it (${Math.round(m.rampLoad * 100)}% of capacity).`);
+  else parts.push("No expressway exit within 2 miles: every car came through local streets.");
+  return parts.join(" ") + ` <button class="ib" type="button" onclick="info('kick')" aria-label="How this is measured">i</button>`;
+}
+
+/* ---------- your ranking ---------- */
+const W = [["trains", "Trains"], ["drive", "Driving and parking"], ["fans", "Fans nearby"], ["hotels", "Hotels"], ["neighbors", "Fewer neighbors affected"], ["land", "Land to spare"]];
+let WT = {trains:2, drive:1, fans:1, hotels:1, neighbors:1, land:1};
+try { Object.assign(WT, JSON.parse(localStorage.getItem("sc-bears-w") || "{}")); } catch (e) {}
+function renderWeights(){
+  $("weights").innerHTML = W.map(([k, t]) => `<label class="w"><span>${t}</span><input type="range" min="0" max="4" step="1" value="${WT[k]}" data-k="${k}" aria-label="${t}"></label>`).join("");
+  $("weights").querySelectorAll("input").forEach(i => i.oninput = () => { WT[i.dataset.k] = +i.value; try { localStorage.setItem("sc-bears-w", JSON.stringify(WT)); } catch (e) {} updateRank(); });
+}
+function updateRank(){
+  const ids = SITES.map(s => s.id).concat(pin && M.pin ? ["pin"] : []);
+  ids.forEach(id => { if (!M[id] && id !== "pin"){ const s = SITES.find(x => x.id === id); M[id] = measure(s.ll[0], s.ll[1], s.rot, s); } });
+  const raw = id => { const m = M[id]; return {trains:m.trainCap, drive:Math.min(1, m.parking / Math.max(1, m.cars)) - Math.min(1, m.rampLoad / 2), fans:m.p25, hotels:m.hotels5, neighbors:-(m.h05 + 5 * m.hIn), land:m.acres}; };
+  const R = Object.fromEntries(ids.map(id => [id, raw(id)])), score = {};
+  // a measure we don't know for a site (a proposal's acreage that hasn't been published) scores in the middle
+  for (const [k] of W){ const v = ids.map(id => R[id][k]).filter(x => x != null && !Number.isNaN(x)), lo = Math.min(...v), hi = Math.max(...v);
+    ids.forEach(id => { const x = R[id][k]; score[id] = (score[id] || 0) + WT[k] * (x == null || Number.isNaN(x) || !(hi > lo) ? 0.5 : (x - lo) / (hi - lo)); }); }
+  const tw = W.reduce((s, [k]) => s + WT[k], 0) || 1;
+  const order = ids.slice().sort((a, b) => score[b] - score[a]);
+  $("rank").innerHTML = order.map((id, i) => { const s = SITES.find(x => x.id === id), v = Math.round(score[id] / tw * 100);
+    return `<li data-id="${id}"><span class="n">${i + 1}</span><span>${esc(s ? s.name : "Your pin")}<div class="bar"><i style="width:${v}%"></i></div></span><span class="s">${v}</span></li>`; }).join("");
+  $("rank").querySelectorAll("li").forEach(li => li.onclick = () => { tab("sites"); li.dataset.id === "pin" ? openPin() : openSite(li.dataset.id); });
+  const cols = [["Fans by train in 2.5 h", m => fmt(m.trainCap)], ["Cars", m => fmt(m.cars)], ["Parking within 1 mi", m => fmt(m.parking)], ["Ramp load", m => m.exits ? Math.round(m.rampLoad * 100) + "%" : "–"], ["Hotels in 5 mi", m => fmt(m.hotels5)], ["People in 25 mi", m => (m.p25 / 1e6).toFixed(1) + "M"], ["Homes in ½ mi", m => fmt(m.h05)], ["Acres", m => m.acres ? fmt(m.acres) : "–"]];
+  $("cmp").innerHTML = `<tr><th></th>${order.map(id => `<th>${esc((SITES.find(x => x.id === id) || {name:"Your pin"}).name)}</th>`).join("")}</tr>` + cols.map(([t, f]) => `<tr><td>${t}</td>${order.map(id => `<td>${f(M[id])}</td>`).join("")}</tr>`).join("");
+}
+
+/* ---------- readers' picks (anonymous, one a day) ---------- */
+async function pickIt(id, m){
+  const body = {site: id === "pin" ? "pin" : id, lon: +m.lon.toFixed(3), lat: +m.lat.toFixed(3)};
+  try { const r = await fetch("/api/bears/pick", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}); if (!r.ok) throw r.status;
+    try { localStorage.setItem("sc-bears-pick", JSON.stringify(body)); } catch (e) {}
+    toast("Counted. See where readers put it under Readers."); loadPicks(); }
+  catch (e) { toast(e === 429 ? "You've already picked today. Come back tomorrow." : "Couldn't count it right now."); }
+}
+async function loadPicks(){
+  try { const r = await fetch("/api/bears/picks"); if (!r.ok) throw 0; const d = await r.json();
+    const tot = Object.values(d.sites || {}).reduce((a, b) => a + b, 0) || 0;
+    const rows = Object.entries(d.sites || {}).sort((a, b) => b[1] - a[1]);
+    $("picks").innerHTML = tot ? rows.map(([k, n]) => `<li><span>${esc((SITES.find(s => s.id === k) || {name:k === "pin" ? "Their own pins" : k}).name)}<div class="bar"><i style="width:${n / rows[0][1] * 100}%"></i></div></span><b>${Math.round(n / tot * 100)}%</b></li>`).join("") + `<li class="small">${fmt(tot)} picks so far</li>` : '<li class="small">No picks yet. Be the first: open a site and tap <b>This is my pick</b>.</li>';
+    map.getSource("heat").setData({type:"FeatureCollection", features:(d.cells || []).map(([lon, lat, n]) => ({type:"Feature", properties:{n}, geometry:{type:"Point", coordinates:[lon, lat]}}))});
+  } catch (e) { $("picks").innerHTML = '<li class="small">Readers\' picks show up here on the live site.</li>'; }
+}
+
+/* ---------- learn ---------- */
+const MYTHS = [
+  ["A stadium will revitalize the neighborhood.", "The research says it rarely does.", "A 2023 survey of more than 130 studies found “near-universal consensus” that stadiums don't create large local economic gains. Areas next to stadiums sit empty most of the year; what does grow tends to come from new homes and offices around them, not the games."],
+  ["Fans bring new money into the area.", "Mostly, they move it around.", "Money spent on tickets and beer is money not spent at other local restaurants, movie theaters and bars. Economists find most stadium spending is a transfer from other local spending, not new spending. That's why a stadium in Hammond would still pull dollars out of Illinois."],
+  ["It pays for itself in taxes.", "Not when the public pays for the building.", "From 1970 to 2020, state and local governments put about $33 billion into major-league venues; the typical public share was 73% of construction. Studies find the tax gains are far smaller. Soldier Field's 2003 renovation is still being paid off from a hotel tax, with Chicago covering the shortfalls."],
+];
+function renderLearn(){
+  $("myths").innerHTML = MYTHS.map(([q, v, b]) => `<div class="myth"><q>${esc(q)}</q><p class="v">${esc(v)}</p><p>${esc(b)}</p></div>`).join("") + `<p class="src">${src("bch", "bchpdf", "conv", "trd")}</p>`;
+  $("lakeCard").innerHTML = LAKE;
+  $("how").innerHTML = HOW;
+}
+const LAKE = `<p>Chicago's lakefront is protected by the <b>public trust doctrine</b>: land that was once lake bottom, and parkland held for everyone, can't simply be handed to a private user. Courts have found violations only when there's no legislative approval and the deal mainly benefits a private party.</p>
+<ul class="facts"><li><b>Lucas Museum:</b> Friends of the Parks sued in 2014. After nearly two years in court, George Lucas took the museum to Los Angeles.</li><li><b>Soldier Field:</b> the 2003 renovation survived a public trust challenge in the Illinois Supreme Court; the Park District kept ownership.</li><li><b>Obama Presidential Center:</b> won in court in 2022; the legislature had approved it and the city kept control.</li><li><b>The Bears' 2024 plan:</b> Friends of the Parks said it was “prepared to fight for the lakefront”, but the plan stalled first, in Springfield, over the public money.</li></ul>
+<p>So the lakefront isn't off-limits, but it's slower, costlier and harder to predict.</p><p class="src">${src("st24", "stfop")}</p>`;
+const HOW = `<ul class="facts">
+<li><b>Land that fits:</b> OpenStreetMap areas mapped as industrial, brownfield, rail yard, commercial, retail, parking, racetrack, construction, port or open land, minus homes, parks, water, cemeteries, schools, hospitals, golf courses and airports. Pieces split only by a street are joined, and only pieces of 30 acres or more count (assumption: enough for a dome and plazas if most fans don't drive). OpenStreetMap is volunteer-made and can be out of date.</li>
+<li><b>Trains:</b> every L, Metra and South Shore line with a station within a 15-minute walk (1,200 m). On game day each line runs up to twice its usual trains, capped at 20 an hour each way for the L, 6 for Metra and 4 for the South Shore; trains carry about 800 (L), 1,200 (Metra) or 900 (South Shore) fans. All assumptions.</li>
+<li><b>Who takes the train:</b> 30% of fans where both the L and commuter rail are within a walk, 25% with the L only, 15% with commuter rail only, 5% with neither (shuttles). Assumptions; no public count of how fans get to Soldier Field exists.</li>
+<li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
+<li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
+<li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
+<li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
+<li><b>Your ranking:</b> each measure is scaled from the lowest to the highest site, multiplied by your weight and added up. Money isn't scored: the public costs aren't comparable yet.</li>
+<li><b>Site pins</b> are placed by hand from news reports; for Hammond the pin is on Lost Marsh Golf Course, one of the two sites under study.</li></ul>
+<p class="src">${src("osm", "census", "lodes", "transit")}</p>`;
+const INFO = {
+  trains:["Fans by train", "Every line with a station within a 15-minute walk, running extra trains for the game, over the 2½ hours before kickoff. It's what the trains could carry, not what fans would choose; the game-day run uses whichever is smaller."],
+  cars:["Cars on game day", "Fans who don't take the train, at 2.6 to a car (assumption)."],
+  parking:["Parking", "Lots mapped in OpenStreetMap within a mile, at one space per 30 m² (assumption). Multi-level garages count only their footprint, so garages are undercounted."],
+  ramps:["Expressway ramps", "Cars arriving over 2.5 hours divided by what the exits within 2 miles can take (one lane each, 1,500 cars an hour, assumption). Over 100% means backups onto the expressway."],
+  hotels:["Hotels", "Hotels and motels mapped in OpenStreetMap. Most don't list rooms, so this is a count of places, not beds."],
+  people:["Fans nearby", "Everyone within 10 and 25 miles as the crow flies, from the 2020 Census. Fans come from farther, but this is who's close."],
+  neighbors:["Neighbors", "Homes within half a mile, from the 2020 Census. They get the traffic, noise and lights on game days."],
+  kick:["How game day works", HOW.replace(/<p class="src">[\s\S]*$/, "")],
+  lake:["Building on the lakefront", LAKE],
+};
+function info(k){ const v = INFO[k]; if (!v) return; const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${esc(v[0])}</b><button class="sc-btn" type="button" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px;font-size:14.5px;line-height:1.55;color:var(--sc-ink2)">${v[1].startsWith("<") ? v[1] : "<p>" + esc(v[1]) + "</p>"}</div>`; d.showModal(); }
+window.info = info;
+
+/* ---------- misc ---------- */
+function tab(t){ document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === t))); ["sites", "rank", "picks", "learn"].forEach(k => $("p-" + k).hidden = k !== t); if (t === "rank") updateRank(); if (t === "picks") loadPicks(); $("scroll").scrollTop = 0; }
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => tab(b.dataset.t));
+let toastT; function toast(t){ const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove("on"), 2600); }
+function setHash(){ const h = cur && cur !== "pin" ? "#s=" + cur : cur === "pin" && pin ? `#p=${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.rot}` : ""; try { history.replaceState(null, "", location.pathname + location.search + h); } catch (e) {} }
+$("pinBtn").onclick = () => { setPinMode(mode !== "pin"); if (mode === "pin") toast("Tap anywhere on the map"); };
+$("landChk").onchange = e => { for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", e.target.checked ? "visible" : "none"); };
+$("heatChk").onchange = e => map.setLayoutProperty("heat", "visibility", e.target.checked ? "visible" : "none");
+$("kickX").onclick = stopKick;
+addEventListener("keydown", e => { if (e.key === "Escape") stopKick(); });
+
+(async function boot(){
+  await loadAll();
+  await initMap();
+  map.setLayoutProperty("heat", "visibility", "none");
+  SITES.forEach(s => M[s.id] = measure(s.ll[0], s.ll[1], s.rot, s));
+  renderList(); renderWeights(); renderLearn();
+  const h = location.hash;
+  let m;
+  if ((m = h.match(/^#s=(\w+)/))) openSite(m[1]);
+  else if ((m = h.match(/^#p=(-?[\d.]+),(-?[\d.]+),?(\d*)/))){ pin = {lon:+m[1], lat:+m[2], rot:+m[3] || 0}; openPin(); map.jumpTo({center:[pin.lon, pin.lat], zoom:13.5, pitch:45}); }
+  window.__bears = {M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
+})();
+</script>
+</body>
+</html>
