@@ -187,7 +187,7 @@ dialog.sc-info{max-width:520px}
   <div class="meter"><div><span>Fans by train</span><b id="kmTrain">0</b></div><div class="t"><i id="kbTrain" style="background:#2b5da0"></i></div></div>
   <div class="meter"><div><span>Fans by car</span><b id="kmCar">0</b></div><div class="t"><i id="kbCar" style="background:#d9822b"></i></div></div>
   <div class="meter"><div><span>Parking spaces used</span><b id="kmPark">0</b></div><div class="t"><i id="kbPark" style="background:#6b7280"></i></div></div>
-  <div class="tlegend"><span><i style="background:#2b5da0;height:5px;width:16px;border-radius:3px"></i>train</span><span><i style="background:#2b5da0;height:8px;width:8px;border-radius:50%"></i>fan walking from the train</span><span><i style="background:#d9822b;height:8px;width:8px;border-radius:50%"></i>car</span><span><i style="background:#3f9c5a"></i>roads OK</span><span><i style="background:#e0a100"></i>busy</span><span><i style="background:#b3001e"></i>jammed</span></div>
+  <div class="tlegend"><span class="tl-t"><i style="background:#2b5da0;height:5px;width:16px;border-radius:3px"></i>train</span><span class="tl-t"><i style="background:#2b5da0;height:8px;width:8px;border-radius:50%"></i>fan walking from the train</span><span><i style="background:#d9822b;height:8px;width:8px;border-radius:50%"></i>car</span><span><i style="background:#3f9c5a"></i>roads OK</span><span><i style="background:#e0a100"></i>busy</span><span><i style="background:#b3001e"></i>jammed</span></div>
   <div class="verdict" id="kickV"></div>
   <details class="gdset"><summary>Change the game</summary>
     <label class="gds"><span>Fans</span><input type="range" id="gdSeats" min="50000" max="80000" step="1000"><b id="gdSeatsV"></b></label>
@@ -531,21 +531,40 @@ function placePin(lon, lat, quiet){
 // roads: the transit simulator's OpenStreetMap expressways and main streets (transit/data/geo.json, meters from State & Madison)
 const RS = {motorway:{v:24, cap:4000}, arterial:{v:10, cap:1100}, ramp:{v:12, cap:1500}};   // assumptions: free-flow speed (m/s) and cars an hour each way
 let ROAD = null, ROADP = null;
+let ROAD_GAPS = 0;
 function loadRoads(){
   return ROADP || (ROADP = fetch("../transit/data/geo.json").then(r => r.json()).then(g => {
     const TK = 111320 * Math.cos(41.85 * Math.PI / 180), TY = 110574, TO = [41.8819, -87.6278];
     const id = new Map(), X = [], Y = [], adj = [], E = {a:[], b:[], len:[], t0:[], cap:[], name:[], mw:[]};
-    const node = (x, y) => { const k = Math.round(x / 8) + "," + Math.round(y / 8); let i = id.get(k); if (i == null){ i = X.length; id.set(k, i); const lon = TO[1] + x / TK, lat = TO[0] + y / TY, q = xy(lon, lat); X.push(q[0]); Y.push(q[1]); adj.push([]); } return i; };
-    for (const cls of ["motorway", "arterial"]) for (const [nm, c] of g[cls] || []) for (let i = 0; i + 3 < c.length; i += 2){
-      const a = node(c[i], c[i + 1]), b = node(c[i + 2], c[i + 3]); if (a === b) continue;
+    // the data comes as many short pieces whose ends don't quite meet: join ends of the same kind of road within 12 m
+    // (an expressway and a street crossing at a bridge aren't joined; only points within 2 m, the same mapped spot, are)
+    const C = [], pieceOf = [];
+    const node = (x, y, mw, pc) => { const gx = Math.floor(x / 12), gy = Math.floor(y / 12); let best = -1, bd = 1e9;
+      for (let a = gx - 1; a <= gx + 1; a++) for (let b = gy - 1; b <= gy + 1; b++){ const l = id.get(a + "," + b); if (l) for (const i of l){ const d = Math.hypot(C[i][0] - x, C[i][1] - y); if ((C[i][2] === mw ? d <= 12 : d <= 2) && d < bd){ bd = d; best = i; } } }
+      if (best >= 0) return best;
+      const i = X.length, k = gx + "," + gy; let l = id.get(k); if (!l) id.set(k, l = []); l.push(i); C.push([x, y, mw]); pieceOf.push(pc);
+      const q = xy(TO[1] + x / TK, TO[0] + y / TY); X.push(q[0]); Y.push(q[1]); adj.push([]); return i; };
+    let pc = 0;
+    for (const cls of ["motorway", "arterial"]) for (const [nm, c] of g[cls] || []){ pc++; for (let i = 0; i + 3 < c.length; i += 2){
+      const mw = cls === "motorway" ? 1 : 0, a = node(c[i], c[i + 1], mw, pc), b = node(c[i + 2], c[i + 3], mw, pc); if (a === b) continue;
       const L = Math.hypot(X[b] - X[a], Y[b] - Y[a]), e = E.a.length;
       E.a.push(a); E.b.push(b); E.len.push(L); E.t0.push(L / RS[cls].v); E.cap.push(RS[cls].cap); E.name.push(nm || ""); E.mw.push(cls === "motorway" ? 1 : 0);
       adj[a].push(e); adj[b].push(e);
-    }
+    } }
     const G = new Map(), cell = 400; X.forEach((x, i) => { const k = Math.floor(x / cell) + "," + Math.floor(Y[i] / cell); let l = G.get(k); if (!l) G.set(k, l = []); l.push(i); });
     // the map data has expressways and main streets but not their ramps, so join them where OpenStreetMap marks an exit:
     // the expressway's nearest point to the exit to the nearest point on up to two main streets within 600 m
     const isMw = new Uint8Array(X.length); for (let e = 0; e < E.a.length; e++) if (E.mw[e]){ isMw[E.a[e]] = 1; isMw[E.b[e]] = 1; }
+    // expressways also have gaps (bridges, toll plazas): a dead end carries on to the nearest expressway point ahead within 400 m
+    let gaps = 0;
+    for (let i = 0; i < X.length; i++){ if (!isMw[i] || adj[i].length !== 1) continue;
+      const e0 = adj[i][0], j0 = E.a[e0] === i ? E.b[e0] : E.a[e0], dx = X[i] - X[j0], dy = Y[i] - Y[j0], dl = Math.hypot(dx, dy) || 1;
+      let best = -1, bd = 400;
+      for (let a = Math.floor((X[i] - 400) / cell); a <= Math.floor((X[i] + 400) / cell); a++) for (let b = Math.floor((Y[i] - 400) / cell); b <= Math.floor((Y[i] + 400) / cell); b++){ const l = G.get(a + "," + b); if (l) for (const k of l){
+        if (!isMw[k] || k === i || k === j0 || pieceOf[k] === pieceOf[i]) continue;
+        const vx = X[k] - X[i], vy = Y[k] - Y[i], d = Math.hypot(vx, vy); if (d >= bd || (vx * dx + vy * dy) / (d * dl) < 0.7) continue; bd = d; best = k; } }
+      if (best >= 0){ const e = E.a.length; E.a.push(i); E.b.push(best); E.len.push(bd); E.t0.push(bd / RS.motorway.v); E.cap.push(RS.motorway.cap); E.name.push(E.name[e0]); E.mw.push(1); adj[i].push(e); adj[best].push(e); gaps++; } }
+    ROAD_GAPS = gaps;
     const near = (x, y, r, want) => { const out = []; for (let a = Math.floor((x - r) / cell); a <= Math.floor((x + r) / cell); a++) for (let b = Math.floor((y - r) / cell); b <= Math.floor((y + r) / cell); b++){ const l = G.get(a + "," + b); if (l) for (const i of l){ if (isMw[i] !== want) continue; const d = Math.hypot(X[i] - x, Y[i] - y); if (d <= r) out.push([d, i]); } } return out.sort((p, q) => p[0] - q[0]); };
     const link = (a, b) => { const L = Math.max(60, Math.hypot(X[b] - X[a], Y[b] - Y[a]) * 1.3), e = E.a.length;
       E.a.push(a); E.b.push(b); E.len.push(L); E.t0.push(L / RS.ramp.v); E.cap.push(RS.ramp.cap); E.name.push(""); E.mw.push(0); adj[a].push(e); adj[b].push(e); };
@@ -601,7 +620,7 @@ function plan(m){
 }
 async function kickoff(m, name){
   stopKick(); KICK = {m, name};
-  document.body.classList.add("gameday"); $("kick").classList.add("on"); $("kickT").textContent = "Game day at " + name; $("kickV").innerHTML = "";
+  document.body.classList.add("gameday"); $("kick").classList.add("on"); document.querySelectorAll(".tl-t").forEach(el => el.hidden = !m.lines.length); $("kickT").textContent = "Game day at " + name; $("kickV").innerHTML = "";
   $("kickClock").textContent = "Finding the routes fans would take…";
   if (phone()) setTimeout(() => map.resize(), 60);
   syncGD(m);
@@ -768,7 +787,7 @@ const HOW = `<ul class="facts">
 <li><b>Who takes the train:</b> 30% of fans where both the L and commuter rail are within a walk, 25% with the L only, 15% with commuter rail only, 5% with neither (shuttles). Assumptions; no public count of how fans get to Soldier Field exists.</li>
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
-<li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
+<li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
 <li><b>Your ranking:</b> each measure is scaled from the lowest to the highest site, multiplied by your weight and added up. Money isn't scored: the public costs aren't comparable yet.</li>
