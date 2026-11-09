@@ -103,6 +103,7 @@ table.cmp th{font-size:12px;color:var(--sc-mute);font-weight:600}
 .kick .x{position:absolute;right:10px;top:10px;border:0;background:none;font-size:20px;color:var(--sc-mute);cursor:pointer;line-height:1}
 .legend{position:absolute;z-index:2;right:14px;bottom:28px;background:rgba(255,255,255,.95);border-radius:12px;box-shadow:var(--sc-shadow2);padding:8px 12px;font-size:12.5px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:4px}
 .legend span{display:flex;align-items:center;gap:7px}
+.legend .lgbtn{display:none}
 .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1a1d21;color:#fff;border-radius:12px;padding:10px 14px;font-size:14px;z-index:9;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw}
 .toast.on{opacity:1}
@@ -127,10 +128,19 @@ dialog.sc-info{max-width:520px}
   .ptop{padding:12px 16px 8px} h1{font-size:20px} .lede{display:none}
   .scroll{padding:12px 16px 20px}
   .kick{left:10px;right:10px;width:auto;top:calc(var(--sc-head) + 8px)}
-  .legend{display:none}
-  #map{bottom:50vh}
+  /* phones and tablets: the key folds to a "Map key" button at the top left, and the map ends where the panel starts so its
+     credit button isn't hidden under it */
+  .legend{left:10px;right:auto;bottom:auto;top:calc(var(--sc-head) + 8px);padding:0;font-size:12px;gap:0;max-width:calc(100vw - 90px)}
+  .legend .lgbtn{display:flex;align-items:center;gap:6px;background:none;border:0;font:600 12.5px var(--sc-font);color:var(--sc-ink);padding:8px 12px;cursor:pointer}
+  .legend .lgbtn::after{content:"";width:7px;height:7px;border:solid var(--sc-ink2);border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin:-3px 0 0 2px;transition:transform .15s}
+  .legend.open .lgbtn::after{transform:rotate(-135deg);margin-top:3px}
+  .legend > span{display:none;padding:0 12px}
+  .legend.open > span{display:flex;padding-bottom:3px} .legend.open > span:last-child{padding-bottom:10px}
+  body.gameday .legend{display:none}
+  #map{bottom:calc(52vh - 18px)}
+  .maplibregl-ctrl-bottom-right{margin-bottom:20px}
   body.gameday .panel{height:64px} body.gameday .panel .scroll,body.gameday .panel .tabs{display:none}
-  body.gameday #map{bottom:64px}
+  body.gameday #map{bottom:46px}
   body.gameday .ptop{cursor:pointer}
   body.gameday .ptop h1::after{content:" · tap for details";font-size:13px;font-weight:500;color:var(--sc-mute)}
   .kick{padding:10px 12px;max-height:46vh;overflow:auto}
@@ -461,7 +471,9 @@ function showStadium(lon, lat, rot, color){
 }
 function clearStadium(){ for (const id of ["fp", "ring", "near", "ref"]) map.getSource(id).setData({type:"FeatureCollection", features:[]}); }
 function legend(){
-  $("legend").innerHTML = '<span><i style="background:rgba(63,156,90,.45);border:1px solid #2e7d46"></i>Land that fits a stadium</span><span><i style="background:#7a4bb3;border-radius:50%"></i>Hotel</span><span><i style="background:#6b7280;border-radius:50%"></i>Parking lot</span><span><i style="border:1.5px dashed #2b5da0;background:none;border-radius:50%"></i>15-minute walk</span>';
+  const lg = $("legend");
+  lg.innerHTML = '<button type="button" class="lgbtn" aria-expanded="false">Map key</button>' + '<span><i style="background:rgba(63,156,90,.45);border:1px solid #2e7d46"></i>Land that fits a stadium</span><span><i style="background:#7a4bb3;border-radius:50%"></i>Hotel</span><span><i style="background:#6b7280;border-radius:50%"></i>Parking lot</span><span><i style="border:1.5px dashed #2b5da0;background:none;border-radius:50%"></i>15-minute walk</span>';
+  lg.querySelector(".lgbtn").onclick = () => { const o = lg.classList.toggle("open"); lg.querySelector(".lgbtn").setAttribute("aria-expanded", String(o)); };
 }
 
 /* ---------- panel ---------- */

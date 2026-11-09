@@ -127,6 +127,7 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 /* first-visit tool intro */
 dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
 @media (max-width:640px){ dialog.sc-intro{width:100vw} }
+@media (min-width:641px){ dialog.sc-intro{margin:auto;border-radius:20px} }   /* tablets: a centered card, not a left-aligned sheet */
 .sc-intro-art{background:linear-gradient(180deg,#f6f8f5,#e8ede7);aspect-ratio:800/380}
 .sc-intro-art img{width:100%;height:100%;object-fit:contain;display:block}
 .sc-intro h2{margin:0 0 10px;font-size:22px;letter-spacing:-.01em;font-weight:600}

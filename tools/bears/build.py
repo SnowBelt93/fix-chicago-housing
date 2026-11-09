@@ -4,7 +4,8 @@ site already has (transit stations, Census blocks, the lake outline).
 
   bears/data/land.json    land big enough for a stadium: OpenStreetMap industrial, brownfield, rail yard, commercial,
                           retail, parking, racetrack, construction, port and greenfield areas, minus homes, parks, water,
-                          cemeteries, schools, hospitals, golf courses and airports; pieces closer than ~30 m are joined
+                          cemeteries, schools, hospitals, golf courses, airports, downtown zoning districts and 100 m
+                          squares already built up with mid-rises and towers (2022 footprints x LiDAR stories); pieces closer than ~30 m are joined
                           (streets between them), anything narrower than 240 m is cut away, and only pieces of MIN_ACRES
                           or more are kept.
                           {"min": acres, "parts": [[acres, kind, name, [ring, ...]], ...]}  rings as [[lon,lat],...]
@@ -63,6 +64,42 @@ def poly(rings_outer, rings_inner=()):
     return g
 
 
+DENSE_FAR = 0.8                   # assumption: a 100 m square where buildings of 4+ stories hold more than 0.8x its area in
+                                  # floor space is already built up (mid-rises, towers, packed lofts), not land a stadium could take
+DENSE_STORIES = 4                 # tall one-story warehouses (30-50 ft roofs) read as 2-3 stories from LiDAR, so they don't count
+CELL = 100
+
+
+def built_up():
+    """100 m squares where today's buildings of DENSE_STORIES or more (Cook County 2022 footprints with LiDAR heights)
+    hold more than DENSE_FAR times the square's area in floor space. Warehouses and rail yards stay out of it; the Loop,
+    River North and Fulton Market don't.
+    Cook County only; outside it OpenStreetMap land use decides."""
+    path = next((p for p in [os.path.join(ROOT, 'tools', 'raw', 'cook_bldg_2022.bin.gz'),
+                             os.path.join(os.path.dirname(ROOT), 'fch-main', 'tools', 'raw', 'cook_bldg_2022.bin.gz')] if os.path.exists(p)), None)
+    if not path:
+        print('no 2022 footprints; skipping the built-up check', file=sys.stderr); return None
+    import numpy as np
+    from shapely.geometry import box
+    raw = gzip.open(path, 'rb').read(); assert raw[:4] == b'CK22'
+    n = struct.unpack_from('<I', raw, 4)[0]; o = 8
+    fl = {}
+    for _ in range(n):
+        h, a, npts, lon0, lat0 = struct.unpack_from('<ffHii', raw, o); o += 18
+        d = np.frombuffer(raw, dtype='<i2', count=2 * (npts - 1), offset=o).reshape(-1, 2).astype(np.int64); o += 4 * (npts - 1)
+        pts = (np.vstack([[0, 0], d]) + [lon0, lat0]) / 1e6
+        x = (pts[:, 0] - ORIGIN[1]) * KX; y = (pts[:, 1] - ORIGIN[0]) * KY
+        area = 0.5 * abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+        st = max(1, round(max(h - 4, 0) / 13))           # LiDAR roof height in feet to stories (as tools/prep_fresh.py)
+        if st < DENSE_STORIES:
+            continue
+        k = (int(x.mean() // CELL), int(y.mean() // CELL))
+        fl[k] = fl.get(k, 0) + area * st
+    cells = [box(i * CELL, j * CELL, (i + 1) * CELL, (j + 1) * CELL) for (i, j), f in fl.items() if f > DENSE_FAR * CELL * CELL]
+    print('built-up 100 m squares', len(cells), 'of', len(fl), file=sys.stderr)
+    return unary_union(cells).buffer(20).buffer(-20)
+
+
 def land():
     rows = json.load(gzip.open(os.path.join(RAW, 'land.json.gz'), 'rt'))
     ok, no, parking, names = [], [], [], []
@@ -81,9 +118,9 @@ def land():
                 names.append((g.area, name, tag, g))
         else:
             no.append(g)
-    # Chicago: the city's zoning map is the authority. Manufacturing (M1-M3), planned manufacturing (PMD), C3 and
-    # downtown service (DS) districts count as land that could take a stadium; residential (RS, RT, RM) and parks and
-    # open space (POS) don't, whatever OpenStreetMap says.
+    # Chicago: the city's zoning map is the authority. Manufacturing (M1-M3), planned manufacturing (PMD) and C3
+    # districts count as land that could take a stadium; residential (RS, RT, RM), parks and open space (POS) and the
+    # downtown districts (DC, DX, DR, DS: the Loop, River North, the South Loop) don't, whatever OpenStreetMap says.
     zp = os.path.join(ROOT, 'tools', 'raw', 'zoning.geojson.gz')
     if os.path.exists(zp):
         from shapely.geometry import shape as gshape
@@ -98,11 +135,14 @@ def land():
                 continue
             if gx is None or gx.is_empty:
                 continue
-            if zc.startswith(('M1', 'M2', 'M3', 'PMD', 'C3', 'DS')):
+            if zc.startswith(('M1', 'M2', 'M3', 'PMD', 'C3')):
                 ok.append(gx); nz += 1
-            elif zc.startswith(('RS', 'RT', 'RM', 'POS')):
+            elif zc.startswith(('RS', 'RT', 'RM', 'POS', 'DC', 'DX', 'DR', 'DS')):   # downtown districts: the Loop, River North, the South Loop
                 no.append(gx); nz += 1
         print('zoning districts used', nz, file=sys.stderr)
+    dense = built_up()
+    if dense is not None:
+        no.append(dense)
     print('ok', len(ok), 'no', len(no), file=sys.stderr)
     good = unary_union(ok).buffer(JOIN_M).buffer(-JOIN_M)
     bad = unary_union(no)
