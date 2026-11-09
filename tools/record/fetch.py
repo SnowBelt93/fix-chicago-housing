@@ -109,7 +109,7 @@ if 'get' in STEPS and os.path.exists(os.path.join(HERE, 'wanted.json')):
             if w.get('select'): p['$select'] = w['select']
             url = f"https://{w.get('domain', 'data.cityofchicago.org')}/resource/{w['id']}.csv?" + urllib.parse.urlencode(p)
         try:
-            data = get(url, timeout=900); gzip.open(path, 'wb').write(data); print('got', w['id'], w.get('name', ''), len(data), flush=True)
+            data = get(url, timeout=1800); gzip.open(path, 'wb').write(data); print('got', w['id'], w.get('name', ''), len(data), flush=True)
         except Exception as e: print('skip', w['id'], e, flush=True)
 
 if 'files' in STEPS and os.path.exists(os.path.join(HERE, 'files.json')):

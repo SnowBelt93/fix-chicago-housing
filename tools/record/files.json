@@ -1,0 +1,20 @@
+{
+ "cta_annual_2025.pdf": "https://www.transitchicago.com/assets/1/6/2025_Annual_Ridership_Report.pdf",
+ "cta_annual_2019.pdf": "https://www.transitchicago.com/assets/1/6/2019_Annual_Ridership_Report.pdf",
+ "cta_monthly_2026_8.pdf": "https://www.transitchicago.com/assets/1/6/Monthly_Ridership_2026-8.pdf",
+ "cta_memo_2026_03.pdf": "https://www.transitchicago.com/assets/1/6/MEMO_-_Ridership_Update_3.20.2026.pdf",
+ "rtams_system_annual.csv": "https://rtams.org/sites/default/files/documents/2026-03/Annual_System_Ridership_Figures_0.csv",
+ "rtams_cta_rail_station.csv": "https://www.rtams.org/sites/default/files/documents/2026-08/CTA_Average_Rail_Station_Ridership_1999_2026.csv",
+ "rtams_cta_bus.xlsx": "https://www.rtams.org/sites/default/files/documents/2026-08/CTA_Average_Bus_Ridership_1999_2026.xlsx",
+ "pace_service_2026_09.zip": "https://www.pacebus.com/sites/default/files/2026-11/ServiceData-Sept2026.zip",
+ "zori_metro.csv": "https://files.zillowstatic.com/research/public_csvs/zori/Metro_zori_uc_sfrcondomfr_sm_month.csv",
+ "zori_city.csv": "https://files.zillowstatic.com/research/public_csvs/zori/City_zori_uc_sfrcondomfr_sm_month.csv",
+ "zhvi_city.csv": "https://files.zillowstatic.com/research/public_csvs/zhvi/City_zhvi_uc_sfrcondo_tier_0.33_0.67_sm_sa_month.csv",
+ "zori_zip.csv": "https://files.zillowstatic.com/research/public_csvs/zori/Zip_zori_uc_sfrcondomfr_sm_month.csv",
+ "nita_board_2026_10.pdf": "https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/October/October-15-2026-NITA-Board-Slide-Deck.pdf",
+ "nita_board_2026_09.pdf": "https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/September/September-10-2026-NITA-Board-Slides.pdf",
+ "nita_finance_2026_11.pdf": "https://nita.illinois.gov/uploads/files/meeting-materials/Finance-and-Audit-Committee/November-5-2026/Finance-comm-presentation-20261103.pdf",
+ "nita_board_2026_08.pdf": "https://nita.illinois.gov/uploads/files/meeting-materials/Board-Meetings/2026/August/August-20-2026-RTA-Board-Slide-Deck.pdf",
+ "aro_limits_2026.pdf": "https://www.chicago.gov/content/dam/city/sites/affordable-requirements-ordinance/2026%20Income%20and%20Rent%20Limits%20-%20final.pdf",
+ "rta_perf_4q2025.pdf": "https://lrb.ilga.gov/reports/ReportsSubmitted/6606RSGAEmail14679RSGAAttachRTA%20Perf%20Data%20and%204Q%202025%20Financial%20Results%20with%20attachments.pdf"
+}

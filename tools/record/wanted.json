@@ -1,12 +1,96 @@
 [
- {"id": "5neh-572f", "name": "CTA L station entries, daily totals"},
- {"id": "jyb9-n7fm", "name": "CTA bus routes, daily totals by route"},
- {"id": "6iiy-9s97", "name": "CTA daily boarding totals"},
- {"id": "s6ha-ppgi", "name": "Affordable rental housing developments"},
- {"id": "ydr8-5enu", "name": "Building permits: renovations that add or mention dwelling units, 2019 on", "save_as": "permits_reno_units",
+ {
+  "id": "jyb9-n7fm",
+  "name": "CTA bus routes, daily totals by route"
+ },
+ {
+  "id": "6iiy-9s97",
+  "name": "CTA daily boarding totals"
+ },
+ {
+  "id": "s6ha-ppgi",
+  "name": "Affordable rental housing developments"
+ },
+ {
+  "id": "ydr8-5enu",
+  "name": "Building permits: renovations that add or mention dwelling units, 2019 on",
+  "save_as": "permits_reno_units",
   "select": "id,permit_,permit_type,issue_date,work_description,reported_cost,street_number,street_direction,street_name,latitude,longitude,ward,community_area,permit_status,permit_milestone",
-  "where": "permit_type='PERMIT - RENOVATION/ALTERATION' AND issue_date >= '2019-01-01' AND (upper(work_description) like '%DWELLING%' OR upper(work_description) like '%UNIT%' OR upper(work_description) like '%CONVER%' OR upper(work_description) like '%ADU%' OR upper(work_description) like '%COACH%')"},
- {"id": "v6vf-nfxy", "name": "311: potholes, street lights, tree trims since 2023", "save_as": "311_streets",
-  "select": "sr_number,sr_type,status,created_date,closed_date,ward,community_area,latitude,longitude",
-  "where": "created_date >= '2023-01-01' AND sr_type in ('Pothole in Street Complaint','Street Light Out Complaint','Alley Light Out Complaint','Tree Trim Request','Abandoned Vehicle Complaint','Vacant/Abandoned Building Complaint','Building Violation')"}
+  "where": "permit_type='PERMIT - RENOVATION/ALTERATION' AND issue_date >= '2019-01-01' AND (upper(work_description) like '%DWELLING%' OR upper(work_description) like '%UNIT%' OR upper(work_description) like '%CONVER%' OR upper(work_description) like '%ADU%' OR upper(work_description) like '%COACH%')"
+ },
+ {
+  "id": "t2rn-p8d7",
+  "name": "CTA L station entries, monthly"
+ },
+ {
+  "id": "j4h8-ug9m",
+  "name": "ADU preapproval applications",
+  "save_as": "adu",
+  "select": "id,submission_date,action_date,status,ward,zoning,street_number,street_direction,street_name,latitude,longitude,coach_house,conversion_unit,adu_applying_for,max_number_of_adu_allowed,dwelling_units_in_lot,number_affordable_units_required,principal_building_built_year,property_owner_occupied"
+ },
+ {
+  "id": "xbwc-ntpx",
+  "name": "ADU preapproval applications, historical",
+  "save_as": "adu_hist",
+  "select": "id,submission_date,status,status_updated_date,ward,comm_area,adu_zone,adu_type,new_adus,current_dus,max_adus,aff_adus,year_built,owner_occ,latitude,longitude"
+ },
+ {
+  "id": "qfyy-956j",
+  "name": "Shared housing (short-term rental) registrations",
+  "save_as": "str",
+  "select": "registration_number,ward,precinct,current_status,current_status_date,expiration_date"
+ },
+ {
+  "id": "gzaz-isa6",
+  "name": "Vision Zero traffic deaths",
+  "save_as": "vz_deaths",
+  "select": "person_id,crash_date,victim,crash_circumstances,crash_location,latitude,longitude"
+ },
+ {
+  "id": "85ca-t3if",
+  "name": "Traffic crashes since 2018 (key fields)",
+  "save_as": "crashes",
+  "select": "crash_record_id,crash_date,injuries_fatal,injuries_incapacitating,injuries_total,most_severe_injury,first_crash_type,street_no,street_direction,street_name,latitude,longitude",
+  "where": "crash_date >= '2018-01-01'"
+ },
+ {
+  "id": "spqx-js37",
+  "name": "Red light camera violations by month",
+  "save_as": "redlight_month",
+  "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
+  "where": "violation_date >= '2015-01-01' group by month"
+ },
+ {
+  "id": "hhkd-xvj4",
+  "name": "Speed camera violations by month",
+  "save_as": "speed_month",
+  "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
+  "where": "violation_date >= '2015-01-01' group by month"
+ },
+ {
+  "id": "wqdh-9gek",
+  "name": "Potholes patched since 2019",
+  "save_as": "potholes",
+  "select": "request_date,completion_date,number_of_potholes_filled_on_block,latitude,longitude",
+  "where": "completion_date >= '2019-01-01'"
+ },
+ {
+  "id": "75xd-xajz",
+  "name": "Zoning Board of Appeals hearings"
+ },
+ {
+  "id": "v6vf-nfxy",
+  "name": "311: potholes and street lights since 2025",
+  "save_as": "311_streets",
+  "select": "sr_type,status,created_date,closed_date,ward,community_area",
+  "where": "created_date >= '2025-01-01' AND sr_type in ('Pothole in Street Complaint','Street Light Out Complaint')"
+ },
+ {
+  "id": "wvhk-k5uv",
+  "domain": "datacatalog.cookcountyil.gov",
+  "name": "Cook County sales in Chicago since 2015",
+  "save_as": "sales_chicago",
+  "select": "pin,year,sale_date,sale_price,class,num_parcels_sale,is_multisale,sale_filter_less_than_10k,sale_filter_same_sale_within_365,sale_filter_deed_type,township_code",
+  "where": "township_code in ('70','71','72','73','74','75','76','77') AND year >= 2015"
+ }
 ]
