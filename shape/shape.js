@@ -122,7 +122,14 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/wards/","Wards"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
+    /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
+    document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
+      const line = el.textContent.trim() || "Not affiliated with the City of Chicago.";
+      el.innerHTML = `<div class="sc-foot-in"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a><span>${esc(line)}</span><nav aria-label="All pages">${FOOT.map(([h, t]) => `<a href="${h}">${esc(t)}</a>`).join("")}</nav></div>`;
+      el.removeAttribute("data-sc-foot");
+    });
     const f = document.querySelector("footer");
     if (f && !f.querySelector('a[href="/support/"]') && !f.querySelector(".sc-foot-extra")){
       const p = document.createElement("p"); p.className = "sc-foot-extra";

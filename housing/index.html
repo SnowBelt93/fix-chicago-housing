@@ -47,6 +47,9 @@ body{margin:0;background:#fff;color:var(--ink);font-family:var(--f-body);font-si
 #basemap{position:absolute;inset:0;pointer-events:none;background:#eef1f4}
 #map.overlay{background:transparent}
 .credit a{color:inherit}
+.credit .cfan{display:none}
+@media (max-width:1180px){ .credit .cfan{display:inline} }
+@media (max-width:859px){ .credit .cdata{display:none} }   /* phones: one short line; the data credit is in Sources */
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
@@ -1112,7 +1115,7 @@ body.hard #goalLbl{color:var(--sc-hard);font-weight:600}
 @media (min-width:860px){ .tab[data-pane="share"]{display:none !important} }
 .tabs{border:0 !important;gap:2px !important;padding:14px 12px 10px !important;justify-content:flex-start !important;overflow-x:auto}
 .tab{border:0 !important;margin:0 !important;padding:8px 10px !important;border-radius:16px;font:600 14.5px var(--sc-font) !important;color:var(--sc-ink2) !important;white-space:nowrap}
-.tab[aria-selected="true"]{background:var(--sc-ink);color:#fff !important}
+.tab[aria-selected="true"]{background:var(--sc-navy);color:#fff !important}
 .tab[aria-selected="true"] .n{color:rgba(255,255,255,.7) !important}
 .tab .n{font:500 12px var(--sc-font) !important}
 .pane{padding:4px 14px 20px !important;gap:10px !important}
@@ -1851,7 +1854,7 @@ body.playing #sky{opacity:1}
   <div class="hoodbanner hoodcard" id="hoodBanner" hidden><button type="button" class="hbx" id="hbClose" aria-label="Close neighborhood">×</button><b id="hbName"></b><span id="hbLine"></span><div class="tiers hbt" id="hbTiers"></div></div>
   <div class="hoodbanner cinecap" id="cineCap" hidden><b id="ccName"></b><span id="ccLine"></span></div>
   <div class="ticker" id="ticker" hidden aria-live="polite"><span id="tkYear"></span><b id="tkText"></b></div>
-  <div class="credit">Buildings &amp; streets: City of Chicago</div>
+  <div class="credit"><span class="cfan">Not affiliated with the City of Chicago. </span><span class="cdata">Buildings &amp; streets: City of Chicago</span></div>
   <div class="mapctl" id="mapctl" role="group" aria-label="Camera">
     <button type="button" data-cam="in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg></button>
     <button type="button" data-cam="out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12"/></svg></button>

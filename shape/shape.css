@@ -211,3 +211,26 @@ body.sc-gray{background:var(--sc-page)}
 .pkind.k-main{background:#fff3e0;color:#8a4b00} .pkind.k-pol{background:#eef7f1;color:#1f6b44} .pkind.k-all{background:#1a1d21;color:#fff} .pkind.k-cut{background:#fdecef;color:#a0001b}
 .psum{font-size:13.5px;color:var(--sc-ink2);line-height:1.35;margin-top:-4px}
 .sc-btn:disabled{opacity:.45;cursor:default}
+
+/* Nov 9 review: "Not affiliated" stays in view at every width. Reading pages get the shared footer
+   (<footer class="sc-foot" data-sc-foot>, filled by shape.js); tools show .sc-fanline in their panel once the header drops its copy. */
+.sc-foot{border-top:1px solid var(--sc-line);margin-top:12px;font-family:var(--sc-font)}
+.sc-foot-in{max-width:1200px;margin:0 auto;padding:28px 20px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
+.sc-foot .sc-brand{font-size:15px} .sc-foot .sc-brand svg{width:18px;height:18px} .sc-foot .sc-brand span{display:inline}
+.sc-foot nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
+.sc-foot nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
+.sc-foot nav a:hover{color:var(--sc-navy);text-decoration:underline}
+@media (max-width:760px){ .sc-foot-in{flex-direction:column;align-items:flex-start;padding-inline:16px} .sc-foot nav{justify-content:flex-start} }
+.sc-fanline{display:none;margin:14px 0 0;font-size:12px;line-height:1.4;color:var(--sc-mute)}
+@media (max-width:1180px){ .sc-fanline{display:block} }
+/* touch targets: nav pills 36 px; on touch screens option pills and buttons are at least 40 px tall, footer links sit in 44 px rows,
+   and the small (i) keeps its size but answers taps within a 44 px square */
+.sc-nav > a,.sc-simbtn{min-height:36px;box-sizing:border-box;display:inline-flex;align-items:center}
+.sc-nav > a .sc-nl{white-space:pre}   /* keeps the space in "Permit tracker" now that the pill is a flex box */
+@media (pointer:coarse){
+  .ib{position:relative}
+  .ib::after{content:"";position:absolute;inset:-14px;border-radius:50%}
+  .sc-seg button,.seg2 button,.opts button,.chip,.chips button,.tabs button,.sc-btn{min-height:40px !important;box-sizing:border-box}
+  footer nav{row-gap:0 !important}
+  footer nav a{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box}
+}

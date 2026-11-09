@@ -294,7 +294,11 @@ loadPlans();
   let seen = null; try { seen = localStorage.getItem("sc-home-seen"); } catch (e){}
   function go(){
     fetch("/news/data/news.json").then(r => r.json()).then(d => {
-      const items = d.items.slice(0, 8), fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
+      /* eight cards: outlets that mostly cover planning come first, at most three from one outlet, then newest first */
+      const PLAN = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WTTW News", "Better Government Association", "Metropolitan Planning Council"];
+      const pool = d.items.slice(0, 40), per = {};
+      const items = pool.filter(i => PLAN.includes(i.s)).concat(pool.filter(i => !PLAN.includes(i.s))).filter(i => (per[i.s] = (per[i.s] || 0) + 1) <= 3).slice(0, 8).sort((a, b) => a.d < b.d ? 1 : -1);
+      const fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
       const origin = u => { try { return new URL(u).origin; } catch (e){ return ""; } };
       document.getElementById("wkNews").innerHTML = items.map(i => `<a href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${i.i ? `<img src="${esc(i.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : `<img class="logo" src="${esc(origin(i.u))}/favicon.ico" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`}</div><div class="tx">${seen && i.d > seen ? '<span class="new">New</span>' : ""}<b>${esc(i.t)}</b><small>${esc(i.s)} · ${day(i.d)}</small></div></a>`).join("") || "<p>No stories yet.</p>";
       if (fresh) document.getElementById("weekNote").textContent = fresh + " new " + (fresh === 1 ? "story" : "stories") + " since your last visit";
@@ -308,7 +312,7 @@ loadPlans();
 /* hero: a featured story (pinned in /shape/site.json "featured", else the newest well-tagged local story with a photo) and three live numbers */
 (function(){
   const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  const LOCAL = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WBEZ", "WTTW News", "Chicago Sun-Times", "South Side Weekly", "Chicago Reader"];
+  const LOCAL = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WBEZ", "WTTW News", "Chicago Sun-Times", "South Side Weekly", "Chicago Reader", "Better Government Association", "Metropolitan Planning Council"];
   Promise.all([fetch("/news/data/news.json").then(r => r.json()), fetch("/shape/site.json").then(r => r.json()).catch(() => ({}))]).then(([d, site]) => {
     const now = Date.now(), age = i => (now - Date.parse(i.d.replace("Z", ":00Z"))) / 864e5;
     let f = site.featured && d.items.find(i => i.u === site.featured);
