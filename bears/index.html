@@ -112,6 +112,13 @@ dialog.sc-info{max-width:520px}
 .picks .bar{height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:4px}
 .picks .bar i{display:block;height:100%;background:var(--sc-star)}
 .picks b{font-weight:600;text-align:right}
+.picks.vote li{grid-template-columns:1fr 40px auto;padding:8px 0;border-bottom:1px solid var(--sc-line)}
+.picks.vote li:last-child{border-bottom:0}
+.picks.vote .nm{background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.picks.vote .nm:hover{color:var(--sc-navy)}
+.picks.vote .why{display:block;font-size:12px;color:var(--sc-ink2);margin-top:2px}
+.picks.vote .sc-btn{min-width:72px}
+.picks.vote li.mine .sc-btn{background:var(--sc-navy);color:#fff;border-color:var(--sc-navy)}
 .satbtn{width:auto !important;padding:0 10px !important;font:600 12.5px var(--sc-font) !important;color:var(--sc-ink2)}
 .satbtn[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important}
 .sc-btn.danger{color:#a0001b;border-color:#f4c3cc} .sc-btn.danger:hover{background:#fdecef;border-color:#c8102e}
@@ -146,7 +153,7 @@ dialog.sc-info{max-width:520px}
     <h1>Where should the Bears play?</h1>
     <p class="lede">Every proposed site, measured the same way: trains, parking, hotels and neighbors. Or drop your own pin.</p>
     <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-t="sites">Sites</button><button role="tab" aria-selected="false" data-t="rank">Ranking</button><button role="tab" aria-selected="false" data-t="picks">Users</button><button role="tab" aria-selected="false" data-t="learn">Learn</button>
+      <button role="tab" aria-selected="true" data-t="sites">Sites</button><button role="tab" aria-selected="false" data-t="rank">Ranking</button><button role="tab" aria-selected="false" data-t="picks">Vote</button><button role="tab" aria-selected="false" data-t="learn">Learn</button>
     </div>
   </div>
   <div class="scroll" id="scroll">
@@ -168,10 +175,11 @@ dialog.sc-info{max-width:520px}
       <div style="overflow-x:auto"><table class="cmp" id="cmp"></table></div>
     </section>
     <section class="pane" id="p-picks" hidden>
-      <h2>Where users put it</h2>
-      <p>Pick a site (or your own pin) from its page with <b>This is my pick</b>. One pick per person a day; nothing else is stored.</p>
-      <ul class="picks" id="picks"><li>Loading…</li></ul>
-      <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show users' pins on the map</label>
+      <h2>Vote for the best spot</h2>
+      <p>Every proposed site is on the ballot, plus your own pin if you dropped one. One vote per person a day; nothing else is stored.</p>
+      <ul class="picks vote" id="picks"><li>Loading…</li></ul>
+      <p class="small" id="voteTot"></p>
+      <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show where people's own pins are</label>
     </section>
     <section class="pane" id="p-learn" hidden>
       <h2>Stadium economics</h2>
@@ -495,7 +503,7 @@ function openSite(id){
     ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
     <h3>Measured the same way as every site</h3>${detailHtml(m, s)}
     <h3>Who pays, and who gets the taxes</h3><ul class="facts">${s.money.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
-    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn">This is my pick</button></div>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn">Vote for this site</button></div>
     <h3>Bring another stadium here, at real scale</h3>${refPicker()}
     <p class="src">${src(...s.src)}</p>`;
   bindDetail(m, s.c, s.name);
@@ -511,7 +519,7 @@ function openPin(){
     ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
     ${detailHtml(m, null)}
     <h3>Who would get the taxes</h3><p>${m.place === "Indiana" ? "Indiana, Lake County and the town it's in. Illinois and Chicago would lose game-day hotel, amusement and sales taxes." : m.place === "Chicago" ? "Chicago and Cook County, and the state through its hotel tax. Today, Chicago's amusement tax applies to tickets." : "The suburb it's in, its school districts and Cook County or the collar county, unless a property tax deal says otherwise."}</p>
-    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button><button class="sc-btn danger" type="button" id="delPinBtn">Delete my pin</button></div>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>Vote for my pin</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button><button class="sc-btn danger" type="button" id="delPinBtn">Delete my pin</button></div>
     <h3>Bring another stadium here, at real scale</h3>${refPicker()}`;
   bindDetail(m, "#1a1d21", "Your pin");
   $("delPinBtn").onclick = () => { pin = null; delete M.pin; drawSites(); back(); updateRank(); toast("Your pin is gone. Pick a site, or drop a new one."); };
@@ -774,21 +782,36 @@ function updateRank(){
   $("cmp").innerHTML = `<tr><th></th>${order.map(id => `<th>${esc((SITES.find(x => x.id === id) || {name:"Your pin"}).name)}</th>`).join("")}</tr>` + cols.map(([t, f]) => `<tr><td>${t}</td>${order.map(id => `<td>${f(M[id])}</td>`).join("")}</tr>`).join("");
 }
 
-/* ---------- users' picks (anonymous, one a day) ---------- */
+/* ---------- votes (anonymous, one a day) ---------- */
+let VOTES = null;
+const today = () => new Date().toLocaleDateString("en-CA");
+function myVote(){ try { const v = JSON.parse(localStorage.getItem("sc-bears-pick") || "null"); return v && v.day === today() ? v.site : null; } catch (e) { return null; } }
+function pinOk(){ const m = M.pin; return !!(pin && m && m.land && m.fits >= 0.7); }
 async function pickIt(id, m){
-  const body = {site: id === "pin" ? "pin" : id, lon: +m.lon.toFixed(3), lat: +m.lat.toFixed(3)};
+  if (!m && id === "pin") m = M.pin;
+  if (!m) m = M[id]; if (!m){ const t = SITES.find(s => s.id === id); m = {lon:t.ll[0], lat:t.ll[1]}; }
+  const body = {site: id, lon: +(+m.lon).toFixed(3), lat: +(+m.lat).toFixed(3)};
   try { const r = await fetch("/api/bears/pick", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}); if (!r.ok) throw r.status;
-    try { localStorage.setItem("sc-bears-pick", JSON.stringify(body)); } catch (e) {}
-    toast("Counted. See where users put it under Users."); loadPicks(); }
-  catch (e) { toast(e === 429 ? "You've already picked today. Come back tomorrow." : "Couldn't count it right now."); }
+    try { localStorage.setItem("sc-bears-pick", JSON.stringify({site:id, day:today()})); } catch (e) {}
+    toast("Vote counted. Thanks!"); loadPicks(); }
+  catch (e) { toast(e === 429 ? "You've already voted today. Come back tomorrow." : "Couldn't count your vote right now."); }
+}
+function renderVotes(){
+  const d = VOTES || {sites:{}}, tot = Object.values(d.sites || {}).reduce((a, b) => a + b, 0), top = Math.max(1, ...Object.values(d.sites || {})), mine = myVote();
+  const rows = SITES.map(s => ({id:s.id, name:s.name, n:(d.sites || {})[s.id] || 0}));
+  rows.push({id:"pin", name:pin ? "My own pin" : "Your own spot", n:(d.sites || {}).pin || 0, why:!pin ? "Drop a pin on the Sites tab first" : !pinOk() ? "Your pin needs land big enough for a stadium" : "Counted with everyone else's own pins"});
+  rows.sort((a, b) => b.n - a.n);
+  $("picks").innerHTML = rows.map(r => `<li data-id="${r.id}"${mine === r.id ? ' class="mine"' : ""}><span><button type="button" class="nm">${esc(r.name)}</button>${r.why ? `<span class="why">${esc(r.why)}</span>` : ""}<div class="bar"><i style="width:${r.n / top * 100}%"></i></div></span><b>${tot ? Math.round(r.n / tot * 100) + "%" : "–"}</b><button type="button" class="sc-btn vbtn"${(r.id === "pin" && !pinOk()) || (mine && mine !== r.id) ? " disabled" : ""}>${mine === r.id ? "Voted" : "Vote"}</button></li>`).join("");
+  $("voteTot").textContent = VOTES ? (tot ? `${fmt(tot)} vote${tot === 1 ? "" : "s"} so far.` : "No votes yet. Be the first.") + (mine ? " You voted today; vote again tomorrow." : "") : "Votes are counted on the live site.";
+  $("picks").querySelectorAll("li").forEach(li => { const id = li.dataset.id;
+    li.querySelector(".nm").onclick = () => { if (id === "pin" && !pin) return tab("sites"); tab("sites"); id === "pin" ? openPin() : openSite(id); };
+    li.querySelector(".vbtn").onclick = () => { if (myVote() !== id) pickIt(id); }; });
 }
 async function loadPicks(){
-  try { const r = await fetch("/api/bears/picks"); if (!r.ok) throw 0; const d = await r.json();
-    const tot = Object.values(d.sites || {}).reduce((a, b) => a + b, 0) || 0;
-    const rows = Object.entries(d.sites || {}).sort((a, b) => b[1] - a[1]);
-    $("picks").innerHTML = tot ? rows.map(([k, n]) => `<li><span>${esc((SITES.find(s => s.id === k) || {name:k === "pin" ? "Their own pins" : k}).name)}<div class="bar"><i style="width:${n / rows[0][1] * 100}%"></i></div></span><b>${Math.round(n / tot * 100)}%</b></li>`).join("") + `<li class="small">${fmt(tot)} picks so far</li>` : '<li class="small">No picks yet. Be the first: open a site and tap <b>This is my pick</b>.</li>';
-    map.getSource("heat").setData({type:"FeatureCollection", features:(d.cells || []).map(([lon, lat, n]) => ({type:"Feature", properties:{n}, geometry:{type:"Point", coordinates:[lon, lat]}}))});
-  } catch (e) { $("picks").innerHTML = '<li class="small">Users\' picks show up here on the live site.</li>'; }
+  renderVotes();
+  try { const r = await fetch("/api/bears/picks"); if (!r.ok) throw 0; VOTES = await r.json(); renderVotes();
+    map.getSource("heat").setData({type:"FeatureCollection", features:(VOTES.cells || []).map(([lon, lat, n]) => ({type:"Feature", properties:{n}, geometry:{type:"Point", coordinates:[lon, lat]}}))});
+  } catch (e) { VOTES = null; renderVotes(); }
 }
 
 /* ---------- learn ---------- */

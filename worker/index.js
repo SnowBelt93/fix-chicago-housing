@@ -173,7 +173,9 @@ export class Community {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS imports (old INTEGER PRIMARY KEY, id INTEGER NOT NULL, likes INTEGER NOT NULL)`);
     // "Where Should the Bears Play?": one pick per person a day; pins rounded to ~100 m; nothing typed is stored
     this.sql.exec(`CREATE TABLE IF NOT EXISTS bears (id INTEGER PRIMARY KEY, site TEXT NOT NULL, lon REAL NOT NULL, lat REAL NOT NULL, who TEXT NOT NULL, day TEXT NOT NULL, ts INTEGER NOT NULL)`);
-    try { this.sql.exec("ALTER TABLE bears ADD COLUMN plan TEXT"); } catch (e) {}   // Nov 8: a pick can carry its site plan (pieces and positions only)
+    try { this.sql.exec("ALTER TABLE bears ADD COLUMN plan TEXT"); } catch (e) {}
+    // Nov 8: the site planner is gone (Kyle); drop the test picks that carried a plan
+    this.sql.exec("DELETE FROM bears WHERE plan IS NOT NULL");
     this.env = env;
     this.cache = null;
   }
@@ -236,18 +238,15 @@ export class Community {
     const site = String(b.site || ""), lon = Math.round(+b.lon * 1000) / 1000, lat = Math.round(+b.lat * 1000) / 1000;
     if (!/^(hammond|arlington|southworks|lakefront|soldier|reese|pin)$/.test(site) || !(lon > -88.6 && lon < -86.8 && lat > 41.3 && lat < 42.4)) return json({error: "invalid"}, 400);
     if (this.sql.exec("SELECT 1 FROM bears WHERE who = ? AND day = ?", who, day).toArray().length) return json({error: "one a day"}, 429);
-    let plan = b.plan == null ? null : String(b.plan);
-    if (plan != null && (plan.length > 1500 || !/^[a-z]+~-?\d+,-?\d+,-?\d+~[a-z0-9,;-]*$/.test(plan) || plan.split("~")[0] !== site)) return json({error: "invalid plan"}, 400);
-    this.sql.exec("INSERT INTO bears (site, lon, lat, who, day, ts, plan) VALUES (?, ?, ?, ?, ?, ?, ?)", site, lon, lat, who, day, Date.now(), plan);
+    this.sql.exec("INSERT INTO bears (site, lon, lat, who, day, ts) VALUES (?, ?, ?, ?, ?, ?)", site, lon, lat, who, day, Date.now());
     this.bearsCache = null;
     return json({ok: true});
   }
   bearsPicks(){
     if (this.bearsCache && Date.now() - this.bearsCache.t < 60e3) return json(this.bearsCache.d);
     const sites = {}; for (const r of this.sql.exec("SELECT site, COUNT(*) AS n FROM bears GROUP BY site").toArray()) sites[r.site] = r.n;
-    const cells = this.sql.exec("SELECT ROUND(lon, 2) AS x, ROUND(lat, 2) AS y, COUNT(*) AS n FROM bears GROUP BY x, y").toArray().map(r => [r.x, r.y, r.n]);
-    const plans = this.sql.exec("SELECT site, plan, ts FROM bears WHERE plan IS NOT NULL ORDER BY id DESC LIMIT 10").toArray().map(r => ({site: r.site, plan: r.plan, ts: r.ts}));
-    const d = {sites, cells, plans}; this.bearsCache = {t: Date.now(), d};
+    const cells = this.sql.exec("SELECT ROUND(lon, 2) AS x, ROUND(lat, 2) AS y, COUNT(*) AS n FROM bears WHERE site = 'pin' GROUP BY x, y").toArray().map(r => [r.x, r.y, r.n]);
+    const d = {sites, cells}; this.bearsCache = {t: Date.now(), d};
     return json(d);
   }
 
