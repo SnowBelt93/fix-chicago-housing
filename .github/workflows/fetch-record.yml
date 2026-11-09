@@ -1,0 +1,29 @@
+# Downloads data for the Shape Chicago record page (tools/record/fetch.py). Push to tools/record/ with "[steps: a b]" in
+# the commit message to run only some steps.
+name: Fetch record data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/record/**', '.github/workflows/fetch-record.yml']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          sudo apt-get install -y poppler-utils >/dev/null
+          STEPS=$(printf '%s' "$MSG" | sed -n 's/.*\[steps: *\([^]]*\)\].*/\1/p')
+          python3 tools/record/fetch.py $STEPS
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/record
+          git commit -m "Fetch record data" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
