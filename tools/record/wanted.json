@@ -1,0 +1,12 @@
+[
+ {"id": "5neh-572f", "name": "CTA L station entries, daily totals"},
+ {"id": "jyb9-n7fm", "name": "CTA bus routes, daily totals by route"},
+ {"id": "6iiy-9s97", "name": "CTA daily boarding totals"},
+ {"id": "s6ha-ppgi", "name": "Affordable rental housing developments"},
+ {"id": "ydr8-5enu", "name": "Building permits: renovations that add or mention dwelling units, 2019 on", "save_as": "permits_reno_units",
+  "select": "id,permit_,permit_type,issue_date,work_description,reported_cost,street_number,street_direction,street_name,latitude,longitude,ward,community_area,permit_status,permit_milestone",
+  "where": "permit_type='PERMIT - RENOVATION/ALTERATION' AND issue_date >= '2019-01-01' AND (upper(work_description) like '%DWELLING%' OR upper(work_description) like '%UNIT%' OR upper(work_description) like '%CONVER%' OR upper(work_description) like '%ADU%' OR upper(work_description) like '%COACH%')"},
+ {"id": "v6vf-nfxy", "name": "311: potholes, street lights, tree trims since 2023", "save_as": "311_streets",
+  "select": "sr_number,sr_type,status,created_date,closed_date,ward,community_area,latitude,longitude",
+  "where": "created_date >= '2023-01-01' AND sr_type in ('Pothole in Street Complaint','Street Light Out Complaint','Alley Light Out Complaint','Tree Trim Request','Abandoned Vehicle Complaint','Vacant/Abandoned Building Complaint','Building Violation')"}
+]

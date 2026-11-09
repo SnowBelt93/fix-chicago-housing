@@ -44,9 +44,11 @@ if 'catalog' in STEPS:
                 if off >= r.get('resultSetSize', 0): break
         print(dom, sum(1 for d in found.values() if d['domain'] == dom), flush=True)
     # row counts for the city portal (cheap count(*) query)
+    t0 = time.time()
     for d in found.values():
+        if time.time() - t0 > 600 or d['domain'] != 'data.cityofchicago.org': d['rows'] = None; continue
         try:
-            c = json.loads(get(f"https://{d['domain']}/resource/{d['id']}.json?$select=count(*)", tries=1, timeout=60))
+            c = json.loads(get(f"https://{d['domain']}/resource/{d['id']}.json?$select=count(*)", tries=1, timeout=15))
             d['rows'] = int(list(c[0].values())[0])
         except Exception: d['rows'] = None
     json.dump(sorted(found.values(), key=lambda d: (d['domain'], d['name'])), open(os.path.join(OUT, 'catalog.json'), 'w'), indent=0)
@@ -97,7 +99,7 @@ if 'probe' in STEPS:
 
 if 'get' in STEPS and os.path.exists(os.path.join(HERE, 'wanted.json')):
     for w in json.load(open(os.path.join(HERE, 'wanted.json'))):
-        path = os.path.join(OUT, w['id'] + '.csv.gz')
+        path = os.path.join(OUT, w.get('save_as', w['id']) + '.csv.gz')
         if os.path.exists(path) and not w.get('refresh'): continue
         q = {'accessType': 'DOWNLOAD'}
         url = f"https://{w.get('domain', 'data.cityofchicago.org')}/api/views/{w['id']}/rows.csv?accessType=DOWNLOAD"
