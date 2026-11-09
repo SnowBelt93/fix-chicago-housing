@@ -640,9 +640,9 @@ function baseSegs(x, y){
   const out = []; if (!map || !map.getSource("openmaptiles")) return out;
   const HW = {motorway:18, trunk:14, primary:12, secondary:10, tertiary:9, minor:7, rail:8};
   let fs = []; try { fs = map.querySourceFeatures("openmaptiles", {sourceLayer:"transportation"}); } catch (e) {}
-  for (const f of fs){ const hw = HW[f.properties.class]; if (!hw || f.properties.brunnel === "tunnel") continue;
+  for (const f of fs){ const pr = f.properties, hw = HW[pr.class]; if (!hw || pr.brunnel === "tunnel" || (pr.class === "rail" && pr.service)) continue;
     const g = f.geometry, L = g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : [];
-    for (const c of L) for (let k = 1; k < c.length; k++){ const [ax, ay] = xy(c[k - 1][0], c[k - 1][1]), [bx, by] = xy(c[k][0], c[k][1]); if ((ax - x) ** 2 + (ay - y) ** 2 < 2600 ** 2) out.push([ax, ay, bx, by, hw, hw >= 9 ? 1 : 0, f.properties.class === "rail" ? 1 : 0]); } }
+    for (const c of L) for (let k = 1; k < c.length; k++){ const [ax, ay] = xy(c[k - 1][0], c[k - 1][1]), [bx, by] = xy(c[k][0], c[k][1]); if ((ax - x) ** 2 + (ay - y) ** 2 < 2600 ** 2) out.push([ax, ay, bx, by, hw, hw >= 9 || pr.class === "rail" ? 1 : 0, pr.class === "rail" ? 1 : 0]); } }
   return out;
 }
 async function loadSegs(x, y, force){
@@ -755,7 +755,7 @@ function layoutBlocks(P){
       if (overlap(b, st, 30)){ grid[i][j] = "st"; continue; }
       if (Math.hypot(x - P.x, y - P.y) > PLAN_R){ grid[i][j] = null; continue; }
       let inn = 0; for (let a = 0; a < 5; a++) for (let q = 0; q < 5; q++){ const [px, py] = toW(ua + (a + 0.5) / 5 * (ub - ua), va + (q + 0.5) / 5 * (vb - va)); if (maskAt(px, py)) inn++; }
-      if (inn < 21 || onStreet({...b, w:b.w - 10, h:b.h - 10}, true, true)){ grid[i][j] = null; continue; }
+      if (inn < 21 || onStreet({...b, w:b.w - 10, h:b.h - 10}, false, true)){ grid[i][j] = null; continue; }
       grid[i][j] = blocks.length; blocks.push(b); } }
   // new streets: grid lines that weren't streets already, wherever a kept block or the stadium sits beside them
   const streetsFor = keep => {
@@ -881,7 +881,7 @@ function renderPlan(){
   const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : "";
   const key = ["gar", "lot", "home", "plaza"].map(k => `<span><i style="background:${KINDS[k].c}"></i>${KINDS[k].n}</span>`).join("") + '<span><i style="background:#fff;border:1.5px dashed #8a93a0"></i>Empty for now</span><span><i style="background:#fff;border:2px solid #c9ced4"></i>New street</span><span><i style="background:#2b5da0;border-radius:50%"></i>Train stop</span>';
   $("detail").innerHTML = head + `
-    <p class="small">Stadium and parking on one side, homes and shops on the side facing the train, on blocks cut by the streets around the site. <b>Tap a block</b> to change it, drag the stadium to move everything, or remove anything from the list under the plan.</p>
+    <p class="small">Stadium and parking on one side, homes and shops on the side facing the train, on blocks cut by the streets around the site. <b>Tap a block</b> to change it, drag the stadium to move everything, or tap × in the list below to remove anything.</p>
     <div class="ptile ${short ? "bad" : "good"}"><b>${fmt(have)} <span>of ${fmt(need)}</span></b><span>parking spaces for the cars that drive in${short ? ` · <b class="red">${fmt(short)} short</b>` : " · enough"}</span>
       <div class="pbar"><i style="width:${Math.min(100, m.yourSpaces / Math.max(1, need) * 100)}%;background:#6b7280"></i><i style="width:${Math.min(100, m.nearby / Math.max(1, need) * 100)}%;background:#c3c8ce"></i></div>
       <span class="small">${fmt(m.yourSpaces)} in the plan, ${fmt(m.nearby)} in lots already within a mile. ${fmt(m.byTrain)} of ${fmt(A.seats)} fans come by train${m.busFrom ? " or shuttle" : ""}, so ${fmt(need)} cars drive in.</span></div>
@@ -889,6 +889,8 @@ function renderPlan(){
       ${tile(fmt(m.parkAcres), `acres of parking (${fmt(m.devAcres)} acres built in all)`, "", "")}
       ${tile(fmt(m.newHomes), `new homes${m.inWay ? `; <b class="red">${fmt(m.inWay)}</b> torn down` : ", none torn down"}`, m.inWay ? "bad" : "", "")}
     </div>
+    <h3>In the plan <span class="small">· tap × to remove</span></h3>
+    <ul class="plist2">${listRows(P, m)}</ul>
     ${m.parkAcres > 1 ? `<p class="tradeoff">That parking covers <b>${fmt(m.parkAcres)} acres</b>, used about ten days a year. Built like the homes blocks here, the same land would hold about <b>${fmt(m.couldHold)} homes</b>.</p>` : ""}
     ${P.bad ? `<p class="small warnline">The stadium sits on a main street or a track. Drag it onto open land.</p>` : ""}
     ${stopNote}${busNote}
@@ -897,8 +899,6 @@ function renderPlan(){
     <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
     <p class="small">${got.length ? "Laid out: " + got.join(", ") + "." : "No open blocks within a mile."}${P.missed ? ` <span class="warnline">Out of open land within a mile, about ${fmt(P.missed)} spaces short of the target.</span>` : ""}</p>
     <div class="pkey">${key}</div>
-    <h3>In the plan</h3>
-    <ul class="plist2">${listRows(P, m)}</ul>
     <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pRedo">Redo the plan</button></div>`;
   $("planBack").onclick = endPlan;
   $("detail").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeThing(b.dataset.rm));
@@ -965,7 +965,7 @@ function planTap(x, y, px){
   const bi = (P.blocks || []).findIndex(b => { const t = -b.rot * Math.PI / 180, dx = x - b.x, dy = y - b.y, u = dx * Math.cos(t) - dy * Math.sin(t), v = dx * Math.sin(t) + dy * Math.cos(t); return Math.abs(u) <= b.w / 2 && Math.abs(v) <= b.h / 2; });
   if (bi < 0){ POPclose(); return; }
   const b = P.blocks[bi], a = b.w * b.h, what = k => { const K = KINDS[k]; return K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : k === "plaza" ? "open space" : "nothing yet"; };
-  popAt(b.x, b.y, `<b>This block: ${(a / 4046.86).toFixed(1)} acres</b><div class="pchoice">${["gar", "lot", "home", "plaza", "empty"].map(k => `<button type="button" data-k="${k}" aria-pressed="${b.k === k}"><i style="background:${KINDS[k].c || "#fff"}"></i>${KINDS[k].n}<span>${what(k)}</span></button>`).join("")}</div>`,
+  popAt(b.x, b.y, `<b>This block: ${(a / 4046.86).toFixed(1)} acres</b><div class="pchoice">${["gar", "lot", "home", "plaza"].map(k => `<button type="button" data-k="${k}" aria-pressed="${b.k === k}"><i style="background:${KINDS[k].c || "#fff"}"></i>${KINDS[k].n}<span>${what(k)}</span></button>`).join("")}</div>${b.k !== "empty" ? `<button class="sc-btn" type="button" data-k="empty" style="margin-top:8px;width:100%">Remove (leave the block empty)</button>` : ""}`,
     el => el.querySelectorAll("[data-k]").forEach(btn => btn.onclick = () => { b.k = btn.dataset.k; b.mine = true; POPclose(); planChanged(); }));
 }
 function bindPlanDrag(){
@@ -1273,7 +1273,7 @@ const HOW = `<ul class="facts">
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
 <li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
 <li><b>Layout:</b> the stadium and its parking take one side and a district of homes over shops the other, on the side facing the train (or the nearby neighborhood), starting with the blocks closest to the stadium; a plaza sits between them. Garages come first on the parking side, then surface lots, then lots past the district if more are needed.</li>
-<li><b>Streets and blocks:</b> the streets around the site that run with the local grid are carried into it; where they're more than 260 m apart, new streets (20 m wide) are added about every 160 m. Blocks that are mostly usable land, aren't crossed by another street or track and lie within a mile become the plan's blocks; the stadium takes the blocks under it. A garage covers 90% of its block with 5 levels; homes over shops are solid buildings to the sidewalk covering 85% of the block, with 5 floors of homes over shops at 1,026 sq ft a home. "Would hold" uses that same density. Assumptions.</li>
+<li><b>Streets and blocks:</b> the streets around the site that run with the local grid are carried into it; where they're more than 260 m apart, new streets (20 m wide) are added about every 160 m. Blocks that are mostly usable land, aren't crossed by a main street, expressway or main rail line and lie within a mile become the plan's blocks (side streets and yard tracks inside them would close, as on any big site); the stadium takes the blocks under it. A garage covers 90% of its block with 5 levels; homes over shops are solid buildings to the sidewalk covering 85% of the block, with 5 floors of homes over shops at 1,026 sq ft a home. "Would hold" uses that same density. Assumptions.</li>
 <li><b>Your site plan:</b> laid out automatically. It goes on usable land within a mile of the stadium (for the proposed sites, also a circle the size of the site's published acreage, or 120 acres when none is published), never on the lake or on blocks with homes. Transit comes first: a game-day stop on the nearest track if it's within a walk, or, with no train within a walk, a stop on the nearest track plus shuttle buses. Then a plaza on the side fans walk in from, homes over shops toward the station (or the nearest neighborhood), up to three garage blocks closest to the stadium and surface lots outward, until there's parking for every car, half or a quarter (your choice), counting lots already there that the plan doesn't build over. Remaining blocks stay empty. Not anyone's actual plan. Satellite photos: USGS The National Map; 3D buildings around the site: OpenStreetMap through OpenFreeMap. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
