@@ -133,6 +133,14 @@ dialog.sc-info{max-width:520px}
 .maplibregl-popup-content{border-radius:14px;padding:12px 14px 10px;box-shadow:var(--sc-shadow)}
 .satbtn{width:auto !important;padding:0 10px !important;font:600 12.5px var(--sc-font) !important;color:var(--sc-ink2)}
 .satbtn[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important}
+.plist2{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.plist2 li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:4px 6px;border-radius:8px}
+.plist2 li[data-hl]:hover{background:var(--sc-chip)}
+.plist2 li > span{display:flex;align-items:center;gap:7px;min-width:0} .plist2 i{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
+.plist2 .grp{display:block;padding:0} .plist2 summary{cursor:pointer;display:flex;align-items:center;gap:7px;padding:4px 6px;font-weight:500}
+.plist2 .grp .plist2{margin:2px 0 4px 14px}
+.rmx{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);font-size:17px;line-height:1;cursor:pointer;padding:0}
+.rmx:hover{border-color:#c8102e;color:#c8102e}
 .mprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
 .mpseg{font-size:12.5px} .mpseg button{padding:6px 10px}
 .pkey{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--sc-mute);margin-top:6px}
@@ -447,7 +455,7 @@ async function initMap(){
   map.addLayer({id:"plan-ef", type:"fill", source:"plan", filter:["==", ["get", "k"], "empty"], paint:{"fill-color":"#ffffff", "fill-opacity":0.35}});
   map.addLayer({id:"plan-e", type:"line", source:"plan", filter:["==", ["get", "k"], "empty"], paint:{"line-color":"#8a93a0", "line-width":1.5, "line-dasharray":[2, 2]}});
   map.addLayer({id:"plan-x", type:"fill-extrusion", source:"plan", filter:["!=", ["get", "k"], "empty"], paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":0.95}});
-  map.addLayer({id:"plan-l", type:"line", source:"plan", filter:["!=", ["get", "k"], "empty"], paint:{"line-color":["case", ["get", "bad"], "#c8102e", "#ffffff"], "line-width":["case", ["get", "bad"], 3, 1.2]}});
+  map.addLayer({id:"plan-l", type:"line", source:"plan", filter:["!=", ["get", "k"], "empty"], paint:{"line-color":["case", ["get", "hl"], "#1a1d21", ["get", "bad"], "#c8102e", "#ffffff"], "line-width":["case", ["any", ["get", "hl"], ["get", "bad"]], 3.5, 1.2]}});
   map.addLayer({id:"planln", type:"line", source:"planln", paint:{"line-color":"#d9822b", "line-width":2.5, "line-dasharray":[2, 1.5]}});
   map.addLayer({id:"planpts", type:"circle", source:"planpts", paint:{"circle-radius":9, "circle-color":["match", ["get", "t"], "stop", "#2b5da0", "#d9822b"], "circle-stroke-color":["case", ["get", "bad"], "#c8102e", ["get", "sel"], "#1a1d21", "#ffffff"], "circle-stroke-width":3}});
   map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 2.6, 11, 3.6, 15, 6], "circle-stroke-color":"#fff", "circle-stroke-width":0.8, "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
@@ -594,10 +602,11 @@ function placePin(lon, lat, quiet){
 // The surrounding streets are carried into the site; where they're more than ~260 m apart, new streets split the land into
 // blocks about 160 m apart. Each block gets one use. Sizes and densities are assumptions, listed under How we measure.
 const SQM_HOME = 95.3;          // 1,026 sq ft a home (the housing simulator's assumption)
+const HOME_COVER = 0.85;        // a solid building built to the sidewalk, less light wells and courtyards (assumption)
 const KINDS = {
   gar:   {n:"Parking garage", c:"#6b7280", ht:16, sp:a => a * 0.9 * 5 / A.sqm, code:"g"},          // 5 levels over 90% of the block
   lot:   {n:"Surface lot", c:"#aeb5bd", ht:0.6, sp:a => a / A.sqm, code:"l"},
-  home:  {n:"Homes over shops", c:"#1f7a8c", ht:21, homes:a => a * 0.6 * 5 / SQM_HOME, code:"h"},  // 60% of the block, 5 floors over shops
+  home:  {n:"Homes over shops", c:"#1f7a8c", ht:21, homes:a => a * HOME_COVER * 5 / SQM_HOME, code:"h"},  // solid buildings to the sidewalk, 5 floors over shops
   plaza: {n:"Tailgate plaza", c:"#8cbf7a", ht:0.4, code:"z"},
   empty: {n:"Empty for now", c:null, ht:0, code:"e"},
   stop:  {n:"Game-day train stop", code:"s"},
@@ -787,13 +796,17 @@ function autoPlan(opt){
   const st = P.items.find(i => i.k === "stop") || m1.busFrom || PL.rail.filter(r => Math.hypot(r.x - P.x, r.y - P.y) <= A.walk).sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
   if (st){ ex = st.x - P.x; ey = st.y - P.y; }
   else if (BLK) for (let k = 0; k < BLK.n; k++){ const dx = BLK.X[k] * 10 - P.x, dy = BLK.Y[k] * 10 - P.y, d = Math.hypot(dx, dy); if (d > 300 && d < 2500 && BLK.H[k]){ ex += dx / d * BLK.H[k]; ey += dy / d * BLK.H[k]; } }
-  const el = Math.hypot(ex, ey) || 1, hx = P.x + ex / el * 420, hy = P.y + ey / el * 420;
-  B.forEach(b => { b.d = Math.hypot(b.x - P.x, b.y - P.y); b.dh = Math.hypot(b.x - hx, b.y - hy); });
-  const free = () => B.filter(b => b.k === "empty" && !b.mine), mine = k => B.filter(b => b.mine && b.k === k);
-  if (!mine("plaza").length) free().sort((a, b) => (a.d + 0.6 * a.dh) - (b.d + 0.6 * b.dh)).slice(0, 1).forEach(b => b.k = "plaza");
-  free().sort((a, b) => a.dh - b.dh).slice(0, Math.max(0, MP.homes[P.hk] - mine("home").length)).forEach(b => b.k = "home");
+  if (!ex && !ey) for (const b of B){ ex += b.x - P.x; ey += b.y - P.y; }   // nothing to face: toward where most of the land is
+  const el = Math.hypot(ex, ey) || 1, ux = ex / el, uy = ey / el;
+  // the district takes the side facing the train (or the neighbors), as close to the stadium as the blocks go;
+  // the stadium's parking takes the other side, then whatever's left past the district
+  B.forEach(b => { b.d = Math.hypot(b.x - P.x, b.y - P.y); b.side = (b.x - P.x) * ux + (b.y - P.y) * uy; });
+  const free = () => B.filter(b => b.k === "empty" && !b.mine), mine = k => B.filter(b => b.mine && b.k === k), byD = (a, b) => a.d - b.d;
+  const front = () => free().filter(b => b.side > 0.4 * b.d).sort(byD), back = () => free().filter(b => b.side <= 0.4 * b.d).sort(byD);   // front: within about 65° of the train's direction
+  if (!mine("plaza").length) (front().length ? front() : free().sort(byD)).slice(0, 1).forEach(b => b.k = "plaza");
+  front().concat(back()).slice(0, Math.max(0, MP.homes[P.hk] - mine("home").length)).forEach(b => b.k = "home");
   let need = Math.max(0, (m1.cars - nearbyLeft(P)) * MP.park[P.pk]) - B.filter(b => b.mine && KINDS[b.k].sp).reduce((s, b) => s + KINDS[b.k].sp(b.w * b.h), 0), ng = mine("gar").length;
-  for (const b of free().sort((a, b) => a.d - b.d)){ if (need <= 0) break; const a = b.w * b.h; if (ng < 3){ b.k = "gar"; ng++; need -= KINDS.gar.sp(a); } else { b.k = "lot"; need -= KINDS.lot.sp(a); } }
+  for (const b of back().concat(front())){ if (need <= 0) break; const a = b.w * b.h; if (ng < 3){ b.k = "gar"; ng++; need -= KINDS.gar.sp(a); } else { b.k = "lot"; need -= KINDS.lot.sp(a); } }
   P.missed = Math.max(0, Math.round(need));
   // keep empty blocks only beside something built (or the stadium), then draw the new streets those blocks need
   const used = new Set(B.filter(b => b.k !== "empty").map(b => b.n));
@@ -816,7 +829,7 @@ function planMeasure(){
   for (const b of P.blocks || []){ const K = KINDS[b.k], a = b.w * b.h;
     if (b.k === "empty"){ m.emptyAcres += a / 4046.86; continue; }
     m.devAcres += a / 4046.86; if (K.sp){ m.yourSpaces += K.sp(a); m.parkAcres += a / 4046.86; } if (K.homes) m.newHomes += K.homes(a); b.under = homesUnder(b); m.inWay += b.under; }
-  m.couldHold = m.parkAcres * 4046.86 * 0.6 * 5 / SQM_HOME;   // the same land as homes over shops
+  m.couldHold = m.parkAcres * 4046.86 * HOME_COVER * 5 / SQM_HOME;   // the same land as homes over shops
   m.parking = m.nearby + m.yourSpaces;
   for (const it of P.items) if (it.k === "stop"){ const d = Math.hypot(it.x - P.x, it.y - P.y); it.walk = d <= A.walk;
     if (it.walk && !m.lines.some(l => l.line === it.line)){ m.lines.push({kind:it.kind, line:it.line, d, tph:A.maxTph[it.kind] / 2, at:[it.x, it.y]}); m.stations.unshift({name:"Your new " + it.kind + " stop", kind:it.kind, d}); } }
@@ -835,9 +848,8 @@ function drawPlan(){
   const P = PLAN, f = [], pts = [], ln = [], sts = [];
   if (P && !P.gone){
     (P.blocks || []).forEach((b, i) => { const K = KINDS[b.k];
-      if (b.k === "home"){ const inner = corners(b, Math.min(b.w, b.h) * 0.2).map(q => llOf(q[0], q[1])); inner.push(inner[0]);
-        f.push({type:"Feature", properties:{i, k:b.k, c:K.c, h:K.ht, bad:b.under > 0}, geometry:{type:"Polygon", coordinates:[ringPoly({...b, w:b.w - 6, h:b.h - 6}), inner.reverse()]}}); }
-      else f.push({type:"Feature", properties:{i, k:b.k, c:K.c || "#ffffff", h:K.ht, bad:b.under > 0}, geometry:{type:"Polygon", coordinates:[ringPoly(b.k === "gar" ? {...b, w:b.w * 0.95, h:b.h * 0.95} : b)]}}); });
+      const shape = b.k === "home" ? {...b, w:b.w - 4, h:b.h - 4} : b.k === "gar" ? {...b, w:b.w * 0.95, h:b.h * 0.95} : b;   // homes: solid, to the sidewalk
+      f.push({type:"Feature", properties:{i, k:b.k, c:K.c || "#ffffff", h:K.ht, bad:b.under > 0, hl:P.hl === i}, geometry:{type:"Polygon", coordinates:[ringPoly(shape)]}}); });
     for (const [a, b] of P.streets || []) sts.push({type:"Feature", properties:{}, geometry:{type:"LineString", coordinates:[llOf(a[0], a[1]), llOf(b[0], b[1])]}});
     P.items.forEach(it => {
       if (it.k === "stop") pts.push({type:"Feature", properties:{t:"stop", bad:!it.walk}, geometry:{type:"Point", coordinates:llOf(it.x, it.y)}});
@@ -869,7 +881,7 @@ function renderPlan(){
   const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : "";
   const key = ["gar", "lot", "home", "plaza"].map(k => `<span><i style="background:${KINDS[k].c}"></i>${KINDS[k].n}</span>`).join("") + '<span><i style="background:#fff;border:1.5px dashed #8a93a0"></i>Empty for now</span><span><i style="background:#fff;border:2px solid #c9ced4"></i>New street</span><span><i style="background:#2b5da0;border-radius:50%"></i>Train stop</span>';
   $("detail").innerHTML = head + `
-    <p class="small">The streets around the site carry into it, and every block gets a use. <b>Tap a block</b> to change it, tap the stadium to remove it, or drag the stadium somewhere else.</p>
+    <p class="small">Stadium and parking on one side, homes and shops on the side facing the train, on blocks cut by the streets around the site. <b>Tap a block</b> to change it, drag the stadium to move everything, or remove anything from the list under the plan.</p>
     <div class="ptile ${short ? "bad" : "good"}"><b>${fmt(have)} <span>of ${fmt(need)}</span></b><span>parking spaces for the cars that drive in${short ? ` · <b class="red">${fmt(short)} short</b>` : " · enough"}</span>
       <div class="pbar"><i style="width:${Math.min(100, m.yourSpaces / Math.max(1, need) * 100)}%;background:#6b7280"></i><i style="width:${Math.min(100, m.nearby / Math.max(1, need) * 100)}%;background:#c3c8ce"></i></div>
       <span class="small">${fmt(m.yourSpaces)} in the plan, ${fmt(m.nearby)} in lots already within a mile. ${fmt(m.byTrain)} of ${fmt(A.seats)} fans come by train${m.busFrom ? " or shuttle" : ""}, so ${fmt(need)} cars drive in.</span></div>
@@ -885,14 +897,35 @@ function renderPlan(){
     <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
     <p class="small">${got.length ? "Laid out: " + got.join(", ") + "." : "No open blocks within a mile."}${P.missed ? ` <span class="warnline">Out of open land within a mile, about ${fmt(P.missed)} spaces short of the target.</span>` : ""}</p>
     <div class="pkey">${key}</div>
+    <h3>In the plan</h3>
+    <ul class="plist2">${listRows(P, m)}</ul>
     <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pRedo">Redo the plan</button></div>`;
   $("planBack").onclick = endPlan;
+  $("detail").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeThing(b.dataset.rm));
+  $("detail").querySelectorAll("[data-hl]").forEach(r => { const on = () => { PLAN.hl = +r.dataset.hl; drawPlan(); }, off = () => { PLAN.hl = -1; drawPlan(); };
+    r.addEventListener("mouseenter", on); r.addEventListener("mouseleave", off); r.addEventListener("focusin", on); r.addEventListener("focusout", off); });
   $("detail").querySelectorAll(".mpseg button").forEach(b => b.onclick = () => { PLAN[b.dataset.key] = +b.dataset.v; redoPlan(true); });
   $("pRedo").onclick = () => redoPlan(false);
   $("pKick").onclick = () => kickoff(M.plan, (s ? s.name : "your site") + " (your plan)");
   $("pPick").onclick = () => pickIt(PLAN.base, M.plan, planCode());
   $("pLink").onclick = async () => { const u = location.origin + location.pathname + "#plan=" + planCode(); try { await navigator.clipboard.writeText(u); toast("Link copied"); } catch (e) { toast(u); } };
 }
+// everything in the plan, each with a remove button; blocks are grouped by use
+function listRows(P, m){
+  const x = (key, label) => `<button class="rmx" type="button" data-rm="${key}" aria-label="Remove ${esc(label)}">×</button>`;
+  let h = `<li><span><b>Stadium</b> <span class="small">${fmt(A.seats)} seats</span></span>${x("stadium", "the stadium")}</li>`;
+  P.items.forEach((it, i) => { const t = it.k === "stop" ? `Game-day ${it.kind} stop` : `Shuttle buses${it.st ? " from " + it.st.name : ""}`; h += `<li><span><b>${esc(t)}</b></span>${x("item:" + i, t)}</li>`; });
+  for (const k of ["home", "plaza", "gar", "lot"]){ const bs = (P.blocks || []).map((b, i) => [b, i]).filter(([b]) => b.k === k); if (!bs.length) continue; const K = KINDS[k];
+    const rows = bs.map(([b, i], n) => { const a = b.w * b.h, v = K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : (a / 4046.86).toFixed(1) + " acres";
+      return `<li data-hl="${i}" tabindex="-1"><span><i style="background:${K.c}"></i>${K.n} ${n + 1} <span class="small">${v}</span></span>${x("block:" + i, K.n + " " + (n + 1))}</li>`; }).join("");
+    h += bs.length > 3 ? `<li class="grp"><details><summary><i style="background:${K.c}"></i>${K.n}s (${bs.length})</summary><ul class="plist2">${rows}</ul></details></li>` : rows; }
+  return h;
+}
+function removeThing(key){ const P = PLAN; POPclose();
+  if (key === "stadium"){ P.gone = true; }
+  else if (key.startsWith("item:")) P.items.splice(+key.slice(5), 1);
+  else if (key.startsWith("block:")){ const b = P.blocks[+key.slice(6)]; if (b){ b.k = "empty"; b.mine = true; } }
+  P.hl = -1; planChanged(); }
 let planT = null;
 function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() => { renderPlan(); drawPlan(); setHash(); }, 30); }
 
@@ -1239,7 +1272,8 @@ const HOW = `<ul class="facts">
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
 <li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
-<li><b>Streets and blocks:</b> the streets around the site that run with the local grid are carried into it; where they're more than 260 m apart, new streets (20 m wide) are added about every 160 m. Blocks that are mostly usable land, aren't crossed by another street or track and lie within a mile become the plan's blocks; the stadium takes the blocks under it. A garage covers 90% of its block with 5 levels; homes over shops cover 60% of a block with 5 floors of homes over shops at 1,026 sq ft a home. "Would hold" uses that same density. Assumptions.</li>
+<li><b>Layout:</b> the stadium and its parking take one side and a district of homes over shops the other, on the side facing the train (or the nearby neighborhood), starting with the blocks closest to the stadium; a plaza sits between them. Garages come first on the parking side, then surface lots, then lots past the district if more are needed.</li>
+<li><b>Streets and blocks:</b> the streets around the site that run with the local grid are carried into it; where they're more than 260 m apart, new streets (20 m wide) are added about every 160 m. Blocks that are mostly usable land, aren't crossed by another street or track and lie within a mile become the plan's blocks; the stadium takes the blocks under it. A garage covers 90% of its block with 5 levels; homes over shops are solid buildings to the sidewalk covering 85% of the block, with 5 floors of homes over shops at 1,026 sq ft a home. "Would hold" uses that same density. Assumptions.</li>
 <li><b>Your site plan:</b> laid out automatically. It goes on usable land within a mile of the stadium (for the proposed sites, also a circle the size of the site's published acreage, or 120 acres when none is published), never on the lake or on blocks with homes. Transit comes first: a game-day stop on the nearest track if it's within a walk, or, with no train within a walk, a stop on the nearest track plus shuttle buses. Then a plaza on the side fans walk in from, homes over shops toward the station (or the nearest neighborhood), up to three garage blocks closest to the stadium and surface lots outward, until there's parking for every car, half or a quarter (your choice), counting lots already there that the plan doesn't build over. Remaining blocks stay empty. Not anyone's actual plan. Satellite photos: USGS The National Map; 3D buildings around the site: OpenStreetMap through OpenFreeMap. A surface lot is 300 by 180 m (about 1,800 spaces at one per 30 m²); a garage is 90 by 60 m with 6 levels (about 1,080 spaces); homes over shops are 80 by 40 m, 5 floors of homes over a floor of shops at 1,026 sq ft a home (the housing simulator's assumption), about 168 homes; a tailgate plaza is 120 by 80 m. Pieces count within a mile of the stadium. Each piece turns to match the streets around it and slides to the nearest spot that keeps it off every street and track, using OpenStreetMap streets (the transit simulator's main streets, Chicago's side streets from the street simulator, and the base map's streets). The stadium only has to stay off main streets, expressways and tracks; side streets under it would close. A game-day train stop sits on the nearest track and gets that line's game-day trains if it's within a 15-minute walk. Shuttle buses: 40 buses of 60 fans from the nearest station beyond a walk, up to about 6 miles out, at about 29 km/h with 10 minutes to load (assumptions); fans by shuttle are limited by both the buses and the trains. Homes torn down = homes in Census blocks whose center falls under a piece.</li>
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
