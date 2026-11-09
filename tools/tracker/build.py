@@ -73,6 +73,8 @@ TIERS = [
     re.compile(r'\b(\d{1,3}|' + '|'.join(sorted(W2N, key=len, reverse=True)) + r')[- ](?:DWELLING[- ])?UNIT\s+(?:RESIDENTIAL\s+|APARTMENT\s+|MULTI-?FAMILY\s+|MASONRY\s+)*(?:BUILDING|DEVELOPMENT|PROJECT)'),
     re.compile(r'\b(\d{1,3}|' + '|'.join(sorted(W2N, key=len, reverse=True)) + r')\s+(?:\(\d+\)\s+)?(?:NEW\s+)?(?:DETACHED\s+|ATTACHED\s+)?SINGLE[- ]FAMILY\s+(?:HOMES|HOUSES|RESIDENCES|DWELLINGS)'),
 ]
+PERAREA = re.compile(r'(?:DENSITY|LOT\s+AREA|\bPER)\b[^.]{0,30}$')
+SQFT = re.compile(r'\s*(?:SQ\.?\s*F|SQUARE|S\.F\.|SF\b)')
 NO_UNITS = re.compile(r'DWELLING UNITS?\s*[:\-]\s*(?:N/?A|NONE|0)\b|NO (?:DWELLING|RESIDENTIAL) UNITS')
 EXIST = re.compile(r'(?:EXISTING|CURRENTLY|PRESENTLY|IMPROVED WITH|CONTAINS)[^.]{0,80}$')
 def narrative_units(texts):
@@ -85,6 +87,8 @@ def narrative_units(texts):
             ns = []
             for m in pat.finditer(txt):
                 if k == 4 and EXIST.search(txt[max(0, m.start() - 120):m.start()]): continue
+                # "Density per dwelling unit: 1,000 sq ft", "lot area per unit: 750 square feet" are lot sizes, not homes
+                if SQFT.match(txt[m.end(1):m.end(1) + 14]) or (PERAREA.search(txt[max(0, m.start() - 40):m.start(1)]) and not re.match(r'\s*(?:DWELLING\s+)?UNITS?\b', txt[m.end(1):m.end(1) + 20])): continue
                 v = [int(x) for x in re.findall(r'\d+', m.group(1))] or ([W2N[m.group(1)]] if m.group(1) in W2N else [])
                 n = v[-1] if v else None
                 if n and 0 < n < 3000 and not 1900 <= n <= 2100: ns.append(n)
