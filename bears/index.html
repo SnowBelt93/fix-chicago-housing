@@ -141,6 +141,7 @@ dialog.sc-info{max-width:520px}
 .plist2 .grp .plist2{margin:2px 0 4px 14px}
 .rmx{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);font-size:17px;line-height:1;cursor:pointer;padding:0}
 .rmx:hover{border-color:#c8102e;color:#c8102e}
+.sc-btn.danger{color:#a0001b;border-color:#f4c3cc} .sc-btn.danger:hover{background:#fdecef;border-color:#c8102e}
 .mprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
 .mpseg{font-size:12.5px} .mpseg button{padding:6px 10px}
 .pkey{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--sc-mute);margin-top:6px}
@@ -557,9 +558,10 @@ function openPin(){
     ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
     ${detailHtml(m, null)}
     <h3>Who would get the taxes</h3><p>${m.place === "Indiana" ? "Indiana, Lake County and the town it's in. Illinois and Chicago would lose game-day hotel, amusement and sales taxes." : m.place === "Chicago" ? "Chicago and Cook County, and the state through its hotel tax. Today, Chicago's amusement tax applies to tickets." : "The suburb it's in, its school districts and Cook County or the collar county, unless a property tax deal says otherwise."}</p>
-    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn primary" type="button" id="planBtn">Plan the site</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button></div>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn primary" type="button" id="planBtn">Plan the site</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button><button class="sc-btn danger" type="button" id="delPinBtn">Delete my pin</button></div>
     <h3>Bring another stadium here, at real scale</h3>${refPicker()}`;
   bindDetail(m, "#1a1d21", "Your pin");
+  $("delPinBtn").onclick = () => { pin = null; delete M.pin; delete PLANS.pin; drawSites(); back(); updateRank(); toast("Your pin is gone. Pick a site, or drop a new one."); };
   $("moveBtn").onclick = () => { setPinMode(true); toast("Tap the map to move your pin"); };
   showStadium(pin.lon, pin.lat, pin.rot, "#e6e9ed"); drawSites(); setHash(); updateRank();
 }
@@ -780,10 +782,11 @@ const pc = (n, k) => fmt(n) + " " + k + (Math.round(n) === 1 ? "" : "s");
 const KN = {home:["Homes over shops building", "Homes over shops buildings"], plaza:["Tailgate plaza", "Tailgate plazas"], gar:["Parking garage", "Parking garages"], lot:["Surface lot", "Surface lots"]};
 function renderPlan(){
   const P = PLAN, s = SITES.find(q => q.id === P.base);
-  const head = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button><h2>Plan the site</h2>`;
+  const head = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button><h2>Plan the site</h2>
+    <div class="btns" style="margin:4px 0 10px">${s ? `<button class="sc-btn" type="button" id="pDel">Close the plan, back to all sites</button>` : `<button class="sc-btn danger" type="button" id="pDel">Delete my stadium</button>`}</div>`;
   if (P.gone){
     $("detail").innerHTML = head + `<div class="okbox"><b>Tap the map where the stadium should go.</b> The district comes with it. Green areas are land big enough for a stadium.</div><div class="btns"><button class="sc-btn" type="button" id="pBackSpot">Put it back where it was</button></div>`;
-    $("planBack").onclick = endPlan; $("pBackSpot").onclick = () => { const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat); placeStadium(at[0], at[1]); };
+    $("planBack").onclick = endPlan; $("pDel").onclick = deleteStadium; $("pBackSpot").onclick = () => { const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat); placeStadium(at[0], at[1]); };
     for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
     return; }
   const m = M.plan = planMeasure(), need = m.cars, have = m.parking, short = Math.max(0, need - have);
@@ -791,7 +794,7 @@ function renderPlan(){
   const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : "";
   const covers = [m.inWay ? `<b class="red">${fmt(m.inWay)} homes</b>` : "", m.bldUnder ? `${fmt(m.bldUnder)} buildings` : ""].filter(Boolean);
   $("detail").innerHTML = head + `
-    <p class="small">One stadium district: the stadium and its ring road, a plaza out front, a main street of homes and shops toward the train, garages at the sides and lots behind. Drag the stadium to move all of it; it turns to match the streets. Tap × below to take anything out.</p>
+    <p class="small">One stadium district: the stadium and its ring road, a plaza out front, a main street of homes and shops toward the train, garages at the sides and lots behind. Drag the stadium to move all of it; it turns to match the streets.</p>
     <div class="ptile ${short ? "bad" : "good"}"><b>${fmt(have)} <span>of ${fmt(need)}</span></b><span>parking spaces for the cars that drive in${short ? ` · <b class="red">${fmt(short)} short</b>` : " · enough"}</span>
       <div class="pbar"><i style="width:${Math.min(100, m.yourSpaces / Math.max(1, need) * 100)}%;background:#6b7280"></i><i style="width:${Math.min(100, m.nearby / Math.max(1, need) * 100)}%;background:#c3c8ce"></i></div>
       <span class="small">${fmt(m.yourSpaces)} in the district, ${fmt(m.nearby)} in lots already within a mile. ${fmt(m.byTrain)} of ${fmt(A.seats)} fans come by train${m.busFrom ? " or shuttle" : ""}, so ${fmt(need)} cars drive in.</span></div>
@@ -800,8 +803,6 @@ function renderPlan(){
       ${tile(fmt(m.newHomes), "new homes over shops", "", "")}
     </div>
     <p class="small" style="margin-top:8px">${covers.length ? `It would take the place of ${covers.join(" and ")} standing there today.` : "Nothing standing there today is in the way."}${m.wet ? ` <span class="warnline">Part of it is in the lake.</span>` : ""}</p>
-    <h3>In the plan <span class="small">· tap × to remove</span></h3>
-    <ul class="plist2">${listRows(P)}</ul>
     ${m.parkAcres > 1 ? `<p class="tradeoff">The parking covers <b>${fmt(m.parkAcres)} acres</b>, used about ten days a year. As homes over shops like the main street's, that land would hold about <b>${fmt(m.couldHold)} homes</b>.</p>` : ""}
     ${busNote}
     <h3>Settings</h3>
@@ -809,7 +810,7 @@ function renderPlan(){
     <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
     ${P.missedNote ? `<p class="small warnline">Even with every lot slot used, about ${fmt(P.missedNote)} spaces short of the target.</p>` : ""}
     <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pTurn">Face another way</button><button class="sc-btn" type="button" id="pRedo">Start the district over</button></div>`;
-  $("planBack").onclick = endPlan;
+  $("planBack").onclick = endPlan; $("pDel").onclick = deleteStadium;
   $("detail").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeThing(b.dataset.rm));
   $("detail").querySelectorAll("[data-hl]").forEach(r => { const on = () => { PLAN.hl = +r.dataset.hl; drawPlan(); }, off = () => { PLAN.hl = -1; drawPlan(); };
     r.addEventListener("mouseenter", on); r.addEventListener("mouseleave", off); });
@@ -831,6 +832,15 @@ function listRows(P){
     h += bs.length > 3 ? `<li class="grp"><details><summary><i style="background:${K.c}"></i>${KN[k][1]} (${bs.length})</summary><ul class="plist2">${rows}</ul></details></li>` : rows; }
   return h;
 }
+// take your stadium off the map: a pin you dropped is deleted; a proposed site just closes its plan. Either way, back to the list.
+function deleteStadium(){
+  const base = PLAN ? PLAN.base : cur; POPclose();
+  if (base === "pin"){ pin = null; delete M.pin; delete PLANS.pin; }
+  PLAN = null; mode = "list"; document.body.classList.remove("planning"); drawPlan();
+  if ($("landChk").checked) for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
+  for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
+  tab("sites"); back(); updateRank(); toast(base === "pin" ? "Your stadium is gone. Pick a site, or drop a new pin." : "Back to all sites.");
+}
 function removeThing(key){ const P = PLAN; POPclose();
   if (key === "stadium") P.gone = true;
   else if (key.startsWith("item:")) P.items.splice(+key.slice(5), 1);
@@ -842,7 +852,8 @@ function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() =
 async function startPlan(base, fromCode){
   const s = SITES.find(q => q.id === base);
   const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat);
-  PLAN = fromCode || PLANS[base] || {base, x:at[0], y:at[1], rot:0, items:[], pieces:[], streets:[], off:[], pk:0, hk:1, fresh:true};
+  const cached = PLANS[base] && (base !== "pin" || Math.hypot(PLANS[base].x - at[0], PLANS[base].y - at[1]) < 5) ? PLANS[base] : null;   // a pin moved since: start over where it is
+  PLAN = fromCode || cached || {base, x:at[0], y:at[1], rot:0, items:[], pieces:[], streets:[], off:[], pk:0, hk:1, fresh:true};
   PLANS[base] = PLAN; cur = base; mode = "plan"; stopKick(); document.body.classList.add("planning");
   for (const id of ["sites", "sites-t", "land", "land-l"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
   $("list").hidden = true; $("detail").hidden = false; $("detail").innerHTML = '<p class="small">Laying out the district…</p>';
@@ -868,13 +879,14 @@ function planTap(x, y, px){
   const P = PLAN;
   if (P.gone){ placeStadium(x, y); return; }
   for (let i = P.items.length - 1; i >= 0; i--){ const it = P.items[i], q = it.k === "stop" ? it : it.st; if (q && Math.hypot(q.x - x, q.y - y) < 20 * px){
-    popAt(q.x, q.y, `<b>${it.k === "stop" ? "Game-day " + esc(it.kind) + " stop" : "Shuttles from " + esc(it.st.name)}</b><button class="sc-btn" type="button" data-a="rm">Remove</button>`, el => el.querySelector("[data-a=rm]").onclick = () => removeThing("item:" + i)); return; } }
+    popAt(q.x, q.y, `<b>${it.k === "stop" ? "Game-day " + esc(it.kind) + " stop" : "Shuttles from " + esc(it.st.name)}</b>`, () => {}); return; } }
   if (inEllipse(x, y, P.x, P.y, P.rot + 90)){
-    popAt(P.x, P.y, `<b>The stadium</b><p>Drag it to move the whole district.</p><button class="sc-btn" type="button" data-a="rm">Remove the stadium</button>`, el => el.querySelector("[data-a=rm]").onclick = () => removeThing("stadium")); return; }
+    const mine = P.base === "pin";
+    popAt(P.x, P.y, `<b>The stadium</b><p>Drag it to move the whole district.</p><button class="sc-btn${mine ? " danger" : ""}" type="button" data-a="rm">${mine ? "Delete my stadium" : "Close the plan"}</button>`, el => el.querySelector("[data-a=rm]").onclick = deleteStadium); return; }
   const b = (P.pieces || []).find(q => inRect(q, x, y));
   if (!b){ POPclose(); return; }
   const K = KINDS[b.k], a = b.w * b.h, v = K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : (a / 4046.86).toFixed(1) + " acres";
-  popAt(b.x, b.y, `<b>${KN[b.k][0]}</b><p>${v}${b.under ? ` · ${fmt(b.under)} homes there today` : ""}</p><button class="sc-btn" type="button" data-a="rm">Remove</button>`, el => el.querySelector("[data-a=rm]").onclick = () => removeThing("piece:" + b.id));
+  popAt(b.x, b.y, `<b>${KN[b.k][0]}</b><p>${v}${b.under ? ` · ${fmt(b.under)} homes there today` : ""}</p>`, () => {});
 }
 function bindPlanDrag(){
   let D = null;
@@ -887,6 +899,7 @@ function bindPlanDrag(){
     POPclose(); PLAN.x = D.ox + dx; PLAN.y = D.oy + dy; PLAN.pieces = D.pc.map(q => ({...q, x:q.x + dx, y:q.y + dy})); PLAN.streets = D.st.map(([a, b]) => [[a[0] + dx, a[1] + dy], [b[0] + dx, b[1] + dy]]); drawPlan(); };
   const up = async () => { if (!D) return; const d = D; D = null; map.dragPan.enable();
     if (!d.moved){ planTap(d.x, d.y, mpp()); return; }
+    if (PLAN.base === "pin" && pin){ const [lon, lat] = llOf(PLAN.x, PLAN.y); pin.lon = lon; pin.lat = lat; }
     await loadSegs(PLAN.x, PLAN.y, true); autoPlan(); planChanged(); };
   map.on("mousedown", down); map.on("touchstart", down); map.on("mousemove", move); map.on("touchmove", move); map.on("mouseup", up); map.on("touchend", up);
   map.on("click", e => { if (mode !== "plan" || !PLAN) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat); if (!PLAN.gone && inEllipse(x, y, PLAN.x, PLAN.y, PLAN.rot + 90)) return; planTap(x, y, mpp()); });
