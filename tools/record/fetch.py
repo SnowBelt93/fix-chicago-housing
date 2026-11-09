@@ -110,7 +110,15 @@ if 'get' in STEPS and os.path.exists(os.path.join(HERE, 'wanted.json')):
             if w.get('group'): p['$group'] = w['group']
             url = f"https://{w.get('domain', 'data.cityofchicago.org')}/resource/{w['id']}.csv?" + urllib.parse.urlencode(p)
         try:
-            data = get(url, timeout=1800); gzip.open(path, 'wb').write(data); print('got', w['id'], w.get('name', ''), len(data), flush=True)
+            data = get(url, timeout=1800)
+            if w.get('drop'):  # remove columns we never keep (e.g. people's names)
+                import csv, io
+                rows = list(csv.DictReader(io.StringIO(data.decode('utf-8'))))
+                keep = [k for k in (rows[0].keys() if rows else []) if k.lower() not in {d.lower() for d in w['drop']}]
+                b = io.StringIO(); cw = csv.DictWriter(b, keep); cw.writeheader()
+                for r in rows: cw.writerow({k: r[k] for k in keep})
+                data = b.getvalue().encode('utf-8')
+            gzip.open(path, 'wb').write(data); print('got', w['id'], w.get('name', ''), len(data), flush=True)
         except Exception as e: print('skip', w['id'], e, flush=True)
 
 if 'files' in STEPS and os.path.exists(os.path.join(HERE, 'files.json')):

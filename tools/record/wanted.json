@@ -33,7 +33,11 @@
  {
   "id": "xbwc-ntpx",
   "name": "ADU preapproval applications, historical",
-  "save_as": "adu_hist"
+  "save_as": "adu_hist",
+  "drop": [
+   "APPLICANT_NAME",
+   "OWNER_NAME"
+  ]
  },
  {
   "id": "qfyy-956j",
