@@ -58,14 +58,16 @@
   "name": "Red light camera violations by month",
   "save_as": "redlight_month",
   "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
-  "where": "violation_date >= '2015-01-01' group by month"
+  "where": "violation_date >= '2015-01-01'",
+  "group": "month"
  },
  {
   "id": "hhkd-xvj4",
   "name": "Speed camera violations by month",
   "save_as": "speed_month",
   "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
-  "where": "violation_date >= '2015-01-01' group by month"
+  "where": "violation_date >= '2015-01-01'",
+  "group": "month"
  },
  {
   "id": "wqdh-9gek",

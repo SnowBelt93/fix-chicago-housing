@@ -103,10 +103,11 @@ if 'get' in STEPS and os.path.exists(os.path.join(HERE, 'wanted.json')):
         if os.path.exists(path) and not w.get('refresh'): continue
         q = {'accessType': 'DOWNLOAD'}
         url = f"https://{w.get('domain', 'data.cityofchicago.org')}/api/views/{w['id']}/rows.csv?accessType=DOWNLOAD"
-        if w.get('where') or w.get('select'):
+        if w.get('where') or w.get('select') or w.get('group'):
             p = {'$limit': 5000000}
             if w.get('where'): p['$where'] = w['where']
             if w.get('select'): p['$select'] = w['select']
+            if w.get('group'): p['$group'] = w['group']
             url = f"https://{w.get('domain', 'data.cityofchicago.org')}/resource/{w['id']}.csv?" + urllib.parse.urlencode(p)
         try:
             data = get(url, timeout=1800); gzip.open(path, 'wb').write(data); print('got', w['id'], w.get('name', ''), len(data), flush=True)
