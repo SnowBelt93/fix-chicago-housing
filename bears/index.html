@@ -112,44 +112,9 @@ dialog.sc-info{max-width:520px}
 .picks .bar{height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:4px}
 .picks .bar i{display:block;height:100%;background:var(--sc-star)}
 .picks b{font-weight:600;text-align:right}
-.pkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.pk{display:grid;grid-template-columns:auto 1fr;gap:1px 8px;align-items:center;text-align:left;font:inherit;padding:9px 10px;border:1px solid var(--sc-line);border-radius:12px;background:#fff;cursor:pointer;color:var(--sc-ink)}
-.pk i{grid-row:1 / 3;width:14px;height:14px;border-radius:4px}
-.pk b{font-size:13.5px;font-weight:600} .pk span{font-size:12px;color:var(--sc-mute)}
-.pk:disabled{opacity:.45;cursor:default}
-@media (hover:hover){ .pk:not(:disabled){transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .pk:not(:disabled):hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
-.ptile{border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px;margin-top:8px}
-.ptile > b{display:block;font-size:22px;font-weight:600;letter-spacing:-.01em} .ptile > b span{font-size:15px;font-weight:500;color:var(--sc-mute)}
-.ptile > span{display:block;font-size:13px;color:var(--sc-ink2);margin-top:2px} .ptile.bad{border-color:#f4c3cc;background:#fff7f8}
-.ptile .small{margin-top:6px}
-.pbar{display:flex;height:8px;border-radius:4px;background:var(--sc-seg);overflow:hidden;margin-top:8px}
-.tradeoff{font-size:14px;line-height:1.45;background:var(--sc-chip);border-radius:12px;padding:10px 12px;margin:10px 0}
-.ppop b{display:block;font-size:14px;margin-bottom:6px} .ppop p{font-size:13px;margin:0 0 8px}
-.pchoice{display:flex;flex-direction:column;gap:4px}
-.pchoice button{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;text-align:left;font:inherit;font-size:13.5px;padding:7px 8px;border:1px solid var(--sc-line);border-radius:10px;background:#fff;cursor:pointer;color:var(--sc-ink)}
-.pchoice button i{width:12px;height:12px;border-radius:3px;border:1px solid #c3c8ce}
-.pchoice button span{font-size:12px;color:var(--sc-mute)}
-.pchoice button[aria-pressed="true"]{border-color:var(--sc-navy);box-shadow:inset 0 0 0 1.5px var(--sc-navy)}
-.maplibregl-popup-content{border-radius:14px;padding:12px 14px 10px;box-shadow:var(--sc-shadow)}
 .satbtn{width:auto !important;padding:0 10px !important;font:600 12.5px var(--sc-font) !important;color:var(--sc-ink2)}
 .satbtn[aria-pressed="true"]{background:var(--sc-navy) !important;color:#fff !important}
-.plist2{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:2px}
-.plist2 li{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;padding:4px 6px;border-radius:8px}
-.plist2 li[data-hl]:hover{background:var(--sc-chip)}
-.plist2 li > span{display:flex;align-items:center;gap:7px;min-width:0} .plist2 i{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none}
-.plist2 .grp{display:block;padding:0} .plist2 summary{cursor:pointer;display:flex;align-items:center;gap:7px;padding:4px 6px;font-weight:500}
-.plist2 .grp .plist2{margin:2px 0 4px 14px}
-.rmx{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-mute);font-size:17px;line-height:1;cursor:pointer;padding:0}
-.rmx:hover{border-color:#c8102e;color:#c8102e}
 .sc-btn.danger{color:#a0001b;border-color:#f4c3cc} .sc-btn.danger:hover{background:#fdecef;border-color:#c8102e}
-.mprow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
-.mpseg{font-size:12.5px} .mpseg button{padding:6px 10px}
-.pkey{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:12.5px;color:var(--sc-mute);margin-top:6px}
-.pkey span{display:flex;align-items:center;gap:5px} .pkey i{width:11px;height:11px;border-radius:3px;display:inline-block}
-.selrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 0;padding:8px 10px;background:var(--sc-chip);border-radius:12px;font-size:14px}
-.warnline{color:#a0001b} b.red{color:#a0001b;font-size:inherit;display:inline;font-weight:600}
-.plist{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column;gap:6px}
-.plist li{display:flex;justify-content:space-between;gap:10px;font-size:14px;align-items:baseline}
 @media (max-width:859px){
   .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:52vh;border-radius:18px 18px 0 0}
   .ptop{padding:12px 16px 8px} h1{font-size:20px} .lede{display:none}
@@ -157,8 +122,6 @@ dialog.sc-info{max-width:520px}
   .kick{left:10px;right:10px;width:auto;top:calc(var(--sc-head) + 8px)}
   .legend{display:none}
   #map{bottom:50vh}
-  body.planning .panel{height:46vh} body.planning #map{bottom:44vh}
-  .pkgrid{gap:6px} .pk{padding:8px 9px}
   body.gameday .panel{height:64px} body.gameday .panel .scroll,body.gameday .panel .tabs{display:none}
   body.gameday #map{bottom:64px}
   body.gameday .ptop{cursor:pointer}
@@ -206,10 +169,8 @@ dialog.sc-info{max-width:520px}
     </section>
     <section class="pane" id="p-picks" hidden>
       <h2>Where users put it</h2>
-      <p>Pick a site (or your own pin) from its page with <b>This is my pick</b>. One pick per person a day. A pick made while planning a site saves the plan's pieces too, so others can open it; nothing you type is stored.</p>
+      <p>Pick a site (or your own pin) from its page with <b>This is my pick</b>. One pick per person a day; nothing else is stored.</p>
       <ul class="picks" id="picks"><li>Loading…</li></ul>
-      <h3>Users' site plans</h3>
-      <ul class="plist" id="planList"><li class="small">Loading…</li></ul>
       <label class="chk" style="margin-top:10px"><input type="checkbox" id="heatChk"> Show users' pins on the map</label>
     </section>
     <section class="pane" id="p-learn" hidden>
@@ -449,14 +410,6 @@ async function initMap(){
   map.addLayer({id:"trains", type:"line", source:"trains", layout:{"line-cap":"round"}, paint:{"line-color":"#2b5da0", "line-width":["interpolate", ["linear"], ["zoom"], 9, 4, 14, 9]}});
   map.addLayer({id:"traffic", type:"line", source:"traffic", layout:{"line-cap":"round"}, paint:{"line-color":["step", ["get", "v"], "#3f9c5a", 0.7, "#e0a100", 1, "#d9531e", 1.4, "#b3001e"], "line-width":["interpolate", ["linear"], ["zoom"], 9, ["case", ["==", ["get", "mw"], 1], 3, 1.6], 14, ["case", ["==", ["get", "mw"], 1], 8, 4]], "line-opacity":0.85}});
   map.addLayer({id:"fp", type:"fill-extrusion", source:"fp", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-base":["get", "b"], "fill-extrusion-opacity":0.95}});
-  for (const id of ["plan", "planpts", "planln", "planst", "planpad"]) map.addSource(id, {type:"geojson", data:{type:"FeatureCollection", features:[]}});
-  const MW = ["interpolate", ["exponential", 2], ["zoom"], 10, ["*", ["get", "w"], 0.0176], 20, ["*", ["get", "w"], 18]];   // a street's width in meters, as pixels
-  map.addLayer({id:"planpad", type:"fill", source:"planpad", paint:{"fill-color":"#e8ebee", "fill-opacity":0.97}}, "fp");
-  map.addLayer({id:"planst", type:"line", source:"planst", layout:{"line-cap":"butt", "line-join":"miter"}, paint:{"line-color":"#ffffff", "line-width":MW}}, "fp");
-  map.addLayer({id:"plan-x", type:"fill-extrusion", source:"plan", paint:{"fill-extrusion-color":["get", "c"], "fill-extrusion-height":["get", "h"], "fill-extrusion-opacity":1}});
-  map.addLayer({id:"plan-l", type:"line", source:"plan", paint:{"line-color":["case", ["get", "hl"], "#1a1d21", "rgba(255,255,255,0.7)"], "line-width":["case", ["get", "hl"], 3.5, 1]}});
-  map.addLayer({id:"planln", type:"line", source:"planln", paint:{"line-color":"#d9822b", "line-width":2.5, "line-dasharray":[2, 1.5]}});
-  map.addLayer({id:"planpts", type:"circle", source:"planpts", paint:{"circle-radius":9, "circle-color":["match", ["get", "t"], "stop", "#2b5da0", "#d9822b"], "circle-stroke-color":["case", ["get", "bad"], "#c8102e", ["get", "sel"], "#1a1d21", "#ffffff"], "circle-stroke-width":3}});
   map.addLayer({id:"fans", type:"circle", source:"fans", paint:{"circle-radius":["interpolate", ["linear"], ["zoom"], 9, 2.6, 11, 3.6, 15, 6], "circle-stroke-color":"#fff", "circle-stroke-width":0.8, "circle-color":["match", ["get", "m"], "t", "#2b5da0", "#d9822b"], "circle-opacity":0.85}});
   map.addLayer({id:"sites", type:"circle", source:"sites", paint:{"circle-radius":["case", ["get", "on"], 10, 7], "circle-color":["get", "c"], "circle-stroke-color":"#fff", "circle-stroke-width":2.5}});
   if (ownDomain()) map.addLayer({id:"sites-t", type:"symbol", source:"sites", layout:{"text-field":["get", "n"], "text-font":["Noto Sans Bold"], "text-size":12.5, "text-offset":[0, 1.3], "text-anchor":"top"}, paint:{"text-color":"#1a1d21", "text-halo-color":"#fff", "text-halo-width":1.6}});
@@ -474,7 +427,7 @@ async function initMap(){
   class SatCtl { onAdd(){ const d = document.createElement("div"); d.className = "maplibregl-ctrl maplibregl-ctrl-group"; d.innerHTML = '<button type="button" class="satbtn" aria-pressed="false" title="Satellite view">Satellite</button>'; this.b = d.firstChild; this.b.onclick = () => setSat(this.b.getAttribute("aria-pressed") !== "true"); return d; } onRemove(){} }
   map.addControl(new SatCtl(), "top-right");
   try { if (localStorage.getItem("sc-bears-sat") === "1") setSat(true); } catch (e) {}
-  bindPlanDrag(); drawSites(); legend();
+  drawSites(); legend();
   const keys = () => window.scKeyCam && scKeyCam(scKeyCam.maplibre(map)); if (window.scKeyCam) keys(); else addEventListener("DOMContentLoaded", keys);
 }
 function setSat(on){ map.setLayoutProperty("sat", "visibility", on ? "visible" : "none"); const b = document.querySelector(".satbtn"); if (b) b.setAttribute("aria-pressed", String(on));
@@ -542,7 +495,7 @@ function openSite(id){
     ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
     <h3>Measured the same way as every site</h3>${detailHtml(m, s)}
     <h3>Who pays, and who gets the taxes</h3><ul class="facts">${s.money.map(f => `<li>${esc(f)}</li>`).join("")}</ul>
-    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn primary" type="button" id="planBtn">Plan the site</button><button class="sc-btn" type="button" id="pickBtn">This is my pick</button></div>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn">This is my pick</button></div>
     <h3>Bring another stadium here, at real scale</h3>${refPicker()}
     <p class="src">${src(...s.src)}</p>`;
   bindDetail(m, s.c, s.name);
@@ -558,10 +511,10 @@ function openPin(){
     ${m.lake ? `<div class="warnbox" style="background:#eef3fa;border-color:#cfdcef;color:#1d4580"><b style="color:#1d4580">On the lakefront.</b> Lakefront projects in Chicago tend to draw public trust lawsuits. <button class="ib" type="button" data-info="lake" aria-label="More">i</button></div>` : ""}
     ${detailHtml(m, null)}
     <h3>Who would get the taxes</h3><p>${m.place === "Indiana" ? "Indiana, Lake County and the town it's in. Illinois and Chicago would lose game-day hotel, amusement and sales taxes." : m.place === "Chicago" ? "Chicago and Cook County, and the state through its hotel tax. Today, Chicago's amusement tax applies to tickets." : "The suburb it's in, its school districts and Cook County or the collar county, unless a property tax deal says otherwise."}</p>
-    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn primary" type="button" id="planBtn">Plan the site</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button><button class="sc-btn danger" type="button" id="delPinBtn">Delete my pin</button></div>
+    <div class="btns"><button class="sc-btn primary" type="button" id="kickBtn">Run game day</button><button class="sc-btn" type="button" id="pickBtn"${!m.land || m.fits < 0.7 ? " disabled" : ""}>This is my pick</button><button class="sc-btn" type="button" id="moveBtn">Move the pin</button><button class="sc-btn danger" type="button" id="delPinBtn">Delete my pin</button></div>
     <h3>Bring another stadium here, at real scale</h3>${refPicker()}`;
   bindDetail(m, "#1a1d21", "Your pin");
-  $("delPinBtn").onclick = () => { pin = null; delete M.pin; delete PLANS.pin; drawSites(); back(); updateRank(); toast("Your pin is gone. Pick a site, or drop a new one."); };
+  $("delPinBtn").onclick = () => { pin = null; delete M.pin; drawSites(); back(); updateRank(); toast("Your pin is gone. Pick a site, or drop a new one."); };
   $("moveBtn").onclick = () => { setPinMode(true); toast("Tap the map to move your pin"); };
   showStadium(pin.lon, pin.lat, pin.rot, "#e6e9ed"); drawSites(); setHash(); updateRank();
 }
@@ -570,7 +523,6 @@ function bindDetail(m, color, name){
   $("backBtn").onclick = back;
   $("kickBtn").onclick = () => kickoff(m, name);
   $("pickBtn").onclick = () => pickIt(cur, m);
-  $("planBtn").onclick = () => startPlan(cur);
   $("refSel").onchange = e => showRef(+e.target.value, m, e.target.value === "");
   $("detail").querySelectorAll("[data-info]").forEach(b => b.onclick = () => info(b.dataset.info));
   $("scroll").scrollTop = 0;
@@ -597,329 +549,6 @@ function placePin(lon, lat, quiet){
   if (!part) toast("That spot isn't on land that fits. See what would have to go:");
   setPinMode(false); openPin(); if (!quiet) map.easeTo({center:[lon, lat], zoom:Math.max(map.getZoom(), 13.5), pitch:45, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
 }
-
-/* ---------- plan the site: one designed stadium district, placed as a whole ---------- */
-// A fixed layout drawn the way a planner would sketch a typical stadium district (not any team's plan): the stadium with a
-// ring road, a plaza on the front, a main street of homes over shops running toward the train (or the neighbors), garages
-// at the sides and back, and surface lots behind until there's parking for the cars you picked. It turns to match the
-// street grid and faces the train; drag the stadium to move all of it. What it lands on is counted, not avoided.
-// All sizes are assumptions, listed under How we measure.
-const SQM_HOME = 95.3;          // 1,026 sq ft a home (the housing simulator's assumption)
-const HOME_COVER = 0.85;        // homes over shops: solid buildings to the sidewalk, less light wells (assumption)
-const KINDS = {
-  gar:   {n:"Parking garage", c:"#6b7280", ht:16, sp:a => a * 5 / A.sqm, code:"g"},       // 5 levels
-  lot:   {n:"Surface lot", c:"#b4bac1", ht:0.3, sp:a => a / A.sqm, code:"l"},
-  home:  {n:"Homes over shops", c:"#1f7a8c", ht:21, homes:a => a * HOME_COVER * 5 / SQM_HOME, code:"h"},   // 5 floors of homes over shops
-  plaza: {n:"Tailgate plaza", c:"#8cbf7a", ht:0.3, code:"z"},
-  stop:  {n:"Game-day train stop", code:"s"},
-  bus:   {n:"Shuttle buses", code:"b"},
-};
-const BUS = {fleet:40, seats:60, v:8, load:600};   // assumptions: 40 buses of 60 fans, ~29 km/h on game day, 10 minutes to load and unload
-const PLAN_R = 1609;                               // parking counts within a mile (the parking measure's radius)
-const MP = {park:[1, 0.5, 0.25], parkN:["Every car", "Half the cars", "A quarter"], homes:[0, 2, 4], homesN:["None", "A few blocks", "A neighborhood"]};
-// the district in meters: u runs from the stadium toward the front (the train), v across. [id, kind, u, v, length along u, width along v]
-const RING = {u0:-170, u1:235, v:195};             // ring road around the stadium
-function districtPieces(P, need){
-  const out = [["z", "plaza", 178, 0, 86, 300]];
-  // main street: buildings both sides, 90 m long and 60 m deep, cross streets every 108 m
-  for (let k = 0; k < MP.homes[P.hk]; k++) for (const sd of [-1, 1]) out.push(["h" + (2 * k + (sd > 0 ? 1 : 0) + 1), "home", RING.u1 + 72 + k * 108, sd * 44, 90, 60]);
-  // garages hug the ring road at both sides and the back
-  const gar = [["g1", "gar", -10, -RING.v - 50, 150, 76], ["g2", "gar", -10, RING.v + 50, 150, 76], ["g3", "gar", RING.u0 - 48, 0, 72, 210]];
-  // surface lots, 180 m by 150 m with 20 m drives between, filling outward behind and beside the stadium (never the front)
-  const slots = []; for (let iu = 0; iu < 7; iu++) for (let iv = -3; iv <= 3; iv++){ const u = RING.u0 - 110 - iu * 200 + 200, v = iv * 170; slots.push([u, v]); }
-  const taken = out.concat(gar).map(p => ({x:p[2], y:p[3], w:p[4], h:p[5], rot:0})).concat([{x:(RING.u0 + RING.u1) / 2, y:0, w:RING.u1 - RING.u0 + 24, h:2 * RING.v + 24, rot:0}]);
-  const lots = slots.map(([u, v]) => ({u, v, d:Math.hypot(u, v)})).filter(s => s.u < 120 && !taken.some(t => overlap({x:s.u, y:s.v, w:180, h:150, rot:0}, t, 18))).sort((a, b) => a.d - b.d);
-  let left = need, n = 0;
-  for (const g of gar){ if (left <= 0) break; out.push(g); left -= KINDS.gar.sp(g[4] * g[5]); }
-  for (const s of lots){ if (left <= 0) break; n++; out.push(["l" + n, "lot", s.u, s.v, 180, 150]); left -= KINDS.lot.sp(180 * 150); }
-  return {pieces:out.filter(p => !(P.off || []).includes(p[0])), short:Math.max(0, Math.round(left))};
-}
-function districtStreets(P, pieces){
-  const S = [[RING.u0, -RING.v, RING.u1, -RING.v], [RING.u0, RING.v, RING.u1, RING.v], [RING.u0, -RING.v, RING.u0, RING.v], [RING.u1, -RING.v, RING.u1, RING.v]];
-  const homes = pieces.filter(p => p[1] === "home"), far = Math.max(RING.u1, ...homes.map(p => p[2] + 45 + 12));
-  if (homes.length){ S.push([RING.u1, 0, far, 0]); for (let k = 0; k <= homes.length / 2; k++){ const u = RING.u1 + 18 + k * 108 - 9; if (u < far) S.push([u, -80, u, 80]); } }
-  const lots = pieces.filter(p => p[1] === "lot" || p[1] === "gar"); if (lots.length){ const back = Math.min(RING.u0, ...lots.map(p => p[2] - p[4] / 2)); S.push([RING.u0, 0, back, 0]);
-    for (const v of [-RING.v, RING.v]) S.push([RING.u0, v, back, v]); }
-  return S;
-}
-let PLAN = null, PLANS = {}, SEGS = [], SEGG = new Map(), SEGAT = null, POP = null;
-const allLines = () => NET ? [...NET.lLines.map(l => ({l, kind:"L"})), ...NET.metraLines.map(l => ({l, kind:"Metra"})), ...NET.southShore.lines.map(l => ({l, kind:"South Shore"}))] : [];
-
-// streets near the site, only to find which way the grid runs: [ax, ay, bx, by, half width, major]
-async function planSegs(x, y){
-  await loadRoads();
-  const out = [], R2 = 1200 ** 2, near = (ax, ay, bx, by) => (ax - x) ** 2 + (ay - y) ** 2 < R2 || (bx - x) ** 2 + (by - y) ** 2 < R2;
-  const R = ROAD; for (let e = 0; e < R.E.a.length; e++){ const a = R.E.a[e], b = R.E.b[e]; if (near(R.X[a], R.Y[a], R.X[b], R.Y[b])) out.push([R.X[a], R.Y[a], R.X[b], R.Y[b], R.E.mw[e] ? 18 : 11, 1]); }
-  if (map && map.getSource("openmaptiles")){ let fs = []; try { fs = map.querySourceFeatures("openmaptiles", {sourceLayer:"transportation"}); } catch (e) {}
-    for (const f of fs){ const c = f.properties.class; if (!["primary", "secondary", "tertiary", "minor"].includes(c)) continue; const g = f.geometry, L = g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : [];
-      for (const q of L) for (let k = 1; k < q.length; k++){ const [ax, ay] = xy(q[k - 1][0], q[k - 1][1]), [bx, by] = xy(q[k][0], q[k][1]); if (near(ax, ay, bx, by)) out.push([ax, ay, bx, by, 8, c === "minor" ? 0 : 1]); } } }
-  return out;
-}
-async function loadSegs(x, y, force){
-  if (!force && SEGAT && Math.hypot(SEGAT[0] - x, SEGAT[1] - y) < 400) return;
-  SEGAT = [x, y]; SEGS = await planSegs(x, y);
-}
-// which way the street grid runs here: the length-weighted average street direction, folded onto a quarter turn
-function gridRot(x, y){ let c = 0, s = 0;
-  for (const g of SEGS){ const mx = (g[0] + g[2]) / 2 - x, my = (g[1] + g[3]) / 2 - y; if (mx * mx + my * my > 700 * 700) continue; const dx = g[2] - g[0], dy = g[3] - g[1], L = Math.hypot(dx, dy); if (L < 1) continue;
-    const t = Math.atan2(dy, dx) * 4, w = L * (g[5] ? 2 : 1); c += w * Math.cos(t); s += w * Math.sin(t); }
-  return c || s ? Math.atan2(s, c) / 4 * 180 / Math.PI : 0; }
-function corners(p){ const t = p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t); return [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([u, v]) => [p.x + u * p.w / 2 * c - v * p.h / 2 * s, p.y + u * p.w / 2 * s + v * p.h / 2 * c]); }
-function overlap(a, b, pad){ const A1 = corners({...a, w:a.w + pad, h:a.h + pad}), B1 = corners({...b, w:b.w + pad, h:b.h + pad});
-  for (const R of [a, b]){ const t = R.rot * Math.PI / 180; for (const [nx, ny] of [[Math.cos(t), Math.sin(t)], [-Math.sin(t), Math.cos(t)]]){
-    const pa = A1.map(([x, y]) => x * nx + y * ny), pb = B1.map(([x, y]) => x * nx + y * ny); if (Math.max(...pa) < Math.min(...pb) || Math.max(...pb) < Math.min(...pa)) return false; } }
-  return true; }
-// district frame -> map meters
-const toW = (P, u, v) => { const t = P.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t); return [P.x + u * c - v * s, P.y + u * s + v * c]; };
-const pieceRect = (P, p) => { const [x, y] = toW(P, p[2], p[3]); return {id:p[0], k:p[1], x, y, w:p[4], h:p[5], rot:P.rot}; };
-// what's standing there now: homes from Census blocks; buildings from the base map (our domain)
-function homesUnder(p){ let h = 0; if (!BLK) return 0; const r2 = ((p.w + p.h) / 2 + 200) ** 2, t = -p.rot * Math.PI / 180, c = Math.cos(t), s = Math.sin(t);
-  for (let i = 0; i < BLK.n; i++){ const dx = BLK.X[i] * 10 - p.x, dy = BLK.Y[i] * 10 - p.y; if (dx * dx + dy * dy > r2) continue; const u = dx * c - dy * s, v = dx * s + dy * c; if (Math.abs(u) <= p.w / 2 && Math.abs(v) <= p.h / 2) h += BLK.H[i]; }
-  return h; }
-function inRect(p, x, y){ const t = -p.rot * Math.PI / 180, dx = x - p.x, dy = y - p.y, u = dx * Math.cos(t) - dy * Math.sin(t), v = dx * Math.sin(t) + dy * Math.cos(t); return Math.abs(u) <= p.w / 2 && Math.abs(v) <= p.h / 2; }
-function buildingsUnder(rects){
-  const ids = new Set(); let n = 0; if (!map || !map.getSource("openmaptiles")) return {n:null, ids};
-  let fs = []; try { fs = map.querySourceFeatures("openmaptiles", {sourceLayer:"building"}); } catch (e) {}
-  const seen = new Set();
-  for (const f of fs){ const g = f.geometry, ring = g.type === "Polygon" ? g.coordinates[0] : g.type === "MultiPolygon" ? g.coordinates[0][0] : null; if (!ring) continue;
-    let cx = 0, cy = 0; for (const q of ring){ const [x, y] = xy(q[0], q[1]); cx += x; cy += y; } cx /= ring.length; cy /= ring.length;
-    if (!rects.some(r => inRect(r, cx, cy))) continue; const key = f.id != null ? "i" + f.id : Math.round(cx) + "," + Math.round(cy); if (seen.has(key)) continue; seen.add(key); n++; if (f.id != null) ids.add(f.id); }
-  return {n, ids};
-}
-// a train stop sits on the nearest track; shuttles run from the nearest station beyond a walk, on a line fans can't walk to
-function nearestTrack(x, y, maxD){ let best = null;
-  allLines().forEach(({l, kind}, li) => { for (const p of l.paths) for (let k = 1; k < p.length; k++){ const [ax, ay] = xy(p[k - 1][0], p[k - 1][1]), [bx, by] = xy(p[k][0], p[k][1]), dx = bx - ax, dy = by - ay;
-    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy || 1))), qx = ax + t * dx, qy = ay + t * dy, d = Math.hypot(qx - x, qy - y);
-    if (d < maxD && (!best || d < best.d)) best = {d, x:qx, y:qy, li, line:l.id, kind}; } });
-  return best; }
-function busStation(have){ let best = null;
-  const cands = PL.rail.map(r => ({x:r.x, y:r.y, name:r[2], kind:r[3], tph:r[4] / Math.max(1, (r[5] || []).length) / 18 / 2, lines:r[5] || [r[3]]}));
-  for (const it of PLAN.items) if (it.k === "stop") cands.push({x:it.x, y:it.y, name:"your new stop", kind:it.kind, tph:A.maxTph[it.kind] / 2, lines:[it.line]});
-  for (const c of cands){ const d = Math.hypot(c.x - PLAN.x, c.y - PLAN.y); if (d <= A.walk || d > 10000 || c.lines.every(l => have.some(q => q.line === l))) continue; if (!best || d < best.d) best = {...c, d}; }
-  return best; }
-function nearbyLeft(P, rects){ let n = 0;
-  for (const q of PL.lots){ if ((q.x - P.x) ** 2 + (q.y - P.y) ** 2 > PLAN_R * PLAN_R) continue; if (inEllipse(q.x, q.y, P.x, P.y, P.rot + 90) || rects.some(r => inRect(r, q.x, q.y))) continue; n += q[2]; }
-  return n; }
-
-// face the district: toward the train fans use (or the nearest neighbors), squared to the street grid
-function faceDistrict(P){
-  const tr = PL.rail.filter(r => Math.hypot(r.x - P.x, r.y - P.y) <= 2500).sort((a, b) => Math.hypot(a.x - P.x, a.y - P.y) - Math.hypot(b.x - P.x, b.y - P.y))[0];
-  const st = P.items.find(i => i.k === "stop") || tr; let ex = 0, ey = 0;
-  if (st){ ex = st.x - P.x; ey = st.y - P.y; }
-  else if (BLK) for (let k = 0; k < BLK.n; k++){ const dx = BLK.X[k] * 10 - P.x, dy = BLK.Y[k] * 10 - P.y, d = Math.hypot(dx, dy); if (d > 300 && d < 2500 && BLK.H[k]){ ex += dx / d * BLK.H[k]; ey += dy / d * BLK.H[k]; } }
-  const want = Math.atan2(ey, ex) * 180 / Math.PI, g = gridRot(P.x, P.y);
-  let best = g, bd = 1e9; for (let k = 0; k < 4; k++){ const r = g + 90 * k, d = Math.abs(((r - want) % 360 + 540) % 360 - 180); if (d < bd){ bd = d; best = r; } }
-  P.rot = ((best % 360) + 360) % 360;
-}
-// transit first: a stop on the nearest track within a walk; with no train in walking distance, a stop on the nearest track plus shuttles
-function autoTransit(P){
-  P.items = []; const m0 = measure(...llOf(P.x, P.y), P.rot + 90, null), tr = nearestTrack(P.x, P.y, 8000);
-  if (tr && tr.d <= A.walk){ if (!m0.lines.some(l => l.line === tr.line)) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); }
-  else if (!m0.lines.length){ if (tr) P.items.push({k:"stop", x:tr.x, y:tr.y, line:tr.line, li:tr.li, kind:tr.kind}); P.items.push({k:"bus"}); }
-}
-// (re)build the district at the stadium: opt.keep keeps the transit and what you removed
-function autoPlan(opt){
-  const P = PLAN; POPclose(); if (P.gone){ P.pieces = []; P.streets = []; return; }
-  if (!(opt && opt.keep)){ P.off = []; autoTransit(P); faceDistrict(P); }
-  // two passes: parking already there only counts if the district doesn't build over it
-  let m = planMeasure(true), D = districtPieces(P, Math.max(0, m.cars * MP.park[P.pk] - m.nearby));
-  P.pieces = D.pieces.map(p => pieceRect(P, p)); m = planMeasure(true);
-  D = districtPieces(P, Math.max(0, m.cars * MP.park[P.pk] - m.nearby)); P.missedNote = D.short;
-  P.pieces = D.pieces.map(p => pieceRect(P, p));
-  P.streets = districtStreets(P, D.pieces).map(([u0, v0, u1, v1]) => [toW(P, u0, v0), toW(P, u1, v1)]);
-}
-async function redoPlan(keep){ if (!PLAN.gone){ await loadSegs(PLAN.x, PLAN.y); } autoPlan(keep ? {keep:true} : {}); planChanged(); }
-
-// the plan's numbers: the spot measured like any site, plus the district
-function planMeasure(quick){
-  const P = PLAN, [lon, lat] = llOf(P.x, P.y), s = SITES.find(q => q.id === P.base);
-  const moved = !s || Math.hypot(...xy(s.ll[0], s.ll[1]).map((v, i) => v - [P.x, P.y][i])) > 150;
-  const m = measure(lon, lat, P.rot + 90, moved ? null : s), R = P.pieces || [];
-  m.nearby = nearbyLeft(P, R); m.yourSpaces = 0; m.newHomes = 0; m.inWay = m.hIn; m.parkAcres = 0; m.devAcres = Math.PI * A.foot[0] / 2 * A.foot[1] / 2 / 4046.86;
-  for (const b of R){ const K = KINDS[b.k], a = b.w * b.h; m.devAcres += a / 4046.86; if (K.sp){ m.yourSpaces += K.sp(a); m.parkAcres += a / 4046.86; } if (K.homes) m.newHomes += K.homes(a); if (!quick){ b.under = homesUnder(b); m.inWay += b.under; } }
-  m.couldHold = m.parkAcres * 4046.86 * HOME_COVER * 5 / SQM_HOME;   // the same land as homes over shops
-  m.parking = m.nearby + m.yourSpaces;
-  for (const it of P.items) if (it.k === "stop"){ const d = Math.hypot(it.x - P.x, it.y - P.y); it.walk = d <= A.walk;
-    if (it.walk && !m.lines.some(l => l.line === it.line)){ m.lines.push({kind:it.kind, line:it.line, d, tph:A.maxTph[it.kind] / 2, at:[it.x, it.y]}); m.stations.unshift({name:"Your new " + it.kind + " stop", kind:it.kind, d}); } }
-  const bus = P.items.find(i => i.k === "bus");
-  if (bus){ const st = busStation(m.lines); bus.st = st;
-    if (st){ const trip = 2 * st.d * 1.3 / BUS.v + BUS.load; m.busMax = BUS.fleet * BUS.seats * A.hours * 3600 / trip; m.busFrom = st;
-      for (const l of st.lines) if (!m.lines.some(q => q.line === l)) m.lines.push({kind:st.kind, line:l, d:st.d, tph:st.tph, at:[st.x, st.y], bus:true}); } }
-  trains(m);
-  if (!quick){ const B = buildingsUnder(R.concat([{x:P.x, y:P.y, w:A.foot[0], h:A.foot[1], rot:P.rot + 90}])); m.bldUnder = B.n; P.hide = B.ids;
-    const lake = NET && NET.lake ? NET.lake.map(r => r.map(q => xy(q[0], q[1]))) : []; m.wet = R.filter(b => lake.some(r => inRing(b.x, b.y, r))).length; }
-  return m;
-}
-
-// on the map
-function ringPoly(b){ const r = corners(b).map(q => llOf(q[0], q[1])); r.push(r[0]); return r; }
-function drawPlan(){
-  if (!map.getSource("plan")) return;
-  const P = PLAN, f = [], pts = [], ln = [], sts = [], pad = [];
-  if (P && !P.gone){
-    (P.pieces || []).forEach((b, i) => { const K = KINDS[b.k], shape = b.k === "gar" ? {...b, w:b.w - 6, h:b.h - 6} : b;
-      f.push({type:"Feature", properties:{i, k:b.k, c:K.c, h:K.ht, hl:P.hl === i}, geometry:{type:"Polygon", coordinates:[ringPoly(shape)]}}); });
-    for (const [a, b] of P.streets || []) sts.push({type:"Feature", properties:{w:b && a ? 14 : 14}, geometry:{type:"LineString", coordinates:[llOf(a[0], a[1]), llOf(b[0], b[1])]}});
-    // a clean ground under the district so today's lots and roads don't show through
-    const all = (P.pieces || []).concat([{x:P.x, y:P.y, w:RING.u1 - RING.u0, h:2 * RING.v, rot:P.rot}]);
-    for (const b of all) pad.push({type:"Feature", properties:{}, geometry:{type:"Polygon", coordinates:[ringPoly({...b, w:b.w + 24, h:b.h + 24})]}});
-    P.items.forEach(it => {
-      if (it.k === "stop") pts.push({type:"Feature", properties:{t:"stop", bad:!it.walk}, geometry:{type:"Point", coordinates:llOf(it.x, it.y)}});
-      else if (it.k === "bus" && it.st){ pts.push({type:"Feature", properties:{t:"bus", bad:false}, geometry:{type:"Point", coordinates:llOf(it.st.x, it.st.y)}}); ln.push({type:"Feature", properties:{}, geometry:{type:"LineString", coordinates:[llOf(it.st.x, it.st.y), llOf(P.x, P.y)]}}); } }); }
-  map.getSource("plan").setData({type:"FeatureCollection", features:f});
-  map.getSource("planst").setData({type:"FeatureCollection", features:sts});
-  map.getSource("planpad").setData({type:"FeatureCollection", features:pad});
-  map.getSource("planpts").setData({type:"FeatureCollection", features:pts});
-  map.getSource("planln").setData({type:"FeatureCollection", features:ln});
-  // today's buildings under the district are hidden (they'd be torn down)
-  if (map.getLayer("bld3d")) map.setFilter("bld3d", P && !P.gone && P.hide && P.hide.size ? ["!", ["in", ["id"], ["literal", [...P.hide]]]] : null);
-  if (P && !P.gone){ const [lon, lat] = llOf(P.x, P.y); showStadium(lon, lat, P.rot + 90, null); }
-  else if (P) clearStadium();
-}
-
-// the panel while planning
-const pc = (n, k) => fmt(n) + " " + k + (Math.round(n) === 1 ? "" : "s");
-const KN = {home:["Homes over shops building", "Homes over shops buildings"], plaza:["Tailgate plaza", "Tailgate plazas"], gar:["Parking garage", "Parking garages"], lot:["Surface lot", "Surface lots"]};
-function renderPlan(){
-  const P = PLAN, s = SITES.find(q => q.id === P.base);
-  const head = `<button class="back" type="button" id="planBack">← ${esc(s ? s.name : "Your pin")}</button><h2>Plan the site</h2>
-    <div class="btns" style="margin:4px 0 10px">${s ? `<button class="sc-btn" type="button" id="pDel">Close the plan, back to all sites</button>` : `<button class="sc-btn danger" type="button" id="pDel">Delete my stadium</button>`}</div>`;
-  if (P.gone){
-    $("detail").innerHTML = head + `<div class="okbox"><b>Tap the map where the stadium should go.</b> The district comes with it. Green areas are land big enough for a stadium.</div><div class="btns"><button class="sc-btn" type="button" id="pBackSpot">Put it back where it was</button></div>`;
-    $("planBack").onclick = endPlan; $("pDel").onclick = deleteStadium; $("pBackSpot").onclick = () => { const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat); placeStadium(at[0], at[1]); };
-    for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
-    return; }
-  const m = M.plan = planMeasure(), need = m.cars, have = m.parking, short = Math.max(0, need - have);
-  const seg = (key, names) => `<div class="sc-seg mpseg" role="radiogroup">${names.map((t, i) => `<button type="button" role="radio" aria-checked="${P[key] === i}" data-key="${key}" data-v="${i}">${t}</button>`).join("")}</div>`;
-  const busNote = m.busFrom ? `<p class="small">Shuttles run from ${esc(m.busFrom.name)} (${(m.busFrom.d / 1609).toFixed(1)} mi): up to ${fmt(m.busMax)} fans in ${A.hours} hours.</p>` : "";
-  const covers = [m.inWay ? `<b class="red">${fmt(m.inWay)} homes</b>` : "", m.bldUnder ? `${fmt(m.bldUnder)} buildings` : ""].filter(Boolean);
-  $("detail").innerHTML = head + `
-    <p class="small">One stadium district: the stadium and its ring road, a plaza out front, a main street of homes and shops toward the train, garages at the sides and lots behind. Drag the stadium to move all of it; it turns to match the streets.</p>
-    <div class="ptile ${short ? "bad" : "good"}"><b>${fmt(have)} <span>of ${fmt(need)}</span></b><span>parking spaces for the cars that drive in${short ? ` · <b class="red">${fmt(short)} short</b>` : " · enough"}</span>
-      <div class="pbar"><i style="width:${Math.min(100, m.yourSpaces / Math.max(1, need) * 100)}%;background:#6b7280"></i><i style="width:${Math.min(100, m.nearby / Math.max(1, need) * 100)}%;background:#c3c8ce"></i></div>
-      <span class="small">${fmt(m.yourSpaces)} in the district, ${fmt(m.nearby)} in lots already within a mile. ${fmt(m.byTrain)} of ${fmt(A.seats)} fans come by train${m.busFrom ? " or shuttle" : ""}, so ${fmt(need)} cars drive in.</span></div>
-    <div class="tiles" style="margin-top:8px">
-      ${tile(fmt(m.devAcres), `acres in the district (${fmt(m.parkAcres)} of them parking)`, "", "")}
-      ${tile(fmt(m.newHomes), "new homes over shops", "", "")}
-    </div>
-    <p class="small" style="margin-top:8px">${covers.length ? `It would take the place of ${covers.join(" and ")} standing there today.` : "Nothing standing there today is in the way."}${m.wet ? ` <span class="warnline">Part of it is in the lake.</span>` : ""}</p>
-    ${m.parkAcres > 1 ? `<p class="tradeoff">The parking covers <b>${fmt(m.parkAcres)} acres</b>, used about ten days a year. As homes over shops like the main street's, that land would hold about <b>${fmt(m.couldHold)} homes</b>.</p>` : ""}
-    ${busNote}
-    <h3>Settings</h3>
-    <div class="mprow"><span>Parking for</span>${seg("pk", MP.parkN)}</div>
-    <div class="mprow"><span>Homes and shops</span>${seg("hk", MP.homesN)}</div>
-    ${P.missedNote ? `<p class="small warnline">Even with every lot slot used, about ${fmt(P.missedNote)} spaces short of the target.</p>` : ""}
-    <div class="btns"><button class="sc-btn primary" type="button" id="pKick">Run game day</button><button class="sc-btn" type="button" id="pPick">This is my pick</button><button class="sc-btn" type="button" id="pLink">Copy link</button><button class="sc-btn" type="button" id="pTurn">Face another way</button><button class="sc-btn" type="button" id="pRedo">Start the district over</button></div>`;
-  $("planBack").onclick = endPlan; $("pDel").onclick = deleteStadium;
-  $("detail").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeThing(b.dataset.rm));
-  $("detail").querySelectorAll("[data-hl]").forEach(r => { const on = () => { PLAN.hl = +r.dataset.hl; drawPlan(); }, off = () => { PLAN.hl = -1; drawPlan(); };
-    r.addEventListener("mouseenter", on); r.addEventListener("mouseleave", off); });
-  $("detail").querySelectorAll(".mpseg button").forEach(b => b.onclick = () => { PLAN[b.dataset.key] = +b.dataset.v; PLAN.off = []; redoPlan(true); });
-  $("pRedo").onclick = () => redoPlan(false);
-  $("pTurn").onclick = () => { PLAN.rot = (PLAN.rot + 90) % 360; redoPlan(true); };
-  $("pKick").onclick = () => kickoff(M.plan, (s ? s.name : "your site") + " (your plan)");
-  $("pPick").onclick = () => pickIt(PLAN.base, M.plan, planCode());
-  $("pLink").onclick = async () => { const u = location.origin + location.pathname + "#plan=" + planCode(); try { await navigator.clipboard.writeText(u); toast("Link copied"); } catch (e) { toast(u); } };
-}
-// everything in the district, each with a remove button; lots are grouped
-function listRows(P){
-  const x = (key, label) => `<button class="rmx" type="button" data-rm="${key}" aria-label="Remove ${esc(label)}">×</button>`;
-  let h = `<li><span><b>Stadium</b> <span class="small">${fmt(A.seats)} seats</span></span>${x("stadium", "the stadium")}</li>`;
-  P.items.forEach((it, i) => { const t = it.k === "stop" ? `Game-day ${it.kind} stop` : `Shuttle buses${it.st ? " from " + it.st.name : ""}`; h += `<li><span><b>${esc(t)}</b></span>${x("item:" + i, t)}</li>`; });
-  for (const k of ["home", "plaza", "gar", "lot"]){ const bs = (P.pieces || []).map((b, i) => [b, i]).filter(([b]) => b.k === k); if (!bs.length) continue; const K = KINDS[k];
-    const rows = bs.map(([b, i], n) => { const a = b.w * b.h, v = K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : (a / 4046.86).toFixed(1) + " acres";
-      return `<li data-hl="${i}"><span><i style="background:${K.c}"></i>${KN[k][0]}${bs.length > 1 ? " " + (n + 1) : ""} <span class="small">${v}</span></span>${x("piece:" + b.id, KN[k][0])}</li>`; }).join("");
-    h += bs.length > 3 ? `<li class="grp"><details><summary><i style="background:${K.c}"></i>${KN[k][1]} (${bs.length})</summary><ul class="plist2">${rows}</ul></details></li>` : rows; }
-  return h;
-}
-// take your stadium off the map: a pin you dropped is deleted; a proposed site just closes its plan. Either way, back to the list.
-function deleteStadium(){
-  const base = PLAN ? PLAN.base : cur; POPclose();
-  if (base === "pin"){ pin = null; delete M.pin; delete PLANS.pin; }
-  PLAN = null; mode = "list"; document.body.classList.remove("planning"); drawPlan();
-  if ($("landChk").checked) for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
-  for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
-  tab("sites"); back(); updateRank(); toast(base === "pin" ? "Your stadium is gone. Pick a site, or drop a new pin." : "Back to all sites.");
-}
-function removeThing(key){ const P = PLAN; POPclose();
-  if (key === "stadium") P.gone = true;
-  else if (key.startsWith("item:")) P.items.splice(+key.slice(5), 1);
-  else if (key.startsWith("piece:")){ P.off = (P.off || []).concat([key.slice(6)]); P.pieces = P.pieces.filter(b => b.id !== key.slice(6)); }
-  P.hl = -1; planChanged(); }
-let planT = null;
-function planChanged(){ drawPlan(); clearTimeout(planT); planT = setTimeout(() => { renderPlan(); drawPlan(); setHash(); }, 30); }
-
-async function startPlan(base, fromCode){
-  const s = SITES.find(q => q.id === base);
-  const at = s ? xy(s.ll[0], s.ll[1]) : xy(pin.lon, pin.lat);
-  const cached = PLANS[base] && (base !== "pin" || Math.hypot(PLANS[base].x - at[0], PLANS[base].y - at[1]) < 5) ? PLANS[base] : null;   // a pin moved since: start over where it is
-  PLAN = fromCode || cached || {base, x:at[0], y:at[1], rot:0, items:[], pieces:[], streets:[], off:[], pk:0, hk:1, fresh:true};
-  PLANS[base] = PLAN; cur = base; mode = "plan"; stopKick(); document.body.classList.add("planning");
-  for (const id of ["sites", "sites-t", "land", "land-l"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none");
-  $("list").hidden = true; $("detail").hidden = false; $("detail").innerHTML = '<p class="small">Laying out the district…</p>';
-  const [lon, lat] = llOf(PLAN.x, PLAN.y);
-  map.easeTo({center:[lon, lat], zoom:phone() ? 14 : 14.6, pitch:50, bearing:-15, duration:reduce ? 0 : 900, padding:phone() ? {} : {left:440}});
-  await loadSegs(PLAN.x, PLAN.y);
-  const fresh = PLAN.fresh; PLAN.fresh = false; autoPlan(fresh ? {} : {keep:true});
-  // on our domain the base map's streets and buildings arrive once its tiles load: square the district to them and count what it covers
-  if (map.getSource("openmaptiles")) map.once("idle", async () => { if (PLAN && !PLAN.gone){ await loadSegs(PLAN.x, PLAN.y, true); if (fresh) faceDistrict(PLAN); autoPlan({keep:true}); planChanged(); } });
-  renderPlan(); drawPlan(); setHash(); $("scroll").scrollTop = 0;
-}
-function endPlan(){ const b = PLAN ? PLAN.base : cur; POPclose(); PLAN = null; mode = "site"; document.body.classList.remove("planning"); drawPlan();
-  if ($("landChk").checked) for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "visible");
-  for (const id of ["sites", "sites-t"]) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible");
-  if (b === "pin") openPin(); else openSite(b); }
-async function placeStadium(x, y){ const P = PLAN; P.gone = false; P.x = x; P.y = y; await loadSegs(x, y); autoPlan(); for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", "none"); planChanged(); }
-
-// tapping: a piece or the stadium shows a Remove button right there
-function POPclose(){ if (POP){ POP.remove(); POP = null; } }
-function popAt(x, y, html, bind){ POPclose(); const el = document.createElement("div"); el.className = "ppop"; el.innerHTML = html; bind(el);
-  POP = new maplibregl.Popup({closeButton:true, closeOnClick:false, maxWidth:"260px", offset:8}).setLngLat(llOf(x, y)).setDOMContent(el).addTo(map); }
-function planTap(x, y, px){
-  const P = PLAN;
-  if (P.gone){ placeStadium(x, y); return; }
-  for (let i = P.items.length - 1; i >= 0; i--){ const it = P.items[i], q = it.k === "stop" ? it : it.st; if (q && Math.hypot(q.x - x, q.y - y) < 20 * px){
-    popAt(q.x, q.y, `<b>${it.k === "stop" ? "Game-day " + esc(it.kind) + " stop" : "Shuttles from " + esc(it.st.name)}</b>`, () => {}); return; } }
-  if (inEllipse(x, y, P.x, P.y, P.rot + 90)){
-    const mine = P.base === "pin";
-    popAt(P.x, P.y, `<b>The stadium</b><p>Drag it to move the whole district.</p><button class="sc-btn${mine ? " danger" : ""}" type="button" data-a="rm">${mine ? "Delete my stadium" : "Close the plan"}</button>`, el => el.querySelector("[data-a=rm]").onclick = deleteStadium); return; }
-  const b = (P.pieces || []).find(q => inRect(q, x, y));
-  if (!b){ POPclose(); return; }
-  const K = KINDS[b.k], a = b.w * b.h, v = K.sp ? pc(K.sp(a), "space") : K.homes ? pc(K.homes(a), "home") : (a / 4046.86).toFixed(1) + " acres";
-  popAt(b.x, b.y, `<b>${KN[b.k][0]}</b><p>${v}${b.under ? ` · ${fmt(b.under)} homes there today` : ""}</p>`, () => {});
-}
-function bindPlanDrag(){
-  let D = null;
-  const mpp = () => 40075016 * Math.cos(map.getCenter().lat * Math.PI / 180) / (512 * 2 ** map.getZoom());
-  const down = e => { if (mode !== "plan" || !PLAN || PLAN.gone || (e.originalEvent.touches && e.originalEvent.touches.length > 1)) return;
-    const [x, y] = xy(e.lngLat.lng, e.lngLat.lat); if (!inEllipse(x, y, PLAN.x, PLAN.y, PLAN.rot + 90)) return;
-    e.preventDefault(); map.dragPan.disable(); D = {x, y, moved:false, ox:PLAN.x, oy:PLAN.y, pc:(PLAN.pieces || []).map(q => ({...q})), st:(PLAN.streets || []).map(q => q.map(r => r.slice()))}; };
-  // while dragging, the district just slides along; it's laid out again where you let go
-  const move = e => { if (!D) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat), dx = x - D.x, dy = y - D.y; if (Math.hypot(dx, dy) > 4 * mpp()) D.moved = true; if (!D.moved) return;
-    POPclose(); PLAN.x = D.ox + dx; PLAN.y = D.oy + dy; PLAN.pieces = D.pc.map(q => ({...q, x:q.x + dx, y:q.y + dy})); PLAN.streets = D.st.map(([a, b]) => [[a[0] + dx, a[1] + dy], [b[0] + dx, b[1] + dy]]); drawPlan(); };
-  const up = async () => { if (!D) return; const d = D; D = null; map.dragPan.enable();
-    if (!d.moved){ planTap(d.x, d.y, mpp()); return; }
-    if (PLAN.base === "pin" && pin){ const [lon, lat] = llOf(PLAN.x, PLAN.y); pin.lon = lon; pin.lat = lat; }
-    await loadSegs(PLAN.x, PLAN.y, true); autoPlan(); planChanged(); };
-  map.on("mousedown", down); map.on("touchstart", down); map.on("mousemove", move); map.on("touchmove", move); map.on("mouseup", up); map.on("touchend", up);
-  map.on("click", e => { if (mode !== "plan" || !PLAN) return; const [x, y] = xy(e.lngLat.lng, e.lngLat.lat); if (!PLAN.gone && inEllipse(x, y, PLAN.x, PLAN.y, PLAN.rot + 90)) return; planTap(x, y, mpp()); });
-}
-// share it: "#plan=" base ~ x,y,rot ~ k<parking><homes>; stop/bus; n<piece id> for each piece you removed (meters from the map origin)
-function planCode(){ const P = PLAN, r = Math.round, parts = ["k" + (P.pk || 0) + (P.hk == null ? 1 : P.hk)];
-  for (const it of P.items) parts.push(it.k === "bus" ? "b" : "s" + [r(it.x), r(it.y), it.li].join(","));
-  for (const id of P.off || []) parts.push("n" + id);
-  if (P.gone) parts.push("x");
-  return P.base + "~" + [r(P.x), r(P.y), r(P.rot)].join(",") + "~" + parts.join(";"); }
-function planDecode(code){
-  const [base, st, items] = code.split("~"); if (!base || !st) return null; const [x, y, rot] = st.split(",").map(Number); if (![x, y, rot].every(Number.isFinite)) return null;
-  const L = allLines(), out = {base, x, y, rot, items:[], pieces:[], streets:[], off:[], pk:0, hk:1};
-  for (const t of (items || "").split(";").filter(Boolean)){
-    if (/^k\d\d$/.test(t)){ out.pk = Math.min(2, +t[1]); out.hk = Math.min(2, +t[2]); }
-    else if (t === "b") out.items.push({k:"bus"});
-    else if (t === "x") out.gone = true;
-    else if (/^n[a-z]\d*$/.test(t)) out.off.push(t.slice(1));
-    else if (t[0] === "s"){ const v = t.slice(1).split(",").map(Number), l = L[v[2]]; if (l) out.items.push({k:"stop", x:v[0], y:v[1], li:v[2], line:l.l.id, kind:l.kind}); } }
-  return out; }
 
 /* ---------- game day: fans drive the real roads and ride the real lines ---------- */
 // roads: the transit simulator's OpenStreetMap expressways and main streets (transit/data/geo.json, meters from State & Madison)
@@ -1051,23 +680,15 @@ async function kickoff(m, name){
   if (NT){
     const lines = [];
     for (const l of m.lines){ let sx, sy;
-      if (l.at) [sx, sy] = l.at;   // your new stop, or the station your shuttles run from
-      else { const sr = PL.rail.filter(r => r[3] === l.kind && (r[5] || []).includes(l.line)).map(r => ({r, d:Math.hypot(r.x - x, r.y - y)})).sort((a, b) => a.d - b.d)[0]; if (!sr) continue; sx = sr.r.x; sy = sr.r.y; }
+      { const sr = PL.rail.filter(r => r[3] === l.kind && (r[5] || []).includes(l.line)).map(r => ({r, d:Math.hypot(r.x - x, r.y - y)})).sort((a, b) => a.d - b.d)[0]; if (!sr) continue; sx = sr.r.x; sy = sr.r.y; }
       const tph = Math.min(A.maxTph[l.kind] || 4, Math.max(2 * l.tph, 4));
-      for (const P2 of railIn([l.line], sx, sy, 12)) lines.push({P:P2, cum:cumOf(P2), kind:l.kind, tph, st:P2[P2.length - 1], bus:!!l.bus}); }
+      for (const P2 of railIn([l.line], sx, sy, 12)) lines.push({P:P2, cum:cumOf(P2), kind:l.kind, tph, st:P2[P2.length - 1]}); }
     // each line runs its game-day trains toward the stadium from both directions (same frequency the counts use)
     for (const L of lines){ const hw = 3600 / L.tph, v = L.kind === "L" ? 13 : 18, ride = L.cum[L.cum.length - 1] / v;
-      for (let dep = -150 * 60 + Math.random() * hw; dep + ride + (L.bus ? 3000 : 1500) < 0; dep += hw) trains.push({P:L.P, cum:L.cum, dep, ride, st:L.st, bus:L.bus}); }
-    // shuttle buses: from the station along the streets to the stadium
-    const busPath = {};
-    const roadTo = st => { const k = Math.round(st[0]) + "," + Math.round(st[1]); if (busPath[k]) return busPath[k];
-      const o = roadNear(st[0], st[1], 1500); let P3 = [st, [x, y]];
-      if (o >= 0 && tree && isFinite(tree.T[o])){ const pth = pathFrom(o, tree); P3 = [st].concat(pth.nodes.map(i => [R.X[i], R.Y[i]]), [[x, y]]); }
-      return busPath[k] = {P:P3, cum:cumOf(P3)}; };
+      for (let dep = -150 * 60 + Math.random() * hw; dep + ride + 1500 < 0; dep += hw) trains.push({P:L.P, cum:L.cum, dep, ride, st:L.st}); }
     // the fans each train lets off walk the last stretch to the gates
     const per = Math.max(3, Math.round(NT / Math.max(1, trains.length)));
     for (const tr of trains) for (let k = 0; k < per; k++){
-      if (tr.bus){ const B = roadTo(tr.st), L = B.cum[B.cum.length - 1]; dots.push({t:"t", P:B.P, cum:B.cum, ct:[0, L / BUS.v], dep:tr.dep + tr.ride + 60 + Math.random() * 600}); continue; }
       const a = Math.random() * 6.283, r = 25 + Math.random() * 45, s0 = [tr.st[0] + Math.cos(a) * r, tr.st[1] + Math.sin(a) * r], walk = Math.hypot(x - s0[0], y - s0[1]);
       const W2 = [s0, [x + (Math.random() - 0.5) * 120, y + (Math.random() - 0.5) * 120]];
       dots.push({t:"t", P:W2, cum:cumOf(W2), ct:[0, walk / (1.1 + Math.random() * 0.5)], dep:tr.dep + tr.ride + Math.random() * 90}); }
@@ -1115,7 +736,7 @@ async function kickoff(m, name){
 }
 function verdict(m, P){
   const acres = P.short * A.sqm / 4046.86, W = KICK && KICK.worst, parts = [];
-  parts.push(m.lines.length ? `<b>${fmt(P.byTrain)}</b> fans came by train${m.busFrom ? ` (some on shuttle buses from ${esc(m.busFrom.name)})` : ""}${P.byTrain >= m.trainCap - 1 ? ", as many as the lines here could carry" : ""}.` : "<b>No train</b> stops within a 15-minute walk, so nearly everyone drove.");
+  parts.push(m.lines.length ? `<b>${fmt(P.byTrain)}</b> fans came by train${P.byTrain >= m.trainCap - 1 ? ", as many as the lines here could carry" : ""}.` : "<b>No train</b> stops within a 15-minute walk, so nearly everyone drove.");
   parts.push(P.short > 0 ? `<b>${fmt(P.short)} cars</b> had nowhere to park within a mile: about <b>${fmt(acres)} acres</b> of new parking.` : "Parking within a mile covered every car.");
   const D = KICK && KICK.drive, hm = s => { const m = Math.round(s / 60); return m < 60 ? m + " min" : Math.floor(m / 60) + " hr " + (m % 60) + " min"; };
   if (D) parts.push(D.avg > D.free * 1.1 ? `The average drive took <b>${hm(D.avg)}</b> (${hm(D.free)} on empty roads), and one fan in ten needed <b>${hm(D.p90)}</b>, so plan on leaving early.` : `The average drive took <b>${hm(D.avg)}</b>, about what it takes on empty roads.`);
@@ -1154,8 +775,8 @@ function updateRank(){
 }
 
 /* ---------- users' picks (anonymous, one a day) ---------- */
-async function pickIt(id, m, code){
-  const body = {site: id === "pin" ? "pin" : id, lon: +m.lon.toFixed(3), lat: +m.lat.toFixed(3)}; if (code) body.plan = code;
+async function pickIt(id, m){
+  const body = {site: id === "pin" ? "pin" : id, lon: +m.lon.toFixed(3), lat: +m.lat.toFixed(3)};
   try { const r = await fetch("/api/bears/pick", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)}); if (!r.ok) throw r.status;
     try { localStorage.setItem("sc-bears-pick", JSON.stringify(body)); } catch (e) {}
     toast("Counted. See where users put it under Users."); loadPicks(); }
@@ -1166,9 +787,6 @@ async function loadPicks(){
     const tot = Object.values(d.sites || {}).reduce((a, b) => a + b, 0) || 0;
     const rows = Object.entries(d.sites || {}).sort((a, b) => b[1] - a[1]);
     $("picks").innerHTML = tot ? rows.map(([k, n]) => `<li><span>${esc((SITES.find(s => s.id === k) || {name:k === "pin" ? "Their own pins" : k}).name)}<div class="bar"><i style="width:${n / rows[0][1] * 100}%"></i></div></span><b>${Math.round(n / tot * 100)}%</b></li>`).join("") + `<li class="small">${fmt(tot)} picks so far</li>` : '<li class="small">No picks yet. Be the first: open a site and tap <b>This is my pick</b>.</li>';
-    const pl = d.plans || [], ago = t => { const h = (Date.now() - t) / 36e5; return h < 1 ? "just now" : h < 24 ? Math.round(h) + " h ago" : Math.round(h / 24) + " d ago"; };
-    $("planList").innerHTML = pl.length ? pl.map(q => { const n = (q.plan.split("~")[2] || "").split(";").filter(Boolean).length; return `<li><a href="#plan=${esc(q.plan)}" data-plan="${esc(q.plan)}">${esc((SITES.find(s => s.id === q.site) || {name:"Their own site"}).name)}</a><span class="small">${n} ${n === 1 ? "piece" : "pieces"} · ${ago(q.ts)}</span></li>`; }).join("") : '<li class="small">No site plans yet. Open a site, tap <b>Plan the site</b>, then <b>This is my pick</b>.</li>';
-    $("planList").querySelectorAll("[data-plan]").forEach(a => a.onclick = e => { e.preventDefault(); openPlanCode(a.dataset.plan); });
     map.getSource("heat").setData({type:"FeatureCollection", features:(d.cells || []).map(([lon, lat, n]) => ({type:"Feature", properties:{n}, geometry:{type:"Point", coordinates:[lon, lat]}}))});
   } catch (e) { $("picks").innerHTML = '<li class="small">Users\' picks show up here on the live site.</li>'; }
 }
@@ -1194,7 +812,6 @@ const HOW = `<ul class="facts">
 <li><b>Cars and parking:</b> ${fmt(A.seats)} fans (assumption: Soldier Field holds about 61,500; a new dome's size hasn't been announced), ${A.perCar} fans a car (assumption). Parking = lots mapped in OpenStreetMap within a mile, at one space per 30 m² of lot (assumption; garages count once, so this undercounts them).</li>
 <li><b>Expressway ramps:</b> exits mapped within 2 miles, one ramp lane each taking 1,500 cars an hour (assumption), with fans arriving over 2.5 hours.</li>
 <li><b>Game-day traffic:</b> cars start from where people live, 5 to 18 km away (2020 Census blocks), and take the fastest route on expressways and main streets mapped in OpenStreetMap (the same streets the transit tool uses), at about 85 km/h on expressways and 35 km/h on main streets. Each road carries about 4,000 cars an hour each way on expressways and 1,100 on main streets (assumptions); as a road fills past that, trips on it slow down along the standard BPR curve (travel time × 1 + 0.15 × load⁴). Ramps aren't in the map data, so expressways join main streets at each exit OpenStreetMap marks, and short gaps in the mapped expressways (bridges, toll plazas) are closed (1,500 cars an hour, the same as the ramp measure). Side streets aren't in the map, so real traffic spreads out more. Fans aim to arrive 10 minutes to 2½ hours before kickoff and leave home early enough to make it, so everyone gets in; the question is how long the drive takes. Trains run on the real tracks at the game-day frequency above, and each one lets its fans off at the station to walk to the gates. The run starts when the first fans leave home and ends at kickoff, in about 15 seconds.</li>
-<li><b>Your site plan:</b> one district, drawn the way a planner would sketch a typical stadium district, not any team's actual plan. The stadium sits inside a ring road; a plaza (86 by 300 m) is out front; a main street runs from it toward the train fans use (or the nearest neighborhood), lined with buildings of homes over shops (90 by 60 m, 5 floors of homes over shops at 1,026 sq ft a home, 85% of the footprint); garages (5 levels) sit at the sides and back; surface lots (180 by 150 m) fill in behind and beside until there's parking for every car, half or a quarter, counting lots already within a mile that the district doesn't build over. It turns to match the local street grid and faces the train. Whatever it lands on is counted: homes from Census blocks and, on this site's own domain, buildings from the base map. Transit: a game-day stop on the nearest track if it's within a walk; with no train within a walk, a stop on the nearest track plus shuttle buses. Satellite photos: USGS The National Map; 3D buildings: OpenStreetMap through OpenFreeMap. All sizes are assumptions.</li>
 
 <li><b>People, homes and jobs:</b> 2020 Census blocks (six Illinois counties plus Lake and Porter counties, Indiana) and LEHD jobs; homes where the stadium would go = blocks whose center falls inside the footprint (a 290 by 240 m oval, assumption).</li>
 <li><b>Hotels:</b> hotels and motels mapped in OpenStreetMap (count only; most don't list rooms).</li>
@@ -1215,14 +832,11 @@ const INFO = {
 function info(k){ const v = INFO[k]; if (!v) return; const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${esc(v[0])}</b><button class="sc-btn" type="button" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px;font-size:14.5px;line-height:1.55;color:var(--sc-ink2)">${v[1].startsWith("<") ? v[1] : "<p>" + esc(v[1]) + "</p>"}</div>`; d.showModal(); }
 window.info = info;
 
-function openPlanCode(code){ const P = planDecode(code); if (!P) return;
-  if (P.base === "pin"){ const [lon, lat] = llOf(P.x, P.y); pin = {lon, lat, rot:P.rot}; } else if (!SITES.some(s => s.id === P.base)) return;
-  tab("sites"); startPlan(P.base, P); }
 /* ---------- misc ---------- */
 function tab(t){ document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === t))); ["sites", "rank", "picks", "learn"].forEach(k => $("p-" + k).hidden = k !== t); if (t === "rank") updateRank(); if (t === "picks") loadPicks(); $("scroll").scrollTop = 0; }
 document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => tab(b.dataset.t));
 let toastT; function toast(t){ const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove("on"), 2600); }
-function setHash(){ const h = mode === "plan" && PLAN ? "#plan=" + planCode() : cur && cur !== "pin" ? "#s=" + cur : cur === "pin" && pin ? `#p=${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.rot}` : ""; try { history.replaceState(null, "", location.pathname + location.search + h); } catch (e) {} }
+function setHash(){ const h = cur && cur !== "pin" ? "#s=" + cur : cur === "pin" && pin ? `#p=${pin.lon.toFixed(4)},${pin.lat.toFixed(4)},${pin.rot}` : ""; try { history.replaceState(null, "", location.pathname + location.search + h); } catch (e) {} }
 $("pinBtn").onclick = () => { setPinMode(mode !== "pin"); if (mode === "pin") toast("Tap anywhere on the map"); };
 $("landChk").onchange = e => { for (const id of ["land", "land-l"]) map.setLayoutProperty(id, "visibility", e.target.checked ? "visible" : "none"); };
 $("heatChk").onchange = e => map.setLayoutProperty("heat", "visibility", e.target.checked ? "visible" : "none");
@@ -1241,10 +855,9 @@ addEventListener("keydown", e => { if (e.key === "Escape") stopKick(); });
   renderList(); renderWeights(); renderLearn();
   const h = location.hash;
   let m;
-  if ((m = h.match(/^#plan=([A-Za-z0-9,;~.-]+)/))) openPlanCode(m[1]);
-  else if ((m = h.match(/^#s=(\w+)/))) openSite(m[1]);
+  if ((m = h.match(/^#s=(\w+)/))) openSite(m[1]);
   else if ((m = h.match(/^#p=(-?[\d.]+),(-?[\d.]+),?(\d*)/))){ pin = {lon:+m[1], lat:+m[2], rot:+m[3] || 0}; openPin(); map.jumpTo({center:[pin.lon, pin.lat], zoom:13.5, pitch:45}); }
-  window.__bears = {road: () => ROAD, kick: () => KICK, plan: () => PLAN, startPlan, autoPlan, planCode, renderPlan, planTap, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
+  window.__bears = {road: () => ROAD, kick: () => KICK, M, measure, SITES, openSite, openPin, placePin, kickoff, tab, map: () => map};
 })();
 </script>
 </body>
