@@ -20,7 +20,9 @@
  },
  {
   "id": "t2rn-p8d7",
-  "name": "CTA L station entries, monthly"
+  "name": "CTA L station entries, monthly",
+  "save_as": "l_monthly",
+  "where": "month_beginning >= '2015-01-01'"
  },
  {
   "id": "j4h8-ug9m",
@@ -31,8 +33,7 @@
  {
   "id": "xbwc-ntpx",
   "name": "ADU preapproval applications, historical",
-  "save_as": "adu_hist",
-  "select": "id,submission_date,status,status_updated_date,ward,comm_area,adu_zone,adu_type,new_adus,current_dus,max_adus,aff_adus,year_built,owner_occ,latitude,longitude"
+  "save_as": "adu_hist"
  },
  {
   "id": "qfyy-956j",
@@ -48,10 +49,17 @@
  },
  {
   "id": "85ca-t3if",
-  "name": "Traffic crashes since 2018 (key fields)",
-  "save_as": "crashes",
-  "select": "crash_record_id,crash_date,injuries_fatal,injuries_incapacitating,injuries_total,most_severe_injury,first_crash_type,street_no,street_direction,street_name,latitude,longitude",
-  "where": "crash_date >= '2018-01-01'"
+  "name": "Traffic crashes 2018_21",
+  "save_as": "crashes_2018_21",
+  "select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
+  "where": "crash_date >= '2018-01-01' AND crash_date < '2022-01-01'"
+ },
+ {
+  "id": "85ca-t3if",
+  "name": "Traffic crashes 2022_on",
+  "save_as": "crashes_2022_on",
+  "select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
+  "where": "crash_date >= '2022-01-01' AND crash_date < '2030-01-01'"
  },
  {
   "id": "spqx-js37",
@@ -75,17 +83,6 @@
   "save_as": "potholes",
   "select": "request_date,completion_date,number_of_potholes_filled_on_block,latitude,longitude",
   "where": "completion_date >= '2019-01-01'"
- },
- {
-  "id": "75xd-xajz",
-  "name": "Zoning Board of Appeals hearings"
- },
- {
-  "id": "v6vf-nfxy",
-  "name": "311: potholes and street lights since 2025",
-  "save_as": "311_streets",
-  "select": "sr_type,status,created_date,closed_date,ward,community_area",
-  "where": "created_date >= '2025-01-01' AND sr_type in ('Pothole in Street Complaint','Street Light Out Complaint')"
  },
  {
   "id": "wvhk-k5uv",
