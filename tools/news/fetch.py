@@ -51,7 +51,22 @@ TOPICS = {
  'policy': r'\b(City Council|alderperson|alderman|alder|ordinance|mayor Johnson|Johnson administration|ward\b|Planning and Development|DPD|Department of Housing|zoning board)',
 }
 STATEWIDE = {'Capitol News Illinois', 'Illinois Answers Project'}
-NOT = r'\b(shooting|shot|shots|gun\b|guns\b|gunman|gunfire|hostage|homicide|murder|killed|dead\b|death\b|carjack|stabb|robbery|burglar|arrest|police chase|charged|crash|crashes|collides|collision|fire breaks|blaze|fundraiser|gala\b|lawsuit filed against .* officer|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
+NOT = r'\b(attack|attacked|attacks|assault|assaulted|beaten|robbed|suspects?|wanted|missing|rescued?|stair climb|football|parade|marathon|shooting|shot|shots|gun\b|guns\b|gunman|gunfire|hostage|homicide|murder|killed|dead\b|death\b|carjack|stabb|robbery|burglar|arrest|police chase|charged|crash|crashes|collides|collision|fire breaks|blaze|fundraiser|gala\b|lawsuit filed against .* officer|Bears|Bulls|Cubs|White Sox|Blackhawks|Sky\b|Fire FC|concert|festival|film|movie|musician|actor|album|venue|restaurant|recipe|obituar|porn|sex|hentai|casino bonus|bingo|horoscope|crossword)'
+# TV stations cover every kind of local story, so a topic word alone isn't enough there: the headline also needs a planning word
+TV = {'CBS Chicago', 'NBC Chicago', 'ABC7 Chicago', 'WGN News', 'FOX 32 Chicago'}
+PLAN = r'\b(zoning|rezon\w*|permits?|develop(er|ers|ment|ments)|redevelop\w*|budget|ordinance|fares?|service (cuts?|changes?)|property tax(es)?|head tax|sales tax|tax (levy|hike|increase)|City Council|Plan Commission|affordable housing|TIF)\b'
+# "tower" and "stadium" on their own bring in stair climbs and game stories: they count only next to a word about building or paying for one
+SOLO = r'\b(tower|stadium)\b'
+BUILD = r'\b(plans?|planned|propos\w*|approv\w*|permits?|stor(y|ies)|site|build\w*|built|construction|zoning|rezon\w*|funding|financing|subsid\w*|tax(es)?|vote[sd]?|bill|deal|lease|develop\w*|demoli\w*|convert\w*|conversion|apartments?|condos?|homes)\b'
+def on_topic(name, title):
+    tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
+    if tags == ['development'] and re.search(SOLO, title, re.I) and not re.search(BUILD, title, re.I) \
+       and not re.search(TOPICS['development'].replace('tower|', '').replace('stadium|', ''), title, re.I): return []
+    if name in TV and not re.search(PLAN, title, re.I): return []
+    return tags
+# outlets that mostly cover planning come first when two outlets run the same story
+FIRST = ['Block Club Chicago', 'Chicago YIMBY', 'Streetsblog Chicago', 'WTTW News', 'Better Government Association', 'Metropolitan Planning Council',
+         'Urbanize Chicago', 'The Daily Line', "Crain's Chicago Business", 'The Real Deal', 'Chicago Sun-Times', 'Chicago Tribune', 'WBEZ', 'South Side Weekly']
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
 # extra feeds read on top of each outlet's main feed: WordPress search feeds (?s=term&feed=rss2) reach further back on
 # the topics we keep, since a main feed only holds the latest 10 to 20 stories
@@ -109,7 +124,7 @@ old = []
 if os.path.exists(OUT):
     try: old = json.load(open(OUT)).get('items', [])
     except Exception: old = []
-old = [o for o in old if not re.search(NOT, o['t'], re.I) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and [k for k, rx in TOPICS.items() if re.search(rx, o['t'], re.I if k != 'transit' else 0)]]   # re-check kept items against the current rules
+old = [o for o in old if not re.search(NOT, o['t'], re.I) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and on_topic(o['s'], o['t'])]   # re-check kept items against the current rules
 seen = {o['u'] for o in old}; items = list(old); status = {}
 now = dt.datetime.now(dt.timezone.utc)
 LOCAL = {n: l for n, l, _ in SOURCES}
@@ -129,12 +144,31 @@ for name, urls in jobs:
         if not title or not link or link in seen or not d or (now - d).days > 45: continue
         blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
         if re.search(NOT, title, re.I): continue
-        tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
+        tags = on_topic(name, title)
         if not tags: continue
         if name in STATEWIDE and not re.search(CHI, title): continue          # statewide outlets: Chicago must be in the headline
         if not local and not re.search(CHI, blob): continue
         seen.add(link); items.append({'t': title, 'u': link, 's': name, 'd': d.strftime('%Y-%m-%dT%H:%MZ'), 'g': tags, **({'i': img} if img.startswith('http') else {}), **({'x': dek(desc)} if dek(desc) else {})})
 items = [i for i in items if (now - dt.datetime.fromisoformat(i['d'].replace('Z', '+00:00'))).days <= 45]
+# the same story from several outlets (or one outlet's updates): keep one headline, from the outlet highest in FIRST, else the earliest
+HSTOP = set('that this with from have will about after their into they them what when where which while would could said says over more than been were your just also chicago'.split())
+def hwords(t): return {w for w in re.findall(r"[a-z0-9]{4,}", t.lower().replace("'s", '').replace('’s', '')) if w not in HSTOP}
+def nums(t): return set(re.findall(r'\d+', t))
+def rank(i): return (FIRST.index(i['s']) if i['s'] in FIRST else len(FIRST), i['d'])
+kept = []
+for it in sorted(items, key=rank):
+    w = hwords(it['t']); n = nums(it['t']); t = dt.datetime.fromisoformat(it['d'].replace('Z', '+00:00'))
+    dup = False
+    for kw, kt, k in kept:
+        if abs((t - kt).total_seconds()) > 4 * 86400 or not w or not kw: continue
+        kn = nums(k['t'])
+        if n and kn and not (n & kn): continue                      # different addresses or figures: different stories
+        both = len(w & kw); share = both / len(w | kw)
+        # one outlet's formula headlines ("Permits issued for…") share many words, so the bar is higher within an outlet
+        if (share >= 0.6) if k['s'] == it['s'] else (both >= 4 and both / min(len(w), len(kw)) >= 0.5): dup = True; break
+    if not dup: kept.append((w, t, it))
+print('same story dropped', len(items) - len(kept))
+items = [k[2] for k in kept]
 items.sort(key=lambda i: i['d'], reverse=True); items = items[:600]
 # stories with no picture in the feed: read the share image the outlet sets for link previews (og:image), once per story;
 # 'i': '' means we looked and found none. Only the image's address is kept; readers' browsers load it from the outlet.
