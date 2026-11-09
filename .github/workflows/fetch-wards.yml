@@ -17,6 +17,17 @@ jobs:
     timeout-minutes: 85
     steps:
       - uses: actions/checkout@v4
+      # City Clerk texts name private applicants, so they stay out of the repo; caches keep them between runs.
+      - uses: actions/cache@v4
+        with:
+          path: tools/raw/wards/ord
+          key: wards-ord-${{ github.run_id }}
+          restore-keys: wards-ord-
+      - uses: actions/cache/restore@v4
+        with:
+          path: tools/raw/tracker/elms_text
+          key: elms-text-none
+          restore-keys: elms-text-
       - name: Tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils >/dev/null
       - name: Download
@@ -38,6 +49,6 @@ jobs:
           rm -rf tools/raw/wards && cp -r /tmp/main/wards tools/raw/wards
           mkdir -p tools/raw/tracker && rm -rf tools/raw/tracker/elms_text && cp -r /tmp/main/tracker/elms_text tools/raw/tracker/ && cp /tmp/main/tracker/elms_zoning.json.gz tools/raw/tracker/
           python3 tools/wards/build.py
-          git add tools/raw/wards wards/data tools/raw/tracker/elms_text tools/raw/tracker/elms_zoning.json.gz
+          git add tools/raw/wards wards/data tools/raw/tracker/elms_zoning.json.gz
           git commit -m "Ward housing records $(date -u +%F)" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin shape-v1 && git push origin HEAD:shape-v1 && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1

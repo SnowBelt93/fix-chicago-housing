@@ -1,6 +1,7 @@
 """Download the raw data for the housing production tracker (runs in GitHub Actions; the cloud
 workspace can't reach these hosts). Writes to tools/raw/tracker/:
   permits_nc.csv.gz    every 'PERMIT - NEW CONSTRUCTION' permit since 2006 (City of Chicago, ydr8-5enu), all columns
+                       except the contacts (names of owners, architects, contractors are never kept)
   elms_zoning.json.gz  City Clerk eLMS matters that match zoning map amendments / planned developments
   elms_sample.json     a few full matter records (actions, attachments) for inspection
   elms_facets.json     facet values (types, statuses) from the eLMS search endpoint
@@ -32,6 +33,8 @@ while True:
     body = r[1:]; rows += body; print('permits', len(body), 'at', off, flush=True)
     if len(body) < 50000: break
     off += 50000
+keep = [i for i, h in enumerate(header) if not h.startswith('contact_')]  # never keep people's names
+header = [header[i] for i in keep]; rows = [[r[i] for i in keep if i < len(r)] for r in rows]
 with gzip.open(os.path.join(OUT, 'permits_nc.csv.gz'), 'wt', newline='') as f:
     w = csv.writer(f); w.writerow(header); w.writerows(rows)
 print('permits total', len(rows), 'columns', header)

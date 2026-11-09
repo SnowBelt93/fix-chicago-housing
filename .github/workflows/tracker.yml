@@ -17,6 +17,12 @@ jobs:
     timeout-minutes: 58
     steps:
       - uses: actions/checkout@v4
+      # City Clerk texts name private applicants, so they stay out of the repo; this cache keeps them between runs.
+      - uses: actions/cache@v4
+        with:
+          path: tools/raw/tracker/elms_text
+          key: elms-text-${{ github.run_id }}
+          restore-keys: elms-text-
       - name: Tools
         run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils tesseract-ocr >/dev/null
       - name: Download

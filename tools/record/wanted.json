@@ -9,7 +9,11 @@
  },
  {
   "id": "s6ha-ppgi",
-  "name": "Affordable rental housing developments"
+  "name": "Affordable rental housing developments",
+  "drop": [
+   "Phone Number",
+   "Management Company"
+  ]
  },
  {
   "id": "ydr8-5enu",
@@ -49,7 +53,7 @@
   "id": "gzaz-isa6",
   "name": "Vision Zero traffic deaths",
   "save_as": "vz_deaths",
-  "select": "person_id,crash_date,victim,crash_circumstances,crash_location,latitude,longitude"
+  "select": "crash_date,victim,crash_circumstances,crash_location,latitude,longitude"
  },
  {
   "id": "85ca-t3if",

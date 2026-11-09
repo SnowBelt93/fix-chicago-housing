@@ -3,3 +3,10 @@ __pycache__/
 .DS_Store
 tools/zoning.geojson
 .wrangler/
+# Never in the repo: anything that can name private people.
+# City Clerk texts (applicants, owners, attorneys) live in the Actions cache instead.
+tools/raw/tracker/elms_text/
+tools/raw/wards/ord/
+# Agency reports and pages for the record analysis: workflow artifacts only.
+tools/raw/record/files/
+tools/raw/record/probe/
