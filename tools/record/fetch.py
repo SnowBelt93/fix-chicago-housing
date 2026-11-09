@@ -17,7 +17,7 @@ def get(url, tries=4, timeout=300):
     last = None
     for t in range(tries):
         try: return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout).read()
-        except Exception as e: last = e; print('retry', t, url, e, flush=True); time.sleep(6 * (t + 1))
+        except Exception as e: last = e; print('retry', t, url, e, flush=True); time.sleep((45 if '503' in str(e) else 6) * (t + 1))
     raise RuntimeError(f'{url}: {last}')
 
 TOPICS = ['housing', 'affordable', 'dwelling', 'additional dwelling unit', 'vacant', 'abandoned', 'demolition', 'building permits',
@@ -110,7 +110,7 @@ if 'get' in STEPS and os.path.exists(os.path.join(HERE, 'wanted.json')):
             if w.get('group'): p['$group'] = w['group']
             url = f"https://{w.get('domain', 'data.cityofchicago.org')}/resource/{w['id']}.csv?" + urllib.parse.urlencode(p)
         try:
-            data = get(url, timeout=1800)
+            data = get(url, tries=6, timeout=1800)
             if w.get('drop'):  # remove columns we never keep (e.g. people's names)
                 import csv, io
                 rows = list(csv.DictReader(io.StringIO(data.decode('utf-8'))))
