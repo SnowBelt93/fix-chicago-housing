@@ -6,3 +6,9 @@ tools/zoning.geojson
 node_modules/
 tools/raw/transit/trip_times_cache*.npz
 tools/raw/transit/trip_gamma_cache.json
+# Never in the repo: anything that can name private people.
+# City Clerk texts (applicants, owners, attorneys) live in the Actions cache instead.
+tools/raw/tracker/elms_text/
+tools/raw/wards/ord/
+tools/raw/record/files/
+tools/raw/record/probe/
