@@ -5,7 +5,7 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155491
+     "count": 155492
     },
     {
      "value": "Committee on Finance",
@@ -13,7 +13,7 @@
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10499
+     "count": 10500
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -41,7 +41,7 @@
     },
     {
      "value": "Committee on Public Safety",
-     "count": 52
+     "count": 51
     },
     {
      "value": "Committee on Housing and Real Estate",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118151
+     "count": 118152
     },
     {
      "value": "Claim",
@@ -223,7 +223,7 @@
     },
     {
      "value": "3-Council Introduction",
-     "count": 12122
+     "count": 12123
     },
     {
      "value": "4-In Committee",
@@ -368,7 +368,7 @@
     },
     {
      "value": "O'Shea, Matthew J.",
-     "count": 1661
+     "count": 1662
     },
     {
      "value": "Gardiner, James M.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169697
+     "count": 169698
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7445
+     "count": 7446
     },
     {
      "value": "2024",
@@ -1000,7 +1000,7 @@
     },
     {
      "value": "19",
-     "count": 1860
+     "count": 1861
     },
     {
      "value": "46",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113435
+     "count": 113423
     },
     {
      "value": "Adopted",
@@ -1153,7 +1153,7 @@
     },
     {
      "value": "Council Introduction",
-     "count": 12122
+     "count": 12123
     },
     {
      "value": "Passed as Substitute",
@@ -1181,7 +1181,7 @@
     },
     {
      "value": "Published in Special Pamphlet",
-     "count": 181
+     "count": 193
     },
     {
      "value": "Signed",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163627
+     "count": 163628
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181837,
-  "pages": 181837
+  "count": 181838,
+  "pages": 181838
  }
 }

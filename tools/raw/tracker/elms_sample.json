@@ -564,85 +564,6 @@
   "lastPublicationDate": "2026-11-05T16:36:17+00:00"
  },
  {
-  "matterId": "44B32124-F0C3-F111-AAAE-001DD80B58E5",
-  "fileYear": 2026,
-  "recordNumber": "O2026-0029358",
-  "legacyRecordNumber": "",
-  "status": "4-In Committee",
-  "legacyStatus": null,
-  "subStatus": "Referred",
-  "statusDescription": "4-In Committee",
-  "filingOffice": "09",
-  "filingSponsor": "Beale, Anthony",
-  "filingSponsorId": "AC394D1C-F988-EC11-8D20-001DD804FD38",
-  "introductionDate": "2026-10-14T15:00:00+00:00",
-  "finalActionDate": null,
-  "shortTitle": null,
-  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
-  "routine": "YES",
-  "introductionType": "Council Introduction",
-  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
-  "controllingBodyId": null,
-  "keyLegislation": "NO",
-  "economicDisclosure": "NO",
-  "title": "Zoning Reclassification Map No. 28-F at 11300 S Wentworth Ave - App No. TBD",
-  "nicknameAlias": "",
-  "recordCreateDate": "2026-10-09T14:46:05+00:00",
-  "matterCategory": "ZONING RECLASSIFICATIONS",
-  "type": "Ordinance",
-  "originalRecordNumber": null,
-  "supersededBy": null,
-  "actions": [
-   {
-    "actionDate": "2026-10-14T05:00:00+00:00",
-    "journalPage": "",
-    "actionByName": "City Council",
-    "actionName": "Referred",
-    "actionText": "The matter was Referred to Committee.",
-    "meetingId": "",
-    "historyId": "20E6C770-B6C8-F111-AAAD-001DD80B6BB8",
-    "name": null,
-    "sort": 70,
-    "votes": []
-   }
-  ],
-  "sponsors": [
-   {
-    "office": "09",
-    "sponsorName": "Beale, Anthony",
-    "sponsorType": "Sponsor",
-    "personId": "AC394D1C-F988-EC11-8D20-001DD804FD38"
-   }
-  ],
-  "attachments": [
-   {
-    "fileName": "SKM_C301i26100116370 (1).pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/e8c5a481-76dd-4071-a4bc-dc1a05e6b1ba.pdf",
-    "attachmentType": "Legislation"
-   }
-  ],
-  "relations": [],
-  "agreedCalendar": "NO",
-  "timeline": [
-   {
-    "eventName": "AcceptedOn",
-    "timestamp": "2026-10-09T14:49:06+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "PostedOn",
-    "timestamp": "2026-10-09T14:49:49+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "SubmittedOn",
-    "timestamp": "1900-01-01T00:00:00+00:00",
-    "eventText": ""
-   }
-  ],
-  "lastPublicationDate": "2026-10-15T18:20:28+00:00"
- },
- {
   "matterId": "3E1386A4-FCC3-F111-AAAE-001DD80AA3CC",
   "fileYear": 2026,
   "recordNumber": "O2026-0029364",
@@ -735,6 +656,95 @@
    }
   ],
   "lastPublicationDate": "2026-11-05T16:25:01+00:00"
+ },
+ {
+  "matterId": "E28FD3EC-FAC3-F111-AAAE-001DD80AA3CC",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029363",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "NO",
+  "title": "Zoning Reclassification Map No. 28-J at 3857 W 111th St - App No. 23183",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-09T16:03:20+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "50646",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "B418DC85-FCC3-F111-AAAE-001DD80AA3CC",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029363 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/0072f592-7291-4b2e-b9ef-2c71ac41cb64.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029363 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/e97f1acb-6026-4b31-8013-99bc63476eeb.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029363 Statements and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/85abaa62-43c6-4119-90c4-a17ef6333dd4.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-09T16:13:23+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-09T16:13:34+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-11-05T16:20:00+00:00"
  },
  {
   "matterId": "2A7639BA-E00D-ED11-82E3-001DD80698CB",
