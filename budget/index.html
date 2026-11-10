@@ -210,6 +210,14 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   .meter{grid-column:1/-1;min-width:0} .mlab{display:none} .bar .sc-m{display:none}
 }
 @media (prefers-reduced-motion:reduce){ .track i,.whobar i{transition:none} }
+/* phones and tablets: the results sit under the options, so a pill jumps between them */
+#jump{display:none}
+@media (max-width:980px){
+  #jump{display:inline-flex;align-items:center;gap:6px;position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:6;
+    min-height:44px;padding:0 18px;border-radius:999px;white-space:nowrap;max-width:calc(100vw - 32px);border:0;background:var(--sc-navy);color:#fff;font:600 14.5px/1 var(--sc-font);box-shadow:0 6px 18px rgba(20,40,80,.28);cursor:pointer;transition:opacity .2s}
+  #jump[hidden]{display:none}
+  #jump .gn{font-weight:500;opacity:.85}
+}
 /* Nov 8: selected = solid navy */
 .tab[aria-selected="true"],.seg2 button[aria-checked="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
 </style>
@@ -229,6 +237,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   <div class="sc-m hm"><b id="homeN">$0</b><span id="homeL">more a year for a typical homeowner</span></div>
   <div class="btns"><button class="sc-btn" id="mayor">Load the Mayor's plan</button><button class="sc-btn" id="reset">Start over</button></div>
 </section>
+<button type="button" id="jump" hidden></button>
 <main>
   <section class="panel" aria-label="Your options">
     <div class="tabs" role="tablist" id="tabs"></div>
@@ -931,5 +940,25 @@ update();
   t.addEventListener("scroll", e, {passive:true}); addEventListener("resize", e); new MutationObserver(e).observe(t, {childList:true}); e(); })();
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("budget", {title:"Balance the Chicago Budget", body:"<p>Chicago's 2027 budget starts $882 million short. Raise or cut taxes, fund departments up or down, or reach for one-time money until the gap reads $0.</p><p>Every option is something the City Council can really do, or would have to ask Springfield for, with its dollar amount and sources behind the (i).</p>", art:"/shape/art/budget.webp"}));</script>
+<script>
+/* phones: "See your results" while the results are below the options; "Back to the options" once past them */
+(function(){ const j = document.getElementById("jump"), res = document.getElementById("resCard"), pan = document.querySelector(".panel"), gap = document.getElementById("gapN");
+  if (!j || !res || !pan) return;
+  const top = () => (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sc-head")) || 56) + (document.querySelector(".bar")?.offsetHeight || 0);
+  let mode = "";
+  function upd(){
+    if (!matchMedia("(max-width:980px)").matches){ j.hidden = true; return; }
+    const r = res.getBoundingClientRect(), p = pan.getBoundingClientRect();
+    const m = r.top > innerHeight - 60 ? "down" : p.bottom < top() ? "up" : "";
+    j.hidden = !m;
+    if (m === "down") { const L = document.getElementById("gapL").textContent; j.innerHTML = `See results <span class="gn">· ${/still/.test(L) ? gap.textContent + " to close" : /surplus/.test(L) ? "surplus" : "balanced"}</span> ↓`; }
+    else if (m && m !== mode) j.textContent = "Back to the options ↑";
+    mode = m;
+  }
+  j.onclick = () => { const el = mode === "down" ? res : pan; scrollTo({top: el.getBoundingClientRect().top + scrollY - top() - 8, behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth"}); };
+  addEventListener("scroll", upd, {passive:true}); addEventListener("resize", upd);
+  new MutationObserver(upd).observe(gap, {childList:true, characterData:true, subtree:true}); setTimeout(upd, 300);
+})();
+</script>
 </body>
 </html>

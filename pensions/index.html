@@ -230,6 +230,7 @@ function run(opt){
 const money = x => { const a = Math.abs(x); return (x < 0 ? "−" : "") + (a >= 1e6 ? "$" + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + "B" : "$" + Math.round(a / 1e3) + "M"); };   // x in $ thousands
 const pct = x => Math.round(x * 100) + "%";
 let BASE = null;
+let rzT = 0, rzW = innerWidth; addEventListener("resize", () => { if (Math.abs(innerWidth - rzW) < 40) return; rzW = innerWidth; clearTimeout(rzT); rzT = setTimeout(() => render(), 150); });
 function render(){
   syncReset();
   const R = run({...st, ret: RETS[st.ret][0]}), T = R.tot, B = BASE.tot;
@@ -291,20 +292,22 @@ function renderSave(){
   $("saveNote").textContent = ret != null && ret < 0.066 ? "At this lower return, paying early saves less: money parked in the funds earns less than the funds assume." : "Under state law, extra money lowers the payments the law requires later, so the funds reach 90% in the same year for less. Savings depend on the funds actually earning their assumed returns.";
 }
 function chart(id, T, B, f, fmt, fixedMax, line, bars){
-  const W = 760, H = 260, P = {l:58, r:16, t:12, b:26};
+  /* drawn at the width it's shown, so labels stay readable on phones */
+  const cw = $(id).clientWidth || 760, W = Math.max(320, Math.min(760, Math.round(cw))), H = W < 520 ? 220 : 260, P = {l:W < 520 ? 46 : 58, r:W < 520 ? 10 : 16, t:12, b:26};
+  const step = W < 560 ? 10 : 5;
   const xs = T.filter(t => t.y >= 2025 && t.y <= 2065), bs = B.filter(t => t.y >= 2025 && t.y <= 2065);
   const vals = xs.map(f).concat(bs.map(f));
   const max = fixedMax ? Math.max(fixedMax, Math.min(1.6, Math.max(...vals))) : Math.max(...vals) * 1.08;
   const x = y => P.l + (y - 2025) / 40 * (W - P.l - P.r), yv = v => H - P.b - Math.max(0, Math.min(v, max)) / max * (H - P.t - P.b);
   let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
   for (let k = 0; k <= 4; k++){ const v = max * k / 4; g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(v)}" y2="${yv(v)}" stroke="#e6e9ed"/><text x="${P.l - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#5a6069">${fmt(v)}</text>`; }
-  for (let y = 2025; y <= 2065; y += 5) g += `<text x="${x(y)}" y="${H - 7}" text-anchor="middle" font-size="11" fill="#5a6069">${y}</text>`;
+  for (let y = 2025; y <= 2065; y += step) g += `<text x="${x(y)}" y="${H - 7}" text-anchor="${y === 2065 ? "end" : "middle"}" font-size="11" fill="#5a6069">${y}</text>`;
   if (line) g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(line[0])}" y2="${yv(line[0])}" stroke="#1f7a45" stroke-dasharray="4 4"/><text x="${W - P.r}" y="${yv(line[0]) - 5}" text-anchor="end" font-size="11" fill="#1f7a45">${line[1]}</text>`;
   if (bars){ const bw = (W - P.l - P.r) / 41 * 0.7;
     for (const t of xs){ if (t.ds) g += `<rect x="${x(t.y) - bw / 2}" y="${yv(t.ds)}" width="${bw}" height="${H - P.b - yv(t.ds)}" fill="#e07a8b" opacity=".85"><title>${t.y} bond payment: ${money(t.ds)}</title></rect>`; } }
   g += `<polyline points="${bs.map(t => x(t.y) + "," + yv(f(t))).join(" ")}" fill="none" stroke="#9aa4b0" stroke-width="2" stroke-dasharray="5 4"/>`;
   g += `<polyline points="${xs.map(t => x(t.y) + "," + yv(f(t))).join(" ")}" fill="none" stroke="#2b5da0" stroke-width="2.6" stroke-linejoin="round"/>`;
-  for (const t of xs) if (t.y % 5 === 0) g += `<circle cx="${x(t.y)}" cy="${yv(f(t))}" r="3" fill="#2b5da0"><title>${t.y}: ${fmt(f(t))}</title></circle>`;
+  for (const t of xs) if (t.y % step === 0) g += `<circle cx="${x(t.y)}" cy="${yv(f(t))}" r="3" fill="#2b5da0"><title>${t.y}: ${fmt(f(t))}</title></circle>`;
   $(id).innerHTML = g + "</svg>";
 }
 function opts(id, list, key, cast){

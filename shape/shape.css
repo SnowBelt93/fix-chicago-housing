@@ -168,6 +168,9 @@ dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
 @media (prefers-reduced-motion:reduce){ .sc-lift:hover{transform:none} }
 /* reading pages: a light gray page so white cards stand off it (maps keep their own look) */
 :root{--sc-page:#f3f5f7}
+/* reading pages share three widths and two headline sizes (Nov 9 review): text 720, lists 860, everything else 1180;
+   page titles 40px (heroes on the home page and the tracker are bigger on purpose), card titles 20px */
+:root{--sc-w-text:720px; --sc-w-list:860px; --sc-w-wide:1180px; --sc-h1:40px; --sc-h2:20px}
 body.sc-gray{background:var(--sc-page)}
 
 

@@ -3077,7 +3077,8 @@ $("mythClose").addEventListener("click", () => hideModal("myth", () => { const n
 let tourPending = false, tourStep = 0;
 const TOUR = [
   {el:() => $("todTiers"), tab:"zoning", t:"Start here", b:"Pick what can go up within a half mile of every L station. Mid-rise is a good first move."},
-  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use the turn buttons to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt."},
+  {el:() => $("mapctl"), t:"Move the camera", b:"Drag to pan and pinch or scroll to zoom. Use the turn buttons to spin the city and 2D to flatten it. On a keyboard: WASD or arrows to move, Q/E to spin, R/F to tilt.",
+   touch:"Drag to pan, pinch to zoom and twist with two fingers to turn the city. 2D flattens it; the target button brings it back to the start."},
   {el:() => document.querySelector('.tab[data-pane="policies"]'), sheet:1, t:"Then vote on real policies", b:"Policies unlock at 30,000 homes. Each item on the docket says what it adds and where the number comes from."},
   {el:() => $("playBtn"), t:"Then run it to 2041", b:"Watch 15 years of building, and see whether rent and the shortage actually move."},
 ];
@@ -3089,7 +3090,8 @@ function showTip(){
   if (T.tab) showTab(T.tab);
   if (!isWide() && (T.tab || T.sheet) && sheetNow() !== "open"){ openSheet(); setTimeout(showTip, 340); return; }   // phones: open the tools first, then point
   const target = T.el(); if (!target){ tourStep++; return showTip(); }
-  $("tipT").textContent = T.t; $("tipB").textContent = T.b;
+  const touch = matchMedia("(pointer:coarse)").matches;
+  $("tipT").textContent = T.t; $("tipB").textContent = touch && T.touch ? T.touch : T.b;
   $("tipStep").textContent = (tourStep + 1) + " of " + TOUR.length;
   $("tipNext").textContent = tourStep === TOUR.length - 1 ? "Let's go" : "Next";
   tip.hidden = false;
@@ -3099,7 +3101,14 @@ function showTip(){
   const r = target.getBoundingClientRect(), th = tip.offsetHeight, clampTop = (y) => Math.max(10, Math.min(H - th - 10, y));
   let dir;
   const panel = isWide() && !document.body.classList.contains("wide") ? target.closest(".sheet,.hud") : null, right = panel ? panel.getBoundingClientRect().right : r.right;
-  if (W - right >= tw + 28){   // room beside it (the desktop sidebar): put the tip over the map, next to the target
+  const sheetEl = !isWide() ? target.closest(".sheet") : null;
+  if (sheetEl){   // phones: a tool in the bottom sheet gets the tip docked just above the sheet, so it never covers the buttons
+    dir = "down"; const st = Math.min(sheetEl.getBoundingClientRect().top, r.top);
+    tip.style.top = Math.max(10, st - th - 12) + "px";
+    if (!showTip.again){ const k = tourStep, again = () => { if (tourStep !== k || tip.hidden) return; showTip.again = 1; showTip(); showTip.again = 0; };
+      setTimeout(again, 450); setTimeout(again, 1200); sheetEl.addEventListener("transitionend", again, {once:true}); }   // the sheet may still be sliding up: place it again once it settles
+    tip.style.left = Math.max(12, Math.min(W - tw - 12, W / 2 - tw / 2)) + "px";
+  } else if (W - right >= tw + 28){   // room beside it (the desktop sidebar): put the tip over the map, next to the target
     dir = "left"; tip.style.left = (right + 14) + "px"; tip.style.top = clampTop(r.top + r.height / 2 - th / 2) + "px";
   } else {
     const below = r.bottom + 12 + th < H, above = r.top - th - 12 > 0;

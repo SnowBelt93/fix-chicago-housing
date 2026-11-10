@@ -167,6 +167,18 @@ body.next #map{border:1px solid var(--sc-line);border-radius:18px;background:#f3
 body.next .scroll{border:1px solid var(--sc-line);border-radius:14px}
 body.next th{border-bottom:1px solid var(--sc-line2);color:var(--sc-mute);font-weight:600;font-size:12.5px}
 body.next td{border-bottom:1px solid var(--sc-line)}
+/* phones: tables of buildings and rezonings become one card per row (labels copied from the header by cardify()) */
+@media (max-width:640px){
+  table.cards thead{display:none}
+  table.cards, table.cards tbody{display:block}
+  table.cards tr{display:grid;grid-template-columns:1fr auto;gap:3px 14px;padding:11px 4px;border-bottom:1px solid var(--sc-line, #e3e6ea)}
+  table.cards td{display:block;border:0 !important;padding:0;text-align:left;white-space:normal !important;font-size:13px}
+  table.cards td.main{grid-column:1/-1;order:-1;font-size:14px;font-weight:600}
+  table.cards td.main .what{font-weight:400}
+  table.cards td:not(.main)::before{content:attr(data-l) ": ";color:var(--sc-mute, #5a6069);font-weight:500}
+  table.cards td.nolab::before{content:none}
+  .scroll:has(table.cards){border:0 !important;max-height:none !important;overflow:visible}
+}
 body.next .bar{border-radius:4px;background:var(--sc-navy)}
 body.next select{border:1px solid var(--sc-line2);border-radius:10px;padding:6px 10px}
 body.next .seg{border:0;background:var(--sc-seg);border-radius:16px;padding:3px;gap:2px}
@@ -523,5 +535,14 @@ function drawMap(D){
 })();
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("tracker", {title:"Chicago Permit Tracker", body:"<p>Every new-home permit since 2006 and every zoning change since 2013, counted the way the Census counts them. See whether Chicago is building fast enough, and what's going up near you.</p>", art:"/shape/art/tracker.webp"}));</script>
+<script>
+/* copy each table's header labels onto its cells, so the phone layout can show them as cards */
+(function(){ function cardify(t){ if (t.classList.contains('cards')) return; const hs = [...t.querySelectorAll('thead th')].map(th => th.textContent.trim()); if (hs.length < 3) return;
+  const main = hs.findIndex(h => /^(Address|Where|Building|Project)$/i.test(h)); if (main < 0) return;
+  t.classList.add('cards'); t.querySelectorAll('tbody tr').forEach(tr => [...tr.children].forEach((td, i) => { if (i === main) td.classList.add('main'); else td.dataset.l = hs[i] || ''; if (/\?$/.test(hs[i] || '')) td.classList.add('nolab'); })); }
+  const scan = root => root.querySelectorAll && root.querySelectorAll('table').forEach(cardify);
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1){ if (n.tagName === 'TABLE') cardify(n); else scan(n); } }))).observe(document.body, {childList:true, subtree:true});
+  scan(document); })();
+</script>
 </body>
 </html>

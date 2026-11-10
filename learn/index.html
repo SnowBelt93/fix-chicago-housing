@@ -24,9 +24,9 @@ body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antia
 a{color:var(--sc-navy)}
 :focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
 .sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
-.wrap{max-width:1120px;margin:0 auto;padding:44px max(24px,env(safe-area-inset-left)) 72px;display:grid;grid-template-columns:240px minmax(0,680px);gap:56px}
+.wrap{max-width:var(--sc-w-wide);margin:0 auto;padding:44px max(24px,env(safe-area-inset-left)) 72px;display:grid;grid-template-columns:240px minmax(0,680px);gap:56px}
 .intro{grid-column:1 / -1}
-h1{font-size:44px;line-height:1.05;letter-spacing:-.03em;font-weight:600;margin:0 0 12px}
+h1{font-size:var(--sc-h1);line-height:1.05;letter-spacing:-.03em;font-weight:600;margin:0 0 12px}
 .intro p{font-size:18px;line-height:1.55;color:var(--sc-ink2);margin:0;max-width:36em}
 nav.toc{position:sticky;top:20px;align-self:start}
 .toc h3{font-size:13px;font-weight:600;color:var(--sc-mute);margin:0 0 6px}
