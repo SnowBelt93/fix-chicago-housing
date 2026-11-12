@@ -419,10 +419,36 @@ NITA_DATES = [('2026-06-01', 'June 1, 2026', 'The law takes effect. The regional
               ('2030-02-01', 'Feb. 1, 2030', 'One fare system across CTA, Metra and Pace')]
 def transit():
     h1 = 'CTA carried 70% of its 2019 rides in 2025, counted the same way. So far in 2026, rides are up 2.6%.'
+    ytd_tile = ('▲ 2.6%', 'CTA rides, Jan.–Aug. 2026 vs. 2025: buses +1.9%, the L +3.7%'); live = ''; thru_live = 'CTA through Aug. 2026'
+    try: TR = json.load(open(os.path.join(ROOT, 'tracker', 'transit.json')))
+    except Exception: TR = None
+    if TR and TR.get('series', {}).get('cta_bus'):
+        # the federal monthly table: this year so far against the same months last year (both counted the same way)
+        yr, mo = int(TR['through'][:4]), int(TR['through'][5:]); se = TR['series']
+        span = f'Jan.–{MON[mo - 1]}' if mo > 1 else MON[0]
+        ysum = lambda k, y: sum(v for m, v in se[k].items() if m[:4] == str(y) and int(m[5:]) <= mo)
+        ch = lambda a, b: 100 * (a / b - 1) if b else 0
+        arrow = lambda p: ('▲ ' if p >= 0 else '▼ ') + f'{abs(p):.1f}%'
+        sign = lambda p: ('+' if p >= 0 else '−') + f'{abs(p):.1f}%'
+        cta = [ysum('cta_bus', y) + ysum('cta_rail', y) for y in (yr - 1, yr)]
+        rows = []
+        for nm, ks in (('CTA buses', ['cta_bus']), ('CTA trains (the L)', ['cta_rail']), ('CTA, all', ['cta_bus', 'cta_rail']), ('Metra', ['metra']), ('Pace buses', ['pace_bus'])):
+            a, b = sum(ysum(k, yr - 1) for k in ks), sum(ysum(k, yr) for k in ks)
+            rows.append([f'<b>{nm}</b>' if nm == 'CTA, all' else nm, f'{a / 1e6:.1f}M', f'{b / 1e6:.1f}M', f'<b>{sign(ch(b, a))}</b>'])
+        pc = ch(cta[1], cta[0])
+        h1 = f'CTA carried 70% of its 2019 rides in 2025, counted the same way. So far in {yr}, rides are {"up" if pc >= 0 else "down"} {abs(pc):.1f}%.'
+        ytd_tile = (arrow(pc), f'CTA rides, {span} {yr} vs. {yr - 1}: buses {sign(ch(ysum("cta_bus", yr), ysum("cta_bus", yr - 1)))}, the L {sign(ch(ysum("cta_rail", yr), ysum("cta_rail", yr - 1)))}')
+        mons = [f'{yr}-{m:02d}' for m in range(1, mo + 1)]
+        live = card(f'Rides so far this year, against the same months of {yr - 1}', f'{span} of each year, from the federal monthly count. It is refreshed about once a month and runs two months behind.',
+                    table(['', f'{span} {yr - 1}', f'{span} {yr}', 'Change'], rows, right=(1, 2, 3))
+                    + f'<h3 style="margin-top:16px">CTA rides each month of {yr}, millions</h3>'
+                    + bars([round((se['cta_bus'].get(m, 0) + se['cta_rail'].get(m, 0)) / 1e6, 1) for m in mons], [MON[int(m[5:]) - 1].rstrip('.')[:3] for m in mons], fmt=lambda v: f'{v:.1f}', short=lambda v: f'{v:.0f}', h=150,
+                           aria=f'CTA rides each month of {yr} in millions, {MON[0]} through {MON[mo - 1]}.'))
+        thru_live = f'federal monthly count through {MON[mo - 1]} {yr}, checked every morning'
     ys = list(range(2015, 2026))
     c1 = card('Rides on CTA, Metra and Pace, millions a year', 'Every year is counted the old way, so the years compare fairly.',
               bars([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], [f'’{str(y)[2:]}' for y in ys], h=190, aria='Rides on CTA, Metra and Pace in millions a year: 626 in 2015, 550 in 2019, 231 in 2020 and 381 in 2025.'))
-    st = tiles([('70%', 'of 2019 rides on CTA in 2025: buses 78%, the L 62%'), ('62%', 'of 2019 rides on Metra: 37.9 million in 2025, up 8% in a year'), ('67%', 'of 2019 rides on Pace buses: 16.4 million in 2025'), ('▲ 2.6%', 'CTA rides, Jan.–Aug. 2026 vs. 2025: buses +1.9%, the L +3.7%')])
+    st = tiles([('70%', 'of 2019 rides on CTA in 2025: buses 78%, the L 62%'), ('62%', 'of 2019 rides on Metra: 37.9 million in 2025, up 8% in a year'), ('67%', 'of 2019 rides on Pace buses: 16.4 million in 2025'), ytd_tile])
     rows = [[f'<b>{n}</b>', f'<span class="chip {c}">{stt}</span>', b, t, due, f'<a href="{u}" target="_blank" rel="noopener">{src}</a><br>{d}'] for n, b, stt, c, t, due, src, d, u in CTA_PROJ]
     c2 = card('CTA’s big projects', 'What is being built, what it costs and when it is due.', table(['Project', 'Status', 'Budget', 'Where it stands', 'Due', 'Source'], rows, cls='stack proj')
               + f'<p class="fine">Budgets, percentages and due dates are from the regional agency’s <a href="{PMO}" target="_blank" rel="noopener">June 2026 oversight report</a> unless the row links elsewhere. That report rates the Red Line Extension on schedule.</p>')
@@ -435,8 +461,8 @@ def transit():
     note = ('In 2025 CTA changed how it counts riders: new fareboxes and passenger counters, and rides the old system missed. That added 5.9% to its 2025 total (8.5% on buses, 2.4% on the L). '
             'On the new count 2025 was 338.0 million rides; on the old count, 319.2 million, which is the figure compared with 2019 here. The 2026 gain compares two years on the new count. '
             'Project budgets are as of March 2026 and status as of late May 2026, except where a row cites a later story.')
-    return page('transit', 'Transit', h1, top('transit', 'Transit', h1, f'CTA rides through Aug. 2026 · Metra and Pace through 2025 · projects as of June to Aug. 2026 · checked {SNAP}') + st + c1 + c2 + '<section class="strip c2 cards">' + c3 + c4 + '</section>' + g
-                + bottom('transit', note, 'CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026); NITA Report on Project Management Oversight (June 2026); NITA Act summary (June 2026).'))
+    return page('transit', 'Transit', h1, top('transit', 'Transit', h1, f'Rides: {thru_live} · yearly totals through 2025 · projects as of June to Aug. 2026 · checked {SNAP}') + st + live + c1 + c2 + '<section class="strip c2 cards">' + c3 + c4 + '</section>' + g
+                + bottom('transit', note + ' This year’s month-by-month rides come from the Federal Transit Administration’s National Transit Database, which counts every boarding; CTA changed how it counts in January 2025, so those months are compared only with the same months a year earlier.', 'Federal Transit Administration, National Transit Database, Complete Monthly Ridership; CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026); NITA Report on Project Management Oversight (June 2026); NITA Act summary (June 2026).'))
 
 def streets():
     h1 = '82 people have died in traffic this year through Sept. 27, up from 71 by that date in 2025.'
