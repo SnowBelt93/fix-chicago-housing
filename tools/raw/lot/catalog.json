@@ -996,6 +996,14 @@
   ],
   "want": false
  },
+ "c4sc-3f6n": {
+  "name": "Boundaries - Special Service Areas (deprecated January 2022) - Map",
+  "type": "map",
+  "updated": "2022-08-23T21:02:02.000Z",
+  "desc": "Map of Boundaries - Special Service Areas (deprecated January 2022)",
+  "cols": [],
+  "want": false
+ },
  "9fit-fndz": {
   "name": "Boundaries - Special Service Areas (deprecated January 2020)",
   "type": "dataset",
@@ -1228,6 +1236,46 @@
   ],
   "want": false
  },
+ "3c9v-pnva": {
+  "name": "311 Service Requests - Abandoned Vehicles - Historical",
+  "type": "dataset",
+  "updated": "2026-03-20T21:02:32.000Z",
+  "desc": "As described in https://data.cityofchicago.org/stories/s/311-Dataset-Changes-12-11-2018/d7nq-5g7t, the function of this dataset was replaced by https://data.cityofchicago.org/d/v6vf-nfxy. This dataset is historical-only.\r\n\r\nAll open abandoned vehicle complaints made to 311 and all requests completed",
+  "cols": [
+   "location_zip",
+   "location_state",
+   "location_address",
+   "status",
+   "license_plate",
+   ":@computed_region_awaf_s7ux",
+   "longitude",
+   "latitude",
+   "ssa",
+   "community_area",
+   "x_coordinate",
+   "vehicle_color",
+   "service_request_number",
+   "completion_date",
+   "creation_date",
+   "zip_code",
+   "how_many_days_has_the_vehicle_been_reported_as_parked_",
+   ":@computed_region_6mkv_f3dw",
+   "location_city",
+   ":@computed_region_vrxf_vc4k",
+   ":@computed_region_bdys_3d7i",
+   ":@computed_region_43wa_7qmu",
+   "type_of_service_request",
+   "police_district",
+   "most_recent_action",
+   "ward",
+   "current_activity",
+   "y_coordinate",
+   "vehicle_make_model",
+   "location",
+   "street_address"
+  ],
+  "want": false
+ },
  "22u3-xenr": {
   "name": "Building Violations",
   "type": "dataset",
@@ -1270,46 +1318,6 @@
    "violation_status_date",
    "violation_description",
    "longitude"
-  ],
-  "want": false
- },
- "3c9v-pnva": {
-  "name": "311 Service Requests - Abandoned Vehicles - Historical",
-  "type": "dataset",
-  "updated": "2026-03-20T21:02:32.000Z",
-  "desc": "As described in https://data.cityofchicago.org/stories/s/311-Dataset-Changes-12-11-2018/d7nq-5g7t, the function of this dataset was replaced by https://data.cityofchicago.org/d/v6vf-nfxy. This dataset is historical-only.\r\n\r\nAll open abandoned vehicle complaints made to 311 and all requests completed",
-  "cols": [
-   "location_zip",
-   "location_state",
-   "location_address",
-   "status",
-   "license_plate",
-   ":@computed_region_awaf_s7ux",
-   "longitude",
-   "latitude",
-   "ssa",
-   "community_area",
-   "x_coordinate",
-   "vehicle_color",
-   "service_request_number",
-   "completion_date",
-   "creation_date",
-   "zip_code",
-   "how_many_days_has_the_vehicle_been_reported_as_parked_",
-   ":@computed_region_6mkv_f3dw",
-   "location_city",
-   ":@computed_region_vrxf_vc4k",
-   ":@computed_region_bdys_3d7i",
-   ":@computed_region_43wa_7qmu",
-   "type_of_service_request",
-   "police_district",
-   "most_recent_action",
-   "ward",
-   "current_activity",
-   "y_coordinate",
-   "vehicle_make_model",
-   "location",
-   "street_address"
   ],
   "want": false
  },
@@ -2028,14 +2036,6 @@
   "cols": [],
   "want": false
  },
- "cauq-8yn6": {
-  "name": "Boundaries - Community Areas - Map",
-  "type": "map",
-  "updated": "2025-04-22T23:06:37.000Z",
-  "desc": "Map of Chicago community areas.",
-  "cols": [],
-  "want": false
- },
  "9wp7-iasj": {
   "name": "Boundaries - Neighborhoods",
   "type": "file",
@@ -2049,6 +2049,14 @@
   "type": "map",
   "updated": "2025-07-24T17:43:56.000Z",
   "desc": "Map of the Chicago boundary.",
+  "cols": [],
+  "want": false
+ },
+ "cauq-8yn6": {
+  "name": "Boundaries - Community Areas - Map",
+  "type": "map",
+  "updated": "2025-04-22T23:06:37.000Z",
+  "desc": "Map of Chicago community areas.",
   "cols": [],
   "want": false
  },
@@ -2291,6 +2299,14 @@
   "cols": [],
   "want": false
  },
+ "f4sz-sn2p": {
+  "name": "Ward Offices and Boundaries Map",
+  "type": "map",
+  "updated": "2026-10-07T03:12:24.000Z",
+  "desc": "Aldermanic ward offices overlaid on ward boundaries.",
+  "cols": [],
+  "want": false
+ },
  "6piy-vbxa": {
   "name": "Boundaries - Ward Precincts (2023-2024)",
   "type": "dataset",
@@ -2372,11 +2388,11 @@
   "cols": [],
   "want": false
  },
- "atkq-s364": {
-  "name": "Boundaries - Ward Precincts (2023-2024) - Map",
+ "xt4z-bnwh": {
+  "name": "Boundaries - Wards (2003-2015)",
   "type": "map",
-  "updated": "2026-03-17T20:13:08.000Z",
-  "desc": "Map of the ward precinct boundaries in Chicago for 2023-2024.",
+  "updated": "2026-03-09T21:20:05.000Z",
+  "desc": "Ward boundaries in Chicago from May 2003 to May 2015, corresponding to the dates when a new City Council is sworn in, based on the immediately preceding elections.  Neither this description nor the dataset should be relied upon in situations where legal precision is required. The data can be viewed ",
   "cols": [],
   "want": false
  },

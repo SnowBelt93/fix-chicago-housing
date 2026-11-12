@@ -292,16 +292,16 @@
     ":@computed_region_rpca_8um6"
    ]
   },
-  "8vyn-k2j3": {
-   "name": "Chicago Public Schools - School Locations SY1819",
-   "type": "map",
-   "updated": "2024-04-24T18:51:59.000Z",
-   "cols": []
-  },
   "9zky-nrsy": {
    "name": "Chicago Public Schools - School Locations SY1617",
    "type": "map",
    "updated": "2024-04-24T18:51:12.000Z",
+   "cols": []
+  },
+  "8vyn-k2j3": {
+   "name": "Chicago Public Schools - School Locations SY1819",
+   "type": "map",
+   "updated": "2024-04-24T18:51:59.000Z",
    "cols": []
   },
   "mv87-m4mi": {
@@ -385,12 +385,6 @@
     "grade_cat"
    ]
   },
-  "cvn9-pbt9": {
-   "name": "Chicago Public Schools - School Locations SY1011",
-   "type": "map",
-   "updated": "2024-04-24T18:50:25.000Z",
-   "cols": []
-  },
   "qsgm-ub2r": {
    "name": "Chicago Public Schools - School Locations SY0910",
    "type": "map",
@@ -445,12 +439,24 @@
    "cols": [],
    "got": 0
   },
+  "u7uu-j2ma": {
+   "name": "Parks - Chicago Park District Buildings (current)",
+   "type": "map",
+   "updated": "2024-08-28T20:48:57.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "e9ef-hrzb": {
+   "name": "Parks - Chicago Park District Artworks (current)",
+   "type": "map",
+   "updated": "2024-11-13T17:45:24.000Z",
+   "cols": []
+  },
   "thkh-m6bg": {
    "name": "Parks - Facilities & Features - Shapefiles",
    "type": "file",
    "updated": "2013-04-22T17:01:37.000Z",
-   "cols": [],
-   "got": 0
+   "cols": []
   },
   "u7uu-j2ma": {
    "name": "Parks - Chicago Park District Buildings (current)",
