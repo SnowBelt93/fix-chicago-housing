@@ -24,6 +24,12 @@ esc = lambda s: str(s).replace('&', '&amp;').replace('<', '&lt;').replace('"', '
 try: SRC = json.load(open(os.path.join(ROOT, 'progress', 'data', 'src.json')))
 except Exception: SRC = {}
 
+# daily files from the tracker job on main (tools/tracker/streets_daily.py); the fixed numbers in streets() and affordable() are only the fallback
+def _load(n):
+    try: return json.load(open(os.path.join(ROOT, 'tracker', n + '.json')))
+    except Exception: return None
+STR = _load('streets'); AFF = _load('affordable')
+
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
 TODAY = __import__('time').strftime('%Y-%m-%d')
@@ -337,20 +343,44 @@ def room_parts():
 
 AFF_WARD = {1: 490, 2: 202, 3: 3921, 4: 2390, 5: 436, 6: 382, 7: 280, 8: 308, 9: 885, 10: 257, 11: 287, 12: 30, 13: 87, 14: 239, 15: 196, 16: 766, 17: 308, 18: 250, 19: 0, 20: 1877, 21: 462, 22: 180, 23: 89, 24: 1063, 25: 359,
             26: 1212, 27: 3427, 28: 2051, 29: 480, 30: 0, 31: 412, 32: 344, 33: 187, 34: 242, 35: 199, 36: 175, 37: 133, 38: 131, 39: 477, 40: 110, 41: 85, 42: 34, 43: 68, 44: 333, 45: 208, 46: 1016, 47: 229, 48: 842, 49: 1178, 50: 233}   # homes on the city list (dated Dec. 30, 2024) by 2023 ward
+def in_ring(x, y, r):
+    ins = False
+    for i in range(len(r)):
+        (x1, y1), (x2, y2) = r[i], r[(i + 1) % len(r)]
+        if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1): ins = not ins
+    return ins
+def ward_at(lon, lat):
+    """Ward on the root wards.json (the city's 2023 map, simplified ward by ward); this matches the Nov. 9 count exactly."""
+    for w in WARDS:
+        for poly in w['polys']:
+            if in_ring(lon, lat, poly[0]) and not any(in_ring(lon, lat, h) for h in poly[1:]): return w['ward']
 def affordable():
-    h1 = 'The city’s list shows 29,550 affordable rental homes in 598 buildings. It was last updated in December 2024.'
-    st = tiles([('29,550', 'homes on the list, which the city says is not complete'), ('About 1 in 3', 'are for seniors (10,759 homes)'), ('156 buildings', 'with 1,727 homes are there because the city requires affordable homes in bigger new buildings (the ARO)'), ('Not counted', 'public housing (CHA) and rent vouchers')])
+    global AFF_WARD
+    tot, nb, sen, aro_b, aro_h, upd = 29550, 598, 10759, 156, 1727, 'Dec. 30, 2024'
+    if AFF and AFF.get('rows'):
+        R = AFF['rows']; tot = sum(r[0] for r in R); nb = len(R)
+        sen = sum(r[0] for r in R if 'senior' in r[1].lower() or '65+' in r[1]); aro = [r for r in R if r[1].strip().upper() == 'ARO']; aro_b, aro_h = len(aro), sum(r[0] for r in aro)
+        if AFF.get('updated', '')[:4].isdigit(): upd = day(AFF['updated'], True)
+        W = {w: 0 for w in range(1, 51)}
+        for h, t, la, lo in R:
+            w = ward_at(lo, la) if la else None
+            if w: W[w] += h
+        AFF_WARD = W
+    h1 = f'The city’s list shows {f(tot)} affordable rental homes in {f(nb)} buildings. It was last updated {upd}.'
+    st = tiles([(f(tot), 'homes on the list, which the city says is not complete'), (f'About 1 in {round(tot / sen)}' if sen else '–', f'are for seniors ({f(sen)} homes)'), (f'{f(aro_b)} buildings', f'with {f(aro_h)} homes are there because the city requires affordable homes in bigger new buildings (the ARO)'), ('Not counted', 'public housing (CHA) and rent vouchers')])
     BIN = [(2000, SEQ[4], '2,000 or more'), (1000, SEQ[3], '1,000–2,000'), (250, SEQ[2], '250–1,000'), (1, SEQ[1], 'Under 250'), (0, '#eceef1', 'None')]
     col = lambda w: next(c for t, c, _ in BIN if AFF_WARD[w] >= t)
     rk = sorted(AFF_WARD.items(), key=lambda r: -r[1])
+    z = [w for w, v in sorted(AFF_WARD.items()) if v == 0]
+    zw = (f'Ward {z[0]} has' if len(z) == 1 else 'Wards ' + ', '.join(map(str, z[:-1])) + f' and {z[-1]} have') if z else ''
     allw = table(['Ward', 'Homes on the city’s list'], [[f'<a href="/wards/#{w}">Ward {w}</a>', f(v)] for w, v in rk], right=(1,))
     c1 = card('Where the listed homes are', 'Homes on the city’s list, by ward.',
               '<div class="mapr"><div class="mp">' + wardmap(col, 'Map of Chicago’s 50 wards shaded by affordable rental homes on the city’s list. The most are on the Near South, Near West and West sides.', {w: f'{f(v)} homes on the city’s list' for w, v in AFF_WARD.items()})
               + key([(t, c, '') for _, c, t in BIN]) + '</div><div class="lists"><div><h3>Most homes on the list</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[:6]])
               + '</div><div><h3>Fewest</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[-6:]], maxv=rk[0][1])
-              + '</div><p class="call">Wards 19 and 30 have no building on the list. That is not the same as no affordable housing.</p></div></div>'
+              + '</div>' + (f'<p class="call">{zw} no building on the list. That is not the same as no affordable housing.</p>' if zw else '') + '</div></div>'
               + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
-    c2 = card('Is the number growing?', '', '<p class="sub">The city’s list cannot say. It gives each building’s address and number of homes but not the year it opened, and the city has published one version of it, dated Dec. 30, 2024. Until it publishes another, there is no second point to compare.</p>')
+    c2 = card('Is the number growing?', '', f'<p class="sub">The city’s list cannot say. It gives each building’s address and number of homes but not the year it opened, and the city keeps only its current version (last updated {upd}), so there is no older copy to compare. We check it every day and will show the change when it moves.</p>')
     H = SRC.get('hud') or {}
     if '2025' in H:
         ys = sorted(int(y) for y in H); a, b = H[str(ys[0])], H[str(ys[-1])]; other = b['all'] - b.get('hcv', 0) - b.get('s8', 0) - b.get('ph', 0)
@@ -361,13 +391,13 @@ def affordable():
                   + f'<h3 style="margin-top:16px">What the {f(b["all"])} homes in {ys[-1]} are</h3>'
                   + split([('Rent vouchers', b['hcv'], NAVY), ('Subsidized private buildings (Section 8)', b['s8'], '#5f8fcc'), ('Public housing', b['ph'], '#9db9de'), ('Senior, disability and other programs', other, '#c9ced6')])
                   + f'<p class="call"><b>{f(a["all"])}</b> homes in {ys[0]}, <b>{f(b["all"])}</b> in {ys[-1]}: {"up" if ch > 0 else "down"} {abs(ch)}%. Rent vouchers {"rose" if dv > 0 else "fell"} by about {f(round(abs(dv) / 100) * 100)}; public housing {"rose" if dp > 0 else "fell"} by about {f(round(abs(dp) / 100) * 100)}.</p>'
-                  + '<p class="sub">The city’s own list still cannot show growth: it has no opening dates and one published version (Dec. 30, 2024).</p>')
+                  + f'<p class="sub">The city’s own list still cannot show growth: it has no opening dates and keeps only its current version (last updated {upd}).</p>')
     g = goal('The 2024–2028 housing bond', 'The city’s Housing and Economic Development Bond plan projects 600 to 1,000 affordable rental homes built or preserved, and 600 or more mixed-income homes every five years from its new Green Social Housing fund. The city has not published a running count against those figures.', 'The bond plan', "https://www.chicago.gov/content/dam/city/sites/business-and-neighborhood-development-strategy/pdf/Housing-and-Economic-Development-Bond-Book-(Updated-2024.07.03).pdf")
     note = ('The list is the Department of Housing’s “Affordable Rental Housing Developments”: buildings the city financed, plus those built under its affordable requirements rule. The city describes it as among the thousands of homes it supports and provides it as a courtesy. '
             'Ward totals place each building by its map location on the 2023 ward map. '
             'The federal count is HUD’s “Picture of Subsidized Households” for Chicago: homes under contract or available in each federal program at the end of each year. A voucher counts as one home wherever it is used. It leaves out buildings financed only with tax credits or city money, so it overlaps the city’s list but is not the same thing.')
-    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list dated Dec. 30, 2024 · federal count through 2025 · checked {SNAP}') + st + c1 + c2 + g
-                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated Dec. 30, 2024); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024); U.S. Department of Housing and Urban Development, Picture of Subsidized Households, 2014–2025.'))
+    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list last updated {upd} · federal count through 2025 · checked {day(TODAY, True) if AFF else SNAP}') + st + c1 + c2 + g
+                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated ' + upd + '); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024); U.S. Department of Housing and Urban Development, Picture of Subsidized Households, 2014–2025.'))
 
 def rents():
     h1 = 'The typical asking rent is $2,311, up 5.7% in a year.'
@@ -464,20 +494,40 @@ def transit():
     return page('transit', 'Transit', h1, top('transit', 'Transit', h1, f'Rides: {thru_live} · yearly totals through 2025 · projects as of June to Aug. 2026 · checked {SNAP}') + st + live + c1 + c2 + '<section class="strip c2 cards">' + c3 + c4 + '</section>' + g
                 + bottom('transit', note + ' This year’s month-by-month rides come from the Federal Transit Administration’s National Transit Database, which counts every boarding; CTA changed how it counts in January 2025, so those months are compared only with the same months a year earlier.', 'Federal Transit Administration, National Transit Database, Complete Monthly Ridership; CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026); NITA Report on Project Management Oversight (June 2026); NITA Act summary (June 2026).'))
 
+STR0 = {'deaths': {'years': dict(zip(map(str, range(2019, 2027)), [120, 153, 186, 160, 136, 130, 100, 82])), 'through': '2026-09-27', 'ytd': 82, 'ytd_prev': 71},
+        'serious': {'years': dict(zip(map(str, range(2019, 2027)), [2376, 2241, 2377, 2287, 2225, 1931, 1710, 1497])), 'through': '2026-11-06', 'ytd': 1497, 'ytd_prev': 1485},
+        'crash_deaths': {'through': '2026-11-06', 'ytd': 84, 'ytd_prev': 76},
+        'potholes': {'through': '2026-11-06', 'ytd': 290090, 'ytd_prev': 221710}, 'pothole_wait': {'median_days': 6, 'share_over_7_weeks': 0.1},
+        'speed': {'years': dict(zip(map(str, range(2019, 2026)), [862596, 800594, 3077604, 2731585, 2288983, 2239667, 2444752]))}, 'redlight': {'years': {'2025': 534385}}}
 def streets():
-    h1 = '82 people have died in traffic this year through Sept. 27, up from 71 by that date in 2025.'
-    ys = [f'’{y}' for y in range(19, 27)]
-    c1 = card('Traffic deaths each year', 'The city’s official count.', bars([120, 153, 186, 160, 136, 130, 100, 82], ys, partial=True, plabel='to Sept. 27', h=170, aria='Traffic deaths each year: 120 in 2019, a peak of 186 in 2021, 100 in 2025 and 82 through Sept. 27, 2026.'))
-    c2 = card('People seriously hurt in crashes each year', 'From police crash reports.', bars([2376, 2241, 2377, 2287, 2225, 1931, 1710, 1497], ys, partial=True, plabel='to Nov. 6', short=lambda v: f'{v / 1000:.1f}k', h=170,
-                                                                                         aria='People seriously hurt in crashes each year: 2,376 in 2019, 1,710 in 2025 and 1,497 through Nov. 6, 2026.'))
-    st = tiles([('100 deaths', 'in all of 2025, the fewest since at least 2019. 36 were people walking'), ('1,497', 'people seriously hurt through Nov. 6 (1,485 by that date in 2025)'), ('6 days', 'for half of pothole requests to be fixed; 1 in 10 takes more than 7 weeks'), ('290,090', 'potholes filled through Nov. 6 (221,710 by that date in 2025)')])
+    D = STR if STR and STR.get('deaths') else STR0
+    de, se, cd, ph, pw = D['deaths'], D['serious'], D.get('crash_deaths', {}), D['potholes'], D.get('pothole_wait', {})
+    dthru, sthru, pthru = de['through'], se['through'], ph['through']; yr = dthru[:4]; full = str(int(yr) - 1)
+    dys = [y for y in sorted(de['years']) if y >= '2019']; sys_ = [y for y in sorted(se['years']) if y >= '2019']
+    up = lambda a, b: 'up from' if a > b else ('down from' if a < b else 'the same as')
+    h1 = f'{f(de["ytd"])} people have died in traffic this year through {day(dthru)}, {up(de["ytd"], de["ytd_prev"])} {f(de["ytd_prev"])} by that date in {int(yr) - 1}.'
+    c1 = card('Traffic deaths each year', 'The city’s official count.', bars([de['years'][y] for y in dys], [f'’{y[2:]}' for y in dys], partial=True, plabel=f'to {day(dthru)}', h=170,
+              aria=f'Traffic deaths each year: {de["years"]["2019"]} in 2019, {de["years"].get("2021", 0)} in 2021, {de["years"].get(full, 0)} in {full} and {de["ytd"]} through {day(dthru, True)}.'))
+    c2 = card('People seriously hurt in crashes each year', 'From police crash reports.', bars([se['years'][y] for y in sys_], [f'’{y[2:]}' for y in sys_], partial=True, plabel=f'to {day(sthru)}', short=lambda v: f'{v / 1000:.1f}k', h=170,
+              aria=f'People seriously hurt in crashes each year: {f(se["years"]["2019"])} in 2019, {f(se["years"].get(full, 0))} in {full} and {f(se["ytd"])} through {day(sthru, True)}.'))
+    walk = '. 36 were people walking' if full == '2025' else ''   # from the Nov. 9 read of the 2025 list
+    fewest = full == min(dys[:-1], key=lambda y: de['years'][y])
+    sh = pw.get('share_over_7_weeks', 0.1); one_in = round(1 / sh) if sh else 0
+    st = tiles([(f'{f(de["years"].get(full, 0))} deaths', f'in all of {full}' + (', the fewest since at least 2019' if fewest else '') + walk),
+                (f(se['ytd']), f'people seriously hurt through {day(sthru)} ({f(se["ytd_prev"])} by that date in {int(sthru[:4]) - 1})'),
+                (f'{pw.get("median_days", 6):g} days', f'for half of pothole requests to be fixed; 1 in {one_in} takes more than 7 weeks'),
+                (f(ph['ytd']), f'potholes filled through {day(pthru)} ({f(ph["ytd_prev"])} by that date in {int(pthru[:4]) - 1})')])
+    sp = D['speed']['years']; sy = [y for y in sorted(sp) if '2019' <= y < sthru[:4]]; rl = D['redlight']['years']
     c3 = card('Speed camera violations, millions a year', 'Violations jumped in 2021, when cameras began recording drivers going 6 to 10 mph over the limit.',
-              bars([0.86, 0.80, 3.08, 2.73, 2.29, 2.24, 2.44], ys[:-1], fmt=lambda v: f'{v:.2f}', h=170, aria='Speed camera violations in millions a year: under 1 million in 2019 and 2020, 3.08 million in 2021 and 2.44 million in 2025.')
-              + '<p class="fine">Red-light cameras recorded 534,385 violations in 2025.</p>')
-    note = ('Deaths are the city’s reviewed Vision Zero list, which is published about a month behind. Serious injuries come from police crash reports, which count a little differently (they show 84 deaths through Nov. 6, against 76 a year earlier). '
-            'Pothole figures cover finished repairs only; open requests are not in the data, and counts follow the winter as much as the crews.')
-    return page('streets', 'Streets', h1, top('streets', 'Streets', h1, f'Deaths through Sept. 27, 2026 · crashes and potholes through Nov. 6 · checked {SNAP}') + st + '<section class="strip c2 cards">' + c1 + c2 + '</section>' + c3
-                + goal('Vision Zero: no traffic deaths or serious injuries by 2026', 'The city’s 2017 Vision Zero Action Plan set this year as its deadline to eliminate traffic deaths and serious injuries. Through Sept. 27, 82 people had died, and 1,497 had been seriously hurt through Nov. 6.', 'The action plan', 'https://www.chicago.gov/content/dam/city/sites/complete-streets/pdfs/17_0612%20VZ%20Action%20Plan_FOR%20WEB.pdf')
+              bars([round(sp[y] / 1e6, 2) for y in sy], [f'’{y[2:]}' for y in sy], fmt=lambda v: f'{v:.2f}', h=170,
+                   aria=f'Speed camera violations in millions a year: under 1 million in 2019 and 2020, {sp["2021"] / 1e6:.2f} million in 2021 and {sp[sy[-1]] / 1e6:.2f} million in {sy[-1]}.')
+              + (f'<p class="fine">Red-light cameras recorded {f(rl[sy[-1]])} violations in {sy[-1]}.</p>' if sy[-1] in rl else ''))
+    note = ('Deaths are the city’s reviewed Vision Zero list, which is published about a month behind. Serious injuries come from police crash reports, which count a little differently '
+            f'(they show {f(cd.get("ytd", 0))} deaths through {day(cd.get("through", sthru))}, against {f(cd.get("ytd_prev", 0))} a year earlier). '
+            'Pothole figures cover finished repairs only; open requests are not in the data, and counts follow the winter as much as the crews. The repair time covers requests finished in the last 12 months.')
+    chk = day(TODAY, True) if D is STR else SNAP
+    return page('streets', 'Streets', h1, top('streets', 'Streets', h1, f'Deaths through {day(dthru, True)} · crashes through {day(sthru)} · potholes through {day(pthru)} · updated daily, checked {chk}') + st + '<section class="strip c2 cards">' + c1 + c2 + '</section>' + c3
+                + goal('Vision Zero: no traffic deaths or serious injuries by 2026', f'The city’s 2017 Vision Zero Action Plan set 2026 as its deadline to eliminate traffic deaths and serious injuries. Through {day(dthru)}, {f(de["ytd"])} people had died this year, and {f(se["ytd"])} had been seriously hurt through {day(sthru)}.', 'The action plan', 'https://www.chicago.gov/content/dam/city/sites/complete-streets/pdfs/17_0612%20VZ%20Action%20Plan_FOR%20WEB.pdf')
                 + bottom('streets', note, 'City of Chicago Vision Zero traffic fatalities, traffic crashes, pothole repairs, and speed and red-light camera violations (Chicago Data Portal).'))
 
 def projects():
