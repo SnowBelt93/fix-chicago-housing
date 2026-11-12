@@ -4,6 +4,7 @@ Steps (commit message "[steps: a b]" picks some; default all):
            row counts and update dates -> tools/raw/record/catalog.json
   probe    snapshots of transit agency performance pages and other public data pages, plus every CSV/XLSX/PDF link
            found on them -> tools/raw/record/probe/<name>.html, probe.json
+  catalog2 a few searches of the federal and Illinois data portals -> tools/raw/record/catalog_other.json
   get      downloads the datasets listed in tools/record/wanted.json ({"id": "...", "domain": "...", "where": "..."})
            -> tools/raw/record/<id>.csv.gz
   files    downloads the URLs listed in tools/record/files.json -> tools/raw/record/files/<name>
@@ -11,7 +12,7 @@ Steps (commit message "[steps: a b]" picks some; default all):
 import urllib.request, urllib.parse, json, os, re, time, gzip, sys, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), 'raw', 'record'); os.makedirs(OUT, exist_ok=True)
-STEPS = set(sys.argv[1:]) or {'catalog', 'probe', 'get', 'files'}
+STEPS = set(sys.argv[1:]) or {'catalog', 'catalog2', 'probe', 'get', 'files'}
 UA = {'User-Agent': 'Mozilla/5.0 (compatible; shapechicago-data/1.0)'}
 def get(url, tries=4, timeout=300):
     last = None
@@ -54,6 +55,16 @@ if 'catalog' in STEPS:
     json.dump(sorted(found.values(), key=lambda d: (d['domain'], d['name'])), open(os.path.join(OUT, 'catalog.json'), 'w'), indent=0)
     print('catalog', len(found), flush=True)
 
+if 'catalog2' in STEPS:   # federal and state portals: only what we search for
+    out = []
+    for dom, q in [('data.transportation.gov', 'monthly ridership'), ('data.transportation.gov', 'National Transit Database monthly'), ('data.illinois.gov', 'traffic'), ('data.illinois.gov', 'pension'), ('data.illinois.gov', 'housing')]:
+        try:
+            r = json.loads(get('https://api.us.socrata.com/api/catalog/v1?' + urllib.parse.urlencode({'domains': dom, 'q': q, 'limit': 40, 'only': 'dataset'}), tries=2))
+            for x in r['results']:
+                res = x['resource']; out.append({'id': res['id'], 'domain': dom, 'q': q, 'name': res['name'], 'updated': res.get('data_updated_at'), 'columns': res.get('columns_field_name')})
+        except Exception as e: print('catalog2 fail', dom, q, e)
+    json.dump(out, open(os.path.join(OUT, 'catalog_other.json'), 'w'), indent=0); print('catalog2', len(out), flush=True)
+
 PROBE = {
     'cta_performance': 'https://www.transitchicago.com/performance/',
     'cta_ridership': 'https://www.transitchicago.com/ridership/',
@@ -81,6 +92,21 @@ PROBE = {
     'ihda': 'https://www.ihda.org/about-ihda/data/',
     'cmap_data': 'https://datahub.cmap.illinois.gov/',
     'fta_ntd_monthly': 'https://www.transit.dot.gov/ntd/data-product/monthly-module-raw-data-release',
+    # Nov. 2026: sources Kyle approved for Progress, the lot and street tools and the reports (pages are probed for their file links first)
+    'fta_ntd_adjusted': 'https://www.transit.dot.gov/ntd/data-product/monthly-module-adjusted-data-release',
+    'hud_picture': 'https://www.huduser.gov/portal/datasets/assthsg.html',
+    'hud_lihtc': 'https://www.huduser.gov/portal/datasets/lihtc/property.html',
+    'hud_safmr': 'https://www.huduser.gov/portal/datasets/fmr/smallarea/index.html',
+    'fhfa_hpi': 'https://www.fhfa.gov/data/hpi/datasets?tab=additional-data',
+    'pace_schedules': 'https://www.pacebus.com/route-and-schedule-data',
+    'pace_developers': 'https://www.pacebus.com/developers',
+    'chicago_menu': 'https://www.chicago.gov/city/en/depts/obm/provdrs/cap_improve/svcs/aldermanic-menu-program.html',
+    'chicago_cip': 'https://www.chicago.gov/city/en/depts/obm/provdrs/cap_improve.html',
+    'cook_clerk_rates': 'https://www.cookcountyclerkil.gov/property-taxes/tax-extension-and-rates',
+    'ilga_ftp': 'https://www.ilga.gov/ftp/legislation/',
+    'census_bps_south': 'https://www2.census.gov/econ/bps/Place/South%20Region/',
+    'census_bps_west': 'https://www2.census.gov/econ/bps/Place/West%20Region/',
+    'census_bps_northeast': 'https://www2.census.gov/econ/bps/Place/Northeast%20Region/',
 }
 if 'probe' in STEPS:
     PD = os.path.join(OUT, 'probe'); os.makedirs(PD, exist_ok=True)
@@ -90,7 +116,7 @@ if 'probe' in STEPS:
             b = get(u, tries=2, timeout=60); html = b.decode('utf-8', 'replace')
             open(os.path.join(PD, k + '.html'), 'w').write(html[:3_000_000])
             links = sorted(set(urllib.parse.urljoin(u, h) for h in re.findall(r'href=["\']([^"\']+)["\']', html, re.I)
-                               if re.search(r'\.(csv|xlsx?|pdf|zip|json)(\?|$)|download|export|powerbi|tableau|arcgis', h, re.I)))
+                               if re.search(r'\.(csv|xlsx?|pdf|zip|json|txt|xml)(\?|$)|download|export|powerbi|tableau|arcgis|/$', h, re.I)))
             rep[k] = {'url': u, 'ok': True, 'bytes': len(b), 'links': links[:400]}
         except Exception as e:
             rep[k] = {'url': u, 'ok': False, 'err': str(e)[:300]}

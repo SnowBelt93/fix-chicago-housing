@@ -1,103 +1,127 @@
 [
- {
-  "id": "jyb9-n7fm",
-  "name": "CTA bus routes, daily totals by route"
- },
- {
-  "id": "6iiy-9s97",
-  "name": "CTA daily boarding totals"
- },
- {
-  "id": "s6ha-ppgi",
-  "name": "Affordable rental housing developments",
-  "drop": [
-   "Phone Number",
-   "Management Company"
-  ]
- },
- {
-  "id": "ydr8-5enu",
-  "name": "Building permits: renovations that add or mention dwelling units, 2019 on",
-  "save_as": "permits_reno_units",
-  "select": "id,permit_,permit_type,issue_date,work_description,reported_cost,street_number,street_direction,street_name,latitude,longitude,ward,community_area,permit_status,permit_milestone",
-  "where": "permit_type='PERMIT - RENOVATION/ALTERATION' AND issue_date >= '2019-01-01' AND (upper(work_description) like '%DWELLING%' OR upper(work_description) like '%UNIT%' OR upper(work_description) like '%CONVER%' OR upper(work_description) like '%ADU%' OR upper(work_description) like '%COACH%')"
- },
- {
-  "id": "t2rn-p8d7",
-  "name": "CTA L station entries, monthly",
-  "save_as": "l_monthly",
-  "where": "month_beginning >= '2015-01-01'"
- },
- {
-  "id": "j4h8-ug9m",
-  "name": "ADU preapproval applications",
-  "save_as": "adu",
-  "select": "id,submission_date,action_date,status,ward,zoning,street_number,street_direction,street_name,latitude,longitude,coach_house,conversion_unit,adu_applying_for,max_number_of_adu_allowed,dwelling_units_in_lot,number_affordable_units_required,principal_building_built_year,property_owner_occupied"
- },
- {
-  "id": "xbwc-ntpx",
-  "name": "ADU preapproval applications, historical",
-  "save_as": "adu_hist",
-  "drop": [
-   "APPLICANT_NAME",
-   "OWNER_NAME"
-  ]
- },
- {
-  "id": "qfyy-956j",
-  "name": "Shared housing (short-term rental) registrations",
-  "save_as": "str",
-  "select": "registration_number,ward,precinct,current_status,current_status_date,expiration_date"
- },
- {
-  "id": "gzaz-isa6",
-  "name": "Vision Zero traffic deaths",
-  "save_as": "vz_deaths",
-  "select": "crash_date,victim,crash_circumstances,crash_location,latitude,longitude"
- },
- {
-  "id": "85ca-t3if",
-  "name": "Traffic crashes 2018_21",
-  "save_as": "crashes_2018_21",
-  "select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
-  "where": "crash_date >= '2018-01-01' AND crash_date < '2022-01-01'"
- },
- {
-  "id": "85ca-t3if",
-  "name": "Traffic crashes 2022_on",
-  "save_as": "crashes_2022_on",
-  "select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
-  "where": "crash_date >= '2022-01-01' AND crash_date < '2030-01-01'"
- },
- {
-  "id": "spqx-js37",
-  "name": "Red light camera violations by month",
-  "save_as": "redlight_month",
-  "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
-  "where": "violation_date >= '2015-01-01'",
-  "group": "month"
- },
- {
-  "id": "hhkd-xvj4",
-  "name": "Speed camera violations by month",
-  "save_as": "speed_month",
-  "select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
-  "where": "violation_date >= '2015-01-01'",
-  "group": "month"
- },
- {
-  "id": "wqdh-9gek",
-  "name": "Potholes patched since 2019",
-  "save_as": "potholes",
-  "select": "request_date,completion_date,number_of_potholes_filled_on_block,latitude,longitude",
-  "where": "completion_date >= '2019-01-01'"
- },
- {
-  "id": "wvhk-k5uv",
-  "domain": "datacatalog.cookcountyil.gov",
-  "name": "Cook County sales in Chicago since 2015",
-  "save_as": "sales_chicago",
-  "select": "pin,year,sale_date,sale_price,class,num_parcels_sale,is_multisale,sale_filter_less_than_10k,sale_filter_same_sale_within_365,sale_filter_deed_type,township_code",
-  "where": "township_code in ('70','71','72','73','74','75','76','77') AND year >= 2015"
- }
+{
+"id": "jyb9-n7fm",
+"name": "CTA bus routes, daily totals by route"
+},
+{
+"id": "6iiy-9s97",
+"name": "CTA daily boarding totals"
+},
+{
+"id": "s6ha-ppgi",
+"name": "Affordable rental housing developments",
+"drop": [
+"Phone Number",
+"Management Company"
+]
+},
+{
+"id": "ydr8-5enu",
+"name": "Building permits: renovations that add or mention dwelling units, 2019 on",
+"save_as": "permits_reno_units",
+"select": "id,permit_,permit_type,issue_date,work_description,reported_cost,street_number,street_direction,street_name,latitude,longitude,ward,community_area,permit_status,permit_milestone",
+"where": "permit_type='PERMIT - RENOVATION/ALTERATION' AND issue_date >= '2019-01-01' AND (upper(work_description) like '%DWELLING%' OR upper(work_description) like '%UNIT%' OR upper(work_description) like '%CONVER%' OR upper(work_description) like '%ADU%' OR upper(work_description) like '%COACH%')"
+},
+{
+"id": "t2rn-p8d7",
+"name": "CTA L station entries, monthly",
+"save_as": "l_monthly",
+"where": "month_beginning >= '2015-01-01'"
+},
+{
+"id": "j4h8-ug9m",
+"name": "ADU preapproval applications",
+"save_as": "adu",
+"select": "id,submission_date,action_date,status,ward,zoning,street_number,street_direction,street_name,latitude,longitude,coach_house,conversion_unit,adu_applying_for,max_number_of_adu_allowed,dwelling_units_in_lot,number_affordable_units_required,principal_building_built_year,property_owner_occupied"
+},
+{
+"id": "xbwc-ntpx",
+"name": "ADU preapproval applications, historical",
+"save_as": "adu_hist",
+"drop": [
+"APPLICANT_NAME",
+"OWNER_NAME"
+]
+},
+{
+"id": "qfyy-956j",
+"name": "Shared housing (short-term rental) registrations",
+"save_as": "str",
+"select": "registration_number,ward,precinct,current_status,current_status_date,expiration_date"
+},
+{
+"id": "gzaz-isa6",
+"name": "Vision Zero traffic deaths",
+"save_as": "vz_deaths",
+"select": "crash_date,victim,crash_circumstances,crash_location,latitude,longitude"
+},
+{
+"id": "85ca-t3if",
+"name": "Traffic crashes 2018_21",
+"save_as": "crashes_2018_21",
+"select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
+"where": "crash_date >= '2018-01-01' AND crash_date < '2022-01-01'"
+},
+{
+"id": "85ca-t3if",
+"name": "Traffic crashes 2022_on",
+"save_as": "crashes_2022_on",
+"select": "crash_date,injuries_fatal,injuries_incapacitating,most_severe_injury,street_name,latitude,longitude",
+"where": "crash_date >= '2022-01-01' AND crash_date < '2030-01-01'"
+},
+{
+"id": "spqx-js37",
+"name": "Red light camera violations by month",
+"save_as": "redlight_month",
+"select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
+"where": "violation_date >= '2015-01-01'",
+"group": "month"
+},
+{
+"id": "hhkd-xvj4",
+"name": "Speed camera violations by month",
+"save_as": "speed_month",
+"select": "date_trunc_ym(violation_date) as month, sum(violations) as violations",
+"where": "violation_date >= '2015-01-01'",
+"group": "month"
+},
+{
+"id": "wqdh-9gek",
+"name": "Potholes patched since 2019",
+"save_as": "potholes",
+"select": "request_date,completion_date,number_of_potholes_filled_on_block,latitude,longitude",
+"where": "completion_date >= '2019-01-01'"
+},
+{
+"id": "wvhk-k5uv",
+"domain": "datacatalog.cookcountyil.gov",
+"name": "Cook County sales in Chicago since 2015",
+"save_as": "sales_chicago",
+"select": "pin,year,sale_date,sale_price,class,num_parcels_sale,is_multisale,sale_filter_less_than_10k,sale_filter_same_sale_within_365,sale_filter_deed_type,township_code",
+"where": "township_code in ('70','71','72','73','74','75','76','77') AND year >= 2015"
+},
+{
+"id": "gc7y-n4xa",
+"name": "Average daily traffic counts by street segment (city counts)",
+"save_as": "adt"
+},
+{
+"id": "r5kz-chrr",
+"name": "Business licenses issued since 2019, without business or owner names",
+"save_as": "biz_licenses",
+"select": "id,license_id,license_code,license_description,business_activity,application_type,address,ward,zip_code,community_area,latitude,longitude,license_start_date,expiration_date,date_issued,license_status,license_status_change_date,site_number",
+"where": "date_issued >= '2019-01-01'"
+},
+{
+"id": "etqr-sz5x",
+"name": "Small Business Improvement Fund grants, without applicant names",
+"save_as": "sbif",
+"select": "tif_district,address_number,street_direction,street_name,street_type,ward,community_area,approval_date,completion_date,incentive_amount,total_project_cost,property_type,location"
+},
+{
+"id": "mex4-ppfc",
+"name": "TIF-funded projects with affordable homes and dates, without developer names",
+"save_as": "tif_projects",
+"select": "id,project_name,address,ward,community_area,tif_district,approved_amount,total_project_cost,affordable_units,cdc_date,coc_date,tif_subsidy_percentage,latitude,longitude"
+}
 ]
