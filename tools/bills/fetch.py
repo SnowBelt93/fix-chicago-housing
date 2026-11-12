@@ -199,6 +199,14 @@ def bills():
     from collections import Counter
     print(len(out), "on our topics;", Counter(t for b in out for t in b["tp"]), Counter(b["lab"] for b in out))
 
+def probe2():
+    """Full status files of a few amended bills, to see how amendment synopses are tagged."""
+    out = {}
+    for fn in ["10400SB2111.xml", "10400HB2755.xml", "10400HB2754.xml", "10400HB1843.xml"]:
+        try: out[fn] = get(BASE + "XML/" + fn).decode("utf-8", "replace")
+        except Exception as e: out[fn] = "ERR " + str(e)
+    json.dump(out, open(os.path.join(OUT, "probe2.json"), "w"), indent=1)
+
 if __name__ == "__main__":
     steps = sys.argv[1:] or ["bills"]
     for s in steps: globals()[s]()
