@@ -262,7 +262,25 @@ def riders():
     person(30, f + 8.0); car(40, f + 4.6, "#c9ced3")
     box(0, 0, 0.02, 0.5, d - 1, 0.14, mat("curb", rough=0.8), bevel=0.05)
 
-TOPICS = {k: globals()[k] for k in ("zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders")}
+def history():
+    """When did your block go up: one block face built across 130 years, oldest on the left; under each lot a band of the
+    timeline in the map's blues (pale = old, navy = new), and a 2020s building still going up at the right end."""
+    by = street_base(96, 34); f = -17
+    cottage(-40, by, col="#b9a27f")                                                     # 1880s wood cottage
+    flats(-28, by, floors=3, wall="#d8d0bd", D=13, porch=True)                          # 1900s greystone three-flat
+    bungalow(-15, by, D=11)                                                             # 1920s bungalow
+    sixflat(1, by, D=12, wall="#c9925a")                                                # 1920s courtyard-style six-flat
+    midrise(20, by, W=16, floors=4, D=12, panel="#c9c3b6", accent=("#8a9aa6", "#8a9aa6", "#8a9aa6", "#8a9aa6"), shop=False, seed=2)   # 1960s
+    frame_up(38, by, 13, 12, 5, done=3)                                                 # 2020s, going up
+    crane(45, by + 9, 0, 20, 11, ang=math.radians(200), m=mat("star", rough=0.45))
+    bands = ((-40, 9.5, "#e3ecf7"), (-28, 9.5, "#c6d8ee"), (-15, 12.5, "#9fbde2"), (1, 16.5, "#6f9ad0"), (20, 18.5, "#3f72b5"), (38, 15.5, "#1f4d8f"))
+    for x, w, c in bands: box(x, by - 3.6, 0.1, w - 0.4, 1.5, 0.16, mat(c, rough=0.6), bevel=0.04)
+    for x in (-34, -21.5, -7, 10.5, 30): fence(x, by - 3.0, x, by + 11.5, h=1.1)
+    street_life(96, f, seed=11, skip=((33, 48),))
+    person(-36, f + 9.2); person(-14, f + 9.0); person(-13.2, f + 9.3, h=0.7); person(6, f + 9.4); person(26, f + 8.9)
+    hardhat(36, by - 1.6); hardhat(40, by - 1.2, "#e07a3f")
+
+TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders")}
 
 # ---------- the lot exhibit: one standard 25 x 125 ft lot (7.6 x 38 m), four districts ----------
 LOTW, LOTD = 7.6, 38.0
