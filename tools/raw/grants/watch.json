@@ -1,0 +1,203 @@
+{
+ "https://cedaorg.net/bills": {
+  "hash": "fd077bde2e44f9e9",
+  "ids": [
+   "liheap"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/emergency-heating-repair-program.html": {
+  "hash": "f087f846bc166776",
+  "ids": [
+   "ehrp"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/home-repair-program.html": {
+  "hash": "daccb063ad01fe41",
+  "ids": [
+   "hrp"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/sarfs.html": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "sarfs"
+  ]
+ },
+ "https://chicagochinatown.org/wp-content/uploads/2026/04/DPD-Grant-Program-Best-Practices_11th-Ward-4.23.26-1.pdf": {
+  "hash": "46c17d04b366f6f3",
+  "ids": [
+   "cdg",
+   "nof",
+   "sbif"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://chicagorealtor.com/chicago-just-launched-a-new-down-payment-assistance-program-heres-what-your-clients-need-to-know/": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "homegrown"
+  ]
+ },
+ "https://cookcountyassessoril.gov/exemptions": {
+  "hash": "672f0aa08f843404",
+  "ids": [
+   "ex_disab",
+   "ex_freeze",
+   "ex_home",
+   "ex_improve",
+   "ex_retvet",
+   "ex_senior",
+   "ex_vetdis"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://dceo.illinois.gov/communityservices/homeweatherization/communityactionagencies/helpillinoisfamilies.html": {
+  "hash": "ec17cc0b98a7eb3d",
+  "ids": [
+   "liheap"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://dnrhistoric.illinois.gov/preserve/statecredit.html": {
+  "hash": "37d324361db0e3b9",
+  "ids": [
+   "ilhtc"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://fhlbc.com/AHP": {
+  "hash": "06fb60be9047b057",
+  "ids": [
+   "ahp"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://news.wttw.com/2025/03/08/registration-opens-monday-chicago-s-home-repair-program-here-s-what-you-need-know": {
+  "hash": "821644ab085882fc",
+  "ids": [
+   "hrp"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html": {
+  "hash": "22d4b677c244ba4e",
+  "ids": [
+   "gap",
+   "lihtc4",
+   "lihtc9"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.chicago.gov/city/en/depts/fss/provdrs/serv/svcs/homeless_prevention.html": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "rap"
+  ]
+ },
+ "https://www.chicago.gov/content/dam/city/depts/doh/qap/2025/2025%20QAP%20Final.pdf": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "lihtc4",
+   "lihtc9"
+  ]
+ },
+ "https://www.chicago.gov/content/dam/city/depts/doh/qap/2025/Underwriting%20Standards%20Guide%20Final.pdf": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "gap",
+   "lihtc9"
+  ]
+ },
+ "https://www.chicago.gov/homegrown": {
+  "hash": "9bb50cfba67b401d",
+  "ids": [
+   "homegrown"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.chicago.gov/missingmiddle": {
+  "hash": "14f3be432b24d855",
+  "ids": [
+   "missing"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.chicago.gov/nof": {
+  "hash": "3d54e9baeaef06d1",
+  "ids": [
+   "nof"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.chicago.gov/sbif": {
+  "hash": "be53d10ab77f3105",
+  "ids": [
+   "sbif"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.cookcountyassessoril.gov/affordable-housing": {
+  "hash": "7b701c490505db92",
+  "ids": [
+   "ahsap"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.cookcountyassessoril.gov/frequently-asked-questions-ahsap": {
+  "hash": "ae172fd742c5c457",
+  "ids": [
+   "ahsap"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.crowe.com/insights/tax-news-highlights/obbba-makes-enhanced-opportunity-zones-permanent": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "oz"
+  ]
+ },
+ "https://www.fhlbc.com/news/details/2026/01/20/fhlbank-chicago-launches-2026-downpayment-plus--grant-programs--unlocking--28-million-to-support-homebuyers-in-illinois-and-wisconsin": {
+  "error": "2026-11-12 HTTPError",
+  "ids": [
+   "dpp"
+  ]
+ },
+ "https://www.fhlbc.com/news/news-detail/2026/05/04/fhlbank-chicago-opens-2026-affordable-housing-program-with--51-million-available": {
+  "hash": "5b9f329aba9986f5",
+  "ids": [
+   "ahp"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.ihda.org/developers/tax-credits/illinois-affordable-housing-tax-credit/": {
+  "hash": "deb26ce6aac27d6a",
+  "ids": [
+   "iahtc"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.ihdamortgage.org/": {
+  "hash": "21c4f24b44a47453",
+  "ids": [
+   "ihda"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.illinoisrealtors.org/wp-content/uploads/2026/06/NineHomeFinancingPrograms_Jun2026.pdf": {
+  "hash": "02f96951e2cdef63",
+  "ids": [
+   "ihda"
+  ],
+  "ok": "2026-11-12"
+ },
+ "https://www.nixonpeabody.com/-/media/files/alerts/2025/07/lihtc_and_obbba.pdf": {
+  "hash": "916de399a71f9423",
+  "ids": [
+   "lihtc4"
+  ],
+  "ok": "2026-11-12"
+ }
+}
