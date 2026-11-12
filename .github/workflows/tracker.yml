@@ -38,6 +38,9 @@ jobs:
       - name: Transit rides
         run: python3 tools/tracker/transit_monthly.py || echo "transit rides failed; keeping the last file"
       # traffic deaths, serious injuries, potholes, camera violations and the city's affordable list (Progress → Streets, Affordable)
+      # days from application to permit for new buildings with homes (Progress → Homes, the lot tool)
+      - name: Permit timelines
+        run: python3 tools/tracker/timelines.py || echo "timelines failed; keeping the last file"
       - name: Streets and affordable list
         run: python3 tools/tracker/streets_daily.py || echo "streets numbers failed; keeping the last files"
       - name: Commit
@@ -57,12 +60,12 @@ jobs:
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp tracker/data.json /tmp/tracker.json; cp tracker/teardowns.json /tmp/teardowns.json 2>/dev/null || true; cp tracker/transit.json /tmp/transit.json 2>/dev/null || true
-          for f in streets affordable; do cp tracker/$f.json /tmp/$f.json 2>/dev/null || true; done
+          for f in streets affordable timelines; do cp tracker/$f.json /tmp/$f.json 2>/dev/null || true; done
           git fetch -q origin shape-v1 || exit 0
           git checkout -q -B shape-v1 origin/shape-v1
           cp /tmp/tracker.json tracker/data.json; cp /tmp/teardowns.json tracker/teardowns.json 2>/dev/null || true; cp /tmp/transit.json tracker/transit.json 2>/dev/null || true
-          for f in streets affordable; do cp /tmp/$f.json tracker/$f.json 2>/dev/null || true; done
+          for f in streets affordable timelines; do cp /tmp/$f.json tracker/$f.json 2>/dev/null || true; done
           # the Progress pages are written from the same numbers
           if [ -f tools/progress/build.py ]; then python3 tools/progress/build.py && git add progress && (git add embed press 2>/dev/null || true) || true; fi
-          git add tracker/data.json; for f in teardowns transit streets affordable; do git add tracker/$f.json 2>/dev/null || true; done; git commit -m "Tracker data $(date -u +%F)" || exit 0
+          git add tracker/data.json; for f in teardowns transit streets affordable timelines; do git add tracker/$f.json 2>/dev/null || true; done; git commit -m "Tracker data $(date -u +%F)" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -X theirs origin shape-v1 && git push origin HEAD:shape-v1 && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
