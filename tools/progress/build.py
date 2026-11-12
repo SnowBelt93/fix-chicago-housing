@@ -355,7 +355,7 @@ def projects():
     rows = [[f'<b>{n}</b>', f'<span class="chip {cls[s]}">{s}</span>', f'{f(b)} of {f(h)}', t, f'<a href="{u}" target="_blank" rel="noopener">{src}</a><br>{d}'] for n, h, b, s, t, src, d, u in PROJ]
     c1 = card('', '', table(['Project', 'Status', 'Homes built so far', 'Where it stands', 'Source'], rows, right=(2,), cls='stack proj'))
     st = tiles([(f(tot), 'homes planned across the six projects'), (f(built), 'homes finished, in two buildings at North Union'), ('3 of 6', 'have broken ground: The 78, Foundry Park and the 1901 Project. None of the three has started on homes')], cols=3)
-    note = f'Home counts are each project’s published plan. “Built so far” counts finished homes only. Each status comes from the dated news story or filing in the last column, checked {SNAP}.'
+    note = f'Home counts are each project’s published plan. “Built so far” counts finished homes only. Each status comes from the dated news story linked with that project, checked {SNAP}.'
     return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP}') + st + c1
                 + bottom('projects', note, 'Home counts: each project’s Plan Commission approval or published plan. Status: the dated story linked on each row. North Union homes built: Power Construction project pages.'))
 
