@@ -93,10 +93,13 @@ def parse(fn, x):
     m = re.match(r"\d{5}(HB|SB)(\d+)\.xml", fn); kind, num = m.group(1), int(m.group(2))
     am = re.search(r"<actions>(.*?)</actions>", x, re.S)
     acts = [(unesc(d), unesc(c), unesc(a)) for d, c, a in re.findall(r"<statusdate>(.*?)</statusdate>\s*<chamber>(.*?)</chamber>\s*<action>(.*?)</action>", am.group(1) if am else "", re.S)]
-    syn = re.search(r"<SynopsisText>(.*?)</SynopsisText>", x, re.S)
-    return {"id": f"{kind}{num}", "short": tag(x, "shortdesc"), "spon": tag(x, "sponsors"),
-            "refs": [unesc(r) for r in re.findall(r"<reference>(.*?)</reference>", x, re.S)][:60],
-            "syn": unesc(syn.group(1)) if syn else "", "acts": acts}
+    # every synopsis: the bill as filed, then one per amendment (a "gut and replace" amendment rewrites the whole bill,
+    # so the last one with text says what the bill does now)
+    syns = [(unesc(t), unesc(body)) for t, body in re.findall(r"<synopsis>\s*<synopsistitle>(.*?)</synopsistitle>(.*?)</synopsis>", x, re.S)]
+    syns = [(t, re.sub(r"^\s*", "", b)) for t, b in syns if b.strip()]
+    refs = [unesc(r) for r in re.findall(r"<reference>(.*?)</reference>", x, re.S)]
+    return {"id": f"{kind}{num}", "short": tag(x, "shortdesc"), "spon": tag(x, "sponsors"), "v": 2,
+            "refs": list(dict.fromkeys(refs))[:300], "syns": syns, "syn": syns[-1][1] if syns else "", "acts": acts}
 
 def iso(d):
     m = re.match(r"(\d+)/(\d+)/(\d{4})", d or ""); return f"{m.group(3)}-{int(m.group(1)):02d}-{int(m.group(2)):02d}" if m else ""
@@ -124,28 +127,32 @@ def stage(acts):
         if re.search(r"Assigned to|Referred to", a): st, label = 1, "In committee"
     return st, label
 
-# Topics: ILCS references first (what the bill amends), then words in its short title and synopsis
+# Topics. A bill counts for a topic when what it amends (its ILCS references) is mostly on the topic, or when the topic's
+# words show up in its short title or at least twice in its synopses. NOT drops look-alikes (assisted living, school buses…).
 TOPICS = {
-  "housing": (r"65 ILCS 5/11-13|65 ILCS 5/11-12\.2|65 ILCS 5/11-13\.1|55 ILCS 5/5-12|55 ILCS 5/5-1063|310 ILCS|20 ILCS 3805|765 ILCS 705|765 ILCS 710|765 ILCS 750|35 ILCS 200/18-173|35 ILCS 200/10-245",
-              r"\bzoning\b|dwelling unit|accessory dwelling|affordable housing|housing development|middle housing|single stairway|residential building|\bhousing\b|landlord|tenant|starter home|manufactured home"),
-  "transit": (r"70 ILCS 3605|70 ILCS 3615|70 ILCS 3610|70 ILCS 3620",
-              r"transit|\bMetra\b|\bPace\b|Regional Transportation Authority|Chicago Transit Authority|Northern Illinois Transit"),
-  "pensions": (r"40 ILCS 5/5-|40 ILCS 5/6-|40 ILCS 5/8-|40 ILCS 5/11-",
-               r"Policemen's Annuity|Firemen's Annuity|Municipal Employees' Annuity|Laborers' Annuity"),
-  "budget": (r"65 ILCS 5/8-11|65 ILCS 5/8-3-19|30 ILCS 115|35 ILCS 5/901|65 ILCS 5/11-74\.4",
-             r"municipality with a population of (more than|over) 1,000,000|City of Chicago|home rule municipal|Local Government Distributive Fund|tax increment"),
-  "property": (r"35 ILCS 200",
-               r"property tax|assessment|homestead exemption"),
+  "housing": (r"65 ILCS 5/11-13(-|\.1)|65 ILCS 5/11-12\.2|55 ILCS 5/5-12|55 ILCS 5/5-1063|310 ILCS 65|310 ILCS 67|20 ILCS 3805|765 ILCS 705|765 ILCS 710|765 ILCS 750|35 ILCS 200/18-173|35 ILCS 200/15-178",
+              r"\bzoning\b|accessory dwelling|affordable housing|housing development|middle housing|single stair|starter home|parking (minimum|requirement)|\blandlords?\b|\btenants?\b|\brent(al)? (control|stabiliz|increase)|housing (supply|production|shortage)|residential (construction|development)|\bhousing\b|\bdwelling"),
+  "transit": (r"70 ILCS 3605|70 ILCS 3615|70 ILCS 3610|70 ILCS 3620|70 ILCS 3601",
+              r"\b(mass |public )?transit\b|\bMetra\b|Pace Suburban|Regional Transportation Authority|Chicago Transit Authority|Northern Illinois Transit|\bCTA\b"),
+  "pensions": (r"40 ILCS 5/(5|6|8|11)-", r"(Policemen's|Firemen's|Municipal Employees'|Laborers') Annuity"),
+  "budget": (r"65 ILCS 5/8-11-|65 ILCS 5/8-3-19|65 ILCS 5/11-74\.4|30 ILCS 115", r"municipality with (a population of )?(more than|over) 1,000,000|City of Chicago|Local Government Distributive Fund|tax increment"),
+  "property": (r"35 ILCS 200", r"property tax|homestead exemption|assessed valuation"),
 }
-CHI = r"Chicago|population of (more than|over) (1,000,000|500,000)|Cook County|Northern Illinois Transit|Regional Transportation Authority"
+NOT = {"housing": r"assisted living|long-term care|nursing|mobile home|hotel|swimming|wildlife|farm|\bpets?\b|detention|correction|hospital|school|veteran|cemeter|restroom|changing station|insurance|tenants in common",
+       "transit": r"school bus|transition|transit(ory)? period", "budget": r"Park District|lifeguard|school", "property": r"farmland|wind|solar"}
+CHI = r"Chicago|population of (more than|over) (1,000,000|500,000|3,000,000)|Cook County|Northern Illinois Transit|Regional Transportation Authority|municipality with"
 def topics(b):
-    refs = " ".join(b["refs"]); words = b["short"] + " " + b["syn"]
+    refs = b["refs"]; text = " ".join(t for _, t in b.get("syns") or [("", b.get("syn", ""))]); short = b["short"]
     out = []
     for k, (r, w) in TOPICS.items():
-        if re.search(r, refs) or re.search(w, words, re.I): out.append(k)
-    if "pensions" in out and not re.search(r"40 ILCS 5/(5|6|8|11)-", refs) and not re.search(CHI, words): out.remove("pensions")
-    if "budget" in out and not re.search(CHI, words): out.remove("budget")
-    if "property" in out and not re.search(CHI, words): out.remove("property")
+        hits = [x for x in refs if re.search(r, x)]
+        by_ref = hits and (len(hits) >= 3 or len(hits) / max(1, len(refs)) >= 0.25)
+        nw = len(re.findall(w, text, re.I)); by_word = re.search(w, short, re.I) or nw >= 2
+        if not (by_ref or by_word): continue
+        if not by_ref and re.search(NOT.get(k, r"$^"), short + " " + text[:600], re.I): continue
+        if k in ("budget", "property") and not re.search(CHI, text): continue
+        if k == "pensions" and not hits: continue
+        out.append(k)
     return out
 def shell(b):
     s = b["syn"]
@@ -158,7 +165,9 @@ def bills():
     allb = json.load(gzip.open(all_p, "rt")) if os.path.exists(all_p) else {}
     listing = get(BASE + "XML/").decode("utf-8", "replace")
     files = {fn: f"{d} {sz}" for d, sz, fn in re.findall(r"(\d+/\d+/\d{4}\s+\d+:\d+ [AP]M)\s+(\d+) <A HREF=\"[^\"]+/(\d{5}(?:HB|SB)\d+\.xml)\">", listing)}
-    todo = [fn for fn, v in files.items() if idx.get(fn) != v]
+    have = {b["id"]: b.get("v") for b in allb.values()}
+    def bid(fn): m = re.match(r"\d{5}(HB|SB)(\d+)", fn); return m.group(1) + str(int(m.group(2)))
+    todo = [fn for fn, v in files.items() if idx.get(fn) != v or have.get(bid(fn)) != 2]
     print(len(files), "bills listed;", len(todo), "new or changed")
     from concurrent.futures import ThreadPoolExecutor
     t0 = time.time(); done = 0
@@ -182,9 +191,9 @@ def bills():
         spon = re.split(r"-|,| and ", re.sub(r"^(Rep\.|Sen\.)\s*", "", b["spon"]))[0].strip()
         out.append({"id": b["id"], "t": b["short"], "tp": tp, "st": st, "lab": lab, "by": spon, "bych": "Rep." if k == "HB" else "Sen.",
                     "in": iso(b["acts"][0][0]) if b["acts"] else "", "last": [iso(last[0]), last[1], last[2]],
-                    "syn": b["syn"][:900], "url": f"https://www.ilga.gov/ftp/legislation/{GA}/BillStatus/HTML/{GA}00{k}{int(n):04d}.html",
+                    "syn": b["syn"][:900], "amended": max(0, len(b.get("syns") or []) - 1), "url": f"https://www.ilga.gov/ftp/legislation/{GA}/BillStatus/HTML/{GA}00{k}{int(n):04d}.html",
                     "hist": [[iso(d), c, a] for d, c, a in b["acts"] if re.search(r"Passed|Public Act|Governor|Veto|Do Pass|Filed with|Referred to Rules|Re-referred", a)][-12:]})
-    out.sort(key=lambda x: (-x["st"], x["last"][0]), reverse=False)
+    out.sort(key=lambda x: (-x["st"], x["last"][0]))
     os.makedirs("tracker", exist_ok=True)
     json.dump({"ga": GA, "made": time.strftime("%Y-%m-%d"), "n_all": len(allb), "bills": out}, open("tracker/bills.json", "w"), separators=(",", ":"))
     from collections import Counter
