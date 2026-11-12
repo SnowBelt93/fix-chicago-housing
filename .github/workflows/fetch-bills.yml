@@ -1,0 +1,29 @@
+# State bill tracker data (tools/bills/fetch.py). Push to tools/bills/ with "[steps: a b]" in the commit message to run
+# only some steps; runs daily once the tracker step exists.
+name: Fetch bills
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tools/bills/**', '.github/workflows/fetch-bills.yml']
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        env:
+          MSG: ${{ github.event.head_commit.message }}
+        run: |
+          pip install -q certifi cryptography
+          STEPS=$(printf '%s' "$MSG" | sed -n 's/.*\[steps: *\([^]]*\)\].*/\1/p')
+          python3 tools/bills/fetch.py $STEPS
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/bills
+          git commit -m "Fetch bills" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
