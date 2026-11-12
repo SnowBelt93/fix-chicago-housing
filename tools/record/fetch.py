@@ -8,11 +8,12 @@ Steps (commit message "[steps: a b]" picks some; default all):
   get      downloads the datasets listed in tools/record/wanted.json ({"id": "...", "domain": "...", "where": "..."})
            -> tools/raw/record/<id>.csv.gz
   files    downloads the URLs listed in tools/record/files.json -> tools/raw/record/files/<name>
+  sources  tools/record/sources.py: federal, county and RTA files cut down to their Chicago rows -> tools/raw/record/src/
 """
 import urllib.request, urllib.parse, json, os, re, time, gzip, sys, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), 'raw', 'record'); os.makedirs(OUT, exist_ok=True)
-STEPS = set(sys.argv[1:]) or {'catalog', 'catalog2', 'probe', 'get', 'files'}
+STEPS = set(sys.argv[1:]) or {'catalog', 'catalog2', 'probe', 'get', 'files', 'sources'}
 UA = {'User-Agent': 'Mozilla/5.0 (compatible; shapechicago-data/1.0)'}
 def get(url, tries=4, timeout=300):
     last = None
@@ -107,6 +108,17 @@ PROBE = {
     'census_bps_south': 'https://www2.census.gov/econ/bps/Place/South%20Region/',
     'census_bps_west': 'https://www2.census.gov/econ/bps/Place/West%20Region/',
     'census_bps_northeast': 'https://www2.census.gov/econ/bps/Place/Northeast%20Region/',
+    # second pass: the pages the first pass could not find
+    'pace_gtfs': 'https://pacebus.com/route-timetable-data-services',
+    'pace_gtfs_mdb': 'https://mobilitydatabase.org/feeds/gtfs/mdb-2347',
+    'ntd_monthly_catalog': 'https://catalog.data.gov/dataset/complete-monthly-ridership-with-adjustments-and-estimates',
+    'ntd_modal_catalog': 'https://catalog.data.gov/dataset/monthly-modal-time-series',
+    'chicago_capital_pubs': 'https://www.chicago.gov/city/en/depts/obm/provdrs/budget/svcs/CapitalPublications.html',
+    'rtams_datasets': 'https://rtams.org/datasets',
+    'rtams_pace': 'https://rtams.org/dataset/pace-ridership',
+    'rtams_metra_ds': 'https://rtams.org/dataset/metra-ridership',
+    'ilga_home': 'https://www.ilga.gov/Legislation',
+    'idot_traffic': 'https://idot.illinois.gov/transportation-system/network-overview/highway-system/illinois-travel-statistics.html',
 }
 if 'probe' in STEPS:
     PD = os.path.join(OUT, 'probe'); os.makedirs(PD, exist_ok=True)
@@ -159,3 +171,6 @@ if 'files' in STEPS and os.path.exists(os.path.join(HERE, 'files.json')):
             else: open(p, 'wb').write(b)
             print('file', name, len(b), flush=True)
         except Exception as e: print('file skip', name, e, flush=True)
+
+if 'sources' in STEPS:
+    import runpy; runpy.run_path(os.path.join(HERE, 'sources.py'), run_name='__main__')

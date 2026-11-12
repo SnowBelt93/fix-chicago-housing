@@ -19,6 +19,7 @@ jobs:
           MSG: ${{ github.event.head_commit.message }}
         run: |
           sudo apt-get install -y poppler-utils >/dev/null
+          pip install -q openpyxl xlrd
           STEPS=$(printf '%s' "$MSG" | sed -n 's/.*\[steps: *\([^]]*\)\].*/\1/p')
           python3 tools/record/fetch.py $STEPS
       - name: Reports and pages (kept 3 days, never committed)
