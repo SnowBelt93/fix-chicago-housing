@@ -766,6 +766,78 @@ def overview():
     foot = '<p class="fine src">Each section lists its own sources and shows the date its data runs through. Homes permitted updates every morning; the other sections were last checked ' + SNAP + '.</p>'
     return page('', 'Progress', 'What Chicago built, rezoned and ran, and where its big projects stand, counted from public records.', head + lead + decs + grid + foot)
 
+# ---------------------------------------------------------------- Progress, next version (preview at /progress/preview/; Kyle asked to see it before it replaces the overview)
+LAWS = [('2021-03-17', 'Demolition fee near the 606 and in Pilsen'), ('2021-04-21', 'Affordable housing rule raised (ARO)'), ('2022-07-20', 'More homes allowed near transit (ETOD)'),
+        ('2025-05-21', 'Green Social Housing fund'), ('2025-10-08', 'Taller buildings on commercial streets'), ('2026-02-18', 'Coach houses in more areas')]
+def lawchart():
+    """Homes permitted each year since 2013, with the dates citywide housing laws passed marked on the timeline."""
+    ys = list(range(2013, 2027)); vals = [ytd['homes'] if y == 2026 else Y[y]['homes'] for y in ys]
+    W, H, L, R_, T_, B_ = 1000, 300, 46, 16, 64, 34; top = 12000
+    xw = (W - L - R_) / len(ys); yv = lambda v: T_ + (H - T_ - B_) * (1 - v / top)
+    g = ''.join(f'<line x1="{L}" x2="{W - R_}" y1="{yv(v):.1f}" y2="{yv(v):.1f}" stroke="#eceef1"/><text x="{L - 6}" y="{yv(v) + 4:.1f}" text-anchor="end" font-size="12" fill="#6a7079">{v // 1000}k</text>' for v in (0, 4000, 8000, 12000))
+    for i, (y, v) in enumerate(zip(ys, vals)):
+        x = L + i * xw + xw * 0.18; w = xw * 0.64; fill = HATCH(NAVY, '#fff') if y == 2026 else NAVY
+        g += f'<rect x="{x:.1f}" y="{yv(v):.1f}" width="{w:.1f}" height="{yv(0) - yv(v):.1f}" rx="3" fill="{NAVY if y < 2026 else "url(#hp)"}"/>'
+        g += f'<text x="{x + w / 2:.1f}" y="{H - 12}" text-anchor="middle" font-size="12" fill="#3d434b">{"’" + str(y)[2:]}</text>'
+    rows = []
+    for k, (iso, name) in enumerate(LAWS):
+        yy, mm, dd = map(int, iso.split('-')); fx = L + (yy - 2013 + (mm - 1 + dd / 31) / 12) * xw
+        lane = k % 2; ly = 12 + lane * 22
+        g += f'<line x1="{fx:.1f}" x2="{fx:.1f}" y1="{ly + 6}" y2="{yv(0):.1f}" stroke="{RED}" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="{fx:.1f}" cy="{ly + 2}" r="8" fill="{RED}"/><text x="{fx:.1f}" y="{ly + 6}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">{k + 1}</text>'
+        rows.append(f'<li><span class="lk">{k + 1}</span><span>{name}</span><span class="ld">{MON[mm - 1]} {yy}</span></li>')
+    svg = (f'<svg class="lawsvg" viewBox="0 0 {W} {H}" role="img" aria-label="Homes permitted each year from 2013 to 2026, with the dates six citywide housing laws passed. Permits fell from 9,000–10,000 a year before 2020 to about 4,000 since.">'
+           f'<defs><pattern id="hp" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#fff"/><rect width="3" height="6" fill="{NAVY}"/></pattern></defs>{g}</svg>')
+    return '<div class="lawwrap">' + svg + '</div>' + f'<ol class="laws">{"".join(rows)}</ol>'
+def funnel():
+    """Rezonings for a new building → a permit within 12 and 24 months, by the year the Council passed them (the Zoning page's table)."""
+    data = [(2021, 42, 31, 43), (2022, 51, 20, 35), (2023, 57, 12, 33), (2024, 63, 35, 46)]
+    out = ''
+    for y, n, p12, p24 in data:
+        out += (f'<div class="fn"><span class="fy">{y}</span><div class="fb"><i style="width:100%;background:#d9e4f4"></i><i style="width:{p24}%;background:#7fa3d1"></i><i style="width:{p12}%;background:{NAVY}"></i></div>'
+                f'<span class="fv"><b>{p12}%</b> in a year · <b>{p24}%</b> in two · of {n}</span></div>')
+    return f'<div class="funnel">{out}</div>' + key([('Permit within 12 months', NAVY, ''), ('Within 24 months', '#7fa3d1', ''), ('No permit yet after 24 months', '#d9e4f4', '')])
+def preview():
+    hold, close, gap0, gr = goal_['hold'], goal_['close'], goal_['gap_now'], goal_['gap_growth']
+    pace = l12['homes']; yrs = 2041 - int(T['through'][:4])
+    if pace > hold: verdict = f'At the last 12 months’ pace, Chicago closes its share of the shortage in about {round(gap0 / (pace - hold))} years.'
+    else: verdict = f'At the last 12 months’ pace, the gap doesn’t close: it grows from {f(gap0)} homes today to about {f(round((gap0 + yrs * (hold - pace)) / 1000) * 1000)} by 2041.'
+    h1 = f'Chicago permitted {f(pace)} homes in the last 12 months. Closing its share of the shortage by 2041 takes {f(close)} a year.'
+    # report card rows: what, now, a year earlier, the official goal, status, trend
+    D = STR or STR0; de, se = D['deaths'], D['serious']
+    TRS = json.load(open(os.path.join(ROOT, 'tracker', 'transit.json'))) if os.path.exists(os.path.join(ROOT, 'tracker', 'transit.json')) else None
+    rows = []
+    def chip(t, kind): return f'<span class="chip {kind}">{t}</span>'
+    ys = list(range(2016, 2027))
+    rows.append(('<a href="/progress/homes/">Homes permitted</a>', f'{f(pace)} <small>last 12 months</small>', f(Y[2025]['homes']) + ' <small>in 2025</small>', f'{f(close)} a year', chip('▼ Behind' if pace < close else '▲ On pace', 'bad' if pace < close else 'good'), spark([Y[y]['homes'] for y in ys[:-1]] + [ytd['homes']], partial=True, rng=('2016', '2026'))))
+    n25, n24 = Y[2025]['homes'] - DEMO[2025], Y[2024]['homes'] - DEMO[2024]
+    rows.append(('<a href="/progress/homes/#lost">Homes added after teardowns</a>', f'about {f(round(n25, -1))} <small>in 2025</small>', f'about {f(round(n24, -1))} <small>in 2024</small>', '<span class="tbd">no official target</span>', chip('▲ Up' if n25 > n24 else '▼ Down', 'good' if n25 > n24 else 'bad'), spark([Y[y]['homes'] - DEMO[y] for y in ys[:-1]], rng=('2016', '2025'))))
+    rows.append(('<a href="/progress/zoning/">Rezonings built within a year</a>', '45% <small>of 2025’s</small>', '35% <small>of 2024’s</small>', '<span class="tbd">no official target</span>', chip('▲ Up', 'good'), spark([31, 20, 12, 35, 45], rng=('2021', '2025'))))
+    if AFF and AFF.get('rows'):
+        H = SRC.get('hud') or {}
+        rows.append(('<a href="/progress/affordable/">Homes with federal rent help</a>', f(H['2025']['all']) + ' <small>in 2025</small>', f(H['2024']['all']) + ' <small>in 2024</small>', '<span class="tbd">no official target</span>',
+                     chip('▼ Down' if H['2025']['all'] < H['2024']['all'] else '▲ Up', 'bad' if H['2025']['all'] < H['2024']['all'] else 'good'), spark([H[str(y)]['all'] for y in range(2014, 2026)], rng=('2014', '2025'))))
+    real = {y: RENT[y] * CPI[2026] / CPI[y] for y in RENT}
+    rows.append(('<a href="/progress/rents/">Typical asking rent</a>', f'${f(RENT[2026])} <small>Jan. 2026</small>', f'${f(RENT[2025])} <small>Jan. 2025</small>', '<span class="tbd">no official target</span>',
+                 chip(f'▲ Up {round(100 * (RENT[2026] / RENT[2025] - 1))}%', 'bad'), spark([RENT[y] for y in range(2019, 2027)], rng=('2019', '2026'))))
+    if TRS:
+        ser = TRS['series']; thru = TRS['through']; yy, mm = int(thru[:4]), int(thru[5:7])
+        tot = lambda y: sum(ser[k].get(f'{y}-{m:02d}', 0) for k in ('cta_bus', 'cta_rail') for m in range(1, mm + 1))
+        a, b = tot(yy), tot(yy - 1)
+        rows.append(('<a href="/progress/transit/">CTA rides</a>', f'{a / 1e6:.0f}M <small>{MON[0]}–{MON[mm - 1]} {yy}</small>', f'{b / 1e6:.0f}M <small>same months {yy - 1}</small>', '<span class="tbd">no official target</span>',
+                     chip(f'{"▲ Up" if a >= b else "▼ Down"} {abs(round(100 * (a / b - 1), 1))}%', 'good' if a >= b else 'bad'), spark([sum(ser[k].get(f'{y}-{m:02d}', 0) for k in ('cta_bus', 'cta_rail') for m in range(1, mm + 1)) for y in range(2019, yy + 1)], partial=True, rng=('2019', str(yy)))))
+    rows.append(('<a href="/progress/streets/">Traffic deaths</a>', f'{f(de["ytd"])} <small>through {day(de["through"])}</small>', f'{f(de["ytd_prev"])} <small>same dates last year</small>', 'zero <small>(Vision Zero, by 2026)</small>',
+                 chip('▲ More' if de['ytd'] > de['ytd_prev'] else '▼ Fewer', 'bad' if de['ytd'] > de['ytd_prev'] else 'good'), spark([de['years'][str(y)] for y in range(2019, 2027)], partial=True, rng=('2019', '2026'))))
+    card_rows = ''.join(f'<tr><th scope="row">{a}</th><td class="n">{b}</td><td class="n">{c}</td><td>{d}</td><td>{e}</td><td class="sp">{g}</td></tr>' for a, b, c, d, e, g in rows)
+    rc = card('The scoreboard', 'Each line: where it stands now, a year earlier, the official goal if there is one, and the trend.',
+              f'<div class="tw"><table class="rc"><thead><tr><th>What we count</th><th class="n">Now</th><th class="n">A year earlier</th><th>Official goal</th><th>Direction</th><th>Trend</th></tr></thead><tbody>{card_rows}</tbody></table></div>')
+    pace_c = card('At this pace', '', f'<p class="big">{verdict}</p><p class="sub">Holding the gap where it is takes {f(hold)} homes a year (the {f(goal_["built_anyway"])} built in a normal year plus the {f(gr)} a year the shortage grows); closing it by 2041 takes {f(close)}. The pace and the goal are the housing simulator’s, an estimate.</p>')
+    laws = card('What happened after each law', 'Homes permitted each year, with the dates the City Council passed citywide housing laws. A chart like this shows timing, not cause: interest rates, the pandemic and costs moved at the same time.', lawchart())
+    fun = card('From zoning vote to building permit', 'Zoning changes passed for a new residential building, by the year they passed: how many had a building permit within one and two years.', funnel() + '<p class="sub"><a href="/progress/zoning/">Every year and the finished homes ›</a></p>')
+    nxt = card('Also coming with this version', '', '<ul class="dot"><li>A page for each of the 50 wards and 77 neighborhoods: homes permitted, rezonings, teardowns, affordable homes, crashes and transit, against the city.</li><li>“What changed this week” at the top, written automatically from the daily data.</li><li>A CSV download under each chart, next to Embed.</li></ul>')
+    body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Preview of the next version</p><h1>{h1}</h1><p class="fine">Updated {UPDATED} · a preview: the current Progress overview stays until you approve this one</p></div>'
+            + pace_c + rc + laws + fun + nxt)
+    return page('preview', 'Progress preview', h1, body)
+
 CSS = '''/* Progress pages (written by tools/progress/build.py) */
 *{box-sizing:border-box}
 html{background:var(--sc-page)}
@@ -781,6 +853,18 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
 .pg h3{margin:0 0 10px;font-size:14.5px;font-weight:600}.pg h3 span{font-weight:400;color:var(--sc-mute)}
 .pg .hd{display:flex;flex-direction:column;gap:4px}
+/* preview: scoreboard, law chart, funnel */
+.pg table.rc{width:100%;border-collapse:collapse;font-size:14.5px}.pg table.rc th,.pg table.rc td{padding:12px 10px;border-top:1px solid var(--sc-line);text-align:left;vertical-align:middle}
+.pg table.rc thead th{border-top:0;font-size:12.5px;color:var(--sc-mute);font-weight:600}.pg table.rc tbody th{font-weight:600}.pg table.rc tbody th a{color:var(--sc-ink);text-decoration:none}.pg table.rc tbody th a:hover{color:var(--sc-navy);text-decoration:underline}
+.pg table.rc td.n{text-align:right;white-space:nowrap;font-weight:600}.pg table.rc small{display:block;font-weight:400;color:var(--sc-mute);font-size:12px}.pg table.rc td.sp{width:150px}.pg table.rc .spark{margin:0}
+@media (max-width:760px){ .pg table.rc thead{display:none}.pg table.rc tr{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;padding:12px 0;border-top:1px solid var(--sc-line)}.pg table.rc th,.pg table.rc td{border:0;padding:0}.pg table.rc tbody th{grid-column:1/-1}.pg table.rc td.n{text-align:left}.pg table.rc td.sp{grid-column:1/-1;width:auto} }
+.pg .big{margin:0;font-size:22px;line-height:1.35;font-weight:600;letter-spacing:-.01em;max-width:860px}
+.pg svg.lawsvg{width:100%;height:auto;display:block}.pg .lawwrap{overflow-x:auto}@media (max-width:640px){ .pg svg.lawsvg{min-width:620px} }
+.pg ol.laws{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 18px;font-size:13.5px}
+.pg ol.laws li{display:flex;gap:8px;align-items:baseline}.pg .lk{flex:none;width:18px;height:18px;border-radius:50%;background:#b3001e;color:#fff;font-size:11px;font-weight:700;display:inline-grid;place-items:center}.pg .ld{margin-left:auto;color:var(--sc-mute);white-space:nowrap}
+.pg .funnel{display:flex;flex-direction:column;gap:10px}.pg .fn{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;font-size:13.5px}
+.pg .fb{position:relative;height:22px;border-radius:6px;overflow:hidden}.pg .fb i{position:absolute;left:0;top:0;bottom:0}.pg .fy{font-weight:600}.pg .fv{color:var(--sc-ink2);white-space:nowrap}
+@media (max-width:640px){ .pg .fn{grid-template-columns:40px minmax(0,1fr)}.pg .fv{grid-column:2} }
 /* embed button on a card, the embed dialog, and the embed pages (/embed/<id>/) */
 .pg .hd .embb{order:2;align-self:flex-start;margin-top:4px;border:1px solid var(--sc-line);background:#fff;color:var(--sc-navy);font:600 12.5px var(--sc-font);border-radius:999px;padding:4px 11px;cursor:pointer}
 @media (pointer:coarse){ .pg .hd .embb{min-height:34px;padding:6px 14px} }
@@ -1025,7 +1109,7 @@ document.querySelectorAll("[data-code]").forEach(b => b.addEventListener("click"
     os.makedirs(os.path.join(ROOT, 'press'), exist_ok=True); open(os.path.join(ROOT, 'press', 'index.html'), 'w').write(doc)
 
 def main():
-    pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': MOVED_ROOM, 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield()}
+    pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': MOVED_ROOM, 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield(), 'preview': preview()}
     for slug, html in pages.items():
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, 'index.html'), 'w').write(html)
