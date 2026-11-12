@@ -13,7 +13,7 @@
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10587
+     "count": 10589
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118246
+     "count": 118248
     },
     {
      "value": "Claim",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2189
+     "count": 2191
     },
     {
      "value": "5-Council Consideration",
@@ -648,7 +648,7 @@
     },
     {
      "value": "Burnett, Walter R.",
-     "count": 175
+     "count": 177
     },
     {
      "value": "Robinson, Lamont J.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169807
+     "count": 169809
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7555
+     "count": 7557
     },
     {
      "value": "2024",
@@ -876,7 +876,7 @@
     },
     {
      "value": "27",
-     "count": 6333
+     "count": 6335
     },
     {
      "value": "14",
@@ -1177,7 +1177,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 274
+     "count": 276
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163723
+     "count": 163725
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181947,
-  "pages": 181947
+  "count": 181949,
+  "pages": 181949
  }
 }
