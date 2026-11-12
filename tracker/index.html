@@ -241,7 +241,6 @@ function render(D){
       <li><a href="https://www.census.gov/construction/bps/" target="_blank" rel="noopener">U.S. Census Bureau, Building Permits Survey</a> (accuracy check, annual totals for Chicago)</li>
       <li><a href="https://upforgrowth.org/wp-content/uploads/2024/10/2024_Housing-Underproduction-in-the-U.S.-Report_Final-c-1.pdf" target="_blank" rel="noopener">Up for Growth, Housing Underproduction in the U.S., 2024</a> (shortage)</li>
       <li><a href="https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/" target="_blank" rel="noopener">The Real Deal Data, 2026</a> (approvals the game uses, for comparison)</li>
-      <li>Code and method: <a href="https://github.com/SnowBelt93/fix-chicago-housing/tree/main/tools/tracker" target="_blank" rel="noopener">tools/tracker on GitHub</a></li>
     </ul>
   </div></section>`;
   requestAnimationFrame(() => { const f = app.querySelector('.meter .fill'); if (f) f.style.width = Math.min(100, now.homes / now.needed_so_far * 100) + '%'; });
