@@ -306,7 +306,7 @@ function scorecard(M){
   add("p", S.F.fl ? 0 : 2, S.F.fl ? `<b>Flood zone ${esc(S.F.fl[0][1])}:</b> a likely problem site characteristic.` : `<b>No flood zone</b> on FEMA's map.`);
   add("p", (M.ahp > 0 || M.ihda > 0 || M.loan > 0) ? 2 : 1, `<b>Non-city money:</b> a first mortgage${M.ihda > 0 ? ", IHDA funds" : ""}${M.ahp > 0 ? ", Federal Home Loan Bank funds" : ""} in the stack.`);
   add("p", $("ud").checked ? 2 : 1, `<b>Accessibility beyond city standards</b>${$("ud").checked ? "" : " (design choice)"}.`);
-  add("p", $("emerg").checked ? 2 : 1, `<b>Emerging developer or vendor</b>${$("emerg").checked ? "" : " on the team?"}.`);
+  add("p", $("emerg").checked ? 2 : 1, `<b>Emerging developer or vendor</b>${$("emerg").checked ? "." : " on the team?"}`);
   if (ctype === "Housing Enhancement Area"){
     add("c", M.dda ? 2 : 0, `<b>Difficult Development Area:</b> ${M.dda ? "yes" : "no"}.`);
     const deep = M.units.filter(u => u.p > 0 && u.p <= 30).reduce((t, u) => t + u.n, 0);
@@ -314,8 +314,8 @@ function scorecard(M){
   } else {
     add("c", (M.qct || M.dda) ? 2 : 0, `<b>Qualified Census Tract or Difficult Development Area:</b> ${M.qct ? "Qualified Census Tract" : M.dda ? "Difficult Development Area" : "neither"}.`);
     add("c", $("mix").value === "mixed" || M.units.some(u => u.p >= 80 || u.p === 0) ? 2 : 0, `<b>Mixed income</b> (homes from 30% of AMI up to 80% or market rate).`);
-    add("c", M.pbv > 0 ? 2 : 1, `<b>Long-term rent subsidy</b> (project-based vouchers)${M.pbv > 0 ? ": " + Math.round(M.pbv * 100) + "% of homes" : "?"}.`);
-    add("c", $("nfp").checked ? 2 : 1, `<b>Nonprofit or CHDO sponsor</b>${$("nfp").checked ? "" : "?"}.`);
+    add("c", M.pbv > 0 ? 2 : 1, `<b>Long-term rent subsidy</b> (project-based vouchers)${M.pbv > 0 ? ": " + Math.round(M.pbv * 100) + "% of homes." : "?"}`);
+    add("c", $("nfp").checked ? 2 : 1, `<b>Nonprofit or CHDO sponsor</b>${$("nfp").checked ? "." : "?"}`);
   }
   return {out, ctype, met:pt.filter(s => s === 2).length, miss:pt.filter(s => s === 0).length, open:pt.filter(s => s === 1).length, total:pt.length, fails:out.filter(o => o[0] === "t" && o[1] === 0).length};
 }
