@@ -511,6 +511,8 @@ async function enrich(lon, lat, A, ward){
     for (const p of T.points) if (p[3] >= y0 && Math.hypot((p[0] - lon) * KX, (p[1] - lat) * KY) <= 805){ n++; h += p[2]; }
     const lag = T.zoning && T.zoning.lag_days_median;
     if (lag) $("nLag").textContent = `Typically about ${Math.round(lag / 30)} months after a rezoning.`;
+    fetch("/tracker/timelines.json").then(r => r.json()).then(TL => { if (!live()) return; const ys = Object.keys(TL.years).sort(), y = ys[ys.length - 1], a = TL.years[y].all;
+      $("nLag").textContent += ` Once you apply, the city's part took ${a.med} days for the middle new home permit in ${y} (half took ${a.p25}–${a.p75} days).`; }).catch(() => {});
     $("nNear").innerHTML = `<div><b>${fmt(h)}</b><span>homes permitted within ½ mile since ${y0}</span></div><div><b>${fmt(n)}</b><span>buildings</span></div><div><a href="/tracker/#near">See them</a></div>`; }).catch(() => {});
 }
 function coachText(I){

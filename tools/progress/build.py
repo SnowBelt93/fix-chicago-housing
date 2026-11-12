@@ -28,7 +28,7 @@ except Exception: SRC = {}
 def _load(n):
     try: return json.load(open(os.path.join(ROOT, 'tracker', n + '.json')))
     except Exception: return None
-STR = _load('streets'); AFF = _load('affordable')
+STR = _load('streets'); AFF = _load('affordable'); TL = _load('timelines')
 
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
@@ -312,8 +312,28 @@ def homes():
                      + '<h3>Suburbs that permitted the most in 2025</h3>' + hbars([(n, v['2025']['u'], f(v['2025']['u'])) for n, v in st], w=96) + '</div></div>')
         note += ' The city comparison uses the Census Building Permits Survey’s yearly place file and the population it carries for each place; Jacksonville, Indianapolis and Charlotte are filed under their county governments there and are left out. New York is its five boroughs added together. Suburbs are Illinois places of 25,000 or more people in the Chicago metro area.'
     h1 = f'So far this year: {f(ytd["homes"])} homes permitted, about {f(d26)} torn down, a net gain of about {f(net26)}.'
-    return page('homes', 'Homes', h1, top('homes', 'Homes', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + peers + lostc + c4 + g
+    return page('homes', 'Homes', h1, top('homes', 'Homes', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + timelines_card() + peers + lostc + c4 + g
                 + bottom('homes', note, 'City of Chicago building permits (new construction, demolition and renovation); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications and shared housing registrations.'))
+
+def timelines_card():
+    """How long a housing permit takes, from tracker/timelines.json (main's daily job)."""
+    if not TL or not TL.get('years'): return ''
+    ys = sorted(TL['years']); cur, prv = ys[-1], (ys[-2] if len(ys) > 1 else None)
+    B = [('1', 'Single-family homes'), ('2-4', '2 to 4 homes'), ('5-49', '5 to 49 homes'), ('50+', '50 or more homes')]
+    rows = []
+    for k, lab in B:
+        c = TL['years'][cur].get(k); p = TL['years'][prv].get(k) if prv else None
+        if not c: continue
+        rows.append((lab, c['med'], f"{c['med']} days" + (f" (was {p['med']} in {prv})" if p else ''), c))
+    mx = max(r[1] for r in rows)
+    hb = '<div class="hb">' + ''.join(f'<div style="grid-template-columns: minmax(0, 150px) minmax(0, 1fr) auto;"><span>{esc(l)}</span><div class="tr"><i style="width: {max(2, 100 * m / mx):.0f}%;"></i></div><b>{t}</b></div>' for l, m, t, c in rows) + '</div>'
+    rv = TL.get('review') or {}
+    rvn = {'Self Cert': 'Self-certified by an architect', 'Standard Plan Review': 'Standard city plan review', 'Direct Developer Services': 'Developer Services (large projects)', 'Traditional Developer Services': 'Developer Services (traditional)'}
+    rvt = ''.join(f'<li><b>{v["med"]} days</b> {rvn.get(k, k)} <span>({v["n"]} permits)</span></li>' for k, v in rv.items())
+    a = TL['years'][cur]['all']
+    return card('How long a housing permit takes', f'Middle number of days from applying to getting the permit, new buildings with homes, {cur} through {day(TL["through"])}.', hb
+                + (f'<h3 style="margin-top:14px">By how the plans were reviewed <span>(last 12 months)</span></h3><ul class="dot">{rvt}</ul>' if rvt else '')
+                + f'<p class="sub">Half of all new home permits in {cur} took between {a["p25"]} and {a["p75"]} days. This counts only the city’s part, from application to permit: design, zoning changes and financing come before it. The city changed how it records application dates in late 2023, so earlier years aren’t compared.</p>', emb='homes-timelines')
 
 # ---------------------------------------------------------------- the snapshot sections
 def zoning():
@@ -811,6 +831,10 @@ def preview():
     rows.append(('<a href="/progress/homes/">Homes permitted</a>', f'{f(pace)} <small>last 12 months</small>', f(Y[2025]['homes']) + ' <small>in 2025</small>', f'{f(close)} a year', chip('▼ Behind' if pace < close else '▲ On pace', 'bad' if pace < close else 'good'), spark([Y[y]['homes'] for y in ys[:-1]] + [ytd['homes']], partial=True, rng=('2016', '2026'))))
     n25, n24 = Y[2025]['homes'] - DEMO[2025], Y[2024]['homes'] - DEMO[2024]
     rows.append(('<a href="/progress/homes/#lost">Homes added after teardowns</a>', f'about {f(round(n25, -1))} <small>in 2025</small>', f'about {f(round(n24, -1))} <small>in 2024</small>', '<span class="tbd">no official target</span>', chip('▲ Up' if n25 > n24 else '▼ Down', 'good' if n25 > n24 else 'bad'), spark([Y[y]['homes'] - DEMO[y] for y in ys[:-1]], rng=('2016', '2025'))))
+    if TL and len(TL.get('years', {})) >= 2:
+        ty = sorted(TL['years']); tc, tp = TL['years'][ty[-1]]['all'], TL['years'][ty[-2]]['all']
+        rows.append(('<a href="/progress/homes/#homes-timelines">Days from application to permit</a>', f'{tc["med"]} days <small>{ty[-1]}, middle permit</small>', f'{tp["med"]} days <small>{ty[-2]}</small>', '<span class="tbd">no official target</span>',
+                     chip('▼ Faster' if tc['med'] < tp['med'] else '▲ Slower', 'good' if tc['med'] < tp['med'] else 'bad'), ''))
     rows.append(('<a href="/progress/zoning/">Rezonings built within a year</a>', '45% <small>of 2025’s</small>', '35% <small>of 2024’s</small>', '<span class="tbd">no official target</span>', chip('▲ Up', 'good'), spark([31, 20, 12, 35, 45], rng=('2021', '2025'))))
     if AFF and AFF.get('rows'):
         H = SRC.get('hud') or {}
