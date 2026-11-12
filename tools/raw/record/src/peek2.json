@@ -1,0 +1,254 @@
+{
+ "ntd_monthly": {
+  "columns": [
+   "ntd_id",
+   "legacy_ntd_id",
+   "agency",
+   "mode_type_of_service_status",
+   "reporter_type",
+   "uace_cd",
+   "uza_name",
+   "mode",
+   "tos",
+   "_3_mode",
+   "date",
+   "upt",
+   "voms",
+   "vrh",
+   "vrm",
+   "agency_mode_tos_date",
+   "state",
+   "fta_region"
+  ],
+  "rows": 5499,
+  "first": [
+   "\"ntd_id\",\"legacy_ntd_id\",\"agency\",\"mode_type_of_service_status\",\"reporter_type\",\"uace_cd\",\"uza_name\",\"mode\",\"tos\",\"_3_mode\",\"date\",\"upt\",\"voms\",\"vrh\",\"vrm\",\"agency_mode_tos_date\",\"state\",\"fta_region\"",
+   "\"50042\",\"5042\",\"City of East Chicago\",\"Active\",\"Small Systems Reporter\",\"16264\",\"Chicago, IL--IN\",\"DR\",\"DO\",\"Bus\",\"2002-01-01T00:00:00.000\",\"673\",\"1\",\"122\",\"2005\",\"50042_DR_DO_Active_Small Systems Reporter_16264_2002-01-01\",\"IN\",\"5\"",
+   "\"50042\",\"5042\",\"City of East Chicago\",\"Active\",\"Small Systems Reporter\",\"16264\",\"Chicago, IL--IN\",\"DR\",\"DO\",\"Bus\",\"2002-02-01T00:00:00.000\",\"639\",\"1\",\"118\",\"1934\",\"50042_DR_DO_Active_Small Systems Reporter_16264_2002-02-01\",\"IN\",\"5\"",
+   "\"50042\",\"5042\",\"City of East Chicago\",\"Active\",\"Small Systems Reporter\",\"16264\",\"Chicago, IL--IN\",\"DR\",\"DO\",\"Bus\",\"2002-03-01T00:00:00.000\",\"644\",\"1\",\"120\",\"1987\",\"50042_DR_DO_Active_Small Systems Reporter_16264_2002-03-01\",\"IN\",\"5\""
+  ],
+  "filter": "upper(uza_name) like '%CHICAGO%'"
+ },
+ "ntd_modal": {
+  "columns": [
+   "_5_digit_ntd_id",
+   "agency",
+   "organization_type",
+   "rail_bus_ferry",
+   "mode_name",
+   "mode",
+   "type_of_service",
+   "fixed_route_flag",
+   "rail_y_n",
+   "uace_code",
+   "primary_uza_name",
+   "primary_uza_sq_miles",
+   "primary_uza_population",
+   "service_area_sq_miles",
+   "service_area_population",
+   "year",
+   "month",
+   "month_year",
+   "vehicles",
+   "vehicle_revenue_miles",
+   "vehicle_revenue_hours",
+   "ridership",
+   "collisions_with_motor_vehicle",
+   "collisions_with_person",
+   "collisions_with_fixed_object",
+   "collisions_with_rail_vehicle",
+   "collisions_with_bus_vehicle",
+   "collisions_with_other",
+   "total_collisions",
+   "total_derailments",
+   "total_fires",
+   "total_security_events",
+   "total_events_not_otherwise",
+   "total_events",
+   "passenger_fatalities",
+   "people_waiting_or_leaving",
+   "operator_fatalities",
+   "other_employee_fatalities",
+   "total_employee_fatalities",
+   "other_worker_fatalities",
+   "bicyclist_fatalities",
+   "pedestrian_in_crosswalk",
+   "pedestrian_not_in_crosswalk",
+   "pedestrian_crossing_tracks",
+   "pedestrian_walking_along",
+   "other_vehicle_occupant",
+   "other_fatalities",
+   "trespasser_fatalities",
+   "suicide_fatalities",
+   "total_other_fatalities",
+   "total_fatalities",
+   "passenger_injuries",
+   "people_waiting_or_leaving_1",
+   "operator_injuries",
+   "other_employee_injuries",
+   "total_employee_injuries",
+   "other_worker_injuries",
+   "bicyclist_injuries",
+   "pedestrian_in_corsswalk",
+   "pedestrian_not_in_crosswalk_1",
+   "pedestrian_crossing_tracks_1",
+   "pedestrian_walking_along_1",
+   "other_vehicle_occupant_1",
+   "other_injuries",
+   "trespasser_injuries",
+   "suicide_injuries",
+   "total_other_injuries",
+   "total_injuries",
+   "non_major_physical_assaults_on_operators",
+   "non_major_non_physical_assaults_on_operators",
+   "non_major_physical_assaults_on_other_transit_workers",
+   "non_major_non_physical_assaults_on_other_transit_workers",
+   "major_physical_assaults_on_operators",
+   "major_non_physical_assaults_on_operators",
+   "major_physical_assaults_on_other_transit_workers",
+   "major_non_physical_assaults_on_other_transit_workers",
+   "total_assaults_on_transit_workers",
+   "personal_security_events"
+  ],
+  "rows": 2468,
+  "first": [
+   "\"_5_digit_ntd_id\",\"agency\",\"organization_type\",\"rail_bus_ferry\",\"mode_name\",\"mode\",\"type_of_service\",\"fixed_route_flag\",\"rail_y_n\",\"uace_code\",\"primary_uza_name\",\"primary_uza_sq_miles\",\"primary_uza_population\",\"service_area_sq_miles\",\"service_area_population\",\"year\",\"month\",\"month_year\",\"vehicles\",\"vehicle_revenue_miles\",\"vehicle_revenue_hours\",\"ridership\",\"collisions_with_motor_vehicle\",\"collisions_with_person\",\"collisions_with_fixed_object\",\"collisions_with_rail_vehicle\",\"collisions_with_bus_vehicle\",\"collisions_with_other\",\"total_collisions\",\"total_derailments\",\"total_fires\",\"total_security_events\",\"total_events_not_otherwise\",\"total_events\",\"passenger_fatalities\",\"people_waiting_or_leaving\",\"operator_fatalities\",\"other_employee_fatalities\",\"total_employee_fatalities\",\"other_worker_fatalities\",\"bicyclist_fatalities\",\"pedestrian_in_crosswalk\",\"pedestrian_not_in_crosswalk\",\"pedestrian_crossing_tracks\",\"pedestrian_walking_along\",\"other_vehicle_occupant\",\"other_fatalities\",\"trespasser_fatalities\",\"suicide_fatalities\",\"total_other_fatalities\",\"total_fatalities\",\"passenger_injuries\",\"people_waiting_or_leaving_1\",\"operator_injuries\",\"other_employee_injuries\",\"total_employee_injuries\",\"other_worker_injuries\",\"bicyclist_injuries\",\"pedestrian_in_corsswalk\",\"pedestrian_not_in_crosswalk_1\",\"pedestrian_crossing_tracks_1\",\"pedestrian_walking_along_1\",\"other_vehicle_occupant_1\",\"other_injuries\",\"trespasser_injuries\",\"suicide_injuries\",\"total_other_injuries\",\"total_injuries\",\"non_major_physical_assaults_on_operators\",\"non_major_non_physical_assaults_on_operators\",\"non_major_physical_assaults_on_other_transit_workers\",\"non_major_non_physical_assaults_on_other_transit_workers\",\"major_physical_assaults_on_operators\",\"major_non_physical_assaults_on_operators\",\"major_physical_assaults_on_other_transit_workers\",\"major_non_physical_assaults_on_other_transit_workers\",\"total_assaults_on_transit_workers\",\"personal_security_events\"",
+   "\"50066\",\"Chicago Transit Authority\",\"Public Agency or Authority of Transit Service\",\"Rail\",\"Heavy Rail\",\"HR\",\"DO\",\"true\",\"true\",\"16264\",\"Chicago, IL--IN\",\"2337.89\",\"8671746\",\"314.00\",\"3425958\",\"2014\",\"January\",\"2014-01-01T00:00:00.000\",\"1070\",\"5967773\",\"319243\",\"17461004\",\"0\",\"1\",\"0\",\"0\",\"0\",\"0\",\"1\",\"1\",\"7\",\"3\",\"26\",\"38\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"4\",\"12\",\"2\",\"5\",\"7\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"9\",\"0\",\"0\",\"9\",\"32\",,,,,,,,,,",
+   "\"50066\",\"Chicago Transit Authority\",\"Public Agency or Authority of Transit Service\",\"Rail\",\"Heavy Rail\",\"HR\",\"DO\",\"true\",\"true\",\"16264\",\"Chicago, IL--IN\",\"2337.89\",\"8671746\",\"314.00\",\"3425958\",\"2014\",\"February\",\"2014-02-01T00:00:00.000\",\"1070\",\"5413923\",\"289595\",\"17800261\",\"1\",\"0\",\"0\",\"0\",\"0\",\"0\",\"1\",\"1\",\"19\",\"8\",\"29\",\"58\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"6\",\"18\",\"2\",\"5\",\"7\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"1\",\"5\",\"0\",\"1\",\"7\",\"38\",,,,,,,,,,",
+   "\"50066\",\"Chicago Transit Authority\",\"Public Agency or Authority of Transit Service\",\"Rail\",\"Heavy Rail\",\"HR\",\"DO\",\"true\",\"true\",\"16264\",\"Chicago, IL--IN\",\"2337.89\",\"8671746\",\"314.00\",\"3425958\",\"2014\",\"March\",\"2014-03-01T00:00:00.000\",\"1070\",\"5903177\",\"315751\",\"20074231\",\"0\",\"1\",\"1\",\"0\",\"0\",\"0\",\"2\",\"0\",\"11\",\"9\",\"39\",\"61\",\"0\",\"1\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"1\",\"42\",\"29\",\"2\",\"1\",\"3\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"0\",\"9\",\"0\",\"0\",\"9\",\"83\",,,,,,,,,,"
+  ],
+  "filter": "upper(primary_uza_name) like '%CHICAGO%'"
+ },
+ "rtams_pace": {
+  "Pace_Monthly_Ridership_2003_202": [
+   [
+    "ROUTE",
+    "MONTH",
+    "YEAR",
+    "DAY_TYPE",
+    "AVG_RIDES"
+   ],
+   [
+    "100",
+    "4",
+    "2026",
+    "Weekday",
+    "1358"
+   ],
+   [
+    "100",
+    "4",
+    "2026",
+    "Saturday",
+    "1271"
+   ],
+   [
+    "100",
+    "4",
+    "2026",
+    "Sunday - Holiday",
+    "1082"
+   ]
+  ],
+  "Pace_Monthly_Ridership_2003_202 #rows": 93270
+ },
+ "rtams_metra_line": [
+  "\u00ef\u00bb\u00bfLONGNAME,YEAR,MONTH,RIDES,RIDERSHIP_ID",
+  "BNSF,2002,12,1138803,10",
+  "BNSF,2002,11,1198694,10",
+  "BNSF,2002,10,1238187,10",
+  "BNSF,2002,9,1195322,10"
+ ],
+ "pace_gtfs": {
+  "bytes": 10365028,
+  "files": {
+   "agency.txt": {
+    "lines": 2,
+    "head": [
+     "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
+     "50113,\"PACE\",https://www.pacebus.com,America/Chicago,en,847-364-PACE,https://www.pacebus.com/fares,passenger.services@pacebus.com"
+    ]
+   },
+   "calendar.txt": {
+    "lines": 48,
+    "head": [
+     "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+     "2026-06-BT-Weekday-01,1,1,1,1,1,0,0,20261102,20261218",
+     "2026-08-FX-Weekday-01,1,1,1,1,1,0,0,20261102,20261218"
+    ]
+   },
+   "calendar_dates.txt": {
+    "lines": 23,
+    "head": [
+     "service_id,date,exception_type",
+     "2026-06-BT-Weekday-01,20261126,2",
+     "2026-08-FX-Weekday-01,20261126,2"
+    ]
+   },
+   "feed_info.txt": {
+    "lines": 2,
+    "head": [
+     "feed_publisher_name,feed_publisher_url,feed_lang,default_lang,feed_start_date,feed_end_date,feed_version,feed_contact_url",
+     "\"PACE\",https://www.pacebus.com,en,en,20261101,20261219,20261101,https://www.pacebus.com/route-timetable-data-services"
+    ]
+   },
+   "routes.txt": {
+    "lines": 135,
+    "head": [
+     "agency_id,route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color",
+     "50113,100,,\"Pulse Milwaukee Line\",,3,https://www.pacebus.com/route/pulse-milwaukee-line,814C9E,FFFFFF",
+     "50113,101,,\"Pulse Dempster Line\",,3,https://www.pacebus.com/route/pulse-dempster-line,814C9E,FFFFFF"
+    ]
+   },
+   "shapes.txt": {
+    "lines": 599166,
+    "head": [
+     "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled",
+     "1000030,41.969992,-87.762087,10001,",
+     "1000030,41.970068,-87.761999,10002,"
+    ]
+   },
+   "stop_times.txt": {
+    "lines": 734840,
+    "head": [
+     "trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,shape_dist_traveled,timepoint,geo_node_id",
+     "15425137,06:35:00,06:35:00,715s0935,1,0,0,,1,28789",
+     "15425137,06:36:00,06:36:00,715n0930,2,0,0,,0,28607"
+    ]
+   },
+   "stops.txt": {
+    "lines": 13766,
+    "head": [
+     "stop_id,stop_name,stop_desc,stop_lat,stop_lon,zone_id,geo_node_id,stop_code",
+     "101e0001,\"Dempster - Skokie CTA Station\",,42.0407233,-87.7528316,,37589,37589",
+     "101n0001,\"O'Hare MMF Bay 9\",,41.9933733,-87.88274,,37590,37590"
+    ]
+   },
+   "trips.txt": {
+    "lines": 14256,
+    "head": [
+     "route_id,service_id,trip_id,direction_id,block_id,bikes_allowed,direction_text,wheelchair_accessible,shape_id",
+     "715,2026-06-BT-Weekday-01,15425137,0,2488144,1,North,1,7150201",
+     "715,2026-06-BT-Weekday-01,15425138,0,2488144,1,North,1,7150201"
+    ]
+   },
+   "license_terms.txt": {
+    "lines": 32,
+    "head": [
+     "Limited License Agreement and Terms of Use",
+     "",
+     "Pace, the Suburban Bus Division of the Regional Transportation Authority (\ufffdLicensor\ufffd or \ufffdPace\ufffd) owns and maintains certain electronic route and arrival data (\ufffdPace\ufffds Data\ufffd). Pace hereby grants you (Licensee\ufffd) non-exclusive, limited and revocable rights to use, reproduce and redistribute Pace\ufffds Data to assist you with mass transportation. Pace has the right, at any time, to change, modify, correct, add or delete any or all of the data on this website, temporarily or permanently, without notice to Licensee. By submitting a query or using the data you agree to be bound by all the terms and conditions set forth herein."
+    ]
+   }
+  }
+ },
+ "lihtc": {
+  "error": "WorksheetProperties.__init__() got an unexpected keyword argument 'synchVertical'"
+ },
+ "menu_2026_q3": {
+  "missing": "https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf"
+ },
+ "cip_2025_2029": {
+  "missing": "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP/City%20of%20Chicago%202025-2029%20CIP.pdf"
+ }
+}
