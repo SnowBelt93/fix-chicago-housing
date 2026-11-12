@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grants finder · Shape Chicago</title>
+<meta name="description" content="Answer a few questions and see the city, county, state and federal housing programs you might qualify for in Chicago, with what each pays, when it's open and where to apply. Nothing you type leaves your browser.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<script src="/shape/addr.js" defer></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{max-width:1120px;margin:0 auto;padding:40px max(24px,env(safe-area-inset-left)) 64px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
+.lede{font-size:18px;line-height:1.55;color:var(--sc-ink2);margin:0 0 6px;max-width:720px}
+.priv{font-size:14px;color:var(--sc-mute);margin:0 0 28px}
+.grid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px;align-items:start}
+.card{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px}
+form.card{position:sticky;top:16px}
+fieldset{border:0;margin:0 0 18px;padding:0}
+legend,.lab{font-size:14px;font-weight:600;margin:0 0 8px;padding:0;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:14px;border:1px solid var(--sc-line);background:#fff;border-radius:999px;padding:8px 13px;cursor:pointer;color:var(--sc-ink)}
+.chips button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input[type=text],input[type=number],select{font:inherit;font-size:15px;width:100%;padding:10px 12px;border:1px solid var(--sc-line);border-radius:10px;background:#fff;color:var(--sc-ink)}
+.addr{position:relative}
+.sugg{position:absolute;left:0;right:0;top:100%;margin-top:4px;background:#fff;border:1px solid var(--sc-line);border-radius:10px;box-shadow:0 8px 24px rgba(20,30,50,.12);z-index:5;overflow:hidden}
+.sugg button{display:block;width:100%;text-align:left;font:inherit;font-size:15px;border:0;background:#fff;padding:10px 12px;cursor:pointer}
+.sugg button[aria-selected="true"],.sugg button:hover{background:#eef3fa}
+.hint{font-size:13px;color:var(--sc-mute);margin:6px 0 0;min-height:1em}
+.place{font-size:13px;line-height:1.5;color:var(--sc-ink2);margin:6px 0 0}
+.checks label{display:flex;gap:8px;align-items:center;font-size:15px;margin:0 0 8px;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--sc-navy)}
+.note{font-size:13px;line-height:1.5;color:var(--sc-mute);margin:6px 0 0}
+.sum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 12px}
+.sum h2{font-size:22px;margin:0;letter-spacing:-.01em}
+.sum span{font-size:14px;color:var(--sc-mute)}
+.prog{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:18px 20px;margin:0 0 12px}
+.prog .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.prog h3{font-size:18px;margin:0 0 2px;letter-spacing:-.01em}
+.prog .by{font-size:13px;color:var(--sc-mute);margin:0 0 10px}
+.prog .amt{font-size:15px;font-weight:600;margin:0 0 8px}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap;background:#eef1f4;color:var(--sc-ink2)}
+.pill.open{background:#e3f3e6;color:#1d6b31} .pill.closed{background:#fbe9ea;color:#a3202c} .pill.seasonal,.pill.round,.pill.rolling{background:#eef3fa;color:var(--sc-navy)}
+.why{list-style:none;margin:0 0 8px;padding:0}
+.why li{font-size:14px;line-height:1.5;color:var(--sc-ink2);padding-left:22px;position:relative;margin:0 0 3px}
+.why li::before{position:absolute;left:0;top:0;font-weight:700}
+.why li.y::before{content:"✓";color:#1d6b31} .why li.m::before{content:"?";color:#9a6700} .why li.n::before{content:"✕";color:#a3202c}
+.stat{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0 0 8px}
+.fine{font-size:13px;line-height:1.5;color:var(--sc-mute);margin:0 0 10px}
+.acts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:13px;color:var(--sc-mute)}
+.acts a.sc-btn{font-size:14px}
+.grp{font-size:14px;font-weight:600;color:var(--sc-mute);margin:22px 0 10px}
+details.no summary{cursor:pointer;font-size:15px;font-weight:600;color:var(--sc-ink2);margin:18px 0 10px}
+details.no .prog{opacity:.75}
+.warn{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:16px 20px;margin:20px 0 0;font-size:14px;line-height:1.55;color:var(--sc-ink2)}
+.warn b{display:block;margin-bottom:4px;color:var(--sc-ink)}
+.deal{display:flex;gap:16px;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:16px 20px;margin:0 0 16px;text-decoration:none;color:inherit}
+.deal b{font-size:16px} .deal span{display:block;font-size:14px;color:var(--sc-ink2);margin-top:2px}
+.empty{font-size:15px;color:var(--sc-ink2)}
+[hidden]{display:none!important}
+.stale{color:#9a6700}
+@media (max-width:900px){ .grid{grid-template-columns:1fr} form.card{position:static} }
+@media (max-width:640px){ main{padding:28px 16px 48px} h1{font-size:30px} .lede{font-size:16px} .prog .top{flex-direction:column-reverse;gap:6px} .deal{flex-direction:column;align-items:flex-start} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+<div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+<nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Grants finder<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/grants/" aria-current="page">Grants finder</a><a href="/deal/">Affordable deal check</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+</header>
+<main>
+<h1>Find money for your home</h1>
+<p class="lede">Answer a few questions and see the city, county, state and federal programs you might qualify for in Chicago: what each pays, whether it's open, and where to apply.</p>
+<p class="priv">Nothing you type leaves this page. No account, nothing saved.</p>
+
+<div class="grid">
+<form class="card" id="f" onsubmit="return false" autocomplete="off">
+  <fieldset><legend>What are you working on?</legend>
+    <div class="chips" id="role">
+      <button type="button" data-r="buyer" aria-pressed="false">Buying a home</button>
+      <button type="button" data-r="owner" aria-pressed="false">A home I own</button>
+      <button type="button" data-r="renter" aria-pressed="false">Renting</button>
+      <button type="button" data-r="business" aria-pressed="false">A storefront or business building</button>
+      <button type="button" data-r="developer" aria-pressed="false">Building housing</button>
+    </div>
+  </fieldset>
+  <fieldset><label class="lab" for="q">Address <span style="font-weight:400;color:var(--sc-mute)">(optional, in Chicago)</span></label>
+    <div class="addr"><input type="text" id="q" placeholder="2150 N Milwaukee Ave" aria-controls="sugg"><div class="sugg" id="sugg"></div></div>
+    <p class="hint" id="hint"></p><p class="place" id="place"></p>
+  </fieldset>
+  <div id="hh">
+  <fieldset><legend>Your household</legend>
+    <div class="row2">
+      <div><label class="lab" for="size" style="font-weight:500">People</label><select id="size"><option value="">Choose</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+      <div><label class="lab" for="inc" style="font-weight:500">Yearly income, before taxes</label><input type="number" id="inc" inputmode="numeric" min="0" step="1000" placeholder="$"></div>
+    </div>
+    <p class="note" id="amiNote"></p>
+  </fieldset>
+  <fieldset class="checks" id="who">
+    <label><input type="checkbox" id="a60"> Someone is 60 or older</label>
+    <label><input type="checkbox" id="a65"> Someone is 65 or older</label>
+    <label><input type="checkbox" id="dis"> Someone has a disability</label>
+    <label><input type="checkbox" id="vet"> A veteran lives here</label>
+    <label><input type="checkbox" id="vetdis"> A veteran with a VA disability rating</label>
+  </fieldset>
+  <fieldset class="checks" id="ownq">
+    <label><input type="checkbox" id="live"> I live in the building</label>
+    <label for="units" class="lab" style="font-weight:500;margin-top:6px">Homes in the building</label>
+    <select id="units"><option value="">Choose</option><option value="1">1</option><option value="2">2 to 4</option><option value="5">5 or more</option></select>
+  </fieldset>
+  <fieldset class="checks" id="buyq"><label><input type="checkbox" id="first"> I haven't owned a home in the last three years</label></fieldset>
+  </div>
+  <p class="note">Income limits use HUD's <span id="limYr">current</span> limits for the Chicago area. Programs check your papers themselves; this only points you to the right ones.</p>
+</form>
+
+<section aria-live="polite">
+  <a class="deal" id="dealLink" href="/deal/" hidden><div><b>Building affordable housing?</b><span>The deal check scores a site against the city's tax credit plan, estimates the cost and builds a capital stack from the sources it qualifies for.</span></div><span class="sc-btn">Open the deal check</span></a>
+  <div id="out"><p class="empty">Pick what you're working on to see programs.</p></div>
+  <div class="warn"><b>Watch for grant scams.</b>Real programs never charge a fee to apply or ask for a gift card, wire or crypto. They come from a city, county, state or federal agency, a utility, or a nonprofit the agency names. If someone calls you about a grant you didn't apply for, hang up and call 311.</div>
+  <p class="note" id="checkedNote" style="margin-top:14px"></p>
+</section>
+</div>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]));
+const money = n => "$" + Math.round(n).toLocaleString("en-US");
+let DATA = null, LIM = null, ROLE = null, PLACE = null;
+const ROLES = {buyer:["buyer"], owner:["owner"], renter:["renter"], business:["business", "landlord"], developer:["developer", "nonprofit"]};
+const STATUS = {open:"Open now", rolling:"Rolling", seasonal:"Opens each year", round:"Opens in rounds", waitlist:"Waiting list", closed:"Closed for now"};
+const LAYER = {tif:"inside a TIF district", qct:"in a Qualified Census Tract", oz:"in an Opportunity Zone", hist:"on or in a National Register listing"};
+
+/* income limit for p% of area median income: HUD's 50% limit for the household size × p/50 (how the city and HUD scale them) */
+function limit(p, n){ if (!LIM || !n) return null; const b = LIM.l50[Math.min(8, n) - 1]; return Math.round(b * p / 50 / 50) * 50; }
+
+function answers(){
+  const n = +$("size").value || 0, inc = $("inc").value === "" ? null : +$("inc").value;
+  return {role:ROLE, n, inc, a60:$("a60").checked || $("a65").checked, a65:$("a65").checked, dis:$("dis").checked, vet:$("vet").checked || $("vetdis").checked, vetdis:$("vetdis").checked,
+    live:$("live").checked, units:+$("units").value || 0, first:$("first").checked, place:PLACE};
+}
+/* each rule → [result, reason]: result 2 = fits, 1 = can't tell yet, 0 = doesn't fit */
+function check(rule, A){
+  const [k, v] = rule;
+  if (k === "chicago") return A.place ? [2, "In Chicago"] : [2, "Chicago program"];
+  if (k === "ami"){
+    const L = limit(v, A.n);
+    if (!A.n || A.inc == null) return [1, `Income at or below ${v}% of area median income${L ? "" : " (add your household size and income to check)"}`];
+    return A.inc <= L ? [2, `Income under ${v}% of area median income (${money(L)} for ${A.n} ${A.n > 1 ? "people" : "person"})`] : [0, `Income over ${v}% of area median income (${money(L)} for ${A.n} ${A.n > 1 ? "people" : "person"})`];
+  }
+  if (k === "income"){ if (A.inc == null) return [1, `Household income ${money(v)} or less`]; return A.inc <= v ? [2, `Household income ${money(v)} or less`] : [0, `Household income over ${money(v)}`]; }
+  if (k === "liheap"){
+    if (!A.n || A.inc == null) return [1, "Income under the state's energy-help limit for your household size"];
+    const t = DATA.liheap.by, m = A.n <= t.length ? t[A.n - 1] : t[t.length - 1] + (A.n - t.length) * (t[1] - t[0]);
+    return A.inc / 12 <= m ? [2, `Monthly income under ${money(m)} for ${A.n} ${A.n > 1 ? "people" : "person"}`] : [0, `Monthly income over ${money(m)}, the limit for ${A.n} ${A.n > 1 ? "people" : "person"}`];
+  }
+  if (k === "age") return (v <= 60 ? A.a60 : A.a65) ? [2, `Someone ${v} or older`] : [0, `Needs someone ${v} or older`];
+  if (k === "own") return A.live ? [2, "You live there"] : (A.role === "owner" ? [1, "For the home you live in"] : [0, "For the home you live in"]);
+  if (k === "units") return !A.units ? [1, `Buildings of ${v} homes or fewer`] : A.units <= v ? [2, `Building of ${v} homes or fewer`] : [0, `Only buildings of ${v} homes or fewer`];
+  if (k === "first") return A.first ? [2, "First-time buyer"] : [0, "First-time buyers only"];
+  if (k === "disab") return A.dis ? [2, "Someone with a disability"] : [0, "For someone with a disability"];
+  if (k === "vet") return A.vet ? [2, "A veteran"] : [0, "For veterans"];
+  if (k === "vetdis") return A.vetdis ? [2, "A veteran with a VA disability rating"] : [0, "For veterans with a VA disability rating"];
+  if (k === "layer"){
+    if (!A.place) return [1, `The property must be ${LAYER[v]} (add an address to check)`];
+    return A.place.layers[v] ? [2, `Your address is ${LAYER[v]}${A.place.layers[v] !== true ? " (" + A.place.layers[v] + ")" : ""}`] : [0, `Only for properties ${LAYER[v]}`];
+  }
+  return [1, ""];
+}
+function card(p, res){
+  const st = p.status || ["", ""], old = (Date.now() - new Date(p.checked + "T12:00:00").getTime()) / 864e5 > 90;
+  const src = (p.src || []).map(s => `<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(" · ");
+  return `<article class="prog"><div class="top"><div><h3>${esc(p.name)}</h3><p class="by">${esc(p.by)}</p></div><span class="pill ${st[0]}">${STATUS[st[0]] || ""}</span></div>
+    <p class="amt">${esc(p.amount)}</p>
+    ${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
+    <p class="stat">${esc(st[1])}</p>${p.note ? `<p class="fine">${esc(p.note)}</p>` : ""}
+    <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">Rules and how to apply</a><span>Source: ${src}</span><span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}${old ? " · may be out of date" : ""}</span></div></article>`;
+}
+function render(){
+  const A = answers();
+  $("hh").hidden = !ROLE || ROLE === "business" || ROLE === "developer";
+  $("ownq").hidden = ROLE !== "owner"; $("buyq").hidden = ROLE !== "buyer"; $("dealLink").hidden = ROLE !== "developer";
+  const L80 = limit(80, A.n);
+  $("amiNote").textContent = L80 ? `For ${A.n} ${A.n > 1 ? "people" : "person"}: 50% of area median income is ${money(limit(50, A.n))}, 80% is ${money(L80)}, 120% is ${money(limit(120, A.n))}.` : "";
+  if (!ROLE || !DATA){ $("out").innerHTML = '<p class="empty">Pick what you\'re working on to see programs.</p>'; return; }
+  const mine = DATA.programs.filter(p => p.for.some(r => ROLES[ROLE].includes(r)));
+  const scored = mine.map(p => { const res = p.rules.map(r => check(r, A)); const s = res.length ? Math.min(...res.map(r => r[0])) : 2; return {p, res, s}; });
+  const rank = x => (x.p.status[0] === "closed" ? 1 : 0);
+  const yes = scored.filter(x => x.s === 2).sort((a, b) => rank(a) - rank(b)), may = scored.filter(x => x.s === 1).sort((a, b) => rank(a) - rank(b)), no = scored.filter(x => x.s === 0);
+  let h = `<div class="sum"><h2>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</h2><span>${may.length ? may.length + " more to check · " : ""}${mine.length} programs for ${esc({buyer:"buyers", owner:"homeowners", renter:"renters", business:"business buildings", developer:"housing builders"}[ROLE])}</span></div>`;
+  h += yes.map(x => card(x.p, x.res)).join("") || '<p class="empty">Nothing fits every answer yet. Check the ones below.</p>';
+  if (may.length) h += `<p class="grp">Might fit: one more thing to check</p>` + may.map(x => card(x.p, x.res)).join("");
+  if (no.length) h += `<details class="no"><summary>Doesn't fit your answers (${no.length})</summary>${no.map(x => card(x.p, x.res)).join("")}</details>`;
+  $("out").innerHTML = h;
+}
+async function onPlace(P){
+  const F = await SCAddr.rules(P.lon, P.lat), G = await fetchG(P.lon, P.lat);
+  const layers = {tif: (G.tif || [])[0] || false, qct: !!(G.qct26 || G.qct27), oz: !!F.oz, hist: F.nr ? F.nr[0][0] : false};
+  PLACE = {...P, layers};
+  const bits = [P.ward ? "Ward " + P.ward : null, layers.tif ? "TIF district: " + layers.tif : "Not in a TIF district", layers.oz ? "Opportunity Zone" : null, layers.qct ? "Qualified Census Tract" : null, layers.hist ? "National Register: " + layers.hist : null].filter(Boolean);
+  $("place").textContent = bits.join(" · ");
+  render();
+}
+/* deal-check layers (TIF, NOF, QCT) for a point, from grants/data/g tiles (tools/grants/build.py) */
+const GT = new Map();
+async function fetchG(lon, lat){
+  const [ix, iy] = SCAddr.tkey(lon, lat), k = ix + "_" + iy;
+  if (!GT.has(k)) GT.set(k, fetch("/grants/data/g/" + k + ".json").then(r => r.ok ? r.json() : {f:[]}).catch(() => ({f:[]})));
+  const R = await GT.get(k), x0 = ix / 100 - 88, y0 = iy / 100 + 41, px = (lon - x0) * 1e6, py = (lat - y0) * 1e6, F = {};
+  const inR = (x, y, a) => { let c = false; for (let i = 0, j = a.length - 2; i < a.length; j = i, i += 2){ const xi = a[i], yi = a[i + 1], xj = a[j], yj = a[j + 1]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
+  for (const [kind, n, rings] of (R.f || [])){ let c = false; for (const r of rings) if (inR(px, py, r)) c = !c; if (c) (F[kind] = F[kind] || []).push(n); }
+  return F;
+}
+(async function(){
+  [DATA, LIM] = await Promise.all([fetch("data/programs.json").then(r => r.json()), fetch("data/limits.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
+  if (LIM) $("limYr").textContent = LIM.label;
+  $("checkedNote").innerHTML = `Programs last checked ${new Date(DATA.checked + "T12:00:00").toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"})}. Something wrong or missing? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Tell us</a>.`;
+  document.querySelectorAll("#role button").forEach(b => b.onclick = () => { ROLE = b.dataset.r; document.querySelectorAll("#role button").forEach(x => x.setAttribute("aria-pressed", x === b)); render(); });
+  ["size", "inc", "a60", "a65", "dis", "vet", "vetdis", "live", "units", "first"].forEach(id => $(id).addEventListener(id === "inc" ? "input" : "change", render));
+  const start = () => { if (!window.SCAddr) return setTimeout(start, 50); SCAddr.attach($("q"), $("sugg"), onPlace, t => $("hint").textContent = t); };
+  start();
+  const r0 = new URLSearchParams(location.search).get("for"); if (r0){ const b = document.querySelector(`#role [data-r="${r0}"]`); b && b.click(); }
+  render();
+})();
+</script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("grants", {title:"Find money for your home", body:"<p>Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.</p>"}));</script>
+</body>
+</html>

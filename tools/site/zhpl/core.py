@@ -11,7 +11,7 @@ T = {
     'Homes': ('住房', 'Mieszkania'), 'Zoning': ('分区', 'Strefowanie'), 'Affordable': ('可负担住房', 'Przystępne'),
     'Rents and prices': ('租金和房价', 'Czynsze i ceny'), 'Streets': ('街道', 'Ulice'), 'City money': ('市政资金', 'Pieniądze miasta'),
     'Big projects': ('大型项目', 'Duże projekty'), 'In Springfield': ('州议会动态', 'W Springfield'), 'Decisions coming up': ('即将做出的决定', 'Nadchodzące decyzje'),
-    'Your ward': ('你的选区', 'Twój okręg'), 'News': ('新闻', 'Wiadomości'), 'Learn': ('了解', 'Wiedza'), 'About': ('关于', 'O stronie'),
+    'Your ward': ('你的选区', 'Twój okręg'), 'News': ('新闻', 'Wiadomości'), 'Learn': ('了解', 'Wiedza'), 'About': ('关于', 'O stronie'), 'Grants finder': ('补助查询', 'Wyszukiwarka dotacji'), 'Affordable deal check': ('经济适用房项目评估', 'Analiza projektu przystępnego'),
     'Not affiliated with the City of Chicago.': ('与芝加哥市政府无关。', 'Niezwiązane z władzami miasta Chicago.'),
     'Not affiliated with the City of Chicago, CTA, Metra or Pace.': ('与芝加哥市政府、CTA、Metra 和 Pace 均无关。', 'Niezwiązane z miastem Chicago, CTA, Metrą ani Pace.'),
     'Send feedback': ('发送反馈', 'Wyślij uwagi'), 'Feedback': ('反馈', 'Uwagi'), 'Menu': ('菜单', 'Menu'), 'Pages': ('页面', 'Strony'),
