@@ -35,7 +35,8 @@
    "checked": "2026-11-12",
    "for": [
     "buyer"
-   ]
+   ],
+   "short": "Up to $70,000"
   },
   {
    "id": "dpp",
@@ -68,7 +69,8 @@
    "checked": "2026-11-12",
    "for": [
     "buyer"
-   ]
+   ],
+   "short": "Up to $10,000"
   },
   {
    "id": "ihda",
@@ -96,7 +98,8 @@
    "checked": "2026-11-12",
    "for": [
     "buyer"
-   ]
+   ],
+   "short": "Up to $15,000"
   },
   {
    "id": "hrp",
@@ -139,6 +142,12 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
+   ],
+   "short": "Free roof or porch repair",
+   "remind": [
+    3,
+    1,
+    "Registration has opened in March for about two weeks."
    ]
   },
   {
@@ -182,6 +191,12 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
+   ],
+   "short": "Free furnace or boiler repair",
+   "remind": [
+    11,
+    1,
+    "It has opened Nov. 1 each winter."
    ]
   },
   {
@@ -229,7 +244,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Free safety repairs"
   },
   {
    "id": "ex_home",
@@ -261,7 +277,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "About $950 a year off your taxes"
   },
   {
    "id": "ex_senior",
@@ -297,7 +314,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Lower property tax"
   },
   {
    "id": "ex_freeze",
@@ -337,7 +355,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Frozen taxable value"
   },
   {
    "id": "ex_disab",
@@ -372,7 +391,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Lower property tax"
   },
   {
    "id": "ex_vetdis",
@@ -407,7 +427,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Lower property tax"
   },
   {
    "id": "ex_retvet",
@@ -442,7 +463,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Lower property tax"
   },
   {
    "id": "ex_improve",
@@ -475,7 +497,8 @@
    "checked": "2026-11-12",
    "for": [
     "owner"
-   ]
+   ],
+   "short": "Up to $75,000 of added value untaxed"
   },
   {
    "id": "liheap",
@@ -508,6 +531,12 @@
    "for": [
     "owner",
     "renter"
+   ],
+   "short": "Help with heat and power bills",
+   "remind": [
+    10,
+    1,
+    "Applications open Oct. 1."
    ]
   },
   {
@@ -540,7 +569,8 @@
    "checked": "2026-11-12",
    "for": [
     "renter"
-   ]
+   ],
+   "short": "Back rent or a deposit"
   },
   {
    "id": "ihwap",
@@ -575,7 +605,8 @@
    "for": [
     "owner",
     "renter"
-   ]
+   ],
+   "short": "Up to $20,000 of free upgrades"
   },
   {
    "id": "cha_wait",
@@ -611,7 +642,8 @@
    "checked": "2026-11-12",
    "for": [
     "renter"
-   ]
+   ],
+   "short": "Rent at about 30% of income"
   },
   {
    "id": "sbif",
@@ -645,7 +677,8 @@
    "for": [
     "business",
     "landlord"
-   ]
+   ],
+   "short": "Up to $250,000"
   },
   {
    "id": "nof",
@@ -680,7 +713,8 @@
     "business",
     "landlord",
     "developer"
-   ]
+   ],
+   "short": "Up to $250,000"
   },
   {
    "id": "cdg",
@@ -715,7 +749,8 @@
     "business",
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "$250,000 to over $5 million"
   },
   {
    "id": "lihtc9",
@@ -752,7 +787,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Up to $1.8M a year in credits"
   },
   {
    "id": "lihtc4",
@@ -785,7 +821,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "About 4% of basis a year in credits"
   },
   {
    "id": "gap",
@@ -818,7 +855,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Up to 20% of cost"
   },
   {
    "id": "ihda9",
@@ -855,7 +893,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Up to $1.7M a year in credits"
   },
   {
    "id": "ihdasoft",
@@ -892,7 +931,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Up to 10% of cost"
   },
   {
    "id": "ihdamtg",
@@ -921,7 +961,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Fixed-rate first mortgage"
   },
   {
    "id": "fha221",
@@ -953,7 +994,8 @@
    "checked": "2026-11-12",
    "for": [
     "developer"
-   ]
+   ],
+   "short": "40-year fixed loan"
   },
   {
    "id": "chapbv",
@@ -987,7 +1029,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Rent help for 15 to 30 years"
   },
   {
    "id": "clihtf",
@@ -1022,7 +1065,8 @@
     "developer",
     "nonprofit",
     "landlord"
-   ]
+   ],
+   "short": "Rent help for the lowest incomes"
   },
   {
    "id": "hedbond",
@@ -1055,7 +1099,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Gap money and low-cost loans"
   },
   {
    "id": "ahsap",
@@ -1086,7 +1131,8 @@
     "developer",
     "nonprofit",
     "landlord"
-   ]
+   ],
+   "short": "Lower taxes for 10 or 30 years"
   },
   {
    "id": "iahtc",
@@ -1115,7 +1161,8 @@
    "for": [
     "developer",
     "nonprofit"
-   ]
+   ],
+   "short": "Donors get 50% back as a state credit"
   },
   {
    "id": "ahp",
@@ -1144,6 +1191,12 @@
    "for": [
     "developer",
     "nonprofit"
+   ],
+   "short": "Up to $2 million",
+   "remind": [
+    5,
+    1,
+    "FHLBank Chicago opened its 2026 round May 4."
    ]
   },
   {
@@ -1179,7 +1232,8 @@
    "for": [
     "developer",
     "landlord"
-   ]
+   ],
+   "short": "Up to $3 million"
   },
   {
    "id": "oz",
@@ -1212,7 +1266,8 @@
    "checked": "2026-11-12",
    "for": [
     "developer"
-   ]
+   ],
+   "short": "Federal tax break for investors"
   },
   {
    "id": "missing",
@@ -1244,7 +1299,8 @@
    "checked": "2026-11-12",
    "for": [
     "developer"
-   ]
+   ],
+   "short": "$1 lots plus up to $150,000 a home"
   }
  ],
  "liheap": {

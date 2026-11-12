@@ -239,9 +239,23 @@ P = [
       src=[['City program page', 'https://www.chicago.gov/missingmiddle']],
       note='Homes are sold at market prices to people who will live in them.', checked=C),
 ]
+
+# one short amount line for the compact card, and a yearly reminder date for programs that open on a schedule
+SHORT = {'homegrown': 'Up to $70,000', 'dpp': 'Up to $10,000', 'ihda': 'Up to $15,000', 'hrp': 'Free roof or porch repair', 'ehrp': 'Free furnace or boiler repair',
+  'sarfs': 'Free safety repairs', 'ex_home': 'About $950 a year off your taxes', 'ex_senior': 'Lower property tax', 'ex_freeze': 'Frozen taxable value',
+  'ex_disab': 'Lower property tax', 'ex_vetdis': 'Lower property tax', 'ex_retvet': 'Lower property tax', 'ex_improve': 'Up to $75,000 of added value untaxed',
+  'liheap': 'Help with heat and power bills', 'rap': 'Back rent or a deposit', 'ihwap': 'Up to $20,000 of free upgrades', 'cha_wait': 'Rent at about 30% of income',
+  'sbif': 'Up to $250,000', 'nof': 'Up to $250,000', 'cdg': '$250,000 to over $5 million', 'lihtc9': 'Up to $1.8M a year in credits', 'lihtc4': 'About 4% of basis a year in credits',
+  'gap': 'Up to 20% of cost', 'ihda9': 'Up to $1.7M a year in credits', 'ihdasoft': 'Up to 10% of cost', 'ihdamtg': 'Fixed-rate first mortgage', 'fha221': '40-year fixed loan',
+  'chapbv': 'Rent help for 15 to 30 years', 'clihtf': 'Rent help for the lowest incomes', 'hedbond': 'Gap money and low-cost loans', 'ahsap': 'Lower taxes for 10 or 30 years',
+  'iahtc': 'Donors get 50% back as a state credit', 'ahp': 'Up to $2 million', 'ilhtc': 'Up to $3 million', 'oz': 'Federal tax break for investors', 'missing': '$1 lots plus up to $150,000 a home'}
+REMIND = {'hrp': [3, 1, 'Registration has opened in March for about two weeks.'], 'ehrp': [11, 1, 'It has opened Nov. 1 each winter.'],
+  'liheap': [10, 1, 'Applications open Oct. 1.'], 'ahp': [5, 1, "FHLBank Chicago opened its 2026 round May 4."]}
 out = []
 for p in P:
-    p = dict(p); p['for'] = p.pop('for_'); out.append(p)
+    p = dict(p); p['for'] = p.pop('for_'); p['short'] = SHORT[p['id']]
+    if p['id'] in REMIND: p['remind'] = REMIND[p['id']]
+    out.append(p)
 LIHEAP = {'note': '30-day gross household income, program year 2026-27', 'src': 'https://dceo.illinois.gov/communityservices/homeweatherization/communityactionagencies/helpillinoisfamilies.html',
           'by': [3990, 5410, 6830, 8250, 9670, 11090]}
 FPL = {'note': '2026 federal poverty guidelines (48 states)', 'base': 15960, 'add': 5680,

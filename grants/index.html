@@ -44,25 +44,43 @@ input[type=text],input[type=number],select{font:inherit;font-size:15px;width:100
 .checks label{display:flex;gap:8px;align-items:center;font-size:15px;margin:0 0 8px;cursor:pointer}
 .checks input{width:18px;height:18px;accent-color:var(--sc-navy)}
 .note{font-size:13px;line-height:1.5;color:var(--sc-mute);margin:6px 0 0}
-.sum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 12px}
+.sum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 4px;flex-wrap:wrap}
 .sum h2{font-size:22px;margin:0;letter-spacing:-.01em}
 .sum span{font-size:14px;color:var(--sc-mute)}
-.prog{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:18px 20px;margin:0 0 12px}
-.prog .top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-.prog h3{font-size:18px;margin:0 0 2px;letter-spacing:-.01em}
-.prog .by{font-size:13px;color:var(--sc-mute);margin:0 0 10px}
-.prog .amt{font-size:15px;font-weight:600;margin:0 0 8px}
+.total{font-size:14px;color:var(--sc-ink2);margin:0 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.bar .chips button{padding:6px 12px;font-size:13px}
+.bar select{width:auto;font-size:13px;padding:6px 10px;border-radius:999px}
+.tog{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--sc-ink2);cursor:pointer}
+.tog input{width:16px;height:16px;accent-color:var(--sc-navy)}
+.mylist{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:#fff;border:1px solid var(--sc-line);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:14px}
+.mylist b{margin-right:auto}
+.mylist button{font:inherit;font-size:13px;background:none;border:0;color:var(--sc-navy);cursor:pointer;padding:6px 2px;text-decoration:underline;text-underline-offset:2px}
+.prog{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:14px 16px;margin:0 0 10px}
+.prog .top{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 10px;align-items:start}
+.star{width:34px;height:34px;border:1px solid var(--sc-line);border-radius:10px;background:#fff;cursor:pointer;font-size:17px;line-height:1;color:var(--sc-mute);padding:0}
+.star[aria-pressed="true"]{color:#c48a00;border-color:#e8c766;background:#fff8e1}
+.prog .amt{font-size:20px;font-weight:600;letter-spacing:-.015em;margin:0;line-height:1.2}
+.prog h3{font-size:15px;font-weight:600;margin:2px 0 0;line-height:1.35}
+.prog .by{font-size:12.5px;color:var(--sc-mute);margin:2px 0 0}
+.one{font-size:13.5px;line-height:1.45;color:var(--sc-ink2);margin:8px 0 0 44px}
+.one b{font-weight:600}
+.one.y b{color:#1d6b31} .one.m b{color:#9a6700} .one.n b{color:#a3202c}
 .pill{font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap;background:#eef1f4;color:var(--sc-ink2)}
 .pill.open{background:#e3f3e6;color:#1d6b31} .pill.closed{background:#fbe9ea;color:#a3202c} .pill.seasonal,.pill.round,.pill.rolling{background:#eef3fa;color:var(--sc-navy)}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0 44px}
+.acts .sc-btn{font-size:14px}
+.ghost{font:inherit;font-size:14px;background:#fff;border:1px solid var(--sc-line);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--sc-ink)}
+.ghost:hover{border-color:var(--sc-navy)}
+.more{margin:12px 0 0 44px;border-top:1px solid #eef0f3;padding-top:10px}
+.more p{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0 0 8px}
+.more .fine{font-size:13px;color:var(--sc-mute)}
 .why{list-style:none;margin:0 0 8px;padding:0}
 .why li{font-size:14px;line-height:1.5;color:var(--sc-ink2);padding-left:22px;position:relative;margin:0 0 3px}
 .why li::before{position:absolute;left:0;top:0;font-weight:700}
 .why li.y::before{content:"✓";color:#1d6b31} .why li.m::before{content:"?";color:#9a6700} .why li.n::before{content:"✕";color:#a3202c}
-.stat{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:0 0 8px}
-.fine{font-size:13px;line-height:1.5;color:var(--sc-mute);margin:0 0 10px}
-.acts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:13px;color:var(--sc-mute)}
-.acts a.sc-btn{font-size:14px}
-.grp{font-size:14px;font-weight:600;color:var(--sc-mute);margin:22px 0 10px}
+.srcs{font-size:13px;color:var(--sc-mute);margin:0}
+.grp{font-size:14px;font-weight:600;color:var(--sc-mute);margin:20px 0 10px}
 details.no summary{cursor:pointer;font-size:15px;font-weight:600;color:var(--sc-ink2);margin:18px 0 10px}
 details.no .prog{opacity:.75}
 .warn{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:16px 20px;margin:20px 0 0;font-size:14px;line-height:1.55;color:var(--sc-ink2)}
@@ -70,10 +88,20 @@ details.no .prog{opacity:.75}
 .deal{display:flex;gap:16px;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:16px 20px;margin:0 0 16px;text-decoration:none;color:inherit}
 .deal b{font-size:16px} .deal span{display:block;font-size:14px;color:var(--sc-ink2);margin-top:2px}
 .empty{font-size:15px;color:var(--sc-ink2)}
+.gbar{display:none}
+@media (max-width:900px){ .gbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;align-items:center;gap:10px;background:#fff;border-top:1px solid var(--sc-line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 18px rgba(20,30,50,.08);font-size:14px}
+  .gbar[hidden]{display:none} .gbar span{flex:1} .gbar b{font-size:16px}
+  .gbar button{font:inherit;font-size:14px;font-weight:600;border:0;background:var(--sc-navy);color:#fff;border-radius:10px;padding:10px 14px;min-height:44px;cursor:pointer}
+  body.hasbar main{padding-bottom:100px} }
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--sc-ink);color:#fff;border-radius:99px;padding:10px 18px;font-size:14px;z-index:50;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media print{ .sc-head,form.card,.bar,.mylist,.warn,.deal,.sc-foot,.acts,.star,details.no,.grp,.priv,.toast,#checkedNote{display:none!important}
+  body,html{background:#fff} main{padding:0} .grid{display:block} .prog{break-inside:avoid;border:0;border-bottom:1px solid #ccc;border-radius:0;padding:10px 0} .more{display:block!important;margin-left:0} .one{margin-left:0}
+  body.printlist .prog:not(.starred){display:none} }
 [hidden]{display:none!important}
 .stale{color:#9a6700}
 @media (max-width:900px){ .grid{grid-template-columns:1fr} form.card{position:static} }
-@media (max-width:640px){ main{padding:28px 16px 48px} h1{font-size:30px} .lede{font-size:16px} .prog .top{flex-direction:column-reverse;gap:6px} .deal{flex-direction:column;align-items:flex-start} }
+@media (max-width:640px){ main{padding:28px 16px 48px} h1{font-size:30px} .lede{font-size:16px} .prog .top{grid-template-columns:34px minmax(0,1fr)} .prog .top .pill{grid-column:2;justify-self:start} .one,.acts,.more{margin-left:0} .deal{flex-direction:column;align-items:flex-start} }
 </style>
 </head>
 <body>
@@ -82,17 +110,18 @@ details.no .prog{opacity:.75}
 <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Grants finder<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/grants/" aria-current="page">Grants finder</a><a href="/deal/">Affordable deal check</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
 </header>
 <main>
-<h1>Find money for your home</h1>
+<h1 id="ttl">Find money and help in Chicago</h1>
 <p class="lede">Answer a few questions and see the city, county, state and federal programs you might qualify for in Chicago: what each pays, whether it's open, and where to apply.</p>
-<p class="priv">Nothing you type leaves this page. No account, nothing saved.</p>
+<p class="priv">Nothing you type leaves this page. No account. Programs you star stay in this browser.</p>
 
 <div class="grid">
 <form class="card" id="f" onsubmit="return false" autocomplete="off">
-  <fieldset><legend>What are you working on?</legend>
+  <fieldset><legend>What are you working on? <span style="font-weight:400;color:var(--sc-mute)">Pick any that apply</span></legend>
     <div class="chips" id="role">
       <button type="button" data-r="buyer" aria-pressed="false">Buying a home</button>
       <button type="button" data-r="owner" aria-pressed="false">A home I own</button>
       <button type="button" data-r="renter" aria-pressed="false">Renting</button>
+      <button type="button" data-r="landlord" aria-pressed="false">A building I rent out</button>
       <button type="button" data-r="business" aria-pressed="false">A storefront or business building</button>
       <button type="button" data-r="developer" aria-pressed="false">Building housing</button>
     </div>
@@ -135,6 +164,8 @@ details.no .prog{opacity:.75}
 </section>
 </div>
 </main>
+<div class="gbar" id="gbar" hidden><span id="gbarTxt"></span><button type="button" id="gbarBtn">See programs</button></div>
+<div class="toast" id="toast" role="status"></div>
 <footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 
 <script>
@@ -142,17 +173,28 @@ details.no .prog{opacity:.75}
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;"}[c]));
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
-let DATA = null, LIM = null, ROLE = null, PLACE = null;
-const ROLES = {buyer:["buyer"], owner:["owner"], renter:["renter"], business:["business", "landlord"], developer:["developer", "nonprofit"]};
+let DATA = null, LIM = null, PLACE = null;
+const SEL = new Set();
+const ROLES = {buyer:["buyer"], owner:["owner"], renter:["renter"], landlord:["landlord"], business:["business", "landlord"], developer:["developer", "nonprofit"]};
+const TITLE = {buyer:"Find money for buying a home", owner:"Find money for your home", renter:"Find help with rent and bills", landlord:"Find money for your building",
+  business:"Find money for your business building", developer:"Find money to build housing"};
+const WHO = {buyer:"buyers", owner:"homeowners", renter:"renters", landlord:"building owners", business:"business buildings", developer:"housing builders"};
 const STATUS = {open:"Open now", rolling:"Rolling", seasonal:"Opens each year", round:"Opens in rounds", waitlist:"Waiting list", closed:"Closed for now"};
+const SORDER = {open:0, rolling:1, waitlist:2, seasonal:3, round:4, closed:9};
+const KINDS = {all:["All", null], grant:["Grants", ["grant", "forgivable"]], loan:["Loans", ["loan"]], tax:["Tax breaks and credits", ["tax", "credit"]], help:["Services and land", ["service", "land"]]};
 const LAYER = {tif:"inside a TIF district", qct:"in a Qualified Census Tract", oz:"in an Opportunity Zone", hist:"on or in a National Register listing"};
+let KIND = "all", OPEN = false, SORT = "fit", ONLYLIST = false, OPENED = new Set();
+const LK = "sc-grants-list";
+let LIST = new Set((() => { try { return JSON.parse(localStorage.getItem(LK) || "[]"); } catch(e){ return []; } })());
+const saveList = () => { try { localStorage.setItem(LK, JSON.stringify([...LIST])); } catch(e){} };
+function toast(t){ const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove("on"), 1800); }
 
 /* income limit for p% of area median income: HUD's 50% limit for the household size × p/50 (how the city and HUD scale them) */
 function limit(p, n){ if (!LIM || !n) return null; const b = LIM.l50[Math.min(8, n) - 1]; return Math.round(b * p / 50 / 50) * 50; }
 
 function answers(){
   const n = +$("size").value || 0, inc = $("inc").value === "" ? null : +$("inc").value;
-  return {role:ROLE, n, inc, a60:$("a60").checked || $("a65").checked, a65:$("a65").checked, dis:$("dis").checked, vet:$("vet").checked || $("vetdis").checked, vetdis:$("vetdis").checked,
+  return {owner:SEL.has("owner"), n, inc, a60:$("a60").checked || $("a65").checked, a65:$("a65").checked, dis:$("dis").checked, vet:$("vet").checked || $("vetdis").checked, vetdis:$("vetdis").checked,
     live:$("live").checked, units:+$("units").value || 0, first:$("first").checked, place:PLACE};
 }
 /* each rule → [result, reason]: result 2 = fits, 1 = can't tell yet, 0 = doesn't fit */
@@ -176,7 +218,7 @@ function check(rule, A){
     return A.inc <= L ? [2, `Income under ${money(L)} a year for ${A.n} ${A.n > 1 ? "people" : "person"} (${v}% of the poverty level)`] : [0, `Income over ${money(L)}, ${v}% of the poverty level for ${A.n} ${A.n > 1 ? "people" : "person"}`];
   }
   if (k === "age") return (v <= 60 ? A.a60 : A.a65) ? [2, `Someone ${v} or older`] : [0, `Needs someone ${v} or older`];
-  if (k === "own") return A.live ? [2, "You live there"] : (A.role === "owner" ? [1, "For the home you live in"] : [0, "For the home you live in"]);
+  if (k === "own") return A.live ? [2, "You live there"] : (A.owner ? [1, "For the home you live in"] : [0, "For the home you live in"]);
   if (k === "units") return !A.units ? [1, `Buildings of ${v} homes or fewer`] : A.units <= v ? [2, `Building of ${v} homes or fewer`] : [0, `Only buildings of ${v} homes or fewer`];
   if (k === "first") return A.first ? [2, "First-time buyer"] : [0, "First-time buyers only"];
   if (k === "disab") return A.dis ? [2, "Someone with a disability"] : [0, "For someone with a disability"];
@@ -188,36 +230,96 @@ function check(rule, A){
   }
   return [1, ""];
 }
-function card(p, res){
+function nextDate(m, d){ const now = new Date(), y = now.getFullYear(); let t = new Date(y, m - 1, d); if (t < now) t = new Date(y + 1, m - 1, d); return t; }
+function remindIcs(p){
+  const [m, d, txt] = p.remind, t = nextDate(m, d), pad = n => String(n).padStart(2, "0");
+  const day = `${t.getFullYear()}${pad(t.getMonth() + 1)}${pad(t.getDate())}`, nx = new Date(t.getTime() + 864e5), day2 = `${nx.getFullYear()}${pad(nx.getMonth() + 1)}${pad(nx.getDate())}`;
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//Grants finder//EN", "BEGIN:VEVENT", `UID:${p.id}-${day}@shapechicago`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    `DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${day2}`, `SUMMARY:Check if ${p.name} is open`, `DESCRIPTION:${(txt + " " + p.link).replace(/[,;]/g, "\\$&")}`, `URL:${p.link}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"})); a.download = p.id + "-reminder.ics"; document.body.appendChild(a); a.click(); a.remove();
+  toast("Reminder for " + t.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}));
+}
+function card(p, res, s){
   const st = p.status || ["", ""], old = (Date.now() - new Date(p.checked + "T12:00:00").getTime()) / 864e5 > 90;
-  const src = (p.src || []).map(s => `<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join(" · ");
-  return `<article class="prog"><div class="top"><div><h3>${esc(p.name)}</h3><p class="by">${esc(p.by)}</p></div><span class="pill ${st[0]}">${STATUS[st[0]] || ""}</span></div>
-    <p class="amt">${esc(p.amount)}</p>
-    ${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
-    <p class="stat">${esc(st[1])}</p>${p.note ? `<p class="fine">${esc(p.note)}</p>` : ""}
-    <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">Rules and how to apply</a><span>Source: ${src}</span><span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}${old ? " · may be out of date" : ""}</span></div></article>`;
+  const src = (p.src || []).map(x => `<a href="${esc(x[1])}" target="_blank" rel="noopener">${esc(x[0])}</a>`).join(" · ");
+  const ok = res.filter(r => r[0] === 2).map(r => r[1]), mb = res.filter(r => r[0] === 1).map(r => r[1]), no = res.filter(r => r[0] === 0).map(r => r[1]);
+  const one = s === 0 ? `<p class="one n"><b>Doesn't fit:</b> ${esc(no.join("; "))}</p>` : s === 1 ? `<p class="one m"><b>To check:</b> ${esc(mb.join("; "))}</p>` : ok.length ? `<p class="one y"><b>Fits:</b> ${esc(ok.slice(0, 3).join(" · "))}</p>` : "";
+  const on = LIST.has(p.id), open = OPENED.has(p.id);
+  return `<article class="prog${on ? " starred" : ""}" data-id="${esc(p.id)}"><div class="top"><button type="button" class="star" data-star="${esc(p.id)}" aria-pressed="${on}" title="${on ? "Remove from my list" : "Add to my list"}" aria-label="${on ? "Remove from my list" : "Add to my list"}: ${esc(p.name)}">${on ? "★" : "☆"}</button>
+    <div><p class="amt">${esc(p.short || p.amount)}</p><h3>${esc(p.name)}</h3><p class="by">${esc(p.by)}</p></div><span class="pill ${st[0]}">${STATUS[st[0]] || ""}</span></div>
+    ${one}
+    <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">How to apply</a><button type="button" class="ghost" data-more="${esc(p.id)}" aria-expanded="${open}">${open ? "Less" : "Details"}</button>${p.remind && st[0] !== "open" ? `<button type="button" class="ghost" data-remind="${esc(p.id)}">Remind me when it opens</button>` : ""}</div>
+    <div class="more" ${open ? "" : "hidden"}><p><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
+      <p>${esc(st[1])}</p>${p.note ? `<p class="fine">${esc(p.note)}</p>` : ""}
+      <p class="srcs">Source: ${src} · <span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}${old ? " · may be out of date" : ""}</span></p></div></article>`;
 }
 function render(){
-  const A = answers();
-  $("hh").hidden = !ROLE || ROLE === "business" || ROLE === "developer";
-  $("ownq").hidden = ROLE !== "owner"; $("buyq").hidden = ROLE !== "buyer"; $("dealLink").hidden = ROLE !== "developer";
+  const A = answers(), roles = [...SEL], has = r => SEL.has(r);
+  $("hh").hidden = !(has("buyer") || has("owner") || has("renter"));
+  $("ownq").hidden = !has("owner"); $("buyq").hidden = !has("buyer"); $("dealLink").hidden = !has("developer");
+  $("ttl").textContent = roles.length === 1 ? TITLE[roles[0]] : roles.length ? "Find money and help for your plans" : "Find money and help in Chicago";
   const L80 = limit(80, A.n);
   $("amiNote").textContent = L80 ? `For ${A.n} ${A.n > 1 ? "people" : "person"}: 50% of area median income is ${money(limit(50, A.n))}, 80% is ${money(L80)}, 120% is ${money(limit(120, A.n))}.` : "";
-  if (!ROLE || !DATA){ $("out").innerHTML = '<p class="empty">Pick what you\'re working on to see programs.</p>'; return; }
-  const mine = DATA.programs.filter(p => p.for.some(r => ROLES[ROLE].includes(r)));
-  const scored = mine.map(p => { const res = p.rules.map(r => check(r, A)); const s = res.length ? Math.min(...res.map(r => r[0])) : 2; return {p, res, s}; });
-  const rank = x => (x.p.status[0] === "closed" ? 1 : 0);
-  const yes = scored.filter(x => x.s === 2).sort((a, b) => rank(a) - rank(b)), may = scored.filter(x => x.s === 1).sort((a, b) => rank(a) - rank(b)), no = scored.filter(x => x.s === 0);
-  let h = `<div class="sum"><h2>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</h2><span>${may.length ? may.length + " more to check · " : ""}${mine.length} programs for ${esc({buyer:"buyers", owner:"homeowners", renter:"renters", business:"business buildings", developer:"housing builders"}[ROLE])}</span></div>`;
-  h += yes.map(x => card(x.p, x.res)).join("") || '<p class="empty">Nothing fits every answer yet. Check the ones below.</p>';
-  if (may.length) h += `<p class="grp">Might fit: one more thing to check</p>` + may.map(x => card(x.p, x.res)).join("");
-  if (no.length) h += `<details class="no"><summary>Doesn't fit your answers (${no.length})</summary>${no.map(x => card(x.p, x.res)).join("")}</details>`;
-  $("out").innerHTML = h;
+  const fors = new Set(roles.flatMap(r => ROLES[r]));
+  if (!DATA || (!roles.length && !ONLYLIST)){
+    $("out").innerHTML = (LIST.size ? listBar() : "") + '<p class="empty">Pick what you\'re working on to see programs.</p>'; bindOut(); writeUrl(); $("gbar").hidden = true; document.body.classList.remove("hasbar"); return;
+  }
+  let pool = ONLYLIST ? DATA.programs.filter(p => LIST.has(p.id)) : DATA.programs.filter(p => p.for.some(r => fors.has(r)));
+  const all = pool.length;
+  if (KIND !== "all") pool = pool.filter(p => KINDS[KIND][1].includes(p.form));
+  if (OPEN) pool = pool.filter(p => ["open", "rolling", "waitlist"].includes(p.status[0]));
+  const scored = pool.map(p => { const res = p.rules.map(r => check(r, A)); const s = res.length ? Math.min(...res.map(r => r[0])) : 2; return {p, res, s}; });
+  const key = SORT === "amount" ? x => -(x.p.max || 0) : SORT === "open" ? x => SORDER[x.p.status[0]] ?? 5 : x => (x.p.status[0] === "closed" ? 1 : 0);
+  const srt = arr => arr.sort((a, b) => key(a) - key(b));
+  const yes = srt(scored.filter(x => x.s === 2)), may = srt(scored.filter(x => x.s === 1)), no = srt(scored.filter(x => x.s === 0));
+  const sumMax = yes.filter(x => x.p.max && ["grant", "forgivable"].includes(x.p.form)).reduce((t, x) => t + x.p.max, 0);
+  const whoTxt = ONLYLIST ? "on your list" : "for " + roles.map(r => WHO[r]).join(" and ");
+  let h = listBar() + filterBar();
+  h += `<div class="sum"><h2>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</h2><span>${may.length ? may.length + " more to check · " : ""}${all} programs ${esc(whoTxt)}</span></div>`;
+  h += sumMax ? `<p class="total">Grants you likely fit list up to <b>${money(sumMax)}</b> between them. Some can't be combined; each program decides.</p>` : `<p class="total"></p>`;
+  h += yes.map(x => card(x.p, x.res, x.s)).join("") || '<p class="empty">Nothing fits every answer yet. Check the ones below.</p>';
+  if (may.length) h += `<p class="grp">Might fit: one more thing to check</p>` + may.map(x => card(x.p, x.res, x.s)).join("");
+  if (no.length) h += `<details class="no"><summary>Doesn't fit your answers (${no.length})</summary>${no.map(x => card(x.p, x.res, x.s)).join("")}</details>`;
+  $("out").innerHTML = h; bindOut(); writeUrl();
+  $("gbar").hidden = false; document.body.classList.add("hasbar");
+  $("gbarTxt").innerHTML = `<b>${yes.length}</b> likely fit${may.length ? ` · ${may.length} to check` : ""}`;
+}
+function listBar(){
+  if (!LIST.size) return "";
+  return `<div class="mylist"><b>★ My list: ${LIST.size} program${LIST.size > 1 ? "s" : ""}</b><button type="button" data-l="view">${ONLYLIST ? "Show everything" : "Show only my list"}</button><button type="button" data-l="print">Print</button><button type="button" data-l="copy">Copy link</button><button type="button" data-l="clear">Clear</button></div>`;
+}
+function filterBar(){
+  return `<div class="bar"><div class="chips" role="group" aria-label="Kind of help">${Object.entries(KINDS).map(([k, [lab]]) => `<button type="button" data-kind="${k}" aria-pressed="${KIND === k}">${lab}</button>`).join("")}</div>
+    <label class="tog"><input type="checkbox" id="openOnly" ${OPEN ? "checked" : ""}> Open now</label>
+    <select id="sortBy" aria-label="Sort"><option value="fit" ${SORT === "fit" ? "selected" : ""}>Sort: best fit</option><option value="amount" ${SORT === "amount" ? "selected" : ""}>Sort: biggest amount</option><option value="open" ${SORT === "open" ? "selected" : ""}>Sort: open soonest</option></select></div>`;
+}
+function bindOut(){
+  const O = $("out");
+  O.querySelectorAll("[data-kind]").forEach(b => b.onclick = () => { KIND = b.dataset.kind; render(); });
+  const oo = $("openOnly"); if (oo) oo.onchange = () => { OPEN = oo.checked; render(); };
+  const sb = $("sortBy"); if (sb) sb.onchange = () => { SORT = sb.value; render(); };
+  O.querySelectorAll("[data-star]").forEach(b => b.onclick = () => { const id = b.dataset.star; if (LIST.has(id)) LIST.delete(id); else { LIST.add(id); toast("Added to your list"); } saveList(); if (!LIST.size) ONLYLIST = false; render(); });
+  O.querySelectorAll("[data-more]").forEach(b => b.onclick = () => { const id = b.dataset.more; OPENED.has(id) ? OPENED.delete(id) : OPENED.add(id); const art = b.closest(".prog"), m = art.querySelector(".more"); m.hidden = !OPENED.has(id); b.textContent = OPENED.has(id) ? "Less" : "Details"; b.setAttribute("aria-expanded", OPENED.has(id)); });
+  O.querySelectorAll("[data-remind]").forEach(b => b.onclick = () => remindIcs(DATA.programs.find(p => p.id === b.dataset.remind)));
+  O.querySelectorAll("[data-l]").forEach(b => b.onclick = async () => {
+    const a = b.dataset.l;
+    if (a === "view"){ ONLYLIST = !ONLYLIST; render(); }
+    if (a === "clear"){ LIST.clear(); saveList(); ONLYLIST = false; render(); }
+    if (a === "print"){ const was = ONLYLIST; ONLYLIST = true; render(); document.body.classList.add("printlist"); const back = () => { document.body.classList.remove("printlist"); ONLYLIST = was; render(); removeEventListener("afterprint", back); }; addEventListener("afterprint", back); window.print(); }
+    if (a === "copy"){ writeUrl(true); try { await navigator.clipboard.writeText(location.href); toast("Link copied"); } catch(e){ toast("Copy the address bar to share"); } }
+  });
+}
+function writeUrl(withList){
+  const u = new URL(location.href);
+  if (SEL.size) u.searchParams.set("for", [...SEL].join(",")); else u.searchParams.delete("for");
+  if (PLACE) u.searchParams.set("q", PLACE.label); 
+  u.hash = withList && LIST.size ? "list=" + [...LIST].join(",") : "";
+  history.replaceState(null, "", u);
 }
 async function onPlace(P){
   const F = await SCAddr.rules(P.lon, P.lat), G = await fetchG(P.lon, P.lat);
   const layers = {tif: (G.tif || [])[0] || false, qct: !!(G.qct26 || G.qct27), oz: !!F.oz, hist: F.nr ? F.nr[0][0] : false};
-  PLACE = {...P, layers};
+  PLACE = {...P, layers}; try { localStorage.setItem("sc-addr", P.label); } catch(e){}
   const bits = [P.ward ? "Ward " + P.ward : null, layers.tif ? "TIF district: " + layers.tif : "Not in a TIF district", layers.oz ? "Opportunity Zone" : null, layers.qct ? "Qualified Census Tract" : null, layers.hist ? "National Register: " + layers.hist : null].filter(Boolean);
   $("place").textContent = bits.join(" · ");
   render();
@@ -236,14 +338,23 @@ async function fetchG(lon, lat){
   [DATA, LIM] = await Promise.all([fetch("data/programs.json").then(r => r.json()), fetch("data/limits.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
   if (LIM) $("limYr").textContent = LIM.label;
   $("checkedNote").innerHTML = `Programs last checked ${new Date(DATA.checked + "T12:00:00").toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"})}. Something wrong or missing? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Tell us</a>.`;
-  document.querySelectorAll("#role button").forEach(b => b.onclick = () => { ROLE = b.dataset.r; document.querySelectorAll("#role button").forEach(x => x.setAttribute("aria-pressed", x === b)); render(); });
+  const setRole = (r, on) => { on ? SEL.add(r) : SEL.delete(r); const b = document.querySelector(`#role [data-r="${r}"]`); b && b.setAttribute("aria-pressed", on); };
+  document.querySelectorAll("#role button").forEach(b => b.onclick = () => { setRole(b.dataset.r, !SEL.has(b.dataset.r)); ONLYLIST = false; render(); });
   ["size", "inc", "a60", "a65", "dis", "vet", "vetdis", "live", "units", "first"].forEach(id => $(id).addEventListener(id === "inc" ? "input" : "change", render));
-  const start = () => { if (!window.SCAddr) return setTimeout(start, 50); SCAddr.attach($("q"), $("sugg"), onPlace, t => $("hint").textContent = t); };
+  const sp = new URLSearchParams(location.search);
+  (sp.get("for") || "").split(",").filter(r => ROLES[r]).forEach(r => setRole(r, true));
+  const hl = location.hash.match(/^#list=([a-z0-9_,]+)$/);
+  if (hl){ hl[1].split(",").filter(id => DATA.programs.some(p => p.id === id)).forEach(id => LIST.add(id)); saveList(); ONLYLIST = true; }
+  const start = () => { if (!window.SCAddr) return setTimeout(start, 50); const H = SCAddr.attach($("q"), $("sugg"), onPlace, t => $("hint").textContent = t);
+    let q0 = sp.get("q"); if (!q0) try { q0 = localStorage.getItem("sc-addr"); } catch(e){}
+    if (q0){ $("q").value = q0; H.pickText(); } };
   start();
-  const r0 = new URLSearchParams(location.search).get("for"); if (r0){ const b = document.querySelector(`#role [data-r="${r0}"]`); b && b.click(); }
   render();
+  let seen = false; new IntersectionObserver(es => { seen = es[0].isIntersecting; $("gbarBtn").textContent = seen ? "Change answers" : "See programs"; }, {rootMargin:"-40% 0px -40% 0px"}).observe($("out"));
+  $("gbarBtn").onclick = () => (seen ? $("f") : $("out")).scrollIntoView({behavior:"smooth", block:"start"});
+  if (ONLYLIST && matchMedia("(max-width:900px)").matches) setTimeout(() => $("out").scrollIntoView(), 300);
 })();
 </script>
-<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("grants", {title:"Find money for your home", body:"<p>Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.</p>"}));</script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("grants", {title:"Find money and help in Chicago", body:"<p>Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.</p>"}));</script>
 </body>
 </html>
