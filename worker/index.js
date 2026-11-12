@@ -9,6 +9,44 @@ const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|
 const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff, nm";
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
+// Plans from the other simulators (transit, budget, pensions). Stored: the plan code, a name picked from the site's list,
+// and a few numbers the simulator worked out (so cards don't have to re-run the models). Never any text people typed:
+// transit line names are dropped unless they are one of the site's own proposal names (cleanTransit).
+const T_PT = "-?[0-9a-z]{1,6},-?[0-9a-z]{1,6}(?:,[LM][A-Za-z0-9_-]{1,40})?";
+const T_DRAW = new RegExp("^x?(?:st|[sebil])(?:\\d{1,3}(?:_\\d)?|undefined|NaN)\\.(?:" + T_PT + ")(?:;" + T_PT + "){0,79}\\.");
+const T_OTHER = /^(?:C[01]{3}|F[0-9a-z]{1,12}\.[0-9a-z]{1,12}\.(?:a|n|[of][0-9A-Za-z-]{1,900})|x?M[A-Z-]{1,6}\.\d{1,3}(?:_\d)?\.[01](?:\.[a-z0-9-]{1,16})?)$/;
+const SIM = {
+  transit: {ok: c => c.length <= 8000 && c.split("~").every(p => { if (T_OTHER.test(p)) return true; const m = p.match(T_DRAW); return !!m && /^[A-Za-z0-9%]{0,120}$/.test(p.slice(m[0].length)); }),
+    num: {n:[0, 80], rail:[0, 80], bus:[0, 80], metra:[0, 20], riders:[0, 5e6], cap:[0, 1e12], op:[-2e10, 5e10], cars:[0, 5e6]}},
+  budget: {ok: c => /^b2\.[-\d.]{1,500}~[-\d:,]{0,800}$/.test(c),
+    num: {left:[-50000, 50000], need:[0, 50000], rec:[0, 50000], one:[0, 50000], cost:[0, 50000], state:[0, 50000], home:[-50000, 50000], yes:[0, 50]}},   // $ millions; home = $ a year for a typical homeowner
+  pensions: {ok: c => /^p2\.\d\.\d{1,9}\.\d\.\d\.\d\.\d\.\d$/.test(c),
+    num: {y90:[0, 2100], cost:[0, 1e10], base:[0, 1e10], peak:[0, 1e9], peakY:[2025, 2100], broke:[0, 2100]}},   // $ thousands, as the simulator counts
+};
+function simStats(kind, b){
+  const out = {}, S = SIM[kind].num;
+  for (const k in S){ const v = +b[k]; if (b[k] != null && isFinite(v) && v >= S[k][0] && v <= S[k][1]) out[k] = Math.round(v * 10) / 10; }
+  if (kind === "transit" && Array.isArray(b.shape)){   // the lines, for the card's little map: [mode 0-5, lon, lat, lon, lat, ...]
+    out.shape = b.shape.slice(0, 40).filter(L => Array.isArray(L) && L.length >= 5 && L.length <= 161 && L[0] >= 0 && L[0] <= 5 && L.slice(1).every((v, i) => typeof v === "number" && (i % 2 ? v > 41.2 && v < 42.6 : v > -88.8 && v < -87.0)))
+      .map(L => [Math.round(L[0])].concat(L.slice(1).map(v => Math.round(v * 1e4) / 1e4)));
+  }
+  if (kind === "pensions" && Array.isArray(b.fr)) out.fr = b.fr.slice(0, 12).map(v => Math.max(0, Math.min(300, Math.round(+v || 0))));   // % funded every five years from 2025
+  return out;
+}
+let PRESET_NAMES = null;
+async function cleanTransit(code, url, env){
+  if (!PRESET_NAMES){
+    try { const d = await (await env.ASSETS.fetch(new Request(url.origin + "/transit/data/presets.json"))).json(); PRESET_NAMES = new Set((Array.isArray(d) ? d : d.presets || []).map(q => q.name)); }
+    catch (e) { PRESET_NAMES = new Set(); }
+  }
+  return String(code || "").slice(0, 20000).split("~").map(part => {
+    if (T_OTHER.test(part)) return part;
+    const m = part.match(T_DRAW); if (!m) return null;
+    const raw = part.slice(m[0].length); let nm = null; try { nm = decodeURIComponent(raw); } catch (e) {}
+    return m[0] + (nm && PRESET_NAMES.has(nm) && /^[A-Za-z0-9%]*$/.test(raw) ? raw : "");
+  }).filter(p => p !== null).join("~");
+}
+
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
 import { cardSvg } from "./card.js";
@@ -33,7 +71,11 @@ export default {
     if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || (req.headers.get("x-feedback-key") || url.searchParams.get("key")) !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
     const ip = req.headers.get("cf-connecting-ip") || "0";
-    const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip}, body: req.method === "POST" ? await req.text() : undefined});
+    let body = req.method === "POST" ? await req.text() : undefined;
+    if (url.pathname === "/api/splan" && req.method === "POST"){   // transit plans: drop any line names people typed before the plan is stored
+      try { const b = JSON.parse(body); if (b && b.kind === "transit"){ b.code = await cleanTransit(b.code, url, env); body = JSON.stringify(b); } } catch (e) { return json({error: "bad request"}, 400); }
+    }
+    const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip}, body});
     return stub.fetch(fwd);
   },
 };
@@ -176,8 +218,34 @@ export class Community {
     try { this.sql.exec("ALTER TABLE bears ADD COLUMN plan TEXT"); } catch (e) {}
     // Nov 8: the site planner is gone (Kyle); drop the test picks that carried a plan
     this.sql.exec("DELETE FROM bears WHERE plan IS NOT NULL");
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS splans (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, code TEXT NOT NULL, stats TEXT NOT NULL, nm INTEGER,
+      likes INTEGER NOT NULL DEFAULT 0, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS slikes (plan INTEGER NOT NULL, who TEXT NOT NULL, PRIMARY KEY (plan, who))`);
     this.env = env;
     this.cache = null;
+  }
+
+  // transit, budget and pensions plans people chose to share (see SIM above)
+  addSim(b, who){
+    const kind = String(b.kind || ""), code = String(b.code || "");
+    if (!SIM[kind] || !code || !SIM[kind].ok(code)) return json({error: "invalid plan"}, 400);
+    const stats = JSON.stringify(simStats(kind, b.stats || {})), nmv = Math.round(+b.nm), nm = b.nm != null && nmv >= 0 && nmv <= 999 ? nmv : null;
+    if (this.sql.exec("SELECT COUNT(*) AS n FROM splans WHERE who = ?", who).one().n >= 20) return json({error: "slow down"}, 429);
+    const dup = this.sql.exec("SELECT id FROM splans WHERE who = ? AND kind = ? AND code = ?", who, kind, code).toArray()[0];
+    let id;
+    if (dup){ this.sql.exec("UPDATE splans SET stats = ?, nm = COALESCE(?, nm), ts = ? WHERE id = ?", stats, nm, Date.now(), dup.id); id = dup.id; }
+    else id = this.sql.exec("INSERT INTO splans (kind, code, stats, nm, who, ts) VALUES (?, ?, ?, ?, ?, ?) RETURNING id", kind, code, stats, nm, who, Date.now()).one().id;
+    return json({ok: true, id});
+  }
+  simRow(r){ let stats = {}; try { stats = JSON.parse(r.stats); } catch (e) {} return {id: r.id, kind: r.kind, code: r.code, stats, nm: r.nm, likes: r.likes, ts: r.ts}; }
+  simGallery(kind, sort, limit){
+    const where = SIM[kind] ? "WHERE kind = '" + kind + "'" : "", order = sort === "top" ? "likes DESC, ts DESC" : "ts DESC";
+    return json({plans: this.sql.exec(`SELECT id, kind, code, stats, nm, likes, ts FROM splans ${where} ORDER BY ${order} LIMIT ${Math.max(1, Math.min(60, Math.round(limit) || 30))}`).toArray().map(r => this.simRow(r))});
+  }
+  simLike(id, who){
+    if (!this.sql.exec("SELECT 1 FROM splans WHERE id = ?", id).toArray().length) return json({error: "not found"}, 404);
+    if (!this.sql.exec("SELECT 1 FROM slikes WHERE plan = ? AND who = ?", id, who).toArray().length){ this.sql.exec("INSERT INTO slikes (plan, who) VALUES (?, ?)", id, who); this.sql.exec("UPDATE splans SET likes = likes + 1 WHERE id = ?", id); }
+    return json({ok: true, likes: this.sql.exec("SELECT likes FROM splans WHERE id = ?", id).one().likes});
   }
 
   // Plans posted on fixchicagohousing.com (the fix-chicago-housing Worker) are copied in, at most every 6 hours, until launch.
@@ -226,6 +294,16 @@ export class Community {
       if (path === "/api/card" && req.method === "POST") return this.addCard(await req.json(), who);
       const cm = path.match(/^\/api\/card\/([0-9a-f]{12})$/);
       if (cm && req.method === "GET"){ const r = this.sql.exec("SELECT code, homes, grade, goal, rent, rentno, mode FROM cards WHERE id = ?", cm[1]).toArray()[0]; return r ? json(r) : json({error: "not found"}, 404); }
+      if (path === "/api/splan" && req.method === "POST") return this.addSim(await req.json(), who);
+      if (path === "/api/sgallery" && req.method === "GET") return this.simGallery(String(url.searchParams.get("kind") || ""), url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("limit") || 30);
+      if (path === "/api/splans" && req.method === "GET"){
+        const ids = String(url.searchParams.get("ids") || "").split(",").map(Number).filter(n => n > 0).slice(0, 40);
+        return json({plans: ids.length ? this.sql.exec(`SELECT id, kind, code, stats, nm, likes, ts FROM splans WHERE id IN (${ids.join(",")})`).toArray().map(r => this.simRow(r)) : []});
+      }
+      const sm = path.match(/^\/api\/splan\/(\d+)$/);
+      if (sm && req.method === "GET"){ const r = this.sql.exec("SELECT id, kind, code, stats, nm, likes, ts FROM splans WHERE id = ?", +sm[1]).toArray()[0]; return r ? json(this.simRow(r)) : json({error: "not found"}, 404); }
+      const sl = path.match(/^\/api\/slike\/(\d+)$/);
+      if (sl && req.method === "POST") return this.simLike(+sl[1], who);
       if (path === "/api/bears/pick" && req.method === "POST") return this.bearsPick(await req.json(), who, day);
       if (path === "/api/bears/picks" && req.method === "GET") return this.bearsPicks();
       const m = path.match(/^\/api\/like\/(\d+)$/);

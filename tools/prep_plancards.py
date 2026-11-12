@@ -1,6 +1,6 @@
 """Small SVG outlines of the 77 community areas for plan cards (plans/areas.json).
 Projects lon/lat to a 1000-unit-tall box (equirectangular at Chicago's latitude), simplifies, and writes one path per area:
-{"w": width, "h": 1000, "areas": {"1": "M..Z", ...}, "L": [[x,y]...] L stations, "M": Metra stations in the box, "corr": corridor paths}. Run: python3 tools/prep_plancards.py"""
+{"w": width, "h": 1000, "b": [west, south, east, north] (for placing other lon/lat points: x = (lon - west) * cos(mid latitude) * 1000 / (north - south), y = (north - lat) * 1000 / (north - south)), "areas": {"1": "M..Z", ...}, "L": [[x,y]...] L stations, "M": Metra stations in the box, "corr": corridor paths}. Run: python3 tools/prep_plancards.py"""
 import json, math
 from shapely.geometry import shape, box
 from shapely.ops import unary_union
@@ -28,5 +28,5 @@ for c in M["corridors"]:
     for pa in c["paths"]:
         q = [P(*xy) for xy in pa]
         lines.append("M" + "L".join(f"{x:.0f} {y:.0f}" for x, y in q))
-json.dump({"w": round(W), "h": int(H), "areas": areas, "L": pt(M["stations"]), "M": [p for p in pt(M["metra"]) if -5 <= p[0] <= W + 5 and -5 <= p[1] <= H + 5], "corr": "".join(lines)}, open("plans/areas.json", "w"), separators=(",", ":"))
+json.dump({"w": round(W), "h": int(H), "b": [round(x0, 5), round(y0, 5), round(x1, 5), round(y1, 5)], "areas": areas, "L": pt(M["stations"]), "M": [p for p in pt(M["metra"]) if -5 <= p[0] <= W + 5 and -5 <= p[1] <= H + 5], "corr": "".join(lines)}, open("plans/areas.json", "w"), separators=(",", ":"))
 print(round(W), sum(len(v) for v in areas.values()), "chars")

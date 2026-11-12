@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js" defer></script>
 <style>
 html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 .sc-head{position:sticky;top:0}
@@ -90,7 +91,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   <div class="k"><b id="k90">–</b><span id="k90l">reaches 90% funded</span></div>
   <div class="k hide"><b id="kCost">–</b><span>city pays 2026–2060, in today's dollars</span></div>
   <div class="k hide"><b id="kPeak">–</b><span>biggest yearly payment</span></div>
-  <div class="btns"><button class="sc-btn" id="reset">Back to state law</button></div>
+  <div class="btns"><button class="sc-btn" id="reset">Back to state law</button><button class="sc-btn" id="shareBtn">Share</button></div>
 </section>
 <main>
   <section class="panel" aria-label="Your choices">
@@ -345,6 +346,21 @@ $("crash").onclick = () => { st.crash = !st.crash; syncCtl(); render(); };
 // "Back to state law" only lights up when something differs from today's law, so a click always visibly changes the plan
 function syncReset(){ const same = Object.keys(LAW).every(k => st[k] === LAW[k]), b = $("reset");
   b.disabled = same; b.title = same ? "You're already on today's state law" : "Undo your changes"; }
+// Share: a link to this exact plan, or add it to Neighbors' plans (the plan code and the numbers on screen; nothing typed)
+function sharedPlan(){
+  save(); const R = run({...st, ret: RETS[st.ret][0]}), T = R.tot, B = BASE.tot;
+  const pv = rows => rows.filter(t => t.y >= 2026 && t.y <= 2060).reduce((a, t) => a + (t.er + (t.ds || 0)) / Math.pow(1 + INFL, t.y - 2026), 0);
+  const peak = T.filter(t => t.y >= 2026).reduce((m, t) => t.er + t.ds > m.v ? {v: t.er + t.ds, y: t.y} : m, {v: 0, y: 2026});
+  const broke = Object.values(R.funds).map(v => v.broke).filter(Boolean), fr = [];
+  for (let y = 2025; y <= 2060; y += 5){ const t = T.find(t => t.y === y); if (t) fr.push(Math.round(t.fr * 100)); }
+  return {code: location.hash.slice(1), stats: {y90: T.find(t => t.fr >= 0.899)?.y || 0, cost: Math.round(pv(T)), base: Math.round(pv(B)), peak: Math.round(peak.v), peakY: peak.y, ...(broke.length ? {broke: Math.min(...broke)} : {}), fr}};
+}
+$("shareBtn").onclick = () => {
+  save();
+  info("Share this plan", `<div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start"><button class="sc-btn" id="shCopy">Copy a link to this plan</button><div id="nbBox"></div><a href="/plans/?sim=pensions" style="font-size:14px;font-weight:600;text-decoration:none">See the pension plans neighbors shared</a></div>`);
+  $("shCopy").onclick = async () => { try { await navigator.clipboard.writeText(location.href); $("shCopy").textContent = "Copied"; } catch (e){ $("shCopy").textContent = "Copy failed"; } };
+  if (window.SCPlans) SCPlans.shareBox($("nbBox"), "pensions", sharedPlan);
+};
 $("reset").onclick = () => {
   Object.assign(st, LAW); syncCtl(); render();
   const pn = $("reset").closest(".panel") || document.querySelector(".panel"); if (pn) pn.scrollTo({top:0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});

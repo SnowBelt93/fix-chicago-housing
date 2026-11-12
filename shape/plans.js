@@ -1,4 +1,5 @@
-/* Shape Chicago: plan cards for housing plans people posted (home page and /plans/).
+/* Shape Chicago: plan cards for the plans people shared from the simulators (home page and /plans/): housing first, then
+   transit, budget and pensions (SIMS, near the end).
    Reads a plan code (the same format as housing/index.html encodePlan/decodePlan) and draws a small map of what it rezones,
    the main choices as chips, the numbers, and an Endorse button. Nothing people type is shown: titles come from the plan itself.
    Map data: /plans/areas.json from tools/prep_plancards.py. */
@@ -156,5 +157,189 @@
     } catch (e) { return null; }
   }
 
-  window.SCPlans = {decode, choices, title, kind, nameOf, NAMES, hashN, map, card, geo, endorseBtn, myNews, mine, AREAS, MODE, fmt, esc, ago, STAR};
+
+  /* ---------- plans from the other simulators: transit, budget, pensions ----------
+     The server keeps the plan code and a few numbers the simulator worked out when the plan was shared (P.stats), so a
+     card never has to run a model. Names come from NAMES, like housing plans. */
+  const money = v => { const a = Math.abs(v); return (v < 0 ? "−" : "") + "$" + (a >= 1e9 ? (a / 1e9).toFixed(a >= 1e10 ? 0 : 1) + "B" : a >= 1e6 ? Math.round(a / 1e6) + "M" : a >= 1e3 ? Math.round(a / 1e3) + "K" : Math.round(a)); };
+  const mm = v => money(v * 1e6);                      // budget figures are in $ millions
+  const plural = (n, one, many) => n + " " + (n === 1 ? one : many || one + "s");
+  const METRA = {BNSF:"BNSF", HC:"Heritage Corridor", "MD-N":"Milwaukee North", "MD-W":"Milwaukee West", ME:"Metra Electric", NCS:"North Central", RI:"Rock Island", SWS:"SouthWest Service", "UP-N":"UP North", "UP-NW":"UP Northwest", "UP-W":"UP West"};
+  const TMODE = {s:["Subway line", "Subway lines"], e:["Elevated line", "Elevated lines"], st:["Streetcar line", "Streetcar lines"], b:["Bus rapid transit line", "Bus rapid transit lines"], i:["New L station", "New L stations"], l:["Bus lane", "Bus lanes"]};
+  const TCOL = ["#2b5da0", "#2b5da0", "#e07a3f", "#2e9d57", "#7a5ea8", "#c8102e"];   // subway, elevated, streetcar, BRT, Metra, bus lane
+  // what a transit plan code holds (lines that are switched off don't count)
+  function tparse(code){
+    const o = {named:[], n:{}, metra:[], clean:[], fresh:false, rail:0, bus:0};
+    for (const part of String(code || "").split("~")){
+      if (!part || part[0] === "x") continue;
+      if (/^C[01]{3}$/.test(part)){ if (part[1] === "1") o.clean.push("Electric buses"); if (part[2] === "1") o.clean.push("Electric Metra"); if (part[3] === "1") o.clean.push("Clean power grid"); continue; }
+      if (part[0] === "F"){ o.fresh = true; continue; }
+      if (part[0] === "M"){ const id = part.slice(1).split(".")[0]; o.metra.push((METRA[id] || id) + " all-day trains"); continue; }
+      const k = part.startsWith("st") ? "st" : part[0]; if (!TMODE[k]) continue;
+      if (k === "s" || k === "e" || k === "i") o.rail++; else o.bus++;
+      let nm = ""; try { nm = decodeURIComponent(part.slice(part.lastIndexOf(".") + 1)); } catch (e) {}
+      if (nm) o.named.push(nm); else o.n[k] = (o.n[k] || 0) + 1;
+    }
+    return o;
+  }
+  function pparse(code){
+    const m = String(code || "").match(/^p2\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)\.(\d)\.(\d)$/); if (!m) return null;
+    return {pay:+m[1], extra:+m[2], bond:+m[3], ret:+m[4], crash:m[5] === "1", by:+m[6], pool:+m[7]};
+  }
+  const SIMS = {
+    transit: {
+      label:"Transit", sim:"/transit/", simName:"the transit simulator", open: P => "/transit/#p=" + P.code,
+      chips(P){ const t = tparse(P.code), c = [];
+        t.named.forEach(n => c.push({t:n, kind:"zone"}));
+        for (const k in t.n) c.push({t: t.n[k] === 1 ? TMODE[k][0] : t.n[k] + " " + TMODE[k][1].toLowerCase(), kind:"zone"});
+        t.metra.forEach(n => c.push({t:n, kind:"zone"}));
+        t.clean.forEach(n => c.push({t:n, kind:"policy"}));
+        if (t.fresh) c.push({t:"Network redrawn from scratch", kind:"policy"});
+        return c; },
+      kind(P){ const t = tparse(P.code);
+        if (t.fresh) return {t:"From scratch", c:"all"};
+        const r = t.rail, b = t.bus, m = t.metra.length;
+        if (!r && !b && !m) return {t:"Cleaner transit", c:"pol"};
+        if (r && !b && !m) return {t:"Rail", c:"tod"}; if (b && !r && !m) return {t:"Buses", c:"mm"}; if (m && !r && !b) return {t:"Metra", c:"hood"};
+        const has = [r && "rail", b && "bus", m && "Metra"].filter(Boolean), t = has.length === 3 ? "Rail, bus and Metra" : has.join(" and ");
+        return {t:t[0].toUpperCase() + t.slice(1), c:"all"}; },
+      sum(P){ const t = tparse(P.code), x = [];
+        if (t.rail) x.push(plural(t.rail, "rail project")); if (t.bus) x.push(plural(t.bus, "bus project")); if (t.metra.length) x.push(plural(t.metra.length, "Metra upgrade"));
+        if (t.clean.length) x.push("cleaner fleet"); return x.join(", ") || (t.fresh ? "A redrawn network" : "No lines yet"); },
+      nums(P){ const s = P.stats || {}, o = [];
+        if (s.riders != null) o.push([fmt(Math.round(s.riders)), "new transit trips a weekday"]);
+        if (s.cap != null) o.push([money(s.cap), "to build"]);
+        if (s.op != null) o.push([money(Math.abs(s.op)), s.op < 0 ? "saved a year to run" : "a year to run"]);
+        if (s.cars != null) o.push([fmt(Math.round(s.cars)), "fewer car trips a day"]);
+        return o; },
+      art(P, G, big){
+        if (!G || !G.b) return '<div class="pmap empty"></div>';
+        const [x0, y0, x1, y1] = G.b, k = Math.cos((y0 + y1) / 2 * Math.PI / 180), S = 1000 / (y1 - y0), X = lon => (lon - x0) * k * S, Y = lat => (y1 - lat) * S;
+        let h = '<svg class="' + (big ? "big" : "pmap") + '" viewBox="-10 -10 ' + (G.w + 20) + ' 1020" role="img" aria-label="Map of the plan\'s lines">';
+        for (const n in G.areas) h += '<path d="' + G.areas[n] + '" fill="#e7ebef" stroke="#fff" stroke-width="3"/>';
+        for (const [x, y] of G.L) h += '<circle cx="' + x + '" cy="' + y + '" r="' + (big ? 4 : 5) + '" fill="#aab2ba"/>';
+        for (const L of (P.stats && P.stats.shape) || []){
+          let d = ""; for (let i = 1; i + 1 < L.length; i += 2) d += (i === 1 ? "M" : "L") + X(L[i]).toFixed(0) + " " + Y(L[i + 1]).toFixed(0);
+          const w = big ? 9 : 14;
+          h += '<path d="' + d + '" fill="none" stroke="#fff" stroke-width="' + (w + 6) + '" stroke-linecap="round" stroke-linejoin="round"/><path d="' + d + '" fill="none" stroke="' + TCOL[L[0]] + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"' + (L[0] === 0 ? ' stroke-dasharray="' + w * 2.2 + " " + w * 1.3 + '"' : "") + '/>';
+        }
+        return h + "</svg>"; },
+      key: '<span><i style="background:#2b5da0"></i>Rail (subway dashed)</span><span><i style="background:#e07a3f"></i>Streetcar</span><span><i style="background:#2e9d57"></i>Bus rapid transit</span><span><i style="background:#7a5ea8"></i>Metra</span><span><i style="background:#c8102e"></i>Bus lane</span>',
+    },
+    budget: {
+      label:"Budget", sim:"/budget/", simName:"the budget simulator", open: P => "/budget/#" + P.code,
+      chips(P){ const s = P.stats || {}, c = [];
+        if (s.rec > 0.05) c.push({t:"Lasting fixes " + mm(s.rec), kind:"zone"});
+        if (s.one > 0.05) c.push({t:"One-time money " + mm(s.one), kind:"policy"});
+        if (s.cost > 0.05) c.push({t:"Tax cuts and new spending " + mm(s.cost), kind:"more"});
+        if (s.state > 0.05) c.push({t:"Needs Springfield or voters: " + mm(s.state), kind:"cut"});
+        if (s.yes != null) c.push({t:"Council vote estimate " + s.yes + "–" + (50 - s.yes), kind:"more"});
+        return c; },
+      kind(P){ const s = P.stats || {};
+        if (s.left > 0.05) return {t:"Still short", c:"cut"};
+        if (s.state > 0.05) return {t:"Leans on Springfield", c:"main"};
+        if (!(s.one > 0.05)) return {t:"No one-time money", c:"pol"};
+        return {t:"Balanced", c:"tod"}; },
+      sum(P){ const s = P.stats || {}; return s.need != null ? "Closes " + mm(Math.min(s.need, (s.rec || 0) + (s.one || 0))) + " of a " + mm(s.need) + " gap" : "A 2027 city budget"; },
+      nums(P){ const s = P.stats || {}, o = [];
+        if (s.left != null) o.push(s.left > 0.05 ? [mm(s.left), "still short"] : ["Balanced", "the 2027 budget"]);
+        if (s.home != null) o.push([(s.home > 0 ? "+" : s.home < 0 ? "−" : "") + "$" + fmt(Math.abs(Math.round(s.home))), "a year for a typical homeowner"]);
+        return o; },
+      art(P, G, big){ const s = P.stats || {}, need = Math.max(1, s.need || 1), rec = Math.max(0, s.rec || 0), one = Math.max(0, s.one || 0), tot = Math.max(need, rec + one);
+        const VW = big ? 600 : 320, W = VW - 40, a = W * rec / tot, b = W * one / tot, c = W * Math.max(0, need - rec - one) / tot, gx = 20 + W * need / tot;
+        const seg = (x, w, fill, label, val) => w < 1 ? "" : '<rect x="' + (20 + x) + '" y="60" width="' + w + '" height="60" fill="' + fill + '"/>' + (w > 76 ? '<text x="' + (20 + x + w / 2) + '" y="86" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">' + label + '</text><text x="' + (20 + x + w / 2) + '" y="106" text-anchor="middle" font-size="14" fill="#fff">' + val + '</text>' : "");
+        return '<svg class="' + (big ? "big" : "pmap") + ' wide" viewBox="0 0 ' + VW + ' 170" role="img" aria-label="How the plan closes the budget gap"><text x="20" y="38" font-size="18" font-weight="600" fill="#1a1d21">' + mm(need) + ' to close</text>'
+          + '<clipPath id="bc' + (big ? "b" : "") + P.id + '"><rect x="20" y="60" width="' + W + '" height="60" rx="12"/></clipPath><g clip-path="url(#bc' + (big ? "b" : "") + P.id + ')"><rect x="20" y="60" width="' + W + '" height="60" fill="#e7ebef"/>' + seg(0, a, "#2b5da0", "Lasting", mm(rec)) + seg(a, b, "#41b6e6", "One-time", mm(one)) + seg(a + b, c, "#e4002b", "Short", mm(need - rec - one)) + '</g>'
+          + '<line x1="' + gx + '" x2="' + gx + '" y1="50" y2="130" stroke="#1a1d21" stroke-width="2"/><text x="' + Math.min(VW - 20, gx) + '" y="150" text-anchor="end" font-size="13" fill="#5a6069">the gap</text></svg>'; },
+      key: '<span><i style="background:#2b5da0"></i>Lasting fixes</span><span><i style="background:#41b6e6"></i>One-time money</span><span><i style="background:#e4002b"></i>Still short</span>',
+    },
+    pensions: {
+      label:"Pensions", sim:"/pensions/", simName:"the pensions simulator", open: P => "/pensions/#" + P.code,
+      chips(P){ const o = pparse(P.code), c = []; if (!o) return c;
+        c.push({t:["State law's payment schedule", "Pays the funds off fully", "Payments frozen at 2026"][o.pay] || "State law's payment schedule", kind:o.pay === 2 ? "cut" : "zone"});
+        if (o.by) c.push({t:"90% funded by " + [0, 2050, 2045, 2040][o.by], kind:"zone"});
+        if (o.extra) c.push({t:"+$" + fmt(o.extra) + "M extra a year", kind:"zone"});
+        if (o.bond) c.push({t:["", "$5B", "$10B"][o.bond] + " pension bond", kind:"policy"});
+        if (o.pool) c.push({t:"Pooled investing", kind:"policy"});
+        if (o.ret !== 2) c.push({t:"Assumes " + ["4%", "5.5%", "", "8%"][o.ret] + " returns", kind:"more"});
+        if (o.crash) c.push({t:"Tested against a 2028 crash", kind:"more"});
+        return c; },
+      kind(P){ const s = P.stats || {}, o = pparse(P.code) || {};
+        if (s.broke) return {t:"A fund runs dry", c:"cut"};
+        if (!s.y90) return {t:"Never reaches 90%", c:"cut"};
+        if (o.bond) return {t:"Borrows to catch up", c:"main"};
+        if (s.y90 < 2055) return {t:"Faster payoff", c:"tod"};
+        return {t:"On the law's schedule", c:"pol"}; },
+      sum(P){ const s = P.stats || {}; return s.broke ? "A fund runs out of money in " + s.broke : s.y90 ? "The four funds reach 90% funded in " + s.y90 : "The funds don't reach 90% by 2070"; },
+      nums(P){ const s = P.stats || {}, o = [];
+        o.push(s.y90 ? [String(s.y90), "90% funded"] : ["Never", "reaches 90%"]);
+        if (s.cost != null) o.push([money(s.cost * 1000), "paid 2026–2060, today's dollars"]);
+        if (s.cost != null && s.base != null && Math.abs(s.cost - s.base) > 5e5) o.push([money(Math.abs(s.cost - s.base) * 1000), s.cost < s.base ? "less than state law" : "more than state law"]);
+        return o; },
+      art(P, G, big){ const f = (P.stats && P.stats.fr) || [], n = f.length;
+        if (n < 2) return '<div class="pmap empty"></div>';
+        const VW = big ? 600 : 320, x0 = 24, x1 = VW - 24, X = i => x0 + i * ((x1 - x0) / (n - 1)), Y = v => 140 - Math.min(110, v) * 1.05;
+        let d = "", pts = ""; f.forEach((v, i) => { d += (i ? "L" : "M") + X(i).toFixed(0) + " " + Y(v).toFixed(0); pts += '<circle cx="' + X(i).toFixed(0) + '" cy="' + Y(v).toFixed(0) + '" r="4" fill="#2b5da0"/>'; });
+        return '<svg class="' + (big ? "big" : "pmap") + ' wide" viewBox="0 0 ' + VW + ' 172" role="img" aria-label="Share of what the funds owe that they hold, 2025 to ' + (2025 + (n - 1) * 5) + '">'
+          + '<line x1="' + x0 + '" x2="' + x1 + '" y1="' + Y(90) + '" y2="' + Y(90) + '" stroke="#e4002b" stroke-width="2" stroke-dasharray="6 5"/><text x="' + x0 + '" y="' + (Y(90) - 8) + '" font-size="13" fill="#a0001b">90% funded</text>'
+          + '<line x1="' + x0 + '" x2="' + x1 + '" y1="140" y2="140" stroke="#d5d9de" stroke-width="1.5"/><path d="' + d + 'L' + X(n - 1).toFixed(0) + ' 140L' + x0 + ' 140Z" fill="#2b5da0" opacity=".12"/><path d="' + d + '" fill="none" stroke="#2b5da0" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>' + pts
+          + '<text x="' + x0 + '" y="162" font-size="13" fill="#5a6069">2025: ' + f[0] + '%</text><text x="' + x1 + '" y="162" text-anchor="end" font-size="13" fill="#5a6069">' + (2025 + (n - 1) * 5) + ': ' + f[n - 1] + '%</text></svg>'; },
+      key: '<span><i style="background:#2b5da0"></i>Share of what the funds owe that they hold</span>',
+    },
+  };
+  const simName = P => "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN(P.kind + (P.id || P.code)) % NAMES.length] + " Plan";
+  const SLS = "sc-sliked";
+  const sliked = () => { try { return new Set(JSON.parse(localStorage.getItem(SLS) || "[]")); } catch (e) { return new Set(); } };
+  function simEndorseBtn(P){
+    const on = sliked().has(P.id);
+    const b = document.createElement("button"); b.type = "button"; b.className = "pend" + (on ? " on" : ""); b.disabled = on;
+    b.setAttribute("aria-label", (on ? "You endorsed this plan. " : "Endorse this plan. ") + P.likes + " endorsements");
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11v9H4v-9zM7 11l4-8c1.6 0 2.6 1.2 2.3 2.8L12.8 9H19a2 2 0 0 1 2 2.3l-1.2 6.9A2 2 0 0 1 17.8 20H7"/></svg><span>' + (on ? "Endorsed" : "Endorse") + '</span><b>' + fmt(P.likes) + '</b>';
+    b.addEventListener("click", async e => { e.preventDefault(); e.stopPropagation();
+      const L = sliked(); if (L.has(P.id)) return; b.disabled = true;
+      try { const r = await fetch("/api/slike/" + P.id, {method:"POST", headers:{"content-type":"application/json"}, body:"{}"}); if (!r.ok) throw 0; const d = await r.json();
+        L.add(P.id); try { localStorage.setItem(SLS, JSON.stringify([...L])); } catch (e2) {}
+        b.classList.add("on"); b.querySelector("span").textContent = "Endorsed"; b.querySelector("b").textContent = fmt(d.likes);
+      } catch (e2) { b.disabled = false; } });
+    return b;
+  }
+  function simCard(P, G){
+    const K = SIMS[P.kind]; if (!K) return null;
+    const a = document.createElement("a"), kd = K.kind(P), c = K.chips(P), nums = K.nums(P);
+    a.className = "pcard sim-" + P.kind; a.href = "/plans/#" + P.kind + "-" + P.id;
+    a.innerHTML = '<div class="pmapw">' + K.art(P, G) + '<span class="pmode sim">' + K.label + '</span></div>'
+      + '<div class="pbody"><span class="pkind k-' + kd.c + '">' + esc(kd.t) + '</span><b class="pt">' + esc(simName(P)) + '</b><span class="psum">' + esc(K.sum(P)) + '</span><span class="pwho">From a neighbor · ' + ago(P.ts) + '</span>'
+      + '<div class="pnums">' + nums.slice(0, 2).map(n => '<span><b>' + esc(n[0]) + '</b> ' + esc(n[1]) + '</span>').join("") + '</div>'
+      + '<ul class="pchips">' + c.slice(0, 5).map(x => '<li class="' + x.kind + '">' + esc(x.t) + '</li>').join("") + (c.length > 5 ? '<li class="more">+' + (c.length - 5) + ' more</li>' : "") + '</ul>'
+      + '<div class="pfoot"><span class="popen">See the plan</span></div></div>';
+    a.querySelector(".pfoot").prepend(simEndorseBtn(P));
+    return a;
+  }
+  // The "share with neighbors" box each simulator shows: pick one of the site's names, post the plan and its numbers.
+  // get() returns {code, stats} at the moment of posting (or null when there is nothing to share yet).
+  const SMINE = "sc-my-splans";
+  function shareBox(host, kind, get){
+    let nm = Math.floor(Math.random() * NAMES.length);
+    host.classList.add("pshare");
+    host.innerHTML = '<p class="pshn">Share it as <b></b><button type="button" class="pshalt">Pick another name</button></p><button type="button" class="sc-btn primary pshgo">Add it to Neighbors\' plans</button><p class="pshfine">Only the plan and its numbers are shared, under a name from our list. No account, nothing you typed.</p><p class="pshmsg" role="status"></p>';
+    const nmEl = host.querySelector(".pshn b"), go = host.querySelector(".pshgo"), msg = host.querySelector(".pshmsg");
+    const show = () => { nmEl.textContent = "The " + NAMES[nm] + " Plan"; }; show();
+    host.querySelector(".pshalt").addEventListener("click", () => { nm = (nm + 1 + Math.floor(Math.random() * (NAMES.length - 1))) % NAMES.length; show(); });
+    go.addEventListener("click", async () => {
+      const d = get(); if (!d || !d.code){ msg.textContent = "There's nothing to share yet. Make a change first."; return; }
+      go.disabled = true; msg.textContent = "Sharing…";
+      try {
+        const r = await fetch("/api/splan", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({kind, code:d.code, stats:d.stats || {}, nm})});
+        if (r.status === 429){ msg.textContent = "That's a lot of plans for one day. Try again tomorrow."; go.disabled = false; return; }
+        if (!r.ok) throw 0; const j = await r.json();
+        try { const ids = JSON.parse(localStorage.getItem(SMINE) || "[]"); if (!ids.includes(j.id)) ids.push(j.id); localStorage.setItem(SMINE, JSON.stringify(ids.slice(-40))); } catch (e) {}
+        msg.innerHTML = 'Shared as <b>' + esc("The " + NAMES[nm] + " Plan") + '</b>. <a href="/plans/#' + kind + "-" + j.id + '">See it in Neighbors\' plans</a>';
+        go.textContent = "Shared"; host.querySelector(".pshalt").hidden = true; host.querySelector(".pshfine").hidden = true;
+      } catch (e) { msg.textContent = "Couldn't reach the plan gallery. Try again in a bit."; go.disabled = false; }
+    });
+  }
+
+  window.SCPlans = {decode, choices, title, kind, nameOf, NAMES, hashN, map, card, geo, endorseBtn, myNews, mine, AREAS, MODE, fmt, esc, ago, STAR,
+    SIMS, simCard, simName, simEndorseBtn, shareBox, tparse, pparse, money};
+
 })();

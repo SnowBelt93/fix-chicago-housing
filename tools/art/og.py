@@ -1,5 +1,5 @@
 """Link-preview images (1200x630) for each Shape Chicago page: the page's render on the right, its name and one line on the left.
-python3 tools/art/og.py <renders dir> <Instrument Sans .woff dir> → shape/art/og-*.jpg"""
+python3 tools/art/og.py <renders dir> <Instrument Sans .woff dir> [only these keys, comma-separated] → shape/art/og-*.jpg"""
 import sys, os
 from PIL import Image, ImageDraw, ImageFont
 
@@ -14,7 +14,9 @@ PAGES = [
     ("housing", "og_housing.png", "Fix Chicago Housing", "Rezone the real city, vote on real policies, and watch 15 years of building."),
     ("transit", "og_transit.png", "Expand Chicago Transit", "Switch on real proposals or draw your own line, and see riders, cost and cars off the road."),
     ("tracker", "og_tracker.png", "Chicago Permit Tracker", "Every new-home permit since 2006, updated daily from the city's own data."),
+    ("progress", "progress.png", "Progress", "What Chicago built, rezoned and ran, counted from public records and updated daily."),
 ]
+ONLY = set(sys.argv[3].split(",")) if len(sys.argv) > 3 else None
 
 def wrap(d, text, f, width):
     lines, cur = [], ""
@@ -25,6 +27,7 @@ def wrap(d, text, f, width):
     lines.append(cur); return lines
 
 for key, art, title, sub in PAGES:
+    if ONLY and key not in ONLY: continue
     W, H = 1200, 630
     im = Image.new("RGB", (W, H), (244, 246, 242))
     g = Image.new("RGB", (1, H));
@@ -38,7 +41,7 @@ for key, art, title, sub in PAGES:
     if key == "home":
         a = a.resize((int(a.width * 0.66), int(a.height * 0.66)), Image.LANCZOS); im.paste(a, (W - a.width + 30, H - a.height + 26), a)
     else:
-        k = {"housing": 0.66, "transit": 0.6, "tracker": 0.6}[key]
+        k = {"housing": 0.66, "transit": 0.6, "tracker": 0.6, "progress": 0.56}[key]
         a = a.resize((int(a.width * k), int(a.height * k)), Image.LANCZOS)
         if key == "transit":   # its ground runs off both ends: trim the left and fade that edge into the background
             a = a.crop((int(a.width * 0.22), 0, a.width, a.height))

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Neighbors' Plans · Shape Chicago</title>
-<meta name="description" content="Housing plans people built in Shape Chicago's housing simulator. Endorse the ones you'd back, or open one and remix it.">
+<meta name="description" content="Housing, transit, budget and pension plans people built in Shape Chicago's simulators. Endorse the ones you'd back, or open one and change it.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Neighbors' plans for Chicago housing">
-<meta property="og:description" content="Housing plans people built and shared. Endorse the ones you'd back, or open one and remix it.">
+<meta property="og:title" content="Neighbors' plans for Chicago">
+<meta property="og:description" content="Housing, transit, budget and pension plans people built and shared. Endorse the ones you'd back, or open one and change it.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +26,9 @@ a{color:var(--sc-navy)}
 main{max-width:var(--sc-w-wide);margin:0 auto;padding:36px max(24px,env(safe-area-inset-left)) 64px}
 h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
 .lede{font-size:17px;line-height:1.5;color:var(--sc-ink2);margin:0 0 22px;max-width:40em}
+.kinds{display:inline-flex;margin:0 0 14px;max-width:100%;overflow-x:auto}
 .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 18px}
+.dmap svg.wide{max-height:none}
 .bar select{font:inherit;font-size:14px;min-height:38px;padding:0 10px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
 .bar .n{margin-left:auto;font-size:14px;color:var(--sc-mute)}
 .mine{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:14px 18px;margin:0 0 22px;font-size:15px}
@@ -79,10 +81,11 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <main id="app">
   <section id="list">
     <h1>Neighbors' plans</h1>
-    <p class="lede">Housing plans people built in the housing simulator and chose to share. Endorse the ones you'd back, or open one and change it.</p>
+    <p class="lede">Plans people built in the simulators and chose to share. Endorse the ones you'd back, or open one and change it.</p>
+    <div class="kinds sc-seg" role="radiogroup" aria-label="Which simulator" id="kinds"><button type="button" role="radio" aria-checked="true" data-k="housing">Housing</button><button type="button" role="radio" aria-checked="false" data-k="transit">Transit</button><button type="button" role="radio" aria-checked="false" data-k="budget">Budget</button><button type="button" role="radio" aria-checked="false" data-k="pensions">Pensions</button></div>
     <div class="mine" id="mine" hidden></div>
     <div class="bar">
-      <div class="sc-seg" role="radiogroup" aria-label="Sort plans"><button type="button" role="radio" aria-checked="true" data-s="top">Most endorsed</button><button type="button" role="radio" aria-checked="false" data-s="new">Newest</button></div>
+      <div class="sc-seg" role="radiogroup" aria-label="Sort plans" id="sorts"><button type="button" role="radio" aria-checked="true" data-s="top">Most endorsed</button><button type="button" role="radio" aria-checked="false" data-s="new">Newest</button></div>
       <select id="hood" aria-label="Neighborhood"><option value="0">From anywhere</option></select>
       <span class="n" id="count"></span>
     </div>
@@ -97,27 +100,35 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 </div></footer>
 <script>
 const S = window.SCPlans, $ = id => document.getElementById(id);
-let sort = "top", hood = 0;
+let sort = "top", hood = 0, kind = "housing";
+try { const k = new URLSearchParams(location.search).get("sim") || localStorage.getItem("sc-plans-kind"); if (k && (k === "housing" || S.SIMS[k])) kind = k; } catch (e) {}
 try { hood = +localStorage.getItem("fch-home-hood") || 0; } catch (e) {}
 S.AREAS.forEach((n, i) => { if (i) { const o = document.createElement("option"); o.value = i; o.textContent = "From " + n; $("hood").appendChild(o); } });
 [...$("hood").options].sort((a, b) => +a.value === 0 ? -1 : +b.value === 0 ? 1 : a.textContent.localeCompare(b.textContent)).forEach(o => $("hood").appendChild(o));
 $("hood").value = String(hood);
 
-const none = '<div class="empty" style="grid-column:1/-1">No plans posted yet' + '<span id="nh"></span>. Build one in the housing simulator and post it from the results page.<br><a class="sc-btn primary" href="/housing/">Open the housing simulator</a></div>';
+const SIMN = {housing:["the housing simulator", "/housing/", "Open the housing simulator", "from the results page"], transit:["the transit simulator", "/transit/", "Open the transit simulator", "from Share"],
+  budget:["the budget simulator", "/budget/", "Open the budget simulator", "from the front page you get when you send it to the Council"], pensions:["the pensions simulator", "/pensions/", "Open the pensions simulator", "with the Share button"]};
+const none = () => '<div class="empty" style="grid-column:1/-1">No ' + (kind === "housing" ? "" : kind + " ") + 'plans shared yet' + '<span id="nh"></span>. Build one in ' + SIMN[kind][0] + ' and share it ' + SIMN[kind][3] + '.<br><a class="sc-btn primary" href="' + SIMN[kind][1] + '">' + SIMN[kind][2] + '</a></div>';
 async function list(){
-  const grid = $("grid");
+  const grid = $("grid"), sim = kind !== "housing";
+  $("hood").hidden = sim;
+  document.querySelectorAll("#kinds button").forEach(x => x.setAttribute("aria-checked", String(x.dataset.k === kind)));
   try {
-    const [G, r] = await Promise.all([S.geo(), fetch("/api/gallery?limit=60&sort=" + sort + (hood ? "&hood=" + hood : ""))]);
+    const [G, r] = await Promise.all([S.geo(), fetch(sim ? "/api/sgallery?limit=60&kind=" + kind + "&sort=" + sort : "/api/gallery?limit=60&sort=" + sort + (hood ? "&hood=" + hood : ""))]);
     if (!r.ok) throw 0;
     const {plans} = await r.json();
     grid.innerHTML = "";
     $("count").textContent = plans.length ? plans.length + (plans.length === 60 ? "+" : "") + (plans.length === 1 ? " plan" : " plans") : "";
-    if (!plans.length){ grid.innerHTML = none; if (hood) $("nh").textContent = " from " + S.AREAS[hood]; return; }
-    for (const P of plans){ const c = S.card(P, G); if (c) grid.appendChild(c); }
+    if (!plans.length){ grid.innerHTML = none(); if (hood && !sim) $("nh").textContent = " from " + S.AREAS[hood]; return; }
+    for (const P of plans){ const c = sim ? S.simCard(P, G) : S.card(P, G); if (c) grid.appendChild(c); }
   } catch (e) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Plans show up here once the site is connected to its plan gallery.</div>'; }
 }
-document.querySelectorAll(".bar .sc-seg button").forEach(b => b.addEventListener("click", () => {
-  sort = b.dataset.s; document.querySelectorAll(".bar .sc-seg button").forEach(x => x.setAttribute("aria-checked", String(x === b))); list();
+document.querySelectorAll("#kinds button").forEach(b => b.addEventListener("click", () => {
+  kind = b.dataset.k; try { localStorage.setItem("sc-plans-kind", kind); history.replaceState(null, "", kind === "housing" ? location.pathname : "?sim=" + kind); } catch (e) {} list();
+}));
+document.querySelectorAll("#sorts button").forEach(b => b.addEventListener("click", () => {
+  sort = b.dataset.s; document.querySelectorAll("#sorts button").forEach(x => x.setAttribute("aria-checked", String(x === b))); list();
 }));
 $("hood").addEventListener("change", () => { hood = +$("hood").value; try { localStorage.setItem("fch-home-hood", hood); } catch (e) {} list(); });
 
@@ -154,10 +165,31 @@ async function one(id){
     $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } setTimeout(() => $("copy").textContent = "Copy link", 1800); });
   } catch (e) { el.innerHTML = '<a class="back" href="#">← All plans</a><div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now.") + '</div>'; }
 }
+// one transit, budget or pensions plan
+async function oneSim(k, id){
+  const el = $("one"), back = '<a class="back" href="#">← All ' + k + ' plans</a>';
+  el.innerHTML = back + '<div class="empty">Loading the plan…</div>';
+  try {
+    const [G, r] = await Promise.all([S.geo(), fetch("/api/splan/" + id)]);
+    if (!r.ok) throw r.status;
+    const P = await r.json(), K = S.SIMS[P.kind]; if (!K || P.kind !== k) throw 404;
+    const c = K.chips(P), kd = K.kind(P), nums = K.nums(P);
+    document.title = S.simName(P) + " · Neighbors' Plans · Shape Chicago";
+    el.innerHTML = back + '<div class="det"><div class="dmap">' + K.art(P, G, true) + '<div class="key">' + K.key + '</div></div>'
+      + '<div class="dside"><div class="dcard"><div class="dtop"><div><span class="pkind k-' + kd.c + '">' + S.esc(kd.t) + '</span><h1>' + S.esc(S.simName(P)) + '</h1><p class="psum">' + S.esc(K.sum(P)) + '</p><p class="pwho">' + K.label + ' plan from a neighbor · shared ' + S.ago(P.ts) + '</p></div></div>'
+      + '<div class="nums">' + nums.map(n => '<div><b>' + S.esc(n[0]) + '</b><span>' + S.esc(n[1]) + '</span></div>').join("") + '<div><b>' + S.fmt(P.likes) + '</b><span>' + (P.likes === 1 ? "endorsement" : "endorsements") + '</span></div></div>'
+      + '<div class="acts" id="acts"><a class="sc-btn primary" href="' + K.open(P) + '">Open it in the simulator</a><button class="sc-btn" type="button" id="copy">Copy link</button></div></div>'
+      + '<div class="dcard"><h2>What this plan does</h2>' + (c.length ? '<ul class="pchips">' + c.map(x => '<li class="' + x.kind + '">' + S.esc(x.t) + '</li>').join("") + '</ul>' : '<p class="note">Nothing changed from today.</p>')
+      + '<p class="note" style="margin-top:14px">Numbers are what ' + K.simName + ' showed when the plan was shared. Open it to see how they were worked out, and the sources.</p></div></div></div>';
+    $("acts").insertBefore(S.simEndorseBtn(P), $("copy"));
+    $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } setTimeout(() => $("copy").textContent = "Copy link", 1800); });
+  } catch (e) { el.innerHTML = back + '<div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now.") + '</div>'; }
+}
 function route(){
-  const id = +(location.hash.match(/^#(\d+)$/) || [])[1] || 0;
-  $("list").hidden = !!id; $("one").hidden = !id;
-  if (id) one(id); else { document.title = "Neighbors' Plans · Shape Chicago"; list(); }
+  const id = +(location.hash.match(/^#(\d+)$/) || [])[1] || 0, sm = location.hash.match(/^#(transit|budget|pensions)-(\d+)$/);
+  $("list").hidden = !!(id || sm); $("one").hidden = !(id || sm);
+  if (sm){ kind = sm[1]; oneSim(sm[1], +sm[2]); }
+  else if (id) one(id); else { document.title = "Neighbors' Plans · Shape Chicago"; list(); }
   scrollTo(0, 0);
 }
 addEventListener("hashchange", route);

@@ -211,6 +211,19 @@ body.sc-gray{background:var(--sc-page)}
 .pend.on b{color:#fff;border-left-color:rgba(255,255,255,.4)}
 .pend.on svg{fill:rgba(255,255,255,.25)}
 .sc-simmenu a.sc-simalt{margin-top:4px;border-top:1px solid var(--sc-line);border-radius:0 0 8px 8px;padding-top:10px}
+/* transit, budget and pensions plan cards: a chart instead of a map, and the simulator's name in the corner */
+.pmap.wide{height:auto;width:calc(100% - 28px);max-width:420px;align-self:center}
+.pmap.wide text,svg.big.wide text{font-family:var(--sc-font)}
+.pcard[class*="sim-"] .pmapw{min-height:189px;align-items:center}
+.pmode.sim{color:var(--sc-ink2)}
+.pchips li.more{background:var(--sc-seg);color:var(--sc-ink2)}
+/* the "share with neighbors" box in each simulator (SCPlans.shareBox) */
+.pshare{display:flex;flex-direction:column;gap:8px;align-items:flex-start;font-family:var(--sc-font)}
+.pshn{margin:0;font-size:15px;line-height:1.4;color:var(--sc-ink2);display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline}
+.pshn b{color:var(--sc-ink);font-weight:600}
+.pshalt{font:inherit;font-size:14px;font-weight:600;color:var(--sc-navy);background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.pshfine,.pshmsg{margin:0;font-size:13px;color:var(--sc-mute);line-height:1.45}
+.pshmsg:empty{display:none} .pshmsg{color:var(--sc-ink2);font-size:14px} .pshmsg a{font-weight:600}
 .pkind{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 8px;border-radius:8px;background:#eef3fa;color:#1d4580}
 .pkind.k-tall{background:#e3f1f2;color:#0b5f67} .pkind.k-mm{background:#e8f5fb;color:#14607f} .pkind.k-hood{background:#f1ecf8;color:#5b3e8c}
 .pkind.k-main{background:#fff3e0;color:#8a4b00} .pkind.k-pol{background:#eef7f1;color:#1f6b44} .pkind.k-all{background:#1a1d21;color:#fff} .pkind.k-cut{background:#fdecef;color:#a0001b}

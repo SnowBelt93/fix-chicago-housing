@@ -22,7 +22,13 @@ esc = lambda s: str(s).replace('&', '&amp;').replace('<', '&lt;').replace('"', '
 
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
-DEMO = dict(zip(range(2013, 2027), [1913, 1607, 1564, 1855, 1417, 1434, 1417, 856, 958, 875, 692, 665, 803, 677]))   # homes in buildings with a demolition permit; 2026 through Nov. 6
+# homes in buildings with a demolition permit, by year: counted every morning by tools/tracker/teardowns.py (main) into
+# tracker/teardowns.json; the fixed numbers below (through Nov. 6, 2026) are only the fallback when that file is missing
+DEMO = dict(zip(range(2013, 2027), [1913, 1607, 1564, 1855, 1417, 1434, 1417, 856, 958, 875, 692, 665, 803, 677])); DEMO_THRU = '2026-11-06'
+try:
+    _td = json.load(open(os.path.join(ROOT, 'tracker', 'teardowns.json')))
+    if _td.get('years', {}).get('2025'): DEMO = {int(y): int(n) for y, n in _td['years'].items()}; DEMO_THRU = _td['through']
+except Exception: pass
 ROOM_BIN = None   # filled from ROOM_FILLS below
 # empty-lot room by ward, in wards.json order, as the five map classes (0 = under 500 ... 4 = 4,000+)
 ROOM_CLASS = None
@@ -39,7 +45,7 @@ CPI = {int(k): v for k, v in json.load(open(os.path.join(ROOT, 'budget', 'data',
 # ---------------------------------------------------------------- live numbers
 ytd, goal_, l12 = T['ytd'], T['goal'], T['last12']
 Y = {y['year']: y for y in T['years']}
-THRU = day(T['through']); UPDATED = day(T['updated'], True)
+THRU = day(T['through']); UPDATED = day(T['updated'], True); TD_THRU = day(DEMO_THRU)
 pct = round(100 * ytd['homes'] / ytd['needed_so_far']); vs = round(100 * (ytd['homes'] / ytd['prev'] - 1))
 net26 = round((ytd['homes'] - DEMO[2026]) / 10) * 10
 behind = ytd['homes'] < ytd['needed_so_far']
@@ -164,7 +170,7 @@ def page(slug, title, desc, main):
 <meta name="description" content="{esc(desc)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
-<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-tracker.jpg">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-progress.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -219,13 +225,13 @@ def homes():
     d26 = round(DEMO[2026] / 10) * 10
     strip = ('<section class="strip c4 eq">'
              f'<div class="card tile"><b>{f(ytd["homes"])}</b><span>homes permitted this year, through {THRU}</span></div>'
-             f'<div class="card tile"><b><i>−</i> about {f(d26)}</b><span>homes in buildings torn down (estimate, through Nov. 6)</span></div>'
+             f'<div class="card tile"><b><i>−</i> about {f(d26)}</b><span>homes in buildings torn down (estimate, through {TD_THRU})</span></div>'
              f'<div class="card tile sum"><b><i>=</i> about {f(net26)}</b><span>net gain: homes permitted minus homes torn down</span></div>'
              f'<div class="card tile">{PACE}{meter(pct)}<span><b class="in">{pct}%</b> of the {f(ytd["needed_so_far"])} homes needed by {THRU} · <b class="in">{"▼" if vs < 0 else "▲"} {abs(vs)}%</b> permitted vs. this date last year</span></div></section>')
     n25 = round((Y[2025]['homes'] - DEMO[2025]) / 10) * 10
     c1 = card('Homes permitted each year, and what was left after teardowns', 'The whole bar is homes permitted. The hatched cap is homes in buildings that got a demolition permit that year; the solid part is the gain.',
               yearchart(True, 230) + key([('Net gain', NAVY, ''), ('Homes in buildings torn down (estimate)', HATCH('#8a9099', '#fff'), ' border: 1px solid #c9ced6; box-sizing: border-box;'), ('2026 so far', HATCH(NAVY, '#9db9de'), '')])
-              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. Teardowns are down by half since 2013, when about 1,900 homes were in torn-down buildings.</p>')
+              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. Teardowns are down by {"more than half" if DEMO[2025] < 0.45 * DEMO[2013] else "about half" if DEMO[2025] < 0.6 * DEMO[2013] else "a third or more"} since 2013, when about {f(round(DEMO[2013] / 100) * 100)} homes were in torn-down buildings.</p>')
     lostc = ('<section class="card pad" id="lost"><div class="hd"><h2>Other ways homes are lost or gained</h2><p class="cap">These are not in the net figure above: the records only let us count part of each.</p></div><div class="facts">'
              '<div><b>At least 525</b><span>buildings lost homes in a renovation since 2019, at least 688 homes in all. 374 became single-family homes; 331 had been two-flats</span></div>'
              '<div><b>At least 281</b><span>buildings gained homes in a renovation since 2019, at least 379 homes</span></div>'
@@ -255,11 +261,11 @@ def homes():
           '<a class="card tile row go" href="/tracker/"><span><b class="t">Every project, ward and zoning approval</b>Search the full list by address or ward</span><em>Open ›</em></a></section>')
     g = goal('The city has not set a citywide target for new homes', f'The pace on this page is our own yardstick: Chicago’s share of the region’s housing shortage, closed by 2041 ({f(goal_["close"])} homes a year). The nearest official plan is the 2024–2028 Housing and Economic Development Bond, which projects 600 to 1,000 affordable rental homes, 750 homes on empty lots in neighborhoods and 600 or more mixed-income homes every five years from a new city fund.', 'The bond plan', BOND, none=True)
     note = ('The pace is the housing simulator’s goal, an estimate: Chicago’s share of the regional shortage, closed by 2041. Over 2010–2025 our permit total is within 1% of the Census permit survey; single years differ by 8% on average. '
-            'Torn-down homes are an estimate through Nov. 6: each demolition permit is matched to the nearest building in the city’s 2013 footprints (within 25 m) to read how many homes it held. Other fair ways of matching give 660 to 860 for 2025. Most teardowns are followed by a new building, which the permit count includes. '
+            f'Torn-down homes are an estimate, counted every morning through the newest demolition permit ({TD_THRU}): each permit is matched to the building at its address in the city’s 2013 footprints (the one its point falls in, or the nearest within 12 m) to read how many homes it held. Permits for only a garage or porch are left out, and so are matches to a building much bigger than the one the permit describes. Looser or tighter matching moves a year’s figure by about a tenth. Most teardowns are followed by a new building, which the permit count includes. '
             'Renovation figures come from permits whose wording states the change (for example “convert from 3 units to 2”), leaving out permits that expired or were cancelled. We catch roughly half of the cuts and fewer of the additions, so both are floors, and neither is subtracted or added in the net figure. '
             'Homes per ward come from the 2020 Census. “Finished” means the city marked the permit complete or issued a certificate of occupancy. Coach house applications are counted from Mar. 31, 2026; the 2021–2025 pilot cleared 907.')
     h1 = f'So far this year: {f(ytd["homes"])} homes permitted, about {f(d26)} torn down, a net gain of about {f(net26)}.'
-    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through Nov. 6') + strip + c1 + c2 + c3 + lostc + c4 + g
+    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + lostc + c4 + g
                 + bottom('homes', note, 'City of Chicago building permits (new construction, demolition and renovation); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications and shared housing registrations.'))
 
 # ---------------------------------------------------------------- the snapshot sections

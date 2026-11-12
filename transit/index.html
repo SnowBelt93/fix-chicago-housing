@@ -18,6 +18,7 @@
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.169.0/build/three.module.min.js"}}</script>
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js" defer></script>
 <style>
 :root{
   --ink:#1a1d21; --ink2:#3d434b; --mute:#5a6069; --faint:#6a7079; --line:#e6e9ed; --line2:#d5d9de;
@@ -404,6 +405,8 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
 .tpane[hidden]{display:none}
 .tlede{margin:0;font-size:14px;line-height:1.45;color:var(--mute)}
 .tcards{display:flex;flex-direction:column;gap:8px}
+.nbshare{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;display:flex;flex-direction:column;gap:10px}
+.nbshare > a{font-size:14px;font-weight:600;color:var(--navy, #2b5da0);text-decoration:none}
 .tcard{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:left;width:100%;cursor:pointer;transition:border-color .15s,background-color .15s}
 .tcard:hover{border-color:var(--line2);background:#fafbfc}
 .tcard .ti{flex:none;width:40px;height:40px;border-radius:12px;background:#eef2f7;color:var(--sc-navy,#2b5da0);display:flex;align-items:center;justify-content:center}
@@ -548,6 +551,7 @@ dialog.sumdlg{width:min(860px,96vw);max-height:94vh;padding:0;border:0;border-ra
         <button type="button" class="tcard" id="sumCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l4 4v16H6z"/><path d="M14 2v5h5M9 13h7M9 17h7"/></svg></span><span class="tt"><b>One-page summary</b><span>A map and the key numbers, to print or save as a PDF</span></span></button>
         <button type="button" class="tcard" id="cmpCard"><span class="ti"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v16H4zM13 4h7v16h-7z"/></svg></span><span class="tt"><b>Compare plans</b><span>Save versions of your plan and put two side by side</span></span></button>
       </div>
+      <div class="nbshare"><span class="sec">Share with neighbors</span><div id="nbBox"></div><a href="/plans/?sim=transit">See the transit plans neighbors shared</a></div>
     </div>
   </section>
   <!-- a group of proposals -->
@@ -2254,7 +2258,19 @@ function renderFresh(){
   const ab = el.querySelector("[data-bus]"); if (ab) ab.onclick = () => { const all = ab.getAttribute("aria-checked") !== "true"; for (const x of NET.bus){ if (all) FRESH.on.add("cta:" + x.id); else FRESH.on.delete("cta:" + x.id); } toggleRoute("__none__", false); };
   const qi = $("freshQ"); if (qi) qi.oninput = () => { freshQ = qi.value; const pos = qi.selectionStart; renderFresh(); const n = $("freshQ"); n.focus(); n.setSelectionRange(pos, pos); };
 }
-function openShare(){ cur = null; renderPlan(); show("vShare"); $("shareLink").textContent = navigator.share && matchMedia("(pointer:coarse)").matches ? "Share a link to this plan" : "Copy a link to this plan"; }
+// what gets shared with neighbors: the plan code (the server drops any line names you typed) and the numbers on screen now
+function sharedPlan(){
+  save(); const code = encodePlan(); if (!code) return null;
+  const r = planStats(null), A = active(), IDX = {subway:0, elevated:1, streetcar:2, brt:3, infill:1, lane:5};
+  const thin = (pts, n) => { if (pts.length <= n) return pts; const o = []; for (let i = 0; i < n; i++) o.push(pts[Math.round(i * (pts.length - 1) / (n - 1))]); return o; };
+  const shape = A.filter(L => L.type === "metra" || (L.pts && L.pts.length > 1)).slice(0, 40).map(L => {
+    const pts = L.type === "metra" ? (NET.metraLines.find(l => l.id === L.line).paths.slice().sort((a, b) => b.length - a.length)[0] || []) : (L.shape || shapeLL(L.mode, L.pts));
+    return [L.type === "metra" ? 4 : IDX[L.mode] ?? 1].concat(thin(pts, 80).flatMap(q => [+q[0].toFixed(4), +q[1].toFixed(4)])); });
+  return {code, stats:{n:A.length, rail:A.filter(L => L.type !== "metra" && MODES[L.mode].kind === "rail").length, bus:A.filter(L => L.type !== "metra" && MODES[L.mode].kind !== "rail").length,
+    metra:A.filter(L => L.type === "metra").length, riders:Math.round(r.riders), cap:Math.round((r.capLo + r.capHi) / 2), op:Math.round(r.op), cars:Math.round(r.cars), shape}};
+}
+function openShare(){ cur = null; renderPlan(); show("vShare");
+  if (window.SCPlans && !$("nbBox").firstChild) SCPlans.shareBox($("nbBox"), "transit", sharedPlan); $("shareLink").textContent = navigator.share && matchMedia("(pointer:coarse)").matches ? "Share a link to this plan" : "Copy a link to this plan"; }
 const WIDE_ICON = {open:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg>', shut:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10h-6V4M4 14h6v6M14 10l7-7M10 14l-7 7"/></svg>'};
 function setWide(on){ document.body.classList.toggle("wide", !!on); const b = $("wideBtn"); b.setAttribute("aria-pressed", String(!!on)); b.innerHTML = on ? WIDE_ICON.shut : WIDE_ICON.open; b.title = on ? "Shrink the panel" : "Expand the panel"; b.setAttribute("aria-label", b.title); lsSet("sc-twide", !!on); padMap.last = null; padMap(); setTimeout(padMap, 320); }
 function openStart(){
