@@ -195,3 +195,49 @@ window.scKeyCam.maplibre = (map, flat) => { if (map.keyboard) map.keyboard.disab
     size:() => { const c = map.getCanvas(); return [c.clientWidth, c.clientHeight]; }}; };
 // call once a page's map exists: works whether or not this file has loaded yet
 window.scWhenReady = fn => { if (document.readyState === "loading") addEventListener("DOMContentLoaded", fn); else fn(); };
+
+/* Feedback: a button in every header (and a link in every footer) opens one short form. The note is stored privately
+   by the Worker (POST /api/feedback) with the page it came from; nothing typed is ever shown on the site. */
+(function(){
+  const ICON = '<svg viewBox="0 0 20 20" aria-hidden="true" width="17" height="17"><path d="M3.5 4.5h13a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H9l-4 3v-3H3.5a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+  let dlg;
+  window.scFeedback = function(){
+    if (!dlg){
+      dlg = document.createElement("dialog"); dlg.className = "sc-info sc-fb";
+      dlg.innerHTML = `<form class="sc-ibody" method="dialog"><button type="button" class="sc-btn sc-x" data-x>Close</button><h2>Send feedback</h2>
+        <p>Something wrong, confusing or missing? Say what you'd change.</p>
+        <label class="sc-fbl" for="scFbT">Your note</label><textarea id="scFbT" rows="5" maxlength="2000" placeholder="For example: the rent number on the housing page doesn't match the Sources tab."></textarea>
+        <p class="sc-fbn">Notes are anonymous, so we can't reply. Please leave out names and contact details.</p>
+        <p class="sc-fbm" role="status" aria-live="polite"></p>
+        <div class="sc-fbr"><button type="submit" class="sc-btn sc-fbsend">Send</button></div></form>`;
+      document.body.appendChild(dlg);
+      const t = dlg.querySelector("textarea"), msg = dlg.querySelector(".sc-fbm"), send = dlg.querySelector(".sc-fbsend");
+      dlg.querySelector("[data-x]").onclick = () => dlg.close();
+      dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+      dlg.querySelector("form").addEventListener("submit", async e => {
+        e.preventDefault(); const text = t.value.trim();
+        if (text.length < 3){ msg.textContent = "Write a few words first."; t.focus(); return; }
+        send.disabled = true; msg.textContent = "Sending…";
+        try {
+          const r = await fetch("/api/feedback", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({text, page: location.pathname.replace(/index\.html$/, "")})});
+          if (r.status === 429) msg.textContent = "That's a lot of notes for one day. Try again tomorrow.";
+          else if (!r.ok) throw 0;
+          else { t.value = ""; msg.textContent = "Sent. Thank you."; setTimeout(() => { if (dlg.open) dlg.close(); msg.textContent = ""; }, 1400); }
+        } catch (err){ msg.textContent = "That didn't send. Check your connection and try again."; }
+        send.disabled = false;
+      });
+    }
+    dlg.querySelector(".sc-fbm").textContent = ""; dlg.showModal(); dlg.querySelector("textarea").focus();
+  };
+  function add(){
+    const r = document.querySelector(".sc-head .sc-r");
+    if (r && !r.querySelector(".sc-fbbtn")){
+      const b = document.createElement("button"); b.type = "button"; b.className = "sc-btn sc-fbbtn"; b.setAttribute("aria-label", "Send feedback");
+      b.innerHTML = ICON + "<span>Feedback</span>"; b.onclick = window.scFeedback;
+      const fan = r.querySelector(".sc-fan"); if (fan && fan.nextSibling) r.insertBefore(b, fan.nextSibling); else r.appendChild(b);
+    }
+    document.querySelectorAll("footer nav").forEach(n => { if (n.querySelector(".sc-fblink")) return;
+      const a = document.createElement("a"); a.href = "#feedback"; a.className = "sc-fblink"; a.textContent = "Feedback"; a.onclick = e => { e.preventDefault(); window.scFeedback(); }; n.appendChild(a); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(add, 0)); else setTimeout(add, 0);
+})();

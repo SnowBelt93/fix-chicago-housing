@@ -237,3 +237,15 @@ body.sc-gray{background:var(--sc-page)}
   footer nav{row-gap:0 !important}
   footer nav a{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box}
 }
+
+/* feedback button and form (shape.js scFeedback) */
+.sc-fbbtn{display:inline-flex;align-items:center;gap:6px}
+@media (max-width:1320px){ .sc-fbbtn span{display:none} .sc-fbbtn{padding-inline:9px !important} }
+dialog.sc-fb textarea{display:block;width:100%;box-sizing:border-box;margin:0 0 8px;padding:10px 12px;border:1px solid var(--sc-line);border-radius:12px;font:15px/1.45 var(--sc-font);color:var(--sc-ink);resize:vertical;min-height:110px}
+dialog.sc-fb textarea:focus-visible{outline:2px solid var(--sc-navy);outline-offset:1px}
+dialog.sc-fb .sc-fbl{display:block;font-size:13px;font-weight:600;margin:4px 0 6px}
+dialog.sc-fb .sc-fbn{font-size:12.5px;color:var(--sc-mute)}
+dialog.sc-fb .sc-fbm{min-height:1.4em;font-weight:600;color:var(--sc-navy);margin:0 0 6px}
+dialog.sc-fb .sc-fbr{display:flex;justify-content:flex-end}
+dialog.sc-fb .sc-fbsend{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff;padding:9px 20px;font-weight:600}
+dialog.sc-fb .sc-fbsend:disabled{opacity:.6}

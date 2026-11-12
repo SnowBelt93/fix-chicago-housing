@@ -91,6 +91,8 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 .cards2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cards2 button{border-radius:14px;text-align:left;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
 .cards2 button span{font-weight:400;font-size:13px;color:var(--sc-mute)}
+.out .again{margin-left:6px;border:1px solid var(--sc-line);background:#fff;border-radius:999px;padding:5px 12px;font:600 13px var(--sc-font);color:var(--sc-navy);cursor:pointer}
+.cards2 button.mine{box-shadow:0 0 0 2px var(--sc-navy)}
 .cards2 button.right{border-color:#1f7a45;background:#eef7f1}.cards2 button.wrong{border-color:#d9a3a0;background:#fbf1f0}
 .bars{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .bar{display:grid;grid-template-columns:150px minmax(0,1fr) 9ch;gap:12px;align-items:center;font-size:14.5px}
@@ -269,12 +271,16 @@ const IL = [{t:"A two-flat", s:"2 homes, zoned RS-3", ok:false, why:"RS-3 needs 
             {t:"A three-flat", s:"3 homes, zoned RT-4", ok:true, why:"RT-4 allows one home per 1,000 sq ft: three fit on 3,125."},
             {t:"A courtyard building", s:"24 homes on two lots (6,250 sq ft), zoned RT-4", ok:false, why:"RT-4 would allow 6 homes on two lots, not 24."}];
 $("ilCards").innerHTML = IL.map((c, i) => `<div class="ic"><b>${c.t}</b><small>${c.s}</small><div class="vote"><button type="button" data-i="${i}" data-v="1">Legal</button><button type="button" data-i="${i}" data-v="0">Illegal</button></div><div class="ans" id="ilA${i}"></div></div>`).join("");
-let ilDone = 0, ilRight = 0;
+/* you can change an answer or start over: the score counts the answers showing now */
+const ilAns = {};
+function ilScore(){ const done = Object.keys(ilAns).length, right = IL.filter((c, i) => ilAns[i] === c.ok).length;
+  $("ilOut").innerHTML = done === IL.length ? `<b>${right} of 3.</b> Two of the three are the kind of building Chicago is known for, and their lots don't allow them today. <button type="button" class="again" id="ilAgain">Try again</button>` : "";
+  if ($("ilAgain")) $("ilAgain").onclick = () => { for (const k in ilAns) delete ilAns[k]; $("ilCards").querySelectorAll("button").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); IL.forEach((c, i) => $("ilA" + i).innerHTML = ""); ilScore(); }; }
 $("ilCards").querySelectorAll("button").forEach(b => b.onclick = () => {
-  const c = IL[+b.dataset.i], a = $("ilA" + b.dataset.i); if (a.innerHTML) return;
-  const right = (b.dataset.v === "1") === c.ok; ilDone++; if (right) ilRight++;
-  b.classList.add("on"); a.innerHTML = `<b class="${right ? "good" : "bad"}">${right ? "Right" : "Nope"}: ${c.ok ? "legal" : "illegal"}.</b> ${c.why}`;
-  if (ilDone === IL.length) $("ilOut").innerHTML = `<b>${ilRight} of 3.</b> Two of the three are the kind of building Chicago is known for, and their lots don't allow them today.`;
+  const i = +b.dataset.i, c = IL[i], said = b.dataset.v === "1", right = said === c.ok; ilAns[i] = said;
+  b.parentNode.querySelectorAll("button").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+  $("ilA" + i).innerHTML = `<b class="${right ? "good" : "bad"}">${right ? "Right" : "Nope"}: ${c.ok ? "legal" : "illegal"}.</b> ${c.why}`;
+  ilScore();
 });
 // the shortage at a given pace (6,778 a year only holds it level; Permit Tracker's goal math)
 function shortage(){ const P = +$("shPace").value, hold = 6778, gap = 54141; $("shVal").textContent = fmt(P) + "/yr";
@@ -312,7 +318,7 @@ function nita(){ const s = +$("ntS").value / 100, lost = 1.12e6 * (1 - Math.sqrt
   $("ntOut").innerHTML = s < 1 ? `<span class="big bad">${fmt(lost)} fewer rides a weekday</span>out of about 1.12 million today, if every bus and train ran ${Math.round(s * 100)}% as often.` : `<span class="big good">No cuts</span>The new money kept service whole.`; }
 $("ntS").oninput = nita; nita();
 // riders guess
-document.querySelectorAll("#pRid .cards2 button").forEach(b => b.onclick = () => { document.querySelectorAll("#pRid .cards2 button").forEach(x => x.classList.add(x.dataset.r === "b" ? "right" : "wrong"));
+document.querySelectorAll("#pRid .cards2 button").forEach(b => b.onclick = () => { document.querySelectorAll("#pRid .cards2 button").forEach(x => { x.classList.add(x.dataset.r === "b" ? "right" : "wrong"); x.classList.toggle("mine", x === b); });
   $("ridOut").innerHTML = `${b.dataset.r === "b" ? '<b class="good">Right.</b>' : '<b class="bad">Not quite.</b>'} The Red Line Extension adds about <b>1,400</b> new transit trips a weekday. The line beside the Blue Line adds about <b>40</b>: it gets almost nobody anywhere faster than the Blue Line already does, so its riders would mostly just switch lines.`; });
 // highlight the topic you're reading
 const links = [...document.querySelectorAll(".toc a")], byId = Object.fromEntries(links.map(a => [a.hash.slice(1), a]));

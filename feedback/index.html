@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Feedback inbox · Shape Chicago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(--sc-ink)}
+main{max-width:var(--sc-w-list);margin:0 auto;padding:36px 20px 60px}
+h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
+p.lead{color:var(--sc-ink2);margin:0 0 20px}
+.key{display:flex;gap:8px;margin:0 0 22px}
+.key input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--sc-line);border-radius:10px;font:15px var(--sc-font)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.chips button{border:1px solid var(--sc-line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13.5px var(--sc-font);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+.note{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:14px 16px;margin:0 0 10px}
+.note small{display:block;color:var(--sc-mute);font-size:12.5px;margin-bottom:4px}
+.note p{margin:0;white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere}
+#msg{color:var(--sc-mute)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Feedback inbox</h1>
+  <p class="lead">Notes people sent from the Feedback button. Only someone with the key can read them.</p>
+  <form class="key" id="keyForm"><input id="key" type="password" autocomplete="off" placeholder="Feedback key" aria-label="Feedback key"><button class="sc-btn" type="submit">Open</button></form>
+  <div class="chips" id="pages"></div>
+  <p id="msg"></p>
+  <div id="list"></div>
+</main>
+<script>
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let ALL = [], page = "";
+function draw(){
+  const pages = [...new Set(ALL.map(f => f.page || "/"))].sort();
+  $("pages").innerHTML = ALL.length ? [["", "All " + ALL.length], ...pages.map(p => [p, p + " " + ALL.filter(f => (f.page || "/") === p).length])].map(([p, t]) => `<button type="button" data-p="${esc(p)}" aria-pressed="${p === page}">${esc(t)}</button>`).join("") : "";
+  $("pages").querySelectorAll("button").forEach(b => b.onclick = () => { page = b.dataset.p; draw(); });
+  const rows = ALL.filter(f => !page || (f.page || "/") === page);
+  $("list").innerHTML = rows.map(f => `<div class="note"><small>${new Date(f.ts).toLocaleString("en-US", {dateStyle:"medium", timeStyle:"short"})} · ${esc(f.page || "/")}</small><p>${esc(f.text)}</p></div>`).join("");
+  $("msg").textContent = ALL.length ? "" : "No notes yet.";
+}
+async function load(key){
+  $("msg").textContent = "Loading…";
+  try { const r = await fetch("/api/feedback", {headers:{"x-feedback-key": key}});
+    if (r.status === 403){ $("msg").textContent = "That key didn't work, or no key is set on the site yet."; $("list").innerHTML = ""; return; }
+    ALL = (await r.json()).feedback || []; try { localStorage.setItem("sc-fb-key", key); } catch (e){}
+    draw();
+  } catch (e){ $("msg").textContent = "Couldn't load the notes."; }
+}
+$("keyForm").onsubmit = e => { e.preventDefault(); const k = $("key").value.trim(); if (k) load(k); };
+try { const k = localStorage.getItem("sc-fb-key"); if (k){ $("key").value = k; load(k); } } catch (e){}
+</script>
+</body>
+</html>

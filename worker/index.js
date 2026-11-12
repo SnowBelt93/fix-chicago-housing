@@ -30,7 +30,7 @@ export default {
     const wf = url.pathname.match(/^\/api\/ward\/(\d{1,2})\.xml$/);
     if (wf && +wf[1] >= 1 && +wf[1] <= 50) return wardFeed(+wf[1], url, env);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
-    if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || url.searchParams.get("key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
+    if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || (req.headers.get("x-feedback-key") || url.searchParams.get("key")) !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
     const ip = req.headers.get("cf-connecting-ip") || "0";
     const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip}, body: req.method === "POST" ? await req.text() : undefined});
