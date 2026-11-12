@@ -177,7 +177,7 @@
  },
  "treasury": 466,
  "hud": {},
- "ran": "2026-11-12T18:34:09",
+ "ran": "2026-11-12T18:39:57",
  "districts": {
   "n": 59,
   "fields": [
@@ -187,5 +187,9 @@
    "REGISTER"
   ],
   "prj": "PROJCS[\"NAD_1983_StatePlane_Illinois_East_FIPS_1201_Feet\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\""
+ },
+ "geo2": {
+  "tracts": 1331,
+  "zcta": 56
  }
 }
