@@ -1,0 +1,483 @@
+{
+ "tif": {
+  "jkpc-3pjb": {
+   "name": "Boundaries - Tax Increment Financing Districts - Map",
+   "type": "map",
+   "updated": "2026-09-29T17:35:43.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "eejr-xtfb": {
+   "name": "Boundaries - Tax Increment Financing Districts",
+   "type": "dataset",
+   "updated": "2026-09-29T17:35:43.000Z",
+   "cols": [
+    "shape_leng",
+    "shape_area",
+    "repealed_d",
+    "approval_d",
+    "ref",
+    "ind",
+    "type",
+    "use",
+    "name_trim",
+    "wards",
+    "comm_area",
+    "sbif",
+    "show",
+    "the_geom",
+    "objectid",
+    "name",
+    "expiration"
+   ],
+   "got": 100
+  },
+  "4sci-edy9": {
+   "name": "Boundaries - Inactive Tax Increment Financing Districts - Map",
+   "type": "map",
+   "updated": "2026-01-27T22:06:13.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "5eit-itsp": {
+   "name": "Boundaries - Inactive Tax Increment Financing Districts",
+   "type": "dataset",
+   "updated": "2026-01-27T22:06:35.000Z",
+   "cols": [
+    "name_trim",
+    "terminate_",
+    "shape_leng",
+    "show",
+    "the_geom",
+    "sbif",
+    "ref",
+    "objectid",
+    "name",
+    "ind",
+    "type",
+    "use",
+    "shape_area",
+    "expiration",
+    "approval_d",
+    "repealed_d",
+    "wards",
+    "comm_area"
+   ]
+  },
+  "v3a3-hhqn": {
+   "name": "Tax Increment Financing (TIF) Projects - Map",
+   "type": "map",
+   "updated": "2026-11-11T06:43:19.000Z",
+   "cols": []
+  },
+  "fpsv-qjg3": {
+   "name": "TIF Projections - 2025-2034",
+   "type": "dataset",
+   "updated": "2025-11-18T18:59:55.000Z",
+   "cols": [
+    "_2026",
+    "_2030",
+    "_2033",
+    "tif_district_name",
+    "category_description",
+    "_2032",
+    "_2031",
+    "_2029",
+    "_2028",
+    "_2027",
+    "line_item_description",
+    "_2034",
+    "tif_district_id",
+    "fund_and_project_balances",
+    "through_end_date",
+    "year_tif_ends",
+    "_2025"
+   ]
+  },
+  "u7me-geeu": {
+   "name": "TIF Projections - 2026-2035",
+   "type": "dataset",
+   "updated": "2026-11-10T00:06:50.000Z",
+   "cols": [
+    "_2033",
+    "_2029",
+    "through_end_date",
+    "_2031",
+    "_2028",
+    "_2030",
+    "year_tif_ends",
+    "_2025",
+    "tif_district_id",
+    "tif_district_name",
+    "_2034",
+    "category_description",
+    "line_item_description",
+    "fund_and_project_balances",
+    "_2027",
+    "_2032",
+    "_2026"
+   ]
+  },
+  "mex4-ppfc": {
+   "name": "Tax Increment Financing (TIF) Funded RDA and IGA Projects",
+   "type": "dataset",
+   "updated": "2026-11-11T06:43:19.000Z",
+   "cols": [
+    "coc_date",
+    "cdc_date",
+    "total_project_cost",
+    "ward",
+    ":@computed_region_43wa_7qmu",
+    "location_city",
+    ":@computed_region_awaf_s7ux",
+    ":@computed_region_vrxf_vc4k",
+    ":@computed_region_6mkv_f3dw",
+    ":@computed_region_bdys_3d7i",
+    ":@computed_region_rpca_8um6",
+    "address",
+    "location_zip",
+    "id",
+    "location_state",
+    "community_area",
+    "location",
+    "longitude",
+    "location_address",
+    "y_coordinate",
+    "affordable_units",
+    "x_coordinate",
+    "approved_amount",
+    "project_name",
+    "developer",
+    "tif_district",
+    "project_description",
+    "latitude",
+    "tif_subsidy_percentage"
+   ]
+  },
+  "ip6w-ws46": {
+   "name": "Tax Increment Financing (TIF) Annual Report - Properties Acquired/Sold by City",
+   "type": "dataset",
+   "updated": "2026-08-31T16:04:28.000Z",
+   "cols": [
+    "action",
+    ":@computed_region_bdys_3d7i",
+    "tif_number",
+    ":@computed_region_6mkv_f3dw",
+    "tif_district",
+    ":@computed_region_43wa_7qmu",
+    ":@computed_region_vrxf_vc4k",
+    "location",
+    ":@computed_region_rpca_8um6",
+    "address",
+    "report_year"
+   ]
+  }
+ },
+ "nof": {
+  "rym7-49n8": {
+   "name": "Financial Incentive Projects - Neighborhood Opportunity Fund (NOF) Small",
+   "type": "dataset",
+   "updated": "2026-03-25T20:01:33.000Z",
+   "cols": [
+    ":@computed_region_43wa_7qmu",
+    ":@computed_region_bdys_3d7i",
+    ":@computed_region_6mkv_f3dw",
+    "incentive_amount",
+    "project_description",
+    "square_footage",
+    "location",
+    "property_type",
+    "jobs_retained_aspirational",
+    "completion_date",
+    "street_direction",
+    "approval_date",
+    "community_area",
+    "ward",
+    "street_name",
+    "jobs_created_aspirational",
+    "address_number_high",
+    "other_public_funding",
+    "total_project_cost",
+    "address_number",
+    "project_name",
+    ":@computed_region_rpca_8um6",
+    "applicant_name",
+    ":@computed_region_vrxf_vc4k",
+    "street_type"
+   ],
+   "got": 126
+  },
+  "j7ew-b73u": {
+   "name": "Financial Incentive Projects - Neighborhood Opportunity Fund (NOF) Large",
+   "type": "dataset",
+   "updated": "2026-03-25T20:07:48.000Z",
+   "cols": [
+    ":@computed_region_bdys_3d7i",
+    ":@computed_region_6mkv_f3dw",
+    "project_name",
+    "wbe_requirement_met",
+    ":@computed_region_43wa_7qmu",
+    ":@computed_region_vrxf_vc4k",
+    ":@computed_region_rpca_8um6",
+    "total_project_cost",
+    "project_description",
+    "jobs_created_aspirational",
+    "jobs_retained_aspirational",
+    "mbe_participation",
+    "square_footage",
+    "mbe_requirement_met",
+    "other_public_funding",
+    "wbe_participation",
+    "location",
+    "completion_date",
+    "property_type",
+    "incentive_amount",
+    "address_number",
+    "approval_date",
+    "address_number_high",
+    "ward",
+    "street_type",
+    "street_name",
+    "street_direction",
+    "community_area",
+    "applicant_name"
+   ],
+   "got": 6
+  }
+ },
+ "cps": {
+  "4g38-vs8v": {
+   "name": "Chicago Public Schools - School Locations SY1718",
+   "type": "map",
+   "updated": "2024-04-24T18:50:35.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "3fhj-xtn5": {
+   "name": "Chicago Public Schools - School Locations SY1415",
+   "type": "map",
+   "updated": "2024-04-24T18:50:06.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "2mts-wp7t": {
+   "name": "Chicago Public Schools - School Locations SY1516",
+   "type": "map",
+   "updated": "2024-12-02T20:33:39.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "9ybt-s3ms": {
+   "name": "Chicago Public Schools - School Locations SY2021 - Map",
+   "type": "map",
+   "updated": "2022-01-10T23:20:19.000Z",
+   "cols": []
+  },
+  "p83k-txqt": {
+   "name": "Chicago Public Schools - School Locations SY2021",
+   "type": "dataset",
+   "updated": "2026-11-04T22:27:29.000Z",
+   "cols": [
+    "grade_cat",
+    "address",
+    "lat",
+    "short_name",
+    ":@computed_region_6mkv_f3dw",
+    ":@computed_region_bdys_3d7i",
+    "long",
+    "the_geom",
+    ":@computed_region_43wa_7qmu",
+    "school_id",
+    ":@computed_region_vrxf_vc4k",
+    ":@computed_region_rpca_8um6"
+   ]
+  },
+  "8vyn-k2j3": {
+   "name": "Chicago Public Schools - School Locations SY1819",
+   "type": "map",
+   "updated": "2024-04-24T18:51:59.000Z",
+   "cols": []
+  },
+  "9zky-nrsy": {
+   "name": "Chicago Public Schools - School Locations SY1617",
+   "type": "map",
+   "updated": "2024-04-24T18:51:12.000Z",
+   "cols": []
+  },
+  "mv87-m4mi": {
+   "name": "Chicago Public Schools - School Locations SY2324",
+   "type": "dataset",
+   "updated": "2025-09-29T21:57:54.000Z",
+   "cols": [
+    "grade_cat",
+    "the_geom",
+    "school_id",
+    "short_name",
+    "address",
+    "long",
+    "lat"
+   ]
+  },
+  "t2hk-erkw": {
+   "name": "Chicago Public Schools - School Locations SY2324 - Map",
+   "type": "map",
+   "updated": "2025-09-29T22:00:24.000Z",
+   "cols": []
+  },
+  "tz49-n8ze": {
+   "name": "Chicago Public Schools - School Locations SY1920",
+   "type": "dataset",
+   "updated": "2019-11-19T19:36:15.000Z",
+   "cols": [
+    ":@computed_region_43wa_7qmu",
+    ":@computed_region_rpca_8um6",
+    ":@computed_region_bdys_3d7i",
+    "y",
+    "x",
+    "grade_cat",
+    "school_id",
+    "sch_addr",
+    ":@computed_region_vrxf_vc4k",
+    "the_geom",
+    "sch_type",
+    ":@computed_region_6mkv_f3dw",
+    "school_nm",
+    "grades"
+   ]
+  },
+  "x9yh-x8zu": {
+   "name": "Chicago Public Schools - School Locations SY0708",
+   "type": "map",
+   "updated": "2024-04-24T18:49:41.000Z",
+   "cols": []
+  },
+  "pb6d-zzuh": {
+   "name": "Chicago Public Schools - School Locations SY2526",
+   "type": "dataset",
+   "updated": "2025-09-29T21:28:33.000Z",
+   "cols": [
+    "school_id",
+    "address",
+    "long",
+    "lat",
+    "short_name",
+    "the_geom",
+    "grade_cat"
+   ]
+  },
+  "hexd-c4gn": {
+   "name": "Chicago Public Schools - School Locations SY2425",
+   "type": "dataset",
+   "updated": "2025-09-29T21:53:17.000Z",
+   "cols": [
+    "school_id",
+    "address",
+    "lat",
+    "the_geom",
+    "long",
+    "short_name",
+    "grade_cat"
+   ]
+  },
+  "6qik-a75t": {
+   "name": "Chicago Public Schools - School Locations SY1112",
+   "type": "map",
+   "updated": "2024-04-24T18:50:56.000Z",
+   "cols": []
+  },
+  "cvn9-pbt9": {
+   "name": "Chicago Public Schools - School Locations SY1011",
+   "type": "map",
+   "updated": "2024-04-24T18:50:25.000Z",
+   "cols": []
+  },
+  "qsgm-ub2r": {
+   "name": "Chicago Public Schools - School Locations SY0910",
+   "type": "map",
+   "updated": "2024-04-24T18:51:11.000Z",
+   "cols": []
+  },
+  "grmh-ksdn": {
+   "name": "Chicago Public Schools - School Locations SY1314",
+   "type": "map",
+   "updated": "2024-04-24T18:51:53.000Z",
+   "cols": []
+  },
+  "vfmh-nkyk": {
+   "name": "Chicago Public Schools - School Locations SY2122",
+   "type": "dataset",
+   "updated": "2025-09-29T22:04:46.000Z",
+   "cols": [
+    "short_name",
+    "the_geom",
+    "long",
+    "school_id",
+    "address",
+    "lat",
+    "grade_cat"
+   ]
+  },
+  "56cp-u89f": {
+   "name": "Chicago Public Schools - School Locations SY1213",
+   "type": "map",
+   "updated": "2024-04-24T18:50:10.000Z",
+   "cols": []
+  },
+  "9p4q-n8rz": {
+   "name": "Chicago Public Schools - School Locations SY0809",
+   "type": "map",
+   "updated": "2024-04-24T18:50:48.000Z",
+   "cols": []
+  }
+ },
+ "parks": {
+  "ej32-qgdr": {
+   "name": "Parks - Chicago Park District Park Boundaries (current)",
+   "type": "map",
+   "updated": "2024-10-17T23:28:30.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "5yyk-qt9y": {
+   "name": "Parks - Chicago Park District Facilities (current)",
+   "type": "map",
+   "updated": "2025-02-11T19:00:03.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "thkh-m6bg": {
+   "name": "Parks - Facilities & Features - Shapefiles",
+   "type": "file",
+   "updated": "2013-04-22T17:01:37.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "sj6t-9cju": {
+   "name": "Parks - Public Art",
+   "type": "dataset",
+   "updated": "2013-03-13T22:30:52.000Z",
+   "cols": [
+    "location_zip",
+    "owner",
+    "location_state",
+    "location",
+    "park_number",
+    ":@computed_region_bdys_3d7i",
+    ":@computed_region_rpca_8um6",
+    "artist",
+    "park_name",
+    "x_coordinate",
+    ":@computed_region_awaf_s7ux",
+    "y_coordinate",
+    "latitude",
+    "location_address",
+    "art",
+    ":@computed_region_43wa_7qmu",
+    ":@computed_region_6mkv_f3dw",
+    ":@computed_region_vrxf_vc4k",
+    "location_city",
+    "longitude"
+   ]
+  }
+ }
+}

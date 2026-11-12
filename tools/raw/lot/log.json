@@ -177,7 +177,7 @@
  },
  "treasury": 466,
  "hud": {},
- "ran": "2026-11-12T18:39:57",
+ "ran": "2026-11-12T18:44:12",
  "districts": {
   "n": 59,
   "fields": [
@@ -188,8 +188,90 @@
   ],
   "prj": "PROJCS[\"NAD_1983_StatePlane_Illinois_East_FIPS_1201_Feet\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\""
  },
- "geo2": {
-  "tracts": 1331,
-  "zcta": 56
+ "hudlim": {
+  "mtsp": {
+   "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-Data-FY26.xlsx": 211,
+   "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-IncAvg-Data-FY26.xlsx": 176
+  },
+  "il": {
+   "https://www.huduser.gov/portal/datasets/il/il26/FY2026-National-Non-Met-Very-Low-Income-Limits.xlsx": 3,
+   "https://www.huduser.gov/portal/datasets/il/il26/HUD_IL_NPG_FY26.xlsx": 32,
+   "https://www.huduser.gov/portal/datasets/il/il26/S235_S236-FY26.xlsx": 36,
+   "https://www.huduser.gov/portal/datasets/il/il26/Section8-FY26.xlsx": 82
+  },
+  "qct": {
+   "https://www.huduser.gov/portal/datasets/qct/2026-DDAs-Data-Used-to-Designate.xlsx": 374,
+   "https://www.huduser.gov/portal/datasets/qct/2027-DDAs-Data-Used-to-Designate.xlsx": 375,
+   "https://www.huduser.gov/portal/datasets/qct/QCT2026CSV.zip": 375,
+   "https://www.huduser.gov/portal/datasets/qct/QCT2027CSV.zip": 356,
+   "https://www.huduser.gov/portal/datasets/qct/qct_data_2026.xlsx": 3185,
+   "https://www.huduser.gov/portal/datasets/qct/qct_data_2027.xlsx": 3212
+  },
+  "sadda": {}
+ },
+ "amen": {
+  "grocery": 409,
+  "health": 680,
+  "school": 1483,
+  "park": 1630
+ },
+ "places": {
+  "tif": {
+   "jkpc-3pjb": 0,
+   "eejr-xtfb": 100,
+   "4sci-edy9": 0,
+   "5eit-itsp": null,
+   "v3a3-hhqn": null,
+   "fpsv-qjg3": null,
+   "u7me-geeu": null,
+   "mex4-ppfc": null,
+   "ip6w-ws46": null
+  },
+  "nof": {
+   "rym7-49n8": 126,
+   "j7ew-b73u": 6
+  },
+  "cps": {
+   "4g38-vs8v": 0,
+   "3fhj-xtn5": 0,
+   "2mts-wp7t": 0,
+   "9ybt-s3ms": null,
+   "p83k-txqt": null,
+   "8vyn-k2j3": null,
+   "9zky-nrsy": null,
+   "mv87-m4mi": null,
+   "t2hk-erkw": null,
+   "tz49-n8ze": null,
+   "x9yh-x8zu": null,
+   "pb6d-zzuh": null,
+   "hexd-c4gn": null,
+   "6qik-a75t": null,
+   "cvn9-pbt9": null,
+   "qsgm-ub2r": null,
+   "grmh-ksdn": null,
+   "vfmh-nkyk": null,
+   "56cp-u89f": null,
+   "9p4q-n8rz": null
+  },
+  "parks": {
+   "ej32-qgdr": 0,
+   "5yyk-qt9y": 0,
+   "thkh-m6bg": 0,
+   "sj6t-9cju": null
+  }
+ },
+ "acs2": {
+  "b19001_2024": 1332,
+  "b19001_2019": "missing",
+  "b17001_2024": 1332,
+  "b17001_2019": 0,
+  "b19013_2024": 1332,
+  "b19013_2019": "missing",
+  "b25064_2024": 1332,
+  "b25064_2019": "missing",
+  "b25077_2024": 1332,
+  "b25077_2019": "missing",
+  "b11001_2024": 1332,
+  "b11001_2019": "missing"
  }
 }

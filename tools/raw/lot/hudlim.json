@@ -1,0 +1,41 @@
+{
+ "mtsp": {
+  "links": [
+   "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-Data-FY26.xlsx",
+   "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-IncAvg-Data-FY26.xlsx"
+  ],
+  "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-Data-FY26.xlsx": 211,
+  "https://www.huduser.gov/portal/datasets/mtsp/mtsp26/MTSP-IncAvg-Data-FY26.xlsx": 176
+ },
+ "il": {
+  "links": [
+   "https://www.huduser.gov/portal/datasets/il/il26/FY2026-National-Non-Met-Very-Low-Income-Limits.xlsx",
+   "https://www.huduser.gov/portal/datasets/il/il26/HUD_IL_NPG_FY26.xlsx",
+   "https://www.huduser.gov/portal/datasets/il/il26/S235_S236-FY26.xlsx",
+   "https://www.huduser.gov/portal/datasets/il/il26/Section8-FY26.xlsx"
+  ],
+  "https://www.huduser.gov/portal/datasets/il/il26/FY2026-National-Non-Met-Very-Low-Income-Limits.xlsx": 3,
+  "https://www.huduser.gov/portal/datasets/il/il26/HUD_IL_NPG_FY26.xlsx": 32,
+  "https://www.huduser.gov/portal/datasets/il/il26/S235_S236-FY26.xlsx": 36,
+  "https://www.huduser.gov/portal/datasets/il/il26/Section8-FY26.xlsx": 82
+ },
+ "qct": {
+  "links": [
+   "https://www.huduser.gov/portal/datasets/qct/2026-DDAs-Data-Used-to-Designate.xlsx",
+   "https://www.huduser.gov/portal/datasets/qct/2027-DDAs-Data-Used-to-Designate.xlsx",
+   "https://www.huduser.gov/portal/datasets/qct/QCT2026CSV.zip",
+   "https://www.huduser.gov/portal/datasets/qct/QCT2027CSV.zip",
+   "https://www.huduser.gov/portal/datasets/qct/qct_data_2026.xlsx",
+   "https://www.huduser.gov/portal/datasets/qct/qct_data_2027.xlsx"
+  ],
+  "https://www.huduser.gov/portal/datasets/qct/2026-DDAs-Data-Used-to-Designate.xlsx": 374,
+  "https://www.huduser.gov/portal/datasets/qct/2027-DDAs-Data-Used-to-Designate.xlsx": 375,
+  "https://www.huduser.gov/portal/datasets/qct/QCT2026CSV.zip": 375,
+  "https://www.huduser.gov/portal/datasets/qct/QCT2027CSV.zip": 356,
+  "https://www.huduser.gov/portal/datasets/qct/qct_data_2026.xlsx": 3185,
+  "https://www.huduser.gov/portal/datasets/qct/qct_data_2027.xlsx": 3212
+ },
+ "sadda": {
+  "links": []
+ }
+}
