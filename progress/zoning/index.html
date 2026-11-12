@@ -41,6 +41,13 @@ document.querySelectorAll(".mapr").forEach(box => {
 });
 document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => { const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
   e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; });
+(function(){ const sel = document.getElementById("zipSel"), out = document.getElementById("zipOut"); if (!sel) return;
+  const D = JSON.parse(document.getElementById("zipData").textContent), usd = v => v == null ? "–" : "$" + v.toLocaleString("en-US"), BR = ["Studio", "One bedroom", "Two bedrooms", "Three bedrooms", "Four bedrooms"];
+  const show = () => { const d = D[sel.value]; if (!d) return; const up = Math.round(100 * (d.r[2] / d.r19 - 1));
+    out.innerHTML = '<div class="facts">' + d.r.map((v, i) => "<div><b>" + usd(v) + "</b><span>" + BR[i] + ", fiscal 2027</span></div>").join("") + "</div>"
+      + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
+      + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; };
+  sel.addEventListener("change", show); show(); })();
 document.querySelectorAll("[data-until]").forEach(e => { const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; });
 </script>
 </body>

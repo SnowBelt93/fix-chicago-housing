@@ -74,6 +74,9 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .wmap path{stroke:#fff;stroke-width:.7;stroke-linejoin:round;cursor:pointer;outline:none}
 .pg .wmap path.on,.pg .wmap path:focus-visible{stroke:#1a1d21;stroke-width:1.8}
 .pg .winfo{margin:0;font-size:13px;line-height:18px;color:var(--sc-ink2);min-height:36px}.pg .winfo b{color:var(--sc-ink)}
+.pg .hb > div.me span,.pg .hb > div.me b{font-weight:700}.pg .hb > div.me .tr i{background:var(--sc-ink)}
+.pg .zipr{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 14px}.pg .zipr select{font:inherit;font-size:15px;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.pg .zipr label{font-weight:600;font-size:15px}
 .pg .hb > div[data-w]{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}.pg .hb > div.on{background:#eef3fb}
 .pg details.all{border-top:1px solid var(--sc-line);padding-top:12px}.pg details.all summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--sc-navy)}.pg details.all .tw{margin-top:10px;max-height:420px;overflow:auto}
 /* the goal each section is measured against */

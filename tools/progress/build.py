@@ -20,6 +20,10 @@ def day(iso, year=False):
     d = dt.date.fromisoformat(iso[:10]); return f'{MON[d.month - 1]} {d.day}' + (f', {d.year}' if year else '')
 esc = lambda s: str(s).replace('&', '&amp;').replace('<', '&lt;').replace('"', '&quot;')
 
+# yearly federal tables (HUD, Census, FHFA), cut to Chicago by tools/progress/data.py; cards that use them are left out if the file is missing
+try: SRC = json.load(open(os.path.join(ROOT, 'progress', 'data', 'src.json')))
+except Exception: SRC = {}
+
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
 # homes in buildings with a demolition permit, by year: counted every morning by tools/tracker/teardowns.py (main) into
@@ -100,9 +104,9 @@ def bars(vals, labels, fmt=f, short=None, refs=(), partial=False, plabel='', top
     labs = ''.join(f'<span>{l}</span>' for l in labels[:-1]) + f'<span>{labels[-1]}{"<br>" + plabel if partial and plabel else ""}</span>'
     return f'<div class="chart" role="img" aria-label="{esc(aria)}" style="--n: {n}; --ch: {h}px;"><div class="plot">{rf}{cols}</div><div class="xl">{labs}</div></div>'
 
-def hbars(rows, unit='', maxv=None, w=62):
+def hbars(rows, unit='', maxv=None, w=62, me=None):
     m = maxv or max(abs(r[1]) for r in rows)
-    return '<div class="hb">' + ''.join(f'<div{(" data-w=" + n[5:]) if n.startswith("Ward ") else ""} style="grid-template-columns: {w}px minmax(0, 1fr) auto;"><span>{esc(n)}</span><div class="tr"><i style="width: {max(1.5, 100 * abs(v) / m):.0f}%;"></i></div><b>{t}</b></div>' for n, v, t in rows) + '</div>'
+    return '<div class="hb">' + ''.join(f'<div{(" data-w=" + n[5:]) if n.startswith("Ward ") else ""}{" class=me" if n == me else ""} style="grid-template-columns: {w}px minmax(0, 1fr) auto;"><span>{esc(n)}</span><div class="tr"><i style="width: {max(1.5, 100 * abs(v) / m):.0f}%;"></i></div><b>{t}</b></div>' for n, v, t in rows) + '</div>'
 
 def split(parts, labels=True):
     tot = sum(p[1] for p in parts)
@@ -200,6 +204,13 @@ document.querySelectorAll(".mapr").forEach(box => {{
 }});
 document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => {{ const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
   e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; }});
+(function(){{ const sel = document.getElementById("zipSel"), out = document.getElementById("zipOut"); if (!sel) return;
+  const D = JSON.parse(document.getElementById("zipData").textContent), usd = v => v == null ? "–" : "$" + v.toLocaleString("en-US"), BR = ["Studio", "One bedroom", "Two bedrooms", "Three bedrooms", "Four bedrooms"];
+  const show = () => {{ const d = D[sel.value]; if (!d) return; const up = Math.round(100 * (d.r[2] / d.r19 - 1));
+    out.innerHTML = '<div class="facts">' + d.r.map((v, i) => "<div><b>" + usd(v) + "</b><span>" + BR[i] + ", fiscal 2027</span></div>").join("") + "</div>"
+      + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
+      + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; }};
+  sel.addEventListener("change", show); show(); }})();
 document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; }});
 </script>
 </body>
@@ -264,8 +275,20 @@ def homes():
             f'Torn-down homes are an estimate, counted every morning through the newest demolition permit ({TD_THRU}): each permit is matched to the building at its address in the city’s 2013 footprints (the one its point falls in, or the nearest within 12 m) to read how many homes it held. Permits for only a garage or porch are left out, and so are matches to a building much bigger than the one the permit describes. Looser or tighter matching moves a year’s figure by about a tenth. Most teardowns are followed by a new building, which the permit count includes. '
             'Renovation figures come from permits whose wording states the change (for example “convert from 3 units to 2”), leaving out permits that expired or were cancelled. We catch roughly half of the cuts and fewer of the additions, so both are floors, and neither is subtracted or added in the net figure. '
             'Homes per ward come from the 2020 Census. “Finished” means the city marked the permit complete or issued a certificate of occupancy. Coach house applications are counted from Mar. 31, 2026; the 2021–2025 pilot cleared 907.')
+    peers = ''
+    C = (SRC.get('bps') or {}).get('cities') or {}
+    if 'Chicago' in C:
+        rate = lambda c, y='2025': 1000 * C[c][y]['u'] / C[c][y]['pop']
+        rk = sorted(C, key=lambda c: -rate(c)); pos = rk.index('Chicago') + 1; chi = C['Chicago']
+        sub = (SRC['bps'].get('suburbs') or {}); st = sorted(sub.items(), key=lambda kv: -kv[1]['2025']['u'])[:6]
+        peers = card('Chicago next to other big cities', 'Homes permitted in 2025 for every 1,000 residents, in Chicago and 12 of the other 14 largest U.S. cities.',
+                     '<div class="pair"><div>' + hbars([(c, rate(c), f'{rate(c):.1f}') for c in rk], w=96, me='Chicago')
+                     + f'</div><div><p class="call" style="margin-top:0">Chicago permitted <b>{rate("Chicago"):.1f}</b> homes per 1,000 residents in 2025, {"the fewest" if pos == len(rk) else f"number {pos}"} of these {len(rk)} cities. {rk[0]} permitted <b>{rate(rk[0]):.1f}</b>.</p>'
+                     + '<h3>Chicago by itself</h3>' + table(['', '2015', '2019', '2022', '2025'], [['Homes permitted'] + [f(chi[str(y)]['u']) for y in (2015, 2019, 2022, 2025)]], right=(1, 2, 3, 4))
+                     + '<h3>Suburbs that permitted the most in 2025</h3>' + hbars([(n, v['2025']['u'], f(v['2025']['u'])) for n, v in st], w=96) + '</div></div>')
+        note += ' The city comparison uses the Census Building Permits Survey’s yearly place file and the population it carries for each place; Jacksonville, Indianapolis and Charlotte are filed under their county governments there and are left out. New York is its five boroughs added together. Suburbs are Illinois places of 25,000 or more people in the Chicago metro area.'
     h1 = f'So far this year: {f(ytd["homes"])} homes permitted, about {f(d26)} torn down, a net gain of about {f(net26)}.'
-    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + lostc + c4 + g
+    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + peers + lostc + c4 + g
                 + bottom('homes', note, 'City of Chicago building permits (new construction, demolition and renovation); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications and shared housing registrations.'))
 
 # ---------------------------------------------------------------- the snapshot sections
@@ -328,11 +351,23 @@ def affordable():
               + '</div><p class="call">Wards 19 and 30 have no building on the list. That is not the same as no affordable housing.</p></div></div>'
               + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
     c2 = card('Is the number growing?', '', '<p class="sub">The city’s list cannot say. It gives each building’s address and number of homes but not the year it opened, and the city has published one version of it, dated Dec. 30, 2024. Until it publishes another, there is no second point to compare.</p>')
+    H = SRC.get('hud') or {}
+    if '2025' in H:
+        ys = sorted(int(y) for y in H); a, b = H[str(ys[0])], H[str(ys[-1])]; other = b['all'] - b.get('hcv', 0) - b.get('s8', 0) - b.get('ph', 0)
+        ch = round(100 * (b['all'] / a['all'] - 1)); dv = b['hcv'] - a['hcv']; dp = b['ph'] - a['ph']
+        c2 = card(f'Is the number growing? The federal count is {"up" if ch > 0 else "down"} {abs(ch)}% since {ys[0]}', f'Homes in Chicago with federal rent help each year: public housing, rent vouchers and federally subsidized buildings. This is HUD’s yearly count, a different list from the city’s above.',
+                  bars([H[str(y)]['all'] for y in ys], [f'’{str(y)[2:]}' for y in ys], short=lambda v: f'{v / 1000:.0f}k', h=170,
+                       aria=f'Homes with federal rent help in Chicago each year: {f(a["all"])} in {ys[0]} and {f(b["all"])} in {ys[-1]}.')
+                  + f'<h3 style="margin-top:16px">What the {f(b["all"])} homes in {ys[-1]} are</h3>'
+                  + split([('Rent vouchers', b['hcv'], NAVY), ('Subsidized private buildings (Section 8)', b['s8'], '#5f8fcc'), ('Public housing', b['ph'], '#9db9de'), ('Senior, disability and other programs', other, '#c9ced6')])
+                  + f'<p class="call"><b>{f(a["all"])}</b> homes in {ys[0]}, <b>{f(b["all"])}</b> in {ys[-1]}: {"up" if ch > 0 else "down"} {abs(ch)}%. Rent vouchers {"rose" if dv > 0 else "fell"} by about {f(round(abs(dv) / 100) * 100)}; public housing {"rose" if dp > 0 else "fell"} by about {f(round(abs(dp) / 100) * 100)}.</p>'
+                  + '<p class="sub">The city’s own list still cannot show growth: it has no opening dates and one published version (Dec. 30, 2024).</p>')
     g = goal('The 2024–2028 housing bond', 'The city’s Housing and Economic Development Bond plan projects 600 to 1,000 affordable rental homes built or preserved, and 600 or more mixed-income homes every five years from its new Green Social Housing fund. The city has not published a running count against those figures.', 'The bond plan', "https://www.chicago.gov/content/dam/city/sites/business-and-neighborhood-development-strategy/pdf/Housing-and-Economic-Development-Bond-Book-(Updated-2024.07.03).pdf")
     note = ('The list is the Department of Housing’s “Affordable Rental Housing Developments”: buildings the city financed, plus those built under its affordable requirements rule. The city describes it as among the thousands of homes it supports and provides it as a courtesy. '
-            'Ward totals place each building by its map location on the 2023 ward map.')
-    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list dated Dec. 30, 2024 · checked {SNAP}') + st + c1 + c2 + g
-                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated Dec. 30, 2024); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024).'))
+            'Ward totals place each building by its map location on the 2023 ward map. '
+            'The federal count is HUD’s “Picture of Subsidized Households” for Chicago: homes under contract or available in each federal program at the end of each year. A voucher counts as one home wherever it is used. It leaves out buildings financed only with tax credits or city money, so it overlaps the city’s list but is not the same thing.')
+    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list dated Dec. 30, 2024 · federal count through 2025 · checked {SNAP}') + st + c1 + c2 + g
+                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated Dec. 30, 2024); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024); U.S. Department of Housing and Urban Development, Picture of Subsidized Households, 2014–2025.'))
 
 def rents():
     h1 = 'The typical asking rent is $2,311, up 5.7% in a year.'
@@ -347,10 +382,26 @@ def rents():
     st = tiles([('$2,311', 'asking rent for a home on the market, Sept. 2026 (Zillow)'), ('$1,440', 'what the typical renter pays, all renters (Census, 2024)'), ('31% vs. 26%', 'rise in asking rents vs. consumer prices, 2019 to 2025'), ('20% fewer', 'houses sold in 2025 than in 2019 (10,369 vs. 12,944)')])
     c2 = card('Sale prices', 'Median sale price in Chicago, not adjusted for inflation.', table(['', '2019', '2021', '2023', '2025', 'Since 2019'],
               [['House', '$230,000', '$295,000', '$284,900', '$320,000', '<b>+39%</b>'], ['Condo', '$260,000', '$288,000', '$280,000', '$329,000', '<b>+27%</b>'], ['2- to 6-flat', '$275,000', '$375,000', '$375,000', '$450,000', '<b>+64%</b>']], right=(1, 2, 3, 4, 5)))
-    note = ('Asking rent is Zillow’s Observed Rent Index for the city: rents advertised for homes on the market, all sizes, smoothed. It runs above what sitting tenants pay. The 2026-dollar figures use the national Consumer Price Index (yearly averages; 2026 is the average of the months published so far, so the last step is an estimate). '
+    zc = ''
+    SF = SRC.get('safmr') or {}; FH = SRC.get('fhfa') or {}
+    Z = sorted(z for z, v in SF.items() if v.get('2027') and v.get('2019') and v['2027'][2] and v['2019'][2])
+    if Z:
+        two = lambda z, y='2027': SF[z][y][2]
+        rk = sorted(Z, key=lambda z: -two(z)); med = sorted(two(z) for z in Z)[len(Z) // 2]
+        capz = [z for z in Z if two(z) == two(rk[0])]; below = [z for z in rk if two(z) < two(rk[0])]
+        zd = {z: {'r': SF[z]['2027'], 'r19': SF[z]['2019'][2], 'p': (round(100 * (FH[z]['2025'] / FH[z]['2019'] - 1)) if z in FH and '2025' in FH[z] and '2019' in FH[z] else None)} for z in Z}
+        zc = card('Rent by ZIP code', 'What the federal government figures a modest home rents for in each Chicago ZIP code, utilities included. It sets these every year to size rent vouchers.',
+                  '<div class="zipr"><label for="zipSel">ZIP code</label><select id="zipSel">' + ''.join(f'<option value="{z}"{" selected" if z == "60647" else ""}>{z}</option>' for z in Z) + '</select></div>'
+                  + '<div id="zipOut" aria-live="polite"></div>'
+                  + f'<script type="application/json" id="zipData">{json.dumps(zd, separators=(",", ":"))}</script>'
+                  + '<div class="pair" style="margin-top:18px"><div><h3>Highest two-bedroom figures below the ceiling</h3>' + hbars([(z, two(z), f'${f(two(z))}') for z in below[:6]], w=58, maxv=two(rk[0]))
+                  + '</div><div><h3>Lowest</h3>' + hbars([(z, two(z), f'${f(two(z))}') for z in rk[-6:]], w=58, maxv=two(rk[0])) + '</div></div>'
+                  + f'<p class="call">The middle Chicago ZIP code’s two-bedroom figure is <b>${f(med)}</b> for fiscal 2027; the lowest is <b>${f(two(rk[-1]))}</b> ({rk[-1]}). <b>{len(capz)}</b> ZIP codes share the top figure, <b>${f(two(rk[0]))}</b>, because HUD caps a ZIP code at 150% of the area-wide figure: {", ".join(sorted(capz))}.</p>')
+    note = ('ZIP code rents are HUD’s Small Area Fair Market Rents for fiscal 2027 and 2019: for each ZIP code, the rent plus utilities that 40% of recently rented standard homes come in under. HUD builds them from Census surveys a few years old plus a trend, so they trail the market; no ZIP code can be set above 150% of the metro area’s figure or below the state’s minimum (HUD, fiscal 2027 Small Area Fair Market Rent methodology). ZIP code price changes are the Federal Housing Finance Agency’s yearly house price index, which follows repeat sales and refinancings of the same homes and is published only where there are enough of them. '
+            'Asking rent is Zillow’s Observed Rent Index for the city: rents advertised for homes on the market, all sizes, smoothed. It runs above what sitting tenants pay. The 2026-dollar figures use the national Consumer Price Index (yearly averages; 2026 is the average of the months published so far, so the last step is an estimate). '
             'Sale prices are the median of what sold that year, not the same homes. They come from the Cook County Assessor’s sales in Chicago, leaving out sales under $10,000, resales within a year, unusual deeds and multi-parcel sales.')
-    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through Sept. 2026 · sales through 2025 · checked {SNAP}') + st + c1 + c2 + goal('No city program sets a target for rents or sale prices', 'Rents and prices are the result the other sections add up to, so this section is a readout, not a scorecard.', none=True)
-                + bottom('rents', note, 'Zillow Observed Rent Index (city of Chicago); Census American Community Survey 2024; Cook County Assessor parcel sales; Bureau of Labor Statistics CPI-U.'))
+    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through Sept. 2026 · sales through 2025 · checked {SNAP}') + st + c1 + zc + c2 + goal('No city program sets a target for rents or sale prices', 'Rents and prices are the result the other sections add up to, so this section is a readout, not a scorecard.', none=True)
+                + bottom('rents', note, 'Zillow Observed Rent Index (city of Chicago); Census American Community Survey 2024; Cook County Assessor parcel sales; Bureau of Labor Statistics CPI-U; HUD Small Area Fair Market Rents, fiscal 2019 and 2027; Federal Housing Finance Agency house price index by ZIP code.'))
 
 PMO = 'https://nita.illinois.gov/uploads/files/general/Transit-Funding/Improving-the-System/2026-06-Report-on-Project-Management-Oversight-1.pdf'
 # name, budget, status, chip class, where it stands, due, source label, source date, url.  Budgets and percentages: NITA's June 2026 oversight report (budgets as of March 2026, status as of late May).
@@ -517,6 +568,9 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .wmap path{stroke:#fff;stroke-width:.7;stroke-linejoin:round;cursor:pointer;outline:none}
 .pg .wmap path.on,.pg .wmap path:focus-visible{stroke:#1a1d21;stroke-width:1.8}
 .pg .winfo{margin:0;font-size:13px;line-height:18px;color:var(--sc-ink2);min-height:36px}.pg .winfo b{color:var(--sc-ink)}
+.pg .hb > div.me span,.pg .hb > div.me b{font-weight:700}.pg .hb > div.me .tr i{background:var(--sc-ink)}
+.pg .zipr{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:0 0 14px}.pg .zipr select{font:inherit;font-size:15px;min-height:40px;padding:0 12px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.pg .zipr label{font-weight:600;font-size:15px}
 .pg .hb > div[data-w]{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}.pg .hb > div.on{background:#eef3fb}
 .pg details.all{border-top:1px solid var(--sc-line);padding-top:12px}.pg details.all summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--sc-navy)}.pg details.all .tw{margin-top:10px;max-height:420px;overflow:auto}
 /* the goal each section is measured against */
