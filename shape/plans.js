@@ -201,8 +201,8 @@
         const r = t.rail, b = t.bus, m = t.metra.length;
         if (!r && !b && !m) return {t:"Cleaner transit", c:"pol"};
         if (r && !b && !m) return {t:"Rail", c:"tod"}; if (b && !r && !m) return {t:"Buses", c:"mm"}; if (m && !r && !b) return {t:"Metra", c:"hood"};
-        const has = [r && "rail", b && "bus", m && "Metra"].filter(Boolean), t = has.length === 3 ? "Rail, bus and Metra" : has.join(" and ");
-        return {t:t[0].toUpperCase() + t.slice(1), c:"all"}; },
+        const has = [r && "rail", b && "bus", m && "Metra"].filter(Boolean), lbl = has.length === 3 ? "Rail, bus and Metra" : has.join(" and ");
+        return {t:lbl[0].toUpperCase() + lbl.slice(1), c:"all"}; },
       sum(P){ const t = tparse(P.code), x = [];
         if (t.rail) x.push(plural(t.rail, "rail project")); if (t.bus) x.push(plural(t.bus, "bus project")); if (t.metra.length) x.push(plural(t.metra.length, "Metra upgrade"));
         if (t.clean.length) x.push("cleaner fleet"); return x.join(", ") || (t.fresh ? "A redrawn network" : "No lines yet"); },
