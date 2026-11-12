@@ -231,6 +231,7 @@ const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ---------- sources ---------- */
 const SRC = {
+  cbsveto: ["CBS Chicago: stadium deal could get a vote in the veto session (Oct 29, 2026)", "https://www.cbsnews.com/chicago/news/chicago-bears-stadium-deal-springfield-vote-november-veto-session/"],
   cbs: ["CBS Chicago: Related Midwest pitches South Works (Nov 6, 2026)", "https://www.cbsnews.com/chicago/news/related-midwest-pitches-bears-stadium-us-steel-south-works-site/"],
   fox32: ["FOX 32: Every proposed Bears stadium site (July 2026)", "https://www.fox32chicago.com/sports/chicago-bears-stadium-every-proposed-site"],
   fox59: ["FOX59: Hammond is the Bears' “sole focus”, two sites near Wolf Lake", "https://fox59.com/indiana-news/bears-president-and-ceo-kevin-warren-says-hammond-indiana-is-teams-sole-focus-for-new-stadium-project/"],
@@ -263,15 +264,15 @@ const SITES = [
    money:["The Bears say they'd put about $2 billion of private money into a stadium.", "The authority would be paid for by a Lake and Porter county food and beverage tax, a Lake County hotel tax, a Hammond admissions tax and renegotiated toll road fees.", "The Bears wouldn't pay property taxes on the site. Taxes from game days would go to Indiana, not Illinois or Chicago."],
    src:["fox59", "getin", "st27", "cbs"]},
   {id:"arlington", name:"Arlington Park", c:"#7a4bb3", ll:[-88.0062, 42.0915], rot:0, where:"Arlington Heights, Illinois", acres:326,
-   who:"The Bears (they own it)", status:"Still on the Bears' list",
+   who:"The Bears (they own it)", status:"One of the Bears' two options",
    facts:["The Bears bought the former Arlington International Racecourse, 326 acres, for $197.2 million in 2023.", "The 2022 master plan put a 120-acre stadium district on the west side and a mixed-use district on the rest, next to the existing Metra Arlington Park station."],
-   money:["The Bears said the stadium structure itself wouldn't need public money; they've asked for help with roads and utilities.", "They've sought a property tax deal: Illinois' “megaproject” bill would let them negotiate one. Property taxes go to Arlington Heights schools and local governments.", "Leaving Soldier Field early would leave the stadium's debt with Chicago taxpayers (see Soldier Field)."],
-   src:["shaw", "bdc", "st27", "cbssp", "trd"]},
+   money:["The Bears said the stadium structure itself wouldn't need public money; they've asked for help with roads and utilities.", "A draft Illinois bill would let a town such as Arlington Heights set up a stadium financing authority that owns the stadium, so it would pay no property taxes; the Bears would pay to build it and public money would cover roads and infrastructure. Lawmakers could vote in the fall veto session (Nov. 17–19 and Dec. 1–3, 2026).", "Leaving Soldier Field early would leave the stadium's debt with Chicago taxpayers (see Soldier Field)."],
+   src:["shaw", "bdc", "st27", "cbssp", "trd", "cbsveto"]},
   {id:"southworks", name:"South Works", c:"#1f7a8c", ll:[-87.5395, 41.7375], rot:-10, where:"South Chicago, Chicago", acres:200, lake:true,
    who:"Related Midwest (Nov 2026)", status:"Developer pitch; not a Bears proposal",
    facts:["Related Midwest pitched a domed stadium on about 200 acres of the former U.S. Steel South Works site near 87th Street and Lake Shore Drive, next to the Illinois Quantum and Microelectronics Park.", "The developer cites existing roads and utilities, room for parking, Metra service and boat docks, and says it could open for the 2032 season."],
-   money:["Financing hasn't been set; the developer mentions a public-private partnership.", "Springfield's draft bill would let a city or village set up a stadium financing authority and own the stadium, so it would pay no property taxes. Hearings are set for Nov. 17–19, 2026."],
-   src:["cbs"]},
+   money:["Financing hasn't been set; the developer mentions a public-private partnership.", "Springfield's draft bill would let a city or village set up a stadium financing authority and own the stadium, so it would pay no property taxes. Lawmakers could vote in the fall veto session (Nov. 17–19 and Dec. 1–3, 2026). The Bears say Arlington Park and Hammond are their only two options."],
+   src:["cbs", "cbsveto"]},
   {id:"lakefront", name:"South of Soldier Field", c:"#2b5da0", ll:[-87.6168, 41.8565], rot:0, where:"Museum Campus, Chicago", acres:null,
    who:"The Bears (April 2024)", status:"Shelved in 2025",
    facts:["In April 2024 the Bears proposed a $4.7 billion domed stadium on the parking lots just south of Soldier Field, keeping the old colonnades inside 14 acres of new parkland.", "It's public lakefront land, so it drew a lawsuit threat from Friends of the Parks (see Learn)."],

@@ -334,7 +334,7 @@ loadPlans();
     const up = m.meetings.find(x => Date.parse(x.d) > Date.now() - 2 * 3600e3 && /City Council|Zoning|Housing/.test(x.b) && !/cancel/i.test(x.st));
     if (!up) return; const d = new Date(up.d);
     document.getElementById("pMeet").textContent = d.toLocaleDateString("en-US", {timeZone:"America/Chicago", month:"short", day:"numeric"});
-    document.getElementById("pMeetL").textContent = "next " + (up.b === "City Council" ? "City Council meeting" : up.b.replace(/^Committee on /, "").replace(/,.*$/, "") + " hearing");
+    document.getElementById("pMeetL").textContent = "next " + (up.b === "City Council" ? "City Council meeting" : up.b.replace(/^Committee on /, "").replace(/,.*$/, "").toLowerCase() + " hearing");
   }).catch(() => {});
 })();
 

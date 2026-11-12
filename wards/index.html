@@ -305,7 +305,6 @@ fetch("data/meetings.json").then(r => r.json()).then(m => {
   $("calCard").hidden = false;
 }).catch(() => {});
 </script>
-<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("wards", {title:"Your ward's housing record", body:"<p>Pick your ward or type your address. You'll see how your alderperson voted on citywide housing laws, every zoning change in the ward, the homes it's permitting, and the next hearings at City Hall.</p><p>It's the public record from the City Clerk and the city's permit data, nothing more.</p>", art:"/shape/art/wards.webp"}));</script>
 <script>
 /* subscribe to City Hall meetings: webcal:// for Apple/Outlook, Google's add-by-URL link */
 (function(){ const u = location.host + "/api/calendar.ics";
