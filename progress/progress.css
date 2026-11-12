@@ -9,7 +9,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg a.card{text-decoration:none;color:var(--sc-ink);transition:transform .15s,border-color .15s,box-shadow .15s}
 @media (hover:hover){ .pg a.card:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 18px rgba(43,93,160,.14)} }
 .pg .pad{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.pg h1{margin:0;font-size:32px;line-height:1.2;letter-spacing:-.02em;font-weight:700;max-width:900px}
+.pg h1{margin:0;font-size:32px;line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:900px}
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
 .pg h3{margin:0 0 10px;font-size:14.5px;font-weight:600}.pg h3 span{font-weight:400;color:var(--sc-mute)}
 .pg .hd{display:flex;flex-direction:column;gap:4px}
@@ -113,6 +113,8 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg ol.bhist{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:3px}.pg ol.bhist span{display:inline-block;min-width:96px;color:var(--sc-mute)}
 .pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
 .pg .bfilt button span{font-weight:400;color:var(--sc-mute)}.pg .bfilt button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}.pg .bfilt button[aria-pressed="true"] span{color:#d9e4f4}
+.pg [id]{scroll-margin-top:84px}
+.pg .h2big{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:10px 0 0}.pg .sub2{margin-top:6px;padding-top:18px;border-top:1px solid var(--sc-line)}
 .pg .blk h2 .more{font-size:14px;font-weight:600;margin-left:10px;text-decoration:none}
 .pg ul.dot{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:21px;color:var(--sc-ink2)}
 .pg ul.dot li::marker{color:var(--sc-navy)}

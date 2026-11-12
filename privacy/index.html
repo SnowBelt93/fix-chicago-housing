@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Privacy · Shape Chicago</title>
 <meta name="description" content="What Shape Chicago stores and what stays in your browser.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +15,7 @@
 <script src="/shape/shape.js" defer></script>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;background:#fff}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
 body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 a{color:var(--sc-navy)}
 :focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
@@ -39,7 +41,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/street/">Your street</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -56,7 +58,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <li><b>Finished housing simulations.</b> When a simulation finishes, the tool sends the plan code (which zoning levels and policies you picked), its home count and grade. We use these for "What other people chose", the share of plans that turn each policy on, and the What people picked page, which only shows totals across many plans.</li>
 <li><b>Plans you post.</b> Posting a plan to the gallery is optional. If you do, its code, totals (homes, grade, rent and affordable homes in 2041) and the neighborhood you picked under "I live in" (if any) are shown publicly, with the plan's name and, if you add one, the name you go by. Use a first name or nickname, not your full name. Names are checked before they're stored and refused if they include swearing, insults, links, emails, handles or phone numbers, or if they make a plan look official. If three different people report a name, it's hidden.</li>
 <li><b>Transit, budget and pension plans you share.</b> Sharing one with neighbors is optional. If you do, the plan's code and the numbers the simulator showed (for example riders and cost, or how much of the budget gap is closed) are shown publicly with the plan's name and the optional name you go by, checked the same way. Names you typed for your own transit lines inside the simulator are removed before the plan is stored.</li>
-<li><b>Deleting a plan you shared.</b> When you share a plan, your browser keeps a private key for it, and we store only a scrambled copy of that key. Open the plan in Neighbors' plans from the same browser and choose Delete this plan: it's removed from the gallery, its names are erased, and (for transit, budget and pension plans) the plan itself is deleted. A finished housing simulation still counts, with no name, in the totals above. If you clear your browser's storage, the key is gone; send us a note with Feedback and we'll remove the plan.</li>
+<li><b>Deleting a plan you shared.</b> When you share a plan, your browser keeps a private key for it, and we store only a scrambled copy of that key. Open the plan on Plans people made from the same browser and choose Delete this plan: it's removed from the gallery, its names are erased, and (for transit, budget and pension plans) the plan itself is deleted. A finished housing simulation still counts, with no name, in the totals above. If you clear your browser's storage, the key is gone; send us a note with Feedback and we'll remove the plan.</li>
 <li><b>Reports.</b> If you report a plan's name, we store that the report came from a visitor (a daily-changing scrambled code, never your address), so each person counts once.</li>
 <li><b>Shared plan links.</b> When a simulation finishes, the tool stores that plan's code, home count, grade, goal and rent so links you share can show a preview of it. No image or text you made is stored; the preview picture is drawn from those numbers.</li>
 <li><b>Endorsements.</b> We record which plan was endorsed so each visitor can endorse a plan once. Your browser also remembers which plans you shared, so the site can show you their new endorsements; that list never leaves your device except to ask for those plans' counts.</li>
@@ -95,10 +97,6 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p>If this changes, we'll update this page and the date at the top.</p>
 
 </main>
-<footer><div class="wrap">
-  <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-  <span>Not affiliated with the City of Chicago.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/">Neighbors' plans</a><a href="/community/">What people picked</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
-</div></footer>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 </body>
 </html>

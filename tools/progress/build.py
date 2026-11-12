@@ -7,7 +7,7 @@ script afterwards, so the pages follow the data). Everything else is a snapshot 
 Nov. 9, 2026 (SNAP below, each with the date its data runs through) until those get their own daily jobs.
 Homes per ward come from the 2020 Census blocks in bears/data/blocks.bin.
 Every figure here was checked in the Nov. 9 review (Claude Docs "Shape Chicago - Progress review")."""
-import json, math, os, re, struct, datetime as dt
+import json, math, os, re, struct, sys, datetime as dt
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, 'progress')
@@ -85,8 +85,8 @@ WR = sorted(((w['ward'], w['last12'], WH[w['ward']], 1000 * w['last12'] / WH[w['
 CITY = 1000 * sum(r[1] for r in WR) / sum(r[2] for r in WR); LOW = sum(1 for r in WR if r[3] < 1); ZERO = [r[0] for r in sorted(WR) if r[1] == 0]
 
 # ---------------------------------------------------------------- pieces
-SECTIONS = [('homes', 'Homes added'), ('zoning', 'After the zoning vote'), ('room', 'Room to grow'), ('affordable', 'Affordable'),
-            ('rents', 'Rents and prices'), ('transit', 'Transit'), ('streets', 'Streets'), ('projects', 'Big projects'), ('capital', 'Capital spending'), ('springfield', 'In Springfield')]
+SECTIONS = [('homes', 'Homes'), ('zoning', 'Zoning'), ('affordable', 'Affordable'),
+            ('rents', 'Rents and prices'), ('transit', 'Transit'), ('streets', 'Streets'), ('capital', 'City money'), ('projects', 'Big projects'), ('springfield', 'In Springfield')]
 HATCH = lambda c, bg: f'repeating-linear-gradient(135deg, {c} 0 3px, {bg} 3px 6px)'
 SEQ = ['#dbe6f3', '#b3c9e6', '#7fa3d1', '#4f7cb8', '#1f4d8f']
 
@@ -155,12 +155,10 @@ def minisplit(parts, cap):
 
 # ---------------------------------------------------------------- page shell
 HEAD = open(os.path.join(ROOT, 'wards', 'index.html')).read()
-HEADER = re.search(r'<header class="sc-head">.*?</header>', HEAD, flags=re.S).group(0).replace('<a href="/wards/" aria-current="page">', '<a href="/wards/">')
-assert 'Progress<svg' in HEADER, 'the shared header needs the Progress menu'
+HEADER = re.search(r'<header class="sc-head">.*?</header>', HEAD, flags=re.S).group(0)
+sys.path.insert(0, os.path.join(ROOT, 'tools', 'site')); from nav import nav_for, NAV_RE   # the one nav definition
 def header(slug):
-    h = HEADER.replace('aria-expanded="false">Progress<svg', 'aria-expanded="false" aria-current="page">Progress<svg')
-    href = '/progress/' + (slug + '/' if slug else '')
-    return h.replace(f'<a href="{href}">', f'<a href="{href}" aria-current="page">', 1)
+    return NAV_RE.sub(lambda m: nav_for('/progress/' + (slug + '/' if slug else '')), HEADER, count=1)
 def pills(slug):
     return ('<nav class="pills" aria-label="Progress sections"><a class="back" href="/progress/">‹ Progress</a>'
             + ''.join(f'<a href="/progress/{s}/"{" aria-current=page" if s == slug else ""}>{t}</a>' for s, t in SECTIONS) + '</nav>')
@@ -171,7 +169,7 @@ def page(slug, title, desc, main):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{esc(title)} · Progress · Shape Chicago</title>
+<title>{esc(title) + ' · ' if slug else ''}Progress · Shape Chicago</title>
 <meta name="description" content="{esc(desc)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
@@ -289,7 +287,7 @@ def homes():
                      + '<h3>Suburbs that permitted the most in 2025</h3>' + hbars([(n, v['2025']['u'], f(v['2025']['u'])) for n, v in st], w=96) + '</div></div>')
         note += ' The city comparison uses the Census Building Permits Survey’s yearly place file and the population it carries for each place; Jacksonville, Indianapolis and Charlotte are filed under their county governments there and are left out. New York is its five boroughs added together. Suburbs are Illinois places of 25,000 or more people in the Chicago metro area.'
     h1 = f'So far this year: {f(ytd["homes"])} homes permitted, about {f(d26)} torn down, a net gain of about {f(net26)}.'
-    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + peers + lostc + c4 + g
+    return page('homes', 'Homes', h1, top('homes', 'Homes', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through {TD_THRU}') + strip + c1 + c2 + c3 + peers + lostc + c4 + g
                 + bottom('homes', note, 'City of Chicago building permits (new construction, demolition and renovation); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications and shared housing registrations.'))
 
 # ---------------------------------------------------------------- the snapshot sections
@@ -310,13 +308,14 @@ def zoning():
     note = ('A zoning change is the Council changing what can be built on a lot. Why “at least”: the zoning map keeps only the latest change on each site, so earlier ones are lost and the true share is higher. '
             'The table counts the 341 zoning changes since 2021 (of 2,093) whose application clearly describes a new residential building and no conversion of an existing one. A permit counts if it is for new construction inside the rezoned area on the zoning map, or at the same address, on or after the vote. '
             'Among those that got a permit, half got it within 9 months. For 2025, the 12-month figure covers the 60 passed by early November 2025.')
-    return page('zoning', 'After the zoning vote', h1, top('zoning', 'After the zoning vote', h1, f'Permits through Nov. 6, 2026 · zoning votes through Oct. 14 · checked {SNAP}') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>'
+    rbody, rnote, rsrc = room_parts()
+    return page('zoning', 'Zoning', h1, top('zoning', 'Zoning', h1, f'Permits through Nov. 6, 2026 · zoning votes through Oct. 14 · zoning map and Assessor lots, 2026 · checked {SNAP}') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>' + rbody
                 + goal('The city has no target for how fast a rezoning turns into homes', 'Its Cut the Tape initiative, begun in 2024, is the program meant to speed approvals and permits. It reports steps taken, not a number to hit.', 'Cut the Tape', 'https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html', none=True)
-                + bottom('zoning', note, 'City Clerk legislation records and zoning applications; Chicago zoning map (the ordinance number and date on each district); City of Chicago building permits.'))
+                + bottom('zoning', note + ' Room to grow: ' + rnote, 'City Clerk legislation records and zoning applications; Chicago zoning map (the ordinance number and date on each district); City of Chicago building permits. ' + rsrc))
 
 ROOM_FILLS = ['#7fa3d1', '#7fa3d1', '#1f4d8f', '#7fa3d1', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#7fa3d1', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#4f7cb8', '#1f4d8f', '#1f4d8f', '#b3c9e6', '#b3c9e6', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#b3c9e6', '#1f4d8f', '#7fa3d1', '#7fa3d1', '#1f4d8f', '#1f4d8f', '#4f7cb8', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#dbe6f3', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#7fa3d1', '#b3c9e6']
 ROOM_BAND = dict(zip(SEQ, ['under 500', '500 to 1,000', '1,000 to 2,000', '2,000 to 4,000', 'more than 4,000']))
-def room():
+def room_parts():
     h1 = 'Today’s zoning allows about 110,000 more homes on empty private lots outside downtown. Nearly everything else it allows would mean replacing a building.'
     fill = {w['ward']: ROOM_FILLS[i] for i, w in enumerate(WARDS)}
     lede = '<p class="lede">This counts homes per lot only. Height limits, parking rules and what is worth building all cut the real number, and at the pace lots are actually built on, most of this room stays unused.</p>'
@@ -333,8 +332,8 @@ def room():
     c3 = card('Downtown is counted apart, and roughly', '', '<p class="sub">Downtown zoning limits floor area, not homes per lot. Unused floor area there works out to somewhere between <b>46,000 and 80,000</b> more homes at 900 sq ft each. Building heights and lot sizes are missing for hundreds of downtown lots, so this is a rough range and those lots are left out.</p>')
     note = ('For each lot: the homes its zoning district allows (lot size ÷ the district’s minimum lot area per home) minus the homes there now. Lot sizes are the Cook County Assessor’s; 51,854 of the 110,000 are on lots with a measured size and the rest assume a standard 3,125 sq ft lot. '
             'City-owned and other tax-exempt land, railroads, planned developments, manufacturing districts and parks are left out. Two-flats that an exception allows in some single-family districts are counted as over.')
-    return page('room', 'Room to grow', h1, top('room', 'Room to grow', h1, f'Zoning map and Assessor lots, 2026 · checked {SNAP}') + lede + c1 + st + c2 + c3 + goal('No city program sets a target for building on empty lots', 'This section is context for the others: it shows how much could be built without changing any zoning.', none=True)
-                + bottom('room', note, 'Chicago zoning map; Chicago Zoning Ordinance §17-2-0303 and downtown floor-area rules; Cook County Assessor parcels and characteristics; City of Chicago building footprints.'))
+    body = (f'<section class="blk sub2" id="room"><h2 class="h2big">Room to grow under today’s zoning</h2><p class="sub">{h1}</p></section>' + lede + c1 + st + c2 + c3)
+    return body, note, 'Chicago zoning map; Chicago Zoning Ordinance §17-2-0303 and downtown floor-area rules; Cook County Assessor parcels and characteristics; City of Chicago building footprints.'
 
 AFF_WARD = {1: 490, 2: 202, 3: 3921, 4: 2390, 5: 436, 6: 382, 7: 280, 8: 308, 9: 885, 10: 257, 11: 287, 12: 30, 13: 87, 14: 239, 15: 196, 16: 766, 17: 308, 18: 250, 19: 0, 20: 1877, 21: 462, 22: 180, 23: 89, 24: 1063, 25: 359,
             26: 1212, 27: 3427, 28: 2051, 29: 480, 30: 0, 31: 412, 32: 344, 33: 187, 34: 242, 35: 199, 36: 175, 37: 133, 38: 131, 39: 477, 40: 110, 41: 85, 42: 34, 43: 68, 44: 333, 45: 208, 46: 1016, 47: 229, 48: 842, 49: 1178, 50: 233}   # homes on the city list (dated Dec. 30, 2024) by 2023 ward
@@ -530,7 +529,7 @@ def capital():
     note = ('Program totals are the five-year plan’s own charts. Ward street money is the city’s third-quarter report: we read each project’s type and estimated cost and grouped the types. Our totals match each ward’s committed total except Ward 16, where the listed projects add up to $7,730 more. '
             'The plan lists what the city intends to spend, not what it spent.')
     g = goal('The plan is the city’s own list of intended projects', 'There is no outside target for capital spending. The five-year plan says what the city intends to build and how it expects to pay; the ward money has to be committed by each alderperson, and what isn’t committed carries over.', 'The 2025–2029 plan (PDF)', CIP_URL, none=True)
-    return page('capital', 'Capital spending', h1, top('capital', 'Capital spending', h1, f'Five-year plan 2025–2029 · ward street money through Sept. 30, 2026 · checked Nov. 11, 2026') + tl + c1 + body + g
+    return page('capital', 'City money', h1, top('capital', 'City money', h1, f'Five-year plan 2025–2029 · ward street money through Sept. 30, 2026 · checked Nov. 11, 2026') + tl + c1 + body + g
                 + bottom('capital', note, f'{src("City of Chicago, 2025–2029 Capital Improvement Program", CIP_URL)} · {src("City of Chicago, 2026 Q3 Aldermanic Menu Report", M["url"]) if M else ""}'))
 
 # ---------------------------------------------------------------- In Springfield (daily: tracker/bills.json from the bill job on main)
@@ -674,7 +673,6 @@ def decisions_index():
 def overview():
     built = sum(p[2] for p in PROJ); tot = sum(p[1] for p in PROJ)
     SECS = [('zoning', '3 in 10', 'zoning changes for a new building get a permit within a year', spark([31, 20, 12, 35, 45], rng=('Passed 2021', '2025')), '45% for 2025’s votes, the most in five years'),
-            ('room', '110,000', 'more homes allowed today on empty lots outside downtown', minisplit([(110, NAVY), (171, '#9db9de'), (203, '#d9e4f4')], 'Empty lots · shop lots · lots with homes'), 'About 484,000 on paper, mostly under standing buildings'),
             ('affordable', '29,550', 'homes on the city’s affordable rental list', minisplit([(10759, NAVY), (18791, '#d9e4f4')], 'For seniors · everyone else'), 'About 1 in 3 are for seniors · list dated Dec. 2024'),
             ('rents', '$2,311', 'typical asking rent, Sept. 2026', spark([RENT[y] for y in range(2019, 2027)], rng=('2019', '2026')), '▲ Up 5.7% in a year'),
             ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% in 2026 · 7 big projects tracked'),
@@ -710,7 +708,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg a.card{text-decoration:none;color:var(--sc-ink);transition:transform .15s,border-color .15s,box-shadow .15s}
 @media (hover:hover){ .pg a.card:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 18px rgba(43,93,160,.14)} }
 .pg .pad{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
-.pg h1{margin:0;font-size:32px;line-height:1.2;letter-spacing:-.02em;font-weight:700;max-width:900px}
+.pg h1{margin:0;font-size:32px;line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:900px}
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
 .pg h3{margin:0 0 10px;font-size:14.5px;font-weight:600}.pg h3 span{font-weight:400;color:var(--sc-mute)}
 .pg .hd{display:flex;flex-direction:column;gap:4px}
@@ -814,6 +812,8 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg ol.bhist{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:3px}.pg ol.bhist span{display:inline-block;min-width:96px;color:var(--sc-mute)}
 .pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
 .pg .bfilt button span{font-weight:400;color:var(--sc-mute)}.pg .bfilt button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}.pg .bfilt button[aria-pressed="true"] span{color:#d9e4f4}
+.pg [id]{scroll-margin-top:84px}
+.pg .h2big{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:10px 0 0}.pg .sub2{margin-top:6px;padding-top:18px;border-top:1px solid var(--sc-line)}
 .pg .blk h2 .more{font-size:14px;font-weight:600;margin-left:10px;text-decoration:none}
 .pg ul.dot{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:21px;color:var(--sc-ink2)}
 .pg ul.dot li::marker{color:var(--sc-navy)}
@@ -856,9 +856,10 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 }
 '''
 
+MOVED_ROOM = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Zoning · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/zoning/#room"><link rel="canonical" href="/progress/zoning/"></head><body><p><a href="/progress/zoning/#room">Room to grow is now part of Zoning.</a></p></body></html>\n'
 MOVED = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Homes added · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/homes/#lost"><link rel="canonical" href="/progress/homes/"></head><body><p><a href="/progress/homes/#lost">Homes lost is now part of Homes added.</a></p></body></html>\n'
 def main():
-    pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': room(), 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield()}
+    pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': MOVED_ROOM, 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield()}
     for slug, html in pages.items():
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, 'index.html'), 'w').write(html)

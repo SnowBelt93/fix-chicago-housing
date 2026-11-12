@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chicago Permit Tracker</title>
+<title>Chicago Permit Tracker · Shape Chicago</title>
 <meta name="description" content="How many new homes Chicago is permitting, where, and how that compares with the pace needed to close its housing shortage. Updated daily from public City of Chicago data.">
 <meta property="og:title" content="Chicago Permit Tracker">
 <meta property="og:description" content="New homes permitted in Chicago vs. the pace needed to close the shortage. Updated daily from public data.">
@@ -144,7 +144,8 @@ body.next .mast nav a{color:var(--sc-ink2);font-weight:500;padding:6px 10px;bord
 body.next .mast nav a:hover{background:var(--sc-seg);text-decoration:none}
 body.next .fan{display:none}
 body.next .hero{background:linear-gradient(180deg,#f6f8fb,#fff);color:var(--sc-ink);padding:40px 0 30px;border-bottom:1px solid var(--sc-line)}
-body.next .hero h1{color:var(--sc-ink);font-size:clamp(32px,5.4vw,54px);line-height:1.05;max-width:16em}
+body.next .hero h1{color:var(--sc-ink);font-size:clamp(28px,4vw,40px);font-weight:600;letter-spacing:-.02em;line-height:1.1;max-width:20em}
+body.next .hero .crumb{margin:0 0 8px;font-size:14px;font-weight:600;color:var(--sc-mute)}body.next .hero .crumb a{color:var(--sc-navy);text-decoration:none}body.next .hero p a{color:var(--sc-navy)}
 body.next .hero h1 em{background:none;color:var(--sc-navy);padding:0}
 body.next .hero p{color:var(--sc-ink2)}
 body.next .hero p strong{color:var(--sc-ink)}
@@ -224,24 +225,16 @@ body.next .seg button[aria-pressed=true]{background:var(--sc-navy);color:#fff;bo
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt" aria-current="page">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
-  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span><a class="sc-btn" href="#method" style="display:inline-flex;align-items:center;text-decoration:none">How we count</a></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/street/">Your street</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/" aria-current="page">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
-<header class="mast">
-  <div class="wrap">
-    <div class="t"><b>Chicago Permit Tracker</b></div>
-  </div>
-</header>
-<div class="fan"><div class="wrap">Built from the city's public permit and legislation data.</div></div>
 
 <main id="app">
   <div class="hero"><div class="wrap"><h1>Loading the city's permits…</h1></div></div>
 </main>
 <div class="tip" id="tip"></div>
 
-<footer><div class="wrap">
-  <p>Not affiliated with the City of Chicago. Counts are read from public permit descriptions and can be off for individual buildings; see <a href="#method">How we count</a>. <a href="/housing/">Try Fix Chicago Housing</a>. <a href="/learn/">Learn the basics</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
-</div></footer>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 
 <script>
 document.body.classList.add("next");   // the Shape Chicago look (approved Nov 7, 2026)
@@ -266,17 +259,9 @@ function render(D){
   const app = $('#app');
   app.innerHTML = `
   <div class="hero"><div class="wrap">
-    <h1>Chicago has permitted <em>${fmt(now.homes)}</em> new homes in ${now.year}.</h1>
-    <p>To close its share of the region's housing shortage by 2041, the city would need about <strong>${fmt(G.close)} homes a year</strong>, or <strong>${fmt(now.needed_so_far)}</strong> by this point in ${now.year}. By the same date last year it had permitted ${fmt(now.prev)}.</p>
-    <div class="meter" role="img" aria-label="${fmt(now.homes)} homes permitted of ${fmt(now.needed_so_far)} needed so far">
-      <div class="fill" style="width:0"></div>
-      <div class="tick prev" style="left:${Math.min(100, now.prev / now.needed_so_far * 100)}%"></div>
-      <div class="tick" style="left:100%"></div>
-    </div>
-    <div class="meterlbl">
-      <span style="left:${Math.max(8, Math.min(88, now.homes / now.needed_so_far * 50))}%"><b>${fmt(now.homes)}</b>permitted</span>
-      <span style="left:calc(100% - 52px)"><b>${fmt(now.needed_so_far)}</b>needed by now</span>
-    </div>
+    <p class="crumb"><a href="/progress/">Progress</a> › <a href="/progress/homes/">Homes</a> › Every permit</p>
+    <h1>Every permit, project and zoning approval</h1>
+    <p>Search new buildings by ward, street or address, follow them from zoning to keys, and see what got permitted near you. The year's totals and the pace Chicago needs are on <a href="/progress/homes/">Homes</a>.</p>
     <div class="hnums">
       <div class="hn ${behind > 0 ? 'bad' : 'good'}"><b>${behind > 0 ? 'Behind' : 'On pace'}</b><span>${behind > 0 ? `${fmt(behind)} homes short of the pace for ${now.year}` : `ahead of the pace for ${now.year}`}</span></div>
       <div class="hn"><b>${fmt(D.last12.homes)}</b><span>homes permitted in the last 12 months</span></div>

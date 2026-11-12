@@ -290,3 +290,21 @@ dialog.sc-fb .sc-fbsend:disabled{opacity:.6}
 .sc-mapkey{background:rgba(255,255,255,.96) !important;border:1px solid var(--sc-line,#e3e5e8) !important;border-radius:12px !important;box-shadow:0 1px 4px rgba(20,30,50,.14) !important;padding:9px 12px !important;font-family:var(--sc-font,system-ui,sans-serif) !important;font-size:12.5px !important;line-height:1.3;color:var(--sc-ink2,#3d434b) !important}
 .mapctl{background:#fff !important;border:1px solid var(--sc-line,#e3e5e8) !important;border-radius:12px !important;box-shadow:0 1px 4px rgba(20,30,50,.14) !important}
 .mapctl button{width:36px !important;height:36px !important}
+
+/* Phones: Menu button + sheet (shape.js); the tab bar hides */
+.sc-menubtn{display:none;align-items:center;gap:7px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink);border-radius:20px;padding:0 14px;min-height:40px;font:600 14px var(--sc-font);cursor:pointer}
+.sc-menubtn svg{width:18px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+dialog.sc-menu{border:0;padding:0;margin:0 0 0 auto;width:min(360px,100vw);max-width:100vw;height:100dvh;max-height:100dvh;background:#fff;color:var(--sc-ink);font-family:var(--sc-font);overflow-y:auto;box-shadow:-10px 0 40px rgba(20,30,50,.18)}
+dialog.sc-menu::backdrop{background:rgba(20,30,50,.35)}
+.sc-menu-top{position:sticky;top:0;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--sc-line)}
+.sc-menu-top b{font-size:16px}
+dialog.sc-menu h2{font-size:13px;font-weight:600;color:var(--sc-mute);margin:16px 16px 4px}
+.sc-menu-g{display:flex;flex-direction:column;padding:0 8px}
+dialog.sc-menu .sc-menu-g a{display:flex;align-items:center;min-height:44px;padding:0 10px;border-radius:10px;color:var(--sc-ink);text-decoration:none;font-size:16px}
+dialog.sc-menu .sc-menu-g a.alt{margin-top:6px;border-top:1px solid var(--sc-line);border-radius:0 0 10px 10px}
+dialog.sc-menu .sc-menu-g a[aria-current="page"]{background:var(--sc-navy);color:#fff;font-weight:600;border-radius:10px}
+dialog.sc-menu .sc-menu-g a:not([aria-current]):hover{background:var(--sc-chip)}
+.sc-menu-more{margin:14px 0 24px;border-top:1px solid var(--sc-line);padding-top:10px}
+@media (max-width:640px){ .sc-head .sc-nav{display:none !important} .sc-menubtn{display:inline-flex} .sc-head .sc-l{flex:1;min-width:0} .sc-head .sc-brand span{display:inline;font-size:17px} }
+@media (max-width:340px){ .sc-head .sc-brand span{display:none} }
+@media (prefers-reduced-motion:no-preference){ dialog.sc-menu[open]{animation:scMenuSlide .2s ease-out} @keyframes scMenuSlide{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}} }

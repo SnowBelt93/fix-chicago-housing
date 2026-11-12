@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Feedback inbox · Shape Chicago</title>
+<title>Feedback Inbox · Shape Chicago</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shape/shape.css">
@@ -64,7 +64,7 @@ async function load(key){
   } catch (e){ $("msg").textContent = "Couldn't load the notes."; }
 }
 $("rmForm").onsubmit = e => { e.preventDefault(); const m = $("rm").value.match(/#(?:(transit|budget|pensions)-)?(\d+)\s*$/);
-  if (!m){ $("rmMsg").textContent = "Paste the plan's link from Neighbors' plans, ending in #12 or #transit-12."; return; } remove(m[1] || "housing", +m[2]); };
+  if (!m){ $("rmMsg").textContent = "Paste the plan's link from Plans people made, ending in #12 or #transit-12."; return; } remove(m[1] || "housing", +m[2]); };
 $("keyForm").onsubmit = e => { e.preventDefault(); const k = $("key").value.trim(); if (k) load(k); };
 try { const k = localStorage.getItem("sc-fb-key"); if (k){ $("key").value = k; load(k); } } catch (e){}
 </script>

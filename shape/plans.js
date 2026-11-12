@@ -327,7 +327,7 @@
   function keepTok(kind, id, tok){ const o = owned(); o[kind + "-" + id] = tok; try { localStorage.setItem(OWN, JSON.stringify(o)); } catch (e) {} }
   function dropTok(kind, id){ const o = owned(); delete o[kind + "-" + id]; try { localStorage.setItem(OWN, JSON.stringify(o)); } catch (e) {} }
 
-  // "Delete this plan": asks once more in place (no browser dialogs), then removes it from Neighbors' plans
+  // "Delete this plan": asks once more in place (no browser dialogs), then removes it from Plans people made
   function deleteBtn(kind, id, done){
     const w = document.createElement("span"); w.className = "pdel";
     const tok = ownTok(kind, id); if (!tok) return w;
@@ -344,7 +344,7 @@
         dropTok(kind, id);
         if (kind === "housing") try { localStorage.setItem(MINE, JSON.stringify(mine().filter(n => n !== id))); } catch (e2) {}
         else try { localStorage.setItem(SMINE, JSON.stringify(JSON.parse(localStorage.getItem(SMINE) || "[]").filter(n => n !== id))); } catch (e2) {}
-        msg.textContent = "Deleted. It's gone from Neighbors' plans.";
+        msg.textContent = "Deleted. It's gone from Plans people made.";
         done && done();
       } catch (e2) { msg.textContent = "Couldn't reach the plan gallery. Try again in a bit."; ask.hidden = false; }
     });
@@ -376,11 +376,11 @@
       + '<button type="button" class="pshalt">Suggest a name</button>'
       + '<label class="pshl"><span class="pshlt">Your name <i>(optional)</i></span><input class="pshby" maxlength="24" autocomplete="off" placeholder="A first name or nickname"></label>'
       + '<p class="pshfine">Don\'t use your full name. Names with swearing, insults, links or contact details are turned away.</p>'
-      + '<button type="button" class="sc-btn primary pshgo">' + (opt.go || "Add it to Neighbors' plans") + '</button><p class="pshmsg" role="status"></p><div class="pshafter"></div>';
+      + '<button type="button" class="sc-btn primary pshgo">' + (opt.go || "Share it on Plans people made") + '</button><p class="pshmsg" role="status"></p><div class="pshafter"></div>';
     const nmIn = host.querySelector(".pshname"), byIn = host.querySelector(".pshby"), go = host.querySelector(".pshgo"), msg = host.querySelector(".pshmsg");
     nmIn.placeholder = sug(); nmIn.value = sug();
     host.querySelector(".pshalt").addEventListener("click", () => { nm = (nm + 1 + Math.floor(Math.random() * (NAMES.length - 1))) % NAMES.length; nmIn.value = sug(); nmIn.placeholder = sug(); nmIn.removeAttribute("aria-invalid"); });
-    [nmIn, byIn].forEach(i => i.addEventListener("input", () => { i.removeAttribute("aria-invalid"); if (go.textContent === "Shared"){ go.textContent = opt.go || "Add it to Neighbors' plans"; go.disabled = false; } }));
+    [nmIn, byIn].forEach(i => i.addEventListener("input", () => { i.removeAttribute("aria-invalid"); if (go.textContent === "Shared"){ go.textContent = opt.go || "Share it on Plans people made"; go.disabled = false; } }));
     go.addEventListener("click", async () => {
       const d = get(); if (!d || !d.code){ msg.textContent = "There's nothing to share yet. Make a change first."; return; }
       let title = nmIn.value.replace(/\s+/g, " ").trim(); const author = byIn.value.replace(/\s+/g, " ").trim();
@@ -405,7 +405,7 @@
         msg.innerHTML = 'Shared as <b>' + esc(title) + '</b>' + (author ? ' by ' + esc(author) : "") + '. <a href="' + href + '">See it in Neighbors\' plans</a>';
         go.textContent = "Shared";
         const after = host.querySelector(".pshafter"); after.innerHTML = "";
-        after.append(deleteBtn(kind, j.id, () => { go.textContent = opt.go || "Add it to Neighbors' plans"; go.disabled = false; msg.textContent = ""; after.innerHTML = ""; }));
+        after.append(deleteBtn(kind, j.id, () => { go.textContent = opt.go || "Share it on Plans people made"; go.disabled = false; msg.textContent = ""; after.innerHTML = ""; }));
         opt.done && opt.done(j.id);
       } catch (e) { msg.textContent = "Couldn't reach the plan gallery. Try again in a bit."; go.disabled = false; }
     });

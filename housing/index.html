@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Fix Chicago Housing</title>
+<title>Fix Chicago Housing · Shape Chicago</title>
 <meta name="description" content="Rezone real Chicago, pass real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
 <meta property="og:title" content="Fix Chicago Housing">
 <meta property="og:description" content="Rezone real Chicago, pass real housing policies, and simulate 15 years. Can you close the housing shortage? Every number is sourced.">
@@ -1425,6 +1425,9 @@ body.playing #sky{opacity:1}
   .sc-bar #playRow{flex:none}
 }
 @media (min-width:860px) and (max-width:1000px){ .sc-bar .hrent{display:none !important} }
+/* 860–1240px: the long rent label ("$20–$203 below no change") ran over the goal; keep the number with a short label */
+@media (min-width:860px) and (max-width:1240px){ .sc-bar .hrent #rentLbl{display:none} .sc-bar .hrent::before{content:"rent in 2041";font-size:12px;color:var(--sc-mute);white-space:nowrap}
+  .sc-bar .hscore{overflow:hidden} .sc-bar .hscore .hl1{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis} }
 @media (min-width:860px) and (max-width:1100px){ .sc-bar #homesLbl{display:none} }
 .learnmore{margin-top:14px !important;font-size:14px !important}
 .learnmore a{font-weight:600}
@@ -1481,7 +1484,7 @@ body.playing #sky{opacity:1}
 
   <header class="sc-head">
     <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/street/">Your street</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
     <div class="sc-r"><span class="sc-fan fanline">Not affiliated with the City of Chicago.</span><button class="sc-btn" id="lookBtn" type="button">Sources</button><button class="sc-btn sc-share" id="shareTop" type="button">Share</button></div>
   </header>
   <section class="sc-bar hbar" id="hud" aria-live="polite">
@@ -1757,7 +1760,7 @@ body.playing #sky{opacity:1}
           <div class="eyebrow">Plan gallery</div>
           <div class="seg2" id="galSort"><button type="button" data-s="new" aria-pressed="true">Newest</button><button type="button" data-s="top" aria-pressed="false">Most endorsed</button><button type="button" data-s="hood" aria-pressed="false">My neighborhood</button></div>
           <div class="gal" id="gallery"><div class="empty">Loading…</div></div>
-          <p class="small" style="margin:8px 0 0"><a href="/plans/" target="_blank" rel="noopener">See every plan, with maps, on Neighbors' plans</a></p>
+          <p class="small" style="margin:8px 0 0"><a href="/plans/" target="_blank" rel="noopener">See every plan, with maps, on Plans people made</a></p>
           <p class="small ptally">Post your plan from the results screen after you simulate. Open any plan to remix it.</p>
         </div>
        </div></div>
@@ -1983,7 +1986,7 @@ body.playing #sky{opacity:1}
         <div class="eyebrow">Add it to the community</div>
         <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select></div>
         <div id="resShareBox"></div>
-        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no accounts). Sharing adds yours to Neighbors' plans, where people can endorse it; you can delete it later from this browser.</p>
+        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no accounts). Sharing adds yours to Plans people made, where people can endorse it; you can delete it later from this browser.</p>
       </section>
 
       <p class="small whyhard" id="resHard" hidden><b>Too easy?</b> That beat Chicago's share of the region's shortage. <button type="button" class="linkbtn" id="resHardBtn">Try hard mode</button>: the city builds the whole region's 297,087 homes, the way it would if Chicago grew back toward its 1950 size.</p>
@@ -2390,7 +2393,7 @@ function siteShape(A, pr){
 }
 // Megaprojects on the map: each project's buildings traced from its published site plan (meta.json megaSites[].bld, from
 // tools/mega/build.py; sources at the top of each tools/mega/<project>.py), with the plan's heights. Buildings go up in the
-// plan's phase order; one appears once the homes the game counts by that year reach the share of the plan's home floor area
+// plan's phase order; one appears once the homes the simulator counts by that year reach the share of the plan's home floor area
 // built before it (MEGA_BUILT of the plan by 2041). Later buildings show as low pads. Anchors (the Fire stadium, the music
 // hall) appear from 2028; finished buildings (two at North Union) stand from the start.
 let MEGA_BLD = null, MEGA_LAND = null;

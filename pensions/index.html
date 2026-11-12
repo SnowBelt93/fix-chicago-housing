@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pay Down Chicago's Pensions</title>
+<title>Pay Down Chicago's Pensions · Shape Chicago</title>
 <meta name="description" content="Chicago's four city pension funds are about a quarter funded. Choose how much the city pays, what the investments earn and whether to borrow, and see when each fund reaches 90% and what it costs.">
 <meta property="og:title" content="Pay Down Chicago's Pensions">
 <meta property="og:description" content="See how long it takes to fix Chicago's pensions, and what it costs, under different choices.">
@@ -16,7 +16,7 @@
 <script src="/shape/shape.js" defer></script>
 <script src="/shape/plans.js" defer></script>
 <style>
-html,body{margin:0;background:#f4f5f7;font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+html,body{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
 .sc-head{position:sticky;top:0}
 .bar{position:sticky;top:var(--sc-head);z-index:4;background:#fff;border-bottom:1px solid var(--sc-line);padding:12px 20px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
 .bar .k{display:flex;flex-direction:column}
@@ -83,7 +83,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Pensions<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/" aria-current="page">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Pensions<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/" aria-current="page">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/street/">Your street</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <section class="bar" aria-label="Your pension plan">
@@ -346,7 +346,7 @@ $("crash").onclick = () => { st.crash = !st.crash; syncCtl(); render(); };
 // "Back to state law" only lights up when something differs from today's law, so a click always visibly changes the plan
 function syncReset(){ const same = Object.keys(LAW).every(k => st[k] === LAW[k]), b = $("reset");
   b.disabled = same; b.title = same ? "You're already on today's state law" : "Undo your changes"; }
-// Share: a link to this exact plan, or add it to Neighbors' plans (the plan code and the numbers on screen; nothing typed)
+// Share: a link to this exact plan, or add it to Plans people made (the plan code and the numbers on screen; nothing typed)
 function sharedPlan(){
   save(); const R = run({...st, ret: RETS[st.ret][0]}), T = R.tot, B = BASE.tot;
   const pv = rows => rows.filter(t => t.y >= 2026 && t.y <= 2060).reduce((a, t) => a + (t.er + (t.ds || 0)) / Math.pow(1 + INFL, t.y - 2026), 0);

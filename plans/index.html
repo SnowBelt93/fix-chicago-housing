@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Neighbors' Plans · Shape Chicago</title>
+<title>Plans People Made · Shape Chicago</title>
 <meta name="description" content="Housing, transit, budget and pension plans people built in Shape Chicago's simulators. Endorse the ones you'd back, or open one and change it.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="Neighbors' plans for Chicago">
+<meta property="og:title" content="Plans people made for Chicago">
 <meta property="og:description" content="Housing, transit, budget and pension plans people built and shared. Endorse the ones you'd back, or open one and change it.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -17,6 +17,10 @@
 <script src="/shape/shape.js" defer></script>
 <script src="/shape/plans.js"></script>
 <style>
+.ptabs{display:flex;gap:22px;border-bottom:1px solid var(--sc-line2);margin:0 0 20px;font-size:16px;font-weight:600}
+.ptabs a{padding:10px 0 9px;color:var(--sc-mute);text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px}
+.ptabs a[aria-current="page"]{color:var(--sc-ink);border-bottom-color:var(--sc-navy)}
+.ptabs a:not([aria-current]):hover{color:var(--sc-ink)}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--sc-page,#f3f5f7)}
 body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
@@ -78,13 +82,15 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Plans people made<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt">Your lot</a><a href="/street/">Your street</a><a href="/plans/" class="sc-simalt" aria-current="page">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main id="app">
   <section id="list">
-    <h1>Neighbors' plans</h1>
-    <p class="lede">Plans people built in the simulators and chose to share. Endorse the ones you'd back, or open one and change it. <a href="/community/">See what people picked most</a>.</p>
+    <h1>Plans people made</h1>
+    <nav class="ptabs" aria-label="Plans people made"><a href="/plans/" aria-current="page">Shared plans</a><a href="/community/">What people picked</a></nav>
+    <p class="lede">Plans people built in the simulators and chose to share. Endorse the ones you'd back, or open one and change it.</p>
+
     <div class="kinds sc-seg" role="radiogroup" aria-label="Which simulator" id="kinds"><button type="button" role="radio" aria-checked="true" data-k="housing">Housing</button><button type="button" role="radio" aria-checked="false" data-k="transit">Transit</button><button type="button" role="radio" aria-checked="false" data-k="budget">Budget</button><button type="button" role="radio" aria-checked="false" data-k="pensions">Pensions</button></div>
     <div class="mine" id="mine" hidden></div>
     <div class="bar">
@@ -96,11 +102,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   </section>
   <section id="one" hidden></section>
 </main>
-<footer><div class="wrap">
-  <a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-  <span>Not affiliated with the City of Chicago.</span>
-  <nav><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/">Neighbors' plans</a><a href="/community/">What people picked</a><a href="/wards/">Wards</a><a href="/tracker/">Permit tracker</a><a href="/news/">News</a><a href="/learn/">Learn</a><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
-</div></footer>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 <script>
 const S = window.SCPlans, $ = id => document.getElementById(id);
 let sort = "top", hood = 0, kind = "housing";
@@ -167,7 +169,7 @@ async function one(id){
     const used = new Set([p.tod, p.metra, p.corr, ...Object.values(p.areas)].filter(Boolean));
     const group = (k, h) => { const L = c.filter(x => x.kind === k); return L.length ? '<h3>' + h + '</h3><ul class="pchips">' + L.map(x => '<li class="' + k + '">' + S.esc(x.t) + '</li>').join("") + '</ul>' : ""; };
     const rentLine = P.rent && P.rentno ? [("$" + S.fmt(P.rent)), "median rent in 2041 ($" + S.fmt(P.rentno) + " with no change)"] : null;
-    const K = S.kind(p); document.title = S.nameOf(P) + " · Neighbors' Plans · Shape Chicago";
+    const K = S.kind(p); document.title = S.nameOf(P) + " · Plans People Made · Shape Chicago";
     el.innerHTML = '<a class="back" href="#">← All plans</a><div class="det"><div class="dmap">' + S.map(p, G, "big")
       + '<div class="key">' + [...used].sort().map(t => '<span><i style="background:' + COLORS[t] + '"></i>' + TIERN[t] + '</span>').join("") + (used.size ? "" : '<span>No rezoning in this plan</span>') + '</div></div>'
       + '<div class="dside"><div class="dcard"><div class="dtop"><span class="pgr" data-g="' + S.esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + S.STAR + '"/></svg><i>' + S.esc(g) + '</i></span><div><span class="pkind k-' + K.c + '">' + K.t + '</span><h1>' + S.esc(S.nameOf(P)) + '</h1><p class="psum">' + S.esc(S.title(p)) + '</p><p class="pwho">' + by(P, P.hood && S.AREAS[P.hood] ? S.AREAS[P.hood] : "") + ' · shared ' + S.ago(P.ts) + ' · ' + S.MODE(p.g) + '</p></div></div>'
@@ -190,7 +192,7 @@ async function oneSim(k, id){
     if (!r.ok) throw r.status;
     const P = await r.json(), K = S.SIMS[P.kind]; if (!K || P.kind !== k) throw 404;
     const c = K.chips(P), kd = K.kind(P), nums = K.nums(P);
-    document.title = S.simName(P) + " · Neighbors' Plans · Shape Chicago";
+    document.title = S.simName(P) + " · Plans People Made · Shape Chicago";
     el.innerHTML = back + '<div class="det"><div class="dmap">' + K.art(P, G, true) + '<div class="key">' + K.key + '</div></div>'
       + '<div class="dside"><div class="dcard"><div class="dtop"><div><span class="pkind k-' + kd.c + '">' + S.esc(kd.t) + '</span><h1>' + S.esc(S.simName(P)) + '</h1><p class="psum">' + S.esc(K.sum(P)) + '</p><p class="pwho">' + K.label + ' plan · ' + by(P, "") + ' · shared ' + S.ago(P.ts) + '</p></div></div>'
       + '<div class="nums">' + nums.map(n => '<div><b>' + S.esc(n[0]) + '</b><span>' + S.esc(n[1]) + '</span></div>').join("") + '<div><b>' + S.fmt(P.likes) + '</b><span>' + (P.likes === 1 ? "endorsement" : "endorsements") + '</span></div></div>'
@@ -206,7 +208,7 @@ function route(){
   const id = +(location.hash.match(/^#(\d+)$/) || [])[1] || 0, sm = location.hash.match(/^#(transit|budget|pensions)-(\d+)$/);
   $("list").hidden = !!(id || sm); $("one").hidden = !(id || sm);
   if (sm){ kind = sm[1]; oneSim(sm[1], +sm[2]); }
-  else if (id) one(id); else { document.title = "Neighbors' Plans · Shape Chicago"; list(); }
+  else if (id) one(id); else { document.title = "Plans People Made · Shape Chicago"; list(); }
   scrollTo(0, 0);
 }
 addEventListener("hashchange", () => { route(); if (!location.hash) mine(); });

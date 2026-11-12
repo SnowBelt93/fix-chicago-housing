@@ -83,6 +83,25 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     const n = document.querySelector(".sc-nav"); n && n.addEventListener("scroll", again, {passive:true});
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
+/* Phones: one Menu button instead of the tab bar. The sheet is built from the same nav markup (tools/site/nav.py). */
+(function(){
+  function f(){
+    const nav = document.querySelector(".sc-head .sc-nav"), head = document.querySelector(".sc-head"); if (!nav || !head || head.querySelector(".sc-menubtn")) return;
+    const btn = document.createElement("button"); btn.type = "button"; btn.className = "sc-menubtn"; btn.setAttribute("aria-haspopup", "dialog");
+    btn.innerHTML = '<svg viewBox="0 0 20 14" aria-hidden="true"><path d="M1 1h18M1 7h18M1 13h18"/></svg><span>Menu</span>';
+    (head.querySelector(".sc-r") || head).appendChild(btn);
+    const dlg = document.createElement("dialog"); dlg.className = "sc-menu"; dlg.setAttribute("aria-label", "Pages");
+    let html = '<div class="sc-menu-top"><b>Shape Chicago</b><button type="button" class="sc-btn" data-close>Close</button></div>';
+    nav.querySelectorAll(".sc-sims").forEach(g => {
+      const t = g.querySelector(".sc-simhd"); html += '<h2>' + (t ? t.textContent : "") + '</h2><div class="sc-menu-g">';
+      g.querySelectorAll(".sc-simmenu a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.classList.contains("sc-simalt") ? ' class="alt"' : "") + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; });
+      html += '</div>'; });
+    html += '<div class="sc-menu-g sc-menu-more">'; nav.querySelectorAll(":scope > a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; }); html += '</div>';
+    dlg.innerHTML = html; document.body.appendChild(dlg);
+    btn.addEventListener("click", () => { dlg.showModal(); const c = dlg.querySelector('[aria-current="page"]'); c && c.scrollIntoView({block:"center"}); });
+    dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest("[data-close]")) dlg.close(); });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 /* keep the current page's tab visible when the tab bar scrolls (phones) */
 (function(){
   function edges(){ const n = document.querySelector(".sc-nav"); if (!n) return; const over = n.scrollWidth > n.clientWidth + 2;
@@ -127,7 +146,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/community/","What people picked"],["/wards/","Wards"],["/progress/","Progress"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Your lot"],["/street/","Your street"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
