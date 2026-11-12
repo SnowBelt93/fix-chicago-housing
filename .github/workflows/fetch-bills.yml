@@ -1,8 +1,10 @@
 # State bill tracker data (tools/bills/fetch.py). Push to tools/bills/ with "[steps: a b]" in the commit message to run
-# only some steps; runs daily once the tracker step exists.
+# only some steps. Runs daily; copies tracker/bills.json to the preview branch (shape-v1).
 name: Fetch bills
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '41 12 * * *'
   push:
     branches: [main]
     paths: ['tools/bills/**', '.github/workflows/fetch-bills.yml']
@@ -24,6 +26,14 @@ jobs:
       - name: Commit
         run: |
           git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/raw/bills
-          git commit -m "Fetch bills" || exit 0
-          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
+          git add tools/raw/bills tracker/bills.json 2>/dev/null || git add tools/raw/bills
+          git commit -m "Fetch bills" || true
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done
+          [ -f tracker/bills.json ] || exit 0
+          cp tracker/bills.json /tmp/bills.json
+          git fetch -q origin shape-v1 && git checkout -q -B shape-v1 origin/shape-v1
+          mkdir -p tracker && cp /tmp/bills.json tracker/bills.json
+          # the Progress pages read it (tools/progress/build.py lives on shape-v1)
+          if [ -f tools/progress/build.py ]; then python3 tools/progress/build.py || true; git add progress; fi
+          git add tracker/bills.json && git commit -m "State bills $(date -u +%F)" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin shape-v1 && git push origin HEAD:shape-v1 && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1
