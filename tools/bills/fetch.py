@@ -199,7 +199,9 @@ def bills():
         st, lab = stage(b["acts"])
         k, n = re.match(r"([A-Z]+)(\d+)", b["id"]).groups()
         last = b["acts"][-1] if b["acts"] else ("", "", "")
-        spon = re.split(r"-|,| and ", re.sub(r"^(Rep\.|Sen\.)\s*", "", b["spon"]))[0].strip()
+        # chief sponsor: the legislator who filed it (the sponsor list joins names with hyphens, and names have hyphens too)
+        fm = next((re.search(r"Filed with (?:the Clerk|Secretary) by (?:Rep\.|Sen\.)\s*(.+)$", a2) for _, _, a2 in b["acts"] if a2.startswith("Filed with")), None)
+        spon = fm.group(1).strip() if fm else re.split(r",| and ", re.sub(r"^(Rep\.|Sen\.)\s*", "", b["spon"]))[0].strip()
         out.append({"id": b["id"], "t": b["short"], "tp": tp, "st": st, "lab": lab, "by": spon, "bych": "Rep." if k == "HB" else "Sen.",
                     "in": iso(b["acts"][0][0]) if b["acts"] else "", "last": [iso(last[0]), last[1], last[2]],
                     "syn": b["syn"][:900], "rewritten": bool(b.get("rewritten")), "url": f"https://www.ilga.gov/ftp/legislation/{GA}/BillStatus/HTML/{GA}00{k}{int(n):04d}.html",
