@@ -246,17 +246,17 @@
   }
  },
  "cps": {
-  "3fhj-xtn5": {
-   "name": "Chicago Public Schools - School Locations SY1415",
-   "type": "map",
-   "updated": "2024-04-24T18:50:06.000Z",
-   "cols": [],
-   "got": 0
-  },
   "4g38-vs8v": {
    "name": "Chicago Public Schools - School Locations SY1718",
    "type": "map",
    "updated": "2024-04-24T18:50:35.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "3fhj-xtn5": {
+   "name": "Chicago Public Schools - School Locations SY1415",
+   "type": "map",
+   "updated": "2024-04-24T18:50:06.000Z",
    "cols": [],
    "got": 0
   },
@@ -345,10 +345,30 @@
    "updated": "2025-09-29T22:00:24.000Z",
    "cols": []
   },
+  "hexd-c4gn": {
+   "name": "Chicago Public Schools - School Locations SY2425",
+   "type": "dataset",
+   "updated": "2025-09-29T21:53:17.000Z",
+   "cols": [
+    "school_id",
+    "address",
+    "lat",
+    "the_geom",
+    "long",
+    "short_name",
+    "grade_cat"
+   ]
+  },
   "x9yh-x8zu": {
    "name": "Chicago Public Schools - School Locations SY0708",
    "type": "map",
    "updated": "2024-04-24T18:49:41.000Z",
+   "cols": []
+  },
+  "6qik-a75t": {
+   "name": "Chicago Public Schools - School Locations SY1112",
+   "type": "map",
+   "updated": "2024-04-24T18:50:56.000Z",
    "cols": []
   },
   "pb6d-zzuh": {
@@ -365,10 +385,10 @@
     "grade_cat"
    ]
   },
-  "6qik-a75t": {
-   "name": "Chicago Public Schools - School Locations SY1112",
+  "cvn9-pbt9": {
+   "name": "Chicago Public Schools - School Locations SY1011",
    "type": "map",
-   "updated": "2024-04-24T18:50:56.000Z",
+   "updated": "2024-04-24T18:50:25.000Z",
    "cols": []
   },
   "qsgm-ub2r": {
@@ -408,26 +428,6 @@
    "type": "map",
    "updated": "2024-04-24T18:50:48.000Z",
    "cols": []
-  },
-  "hexd-c4gn": {
-   "name": "Chicago Public Schools - School Locations SY2425",
-   "type": "dataset",
-   "updated": "2025-09-29T21:53:17.000Z",
-   "cols": [
-    "school_id",
-    "address",
-    "lat",
-    "the_geom",
-    "long",
-    "short_name",
-    "grade_cat"
-   ]
-  },
-  "cvn9-pbt9": {
-   "name": "Chicago Public Schools - School Locations SY1011",
-   "type": "map",
-   "updated": "2024-04-24T18:50:25.000Z",
-   "cols": []
   }
  },
  "parks": {
@@ -451,6 +451,12 @@
    "updated": "2013-04-22T17:01:37.000Z",
    "cols": [],
    "got": 0
+  },
+  "u7uu-j2ma": {
+   "name": "Parks - Chicago Park District Buildings (current)",
+   "type": "map",
+   "updated": "2024-08-28T20:48:57.000Z",
+   "cols": []
   },
   "sj6t-9cju": {
    "name": "Parks - Public Art",

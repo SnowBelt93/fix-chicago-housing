@@ -41,6 +41,7 @@
     "yearnotes"
    ]
   },
+  "mf4j-r5g9": "not json",
   "bqx3-yhry": {
    "name": "National Register of Historic Places",
    "n": 389,
@@ -59,7 +60,6 @@
     "type_main"
    ]
   },
-  "mf4j-r5g9": "not json",
   "bddq-yxar": "not json",
   "uct4-hrvh": {
    "name": "Individual Landmarks",
@@ -119,7 +119,7 @@
    "tiger2010": true
   }
  },
- "flood": 1582,
+ "flood": 0,
  "sales_cols": [
   "pin",
   "year",
@@ -177,7 +177,7 @@
  },
  "treasury": 466,
  "hud": {},
- "ran": "2026-11-12T19:21:28",
+ "ran": "2026-11-12T19:59:00",
  "districts": {
   "n": 59,
   "fields": [
@@ -210,10 +210,10 @@
   "sadda": {}
  },
  "amen": {
-  "grocery": 0,
-  "health": 0,
-  "school": 0,
-  "park": 0
+  "grocery": 410,
+  "health": 674,
+  "school": 1490,
+  "park": 1619
  },
  "places": {
   "tif": {
@@ -232,8 +232,8 @@
    "j7ew-b73u": 6
   },
   "cps": {
-   "3fhj-xtn5": 0,
    "4g38-vs8v": 0,
+   "3fhj-xtn5": 0,
    "2mts-wp7t": 0,
    "9ybt-s3ms": null,
    "p83k-txqt": null,
@@ -242,21 +242,22 @@
    "mv87-m4mi": null,
    "tz49-n8ze": null,
    "t2hk-erkw": null,
+   "hexd-c4gn": null,
    "x9yh-x8zu": null,
-   "pb6d-zzuh": null,
    "6qik-a75t": null,
+   "pb6d-zzuh": null,
+   "cvn9-pbt9": null,
    "qsgm-ub2r": null,
    "vfmh-nkyk": null,
    "56cp-u89f": null,
    "grmh-ksdn": null,
-   "9p4q-n8rz": null,
-   "hexd-c4gn": null,
-   "cvn9-pbt9": null
+   "9p4q-n8rz": null
   },
   "parks": {
    "ej32-qgdr": 0,
    "5yyk-qt9y": 0,
    "thkh-m6bg": 0,
+   "u7uu-j2ma": null,
    "sj6t-9cju": null
   }
  },
@@ -277,5 +278,6 @@
  "geo2": {
   "tracts": 1331,
   "zcta": 56
- }
+ },
+ "flood_err": "no reply"
 }
