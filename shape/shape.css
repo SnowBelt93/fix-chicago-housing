@@ -122,6 +122,8 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 .sc-nav.more-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}
 .sc-nav.more-l{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 28px),transparent)}
 .sc-nav.more-l.more-r{-webkit-mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+/* the edge fade would also hide an open menu, which hangs below the bar */
+.sc-nav:has(.sc-simbtn[aria-expanded="true"]){-webkit-mask-image:none !important;mask-image:none !important}
 .sc-head .sc-l{flex:1 1 auto}
 .sc-head .sc-r{flex:none}
 /* first-visit tool intro */
