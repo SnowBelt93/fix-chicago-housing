@@ -63,19 +63,24 @@
 if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|anthropic|usercontent/.test(location.hostname)){
   addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
 }
-/* Simulators menu: the button opens a list under it (fixed, so the scrolling tab bar can't clip it) */
+/* Header menus (Simulators, Progress): each button opens a list under it (fixed, so the scrolling tab bar can't clip it) */
 (function(){
   function f(){
-    const b = document.querySelector(".sc-simbtn"), m = document.querySelector(".sc-simmenu"); if (!b || !m) return;
-    const place = () => { const r = b.getBoundingClientRect(); m.style.top = (r.bottom + 6) + "px"; m.style.left = Math.max(8, Math.min(r.left, innerWidth - m.offsetWidth - 8)) + "px"; };
-    const open = on => { m.hidden = !on; b.setAttribute("aria-expanded", on); if (on){ place(); const a = m.querySelector('[aria-current="page"]') || m.querySelector("a"); a && a.focus({preventScroll:true}); } };
-    b.addEventListener("click", e => { e.stopPropagation(); open(m.hidden); });
-    document.addEventListener("click", e => { if (!m.hidden && !m.contains(e.target)) open(false); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && !m.hidden){ open(false); b.focus(); } });
-    m.addEventListener("keydown", e => { const L = [...m.querySelectorAll("a")], i = L.indexOf(document.activeElement);
-      if (e.key === "ArrowDown"){ e.preventDefault(); L[(i + 1) % L.length].focus(); } if (e.key === "ArrowUp"){ e.preventDefault(); L[(i - 1 + L.length) % L.length].focus(); } });
-    addEventListener("resize", () => { if (!m.hidden) place(); });
-    const n = document.querySelector(".sc-nav"); n && n.addEventListener("scroll", () => { if (!m.hidden) place(); }, {passive:true});
+    const groups = [...document.querySelectorAll(".sc-sims")].map(g => ({b: g.querySelector(".sc-simbtn"), m: g.querySelector(".sc-simmenu")})).filter(g => g.b && g.m);
+    if (!groups.length) return;
+    const place = g => { const r = g.b.getBoundingClientRect(); g.m.style.top = (r.bottom + 6) + "px"; g.m.style.left = Math.max(8, Math.min(r.left, innerWidth - g.m.offsetWidth - 8)) + "px"; };
+    const open = (g, on) => { if (on) groups.forEach(o => { if (o !== g && !o.m.hidden){ o.m.hidden = true; o.b.setAttribute("aria-expanded", false); } });
+      g.m.hidden = !on; g.b.setAttribute("aria-expanded", on); if (on){ place(g); const a = g.m.querySelector('[aria-current="page"]') || g.m.querySelector("a"); a && a.focus({preventScroll:true}); } };
+    for (const g of groups){
+      g.b.addEventListener("click", e => { e.stopPropagation(); open(g, g.m.hidden); });
+      g.m.addEventListener("keydown", e => { const L = [...g.m.querySelectorAll("a")], i = L.indexOf(document.activeElement);
+        if (e.key === "ArrowDown"){ e.preventDefault(); L[(i + 1) % L.length].focus(); } if (e.key === "ArrowUp"){ e.preventDefault(); L[(i - 1 + L.length) % L.length].focus(); } });
+    }
+    document.addEventListener("click", e => groups.forEach(g => { if (!g.m.hidden && !g.m.contains(e.target)) open(g, false); }));
+    document.addEventListener("keydown", e => { if (e.key === "Escape") groups.forEach(g => { if (!g.m.hidden){ open(g, false); g.b.focus(); } }); });
+    const again = () => groups.forEach(g => { if (!g.m.hidden) place(g); });
+    addEventListener("resize", again);
+    const n = document.querySelector(".sc-nav"); n && n.addEventListener("scroll", again, {passive:true});
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 /* keep the current page's tab visible when the tab bar scrolls (phones) */
@@ -122,7 +127,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/wards/","Wards"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/wards/","Wards"],["/progress/","Progress"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
