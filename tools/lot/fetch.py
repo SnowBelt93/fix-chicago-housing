@@ -305,6 +305,8 @@ def amen():
         k = ('grocery' if t.get('shop') == 'supermarket' else 'school' if t.get('amenity') == 'school' else 'park' if t.get('leisure') == 'park'
              else 'health')
         pts.append([k, round(c['lon'], 5), round(c['lat'], 5)])   # no names: a doctor's office can carry the doctor's own name
+    if len(pts) < 1000:   # Overpass failed or timed out: keep the last good file
+        LOG['amen'] = {'error': f'only {len(pts)} points; kept the previous file'}; return
     with gzip.open(os.path.join(OUT, 'amen.json.gz'), 'wt') as fh: json.dump(pts, fh)
     LOG['amen'] = {k: sum(1 for p in pts if p[0] == k) for k in ('grocery', 'health', 'school', 'park')}
 
