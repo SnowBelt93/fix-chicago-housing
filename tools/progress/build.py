@@ -538,10 +538,44 @@ def capital():
 # property taxes (topic rules in tools/bills/fetch.py on main). WATCH gives a few bills a plain name; each was checked
 # against the bill's own synopsis. Shell bills ("makes a technical change") are left out by the fetcher.
 WATCH = {
+    'SB2111': 'Became the 2025 transit law: the new regional transit agency and its funding, plus the People Over Parking Act',
     'HB5626': 'The BUILD Act: up to 4–8 homes on single-family lots by lot size, coach houses everywhere, single-stair buildings, no parking minimums for small homes',
+    'HB1814': 'Middle housing (two- to four-flats and similar) allowed on residential lots over 5,000 sq ft in cities of 25,000 or more',
+    'SB4060': 'Single-family homes allowed on lots as small as 2,500 sq ft',
+    'SB4064': 'Parking caps: no more than 0.5 spaces per apartment or 1 per house required, and none for small homes or affordable projects',
+    'SB4071': 'Coach houses (accessory dwelling units) allowed wherever single-family homes are, from 2027',
+    'HB1813': 'Towns may not ban coach houses (accessory dwelling units)',
+    'HB5223': 'Towns with zoning must adopt at least 5 of 14 listed housing strategies',
+    'HB2754': 'Zoning votes: mayors get a vote, and some zoning changes need a simple majority instead of two-thirds',
+    'HB2545': 'Appeals when a town turns down supportive housing for people with disabilities',
+    'HB957': 'Tenants of buildings with 6 or more homes get a first chance to buy when the building is sold',
+    'HB3269': 'A fee on monthly rents above $1,200 at landlords with more than 5 units, to help households buy homes',
+    'SB3212': 'Shops, restaurants and other uses allowed by right within a mile of transit-oriented development',
 }
 TOPIC = {'housing': 'Housing and zoning', 'transit': 'Transit', 'budget': 'City budget and taxes', 'pensions': 'City pensions', 'property': 'Property taxes'}
 VANDALIA = 'https://www.vandaliaradio.com/2026/10/19/163417/'
+# the legislature's short titles are abbreviated capitals ("VEH CD-BICYCLES"); spell out the common pieces
+ABBR = [(r'\bVEH CD\b', 'Vehicle Code'), (r'\bMUNI CD\b', 'Municipal Code'), (r'\bPEN CD\b', 'Pension Code'), (r'\bSCH CD\b', 'School Code'), (r'\bCIV PRO\b', 'Civil procedure'),
+        (r'\bCRIM PRO\b', 'Criminal procedure'), (r'\bPROP TX\b', 'Property tax'), (r'\bLOC GOV\b', 'Local government'), (r'\bCHI\b', 'Chicago'), (r'\bMUNI\b', 'Municipal'),
+        (r'\bCNTY\b', 'County'), (r'\bCOUNTIES CD\b', 'Counties Code'), (r'\bINC TX\b', 'Income tax'), (r'\bTRANS\b', 'Transportation'), (r'\bPROP\b', 'Property'), (r'\bDEV\b', 'Development')]
+KEEP = {'IHDA', 'DCEO', 'EPA', 'DHS', 'DCFS', 'CTA', 'RTA', 'NITA', 'TIF', 'ADU', 'PHA', 'CMS', 'OSFM', 'SURS', 'TRS', 'IMRF', 'MWRD', 'II', 'IL', 'SW', 'DOT', 'IDOT', 'HUD', 'LLC'}
+SMALL = {'and', 'or', 'of', 'the', 'to', 'in', 'on', 'for', 'by', 'at', 'a', 'an'}
+def bill_title(t):
+    for a, b in ABBR: t = re.sub(a, b, t)
+    out = []
+    for i, w in enumerate(re.split(r'(\s+|-|/|&)', t)):
+        if not w.strip() or w in '-/&': out.append(' – ' if w == '-' else w); continue
+        u = w.upper(); out.append(u if u in KEEP else w if not w.isupper() else (w.lower() if i and w.lower() in SMALL else w.capitalize()))
+    return re.sub(r'\s+', ' ', ''.join(out)).strip()
+def syn_clean(t): return re.sub(r'^(Reinserts|Replaces everything after the enacting clause with) the provisions of the (introduced|engrossed) bill with (the following )?changes\.\s*', '', t)
+def act(a):
+    m = re.search(r'Public Act[ .]*(\d+-\d+)', a)
+    return f'Became Public Act {m.group(1)}' if m else a
+def spr_card():
+    try: L = json.load(open(os.path.join(ROOT, 'tracker', 'bills.json')))['bills']
+    except Exception: L = []
+    law = sum(1 for b in L if b['st'] == 6); moving = sum(1 for b in L if 3 <= b['st'] < 6 and b['lab'] != 'Vetoed')
+    return (f(len(L)), 'bills in Springfield on Chicago’s housing, transit and money this session', minisplit([(law, NAVY), (moving, '#7fa3d1'), (max(0, len(L) - law - moving), '#d9e4f4')], 'Law · passed a chamber · still waiting'), f'{f(law)} became law; the session ends in January')
 def springfield():
     try: B = json.load(open(os.path.join(ROOT, 'tracker', 'bills.json')))
     except Exception: B = None
@@ -556,27 +590,27 @@ def springfield():
     h1 = f'{f(n)} bills in this session of the General Assembly would change Chicago’s housing, transit, budget, pensions or property taxes. {f(law)} have become law.'
     tl = tiles([(f(law), 'became law'), (f(sent + both), 'passed both chambers, waiting on the governor'), (f(one), 'passed one chamber'), (f(com + out), 'still in committee or waiting for a vote')])
     def row(b):
-        name = WATCH.get(b['id']) or b['t'].title().replace(' Cd-', ' Code: ').replace('-', ' – ')
+        name = WATCH.get(b['id']) or bill_title(b['t'])
         cls = 'good' if b['st'] == 6 else 'go' if b['st'] >= 3 else ''
         tags = ''.join(f'<span class="btag">{TOPIC[t]}</span>' for t in b['tp'])
         last = b['last']; when = day(last[0], True) if last[0] else ''
-        hist = ''.join(f'<li><span>{day(d, True) if d else ""}</span> {esc(c)}: {esc(a)}</li>' for d, c, a in b['hist'])
+        hist = ''.join(f'<li><span>{day(d, True) if d else ""}</span> {esc(c)}: {esc(act(a))}</li>' for d, c, a in b['hist'])
         return (f'<li class="bill" data-tp="{" ".join(b["tp"])}" data-st="{b["st"]}"><div class="bh"><a class="bid" href="{b["url"]}" target="_blank" rel="noopener">{b["id"][:2]} {b["id"][2:]}</a>'
                 f'<span class="chip {cls}">{esc(b["lab"])}</span>{tags}</div><b class="bt">{esc(name)}</b>'
-                f'<p class="fine">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(last[2])}</p>'
-                f'<details><summary>What it does</summary><p class="sub">{esc(b["syn"])}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist">{hist}</ol>' if hist else '') + '</details></li>')
-    order = sorted(L, key=lambda b: (-(b['id'] in WATCH), -b['st'], b['last'][0] and -int(b['last'][0].replace('-', '')) or 0))
+                f'<p class="fine">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(act(last[2]))}{" · rewritten by an amendment" if b.get("rewritten") else ""}</p>'
+                f'<details><summary>What it does</summary><p class="sub">{esc(syn_clean(b["syn"]))}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist">{hist}</ol>' if hist else '') + '</details></li>')
+    order = sorted(L, key=lambda b: (-(b['id'] in WATCH), -b['st'], -int((b['last'][0] or '0').replace('-', ''))))
     filt = ('<div class="bfilt" role="group" aria-label="Show bills about"><button type="button" aria-pressed="true" data-t="">All</button>'
             + ''.join(f'<button type="button" aria-pressed="false" data-t="{k}">{v} <span>{sum(1 for b in L if k in b["tp"])}</span></button>' for k, v in TOPIC.items())
             + '</div><div class="bfilt" role="group" aria-label="Show bills that"><button type="button" aria-pressed="true" data-s="0">Any stage</button><button type="button" aria-pressed="false" data-s="3">Passed a chamber or more</button><button type="button" aria-pressed="false" data-s="6">Became law</button></div>')
     c1 = card('Every bill on these topics', f'Newest action first within each stage. Bill names are the legislature’s own short titles unless we give a plain one. Tap a number for the bill’s official page.',
-              filt + f'<ol class="bills" id="bills">{"".join(row(b) for b in order)}</ol><p class="fine" id="bcount"></p>')
+              filt + f'<ol class="bills" id="bills">{"".join(row(b) for b in order)}</ol><p class="fine" id="bcount"></p><button type="button" class="sc-btn" id="bmore" hidden>Show 20 more</button>')
     g = goal('Bills die when the session ends', 'This General Assembly’s term ends in January 2027. Bills that haven’t passed both chambers by then have to be filed again and start over. The governor said in October that his housing plan may wait until the new session.', 'Vandalia Radio, Oct. 19, 2026', VANDALIA)
     note = ('A bill is listed if what it amends (the Illinois Compiled Statutes sections) or its synopsis is about zoning and housing, the transit agencies, Chicago’s taxes and budget, the four city pension funds, or property taxes in Cook County. '
             'Some listed bills only touch a topic in passing; bills that change only a title or make technical changes are left out. Stages come from each bill’s list of actions.')
     js = ('<script>(function(){const L=[...document.querySelectorAll("#bills .bill")],F=document.querySelectorAll(".bfilt button");let t="",s=0;'
-          'const go=()=>{let n=0;L.forEach(e=>{const ok=(!t||e.dataset.tp.split(" ").includes(t))&&+e.dataset.st>=s;e.hidden=!ok;if(ok)n++;});document.getElementById("bcount").textContent=n+" bills shown";};'
-          'F.forEach(b=>b.addEventListener("click",()=>{const g=b.parentNode;g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));if("t" in b.dataset)t=b.dataset.t;else s=+b.dataset.s;go();}));go();})();</script>')
+          'let lim=20;const M=document.getElementById("bmore");const go=()=>{let n=0;L.forEach(e=>{const ok=(!t||e.dataset.tp.split(" ").includes(t))&&+e.dataset.st>=s;e.hidden=!ok||n>=lim;if(ok)n++;});document.getElementById("bcount").textContent="Showing "+Math.min(n,lim)+" of "+n+" bills";M.hidden=n<=lim;};M.addEventListener("click",()=>{lim+=20;go();});'
+          'F.forEach(b=>b.addEventListener("click",()=>{const g=b.parentNode;g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));if("t" in b.dataset)t=b.dataset.t;else s=+b.dataset.s;lim=20;go();}));go();})();</script>')
     return page('springfield', 'In Springfield', h1, top('springfield', 'In Springfield', h1, f'Bill statuses from the Illinois General Assembly, updated every morning · last updated {day(made, True) if made else ""}') + tl + c1 + g
                 + bottom('springfield', note, src('Illinois General Assembly bill status files', 'https://www.ilga.gov/ftp/legislation/104/BillStatus/')) + js)
 
@@ -646,6 +680,7 @@ def overview():
             ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% in 2026 · 7 big projects tracked'),
             ('streets', '82 deaths', 'in traffic this year through Sept. 27', spark([120, 153, 186, 160, 136, 130, 100, 82], partial=True, rng=('2019', '2026 so far')), 'The city’s goal for 2026 was zero'),
             ('projects', f'{f(built)} of {f(tot)}', 'homes built in six big projects', minisplit([(built, NAVY), (tot - built, '#d9e4f4')], 'Built · planned'), '3 of the 6 have broken ground'),
+            ('springfield', *spr_card()),
             ('capital', '$18.1B', 'in the city’s five-year building plan, 2025–2029', minisplit([(5980, NAVY), (3673 + 1893, '#7fa3d1'), (3034 + 1447, '#b3c9e6'), (2024, '#d9e4f4')], 'Airports · water and sewers · streets · the rest'), 'Plus $1.5M a year per ward for street projects')]
     name = dict(SECTIONS)
     head = (f'<div class="otop"><div><h1>Progress</h1><p>What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.</p></div><span class="upd">Updated {UPDATED}</span></div>')
