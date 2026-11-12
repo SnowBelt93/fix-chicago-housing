@@ -49,6 +49,8 @@ for sid, v in days.items():
 ORDER = {'NB': 0, 'EB': 0, 'Northeast': 0, 'Northwest': 0, 'SB': 1, 'WB': 1, 'Southwest': 1, 'Southeast': 1}
 NAME = {'NB': 'Northbound', 'SB': 'Southbound', 'EB': 'Eastbound', 'WB': 'Westbound', 'Northeast': 'Northeast-bound', 'Northwest': 'Northwest-bound', 'Southeast': 'Southeast-bound', 'Southwest': 'Southwest-bound'}
 title = lambda s: ' '.join(w if w[:1].isdigit() else w.capitalize() for w in s.lower().split()).replace(' Ave', ' Ave').strip()
+import re
+street = lambda s: title(s) + (' St' if re.fullmatch(r'\d+(st|nd|rd|th)', s.strip(), re.I) else '')   # the city lists numbered streets as "35TH"
 segs = []
 for (road, ends), dirs in groups.items():
     if not road: continue
@@ -56,7 +58,7 @@ for (road, ends), dirs in groups.items():
     try: lon0, lat0, lon1, lat1 = float(m['startlon']), float(m['startlat']), float(m['endlon']), float(m['endlat'])
     except ValueError: continue
     ln, ow = lanes_at((lon0 + lon1) / 2, (lat0 + lat1) / 2, road)
-    segs.append([title(road), title(m['fromsegment']), title(m['tosegment']), round(lon0, 5), round(lat0, 5), round(lon1, 5), round(lat1, 5),
+    segs.append([street(road), title(m['fromsegment']), title(m['tosegment']), round(lon0, 5), round(lat0, 5), round(lon1, 5), round(lat1, 5),
                  sum(c for _, (c, _) in ds), [[NAME.get(d, d), c] for d, (c, _) in ds], ln, ow])
 segs.sort(key=lambda s: (s[0], s[4], s[3]))
 json.dump({'from': start, 'through': through, 'segs': segs}, open(os.path.join(ROOT, 'street', 'data', 'traffic.json'), 'w'), separators=(',', ':'))

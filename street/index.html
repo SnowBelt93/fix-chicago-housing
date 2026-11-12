@@ -346,7 +346,7 @@ async function setTraffic(on){
 // the counted stretch this street piece belongs to, if the traffic file is loaded: same street name, within 60 m
 function trafficNear(p, name){
   if (!TRAFFIC || !name) return null; const N = name.toUpperCase(); let best = null, bd = 60;
-  for (const t of TRAFFIC.segs){ if (!N.includes(t[0].toUpperCase())) continue; const d = dSeg(p, [t[3], t[4]], [t[5], t[6]]); if (d < bd){ bd = d; best = t; } }
+  for (const t of TRAFFIC.segs){ if (!N.includes(t[0].toUpperCase().replace(/ ST$/, ""))) continue; const d = dSeg(p, [t[3], t[4]], [t[5], t[6]]); if (d < bd){ bd = d; best = t; } }
   return best;
 }
 function showTraffic(i){
@@ -362,7 +362,7 @@ function showTraffic(i){
   map.getSource("pick").setData({type:"FeatureCollection", features:[{type:"Feature", geometry:{type:"LineString", coordinates:[[t[3], t[4]], [t[5], t[6]]]}}]});
   $("panel").classList.remove("fresh"); $("hint").textContent = "";
   $("out").innerHTML = `<div class="res"><h2>${esc(t[0])}</h2><p class="sub">${esc(t[1])} to ${esc(t[2])}</p>${label ? `<span class="tlabel">${label}</span>` : ""}
-    <div class="tfacts"><div><b>${nf(t[7])}</b><span>vehicles on a typical day${both ? ", both directions" : ", " + esc(t[8][0][0].toLowerCase()) + " only"}</span></div>${both ? t[8].map(d => `<div><b>${nf(d[1])}</b><span>${esc(d[0].toLowerCase())}</span></div>`).join("") : ""}<div><b>${lanes || "Not listed"}</b><span>car lanes (OpenStreetMap)</span></div></div>
+    <div class="tfacts"><div><b>${nf(t[7])}</b><span>vehicles on a typical day${both ? ", both directions" : ", " + esc(t[8][0][0].toLowerCase()) + " only"}</span></div>${both ? t[8].map(d => `<div><b>${nf(d[1])}</b><span>${esc(d[0].toLowerCase())}</span></div>`).join("") : ""}<div><b>${lanes || "Not listed"}</b><span>lanes, turn lanes included (OpenStreetMap)</span></div></div>
     <p class="tnote">${verdict}</p>
     <button class="sc-btn primary" id="tGo">Redesign this stretch</button>
     <p class="tnote" style="font-size:13px">The count is the middle day of the last 12 months (${TRAFFIC.from} to ${TRAFFIC.through}), from the city's traffic and speed cameras, so it is an estimate. Sources: ${["adt", "rdig"].map(k => `<a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a>`).join(" · ")}</p></div>`;
