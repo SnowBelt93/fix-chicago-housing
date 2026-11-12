@@ -16,7 +16,7 @@ Steps (python3 tools/lot/fetch.py [steps]):
 """
 import urllib.request, urllib.parse, json, os, re, io, csv, gzip, zipfile, sys, time, datetime
 HERE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(os.path.dirname(HERE), 'raw', 'lot'); os.makedirs(OUT, exist_ok=True)
+OUT = os.path.join(os.path.dirname(HERE), 'raw', 'lot'); os.makedirs(os.path.join(OUT, 'hud'), exist_ok=True)
 UA = {'User-Agent': 'Mozilla/5.0 (compatible; shapechicago-data/1.0)'}
 LOG = {}
 PERSON = re.compile(r'name|owner|buyer|seller|grantor|grantee|applicant|contact|email|phone|tel|agent|attorney|taxpayer|mail', re.I)
@@ -237,7 +237,120 @@ def hud():
             except Exception as e: keep[u] = str(e)
     save('hud_rows.json', keep); LOG['hud'] = {k: (len(v) if isinstance(v, list) else v) for k, v in keep.items()}
 
-STEPS = {'catalog': catalog, 'overlays': overlays, 'districts': districts, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud}
+
+# ---- affordable-housing deal check and grants finder (Nov 12, 2026) ----
+def links(page, pat):
+    b = get(page, tries=2)
+    if not b: return []
+    h = b.decode('utf-8', 'replace')
+    return sorted({urllib.parse.urljoin(page, m) for m in re.findall(r'href="([^"]+)"', h) if re.search(pat, m, re.I)})
+
+def chicago_rows(b, name, pat=r'chicago|cook|17031|\b606\d\d'):
+    """Keep the header rows and the Chicago rows of a spreadsheet or CSV (as text lines)."""
+    out = []
+    try:
+        if name.lower().endswith(('.xlsx', '.xls')):
+            import openpyxl
+            wb = openpyxl.load_workbook(io.BytesIO(b), read_only=True, data_only=True)
+            for ws in wb.worksheets:
+                for i, row in enumerate(ws.iter_rows(values_only=True)):
+                    s = ['' if c is None else str(c) for c in row]
+                    if i < 3 or any(re.search(pat, c, re.I) for c in s): out.append(ws.title + '|' + '|'.join(s[:120]))
+        elif name.lower().endswith('.zip'):
+            z = zipfile.ZipFile(io.BytesIO(b))
+            for n in z.namelist():
+                if n.lower().endswith(('.csv', '.txt', '.xlsx', '.xls')): out += [n + ':' + l for l in chicago_rows(z.read(n), n, pat)[:5000]]
+        else:
+            t = b.decode('utf-8', 'replace').splitlines()
+            out = t[:3] + [l for l in t[3:] if re.search(pat, l, re.I)]
+    except Exception as e: out = ['ERROR ' + repr(e)]
+    return out
+
+def hudlim():
+    """HUD income limits, the tax-credit (MTSP) income and rent limits, QCTs and DDAs: Chicago rows only."""
+    got = {}
+    pages = {'mtsp': ('https://www.huduser.gov/portal/datasets/mtsp.html', r'(fy2?0?2[67]|il2[67]).*\.(xlsx|xls|csv|zip)$'),
+             'il': ('https://www.huduser.gov/portal/datasets/il.html', r'(fy2?0?2[67]|il2[67]).*\.(xlsx|xls|csv|zip)$'),
+             'qct': ('https://www.huduser.gov/portal/datasets/qct.html', r'(202[67]|2[67]).*\.(xlsx|xls|csv|zip)$'),
+             'sadda': ('https://www.huduser.gov/portal/sadda/sadda_qct.html', r'\.(xlsx|xls|csv|zip)$')}
+    for k, (page, pat) in pages.items():
+        L = links(page, pat); got[k] = {'links': L[:40]}
+        for u in L[:12]:
+            b = get(u, tries=2, timeout=600)
+            if not b: got[k][u] = 'missing'; continue
+            rows = chicago_rows(b, u.split('?')[0])
+            fn = k + '_' + re.sub(r'[^A-Za-z0-9._-]', '_', u.rsplit('/', 1)[-1])[:80] + '.txt.gz'
+            with gzip.open(os.path.join(OUT, 'hud', fn), 'wt') as fh: fh.write('\n'.join(rows))
+            got[k][u] = len(rows)
+    save('hudlim.json', got); LOG['hudlim'] = {k: {u: v for u, v in d.items() if u != 'links'} for k, d in got.items()}
+
+def amen():
+    """Places the city's tax-credit plan counts as amenities (full-service grocery, health care, schools, parks), from
+    OpenStreetMap (ODbL: credit OpenStreetMap contributors). Only the kind, a name of the business or place and the point."""
+    s, w, n, e = 41.64, -87.95, 42.03, -87.52
+    q = f"""[out:json][timeout:600];(
+      nwr["shop"="supermarket"]({s},{w},{n},{e});
+      nwr["amenity"~"^(hospital|clinic|doctors|pharmacy)$"]({s},{w},{n},{e});
+      nwr["healthcare"~"^(hospital|clinic|doctor|pharmacy|centre)$"]({s},{w},{n},{e});
+      nwr["amenity"="school"]({s},{w},{n},{e});
+      nwr["leisure"="park"]({s},{w},{n},{e}););out center tags;"""
+    d = None
+    for host in ('https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'):
+        d = jget(host, data=urllib.parse.urlencode({'data': q}).encode(), timeout=900)
+        if d: break
+    pts = []
+    for el in (d or {}).get('elements', []):
+        t = el.get('tags', {}); c = el.get('center') or el
+        if 'lat' not in c: continue
+        k = ('grocery' if t.get('shop') == 'supermarket' else 'school' if t.get('amenity') == 'school' else 'park' if t.get('leisure') == 'park'
+             else 'health')
+        pts.append([k, round(c['lon'], 5), round(c['lat'], 5), (t.get('name') or '')[:60]])
+    with gzip.open(os.path.join(OUT, 'amen.json.gz'), 'wt') as fh: json.dump(pts, fh)
+    LOG['amen'] = {k: sum(1 for p in pts if p[0] == k) for k in ('grocery', 'health', 'school', 'park')}
+
+def places():
+    """City layers the deal check needs: TIF districts, Neighborhood Opportunity Fund areas, parks, schools."""
+    want = {'tif': (['tax increment financing district', 'tif boundaries'], r'tax increment|\btif\b'),
+            'nof': (['neighborhood opportunity fund'], r'opportunity fund'),
+            'cps': (['school locations'], r'school.*location|location.*school'),
+            'parks': (['park district parks', 'parks - shapefiles'], r'^parks|park.*boundar')}
+    got = {}
+    for k, (qs, pat) in want.items():
+        hits = {}
+        for q in qs:
+            d = jget('https://api.us.socrata.com/api/catalog/v1?' + urllib.parse.urlencode({'domains': 'data.cityofchicago.org', 'q': q, 'limit': 20}))
+            for r in (d or {}).get('results', []):
+                res = r.get('resource', {})
+                if re.search(pat, res.get('name') or '', re.I) and not re.search(r'deprecated|historical|tabular|\b19\d\d\b|201\d', res.get('name') or '', re.I):
+                    hits[res['id']] = {'name': res['name'], 'type': res.get('type'), 'updated': res.get('updatedAt'), 'cols': res.get('columns_field_name', [])[:40]}
+        got[k] = hits
+        for i, h in list(hits.items())[:3]:
+            b = get(f'https://data.cityofchicago.org/api/geospatial/{i}?method=export&format=GeoJSON', tries=2) or get(f'https://data.cityofchicago.org/resource/{i}.geojson?$limit=50000', tries=2)
+            try: g = json.loads(b) if b else None
+            except Exception: g = None
+            feats = [f for f in (g or {}).get('features', []) if f.get('geometry')]
+            if not feats: h['got'] = 0; continue
+            for f in feats: f['properties'] = {a: v for a, v in (f.get('properties') or {}).items() if not PERSON.search(a) or SAFE_NAMES.match(a)}
+            with gzip.open(os.path.join(OUT, f'pl_{k}_{i}.geojson.gz'), 'wt') as fh: json.dump({'type': 'FeatureCollection', 'name': h['name'], 'features': feats}, fh)
+            h['got'] = len(feats)
+    save('places.json', got); LOG['places'] = {k: {i: h.get('got') for i, h in v.items()} for k, v in got.items()}
+
+def acs2():
+    """ACS 5-year tables for the city's market-area tests: household income brackets (B19001), poverty (B17001),
+    median household income (B19013), median gross rent (B25064), median home value (B25077). Cook County tracts."""
+    got = {}
+    for tb in ['b19001', 'b17001', 'b19013', 'b25064', 'b25077', 'b11001']:
+        for yr in (2024, 2019):
+            u = f'https://www2.census.gov/programs-surveys/acs/summary_file/{yr}/table-based-SF/data/5YRData/acsdt5y{yr}-{tb}.dat'
+            b = get(u, tries=2, timeout=600)
+            if not b: got[f'{tb}_{yr}'] = 'missing'; continue
+            lines = b.decode('utf-8', 'replace').splitlines()
+            keep = [l for l in lines[1:] if '1400000US17031' in l.split('|')[0]]
+            with gzip.open(os.path.join(OUT, f'acs_{tb}_{yr}.dat.gz'), 'wt') as fh: fh.write(lines[0] + '\n' + '\n'.join(keep) + '\n')
+            got[f'{tb}_{yr}'] = len(keep)
+    LOG['acs2'] = got
+
+STEPS = {'catalog': catalog, 'overlays': overlays, 'districts': districts, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud, 'hudlim': hudlim, 'amen': amen, 'places': places, 'acs2': acs2}
 if __name__ == '__main__':
     todo = sys.argv[1:] or list(STEPS)
     for s in todo:
