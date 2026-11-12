@@ -348,7 +348,7 @@
  "cta_ridership": {
   "url": "https://www.transitchicago.com/ridership/",
   "ok": true,
-  "bytes": 233119,
+  "bytes": 232241,
   "links": [
    "http://www.ctarealestate.com/",
    "https://ctabustracker.com/",
@@ -647,7 +647,6 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
-   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -746,16 +745,17 @@
    "https://www.transitchicago.com/schooladmins/",
    "https://www.transitchicago.com/security/",
    "https://www.transitchicago.com/social/",
-   "https://www.transitchicago.com/station/adbl/",
+   "https://www.transitchicago.com/station/asho/",
    "https://www.transitchicago.com/station/chif/",
-   "https://www.transitchicago.com/station/chna/",
-   "https://www.transitchicago.com/station/wawa/"
+   "https://www.transitchicago.com/station/pulp/",
+   "https://www.transitchicago.com/station/wawa/",
+   "https://www.transitchicago.com/survey/website-feedback/"
   ]
  },
  "cta_ridership_reports": {
   "url": "https://www.transitchicago.com/ridership/#reports",
   "ok": true,
-  "bytes": 233119,
+  "bytes": 232241,
   "links": [
    "http://www.ctarealestate.com/",
    "https://ctabustracker.com/",
@@ -1054,7 +1054,6 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
-   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -1153,16 +1152,17 @@
    "https://www.transitchicago.com/schooladmins/",
    "https://www.transitchicago.com/security/",
    "https://www.transitchicago.com/social/",
-   "https://www.transitchicago.com/station/adbl/",
+   "https://www.transitchicago.com/station/asho/",
    "https://www.transitchicago.com/station/chif/",
-   "https://www.transitchicago.com/station/chna/",
-   "https://www.transitchicago.com/station/wawa/"
+   "https://www.transitchicago.com/station/pulp/",
+   "https://www.transitchicago.com/station/wawa/",
+   "https://www.transitchicago.com/survey/website-feedback/"
   ]
  },
  "cta_meeting_moment": {
   "url": "https://www.transitchicago.com/meetingthemoment/",
   "ok": true,
-  "bytes": 253375,
+  "bytes": 252497,
   "links": [
    "http://www.apta.com/research-technical-resources/research-reports/transit-workforce-shortage/",
    "http://www.ctarealestate.com/",
@@ -1228,7 +1228,6 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
-   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -1340,9 +1339,9 @@
    "https://www.transitchicago.com/security/",
    "https://www.transitchicago.com/service-changes-designed-to-provide-better-service-along-blue-line-ohare-branch-/",
    "https://www.transitchicago.com/social/",
-   "https://www.transitchicago.com/station/adbl/",
+   "https://www.transitchicago.com/station/asho/",
    "https://www.transitchicago.com/station/chif/",
-   "https://www.transitchicago.com/station/chna/",
+   "https://www.transitchicago.com/station/pulp/",
    "https://www.transitchicago.com/station/wawa/",
    "https://www.transitchicago.com/survey/website-feedback/",
    "https://www.transitchicago.com/terms/",
@@ -1376,7 +1375,7 @@
  "metra_performance": {
   "url": "https://metra.com/performance-measures",
   "ok": true,
-  "bytes": 180626,
+  "bytes": 180623,
   "links": [
    "https://merch.metra.com/",
    "https://metra.com/",
@@ -1394,45 +1393,12 @@
   "ok": false,
   "err": "https://metra.com/ridership-reports: HTTP Error 404: Not Found"
  },
- "pace_performance": {
-  "url": "https://www.pacebus.com/performance-measures",
-  "ok": true,
-  "bytes": 85857,
-  "links": [
-   "http://tmweb.pacebus.com/TMWebWatch/",
-   "https://nextdoor.com/agency-detail/il/arlington-heights/pace-suburbanbus/",
-   "https://www.facebook.com/PaceBus/",
-   "https://www.pacebus.com/",
-   "https://www.pacebus.com/sitemap.xml",
-   "https://www.pacebus.com/sites/default/files/2025-05/ServiceData-Feb2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-05/ServiceData-Jan2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-05/ServiceData-Mar2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-08/ServiceData-Apr2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-08/ServiceData-June2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-08/ServiceData-May2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-09/ServiceData-July2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-10/ServiceData-Aug2025_0.zip",
-   "https://www.pacebus.com/sites/default/files/2025-11/ServiceData-Oct2025.zip",
-   "https://www.pacebus.com/sites/default/files/2025-11/ServiceData-Sept2025.zip",
-   "https://www.pacebus.com/sites/default/files/2026-01/ServiceData-Nov2025.zip",
-   "https://www.pacebus.com/sites/default/files/2026-02/Service%20Data-Dec2025.zip",
-   "https://www.pacebus.com/sites/default/files/2026-03/Service%20Data-Jan2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-04/Service%20Data-Feb2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-04/Service%20Data-March2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-06/Service%20Data-April%202026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-07/Service%20Data-May2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-08/ServiceData-July2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-08/ServiceData-June2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-11/ServiceData-Aug2026.zip",
-   "https://www.pacebus.com/sites/default/files/2026-11/ServiceData-Sept2026.zip"
-  ]
- },
  "rta_dashboards": {
   "url": "https://www.rtachicago.org/dashboards",
   "ok": true,
   "bytes": 5568,
   "links": [
-   "https://www.rtachicago.org/cdn/3917/experience/"
+   "https://www.rtachicago.org/cdn/3921/experience/"
   ]
  },
  "rtams_ridership": {
@@ -1639,7 +1605,7 @@
  "apartmentlist_data": {
   "url": "https://www.apartmentlist.com/research/category/data-rent-estimates",
   "ok": true,
-  "bytes": 143777,
+  "bytes": 143773,
   "links": [
    "https://www.apartmentlist.com/",
    "https://www.apartmentlist.com/__falcon__/static/android_manifest.json"
@@ -2073,7 +2039,7 @@
  "cook_evictions": {
   "url": "https://www.cookcountyclerkofcourt.org/",
   "ok": true,
-  "bytes": 76639,
+  "bytes": 75930,
   "links": [
    "https://appeals.cookcountyclerkofcourt.org/",
    "https://services.cookcountyclerkofcourt.org/Forms/",
@@ -2095,11 +2061,13 @@
  "cmap_data": {
   "url": "https://datahub.cmap.illinois.gov/",
   "ok": true,
-  "bytes": 46118,
+  "bytes": 46424,
   "links": [
-   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/chunk.33524.ecced07542a6596c452b.css",
-   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/opendata-rtl-bf9e2714ce4f88422df7fe2c0555972f.css",
-   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/vendor-4e67da638136388d59ddf99b8e586359.css"
+   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/chunk.33524.e157420c768a4bebb19d.css",
+   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/chunk.63222.2e84231afbefddeaeb2b.css",
+   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/opendata-rtl-04089f354388f772ba6075194167fedf.css",
+   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/opendata-ui-4cee9909d2133c4b03a125cc75cbdd56.css",
+   "https://hubcdn.arcgis.com/opendata-ui/assets/assets/vendor-9e3b869413c8ca5dca96a541db80b8f0.css"
   ]
  },
  "fta_ntd_monthly": {
@@ -2608,16 +2576,6 @@
    "https://www.usa.gov/"
   ]
  },
- "pace_schedules": {
-  "url": "https://www.pacebus.com/route-and-schedule-data",
-  "ok": false,
-  "err": "https://www.pacebus.com/route-and-schedule-data: HTTP Error 404: Not Found"
- },
- "pace_developers": {
-  "url": "https://www.pacebus.com/developers",
-  "ok": false,
-  "err": "https://www.pacebus.com/developers: HTTP Error 404: Not Found"
- },
  "chicago_menu": {
   "url": "https://www.chicago.gov/city/en/depts/obm/provdrs/cap_improve/svcs/aldermanic-menu-program.html",
   "ok": false,
@@ -2631,7 +2589,7 @@
  "cook_clerk_rates": {
   "url": "https://www.cookcountyclerkil.gov/property-taxes/tax-extension-and-rates",
   "ok": true,
-  "bytes": 79210,
+  "bytes": 78265,
   "links": [
    "http://cookcountyboardofreview.com/",
    "http://cookcountysheriff.org/",
@@ -3896,57 +3854,10 @@
    "https://www2.census.gov/econ/bps/Place/Northeast%20Region/ne1604y.txt"
   ]
  },
- "pace_gtfs": {
-  "url": "https://pacebus.com/route-timetable-data-services",
-  "ok": true,
-  "bytes": 80960,
-  "links": [
-   "http://tmweb.pacebus.com/TMWebWatch/",
-   "https://gtfs.org/documentation/schedule/reference/",
-   "https://nextdoor.com/agency-detail/il/arlington-heights/pace-suburbanbus/",
-   "https://pacebus.com/",
-   "https://pacebus.com/sitemap.xml",
-   "https://pacebus.com/sites/default/files/2026-10/GTFS.zip",
-   "https://www.facebook.com/PaceBus/"
-  ]
- },
- "pace_gtfs_mdb": {
-  "url": "https://mobilitydatabase.org/feeds/gtfs/mdb-2347",
-  "ok": true,
-  "bytes": 465285,
-  "links": [
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202502270021/mdb-2347-202502270021.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202502270021/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202505280002/mdb-2347-202505280002.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202505280002/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202508060100/mdb-2347-202508060100.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202508060100/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202509250116/mdb-2347-202509250116.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202509250116/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202512020107/mdb-2347-202512020107.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202512020107/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202603100025/mdb-2347-202603100025.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202603100025/report_7.1.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202604010051/mdb-2347-202604010051.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202604010051/report_8.0.0.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202605290102/mdb-2347-202605290102.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202605290102/report_8.0.1.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202608130043/mdb-2347-202608130043.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202608130043/report_8.0.1.json",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202610280204/mdb-2347-202610280204.zip",
-   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202610280204/report_8.0.1.json",
-   "https://gbfs-validator.mobilitydata.org/",
-   "https://gtfs-validator.mobilitydata.org/",
-   "https://gtfs.org/getting_started/features/overview/",
-   "https://mobilitydatabase.org/",
-   "https://www.linkedin.com/company/mobilitydata/",
-   "https://www.pacebus.com/gtfsdownload"
-  ]
- },
  "ntd_monthly_catalog": {
   "url": "https://catalog.data.gov/dataset/complete-monthly-ridership-with-adjustments-and-estimates",
   "ok": true,
-  "bytes": 152933,
+  "bytes": 152962,
   "links": [
    "https://catalog.data.gov/",
    "https://catalog.data.gov/sitemap.xml",
@@ -3965,7 +3876,7 @@
  "ntd_modal_catalog": {
   "url": "https://catalog.data.gov/dataset/monthly-modal-time-series",
   "ok": true,
-  "bytes": 148540,
+  "bytes": 148568,
   "links": [
    "https://catalog.data.gov/",
    "https://catalog.data.gov/sitemap.xml",
@@ -3984,7 +3895,7 @@
  "chicago_capital_pubs": {
   "url": "https://www.chicago.gov/city/en/depts/obm/provdrs/budget/svcs/CapitalPublications.html",
   "ok": true,
-  "bytes": 64697,
+  "bytes": 65130,
   "links": [
    "http://www.chicagocitytreasurer.com/",
    "http://www.chicityclerk.com/",
@@ -4011,20 +3922,6 @@
   "url": "https://rtams.org/datasets",
   "ok": false,
   "err": "https://rtams.org/datasets: HTTP Error 404: Not Found"
- },
- "rtams_pace": {
-  "url": "https://rtams.org/dataset/pace-ridership",
-  "ok": true,
-  "bytes": 21985,
-  "links": [
-   "https://rtagis.maps.arcgis.com/home/index.html",
-   "https://rtams.org/",
-   "https://rtams.org/node/778/dataset/download",
-   "https://rtams.org/sites/default/files/Pace_Ridership_ReadMe_1.txt",
-   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Monthly_Ridership_2003_2026.xlsx",
-   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Paratransit_Ridership_2003_2026.csv",
-   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Vanpool_Ridership_2003_2026.csv"
-  ]
  },
  "rtams_metra_ds": {
   "url": "https://rtams.org/dataset/metra-ridership",
