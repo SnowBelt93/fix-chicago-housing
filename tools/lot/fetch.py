@@ -6,6 +6,7 @@ Steps (python3 tools/lot/fetch.py [steps]):
   catalog    Chicago Data Portal search for overlay datasets (landmarks, historic survey, ARO areas, demolition surcharge
              areas, enterprise zones, PMDs, industrial corridors, SSAs, ETOD) -> catalog.json (names, ids, columns)
   overlays   every catalog hit with a map shape -> ov_<id>.geojson.gz, person-like columns dropped
+  districts  landmark district boundaries (a shapefile only) -> ov_landmark_districts.geojson.gz
   oz         federal Opportunity Zones: CDFI Fund tract list + Census 2010 tract shapes for Cook County -> oz_tracts.json
   flood      FEMA National Flood Hazard Layer zones inside Chicago's box -> flood.geojson.gz
   sales      Cook County Assessor sales in Chicago since 2019: PIN, date, price, class only -> sales.csv.gz
@@ -41,6 +42,8 @@ QUERIES = ['landmark district', 'chicago landmarks', 'historic resources survey'
 WANT = re.compile(r'landmark|historic|affordable requirement|\baro\b|demolition|surcharge|pilsen|606|enterprise zone|planned manufacturing|'
                   r'industrial corridor|special service|transit[- ]served|etod|opportunity|low.?affordab|adu|coach|additional dwelling', re.I)
 
+SKIP = re.compile(r'311|service request|deprecated|application|tabular|financial incentive|performance metric|balance sheet|historical', re.I)
+
 def catalog():
     hits = {}
     for q in QUERIES:
@@ -49,7 +52,7 @@ def catalog():
             res = r.get('resource', {}); i = res.get('id')
             if not i or i in hits: continue
             hits[i] = {'name': res.get('name'), 'type': res.get('type'), 'updated': res.get('updatedAt'), 'desc': (res.get('description') or '')[:300],
-                       'cols': res.get('columns_field_name', [])[:60], 'want': bool(WANT.search(res.get('name') or ''))}
+                       'cols': res.get('columns_field_name', [])[:60], 'want': bool(WANT.search(res.get('name') or '')) and not SKIP.search(res.get('name') or '') and res.get('type') in ('dataset', 'map')}
     save('catalog.json', hits); LOG['catalog'] = len(hits); print('catalog', len(hits), 'datasets,', sum(h['want'] for h in hits.values()), 'wanted')
 
 def overlays():
@@ -66,10 +69,33 @@ def overlays():
         feats = [f for f in g.get('features', []) if f.get('geometry')]
         if not feats: got[i] = 'no shapes'; continue
         for f in feats:
-            f['properties'] = {k: v for k, v in (f.get('properties') or {}).items() if SAFE_NAMES.match(k) or not PERSON.search(k)}
+            f['properties'] = {k: v for k, v in (f.get('properties') or {}).items() if (SAFE_NAMES.match(k) or not PERSON.search(k)) and not re.search(r'architect|plate|vehicle', k, re.I)}
         with gzip.open(os.path.join(OUT, f'ov_{i}.geojson.gz'), 'wt') as fh: json.dump({'type': 'FeatureCollection', 'name': h['name'], 'features': feats}, fh)
         got[i] = {'name': h['name'], 'n': len(feats), 'props': sorted({k for f in feats[:50] for k in f['properties']})}
     save('overlays.json', got); LOG['overlays'] = got
+
+def districts():
+    """Landmark district boundaries are only published as a shapefile (t8pq-wu86)."""
+    b = get('https://data.cityofchicago.org/download/t8pq-wu86/application%2Fzip', tries=2)
+    if not b: LOG['districts'] = 'missing'; return
+    import shapefile
+    z = zipfile.ZipFile(io.BytesIO(b)); base = [n[:-4] for n in z.namelist() if n.lower().endswith('.shp')][0]
+    prj = z.read(base + '.prj').decode('latin-1') if base + '.prj' in z.namelist() else ''
+    r = shapefile.Reader(shp=io.BytesIO(z.read(base + '.shp')), dbf=io.BytesIO(z.read(base + '.dbf')))
+    fields = [f[0] for f in r.fields[1:]]
+    tf = None
+    if 'GEOGCS' not in prj[:8]:
+        from pyproj import CRS, Transformer
+        tf = Transformer.from_crs(CRS.from_wkt(prj), 4326, always_xy=True)
+    feats = []
+    for sr in r.iterShapeRecords():
+        pts = sr.shape.points; parts = list(sr.shape.parts) + [len(pts)]
+        rings = [[list(tf.transform(x, y)) if tf else [x, y] for x, y in pts[a:b]] for a, b in zip(parts, parts[1:])]
+        rings = [[[round(x, 6), round(y, 6)] for x, y in ring] for ring in rings]
+        props = {k: (v.isoformat() if hasattr(v, 'isoformat') else v) for k, v in zip(fields, sr.record) if not PERSON.search(k) or SAFE_NAMES.match(k)}
+        feats.append({'type': 'Feature', 'properties': props, 'geometry': {'type': 'Polygon', 'coordinates': rings}})
+    with gzip.open(os.path.join(OUT, 'ov_landmark_districts.geojson.gz'), 'wt') as fh: json.dump({'type': 'FeatureCollection', 'name': 'Landmark Districts', 'features': feats}, fh)
+    LOG['districts'] = {'n': len(feats), 'fields': fields, 'prj': prj[:120]}
 
 def oz():
     """Opportunity Zones are 2010 census tracts. Try the CDFI Fund list, then Census 2010 tract shapes for Cook County."""
@@ -211,7 +237,7 @@ def hud():
             except Exception as e: keep[u] = str(e)
     save('hud_rows.json', keep); LOG['hud'] = {k: (len(v) if isinstance(v, list) else v) for k, v in keep.items()}
 
-STEPS = {'catalog': catalog, 'overlays': overlays, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud}
+STEPS = {'catalog': catalog, 'overlays': overlays, 'districts': districts, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud}
 if __name__ == '__main__':
     todo = sys.argv[1:] or list(STEPS)
     for s in todo:

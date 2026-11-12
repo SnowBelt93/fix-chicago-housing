@@ -18,7 +18,7 @@ jobs:
         env:
           MSG: ${{ github.event.head_commit.message }}
         run: |
-          pip install -q openpyxl pyshp
+          pip install -q openpyxl pyshp pyproj
           STEPS=$(printf '%s' "$MSG" | sed -n 's/.*\[steps: *\([^]]*\)\].*/\1/p')
           python3 tools/lot/fetch.py $STEPS
       - name: Commit
