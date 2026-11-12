@@ -386,3 +386,23 @@ window.scMap = {
   const b = document.createElement("script"); b.defer = true; b.src = "https://static.cloudflareinsights.com/beacon.min.js";
   b.setAttribute("data-cf-beacon", JSON.stringify({token: CF_TOKEN})); document.head.appendChild(b);
 })();
+
+/* "Your address": the lot tool, grants finder and deal check share one address. Any element with [data-atabs] becomes a tab row
+   linking the three, each carrying ?q=<address>. Pages call window.scSetAddr(label) when someone picks an address; the address is
+   kept in this browser (localStorage "sc-addr") so the next tab opens on it. */
+(function(){
+  const TABS = [["/lot/", "Zoning and rules"], ["/grants/", "Grants and help"], ["/deal/", "Deal check"]];
+  const get = () => { try { return localStorage.getItem("sc-addr") || ""; } catch(e){ return ""; } };
+  function draw(){
+    const a = get();
+    document.querySelectorAll("[data-atabs]").forEach(el => {
+      const here = location.pathname.replace(/index\.html$/, "");
+      el.innerHTML = `<span class="sc-athd">Your address${a ? ": <b translate=\"no\"></b>" : ""}</span><span class="sc-atl">` + TABS.map(([h, n]) =>
+        `<a href="${h}${a ? "?q=" + encodeURIComponent(a) : ""}"${here === h ? ' aria-current="page"' : ""}>${n}</a>`).join("") + "</span>";
+      const b = el.querySelector("b"); if (b) b.textContent = a;
+    });
+  }
+  window.scSetAddr = label => { if (!label) return; try { localStorage.setItem("sc-addr", label); } catch(e){} draw(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", draw); else draw();
+  addEventListener("pageshow", draw);
+})();

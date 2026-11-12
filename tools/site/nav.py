@@ -2,13 +2,14 @@
 <nav class="sc-nav"> in every page (with the right item marked as the current page), and tools/progress/build.py
 imports nav_for() for the pages it writes. Phones get a single Menu button built from this same markup (shape/shape.js).
 
-Top bar: Simulators ▾, Progress ▾, Your ward, News, Learn (Kyle, Nov. 12, 2026).
+Top bar: Simulators ▾, Your address ▾, Progress ▾, Your ward, News, Learn (Kyle, Nov. 12, 2026).
 """
 import os, re, sys
 
 SIMS = [('/housing/', 'Housing'), ('/transit/', 'Transit'), ('/budget/', 'Budget'), ('/pensions/', 'Pensions'), ('/bears/', 'Bears stadium'),
-        None, ('/lot/', 'Your lot'), ('/grants/', 'Grants finder'), ('/deal/', 'Affordable deal check'),
         None, ('/plans/', 'Plans people made')]
+# one address, three tools (they share the address through shape.js scSetAddr and show the same tab row)
+ADDR = [('/lot/', 'Zoning and rules'), ('/grants/', 'Grants and help'), ('/deal/', 'Affordable deal check')]
 PROG = [('/progress/', 'Overview'), ('/progress/homes/', 'Homes'), ('/progress/zoning/', 'Zoning'), ('/progress/affordable/', 'Affordable'),
         ('/progress/rents/', 'Rents and prices'), ('/progress/transit/', 'Transit'), ('/progress/streets/', 'Streets'),
         ('/progress/capital/', 'City money'), ('/progress/projects/', 'Big projects'),
@@ -41,7 +42,7 @@ def nav_for(path):
     cur = current(path)
     sim_name = next((n for it in SIMS if it for h, n in [it] if h == cur), None)
     top = ''.join(f'<a href="{h}"' + (' aria-current="page"' if h == cur else '') + f'>{n}</a>' for h, n in TOP)
-    return ('<nav class="sc-nav" aria-label="Shape Chicago tools">' + menu('Simulators', SIMS, cur, sim_name) + menu('Progress', PROG, cur)
+    return ('<nav class="sc-nav" aria-label="Shape Chicago tools">' + menu('Simulators', SIMS, cur, sim_name) + menu('Your address', ADDR, cur) + menu('Progress', PROG, cur)
             + top + '</nav>')
 
 NAV_RE = re.compile(r'<nav class="sc-nav" aria-label="Shape Chicago tools">.*?</nav>', re.S)

@@ -131,7 +131,7 @@ h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Simulators">Your lot<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/lot/" class="sc-simalt" aria-current="page">Your lot</a><a href="/grants/">Grants finder</a><a href="/deal/">Affordable deal check</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/" aria-current="page">Zoning and rules</a><a href="/grants/">Grants and help</a><a href="/deal/">Affordable deal check</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <div id="map" aria-label="Map of Chicago lots"></div>
@@ -139,6 +139,7 @@ h2{font-size:16px;font-weight:600;margin:18px 0 8px;letter-spacing:-.01em}
 <section class="panel fresh" id="panel">
   <button class="grab" id="grab" aria-label="Show or hide the details"></button>
   <div class="pin">
+    <nav class="sc-atabs" data-atabs aria-label="Your address"></nav>
     <h1>What can I build on my lot?</h1>
     <p class="lede">Type an address or tap a lot. See how many homes the rules allow, in 3D.</p>
     <div class="search">
@@ -358,6 +359,7 @@ function show(T, k, fly){
   const p = T.p[k], [x0, y0] = corner(T.ix, T.iy), lon = x0 + p[1] / 1e6, lat = y0 + p[2] / 1e6;
   const [pin, , , cls, land, apts, yr, bsf, bi, zi, ward, condo, addr] = p;
   const B = bi >= 0 ? T.b[bi] : null, zc = zi >= 0 ? T.zn[zi] : null, I = zoneInfo(zc);
+  if (window.scSetAddr) scSetAddr(addr ? title(addr) : $("q").value);
   // lot: the Assessor's land area, else estimated from the building, else a standard lot
   let lot = land, lotNote = "Cook County Assessor";
   let lotEst = false;
@@ -681,7 +683,8 @@ function enterPick(){
   const h = location.hash.match(/^#(-?\d+\.\d+),(-?\d+\.\d+)/);
   if (h) pickAt(+h[1], +h[2], false);
   const q0 = new URLSearchParams(location.search).get("q");   // from the home page's address box: /lot/?q=2150 N Milwaukee
-  if (q0 && !h){ $("q").value = q0; await suggest(); enterPick(); }
+  let qa = q0; if (!qa && !h) try { qa = localStorage.getItem("sc-addr"); } catch(e){}
+  if (qa && !h){ $("q").value = qa; await suggest(); enterPick(); }
 })();
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("lot", {title:"What can I build on my lot?", body:"<p>Type any Chicago address or tap a lot. See its zoning, how many homes the rules allow, whether today's building could even be built today, and what it would take to build more.</p>", art:"/shape/art/lot.webp"}));</script>

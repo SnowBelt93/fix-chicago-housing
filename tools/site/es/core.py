@@ -7,7 +7,7 @@ T = {
     'Bears stadium': 'Estadio de los Bears', 'Your lot': 'Tu lote', 'Plans people made': 'Planes de la gente',
     'Progress': 'Avances', 'Overview': 'Resumen', 'Homes': 'Viviendas', 'Zoning': 'Zonificación', 'Affordable': 'Asequible',
     'Rents and prices': 'Alquileres y precios', 'Streets': 'Calles', 'City money': 'Dinero de la ciudad', 'Big projects': 'Grandes proyectos',
-    'In Springfield': 'En Springfield', 'Decisions coming up': 'Decisiones próximas', 'Your ward': 'Tu distrito', 'News': 'Noticias', 'Learn': 'Aprende',
+    'In Springfield': 'En Springfield', 'Decisions coming up': 'Decisiones próximas', 'Your ward': 'Tu distrito', 'Your address': 'Tu dirección', 'Your address:': 'Tu dirección:', 'Zoning and rules': 'Zonificación y reglas', 'Grants and help': 'Ayudas y apoyo', 'Deal check': 'Análisis del proyecto', 'News': 'Noticias', 'Learn': 'Aprende',
     'Not affiliated with the City of Chicago.': 'Sin afiliación con la Ciudad de Chicago.',
     'Not affiliated with the City of Chicago, CTA, Metra or Pace.': 'Sin afiliación con la Ciudad de Chicago, la CTA, Metra ni Pace.',
     'Send feedback': 'Enviar comentarios', 'Feedback': 'Comentarios', 'Menu': 'Menú', 'Pages': 'Páginas', 'Close': 'Cerrar', 'All pages': 'Todas las páginas',

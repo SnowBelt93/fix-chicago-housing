@@ -322,3 +322,14 @@ html.sc-zh body{word-break:normal;line-break:strict}
 .sc-head .sc-lang{min-height:32px;padding:0 10px;font-size:13px;font-weight:700;letter-spacing:.02em}
 @media (pointer:coarse){ .sc-head .sc-lang{min-height:40px;min-width:40px} }
 .sc-langoffer{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#fff;border:1px solid var(--sc-line);border-radius:16px;box-shadow:0 10px 30px rgba(20,30,50,.18);padding:10px 12px 10px 16px;font:14px var(--sc-font);color:var(--sc-ink);max-width:calc(100vw - 24px)}
+
+/* "Your address" tabs on the lot tool, grants finder and deal check (shape.js) */
+.sc-atabs{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 18px}
+.sc-athd{font-size:13px;color:var(--sc-mute);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.sc-athd b{color:var(--sc-ink);font-weight:600}
+.sc-atl{display:inline-flex;background:#fff;border:1px solid var(--sc-line);border-radius:999px;padding:3px;gap:2px}
+.sc-atl a{font-size:14px;font-weight:500;color:var(--sc-ink);text-decoration:none;border-radius:999px;padding:7px 13px;white-space:nowrap;min-height:36px;display:inline-flex;align-items:center}
+.sc-atl a:hover{background:#eef1f4}
+.sc-atl a[aria-current="page"]{background:var(--sc-navy);color:#fff}
+@media (max-width:420px){ .sc-atl{width:100%} .sc-atl a{flex:1;justify-content:center;padding:7px 6px;font-size:13px;text-align:center} }
+@media print{ .sc-atabs{display:none} }
