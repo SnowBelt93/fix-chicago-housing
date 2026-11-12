@@ -9,6 +9,7 @@ Steps (commit message "[steps: a b]" picks some; default all):
            -> tools/raw/record/<id>.csv.gz
   files    downloads the URLs listed in tools/record/files.json -> tools/raw/record/files/<name>
   sources  tools/record/sources.py: federal, county and RTA files cut down to their Chicago rows -> tools/raw/record/src/
+  sources2 tools/record/sources2.py: federal monthly ridership, Pace and Metra by month, the tax-credit list (run by name)
 """
 import urllib.request, urllib.parse, json, os, re, time, gzip, sys, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -174,3 +175,5 @@ if 'files' in STEPS and os.path.exists(os.path.join(HERE, 'files.json')):
 
 if 'sources' in STEPS:
     import runpy; runpy.run_path(os.path.join(HERE, 'sources.py'), run_name='__main__')
+if 'sources2' in STEPS:
+    import runpy; runpy.run_path(os.path.join(HERE, 'sources2.py'), run_name='__main__')
