@@ -7,7 +7,7 @@ Top bar: Simulators ▾, Progress ▾, Your ward, News, Learn (Kyle, Nov. 12, 20
 import os, re, sys
 
 SIMS = [('/housing/', 'Housing'), ('/transit/', 'Transit'), ('/budget/', 'Budget'), ('/pensions/', 'Pensions'), ('/bears/', 'Bears stadium'),
-        None, ('/lot/', 'Your lot'), ('/street/', 'Your street'),
+        None, ('/lot/', 'Your lot'),
         None, ('/plans/', 'Plans people made')]
 PROG = [('/progress/', 'Overview'), ('/progress/homes/', 'Homes'), ('/progress/zoning/', 'Zoning'), ('/progress/affordable/', 'Affordable'),
         ('/progress/rents/', 'Rents and prices'), ('/progress/transit/', 'Transit'), ('/progress/streets/', 'Streets'),
