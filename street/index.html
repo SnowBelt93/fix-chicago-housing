@@ -60,6 +60,15 @@ svg.sec{display:block;width:100%;height:auto;cursor:pointer;touch-action:manipul
 .links a{font-size:13px;font-weight:600;color:var(--sc-navy);text-decoration:none;padding:7px 11px;border-radius:14px;background:#eef3fa}
 .fine{font-size:11.5px;color:var(--sc-mute);line-height:1.5;margin:14px 0 0}
 .fine a{color:var(--sc-mute)}
+.trow{display:flex;gap:12px;align-items:center;margin:12px 0 0;font-size:14px;line-height:1.3}
+.trow b{display:block;font-weight:600}.trow small{display:block;font-size:12.5px;color:var(--sc-mute)}
+.tkey{position:absolute;z-index:2;right:14px;top:calc(var(--sc-head) + 14px);display:flex;flex-direction:column;gap:5px;font-size:12.5px;padding:10px 12px;background:#fff;border-radius:12px}
+.tkey[hidden]{display:none}.tkey b{font-weight:600;margin-bottom:2px}.tkey span{display:flex;align-items:center;gap:7px}.tkey i{width:22px;height:5px;border-radius:3px}
+.tfacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.tfacts div{background:#f6f7f9;border-radius:12px;padding:10px 12px}.tfacts b{display:block;font-size:22px;font-weight:600;letter-spacing:-.01em}.tfacts span{font-size:13px;color:var(--sc-mute)}
+.tnote{font-size:14px;line-height:1.5;color:var(--sc-ink2);margin:10px 0}.tnote a{color:var(--sc-navy)}
+.tlabel{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:8px;background:#eef3fa;color:#1d4580;margin-bottom:6px}
+@media (max-width:859px){ .tkey{top:calc(var(--sc-head) + 10px);right:10px;font-size:12px} }
 .zoomhint{position:absolute;z-index:2;left:50%;transform:translateX(-50%);bottom:24px;background:#fff;border-radius:16px;padding:8px 14px;font-size:13.5px;box-shadow:var(--sc-shadow2)}
 @media (min-width:860px){ .zoomhint{left:calc(50% + 250px)} }
 @media (max-width:859px){
@@ -76,11 +85,13 @@ svg.sec{display:block;width:100%;height:auto;cursor:pointer;touch-action:manipul
 </header>
 <div id="map"></div>
 <div class="zoomhint" id="zoomhint">Zoom in, then tap a street</div>
+<div class="sc-mapkey tkey" id="tkey" hidden><b>Vehicles a day, both directions</b><span><i style="background:#9fc5e8"></i>Under 10,000</span><span><i style="background:#5f8fcc"></i>10,000 to 15,000</span><span><i style="background:#2b5da0"></i>15,000 to 20,000</span><span><i style="background:#14335f"></i>20,000 or more</span><span><i style="background:#b9c0c8"></i>One direction counted</span></div>
 <section class="panel fresh" id="panel">
   <div class="ph">
     <h1>Redesign my street</h1>
     <p class="lede">Find a street, see how its width is split today and what's happened on it, then move the lanes around.</p>
     <div class="search"><input id="q" type="search" placeholder="An address on the street, like 1600 N Milwaukee" autocomplete="off" aria-label="Address"><div class="sugg" id="sugg" role="listbox"></div></div>
+    <div class="trow"><button class="sc-switch" role="switch" aria-checked="false" id="trafficOn" aria-labelledby="trafficLbl"></button><span id="trafficLbl"><b>Show how busy the main streets are</b><small>Vehicles a day, from the city's traffic cameras</small></span></div>
     <p class="hint" id="hint"></p>
     <p class="sc-fanline">Not affiliated with the City of Chicago.</p>
   </div>
@@ -106,6 +117,8 @@ const PART = {
 const ORDER = Object.keys(PART);
 const SRC = {
   fhwa:["FHWA, Road Diets (4 to 3 lanes): 19–47% fewer crashes", "https://highways.dot.gov/safety/proven-safety-countermeasures/road-diets-roadway-reconfiguration"],
+  rdig:["FHWA, Road Diet Informational Guide, sections 3.3.5 and 3.6", "https://highways.dot.gov/sites/fhwa.dot.gov/files/2022-06/rdig.pdf"],
+  adt:["City of Chicago, Average Daily Traffic Counts", "https://data.cityofchicago.org/d/gc7y-n4xa"],
   nacto:["NACTO Urban Street Design Guide: lane width", "https://nacto.org/publication/urban-street-design-guide/street-design-elements/lane-width/"],
   bikes:["NACTO, Don't Give Up at the Intersection / protected lanes", "https://nacto.org/publication/urban-bikeway-design-guide/cycle-tracks/"],
   bus:["Move Minnesota, citing UCLA ITS: bus lanes speed buses 5–25%", "https://www.movemn.org/blog/bus-lanes"],
@@ -146,6 +159,7 @@ async function pick(lon, lat){
   for (const T of Ts) Object.assign(R, T.r);
   for (const p of pieces){ p[11].forEach((v, i) => crashes[i] += v); p[12].forEach(r => routes.add(r)); }
   STRETCH = {name, w:best, pieces, m:total, crashes, routes:[...routes].map(r => R[r]).filter(Boolean), mid:best.ll[Math.floor(best.ll.length / 2)]};
+  STRETCH.adt = trafficNear(STRETCH.mid, name);
   BASE = defaultSection(best); CUR = BASE.map(p => ({...p})); SEL = CUR.findIndex(p => p.k === "drive"); if (SEL < 0) SEL = 0;
   map.getSource("pick").setData({type:"FeatureCollection", features:pieces.map(p => ({type:"Feature", geometry:{type:"LineString", coordinates:p.ll}}))});
   $("panel").classList.remove("fresh"); $("hint").textContent = "";
@@ -213,6 +227,7 @@ function draw(){
     <div class="presets"><button data-p="diet">Road diet</button><button data-p="pbike">Protected bike lanes</button><button data-p="bus">Bus lanes</button><button data-p="walk">Wider sidewalks</button><button data-p="reset">As it is</button></div>
     <h3>What your design would do</h3>
     <div class="fx">${effects()}</div>
+    ${STRETCH.adt ? `<h3>How busy it is</h3><p class="tnote"><b>About ${nf(STRETCH.adt[7])}</b> vehicles on a typical day${STRETCH.adt[8].length > 1 ? ", both directions" : ", " + esc(STRETCH.adt[8][0][0].toLowerCase()) + " only"}, between ${esc(STRETCH.adt[1])} and ${esc(STRETCH.adt[2])} (${link("adt")}).</p>` : ""}
     <h3>Crashes here since 2021</h3>
     <div class="crash"><div><b>${STRETCH.crashes[0].toLocaleString("en-US")}</b><span>crashes</span></div><div><b>${STRETCH.crashes[1].toLocaleString("en-US")}</b><span>people hurt</span></div><div><b>${STRETCH.crashes[2].toLocaleString("en-US")}</b><span>killed or badly hurt</span></div><div><b>${STRETCH.crashes[3]}</b><span>hit a pedestrian</span></div><div><b>${STRETCH.crashes[4]}</b><span>hit a cyclist</span></div><div><b>${STRETCH.routes.length}</b><span>CTA bus ${STRETCH.routes.length === 1 ? "route" : "routes"}</span></div></div>
     <div class="links"><a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${STRETCH.mid[1]},${STRETCH.mid[0]}" target="_blank" rel="noopener">See it in Street View</a><a href="https://www.chicago.gov/city/en/about/wards.html" target="_blank" rel="noopener">Ask your alderperson</a><a href="/transit/">Draw a bus lane in the transit tool</a></div>
@@ -306,7 +321,52 @@ async function initMap(){
   map.addLayer({id:"streets", type:"line", source:"streets", paint:{"line-color":["match", ["get", "c"], 1, "#8a94a0", 2, "#8a94a0", 3, "#a7aeb6", "#c3c8ce"], "line-width":["interpolate", ["linear"], ["zoom"], 14, ["match", ["get", "c"], 1, 3, 2, 3, 1.6], 18, ["match", ["get", "c"], 1, 12, 2, 10, 6]], "line-opacity":0.55}});
   map.addLayer({id:"pick", type:"line", source:"pick", layout:{"line-cap":"round"}, paint:{"line-color":"#2b5da0", "line-width":["interpolate", ["linear"], ["zoom"], 13, 5, 18, 16], "line-opacity":0.85}});
   map.on("moveend", showStreets); showStreets();
-  map.on("click", e => { if (map.getZoom() >= 14) pick(e.lngLat.lng, e.lngLat.lat); });
+  map.on("click", e => {
+    if (TRAFFIC_ON){ const f = map.queryRenderedFeatures([[e.point.x - 8, e.point.y - 8], [e.point.x + 8, e.point.y + 8]], {layers:["traffic"]})[0]; if (f){ showTraffic(+f.properties.i); return; } }
+    if (map.getZoom() >= 14) pick(e.lngLat.lng, e.lngLat.lat); });
+}
+/* ---------- how busy the main streets are: the city's camera counts, one line per stretch ---------- */
+let TRAFFIC = null, TRAFFIC_ON = false;
+const nf = n => Math.round(n).toLocaleString("en-US");
+async function setTraffic(on){
+  TRAFFIC_ON = on; $("trafficOn").setAttribute("aria-checked", String(on)); $("tkey").hidden = !on;
+  try { localStorage.setItem("sc-street-traffic", on ? "1" : ""); } catch (e){}
+  if (on && !TRAFFIC){
+    try { TRAFFIC = await fetch("data/traffic.json").then(r => r.json()); } catch (e){ TRAFFIC = {segs:[]}; }
+    map.addSource("traffic", {type:"geojson", data:{type:"FeatureCollection", features:TRAFFIC.segs.map((t, i) => ({type:"Feature", properties:{i, v:t[7], both:t[8].length > 1 ? 1 : 0}, geometry:{type:"LineString", coordinates:[[t[3], t[4]], [t[5], t[6]]]}}))}});
+    map.addLayer({id:"traffic", type:"line", source:"traffic", layout:{"line-cap":"round"}, paint:{
+      "line-color":["case", ["==", ["get", "both"], 0], "#b9c0c8", ["step", ["get", "v"], "#9fc5e8", 10000, "#5f8fcc", 15000, "#2b5da0", 20000, "#14335f"]],
+      "line-width":["interpolate", ["linear"], ["zoom"], 10, 1.6, 13, 4, 17, 9], "line-opacity":0.9}}, "pick");
+    map.on("mouseenter", "traffic", () => map.getCanvas().style.cursor = "pointer"); map.on("mouseleave", "traffic", () => map.getCanvas().style.cursor = "");
+  }
+  if (map.getLayer("traffic")) map.setLayoutProperty("traffic", "visibility", on ? "visible" : "none");
+  $("zoomhint").textContent = on ? "Tap a colored street for its traffic" : "Zoom in, then tap a street";
+  if (on) $("zoomhint").style.display = map.getZoom() >= 14 || STRETCH ? "none" : "block";
+}
+// the counted stretch this street piece belongs to, if the traffic file is loaded: same street name, within 60 m
+function trafficNear(p, name){
+  if (!TRAFFIC || !name) return null; const N = name.toUpperCase(); let best = null, bd = 60;
+  for (const t of TRAFFIC.segs){ if (!N.includes(t[0].toUpperCase())) continue; const d = dSeg(p, [t[3], t[4]], [t[5], t[6]]); if (d < bd){ bd = d; best = t; } }
+  return best;
+}
+function showTraffic(i){
+  const t = TRAFFIC.segs[i], both = t[8].length > 1, lanes = t[9], mid = [(t[3] + t[5]) / 2, (t[4] + t[6]) / 2];
+  // FHWA's and Chicago's own rules of thumb for turning a four-lane street into three (one lane each way plus a turn lane)
+  let label = "", verdict = "";
+  if (!both) verdict = "Only one direction of this stretch is counted, so the two-way total isn't known.";
+  else if (lanes && lanes < 4) verdict = `OpenStreetMap lists ${lanes} car ${lanes === 1 ? "lane" : "lanes"} here, so there is no four-lane street to slim down. The number still tells you how much room the cars need.`;
+  else if (t[7] < 15000){ label = "Within Chicago's own range for a road diet"; verdict = `A federal highway guide quotes Chicago's transportation department as treating streets with up to 15,000 to 18,000 vehicles a day as good candidates for going from four lanes to three. This stretch carries about ${nf(t[7])}.`; }
+  else if (t[7] <= 20000){ label = "Under the federal 20,000 mark"; verdict = `Federal highway guidance says four-lane streets carrying 20,000 vehicles a day or fewer may be good candidates for going to three lanes and should be studied. This stretch carries about ${nf(t[7])}; Chicago's own range tops out at 15,000 to 18,000.`; }
+  else { label = "Above the federal 20,000 mark"; verdict = `Federal highway guidance says four-lane streets carrying 20,000 vehicles a day or fewer may be good candidates for going to three lanes. This stretch carries about ${nf(t[7])}, which is above that.`; }
+  if (both && !lanes) verdict += " OpenStreetMap doesn't list how many lanes this stretch has, so check the street before reading that as a verdict.";
+  map.getSource("pick").setData({type:"FeatureCollection", features:[{type:"Feature", geometry:{type:"LineString", coordinates:[[t[3], t[4]], [t[5], t[6]]]}}]});
+  $("panel").classList.remove("fresh"); $("hint").textContent = "";
+  $("out").innerHTML = `<div class="res"><h2>${esc(t[0])}</h2><p class="sub">${esc(t[1])} to ${esc(t[2])}</p>${label ? `<span class="tlabel">${label}</span>` : ""}
+    <div class="tfacts"><div><b>${nf(t[7])}</b><span>vehicles on a typical day${both ? ", both directions" : ", " + esc(t[8][0][0].toLowerCase()) + " only"}</span></div>${both ? t[8].map(d => `<div><b>${nf(d[1])}</b><span>${esc(d[0].toLowerCase())}</span></div>`).join("") : ""}<div><b>${lanes || "Not listed"}</b><span>car lanes (OpenStreetMap)</span></div></div>
+    <p class="tnote">${verdict}</p>
+    <button class="sc-btn primary" id="tGo">Redesign this stretch</button>
+    <p class="tnote" style="font-size:13px">The count is the middle day of the last 12 months (${TRAFFIC.from} to ${TRAFFIC.through}), from the city's traffic and speed cameras, so it is an estimate. Sources: ${["adt", "rdig"].map(k => `<a href="${SRC[k][1]}" target="_blank" rel="noopener">${SRC[k][0]}</a>`).join(" · ")}</p></div>`;
+  $("tGo").onclick = () => { map.jumpTo({center:mid, zoom:16.5}); pick(mid[0], mid[1]); };
 }
 let stTok = 0;
 async function showStreets(){
@@ -346,6 +406,8 @@ async function go(num, street){
 }
 (async function(){
   await initMap();
+  $("trafficOn").addEventListener("click", () => setTraffic(!TRAFFIC_ON));
+  try { if (localStorage.getItem("sc-street-traffic")) setTraffic(true); } catch (e){}
   let tm = 0; $("q").addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(suggest, 120); });
   $("q").addEventListener("keydown", e => { if (e.key === "Enter"){ const b = $("sugg").querySelector("button"); if (b) b.click(); } });
   load();
