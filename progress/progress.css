@@ -13,6 +13,18 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
 .pg h3{margin:0 0 10px;font-size:14.5px;font-weight:600}.pg h3 span{font-weight:400;color:var(--sc-mute)}
 .pg .hd{display:flex;flex-direction:column;gap:4px}
+/* embed button on a card, the embed dialog, and the embed pages (/embed/<id>/) */
+.pg .hd .embb{order:2;align-self:flex-start;margin-top:4px;border:1px solid var(--sc-line);background:#fff;color:var(--sc-navy);font:600 12.5px var(--sc-font);border-radius:999px;padding:4px 11px;cursor:pointer}
+@media (min-width:700px){ .pg .hd{position:relative;padding-right:84px} .pg .hd .embb{position:absolute;right:0;top:-2px;margin:0} }
+.pg .hd .embb:hover{border-color:var(--sc-navy)}
+dialog.embd{border:0;border-radius:18px;padding:22px 24px;max-width:min(560px,calc(100vw - 32px));width:100%;box-shadow:0 20px 60px rgba(20,30,50,.25);font-family:var(--sc-font);color:var(--sc-ink)}
+dialog.embd::backdrop{background:rgba(20,30,50,.35)}
+dialog.embd h2{margin:0 0 6px;font-size:18px;font-weight:600}dialog.embd p{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--sc-ink2)}
+dialog.embd label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+dialog.embd textarea,dialog.embd input{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace;border:1px solid var(--sc-line);border-radius:10px;padding:10px;resize:vertical;color:var(--sc-ink)}
+dialog.embd .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+body.emb{background:#fff}body.emb main{padding:0;gap:0;max-width:none}body.emb .card{border:0;box-shadow:none;border-radius:0}
+body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-line);font-size:12px;line-height:17px;color:var(--sc-mute)}body.emb .embf a{color:var(--sc-navy);font-weight:600;text-decoration:none}
 .pg .cap{margin:0;font-size:13px;color:var(--sc-mute)}
 .pg .sub{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2)}.pg .sub b,.pg .call b{color:var(--sc-ink)}
 .pg .fine{margin:0;font-size:12.5px;line-height:18px;color:var(--sc-mute)}

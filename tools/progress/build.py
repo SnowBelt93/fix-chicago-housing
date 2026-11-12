@@ -138,9 +138,13 @@ def goal(title, text, label=None, url=None, none=False):
 
 def tiles(items, cols=4):
     return f'<section class="strip c{cols}">' + ''.join(f'<div class="card tile"><b>{b}</b><span>{s}</span></div>' for b, s in items) + '</section>'
-def card(title, cap, body, cls=''):
-    hd = f'<div class="hd"><h2>{title}</h2>' + (f'<p class="cap">{cap}</p>' if cap else '') + '</div>' if title else ''
-    return f'<section class="card pad {cls}">{hd}{body}</section>'
+EMB, PINFO = {}, {}   # embeddable cards (id -> section, title, html) and each section's dates and sources, for /embed/
+def card(title, cap, body, cls='', emb=None):
+    btn = f'<button type="button" class="embb" data-emb="{emb}" aria-label="Embed or link to this chart">Embed</button>' if emb else ''
+    hd = f'<div class="hd">{btn}<h2>{title}</h2>' + (f'<p class="cap">{cap}</p>' if cap else '') + '</div>' if title else ''
+    if emb: EMB[emb] = (emb.split('-')[0], title, f'<section class="card pad {cls}"><div class="hd"><h2>{title}</h2>' + (f'<p class="cap">{cap}</p>' if cap else '') + f'</div>{body}</section>')
+    idat = f' id="{emb}"' if emb else ''
+    return f'<section class="card pad {cls}"{idat}>{hd}{body}</section>'
 def key(items): return '<div class="key">' + ''.join(f'<span><i style="background: {c};{x}"></i>{t}</span>' for t, c, x in items) + '</div>'
 def meter(p): return f'<div class="meter" role="img" aria-label="{p} percent of the homes needed by now"><i style="width: {min(100, p)}%;"></i></div>'
 def table(head, rows, right=(), cls=''):
@@ -216,14 +220,29 @@ document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => {{ const
       + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
       + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; }};
   sel.addEventListener("change", show); show(); }})();
+/* Embed: copy an iframe or a link for this chart */
+document.querySelectorAll(".embb").forEach(b => b.addEventListener("click", () => {{
+  const id = b.dataset.emb, card = b.closest(".card"), src = location.origin + "/embed/" + id + "/", h = Math.max(320, Math.round(card.offsetHeight + 70));
+  let d = document.getElementById("embd"); if (!d) {{ d = document.createElement("dialog"); d.id = "embd"; d.className = "embd"; document.body.appendChild(d); }}
+  const code = '<iframe src="' + src + '" title="' + card.querySelector("h2").textContent.replace(/"/g, "&quot;") + ' (Shape Chicago)" width="100%" height="' + h + '" style="border:0;max-width:820px" loading="lazy"></iframe>';
+  d.innerHTML = '<h2>Embed this chart</h2><p>Free to use with credit to Shape Chicago. It updates itself when the numbers change.</p>'
+    + '<label for="embc">Embed code</label><textarea id="embc" rows="4" readonly></textarea><label for="embl">Link to this chart</label><input id="embl" readonly>'
+    + '<div class="row"><button type="button" class="sc-btn primary" id="embcp">Copy embed code</button><button type="button" class="sc-btn" id="emblc">Copy link</button><a class="sc-btn" href="' + src + '" target="_blank" rel="noopener">Preview</a><button type="button" class="sc-btn" id="embx">Close</button></div>'
+    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For reporters ›</a></p>';
+  d.querySelector("#embc").value = code; d.querySelector("#embl").value = location.origin + location.pathname + "#" + id;
+  const cp = (t, btn) => navigator.clipboard.writeText(t).then(() => {{ const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = o, 1400); }});
+  d.querySelector("#embcp").onclick = e => cp(code, e.target); d.querySelector("#emblc").onclick = e => cp(d.querySelector("#embl").value, e.target); d.querySelector("#embx").onclick = () => d.close();
+  d.showModal(); }}));
 document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; }});
 </script>
 </body>
 </html>
 '''
 def top(slug, name, h1, thru):
+    PINFO.setdefault(slug, {}).update(name=name, thru=thru)
     return f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> {name}</p><h1>{h1}</h1><p class="fine">{thru}</p></div>'
 def bottom(slug, note, src):
+    PINFO.setdefault(slug, {}).update(src=src)
     i = [s for s, _ in SECTIONS].index(slug); prv = SECTIONS[i - 1] if i else None; nxt = SECTIONS[i + 1] if i + 1 < len(SECTIONS) else None
     nav = '<nav class="pn" aria-label="More sections">' + (f'<a class="card" href="/progress/{prv[0]}/"><span>Previous</span><b>‹ {prv[1]}</b></a>' if prv else '<span></span>') + (f'<a class="card nx" href="/progress/{nxt[0]}/"><span>Next</span><b>{nxt[1]} ›</b></a>' if nxt else '') + '</nav>'
     return f'<p class="fine note">{note}</p>{nav}<p class="fine src"><b>Sources:</b> {src}</p>'
@@ -247,7 +266,7 @@ def homes():
     n25 = round((Y[2025]['homes'] - DEMO[2025]) / 10) * 10
     c1 = card('Homes permitted each year, and what was left after teardowns', 'The whole bar is homes permitted. The hatched cap is homes in buildings that got a demolition permit that year; the solid part is the gain.',
               yearchart(True, 230) + key([('Net gain', NAVY, ''), ('Homes in buildings torn down (estimate)', HATCH('#8a9099', '#fff'), ' border: 1px solid #c9ced6; box-sizing: border-box;'), ('2026 so far', HATCH(NAVY, '#9db9de'), '')])
-              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. Teardowns are down by {"more than half" if DEMO[2025] < 0.45 * DEMO[2013] else "about half" if DEMO[2025] < 0.6 * DEMO[2013] else "a third or more"} since 2013, when about {f(round(DEMO[2013] / 100) * 100)} homes were in torn-down buildings.</p>')
+              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. Teardowns are down by {"more than half" if DEMO[2025] < 0.45 * DEMO[2013] else "about half" if DEMO[2025] < 0.6 * DEMO[2013] else "a third or more"} since 2013, when about {f(round(DEMO[2013] / 100) * 100)} homes were in torn-down buildings.</p>', emb='homes-years')
     lostc = ('<section class="card pad" id="lost"><div class="hd"><h2>Other ways homes are lost or gained</h2><p class="cap">These are not in the net figure above: the records only let us count part of each.</p></div><div class="facts">'
              '<div><b>At least 525</b><span>buildings lost homes in a renovation since 2019, at least 688 homes in all. 374 became single-family homes; 331 had been two-flats</span></div>'
              '<div><b>At least 281</b><span>buildings gained homes in a renovation since 2019, at least 379 homes</span></div>'
@@ -261,7 +280,7 @@ def homes():
     r21, r22, r24 = Y[2021], Y[2022], Y[2024]; exp = round(100 * (r21['expired'] + r22['expired']) / (r21['homes'] + r22['homes']))
     c2 = card('A permit is not a finished home', 'Of the homes permitted each year, how many are finished today.',
               f'<div class="fin" role="img" aria-label="Share of each year\'s permitted homes that are finished today, 2019 to 2026">{rows}</div>' + key([('Finished', NAVY, ''), ('Still under way', '#9db9de', ''), ('Permit expired', '#c9ced6', '')])
-              + f'<p class="sub">Building takes years: <b>{round(100 * r22["finished"] / r22["homes"])}%</b> of the homes permitted in 2022 are done, and <b>{round(100 * r24["finished"] / r24["homes"])}%</b> of 2024’s. About {exp}% of the homes permitted in 2021 and 2022 had the permit expire before the city recorded them as finished.</p>')
+              + f'<p class="sub">Building takes years: <b>{round(100 * r22["finished"] / r22["homes"])}%</b> of the homes permitted in 2022 are done, and <b>{round(100 * r24["finished"] / r24["homes"])}%</b> of 2024’s. About {exp}% of the homes permitted in 2021 and 2022 had the permit expire before the city recorded them as finished.</p>', emb='homes-finished')
     BIN = [(6, NAVY, '6 or more'), (3, '#5f8fcc', '3–6'), (1, '#a9c3e6', '1–3'), (0.0001, '#d9e4f4', 'Under 1'), (-1, '#eceef1', 'None')]
     rate = {r[0]: r[3] for r in WR}; col = lambda w: next(c for t, c, _ in BIN if rate[w] >= t)
     raw = sorted(WR, key=lambda r: -r[1])
@@ -272,7 +291,7 @@ def homes():
               + key([(t, c, '') for _, c, t in BIN]) + '</div><div class="lists"><div><h3>Most homes permitted</h3>' + hbars([(f'Ward {r[0]}', r[1], f(r[1])) for r in raw[:6]])
               + '</div><div><h3>Most for its size <span>(per 1,000 homes)</span></h3>' + hbars([(f'Ward {r[0]}', r[3], f'{r[3]:.0f}') for r in WR[:6]])
               + f'</div><p class="call"><b>{LOW} of 50 wards</b> permitted less than 1 new home for every 1,000 they have. {len(ZERO)} permitted none{" (Wards " + ", ".join(map(str, ZERO)) + ")" if ZERO else ""}. The city as a whole: <b>{CITY:.1f}</b> per 1,000.</p></div></div>'
-              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
+              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>', emb='homes-wards')
     c4 = ('<section class="strip c2"><div class="card tile row"><b>580</b><span>coach houses and basement homes have cleared the city’s first step since citywide rules began this spring. Cleared is not built.</span></div>'
           '<a class="card tile row go" href="/tracker/"><span><b class="t">Every project, ward and zoning approval</b>Search the full list by address or ward</span><em>Open ›</em></a></section>')
     g = goal('The city has not set a citywide target for new homes', f'The pace on this page is our own yardstick: Chicago’s share of the region’s housing shortage, closed by 2041 ({f(goal_["close"])} homes a year). The nearest official plan is the 2024–2028 Housing and Economic Development Bond, which projects 600 to 1,000 affordable rental homes, 750 homes on empty lots in neighborhoods and 600 or more mixed-income homes every five years from a new city fund.', 'The bond plan', BOND, none=True)
@@ -305,7 +324,7 @@ def zoning():
     tb = table(['Year passed', 'Zoning changes for a new building', 'Permit within 12 months', 'Within 24 months', 'Homes permitted so far on those sites', 'Of those, finished'],
                [['2021', '42', '31%', '43%', '4,926', '4,142'], ['2022', '51', '20%', '35%', '2,073', '1,300'], ['2023', '57', '12%', '33%', '1,320', '374'], ['2024', '63', '35%', '46%', '1,327', '124'],
                 ['2025', '71', '45%', '<span class="tbd">too early to tell</span>', '721', '28'], ['2026', '57', '<span class="tbd">too early to tell</span>', '<span class="tbd">too early to tell</span>', '97', '0']], right=(1, 2, 3, 4, 5), cls='stack')
-    c1 = card('What followed each year’s votes', 'Zoning changes passed for a new residential building, by the year they passed: the share with a building permit within 12 months. Our copies of the applications start in 2021, so earlier years can’t be counted yet.', ch + tb)
+    c1 = card('What followed each year’s votes', 'Zoning changes passed for a new residential building, by the year they passed: the share with a building permit within 12 months. Our copies of the applications start in 2021, so earlier years can’t be counted yet.', ch + tb, emb='zoning-follow')
     c2 = card('This Council term, since May 2023', '787 zoning changes sorted so far by what the new zoning allows on the lot.',
               split([('More homes per lot', 468, NAVY), ('Same', 217, '#9db9de'), ('Fewer', 72, '#c98a8a'), ('Big-site plans', 30, '#c9ced6')])
               + '<p class="sub">385 more, a third of the term’s total, aren’t sorted yet because the before-and-after zoning couldn’t be read from the paperwork. “More homes per lot” compares what the zoning allows, not what was proposed.</p>')
@@ -379,7 +398,7 @@ def affordable():
               + key([(t, c, '') for _, c, t in BIN]) + '</div><div class="lists"><div><h3>Most homes on the list</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[:6]])
               + '</div><div><h3>Fewest</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[-6:]], maxv=rk[0][1])
               + '</div>' + (f'<p class="call">{zw} no building on the list. That is not the same as no affordable housing.</p>' if zw else '') + '</div></div>'
-              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
+              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>', emb='affordable-wards')
     c2 = card('Is the number growing?', '', f'<p class="sub">The city’s list cannot say. It gives each building’s address and number of homes but not the year it opened, and the city keeps only its current version (last updated {upd}), so there is no older copy to compare. We check it every day and will show the change when it moves.</p>')
     H = SRC.get('hud') or {}
     if '2025' in H:
@@ -477,7 +496,7 @@ def transit():
         thru_live = f'federal monthly count through {MON[mo - 1]} {yr}, checked every morning'
     ys = list(range(2015, 2026))
     c1 = card('Rides on CTA, Metra and Pace, millions a year', 'Every year is counted the old way, so the years compare fairly.',
-              bars([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], [f'’{str(y)[2:]}' for y in ys], h=190, aria='Rides on CTA, Metra and Pace in millions a year: 626 in 2015, 550 in 2019, 231 in 2020 and 381 in 2025.'))
+              bars([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], [f'’{str(y)[2:]}' for y in ys], h=190, aria='Rides on CTA, Metra and Pace in millions a year: 626 in 2015, 550 in 2019, 231 in 2020 and 381 in 2025.'), emb='transit-rides')
     st = tiles([('70%', 'of 2019 rides on CTA in 2025: buses 78%, the L 62%'), ('62%', 'of 2019 rides on Metra: 37.9 million in 2025, up 8% in a year'), ('67%', 'of 2019 rides on Pace buses: 16.4 million in 2025'), ytd_tile])
     rows = [[f'<b>{n}</b>', f'<span class="chip {c}">{stt}</span>', b, t, due, f'<a href="{u}" target="_blank" rel="noopener">{src}</a><br>{d}'] for n, b, stt, c, t, due, src, d, u in CTA_PROJ]
     c2 = card('CTA’s big projects', 'What is being built, what it costs and when it is due.', table(['Project', 'Status', 'Budget', 'Where it stands', 'Due', 'Source'], rows, cls='stack proj')
@@ -507,9 +526,9 @@ def streets():
     up = lambda a, b: 'up from' if a > b else ('down from' if a < b else 'the same as')
     h1 = f'{f(de["ytd"])} people have died in traffic this year through {day(dthru)}, {up(de["ytd"], de["ytd_prev"])} {f(de["ytd_prev"])} by that date in {int(yr) - 1}.'
     c1 = card('Traffic deaths each year', 'The city’s official count.', bars([de['years'][y] for y in dys], [f'’{y[2:]}' for y in dys], partial=True, plabel=f'to {day(dthru)}', h=170,
-              aria=f'Traffic deaths each year: {de["years"]["2019"]} in 2019, {de["years"].get("2021", 0)} in 2021, {de["years"].get(full, 0)} in {full} and {de["ytd"]} through {day(dthru, True)}.'))
+              aria=f'Traffic deaths each year: {de["years"]["2019"]} in 2019, {de["years"].get("2021", 0)} in 2021, {de["years"].get(full, 0)} in {full} and {de["ytd"]} through {day(dthru, True)}.'), emb='streets-deaths')
     c2 = card('People seriously hurt in crashes each year', 'From police crash reports.', bars([se['years'][y] for y in sys_], [f'’{y[2:]}' for y in sys_], partial=True, plabel=f'to {day(sthru)}', short=lambda v: f'{v / 1000:.1f}k', h=170,
-              aria=f'People seriously hurt in crashes each year: {f(se["years"]["2019"])} in 2019, {f(se["years"].get(full, 0))} in {full} and {f(se["ytd"])} through {day(sthru, True)}.'))
+              aria=f'People seriously hurt in crashes each year: {f(se["years"]["2019"])} in 2019, {f(se["years"].get(full, 0))} in {full} and {f(se["ytd"])} through {day(sthru, True)}.'), emb='streets-injuries')
     walk = '. 36 were people walking' if full == '2025' else ''   # from the Nov. 9 read of the 2025 list
     fewest = full == min(dys[:-1], key=lambda y: de['years'][y])
     sh = pw.get('share_over_7_weeks', 0.1); one_in = round(1 / sh) if sh else 0
@@ -762,6 +781,18 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
 .pg h3{margin:0 0 10px;font-size:14.5px;font-weight:600}.pg h3 span{font-weight:400;color:var(--sc-mute)}
 .pg .hd{display:flex;flex-direction:column;gap:4px}
+/* embed button on a card, the embed dialog, and the embed pages (/embed/<id>/) */
+.pg .hd .embb{order:2;align-self:flex-start;margin-top:4px;border:1px solid var(--sc-line);background:#fff;color:var(--sc-navy);font:600 12.5px var(--sc-font);border-radius:999px;padding:4px 11px;cursor:pointer}
+@media (min-width:700px){ .pg .hd{position:relative;padding-right:84px} .pg .hd .embb{position:absolute;right:0;top:-2px;margin:0} }
+.pg .hd .embb:hover{border-color:var(--sc-navy)}
+dialog.embd{border:0;border-radius:18px;padding:22px 24px;max-width:min(560px,calc(100vw - 32px));width:100%;box-shadow:0 20px 60px rgba(20,30,50,.25);font-family:var(--sc-font);color:var(--sc-ink)}
+dialog.embd::backdrop{background:rgba(20,30,50,.35)}
+dialog.embd h2{margin:0 0 6px;font-size:18px;font-weight:600}dialog.embd p{margin:0 0 12px;font-size:14px;line-height:20px;color:var(--sc-ink2)}
+dialog.embd label{display:block;font-size:13px;font-weight:600;margin:12px 0 6px}
+dialog.embd textarea,dialog.embd input{width:100%;font:13px/1.4 ui-monospace,Menlo,monospace;border:1px solid var(--sc-line);border-radius:10px;padding:10px;resize:vertical;color:var(--sc-ink)}
+dialog.embd .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+body.emb{background:#fff}body.emb main{padding:0;gap:0;max-width:none}body.emb .card{border:0;box-shadow:none;border-radius:0}
+body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-line);font-size:12px;line-height:17px;color:var(--sc-mute)}body.emb .embf a{color:var(--sc-navy);font-weight:600;text-decoration:none}
 .pg .cap{margin:0;font-size:13px;color:var(--sc-mute)}
 .pg .sub{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2)}.pg .sub b,.pg .call b{color:var(--sc-ink)}
 .pg .fine{margin:0;font-size:12.5px;line-height:18px;color:var(--sc-mute)}
@@ -908,12 +939,95 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 
 MOVED_ROOM = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Zoning · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/zoning/#room"><link rel="canonical" href="/progress/zoning/"></head><body><p><a href="/progress/zoning/#room">Room to grow is now part of Zoning.</a></p></body></html>\n'
 MOVED = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Homes added · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/homes/#lost"><link rel="canonical" href="/progress/homes/"></head><body><p><a href="/progress/homes/#lost">Homes lost is now part of Homes added.</a></p></body></html>\n'
+SITE = 'https://shape-chicago.hd9bt6x5mn.workers.dev'   # launch to-do: the new domain
+def write_embeds(pages):
+    """/embed/<id>/: one card alone, for news sites to put in an iframe; /press/: the list, with how to cite."""
+    script = re.search(r'<script>\n/\* "In N days".*?</script>', pages['homes'], re.S).group(0)
+    E = os.path.join(ROOT, 'embed'); os.makedirs(E, exist_ok=True)
+    rows = ''
+    for eid, (sec, title, html) in EMB.items():
+        P = PINFO.get(sec, {}); name = P.get('name', sec.title())
+        thru = re.sub('<[^>]+>', '', P.get('thru', '')); src = P.get('src', '')
+        doc = f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{esc(re.sub('<[^>]+>', '', title))} · Shape Chicago</title>
+<meta name="robots" content="noindex"><link rel="canonical" href="/progress/{sec}/#{eid}"><base target="_blank">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css"><link rel="stylesheet" href="/progress/progress.css">
+</head>
+<body class="pg emb">
+<main>
+{html}
+<p class="embf"><a href="/progress/{sec}/#{eid}">Shape Chicago · Progress › {name}</a> · {esc(thru)}<br>Sources: {re.sub('<[^>]+>', '', src)} Not affiliated with the City of Chicago.</p>
+</main>
+{script}
+<script>/* tell the page holding this iframe how tall it is (optional resize script on /press/) */
+(function(){{ const send = () => parent.postMessage({{scEmbed: "{eid}", h: document.documentElement.scrollHeight}}, "*"); addEventListener("load", send); new ResizeObserver(send).observe(document.body); }})();</script>
+</body>
+</html>
+'''
+        os.makedirs(os.path.join(E, eid), exist_ok=True); open(os.path.join(E, eid, 'index.html'), 'w').write(doc)
+        rows += (f'<li><div><b>{title}</b><span>Progress › {name}</span></div><span class="acts"><a class="sc-btn" href="/embed/{eid}/" target="_blank" rel="noopener">Preview</a>'
+                 f'<button type="button" class="sc-btn primary" data-code="{esc(f"<iframe src=\"{SITE}/embed/{eid}/\" title=\"{re.sub("<[^>]+>", "", title)} (Shape Chicago)\" width=\"100%\" height=\"520\" style=\"border:0;max-width:820px\" loading=\"lazy\"></iframe>")}">Copy embed code</button></span></li>')
+    return rows
+
+def press(rows):
+    hd = NAV_RE.sub(lambda m: nav_for('/press/'), HEADER, count=1)
+    doc = f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For Reporters · Shape Chicago</title>
+<meta name="description" content="Charts on Chicago housing, zoning, transit and streets that you can embed in a story, free with credit, plus how we count.">
+<meta property="og:title" content="For reporters · Shape Chicago"><meta property="og:image" content="{SITE}/shape/art/og-progress.jpg"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css"><link rel="stylesheet" href="/progress/progress.css">
+<style>
+.pg main{{max-width:880px}}
+.pr ul{{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}}
+.pr li{{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--sc-line)}}.pr li:first-child{{border-top:0}}
+.pr li div{{display:flex;flex-direction:column;gap:2px;min-width:0}}.pr li b{{font-size:15px;font-weight:600}}.pr li div span{{font-size:13px;color:var(--sc-mute)}}
+.pr .acts{{display:flex;gap:8px;flex:none}}
+@media (max-width:620px){{ .pr li{{flex-direction:column;align-items:flex-start}} }}
+.pr code{{font:13px ui-monospace,Menlo,monospace;background:#f3f5f7;border-radius:6px;padding:2px 6px}}
+.pr pre{{margin:0;font:12.5px/1.5 ui-monospace,Menlo,monospace;background:#f3f5f7;border-radius:10px;padding:12px;white-space:pre-wrap;word-break:break-all}}
+</style>
+</head>
+<body class="pg">
+{hd}
+<main class="pr">
+<div class="top"><h1>For reporters</h1><p class="lede">Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.</p></div>
+<section class="card pad"><div class="hd"><h2>Using our charts and numbers</h2></div>
+<p class="sub">Our charts, tables and the figures we calculate are free to use, quote and embed. Please credit <b>Shape Chicago</b> and link to the page the number came from. The underlying data belongs to the agencies that publish it; each chart names them.</p>
+<p class="sub">Shape Chicago is a fan-made project. It is not affiliated with the City of Chicago, CTA, Metra or Pace, and it takes no side in elections. Estimates are labeled as estimates, and each section ends with how we count.</p>
+<p class="sub">Spotted something wrong? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Send a correction</a>. We fix errors and say what changed.</p></section>
+<section class="card pad"><div class="hd"><h2>Charts you can embed</h2><p class="cap">Paste the code into your story’s HTML. Every chart page on Progress also has an Embed button.</p></div><ul>{rows}</ul></section>
+<section class="card pad"><div class="hd"><h2>Optional: let the chart set its own height</h2><p class="cap">Add this once to the page, after the iframes, if your site allows scripts.</p></div>
+<pre>&lt;script&gt;addEventListener("message", e =&gt; {{ if (!e.data || !e.data.scEmbed) return; document.querySelectorAll('iframe[src*="/embed/' + e.data.scEmbed + '/"]').forEach(f =&gt; f.style.height = e.data.h + "px"); }});&lt;/script&gt;</pre></section>
+<section class="card pad"><div class="hd"><h2>How the simulators work</h2></div>
+<p class="sub">The housing, transit, budget and pensions simulators are estimates, not forecasts. Each lists its sources and every assumption it makes: open <b>Sources</b> in the header of any simulator. Plans that people share are on <a href="/plans/">Plans people made</a>, with a summary of the most common choices on <a href="/community/">What people picked</a>.</p></section>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
+<script src="/shape/shape.js"></script>
+<script>
+document.querySelectorAll("[data-code]").forEach(b => b.addEventListener("click", () => navigator.clipboard.writeText(b.dataset.code.replace("{SITE}", location.origin)).then(() => {{ const o = b.textContent; b.textContent = "Copied"; setTimeout(() => b.textContent = o, 1400); }})));
+</script>
+</body>
+</html>
+'''
+    os.makedirs(os.path.join(ROOT, 'press'), exist_ok=True); open(os.path.join(ROOT, 'press', 'index.html'), 'w').write(doc)
+
 def main():
     pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': MOVED_ROOM, 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield()}
     for slug, html in pages.items():
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, 'index.html'), 'w').write(html)
     open(os.path.join(OUT, 'progress.css'), 'w').write(CSS)
+    press(write_embeds(pages))
     print('progress:', len(pages), 'pages;', f(ytd['homes']), 'homes through', THRU, f'({pct}% of pace)')
 
 if __name__ == '__main__':

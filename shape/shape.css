@@ -26,6 +26,7 @@
 .sc-fan{font-size:12px;color:var(--sc-faint);margin-right:6px;white-space:nowrap}
 .sc-btn{font:inherit;font-family:var(--sc-font);font-size:14px;font-weight:600;min-height:38px;padding:0 16px;border-radius:20px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink);cursor:pointer;white-space:nowrap}
 .sc-btn:hover{background:var(--sc-seg)}
+a.sc-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:var(--sc-ink);box-sizing:border-box}a.sc-btn.primary{color:#fff}
 .sc-btn.primary{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
 .sc-btn.primary:hover{background:var(--sc-navy2)}
 @media (max-width:1180px){ .sc-fan{display:none} }

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What followed each year’s votes · Shape Chicago</title>
+<meta name="robots" content="noindex"><link rel="canonical" href="/progress/zoning/#zoning-follow"><base target="_blank">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css"><link rel="stylesheet" href="/progress/progress.css">
+</head>
+<body class="pg emb">
+<main>
+<section class="card pad "><div class="hd"><h2>What followed each year’s votes</h2><p class="cap">Zoning changes passed for a new residential building, by the year they passed: the share with a building permit within 12 months. Our copies of the applications start in 2021, so earlier years can’t be counted yet.</p></div><div class="chart" role="img" aria-label="Share of zoning changes for a new building that had a building permit within 12 months, by the year the change passed: 31% for 2021, 20% for 2022, 12% for 2023, 35% for 2024 and 45% for 2025." style="--n: 5; --ch: 190px;"><div class="plot"><div class="bc"><span class="bv"><span class="vl">31%</span><span class="vs">31%</span></span><i style="height: calc(var(--ch) * 0.5167); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">20%</span><span class="vs">20%</span></span><i style="height: calc(var(--ch) * 0.3333); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">12%</span><span class="vs">12%</span></span><i style="height: calc(var(--ch) * 0.2000); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">35%</span><span class="vs">35%</span></span><i style="height: calc(var(--ch) * 0.5833); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">45%</span><span class="vs">45%</span></span><i style="height: calc(var(--ch) * 0.7500); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div></div><div class="xl"><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025</span></div></div><div class="tw"><table class="stack"><thead><tr><th>Year passed</th><th class=n>Zoning changes for a new building</th><th class=n>Permit within 12 months</th><th class=n>Within 24 months</th><th class=n>Homes permitted so far on those sites</th><th class=n>Of those, finished</th></tr></thead><tbody><tr><td data-l="Year passed">2021</td><td class=n data-l="Zoning changes for a new building">42</td><td class=n data-l="Permit within 12 months">31%</td><td class=n data-l="Within 24 months">43%</td><td class=n data-l="Homes permitted so far on those sites">4,926</td><td class=n data-l="Of those, finished">4,142</td></tr><tr><td data-l="Year passed">2022</td><td class=n data-l="Zoning changes for a new building">51</td><td class=n data-l="Permit within 12 months">20%</td><td class=n data-l="Within 24 months">35%</td><td class=n data-l="Homes permitted so far on those sites">2,073</td><td class=n data-l="Of those, finished">1,300</td></tr><tr><td data-l="Year passed">2023</td><td class=n data-l="Zoning changes for a new building">57</td><td class=n data-l="Permit within 12 months">12%</td><td class=n data-l="Within 24 months">33%</td><td class=n data-l="Homes permitted so far on those sites">1,320</td><td class=n data-l="Of those, finished">374</td></tr><tr><td data-l="Year passed">2024</td><td class=n data-l="Zoning changes for a new building">63</td><td class=n data-l="Permit within 12 months">35%</td><td class=n data-l="Within 24 months">46%</td><td class=n data-l="Homes permitted so far on those sites">1,327</td><td class=n data-l="Of those, finished">124</td></tr><tr><td data-l="Year passed">2025</td><td class=n data-l="Zoning changes for a new building">71</td><td class=n data-l="Permit within 12 months">45%</td><td class=n data-l="Within 24 months"><span class="tbd">too early to tell</span></td><td class=n data-l="Homes permitted so far on those sites">721</td><td class=n data-l="Of those, finished">28</td></tr><tr><td data-l="Year passed">2026</td><td class=n data-l="Zoning changes for a new building">57</td><td class=n data-l="Permit within 12 months"><span class="tbd">too early to tell</span></td><td class=n data-l="Within 24 months"><span class="tbd">too early to tell</span></td><td class=n data-l="Homes permitted so far on those sites">97</td><td class=n data-l="Of those, finished">0</td></tr></tbody></table></div></section>
+<p class="embf"><a href="/progress/zoning/#zoning-follow">Shape Chicago · Progress › Zoning</a> · Permits through Nov. 6, 2026 · zoning votes through Oct. 14 · zoning map and Assessor lots, 2026 · checked Nov. 9, 2026<br>Sources: City Clerk legislation records and zoning applications; Chicago zoning map (the ordinance number and date on each district); City of Chicago building permits. Chicago zoning map; Chicago Zoning Ordinance §17-2-0303 and downtown floor-area rules; Cook County Assessor parcels and characteristics; City of Chicago building footprints. Not affiliated with the City of Chicago.</p>
+</main>
+<script>
+/* "In N days" on the decisions coming up */
+/* ward maps: point at or tap a ward (or a ward in the lists beside it) */
+document.querySelectorAll(".mapr").forEach(box => {
+  const info = box.querySelector(".winfo"), svg = box.querySelector(".wmap"); if (!svg) return; let pinned = null;
+  const show = w => { const p = svg.querySelector('path[data-w="' + w + '"]'); if (!p) return;
+    svg.querySelectorAll("path.on").forEach(e => e.classList.remove("on")); box.querySelectorAll(".hb .on").forEach(e => e.classList.remove("on"));
+    p.classList.add("on"); svg.appendChild(p); box.querySelectorAll('.hb [data-w="' + w + '"]').forEach(e => e.classList.add("on"));
+    info.innerHTML = "<b>Ward " + w + "</b> · " + p.dataset.t + ' · <a href="/wards/#' + w + '">Ward ' + w + "’s record ›</a>"; };
+  const over = e => { const t = e.target.closest("[data-w]"); if (t && pinned === null) show(t.dataset.w); };
+  const pick = e => { const t = e.target.closest("[data-w]"); if (!t || e.target.closest("a")) return; pinned = t.dataset.w; show(pinned); };
+  box.addEventListener("pointerover", over); box.addEventListener("focusin", over); box.addEventListener("click", pick);
+  box.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { pick(e); if (e.target.matches("path")) e.preventDefault(); } });
+});
+document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => { const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
+  e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; });
+(function(){ const sel = document.getElementById("zipSel"), out = document.getElementById("zipOut"); if (!sel) return;
+  const D = JSON.parse(document.getElementById("zipData").textContent), usd = v => v == null ? "–" : "$" + v.toLocaleString("en-US"), BR = ["Studio", "One bedroom", "Two bedrooms", "Three bedrooms", "Four bedrooms"];
+  const show = () => { const d = D[sel.value]; if (!d) return; const up = Math.round(100 * (d.r[2] / d.r19 - 1));
+    out.innerHTML = '<div class="facts">' + d.r.map((v, i) => "<div><b>" + usd(v) + "</b><span>" + BR[i] + ", fiscal 2027</span></div>").join("") + "</div>"
+      + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
+      + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; };
+  sel.addEventListener("change", show); show(); })();
+/* Embed: copy an iframe or a link for this chart */
+document.querySelectorAll(".embb").forEach(b => b.addEventListener("click", () => {
+  const id = b.dataset.emb, card = b.closest(".card"), src = location.origin + "/embed/" + id + "/", h = Math.max(320, Math.round(card.offsetHeight + 70));
+  let d = document.getElementById("embd"); if (!d) { d = document.createElement("dialog"); d.id = "embd"; d.className = "embd"; document.body.appendChild(d); }
+  const code = '<iframe src="' + src + '" title="' + card.querySelector("h2").textContent.replace(/"/g, "&quot;") + ' (Shape Chicago)" width="100%" height="' + h + '" style="border:0;max-width:820px" loading="lazy"></iframe>';
+  d.innerHTML = '<h2>Embed this chart</h2><p>Free to use with credit to Shape Chicago. It updates itself when the numbers change.</p>'
+    + '<label for="embc">Embed code</label><textarea id="embc" rows="4" readonly></textarea><label for="embl">Link to this chart</label><input id="embl" readonly>'
+    + '<div class="row"><button type="button" class="sc-btn primary" id="embcp">Copy embed code</button><button type="button" class="sc-btn" id="emblc">Copy link</button><a class="sc-btn" href="' + src + '" target="_blank" rel="noopener">Preview</a><button type="button" class="sc-btn" id="embx">Close</button></div>'
+    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For reporters ›</a></p>';
+  d.querySelector("#embc").value = code; d.querySelector("#embl").value = location.origin + location.pathname + "#" + id;
+  const cp = (t, btn) => navigator.clipboard.writeText(t).then(() => { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = o, 1400); });
+  d.querySelector("#embcp").onclick = e => cp(code, e.target); d.querySelector("#emblc").onclick = e => cp(d.querySelector("#embl").value, e.target); d.querySelector("#embx").onclick = () => d.close();
+  d.showModal(); }));
+document.querySelectorAll("[data-until]").forEach(e => { const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; });
+</script>
+<script>/* tell the page holding this iframe how tall it is (optional resize script on /press/) */
+(function(){ const send = () => parent.postMessage({scEmbed: "zoning-follow", h: document.documentElement.scrollHeight}, "*"); addEventListener("load", send); new ResizeObserver(send).observe(document.body); })();</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rides on CTA, Metra and Pace, millions a year · Shape Chicago</title>
+<meta name="robots" content="noindex"><link rel="canonical" href="/progress/transit/#transit-rides"><base target="_blank">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css"><link rel="stylesheet" href="/progress/progress.css">
+</head>
+<body class="pg emb">
+<main>
+<section class="card pad "><div class="hd"><h2>Rides on CTA, Metra and Pace, millions a year</h2><p class="cap">Every year is counted the old way, so the years compare fairly.</p></div><div class="chart" role="img" aria-label="Rides on CTA, Metra and Pace in millions a year: 626 in 2015, 550 in 2019, 231 in 2020 and 381 in 2025." style="--n: 11; --ch: 190px;"><div class="plot"><div class="bc"><span class="bv"><span class="vl">626</span><span class="vs">626</span></span><i style="height: calc(var(--ch) * 0.8929); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">605</span><span class="vs">605</span></span><i style="height: calc(var(--ch) * 0.8629); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">586</span><span class="vs">586</span></span><i style="height: calc(var(--ch) * 0.8358); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">571</span><span class="vs">571</span></span><i style="height: calc(var(--ch) * 0.8144); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">550</span><span class="vs">550</span></span><i style="height: calc(var(--ch) * 0.7845); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">231</span><span class="vs">231</span></span><i style="height: calc(var(--ch) * 0.3295); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">226</span><span class="vs">226</span></span><i style="height: calc(var(--ch) * 0.3223); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">285</span><span class="vs">285</span></span><i style="height: calc(var(--ch) * 0.4065); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">331</span><span class="vs">331</span></span><i style="height: calc(var(--ch) * 0.4721); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">367</span><span class="vs">367</span></span><i style="height: calc(var(--ch) * 0.5234); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div><div class="bc"><span class="bv"><span class="vl">381</span><span class="vs">381</span></span><i style="height: calc(var(--ch) * 0.5434); background: #2b5da0; border-radius: 3px 3px 0 0;"></i></div></div><div class="xl"><span>’15</span><span>’16</span><span>’17</span><span>’18</span><span>’19</span><span>’20</span><span>’21</span><span>’22</span><span>’23</span><span>’24</span><span>’25</span></div></div></section>
+<p class="embf"><a href="/progress/transit/#transit-rides">Shape Chicago · Progress › Transit</a> · Rides: federal monthly count through Sept. 2026, checked every morning · yearly totals through 2025 · projects as of June to Aug. 2026 · checked Nov. 9, 2026<br>Sources: Federal Transit Administration, National Transit Database, Complete Monthly Ridership; CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026); NITA Report on Project Management Oversight (June 2026); NITA Act summary (June 2026). Not affiliated with the City of Chicago.</p>
+</main>
+<script>
+/* "In N days" on the decisions coming up */
+/* ward maps: point at or tap a ward (or a ward in the lists beside it) */
+document.querySelectorAll(".mapr").forEach(box => {
+  const info = box.querySelector(".winfo"), svg = box.querySelector(".wmap"); if (!svg) return; let pinned = null;
+  const show = w => { const p = svg.querySelector('path[data-w="' + w + '"]'); if (!p) return;
+    svg.querySelectorAll("path.on").forEach(e => e.classList.remove("on")); box.querySelectorAll(".hb .on").forEach(e => e.classList.remove("on"));
+    p.classList.add("on"); svg.appendChild(p); box.querySelectorAll('.hb [data-w="' + w + '"]').forEach(e => e.classList.add("on"));
+    info.innerHTML = "<b>Ward " + w + "</b> · " + p.dataset.t + ' · <a href="/wards/#' + w + '">Ward ' + w + "’s record ›</a>"; };
+  const over = e => { const t = e.target.closest("[data-w]"); if (t && pinned === null) show(t.dataset.w); };
+  const pick = e => { const t = e.target.closest("[data-w]"); if (!t || e.target.closest("a")) return; pinned = t.dataset.w; show(pinned); };
+  box.addEventListener("pointerover", over); box.addEventListener("focusin", over); box.addEventListener("click", pick);
+  box.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { pick(e); if (e.target.matches("path")) e.preventDefault(); } });
+});
+document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => { const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
+  e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; });
+(function(){ const sel = document.getElementById("zipSel"), out = document.getElementById("zipOut"); if (!sel) return;
+  const D = JSON.parse(document.getElementById("zipData").textContent), usd = v => v == null ? "–" : "$" + v.toLocaleString("en-US"), BR = ["Studio", "One bedroom", "Two bedrooms", "Three bedrooms", "Four bedrooms"];
+  const show = () => { const d = D[sel.value]; if (!d) return; const up = Math.round(100 * (d.r[2] / d.r19 - 1));
+    out.innerHTML = '<div class="facts">' + d.r.map((v, i) => "<div><b>" + usd(v) + "</b><span>" + BR[i] + ", fiscal 2027</span></div>").join("") + "</div>"
+      + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
+      + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; };
+  sel.addEventListener("change", show); show(); })();
+/* Embed: copy an iframe or a link for this chart */
+document.querySelectorAll(".embb").forEach(b => b.addEventListener("click", () => {
+  const id = b.dataset.emb, card = b.closest(".card"), src = location.origin + "/embed/" + id + "/", h = Math.max(320, Math.round(card.offsetHeight + 70));
+  let d = document.getElementById("embd"); if (!d) { d = document.createElement("dialog"); d.id = "embd"; d.className = "embd"; document.body.appendChild(d); }
+  const code = '<iframe src="' + src + '" title="' + card.querySelector("h2").textContent.replace(/"/g, "&quot;") + ' (Shape Chicago)" width="100%" height="' + h + '" style="border:0;max-width:820px" loading="lazy"></iframe>';
+  d.innerHTML = '<h2>Embed this chart</h2><p>Free to use with credit to Shape Chicago. It updates itself when the numbers change.</p>'
+    + '<label for="embc">Embed code</label><textarea id="embc" rows="4" readonly></textarea><label for="embl">Link to this chart</label><input id="embl" readonly>'
+    + '<div class="row"><button type="button" class="sc-btn primary" id="embcp">Copy embed code</button><button type="button" class="sc-btn" id="emblc">Copy link</button><a class="sc-btn" href="' + src + '" target="_blank" rel="noopener">Preview</a><button type="button" class="sc-btn" id="embx">Close</button></div>'
+    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For reporters ›</a></p>';
+  d.querySelector("#embc").value = code; d.querySelector("#embl").value = location.origin + location.pathname + "#" + id;
+  const cp = (t, btn) => navigator.clipboard.writeText(t).then(() => { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = o, 1400); });
+  d.querySelector("#embcp").onclick = e => cp(code, e.target); d.querySelector("#emblc").onclick = e => cp(d.querySelector("#embl").value, e.target); d.querySelector("#embx").onclick = () => d.close();
+  d.showModal(); }));
+document.querySelectorAll("[data-until]").forEach(e => { const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; });
+</script>
+<script>/* tell the page holding this iframe how tall it is (optional resize script on /press/) */
+(function(){ const send = () => parent.postMessage({scEmbed: "transit-rides", h: document.documentElement.scrollHeight}, "*"); addEventListener("load", send); new ResizeObserver(send).observe(document.body); })();</script>
+</body>
+</html>
