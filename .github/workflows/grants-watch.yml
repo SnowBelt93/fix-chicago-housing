@@ -1,0 +1,25 @@
+# Weekly: has any program page the grants finder cites changed? (tools/grants/watch.py)
+name: Grants watch
+on:
+  workflow_dispatch:
+  schedule: [{cron: '17 13 * * 1'}]
+  push:
+    branches: [main]
+    paths: ['tools/grants/**', '.github/workflows/grants-watch.yml']
+permissions:
+  contents: write
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Check pages
+        run: python3 tools/grants/watch.py
+      - name: Commit
+        run: |
+          git config user.name "github-actions"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/raw/grants
+          git commit -m "Grants watch" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs origin main && git push origin HEAD:main && exit 0; git rebase --abort 2>/dev/null || true; sleep $((i*10)); done; exit 1

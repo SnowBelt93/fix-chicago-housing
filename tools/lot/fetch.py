@@ -286,7 +286,7 @@ def hudlim():
 
 def amen():
     """Places the city's tax-credit plan counts as amenities (full-service grocery, health care, schools, parks), from
-    OpenStreetMap (ODbL: credit OpenStreetMap contributors). Only the kind, a name of the business or place and the point."""
+    OpenStreetMap (ODbL: credit OpenStreetMap contributors). Only the kind and the point."""
     s, w, n, e = 41.64, -87.95, 42.03, -87.52
     q = f"""[out:json][timeout:600];(
       nwr["shop"="supermarket"]({s},{w},{n},{e});
@@ -304,7 +304,7 @@ def amen():
         if 'lat' not in c: continue
         k = ('grocery' if t.get('shop') == 'supermarket' else 'school' if t.get('amenity') == 'school' else 'park' if t.get('leisure') == 'park'
              else 'health')
-        pts.append([k, round(c['lon'], 5), round(c['lat'], 5), (t.get('name') or '')[:60]])
+        pts.append([k, round(c['lon'], 5), round(c['lat'], 5)])   # no names: a doctor's office can carry the doctor's own name
     with gzip.open(os.path.join(OUT, 'amen.json.gz'), 'wt') as fh: json.dump(pts, fh)
     LOG['amen'] = {k: sum(1 for p in pts if p[0] == k) for k in ('grocery', 'health', 'school', 'park')}
 
