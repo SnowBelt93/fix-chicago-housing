@@ -40,6 +40,7 @@ h1{font-size:25px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:
 .sec h2{margin:18px 0 10px}
 .cards2{display:grid;grid-template-columns:1fr;gap:8px}
 .c2{border:1px solid var(--sc-line);border-radius:12px;padding:10px 12px}
+.rl{display:grid;gap:8px}.rl .c2 b{display:block;margin-bottom:2px}.rl .c2 span{font-size:14px;line-height:1.5;color:var(--sc-ink2)}.rl .c2 a{white-space:nowrap}
 .c2 b{display:block;font-size:14.5px;font-weight:600;margin-bottom:2px}
 .c2 span{font-size:13px;color:var(--sc-ink2);line-height:1.45;display:block}
 .uses{display:grid;grid-template-columns:1fr;border:1px solid var(--sc-line);border-radius:12px;overflow:hidden}
@@ -405,7 +406,7 @@ function show(T, k, fly){
   $("out").innerHTML = `<div class="res">
     <p class="addr">${esc(addrTxt)}</p>
     <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}</p>
-    <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sBuild">Build more</a><a href="#sBiz">Businesses</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print</button></nav>
+    <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sRules">Rules</a><a href="#sBuild">Build more</a><a href="#sPrice">Prices</a><a href="#sBiz">Businesses</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print</button></nav>
     <section id="sOver" class="sec">
     ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${/^(RS|RT)/.test(I.z) ? "#16324f" : "#fff"}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
     <div class="big"><div class="n">${bigN}</div><div class="t">${bigT}</div></div>
@@ -418,6 +419,7 @@ function show(T, k, fly){
       ${yr ? `<div><b>${yr}</b><span>Built</span></div>` : ""}
     </div>
     </section>
+    <section id="sRules" class="sec"><h2>Rules that apply here</h2><div class="rl" id="rules"><p class="how">Checking…</p></div></section>
     <section id="sBuild" class="sec"><h2>Build more homes here</h2>
       <div class="cards2">
         <div class="c2"><b>${I.pd ? "Set by the planned development" : I.nohomes ? "No homes allowed" : now !== null && allowed > now ? `Room for ${allowed - now} more ${allowed - now === 1 ? "home" : "homes"}` : "No extra homes under today's rules"}</b><span>${I.pd || I.nohomes || !(now !== null && allowed > now) ? "Needs a zoning change." : "No zoning change needed."}</span></div>
@@ -427,6 +429,7 @@ function show(T, k, fly){
       </div>
       ${opts.length ? `<h3>What would change it</h3><div class="opts">${opts.join("")}</div>` : ""}
     </section>
+    <section id="sPrice" class="sec"><h2>What sells nearby</h2><div id="prices"><p class="how">Loading…</p></div></section>
     <section id="sBiz" class="sec"><h2>Businesses allowed here</h2>${bizHtml(I)}</section>
     <section id="sNext" class="sec"><h2>Next steps</h2>
       <div id="nAld" class="ald"></div>
@@ -445,13 +448,16 @@ function show(T, k, fly){
       </div>
     </section>
   </div>`;
-  $("srcBtn").onclick = () => { const d = $("infoDlg"); d.innerHTML = `<div class="sc-ibody"><button type="button" class="sc-btn sc-x" autofocus onclick="this.closest('dialog').close()">Close</button><h2>Sources and limits</h2><p>A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, lot width, landmark districts, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked. The 3D shape assumes a ${lotDims(lot)[1]}-foot-deep lot centered on the building. Lot size: ${esc(lotNote)}. Homes now: ${esc(nowNote)}.${pin ? " PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") + "." : ""}</p><p>Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a>, <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, <a href="${CODE_USE}" target="_blank" rel="noopener">use table §17-3-0207</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a> and <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">buildings</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">parking rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>, city <a href="https://data.cityofchicago.org/d/ydr8-5enu" target="_blank" rel="noopener">permits</a> and <a href="https://data.cityofchicago.org/d/eejr-xtfb" target="_blank" rel="noopener">TIF districts</a>. Coach houses can be costly: one in Wicker Park cost nearly $700,000 (<a href="https://chicago.suntimes.com/real-estate/2024/07/06/housing-advocates-support-expansion-chicago-adu-program-building-costs-high" target="_blank" rel="noopener">Sun-Times</a>); see <a href="https://help.chicagocityscape.com/adufunding" target="_blank" rel="noopener">Chicago Cityscape's ADU funding guide</a>.</p></div>`; d.showModal(); };
+  $("srcBtn").onclick = () => { const d = $("infoDlg"); d.innerHTML = `<div class="sc-ibody"><button type="button" class="sc-btn sc-x" autofocus onclick="this.closest('dialog').close()">Close</button><h2>Sources and limits</h2><p>A quick check, not legal advice. It uses the lot area per home, floor area and height rules only. Setbacks, lot width, special exceptions, the RS-3 two-flat rule and pending zoning changes aren't checked. The 3D shape assumes a ${lotDims(lot)[1]}-foot-deep lot centered on the building. Lot size: ${esc(lotNote)}. Homes now: ${esc(nowNote)}.${pin ? " PIN " + pin.replace(/^(\d\d)(\d\d)(\d\d\d)(\d\d\d)(\d{4})$/, "$1-$2-$3-$4-$5") + "." : ""}</p><p>Sources: <a href="https://data.cityofchicago.org/d/dj47-wfun" target="_blank" rel="noopener">zoning map</a>, <a href="${I.code || CODE_R}" target="_blank" rel="noopener">Zoning Ordinance</a>, <a href="${CODE_USE}" target="_blank" rel="noopener">use table §17-3-0207</a>, Cook County Assessor <a href="https://datacatalog.cookcountyil.gov/d/nj4t-kc8j" target="_blank" rel="noopener">parcels</a> and <a href="https://datacatalog.cookcountyil.gov/d/x54s-btds" target="_blank" rel="noopener">buildings</a>, <a href="https://help.chicagocityscape.com/aduordinancechicago" target="_blank" rel="noopener">coach house rules</a>, <a href="https://www.chicagocityscape.com/blog/chicago-eliminates-parking-requirements-across-most-of-the-city-8d87a6b21f" target="_blank" rel="noopener">parking rules</a>, <a href="https://www.dailyherald.com/20260607/real-estate/whats-next-for-pritzkers-stalled-housing-plan/" target="_blank" rel="noopener">BUILD Act</a>, city <a href="https://data.cityofchicago.org/d/ydr8-5enu" target="_blank" rel="noopener">permits</a> and <a href="https://data.cityofchicago.org/d/eejr-xtfb" target="_blank" rel="noopener">TIF districts</a>. Coach houses can be costly: one in Wicker Park cost nearly $700,000 (<a href="https://chicago.suntimes.com/real-estate/2024/07/06/housing-advocates-support-expansion-chicago-adu-program-building-costs-high" target="_blank" rel="noopener">Sun-Times</a>); see <a href="https://help.chicagocityscape.com/adufunding" target="_blank" rel="noopener">Chicago Cityscape's ADU funding guide</a>.</p></div>`; d.showModal(); };
   // jump links: scroll the panel so the section's heading lands just under the sticky bar
   $("out").querySelectorAll(".jump a").forEach(a => a.onclick = e => { e.preventDefault(); const t = $(a.getAttribute("href").slice(1)), out = $("out"), bar = out.querySelector(".jump"); if (!t) return;
     const y = t.getBoundingClientRect().top - out.getBoundingClientRect().top + out.scrollTop - (bar ? bar.offsetHeight : 0) - 4;
     out.scrollTo({top: Math.max(0, y), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
   $("lotPrint").onclick = () => window.print();
   enrich(lon, lat, pAddr, ward ? +ward : null);
+  const ctr = B ? ringLL(T, B[4]).reduce((a, q, i, L) => [a[0] + q[0] / L.length, a[1] + q[1] / L.length], [0, 0]) : null;
+  rules(lon, lat, ctr ? [[lon, lat], ctr] : [[lon, lat]]);
+  prices(lon, lat);
   $("out").scrollTop = 0;
 }
 
@@ -476,6 +482,47 @@ function bizHtml(I){
   if (/^(M|PMD)/.test(z)) return `<p class="how">Industry and many businesses. No homes.</p>`;
   if (I.pd) return `<p class="how">Set by this site's planned development.</p>`;
   return `<p class="how">We couldn't match this district to a use table.</p>`;
+}
+// "Rules that apply here": overlays in lot/data/r/<tile>.json (tools/lot/prep_rules.py)
+const RT = new Map();
+function getRules(ix, iy){ const k = ix + "_" + iy; if (!RT.has(k)) RT.set(k, fetch("data/r/" + k + ".json").then(r => r.ok ? r.json() : {f:[]}).catch(() => ({f:[]}))); return RT.get(k); }
+function inRing(px, py, a){ let c = false; for (let i = 0, j = a.length - 2; i < a.length; j = i, i += 2){ const xi = a[i], yi = a[i + 1], xj = a[j], yj = a[j + 1]; if ((yi > py) !== (yj > py) && px < (xj - xi) * (py - yi) / (yj - yi) + xi) c = !c; } return c; }
+function inRings(rings, px, py){ let c = false; for (const r of rings) if (inRing(px, py, r)) c = !c; return c; }
+const RULE_SRC = {ld:"https://data.cityofchicago.org/d/t8pq-wu86", il:"https://data.cityofchicago.org/d/uct4-hrvh", hr:"https://chicago.gov/city/en/depts/dcd/supp_info/demolition_delay.html",
+  nr:"https://data.cityofchicago.org/d/bqx3-yhry", ssa:"https://data.cityofchicago.org/d/cmr6-dn8c", oz:"https://www.crowe.com/insights/tax-news-highlights/obbba-makes-enhanced-opportunity-zones-permanent", fl:"https://msc.fema.gov/portal/home"};
+async function rules(lon, lat, pts){
+  const box = $("rules"); if (!box) return;
+  const [ix, iy] = tkey(lon, lat), R = await getRules(ix, iy), x0 = ix / 100 - 88, y0 = iy / 100 + 41, F = {};
+  for (const [k, n, d, rings] of (R.f || [])){
+    const test = /^(hr|il|nr)$/.test(k) ? pts : [[lon, lat]];
+    if (test.some(([x, y]) => inRings(rings, (x - x0) * 1e6, (y - y0) * 1e6))) (F[k] = F[k] || []).push([n, d]);
+  }
+  if (!$("rules")) return;
+  const src = k => ` <a href="${RULE_SRC[k]}" target="_blank" rel="noopener">Source</a>`, out = [];
+  const yr = d => d ? " in " + d.slice(0, 4) : "";
+  if (F.il) out.push(`<div class="c2"><b>A Chicago Landmark: ${esc(F.il[0][0])}</b><span>Designated${yr(F.il[0][1])}. Work on the outside and any demolition need a permit review by the Commission on Chicago Landmarks.${src("il")}</span></div>`);
+  if (F.ld) out.push(`<div class="c2"><b>In the ${esc(F.ld[0][0])} landmark district</b><span>New buildings, additions, exterior changes and demolitions here need a permit review by the Commission on Chicago Landmarks.${src("ld")}</span></div>`);
+  if (F.hr && !F.il) out.push(`<div class="c2"><b>Rated ${esc(F.hr[0][1].toLowerCase())} in the Chicago Historic Resources Survey</b><span>A demolition permit for this building can be held up to 90 days while the city looks at ways to save it, such as landmark status.${src("hr")}</span></div>`);
+  if (F.nr) out.push(`<div class="c2"><b>On the National Register of Historic Places: ${esc(F.nr[0][0])}</b><span>${F.nr[0][1] === "district" ? "A listed historic district." : "A listed building."} Listing is an honor, not a limit on private work. A rehab of a listed rental or commercial building can qualify for the federal 20% historic tax credit.${src("nr")}</span></div>`);
+  if (F.fl) out.push(`<div class="c2"><b>In a FEMA flood zone (${esc(F.fl[0][1])})</b><span>Federally backed mortgages here require flood insurance, and new buildings and big additions must meet the city's flood rules. Check the official map before you buy or build.${src("fl")}</span></div>`);
+  if (F.oz) out.push(`<div class="c2"><b>In a federal Opportunity Zone</b><span>Census tract ${esc(F.oz[0][1].slice(5))}. Investors who put capital gains into new building or major rehab here can cut their federal taxes. This is the 2018 map: new zones take effect January 1, 2027, and the current ones end after 2028.${src("oz")}</span></div>`);
+  if (F.ssa) out.push(`<div class="c2"><b>In Special Service Area #${esc(F.ssa[0][1])}${F.ssa[0][0] ? " (" + esc(F.ssa[0][0]) + ")" : ""}</b><span>Property owners here pay a small extra property tax that funds local services such as street cleaning, safety programs and events.${src("ssa")}</span></div>`);
+  box.innerHTML = (out.length ? out.join("") : `<div class="c2"><b>No special rules found</b><span>Not a Chicago Landmark or in a landmark district, not rated in the historic survey, not on the National Register, and not in a flood zone, Opportunity Zone or Special Service Area.</span></div>`)
+    + `<p class="how" style="margin-top:6px">Checked against city, federal and FEMA maps. A quick check, not a title search: easements, deed limits and pending landmark nominations aren't included.</p>`;
+}
+// "What sells nearby": medians only (tools/lot/prep_sales.py), never a single sale or address
+let SALES = null;
+async function prices(lon, lat){
+  if (!SALES) SALES = fetch("data/sales.json").then(r => r.ok ? r.json() : null).catch(() => null);
+  const S = await SALES, box = $("prices"); if (!box) return;
+  const [ix, iy] = tkey(lon, lat), o = S && S.t[ix + "_" + iy];
+  if (!o){ box.innerHTML = `<p class="how">Too few recent sales near here to show a fair median.</p>`; return; }
+  const m = v => "$" + fmt(v), c = [];
+  if (o.h) c.push(`<div class="c2"><b>${m(o.h[1])}</b><span>Typical house, ${o.h[0]} sales since 2024</span></div>`);
+  if (o.f) c.push(`<div class="c2"><b>${m(o.f[1])}</b><span>Typical two- to six-flat, ${o.f[0]} sales since 2024</span></div>`);
+  if (o.c) c.push(`<div class="c2"><b>${m(o.c[1])}</b><span>Typical condo, ${o.c[0]} sales since 2024</span></div>`);
+  if (o.l) c.push(`<div class="c2"><b>${m(o.l[1])} a sq ft${o.l[2] ? " · " + m(o.l[2]) + " per home allowed" : ""}</b><span>Typical empty lot, ${o.l[0]} sales since 2021</span></div>`);
+  box.innerHTML = `<div class="cards2">${c.join("")}</div><p class="how" style="margin-top:6px">Middle sale price within about half a mile, from Cook County Assessor sales (one-parcel sales the Assessor counts as market sales). Medians only: no single sale is shown. <a href="https://datacatalog.cookcountyil.gov/d/wvhk-k5uv" target="_blank" rel="noopener">Source</a></p>`;
 }
 function parseAddr(a){ const m = (a || "").toUpperCase().match(/^(\d+)[A-Z-]*\s+([NSEW])\s+(.+)$/); return m ? {num:m[1], dir:m[2], street:m[3].replace(/\s+/g, " ").trim()} : null; }
 let STA = null;
