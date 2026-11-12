@@ -629,6 +629,8 @@ function enterPick(){
   loadStreets().then(L => { if (!L.length){ $("q").placeholder = "Address search is coming; tap the map"; } });
   const h = location.hash.match(/^#(-?\d+\.\d+),(-?\d+\.\d+)/);
   if (h) pickAt(+h[1], +h[2], false);
+  const q0 = new URLSearchParams(location.search).get("q");   // from the home page's address box: /lot/?q=2150 N Milwaukee
+  if (q0 && !h){ $("q").value = q0; await suggest(); enterPick(); }
 })();
 </script>
 <script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("lot", {title:"What can I build on my lot?", body:"<p>Type any Chicago address or tap a lot. See its zoning, how many homes the rules allow, whether today's building could even be built today, and what it would take to build more.</p>", art:"/shape/art/lot.webp"}));</script>

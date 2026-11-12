@@ -146,7 +146,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Your lot"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Your lot"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/about/","About"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
@@ -360,4 +360,14 @@ window.scMap = {
         .observe(document.body, {childList: true, subtree: true, characterData: true});
     }).catch(() => {});
   }
+})();
+
+/* Cloudflare Web Analytics on every page: counts page views, no cookies, nothing personal. Off on claude.ai previews and local
+   files. At launch, add the new domain under Cloudflare → Web Analytics and paste its token here if it differs. */
+(function(){
+  const CF_TOKEN = "1e9dc637635a4e7c8afaa420c1136085";
+  if (!/^https?:$/.test(location.protocol) || /claude|anthropic|usercontent|localhost|127\.0\.0\.1/.test(location.hostname)) return;
+  if (document.querySelector('script[src*="cloudflareinsights"]')) return;
+  const b = document.createElement("script"); b.defer = true; b.src = "https://static.cloudflareinsights.com/beacon.min.js";
+  b.setAttribute("data-cf-beacon", JSON.stringify({token: CF_TOKEN})); document.head.appendChild(b);
 })();

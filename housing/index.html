@@ -3615,7 +3615,6 @@ function loadBasemap(){
 }
 deckgl.setProps({onAfterRender: syncBasemap});
 loadBasemap();
-if (BASEMAP_OK){ const b = document.createElement("script"); b.defer = true; b.src = "https://static.cloudflareinsights.com/beacon.min.js"; b.setAttribute("data-cf-beacon", '{"token": "1e9dc637635a4e7c8afaa420c1136085"}'); document.head.appendChild(b); }
 function camTo(patch){
   viewState = {...viewState, ...patch, transitionDuration: reduceMotion ? 0 : 550, transitionInterpolator: new deck.LinearInterpolator(["bearing", "pitch", "zoom", "longitude", "latitude"])};
   deckgl.setProps({initialViewState: viewState});

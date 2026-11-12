@@ -42,6 +42,14 @@ a{color:var(--sc-navy)}
 .mapcard .tag b{font-size:15px;color:var(--sc-ink);font-weight:600}
 .hero2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:44px;align-items:start;padding-block:44px 52px}
 .hero2 h1{margin:6px 0 12px;font-size:50px;line-height:1.04;letter-spacing:-.03em;font-weight:600;text-wrap:balance}
+.addr{margin:0 0 22px;padding:16px 16px 14px;background:#fff;border:1px solid var(--sc-line);border-radius:16px;box-shadow:0 1px 2px rgba(20,30,50,.04);display:flex;flex-direction:column;gap:8px}
+.addr label{font-weight:600;font-size:16px}
+.addr .ar{display:flex;gap:8px}
+.addr input{flex:1;min-width:0;font:inherit;font-size:16px;border:1px solid var(--sc-line2,#cfd5dc);border-radius:12px;padding:10px 12px;color:var(--sc-ink);background:#fff}
+.addr input:focus{outline:2px solid var(--sc-navy);outline-offset:1px}
+.addr .sc-btn{min-height:44px;flex:none}
+.addr .ah{font-size:13px;color:var(--sc-mute)}
+@media (max-width:420px){ .addr .ar{flex-direction:column} }
 .hero2 .hl>p{margin:0 0 22px;font-size:17px;line-height:1.5;color:var(--sc-ink2);max-width:32em}
 .quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .quick a{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 8px;border:1px solid var(--sc-line);border-radius:16px;text-decoration:none;color:var(--sc-ink2);font-size:13.5px;background:#fff;transition:border-color .15s,box-shadow .15s,transform .15s}
@@ -219,6 +227,11 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
     <div class="hl">
       <h1>See how Chicago works. Then try changing it.</h1>
       <p>Daily news on housing, transit and the budget. Your ward's votes, rezonings and permits. Plain-English explainers. And simulators that show what a change would really do, with every number sourced.</p>
+      <form class="addr" action="/lot/" method="get" role="search">
+        <label for="homeQ">What can you build at your address?</label>
+        <div class="ar"><input id="homeQ" name="q" type="search" placeholder="Your address, like 2150 N Milwaukee" autocomplete="street-address" required><button type="submit" class="sc-btn primary">Look it up</button></div>
+        <span class="ah">Zoning, how many homes the rules allow, permits nearby and your alderperson. Free.</span>
+      </form>
       <div class="quick">
         <a href="/housing/"><img src="/shape/art/icons/build.webp" alt="" width="56" height="56"><span><b>Housing</b>Zone for more homes</span></a>
         <a href="/transit/"><img src="/shape/art/icons/subway.webp" alt="" width="56" height="56"><span><b>Transit</b>Draw a new line</span></a>
