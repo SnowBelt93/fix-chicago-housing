@@ -2,7 +2,7 @@
  "cta_performance": {
   "url": "https://www.transitchicago.com/performance/",
   "ok": true,
-  "bytes": 192997,
+  "bytes": 193767,
   "links": [
    "http://www.ctarealestate.com/",
    "https://ctabustracker.com/",
@@ -348,7 +348,7 @@
  "cta_ridership": {
   "url": "https://www.transitchicago.com/ridership/",
   "ok": true,
-  "bytes": 232540,
+  "bytes": 233119,
   "links": [
    "http://www.ctarealestate.com/",
    "https://ctabustracker.com/",
@@ -647,6 +647,7 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
+   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -748,14 +749,13 @@
    "https://www.transitchicago.com/station/adbl/",
    "https://www.transitchicago.com/station/chif/",
    "https://www.transitchicago.com/station/chna/",
-   "https://www.transitchicago.com/station/wawa/",
-   "https://www.transitchicago.com/survey/website-feedback/"
+   "https://www.transitchicago.com/station/wawa/"
   ]
  },
  "cta_ridership_reports": {
   "url": "https://www.transitchicago.com/ridership/#reports",
   "ok": true,
-  "bytes": 232540,
+  "bytes": 233119,
   "links": [
    "http://www.ctarealestate.com/",
    "https://ctabustracker.com/",
@@ -1054,6 +1054,7 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
+   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -1155,14 +1156,13 @@
    "https://www.transitchicago.com/station/adbl/",
    "https://www.transitchicago.com/station/chif/",
    "https://www.transitchicago.com/station/chna/",
-   "https://www.transitchicago.com/station/wawa/",
-   "https://www.transitchicago.com/survey/website-feedback/"
+   "https://www.transitchicago.com/station/wawa/"
   ]
  },
  "cta_meeting_moment": {
   "url": "https://www.transitchicago.com/meetingthemoment/",
   "ok": true,
-  "bytes": 252796,
+  "bytes": 253375,
   "links": [
    "http://www.apta.com/research-technical-resources/research-reports/transit-workforce-shortage/",
    "http://www.ctarealestate.com/",
@@ -1228,6 +1228,7 @@
    "https://www.transitchicago.com/bus/22/",
    "https://www.transitchicago.com/bus/26/",
    "https://www.transitchicago.com/bus/29/",
+   "https://www.transitchicago.com/bus/30/",
    "https://www.transitchicago.com/bus/35/",
    "https://www.transitchicago.com/bus/36/",
    "https://www.transitchicago.com/bus/37/",
@@ -1638,7 +1639,7 @@
  "apartmentlist_data": {
   "url": "https://www.apartmentlist.com/research/category/data-rent-estimates",
   "ok": true,
-  "bytes": 144127,
+  "bytes": 143777,
   "links": [
    "https://www.apartmentlist.com/",
    "https://www.apartmentlist.com/__falcon__/static/android_manifest.json"
@@ -3894,5 +3895,163 @@
    "https://www2.census.gov/econ/bps/Place/Northeast%20Region/ne1604c.txt",
    "https://www2.census.gov/econ/bps/Place/Northeast%20Region/ne1604y.txt"
   ]
+ },
+ "pace_gtfs": {
+  "url": "https://pacebus.com/route-timetable-data-services",
+  "ok": true,
+  "bytes": 80960,
+  "links": [
+   "http://tmweb.pacebus.com/TMWebWatch/",
+   "https://gtfs.org/documentation/schedule/reference/",
+   "https://nextdoor.com/agency-detail/il/arlington-heights/pace-suburbanbus/",
+   "https://pacebus.com/",
+   "https://pacebus.com/sitemap.xml",
+   "https://pacebus.com/sites/default/files/2026-10/GTFS.zip",
+   "https://www.facebook.com/PaceBus/"
+  ]
+ },
+ "pace_gtfs_mdb": {
+  "url": "https://mobilitydatabase.org/feeds/gtfs/mdb-2347",
+  "ok": true,
+  "bytes": 465285,
+  "links": [
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202502270021/mdb-2347-202502270021.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202502270021/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202505280002/mdb-2347-202505280002.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202505280002/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202508060100/mdb-2347-202508060100.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202508060100/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202509250116/mdb-2347-202509250116.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202509250116/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202512020107/mdb-2347-202512020107.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202512020107/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202603100025/mdb-2347-202603100025.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202603100025/report_7.1.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202604010051/mdb-2347-202604010051.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202604010051/report_8.0.0.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202605290102/mdb-2347-202605290102.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202605290102/report_8.0.1.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202608130043/mdb-2347-202608130043.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202608130043/report_8.0.1.json",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202610280204/mdb-2347-202610280204.zip",
+   "https://files.mobilitydatabase.org/mdb-2347/mdb-2347-202610280204/report_8.0.1.json",
+   "https://gbfs-validator.mobilitydata.org/",
+   "https://gtfs-validator.mobilitydata.org/",
+   "https://gtfs.org/getting_started/features/overview/",
+   "https://mobilitydatabase.org/",
+   "https://www.linkedin.com/company/mobilitydata/",
+   "https://www.pacebus.com/gtfsdownload"
+  ]
+ },
+ "ntd_monthly_catalog": {
+  "url": "https://catalog.data.gov/dataset/complete-monthly-ridership-with-adjustments-and-estimates",
+  "ok": true,
+  "bytes": 152933,
+  "links": [
+   "https://catalog.data.gov/",
+   "https://catalog.data.gov/sitemap.xml",
+   "https://data.gov/contact/",
+   "https://data.gov/user-guide/",
+   "https://data.transportation.gov/api/v3/views/8bui-9xvu/export.csv?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/v3/views/8bui-9xvu/query.json?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/v3/views/8bui-9xvu/query.xml?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/views/8bui-9xvu/columns.json",
+   "https://data.transportation.gov/api/views/8bui-9xvu/columns.xml",
+   "https://www.data.gov/open-gov/",
+   "https://www.performance.gov/",
+   "https://www.usa.gov/"
+  ]
+ },
+ "ntd_modal_catalog": {
+  "url": "https://catalog.data.gov/dataset/monthly-modal-time-series",
+  "ok": true,
+  "bytes": 148540,
+  "links": [
+   "https://catalog.data.gov/",
+   "https://catalog.data.gov/sitemap.xml",
+   "https://data.gov/contact/",
+   "https://data.gov/user-guide/",
+   "https://data.transportation.gov/api/v3/views/5ti2-5uiv/export.csv?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/v3/views/5ti2-5uiv/query.json?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/v3/views/5ti2-5uiv/query.xml?accessType=DOWNLOAD",
+   "https://data.transportation.gov/api/views/5ti2-5uiv/columns.json",
+   "https://data.transportation.gov/api/views/5ti2-5uiv/columns.xml",
+   "https://www.data.gov/open-gov/",
+   "https://www.performance.gov/",
+   "https://www.usa.gov/"
+  ]
+ },
+ "chicago_capital_pubs": {
+  "url": "https://www.chicago.gov/city/en/depts/obm/provdrs/budget/svcs/CapitalPublications.html",
+  "ok": true,
+  "bytes": 64697,
+  "links": [
+   "http://www.chicagocitytreasurer.com/",
+   "http://www.chicityclerk.com/",
+   "http://www.mpea.com/",
+   "http://www.pbcchicago.com/",
+   "https://data.cityofchicago.org/",
+   "https://webapps1.cityofchicago.org/moboco/",
+   "https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/TIF_Projections/TIF%20Projection%20Report%20-%20FY27%20Budget%20-%20Oct%202026.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/general/CIP/CIPDocs/CIPBooks/2018-2022%20CIP%20Book.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/general/CIP/CIPDocs/CIPBooks/2019-2023CIPBook.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/general/CIP/CIPDocs/CIPBooks/2021-2025CIPBookFinal.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/general/CIP/CIPDocs/CIPBooks/2022%20-%202026%20CIP%20Book.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP/CIP%202024-2028.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP/City of Chicago 2025-2029 CIP.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP_Archive/Aldermanic Menu/2026 Q1 Menu Report.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP_Archive/Aldermanic Menu/Q2_2026_Ald_Menu_Report.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/TIF/TIF Projection 2025 Yearend Report.pdf",
+   "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/TIF/TIF Public Report 10-15-25-Mid Year Report.pdf",
+   "https://www.choosechicago.com/"
+  ]
+ },
+ "rtams_datasets": {
+  "url": "https://rtams.org/datasets",
+  "ok": false,
+  "err": "https://rtams.org/datasets: HTTP Error 404: Not Found"
+ },
+ "rtams_pace": {
+  "url": "https://rtams.org/dataset/pace-ridership",
+  "ok": true,
+  "bytes": 21985,
+  "links": [
+   "https://rtagis.maps.arcgis.com/home/index.html",
+   "https://rtams.org/",
+   "https://rtams.org/node/778/dataset/download",
+   "https://rtams.org/sites/default/files/Pace_Ridership_ReadMe_1.txt",
+   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Monthly_Ridership_2003_2026.xlsx",
+   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Paratransit_Ridership_2003_2026.csv",
+   "https://rtams.org/sites/default/files/documents/2026-06/Pace_Vanpool_Ridership_2003_2026.csv"
+  ]
+ },
+ "rtams_metra_ds": {
+  "url": "https://rtams.org/dataset/metra-ridership",
+  "ok": true,
+  "bytes": 27627,
+  "links": [
+   "https://rtagis.maps.arcgis.com/home/index.html",
+   "https://rtams.org/",
+   "https://rtams.org/node/989/dataset/download",
+   "https://rtams.org/sites/default/files/Metra_Ridership_by_Line_Boarding_Alighting_Survey_1979_2018_0.csv",
+   "https://rtams.org/sites/default/files/Metra_Ridership_by_Line_Boarding_Alighting_Survey_Direction_TimeofDay_1999_2018_0.csv",
+   "https://rtams.org/sites/default/files/Metra_Ridership_by_Station_Boarding_Alighting_Survey_Direction_TimeofDay_1999_2018.csv",
+   "https://rtams.org/sites/default/files/documents/2024-05/Metra_Monthly_Ridership_by_FareZone_2010_2024.csv",
+   "https://rtams.org/sites/default/files/documents/2024-07/Metra_Ridership_by_Station_Boarding_Alighting%20Survey_1979_2018.csv",
+   "https://rtams.org/sites/default/files/documents/2025-11/Metra_Ridership_ReadMe.txt",
+   "https://rtams.org/sites/default/files/documents/2026-08/Metra_Monthly_Ridership_by_FareZone.csv",
+   "https://rtams.org/sites/default/files/documents/2026-08/Metra_Monthly_Ridership_by_Line_2003_2026.csv"
+  ]
+ },
+ "ilga_home": {
+  "url": "https://www.ilga.gov/Legislation",
+  "ok": false,
+  "err": "https://www.ilga.gov/Legislation: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)>"
+ },
+ "idot_traffic": {
+  "url": "https://idot.illinois.gov/transportation-system/network-overview/highway-system/illinois-travel-statistics.html",
+  "ok": false,
+  "err": "https://idot.illinois.gov/transportation-system/network-overview/highway-system/illinois-travel-statistics.html: HTTP Error 404: Not Found"
  }
 }
