@@ -16,7 +16,7 @@
   "updated": "2012-11-23T17:21:58.000Z",
   "desc": "Landmark district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as Esri ArcGIS, are required.",
   "cols": [],
-  "want": true
+  "want": false
  },
  "rkur-ce6h": {
   "name": "Boundaries - Landmark Districts - KML",
@@ -24,7 +24,7 @@
   "updated": "2012-11-23T17:25:58.000Z",
   "desc": "KML file for landmark districts in Chicago. To view or use these files, special GIS software such Google Earth is required.",
   "cols": [],
-  "want": true
+  "want": false
  },
  "habu-n236": {
   "name": "Individual Landmarks - Map",
@@ -45,7 +45,7 @@
    "month",
    "permit_applications_reviewed"
   ],
-  "want": true
+  "want": false
  },
  "tdab-kixi": {
   "name": "Individual Landmarks (Deprecated January 2024)",
@@ -73,7 +73,7 @@
    "location",
    ":@computed_region_awaf_s7ux"
   ],
-  "want": true
+  "want": false
  },
  "ty7a-2bxt": {
   "name": "Chicago Historic Resources Survey - Red and Orange Buildings - Deprecated",
@@ -81,7 +81,7 @@
   "updated": "2026-08-21T17:41:45.000Z",
   "desc": "<b>This dataset is in an outdated format. For both slightly updated data and a better user experience, please use </b><a href=\"https://data.cityofchicago.org/d/2u8t-236p\" target=\"_blank\">this link</a><b>.</b>\n\nThe Chicago Historic Resources Survey (CHRS), completed in 1995, was a decade-long researc",
   "cols": [],
-  "want": true
+  "want": false
  },
  "cmb2-8jw8": {
   "name": "Chicago Historic Resources Survey - Red and Orange Buildings - KML - Deprecated",
@@ -89,7 +89,7 @@
   "updated": "2026-08-21T17:41:27.000Z",
   "desc": "<b>This dataset is in an outdated format. For both slightly updated data and a better user experience, please use </b><a href=\"https://data.cityofchicago.org/d/2u8t-236p\" target=\"_blank\">this link</a><b>.</b>\n\nThe Chicago Historic Resources Survey (CHRS), completed in 1995, was a decade-long researc",
   "cols": [],
-  "want": true
+  "want": false
  },
  "yw5d-szpx": {
   "name": "National Register of Historic Places",
@@ -97,7 +97,7 @@
   "updated": "2012-11-23T17:20:43.000Z",
   "desc": "This dataset includes buildings and districts in Chicago which are listed on the National Register of Historic Places (NRHP) or designated as National Historic Landmarks (NHL).\r\n\r\n The NRHP is the official list of the Nation's historic places worthy of preservation; NHLs are nationally significant h",
   "cols": [],
-  "want": true
+  "want": false
  },
  "2u8t-236p": {
   "name": "Chicago Historic Resources Survey - Red and Orange Buildings",
@@ -149,7 +149,7 @@
   "updated": "2012-11-23T17:26:42.000Z",
   "desc": "This dataset includes buildings and districts in Chicago which are listed on the National Register of Historic Places (NRHP) or designated as National Historic Landmarks (NHL).  \r\n\r\nThe NRHP is the official list of the Nation's historic places worthy of preservation; NHLs are nationally significant ",
   "cols": [],
-  "want": true
+  "want": false
  },
  "bqx3-yhry": {
   "name": "National Register of Historic Places",
@@ -187,7 +187,7 @@
   "updated": "2024-02-06T17:24:53.000Z",
   "desc": "Individual Chicago Landmarks designated by City Council upon recommendation of the Commission on Chicago Landmarks. To view or use these files, special GIS software such as Google Earth is required. To download, right-click the \"Download\" link above and choose \"Save link as.\"",
   "cols": [],
-  "want": true
+  "want": false
  },
  "bddq-yxar": {
   "name": "Individual Landmarks - Map",
@@ -196,6 +196,14 @@
   "desc": "Map of Individual Landmarks",
   "cols": [],
   "want": true
+ },
+ "2h6e-2yk6": {
+  "name": "Individual Landmarks - Shapefiles (Deprecated December 2013)",
+  "type": "file",
+  "updated": "2013-12-13T21:22:35.000Z",
+  "desc": "Individual landmarks in Chicago. To view or use these shapefiles, compression software, like WinZip, and special GIS software, such as ESRI ArcGIS, is required.",
+  "cols": [],
+  "want": false
  },
  "uct4-hrvh": {
   "name": "Individual Landmarks",
@@ -212,14 +220,6 @@
    "date_built",
    "name"
   ],
-  "want": true
- },
- "2h6e-2yk6": {
-  "name": "Individual Landmarks - Shapefiles (Deprecated December 2013)",
-  "type": "file",
-  "updated": "2013-12-13T21:22:35.000Z",
-  "desc": "Individual landmarks in Chicago. To view or use these shapefiles, compression software, like WinZip, and special GIS software, such as ESRI ArcGIS, is required.",
-  "cols": [],
   "want": true
  },
  "9i9k-jh45": {
@@ -327,7 +327,7 @@
    "property_owner_last_name",
    "adu_applying_for"
   ],
-  "want": true
+  "want": false
  },
  "fqz5-is9z": {
   "name": "TIF Balance Sheets - Pilsen Industrial Corridor",
@@ -341,7 +341,7 @@
    "amount",
    "description"
   ],
-  "want": true
+  "want": false
  },
  "xfya-dxtq": {
   "name": "Open Air Chicago Individual Measurements",
@@ -550,7 +550,7 @@
    "shape_leng",
    "display_co"
   ],
-  "want": true
+  "want": false
  },
  "et95-m34q": {
   "name": "Boundaries - Enterprise Zones (Deprecated February 2016)",
@@ -558,7 +558,7 @@
   "updated": "2024-04-24T18:51:27.000Z",
   "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/64xf-pyvh -- The Illinois Enterprise Zone Program is designed to stimulate economic growth and neighborhood revitalization in economically depressed areas of the state. For more information about this program, go to http://www.commer",
   "cols": [],
-  "want": true
+  "want": false
  },
  "huvz-edkp": {
   "name": "Boundaries - Enterprise Zones (Deprecated October 2021) - Map",
@@ -566,7 +566,7 @@
   "updated": "2021-10-01T21:38:49.000Z",
   "desc": "Map of Boundaries - Enterprise Zones (Deprecated October 2021)",
   "cols": [],
-  "want": true
+  "want": false
  },
  "bwpt-y235": {
   "name": "Enterprise_Zones",
@@ -646,7 +646,7 @@
   "updated": "2011-08-28T16:20:40.000Z",
   "desc": "Industrial corridor boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
   "cols": [],
-  "want": true
+  "want": false
  },
  "e6xh-nr8w": {
   "name": "Boundaries - Industrial Corridors (current)",
@@ -662,7 +662,7 @@
   "updated": "2024-04-24T18:48:12.000Z",
   "desc": "Industrial corridors in Chicago that were effective through December 2012. The data can be viewed on the Chicago Data Portal with a web browser. However, to view or use the files outside of a web browser, you will need to use compression software and special GIS software, such as ESRI ArcGIS (shapef",
   "cols": [],
-  "want": true
+  "want": false
  },
  "nnk5-dwci": {
   "name": "TIF Balance Sheets - Kinzie Industrial Corridor",
@@ -676,7 +676,7 @@
    "tif_name",
    "reporting_category"
   ],
-  "want": true
+  "want": false
  },
  "7stf-9xe9": {
   "name": "TIF Balance Sheets - Elston/Armstrong Industrial Corridor",
@@ -690,7 +690,7 @@
    "tif_id",
    "description"
   ],
-  "want": true
+  "want": false
  },
  "uevf-xsjr": {
   "name": "TIF Balance Sheets - Midway  Industrial Corridor",
@@ -704,7 +704,7 @@
    "amount",
    "description"
   ],
-  "want": true
+  "want": false
  },
  "ysbe-3bhn": {
   "name": "TIF Balance Sheets - Northwest Industrial Corridor",
@@ -718,7 +718,7 @@
    "amount",
    "tif_name"
   ],
-  "want": true
+  "want": false
  },
  "qgkk-xrvp": {
   "name": "TIF Balance Sheets - Little Village Industrial Corridor",
@@ -732,7 +732,7 @@
    "tif_id",
    "description"
   ],
-  "want": true
+  "want": false
  },
  "hn8b-xuti": {
   "name": "TIF Balance Sheets - Greater Southwest Industrial Corridor (West)",
@@ -746,7 +746,7 @@
    "description",
    "tif_name"
   ],
-  "want": true
+  "want": false
  },
  "keda-fhtt": {
   "name": "TIF Balance Sheets - Greater Southwest Industrial Corridor (East)",
@@ -760,7 +760,7 @@
    "tif_id",
    "reporting_category"
   ],
-  "want": true
+  "want": false
  },
  "7yd9-wm38": {
   "name": "TIF Balance Sheets - Stony Island Avenue Commercial and Burnside Industrial Corridors",
@@ -774,7 +774,7 @@
    "tif_name",
    "tif_id"
   ],
-  "want": true
+  "want": false
  },
  "jkfs-hwcr": {
   "name": "Broadband Innovation Zones",
@@ -917,7 +917,7 @@
   "updated": "2013-11-06T22:13:50.000Z",
   "desc": "Special Service Areas (SSA) boundaries in Chicago. To view or use these shapefiles, compression software and special GIS software, such as ESRI ArcGIS, is required. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy withi",
   "cols": [],
-  "want": true
+  "want": false
  },
  "x9du-wfiv": {
   "name": "Boundaries - Special Service Areas (deprecated October 2014)",
@@ -925,7 +925,7 @@
   "updated": "2024-04-24T18:51:01.000Z",
   "desc": "Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercial and residential areas. The enhanced services and programs are in addition to s",
   "cols": [],
-  "want": true
+  "want": false
  },
  "uvpn-q65m": {
   "name": "Boundaries - Special Service Areas (deprecated January 2024)",
@@ -946,26 +946,7 @@
    "objectid_2",
    "comm_area"
   ],
-  "want": true
- },
- "i35c-ftqu": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2022)",
-  "type": "dataset",
-  "updated": "2022-08-23T20:45:22.000Z",
-  "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
-  "cols": [
-   "comm_area",
-   "ward",
-   "status",
-   "name",
-   "ref_no",
-   "the_geom",
-   "shape_area",
-   "objectid",
-   "shape_leng",
-   "objectid_1"
-  ],
-  "want": true
+  "want": false
  },
  "5pr3-hwde": {
   "name": "Boundaries - Special Service Areas (deprecated July 2017)",
@@ -973,7 +954,7 @@
   "updated": "2024-04-24T18:50:32.000Z",
   "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -\r\n Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commerci",
   "cols": [],
-  "want": true
+  "want": false
  },
  "uhab-t2hm": {
   "name": "Boundaries - Special Service Areas (deprecated January 2023)",
@@ -994,7 +975,26 @@
    "objectid",
    "shape_area"
   ],
-  "want": true
+  "want": false
+ },
+ "i35c-ftqu": {
+  "name": "Boundaries - Special Service Areas (deprecated January 2022)",
+  "type": "dataset",
+  "updated": "2022-08-23T20:45:22.000Z",
+  "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
+  "cols": [
+   "comm_area",
+   "ward",
+   "status",
+   "name",
+   "ref_no",
+   "the_geom",
+   "shape_area",
+   "objectid",
+   "shape_leng",
+   "objectid_1"
+  ],
+  "want": false
  },
  "c4sc-3f6n": {
   "name": "Boundaries - Special Service Areas (deprecated January 2022) - Map",
@@ -1002,7 +1002,7 @@
   "updated": "2022-08-23T21:02:02.000Z",
   "desc": "Map of Boundaries - Special Service Areas (deprecated January 2022)",
   "cols": [],
-  "want": true
+  "want": false
  },
  "9fit-fndz": {
   "name": "Boundaries - Special Service Areas (deprecated January 2020)",
@@ -1020,15 +1020,7 @@
    "status",
    "ref_no"
   ],
-  "want": true
- },
- "vchi-3msd": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2023) - Map",
-  "type": "map",
-  "updated": "2023-02-10T21:33:22.000Z",
-  "desc": "Map of Boundaries - Special Service Areas (deprecated January 2023)",
-  "cols": [],
-  "want": true
+  "want": false
  },
  "vqvu-rchz": {
   "name": "Boundaries - Special Service Areas (deprecated January 2024) - Map",
@@ -1036,7 +1028,7 @@
   "updated": "2024-01-12T22:43:24.000Z",
   "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
   "cols": [],
-  "want": true
+  "want": false
  },
  "ch5p-gxrk": {
   "name": "Boundaries - Special Service Areas - KML (deprecated November 2013)",
@@ -1044,7 +1036,15 @@
   "updated": "2013-11-06T22:13:19.000Z",
   "desc": "KML files of Special Service Areas (SSA) boundaries in Chicago. To view or use these files, special GIS software such a Google Earth is required. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous indust",
   "cols": [],
-  "want": true
+  "want": false
+ },
+ "vchi-3msd": {
+  "name": "Boundaries - Special Service Areas (deprecated January 2023) - Map",
+  "type": "map",
+  "updated": "2023-02-10T21:33:22.000Z",
+  "desc": "Map of Boundaries - Special Service Areas (deprecated January 2023)",
+  "cols": [],
+  "want": false
  },
  "aq3f-cb5w": {
   "name": "Boundaries - Special Service Areas (Deprecated May 2019) - Tabular View",
@@ -1062,7 +1062,7 @@
    "ref_no",
    "the_geom"
   ],
-  "want": true
+  "want": false
  },
  "2gdn-k2ni": {
   "name": "Boundaries - Special Service Areas (deprecated January 2020) - Map",
@@ -1070,7 +1070,7 @@
   "updated": "2020-01-13T23:23:04.000Z",
   "desc": "OUTDATED. See the current data at <a href=\"https://data.cityofchicago.org/d/kjav-iyuj\" target=\"_blank\" rel=\"nofollow external\">https://data.cityofchicago.org/d/kjav-iyuj</a> -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded se",
   "cols": [],
-  "want": true
+  "want": false
  },
  "we7q-2v2d": {
   "name": "Boundaries - Special Service Areas (Deprecated May 2019) - Map View",
@@ -1078,7 +1078,7 @@
   "updated": "2019-05-16T17:40:04.000Z",
   "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
   "cols": [],
-  "want": true
+  "want": false
  },
  "cnf7-yj5k": {
   "name": "SSA",
@@ -1143,7 +1143,7 @@
    ":@computed_region_vrxf_vc4k",
    "location_state"
   ],
-  "want": true
+  "want": false
  },
  "9ksk-na4q": {
   "name": "311 Service Requests - Garbage Carts - Historical",
@@ -1180,7 +1180,7 @@
    "status",
    "creation_date"
   ],
-  "want": true
+  "want": false
  },
  "uupf-x98q": {
   "name": "Business Licenses - Current Active",
@@ -1266,7 +1266,7 @@
    "ward",
    "current_activity"
   ],
-  "want": true
+  "want": false
  },
  "22u3-xenr": {
   "name": "Building Violations",
@@ -1348,7 +1348,7 @@
    "location_state",
    ":@computed_region_43wa_7qmu"
   ],
-  "want": true
+  "want": false
  },
  "8tus-apua": {
   "name": "311 Service Requests - Graffiti Removal - No Duplicates",
@@ -1710,6 +1710,37 @@
   ],
   "want": false
  },
+ "umwj-yc4m": {
+  "name": "Tax Increment Financing (TIF) Annual Report - Itemized List of Expenditures from the Special Tax Allocation Fund",
+  "type": "dataset",
+  "updated": "2026-08-31T15:21:43.000Z",
+  "desc": "An itemized list of all the expenditures in a fund balance for each TIF district during the Reporting Year.\n\nFor the detailed reports for each TIF district for each year, please see https://www.chicago.gov/city/en/depts/dcd/supp_info/tif-district-annual-reports-2004-present.html.",
+  "cols": [
+   "site_preparation_costs",
+   "report_year",
+   "public_works",
+   "library_districts",
+   "day_care_services",
+   "capital_costs",
+   "tif_number",
+   "new_housing",
+   "financing_costs",
+   "job_training",
+   "cost_of_studies",
+   "removing_contaminants",
+   "renovation_rehab_etc",
+   "administrative_cost",
+   "tif_district",
+   "school_districts",
+   "other",
+   "interest_cost",
+   "job_training_retraining",
+   "marketing_sites",
+   "in_lieu_of_taxes",
+   "relocation_costs"
+  ],
+  "want": false
+ },
  "h6r6-h5c9": {
   "name": "Budget Survey 2021",
   "type": "dataset",
@@ -1775,45 +1806,6 @@
   ],
   "want": false
  },
- "umwj-yc4m": {
-  "name": "Tax Increment Financing (TIF) Annual Report - Itemized List of Expenditures from the Special Tax Allocation Fund",
-  "type": "dataset",
-  "updated": "2026-08-31T15:21:43.000Z",
-  "desc": "An itemized list of all the expenditures in a fund balance for each TIF district during the Reporting Year.\n\nFor the detailed reports for each TIF district for each year, please see https://www.chicago.gov/city/en/depts/dcd/supp_info/tif-district-annual-reports-2004-present.html.",
-  "cols": [
-   "site_preparation_costs",
-   "report_year",
-   "public_works",
-   "library_districts",
-   "day_care_services",
-   "capital_costs",
-   "tif_number",
-   "new_housing",
-   "financing_costs",
-   "job_training",
-   "cost_of_studies",
-   "removing_contaminants",
-   "renovation_rehab_etc",
-   "administrative_cost",
-   "tif_district",
-   "school_districts",
-   "other",
-   "interest_cost",
-   "job_training_retraining",
-   "marketing_sites",
-   "in_lieu_of_taxes",
-   "relocation_costs"
-  ],
-  "want": false
- },
- "f2im-mrqs": {
-  "name": "Boundaries - Recycling Service Areas - Shapefile (Deprecated March 2013)",
-  "type": "file",
-  "updated": "2013-04-22T17:24:00.000Z",
-  "desc": "Blue Cart Residential Recycling zones and schedule. Each recycling zone is divided into two sections \u2013 A (Orange) and B (Yellow). Collection is done on an alternating-week basis. For 2012, B/Yellow sections were collected the week of 1/2/2012 and A/Orange sections were collected the week of 1/9/2012",
-  "cols": [],
-  "want": false
- },
  "cjg8-dbka": {
   "name": "Public Health Services- Chicago Primary Care Community Health Centers",
   "type": "dataset",
@@ -1836,6 +1828,14 @@
    ":@computed_region_bdys_3d7i",
    ":@computed_region_43wa_7qmu"
   ],
+  "want": false
+ },
+ "f2im-mrqs": {
+  "name": "Boundaries - Recycling Service Areas - Shapefile (Deprecated March 2013)",
+  "type": "file",
+  "updated": "2013-04-22T17:24:00.000Z",
+  "desc": "Blue Cart Residential Recycling zones and schedule. Each recycling zone is divided into two sections \u2013 A (Orange) and B (Yellow). Collection is done on an alternating-week basis. For 2012, B/Yellow sections were collected the week of 1/2/2012 and A/Orange sections were collected the week of 1/9/2012",
+  "cols": [],
   "want": false
  },
  "fhty-4yev": {
@@ -1980,7 +1980,7 @@
    ":@computed_region_vrxf_vc4k",
    ":@computed_region_rpca_8um6"
   ],
-  "want": true
+  "want": false
  },
  "j7ew-b73u": {
   "name": "Financial Incentive Projects - Neighborhood Opportunity Fund (NOF) Large",
@@ -2018,7 +2018,7 @@
    "address_number_high",
    ":@computed_region_43wa_7qmu"
   ],
-  "want": true
+  "want": false
  },
  "bbvz-uum9": {
   "name": "Boundaries - Neighborhoods",
@@ -2036,19 +2036,19 @@
   "cols": [],
   "want": false
  },
- "cauq-8yn6": {
-  "name": "Boundaries - Community Areas - Map",
-  "type": "map",
-  "updated": "2025-04-22T23:06:37.000Z",
-  "desc": "Map of Chicago community areas.",
-  "cols": [],
-  "want": false
- },
  "9wp7-iasj": {
   "name": "Boundaries - Neighborhoods",
   "type": "file",
   "updated": "2012-10-04T21:59:17.000Z",
   "desc": "Neighborhood boundaries in Chicago, as developed by the Office of Tourism. These boundaries are approximate and names are not official. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
+  "cols": [],
+  "want": false
+ },
+ "cauq-8yn6": {
+  "name": "Boundaries - Community Areas - Map",
+  "type": "map",
+  "updated": "2025-04-22T23:06:37.000Z",
+  "desc": "Map of Chicago community areas.",
   "cols": [],
   "want": false
  },
@@ -2133,20 +2133,6 @@
   "cols": [],
   "want": false
  },
- "qqq8-j68g": {
-  "name": "Boundaries - City",
-  "type": "dataset",
-  "updated": "2025-07-24T17:38:38.000Z",
-  "desc": "The city boundary of Chicago.\n\nThis dataset is in a format for spatial datasets that is inherently tabular but allows for a map as a derived view. Please click the indicated link below for such a map. \n\nTo export the data in either tabular or geographic format, please use the Export button on this d",
-  "cols": [
-   "objectid",
-   "shape_area",
-   "the_geom",
-   "name",
-   "shape_len"
-  ],
-  "want": false
- },
  "igwz-8jzy": {
   "name": "Boundaries - Community Areas",
   "type": "dataset",
@@ -2162,19 +2148,25 @@
   ],
   "want": false
  },
+ "qqq8-j68g": {
+  "name": "Boundaries - City",
+  "type": "dataset",
+  "updated": "2025-07-24T17:38:38.000Z",
+  "desc": "The city boundary of Chicago.\n\nThis dataset is in a format for spatial datasets that is inherently tabular but allows for a map as a derived view. Please click the indicated link below for such a map. \n\nTo export the data in either tabular or geographic format, please use the Export button on this d",
+  "cols": [
+   "objectid",
+   "shape_area",
+   "the_geom",
+   "name",
+   "shape_len"
+  ],
+  "want": false
+ },
  "5gv8-ktcg": {
   "name": "Boundaries - Curb Lines",
   "type": "file",
   "updated": "2011-08-28T20:02:20.000Z",
   "desc": "Curb lines for the city of Chicago. Curb lines mark the points where curbs meet the edge of the street pavement.  To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
-  "cols": [],
-  "want": false
- },
- "uvpq-qeeq": {
-  "name": "Boundaries - Ward Precincts (2013-2022) - Map",
-  "type": "map",
-  "updated": "2026-03-17T20:34:08.000Z",
-  "desc": "Map of Ward Precincts (2013-2022)",
   "cols": [],
   "want": false
  },
@@ -2186,11 +2178,11 @@
   "cols": [],
   "want": false
  },
- "q38j-zgre": {
-  "name": "Boundaries - City - Outdated Format",
-  "type": "file",
-  "updated": "2017-06-30T22:12:59.000Z",
-  "desc": "City boundary of Chicago in shapefile format. This dataset has been superseded by https://data.cityofchicago.org/d/ewy2-6yfk, which is in a more flexible format that still allows shapefile downloads.  Please use that dataset instead.",
+ "uvpq-qeeq": {
+  "name": "Boundaries - Ward Precincts (2013-2022) - Map",
+  "type": "map",
+  "updated": "2026-03-17T20:34:08.000Z",
+  "desc": "Map of Ward Precincts (2013-2022)",
   "cols": [],
   "want": false
  },
@@ -2199,6 +2191,14 @@
   "type": "file",
   "updated": "2012-10-04T22:00:28.000Z",
   "desc": "KML file of neighborhood boundaries in Chicago, as developed by the Office of Tourism. These boundaries are approximate and names are not official. To view or use these files, special GIS software, such as Google Earth, is required.",
+  "cols": [],
+  "want": false
+ },
+ "q38j-zgre": {
+  "name": "Boundaries - City - Outdated Format",
+  "type": "file",
+  "updated": "2017-06-30T22:12:59.000Z",
+  "desc": "City boundary of Chicago in shapefile format. This dataset has been superseded by https://data.cityofchicago.org/d/ewy2-6yfk, which is in a more flexible format that still allows shapefile downloads.  Please use that dataset instead.",
   "cols": [],
   "want": false
  },
@@ -2215,6 +2215,28 @@
    "globalid",
    "region_nam",
    "shape_area"
+  ],
+  "want": false
+ },
+ "mfzt-js4n": {
+  "name": "Boundaries - Census Blocks - 2010 - Map",
+  "type": "map",
+  "updated": "2026-09-29T22:08:36.000Z",
+  "desc": "Map of Census block boundaries used in Chicago for the 2020 Census.",
+  "cols": [],
+  "want": false
+ },
+ "unjd-c2ca": {
+  "name": "Boundaries - ZIP Codes",
+  "type": "dataset",
+  "updated": "2025-04-28T21:28:21.000Z",
+  "desc": "ZIP Code boundaries in Chicago.\n\nThis dataset is in a format for spatial datasets that is inherently tabular but allows for a map as a derived view. Please click the indicated link below for such a map. \n\nTo export the data in either tabular or geographic format, please use the Export button on this",
+  "cols": [
+   "zip",
+   "the_geom",
+   "shape_area",
+   "objectid",
+   "shape_len"
   ],
   "want": false
  },
@@ -2245,26 +2267,12 @@
   ],
   "want": false
  },
- "mfzt-js4n": {
-  "name": "Boundaries - Census Blocks - 2010 - Map",
-  "type": "map",
-  "updated": "2026-09-29T22:08:36.000Z",
-  "desc": "Map of Census block boundaries used in Chicago for the 2020 Census.",
+ "eg5e-qm3q": {
+  "name": "Boundaries - City - KML",
+  "type": "file",
+  "updated": "2011-11-18T20:34:21.000Z",
+  "desc": "KML file of boundary for the city of Chicago. To view or use these files, special GIS software, such as Google Earth, is required.",
   "cols": [],
-  "want": false
- },
- "unjd-c2ca": {
-  "name": "Boundaries - ZIP Codes",
-  "type": "dataset",
-  "updated": "2025-04-28T21:28:21.000Z",
-  "desc": "ZIP Code boundaries in Chicago.\n\nThis dataset is in a format for spatial datasets that is inherently tabular but allows for a map as a derived view. Please click the indicated link below for such a map. \n\nTo export the data in either tabular or geographic format, please use the Export button on this",
-  "cols": [
-   "zip",
-   "the_geom",
-   "shape_area",
-   "objectid",
-   "shape_len"
-  ],
   "want": false
  },
  "ndp9-x4ic": {
@@ -2272,14 +2280,6 @@
   "type": "file",
   "updated": "2011-11-18T20:33:03.000Z",
   "desc": "Boundaries for the municipalities that surround Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
-  "cols": [],
-  "want": false
- },
- "eg5e-qm3q": {
-  "name": "Boundaries - City - KML",
-  "type": "file",
-  "updated": "2011-11-18T20:34:21.000Z",
-  "desc": "KML file of boundary for the city of Chicago. To view or use these files, special GIS software, such as Google Earth, is required.",
   "cols": [],
   "want": false
  },
@@ -2340,19 +2340,19 @@
   ],
   "want": false
  },
- "dw5c-9g79": {
-  "name": "Boundaries - U.S. Congressional Districts",
-  "type": "file",
-  "updated": "2013-01-03T20:46:37.000Z",
-  "desc": "U.S. Congressional district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required",
-  "cols": [],
-  "want": false
- },
  "f4sz-sn2p": {
   "name": "Ward Offices and Boundaries Map",
   "type": "map",
   "updated": "2026-10-07T03:12:24.000Z",
   "desc": "Aldermanic ward offices overlaid on ward boundaries.",
+  "cols": [],
+  "want": false
+ },
+ "dw5c-9g79": {
+  "name": "Boundaries - U.S. Congressional Districts",
+  "type": "file",
+  "updated": "2013-01-03T20:46:37.000Z",
+  "desc": "U.S. Congressional district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required",
   "cols": [],
   "want": false
  },
@@ -2362,7 +2362,7 @@
   "updated": "2022-05-24T16:51:45.000Z",
   "desc": "Planning district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
   "cols": [],
-  "want": true
+  "want": false
  },
  "2wek-zf5g": {
   "name": "Boundaries - Planning Regions - Map",
@@ -2732,7 +2732,7 @@
    "status",
    "street_direction"
   ],
-  "want": true
+  "want": false
  },
  "xbwc-ntpx": {
   "name": "Additional Dwelling Unit Preapproval Applications - Historical",
@@ -2772,7 +2772,7 @@
    ":@computed_region_6mkv_f3dw",
    "zoning"
   ],
-  "want": true
+  "want": false
  },
  "ttjb-ayff": {
   "name": "Additional Dwelling Unit Areas",
@@ -2802,7 +2802,7 @@
   "updated": "2026-04-02T00:01:41.000Z",
   "desc": "Count of applications by Community Area",
   "cols": [],
-  "want": true
+  "want": false
  },
  "pkyu-f77p": {
   "name": "Dataset Retirement/Replacement: Additional Dwelling Unit Preapproval Applications - 5/11/2026 (Updated With New Dataset Link)",
@@ -2810,7 +2810,7 @@
   "updated": "2026-09-03T23:15:31.506Z",
   "desc": "The original Additional Dwelling Unit Preapproval Applications dataset is historical-only and has been  succeeded by a new dataset.",
   "cols": [],
-  "want": true
+  "want": false
  },
  "b77m-uuhb": {
   "name": "Lending Equity - Residential Lending",

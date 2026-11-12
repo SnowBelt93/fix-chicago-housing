@@ -1,30 +1,6 @@
 {
  "zidz-sdfj": "not json",
- "t8pq-wu86": "missing",
- "rkur-ce6h": "missing",
  "habu-n236": "not json",
- "2wk4-c5se": "not json",
- "tdab-kixi": {
-  "name": "Individual Landmarks (Deprecated January 2024)",
-  "n": 317,
-  "props": [
-   "address",
-   "architect",
-   "date_built",
-   "id",
-   "landmark_designation_date",
-   "landmark_name",
-   "latitude",
-   "location_address",
-   "location_city",
-   "location_state",
-   "location_zip",
-   "longitude"
-  ]
- },
- "ty7a-2bxt": "missing",
- "cmb2-8jw8": "missing",
- "yw5d-szpx": "missing",
  "2u8t-236p": {
   "name": "Chicago Historic Resources Survey - Red and Orange Buildings",
   "n": 9298,
@@ -63,7 +39,6 @@
    "yearnotes"
   ]
  },
- "c4vt-4uy5": "missing",
  "bqx3-yhry": {
   "name": "National Register of Historic Places",
   "n": 389,
@@ -83,14 +58,12 @@
   ]
  },
  "mf4j-r5g9": "not json",
- "g5sm-atjv": "missing",
  "bddq-yxar": "not json",
  "uct4-hrvh": {
   "name": "Individual Landmarks",
   "n": 412,
   "props": [
    "address",
-   "architect",
    "date_built",
    "id",
    "landmark",
@@ -98,74 +71,9 @@
    "valid_date"
   ]
  },
- "2h6e-2yk6": "missing",
  "9i9k-jh45": "not json",
- "j4h8-ug9m": {
-  "name": "Additional Dwelling Unit Preapproval Applications",
-  "n": 613,
-  "props": [
-   "acknowledge_no_shared",
-   "acknowledge_will_require_affordable_adus",
-   "action_date",
-   "address",
-   "adu_applying_for",
-   "affidavit_yn",
-   "alderman",
-   "coach_house",
-   "conversion_unit",
-   "dwelling_units_in_lot",
-   "fee_affordable_units_required",
-   "has_one_applied_previously",
-   "id",
-   "labor_requirement",
-   "latitude",
-   "longitude",
-   "max_number_coach_house_units_allowed",
-   "max_number_of_adu_allowed",
-   "number_affordable_units_required",
-   "principal_building_built_year",
-   "principal_building_requirement",
-   "proof_of_residency_yn",
-   "recording_deed_yn",
-   "status",
-   "street_direction",
-   "street_number",
-   "submission_date",
-   "submitter_role",
-   "unit",
-   "user_amended_date",
-   "ward",
-   "zip",
-   "zoning"
-  ]
- },
- "fqz5-is9z": "not json",
  "64xf-pyvh": "not json",
- "y9xh-uwte": {
-  "name": "Boundaries - Enterprise Zones (Deprecated October 2021)",
-  "n": 6,
-  "props": [
-   "display_co",
-   "enterprise",
-   "name",
-   "objectid",
-   "shape_area",
-   "shape_leng"
-  ]
- },
- "et95-m34q": "not json",
- "huvz-edkp": "not json",
- "vdsr-p25b": "missing",
  "e6xh-nr8w": "not json",
- "44ph-3azf": "not json",
- "nnk5-dwci": "not json",
- "7stf-9xe9": "not json",
- "uevf-xsjr": "no shapes",
- "ysbe-3bhn": "not json",
- "qgkk-xrvp": "not json",
- "hn8b-xuti": "not json",
- "keda-fhtt": "not json",
- "7yd9-wm38": "not json",
  "kjav-iyuj": "not json",
  "cmr6-dn8c": {
   "name": "Boundaries - Special Service Areas",
@@ -189,283 +97,6 @@
    "ward_2023"
   ]
  },
- "dbvs-iaa4": "missing",
- "x9du-wfiv": "not json",
- "uvpn-q65m": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2024)",
-  "n": 57,
-  "props": [
-   "comm_area",
-   "name",
-   "objectid",
-   "objectid_1",
-   "objectid_2",
-   "ref_no",
-   "shape_area",
-   "shape_le_1",
-   "shape_leng",
-   "status",
-   "ward"
-  ]
- },
- "i35c-ftqu": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2022)",
-  "n": 53,
-  "props": [
-   "comm_area",
-   "name",
-   "objectid",
-   "objectid_1",
-   "ref_no",
-   "shape_area",
-   "shape_leng",
-   "status",
-   "ward"
-  ]
- },
- "5pr3-hwde": "not json",
- "uhab-t2hm": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2023)",
-  "n": 56,
-  "props": [
-   "comm_area",
-   "name",
-   "objectid",
-   "objectid_1",
-   "objectid_2",
-   "ref_no",
-   "shape_area",
-   "shape_le_1",
-   "shape_leng",
-   "status",
-   "ward"
-  ]
- },
- "c4sc-3f6n": "not json",
- "9fit-fndz": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2020)",
-  "n": 53,
-  "props": [
-   "comm_area",
-   "name",
-   "objectid",
-   "ref_no",
-   "shape_area",
-   "shape_len",
-   "status",
-   "ward"
-  ]
- },
- "vchi-3msd": "not json",
- "vqvu-rchz": "not json",
- "ch5p-gxrk": "missing",
- "aq3f-cb5w": {
-  "name": "Boundaries - Special Service Areas (Deprecated May 2019) - Tabular View",
-  "n": 53,
-  "props": [
-   "comm_area",
-   "name",
-   "objectid",
-   "ref_no",
-   "shape_area",
-   "shape_len",
-   "status",
-   "ward"
-  ]
- },
- "2gdn-k2ni": "not json",
- "we7q-2v2d": "not json",
- "hec5-y4x5": {
-  "name": "311 Service Requests - Graffiti Removal - Historical",
-  "n": 1052041,
-  "props": [
-   "community_area",
-   "completion_date",
-   "creation_date",
-   "latitude",
-   "location_address",
-   "location_city",
-   "location_state",
-   "location_zip",
-   "longitude",
-   "police_district",
-   "service_request_number",
-   "ssa",
-   "status",
-   "street_address",
-   "type_of_service_request",
-   "ward",
-   "what_type_of_surface_is_the_graffiti_on_",
-   "where_is_the_graffiti_located_",
-   "x_coordinate",
-   "y_coordinate",
-   "zip_code"
-  ]
- },
- "9ksk-na4q": {
-  "name": "311 Service Requests - Garbage Carts - Historical",
-  "n": 403716,
-  "props": [
-   "community_area",
-   "completion_date",
-   "creation_date",
-   "current_activity",
-   "latitude",
-   "location_address",
-   "location_city",
-   "location_state",
-   "location_zip",
-   "longitude",
-   "most_recent_action",
-   "number_of_black_carts_delivered",
-   "police_district",
-   "service_request_number",
-   "ssa",
-   "status",
-   "street_address",
-   "type_of_service_request",
-   "ward",
-   "x_coordinate",
-   "y_coordinate",
-   "zip_code"
-  ]
- },
- "3c9v-pnva": {
-  "name": "311 Service Requests - Abandoned Vehicles - Historical",
-  "n": 260557,
-  "props": [
-   "community_area",
-   "completion_date",
-   "creation_date",
-   "current_activity",
-   "how_many_days_has_the_vehicle_been_reported_as_parked_",
-   "latitude",
-   "license_plate",
-   "location_address",
-   "location_city",
-   "location_state",
-   "location_zip",
-   "longitude",
-   "most_recent_action",
-   "police_district",
-   "service_request_number",
-   "ssa",
-   "status",
-   "street_address",
-   "type_of_service_request",
-   "vehicle_color",
-   "vehicle_make_model",
-   "ward",
-   "x_coordinate",
-   "y_coordinate",
-   "zip_code"
-  ]
- },
- "7as2-ds3y": {
-  "name": "311 Service Requests - Pot Holes Reported - Historical",
-  "n": 559602,
-  "props": [
-   "community_area",
-   "completion_date",
-   "creation_date",
-   "current_activity",
-   "latitude",
-   "location_address",
-   "location_city",
-   "location_state",
-   "location_zip",
-   "longitude",
-   "most_recent_action",
-   "number_of_potholes_filled_on_block",
-   "police_district",
-   "service_request_number",
-   "ssa",
-   "status",
-   "street_address",
-   "type_of_service_request",
-   "ward",
-   "x_coordinate",
-   "y_coordinate",
-   "zip"
-  ]
- },
- "rym7-49n8": {
-  "name": "Financial Incentive Projects - Neighborhood Opportunity Fund (NOF) Small",
-  "n": 126,
-  "props": [
-   "address_number",
-   "address_number_high",
-   "approval_date",
-   "community_area",
-   "completion_date",
-   "incentive_amount",
-   "jobs_created_aspirational",
-   "jobs_retained_aspirational",
-   "other_public_funding",
-   "project_description",
-   "property_type",
-   "square_footage",
-   "street_direction",
-   "street_type",
-   "total_project_cost",
-   "ward"
-  ]
- },
- "j7ew-b73u": {
-  "name": "Financial Incentive Projects - Neighborhood Opportunity Fund (NOF) Large",
-  "n": 6,
-  "props": [
-   "address_number",
-   "address_number_high",
-   "approval_date",
-   "community_area",
-   "completion_date",
-   "incentive_amount",
-   "jobs_created_aspirational",
-   "jobs_retained_aspirational",
-   "mbe_participation",
-   "mbe_requirement_met",
-   "other_public_funding",
-   "project_description",
-   "property_type",
-   "square_footage",
-   "street_direction",
-   "street_type",
-   "total_project_cost",
-   "ward",
-   "wbe_participation",
-   "wbe_requirement_met"
-  ]
- },
- "5xt8-wz7f": "missing",
- "pzvt-tadb": "not json",
- "xbwc-ntpx": {
-  "name": "Additional Dwelling Unit Preapproval Applications - Historical",
-  "n": 1038,
-  "props": [
-   "address",
-   "adu_type",
-   "adu_zone",
-   "aff_adus",
-   "comm_area",
-   "current_dus",
-   "existing_bldg",
-   "id",
-   "latitude",
-   "longitude",
-   "max_adus",
-   "new_adus",
-   "prev_adus",
-   "status",
-   "status_updated_date",
-   "street_direction",
-   "street_number",
-   "submission_date",
-   "ward",
-   "year_built",
-   "zoning"
-  ]
- },
  "ttjb-ayff": {
   "name": "Additional Dwelling Unit Areas",
   "n": 5,
@@ -476,7 +107,5 @@
    "shape_leng"
   ]
  },
- "n8dk-kjjn": "not json",
- "smqg-b5t3": "not json",
- "pkyu-f77p": "missing"
+ "n8dk-kjjn": "not json"
 }
