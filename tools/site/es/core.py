@@ -27,7 +27,7 @@ T = {
     'Free to use with credit to Shape Chicago. It updates itself when the numbers change.': 'Uso libre citando a Shape Chicago. Se actualiza solo cuando cambian las cifras.',
     'More charts and how to cite them:': 'Más gráficos y cómo citarlos:', 'For reporters ›': 'Para periodistas ›',
     'Date passed': 'Fecha pasada', 'Today': 'Hoy', 'Tomorrow': 'Mañana', 'Passed': 'Pasó',
-    'Read this site in English': 'Read this site in English',
+    'About': 'Acerca de',
     'Endorse': 'Respaldar', 'See the plan': 'Ver el plan', 'All plans': 'Todos los planes',
 }
 H = {}

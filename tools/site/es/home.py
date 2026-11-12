@@ -4,6 +4,9 @@ T = {
     'See how Chicago works. Then try changing it.': 'Entiende cómo funciona Chicago. Luego prueba a cambiarlo.',
     "Daily news on housing, transit and the budget. Your ward's votes, rezonings and permits. Plain-English explainers. And simulators that show what a change would really do, with every number sourced.":
         'Noticias diarias sobre vivienda, transporte y presupuesto. Los votos, cambios de zonificación y permisos de tu distrito. Explicaciones sencillas. Y simuladores que muestran lo que de verdad haría un cambio, con la fuente de cada cifra.',
+    'What can you build at your address?': '¿Qué puedes construir en tu dirección?', 'Look it up': 'Buscar',
+    'Your address, like 2150 N Milwaukee': 'Tu dirección, como 2150 N Milwaukee',
+    'Zoning, how many homes the rules allow, permits nearby and your alderperson. Free.': 'Zonificación, cuántas viviendas permiten las reglas, permisos cercanos y tu concejal. Gratis.',
     'In the news': 'En las noticias', 'Chicago planning news': 'Noticias de urbanismo en Chicago',
     'The newest stories on housing, transit and the budget, in one list.': 'Las noticias más recientes sobre vivienda, transporte y presupuesto, en una sola lista.',
     'homes permitted in 2026 so far': 'viviendas con permiso en lo que va de 2026', 'next zoning hearing': 'próxima audiencia de zonificación',

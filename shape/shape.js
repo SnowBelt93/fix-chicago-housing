@@ -287,44 +287,59 @@ window.scMap = {
   }
 };
 
-/* Español. A reader picks the language with the EN/ES button in the header (or ?lang=es in a link); it is remembered in this
-   browser as sc-lang. Translations live in /shape/es.json, keyed by the English text, so pages stay one file each:
-     t: {"English text": "Texto en español"}            a text node or attribute whose whole text matches
-     h: {"English with <b>tags</b>": "Español con <b>etiquetas</b>"}   an element whose inner HTML matches (for sentences with links or bold)
-     r: [["^(\\d[\\d,]*) homes$", "$1 viviendas"]]       patterns for text with numbers in it (hr: the same for inner HTML;
+/* Languages: English, Spanish, Chinese (Simplified) and Polish, Chicago's three most spoken languages after English (ACS).
+   A reader picks one from the language button in the header (or ?lang=es|zh|pl in a link); it is remembered in this browser
+   as sc-lang. Translations live in /shape/<lang>.json (built by tools/site/es_build.py), keyed by the English text, so pages
+   stay one file each:
+     t: {"English text": "translation"}                  a text node or attribute whose whole text matches
+     h: {"English with <b>tags</b>": "…<b>…</b>"}        an element whose inner HTML matches (for sentences with links or bold)
+     r: [["^(\\d[\\d,]*) homes$", "$1 viviendas"]]     patterns for text with numbers in it (hr: the same for inner HTML;
                                                          w: words a pattern can look up, written {{Nov}} in its replacement;
                                                          [[$1]] in a replacement translates that captured piece with t)
    Anything without a translation stays in English. New text added by a page later (a simulator's results, a pop-up) is
    translated as it appears. Elements marked translate="no" (names, addresses, codes) are left alone. */
 (function(){
+  const LANGS = {en: {n: "English", c: "EN", html: "en"}, es: {n: "Español", c: "ES", html: "es", offer: "Este sitio también está en español.", yes: "Leer en español", no: "No, gracias"},
+    zh: {n: "中文", c: "中文", html: "zh-Hans", offer: "本网站也有中文版。", yes: "阅读中文版", no: "不用了"},
+    pl: {n: "Polski", c: "PL", html: "pl", offer: "Ta strona jest też po polsku.", yes: "Czytaj po polsku", no: "Nie, dziękuję"}};
   const KEY = "sc-lang", qs = new URLSearchParams(location.search).get("lang");
-  let lang = "en"; try { if (qs === "es" || qs === "en") localStorage.setItem(KEY, qs); lang = localStorage.getItem(KEY) || "en"; } catch (e) { if (qs) lang = qs; }
+  let lang = "en"; try { if (LANGS[qs]) localStorage.setItem(KEY, qs); lang = localStorage.getItem(KEY) || "en"; } catch (e) { if (LANGS[qs]) lang = qs; }
+  if (!LANGS[lang]) lang = "en";
   window.scLang = lang;
   window.scSetLang = l => { try { localStorage.setItem(KEY, l); } catch (e) {} const u = new URL(location.href); u.searchParams.delete("lang"); location.replace(u.toString()); };
   const norm = s => s.replace(/\s+/g, " ").trim();
   function button(){
     const r = document.querySelector(".sc-head .sc-r"); if (!r || r.querySelector(".sc-lang")) return;
-    const b = document.createElement("button"); b.type = "button"; b.className = "sc-btn sc-lang"; b.setAttribute("translate", "no");
-    b.textContent = lang === "es" ? "EN" : "ES"; b.setAttribute("aria-label", lang === "es" ? "Read this site in English" : "Leer este sitio en español"); b.lang = lang === "es" ? "en" : "es";
-    b.onclick = () => window.scSetLang(lang === "es" ? "en" : "es");
-    const fb = r.querySelector(".sc-fbbtn, .sc-menubtn"); fb ? r.insertBefore(b, fb) : r.appendChild(b);
+    const w = document.createElement("div"); w.className = "sc-langw"; w.setAttribute("translate", "no");
+    const b = document.createElement("button"); b.type = "button"; b.className = "sc-btn sc-lang"; b.textContent = LANGS[lang].c;
+    b.setAttribute("aria-haspopup", "true"); b.setAttribute("aria-expanded", "false"); b.setAttribute("aria-label", "Language · Idioma · 语言 · Język");
+    const m = document.createElement("div"); m.className = "sc-langmenu"; m.hidden = true;
+    for (const [k, L] of Object.entries(LANGS)){ const o = document.createElement("button"); o.type = "button"; o.lang = L.html; o.textContent = L.n;
+      if (k === lang) o.setAttribute("aria-current", "true"); o.onclick = () => k === lang ? close() : window.scSetLang(k); m.appendChild(o); }
+    const close = () => { m.hidden = true; b.setAttribute("aria-expanded", "false"); };
+    b.onclick = e => { e.stopPropagation(); m.hidden = !m.hidden; b.setAttribute("aria-expanded", String(!m.hidden)); if (!m.hidden) m.querySelector("button").focus(); };
+    document.addEventListener("click", e => { if (!w.contains(e.target)) close(); });
+    w.addEventListener("keydown", e => { if (e.key === "Escape"){ close(); b.focus(); } });
+    w.append(b, m); const fb = r.querySelector(".sc-fbbtn, .sc-menubtn"); fb ? r.insertBefore(w, fb) : r.appendChild(w);
     document.querySelectorAll("footer nav").forEach(n => { if (n.querySelector(".sc-langlink")) return;
-      const a = document.createElement("a"); a.href = "?lang=" + (lang === "es" ? "en" : "es"); a.className = "sc-langlink"; a.setAttribute("translate", "no");
-      a.textContent = lang === "es" ? "English" : "Español"; a.lang = lang === "es" ? "en" : "es"; n.appendChild(a); });
+      for (const [k, L] of Object.entries(LANGS)){ if (k === lang) continue;
+        const a = document.createElement("a"); a.href = "?lang=" + k; a.className = "sc-langlink"; a.setAttribute("translate", "no"); a.textContent = L.n; a.lang = L.html; n.appendChild(a); } });
   }
-  function offer(){   // one quiet offer for readers whose browser is set to Spanish
+  function offer(){   // one quiet offer for readers whose browser is set to Spanish, Chinese or Polish
     if (lang !== "en") return; let seen = null; try { seen = localStorage.getItem("sc-lang-offer"); } catch (e) {}
-    if (seen || !/^es\b/i.test(navigator.language || "")) return;
-    const d = document.createElement("div"); d.className = "sc-langoffer"; d.lang = "es"; d.setAttribute("role", "region"); d.setAttribute("aria-label", "Idioma");
-    d.innerHTML = '<span>Este sitio también está en español.</span><button type="button" class="sc-btn primary">Leer en español</button><button type="button" class="sc-btn" aria-label="Cerrar">No, gracias</button>';
+    const want = ((navigator.language || "").toLowerCase().match(/^(es|zh|pl)/) || [])[1];
+    if (seen || !want || (want === "zh" && /^zh-(tw|hk|mo|hant)/i.test(navigator.language))) return;
+    const L = LANGS[want], d = document.createElement("div"); d.className = "sc-langoffer"; d.lang = L.html; d.setAttribute("role", "region"); d.setAttribute("aria-label", L.n);
+    d.innerHTML = '<span></span><button type="button" class="sc-btn primary"></button><button type="button" class="sc-btn"></button>';
+    d.children[0].textContent = L.offer; d.children[1].textContent = L.yes; d.children[2].textContent = L.no;
     const done = () => { try { localStorage.setItem("sc-lang-offer", "1"); } catch (e) {} d.remove(); };
-    d.querySelectorAll("button")[0].onclick = () => { done(); window.scSetLang("es"); }; d.querySelectorAll("button")[1].onclick = done;
+    d.children[1].onclick = () => { done(); window.scSetLang(want); }; d.children[2].onclick = done;
     document.body.appendChild(d);
   }
-  function go(){ button(); offer(); if (lang === "es") translate(); }
+  function go(){ button(); offer(); if (lang !== "en") translate(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(go, 0)); else setTimeout(go, 0);
-  if (lang !== "es") return;
-  document.documentElement.lang = "es"; document.documentElement.classList.add("sc-es");
+  if (lang === "en") return;
+  document.documentElement.lang = LANGS[lang].html; document.documentElement.classList.add("sc-" + lang, "sc-tr");
   let T = null, H = null, R = [], HR = [];
   const SKIP = "script,style,code,pre,textarea,[translate=no],.sc-lang,.sc-langlink";
   let W = {};   // words used inside patterns: "{{Nov}}" in a replacement becomes W.Nov (month and day names)
@@ -350,7 +365,7 @@ window.scMap = {
     }
   }
   function translate(){
-    fetch("/shape/es.json").then(r => r.json()).then(d => {
+    fetch("/shape/" + lang + ".json").then(r => r.json()).then(d => {
       T = d.t || {}; H = d.h || {}; R = (d.r || []).map(([a, b]) => [new RegExp(a), b]); HR = (d.hr || []).map(([a, b]) => [new RegExp(a), b]); W = d.w || {};
       if (document.title){ const t = tr(document.title); if (t) document.title = t; }
       walk(document.body);
