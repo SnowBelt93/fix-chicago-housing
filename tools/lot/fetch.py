@@ -350,7 +350,28 @@ def acs2():
             got[f'{tb}_{yr}'] = len(keep)
     LOG['acs2'] = got
 
-STEPS = {'catalog': catalog, 'overlays': overlays, 'districts': districts, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud, 'hudlim': hudlim, 'amen': amen, 'places': places, 'acs2': acs2}
+def geo2():
+    """Census tract (2024 cartographic, Cook County) and ZIP code area (2020 ZCTA, 606xx) outlines: only the ID and shape."""
+    import shapefile
+    got = {}
+    for name, url, keep, idf in [('tracts', 'https://www2.census.gov/geo/tiger/GENZ2024/shp/cb_2024_17_tract_500k.zip', lambda g: g.startswith('17031'), 'GEOID'),
+                                 ('zcta', 'https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_zcta520_500k.zip', lambda g: g.startswith('606'), 'ZCTA5CE20')]:
+        b = get(url, tries=2, timeout=900)
+        if not b: got[name] = 'missing'; continue
+        z = zipfile.ZipFile(io.BytesIO(b)); base = [n[:-4] for n in z.namelist() if n.endswith('.shp')][0]
+        r = shapefile.Reader(shp=io.BytesIO(z.read(base + '.shp')), dbf=io.BytesIO(z.read(base + '.dbf')))
+        fields = [f[0] for f in r.fields[1:]]; feats = []
+        for sr in r.iterShapeRecords():
+            g = str(dict(zip(fields, sr.record)).get(idf) or '')
+            if not keep(g): continue
+            pts = sr.shape.points; parts = list(sr.shape.parts) + [len(pts)]
+            rings = [[[round(x, 5), round(y, 5)] for x, y in pts[a:b]] for a, b in zip(parts, parts[1:])]
+            feats.append({'type': 'Feature', 'properties': {'id': g}, 'geometry': {'type': 'Polygon', 'coordinates': rings}})
+        with gzip.open(os.path.join(OUT, f'{name}.geojson.gz'), 'wt') as fh: json.dump({'type': 'FeatureCollection', 'features': feats}, fh)
+        got[name] = len(feats)
+    LOG['geo2'] = got
+
+STEPS = {'catalog': catalog, 'overlays': overlays, 'districts': districts, 'oz': oz, 'flood': flood, 'sales': sales, 'acs': acs, 'treasury': treasury, 'hud': hud, 'hudlim': hudlim, 'amen': amen, 'places': places, 'acs2': acs2, 'geo2': geo2}
 if __name__ == '__main__':
     todo = sys.argv[1:] or list(STEPS)
     for s in todo:
