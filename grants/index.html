@@ -170,6 +170,11 @@ function check(rule, A){
     const t = DATA.liheap.by, m = A.n <= t.length ? t[A.n - 1] : t[t.length - 1] + (A.n - t.length) * (t[1] - t[0]);
     return A.inc / 12 <= m ? [2, `Monthly income under ${money(m)} for ${A.n} ${A.n > 1 ? "people" : "person"}`] : [0, `Monthly income over ${money(m)}, the limit for ${A.n} ${A.n > 1 ? "people" : "person"}`];
   }
+  if (k === "fpl"){
+    const F = DATA.fpl, L = A.n ? (F.base + F.add * (A.n - 1)) * v / 100 : null;
+    if (!A.n || A.inc == null) return [1, `Income at or below ${v}% of the federal poverty level`];
+    return A.inc <= L ? [2, `Income under ${money(L)} a year for ${A.n} ${A.n > 1 ? "people" : "person"} (${v}% of the poverty level)`] : [0, `Income over ${money(L)}, ${v}% of the poverty level for ${A.n} ${A.n > 1 ? "people" : "person"}`];
+  }
   if (k === "age") return (v <= 60 ? A.a60 : A.a65) ? [2, `Someone ${v} or older`] : [0, `Needs someone ${v} or older`];
   if (k === "own") return A.live ? [2, "You live there"] : (A.role === "owner" ? [1, "For the home you live in"] : [0, "For the home you live in"]);
   if (k === "units") return !A.units ? [1, `Buildings of ${v} homes or fewer`] : A.units <= v ? [2, `Building of ${v} homes or fewer`] : [0, `Only buildings of ${v} homes or fewer`];

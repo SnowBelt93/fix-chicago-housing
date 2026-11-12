@@ -70,6 +70,9 @@ tr.tot td{font-weight:600;border-top:2px solid var(--sc-line)}
 .key{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--sc-ink2);margin:0 0 12px}
 .key i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .gap{font-size:15px;margin:10px 0 0}
+tr.sec td{font-size:13px;font-weight:600;color:var(--sc-mute);padding-top:14px;border-top:0}
+tr.sub td{font-weight:600;background:#f6f8fa}
+i.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:0}
 .gap b{font-size:18px}
 .assume li{font-size:13px;line-height:1.55;color:var(--sc-ink2);margin:0 0 4px}
 .empty{font-size:15px;color:var(--sc-ink2)}
@@ -98,6 +101,10 @@ tr.tot td{font-weight:600;border-top:2px solid var(--sc-line)}
     <div><label class="lab" for="homes">Homes</label><input type="number" id="homes" min="4" max="400" step="1" inputmode="numeric"></div>
     <div><label class="lab" for="land">Land price <span class="sub">($)</span></label><input type="number" id="land" min="0" step="1000" inputmode="numeric" placeholder="estimate"></div>
   </div><p class="note" id="homesNote"></p></fieldset>
+  <fieldset><div class="row2">
+    <div><label class="lab" for="rate">Mortgage rate <span class="sub">(%)</span></label><input type="number" id="rate" min="3" max="12" step="0.05" inputmode="decimal"></div>
+    <div><label class="lab" for="crate">Construction loan <span class="sub">(%)</span></label><input type="number" id="crate" min="3" max="14" step="0.05" inputmode="decimal"></div>
+  </div><p class="note" id="rateNote"></p></fieldset>
   <fieldset><legend>Tax credits</legend><div class="seg" id="credit"><button type="button" data-v="auto" aria-pressed="true">Best fit</button><button type="button" data-v="9" aria-pressed="false">9%</button><button type="button" data-v="4" aria-pressed="false">4% + bonds</button></div></fieldset>
   <fieldset><legend>Who it's for</legend>
     <select id="mix">
@@ -106,6 +113,9 @@ tr.tot td{font-weight:600;border-top:2px solid var(--sc-line)}
       <option value="deep">Deeper: a quarter at 30%, the rest at 50–60%</option>
       <option value="mixed">Mixed-income: 80% affordable, 20% market rate</option>
     </select></fieldset>
+  <fieldset><legend>Homes with project-based vouchers</legend>
+    <select id="pbv"><option value="0">None</option><option value="0.1">10% of homes</option><option value="0.25">25% of homes</option><option value="0.5">Half the homes</option></select>
+    <p class="note">CHA or Chicago Low-Income Housing Trust Fund rent help tied to the building. It raises rent income, so the building can carry a bigger mortgage.</p></fieldset>
   <fieldset><legend>Home sizes</legend>
     <select id="beds"><option value="fam">Family: 30% one-bedroom, 45% two, 25% three</option><option value="std" selected>Standard: 35% one, 45% two, 20% three</option><option value="small">Smaller: 20% studio, 50% one, 30% two</option><option value="senior">Seniors: 80% one-bedroom, 20% two</option></select></fieldset>
   <fieldset class="checks"><legend>What you know about the deal</legend>
@@ -113,7 +123,6 @@ tr.tot td{font-weight:600;border-top:2px solid var(--sc-line)}
     <label><input type="checkbox" id="nfp"> A nonprofit is a sponsor</label>
     <label><input type="checkbox" id="emerg"> An emerging developer is on the team</label>
     <label><input type="checkbox" id="ud"> Accessibility beyond what the city requires</label>
-    <label><input type="checkbox" id="subsidy"> Long-term rent subsidy (vouchers or CHA units)</label>
   </fieldset>
 </form>
 
@@ -139,12 +148,22 @@ const CITY = {credit9Max:1.8e6, gapMaxShare:0.20, devFeeCap:2.5e6, dscr:1.15, va
 const A = {
   netSf:{0:520, 1:700, 2:950, 3:1200}, eff:0.82,
   hard:{flats:{c:320, n:"three-story flats, no elevator"}, low:{c:360, n:"four-story walk-up or small elevator building"}, mid:{c:400, n:"five- to seven-story building"}, high:{c:460, n:"high-rise"}},
-  band:0.12, soft:0.22, nonBasis:0.10, util:110, spread:0.02, amort:35, price:0.83, deferMax:0.5, opRes:0.5, repRes:1000, ahp:2e6, bondShare:0.25
+  band:0.12, soft:0.17, nonBasis:0.10, ua:{0:70, 1:90, 2:115, 3:140, 4:165}, spread:0.0225, amort:35, price:0.83, deferMax:0.5, opRes:0.5, repRes:1000, ahp:2e6, bondShare:0.25,
+  // construction financing: loan = 65% of hard and soft costs, about 55% drawn on average while building, all of it during lease-up
+  softMin:400000, cl:0.65, draw:0.55, months:{flats:12, low:16, mid:20, high:26}, leaseUp:6, cspread:0.03, cfee:0.015, pfee:0.01, pbvShare:1.0
 };
+/* market rates, read by hand: Northmarq "Rates and spreads", Nov. 11, 2026 (30-day average SOFR 3.91%; HUD 221(d)(4) 6.75–7.25% before the
+   0.25% mortgage insurance premium; Freddie Mac 15-year fixed 6.34–6.54%) */
+const MKT = {sofr:3.91, date:"Nov. 11, 2026", src:"https://www.northmarq.com/insights/rates-spreads", hud:"6.75–7.25%", mip:0.25, fre:"6.34–6.54%"};
+/* other public money a Chicago deal can apply for (soft sources): caps from each agency's own rules */
+const IHDA_USG = "https://www.ihda.org/wp-content/uploads/2025/12/Underwriting-Standards-Guide_December-2025-update-Final.pdf";
+const IHDA_QAP = "https://www.ihda.org/wp-content/uploads/2025/07/2026-Qualified-Allocation-Plan_7.1.2025.pdf";
+const IHDA_PLAN = "https://www.ihda.org/wp-content/uploads/2026/01/2026-Annual-Comprehensive-Housing-Plan.pdf";
+const SOFT = {ihdaShare:0.10, city9:8239164};
 const MIX = {avg:[[30, .2], [50, .3], [60, .3], [80, .2]], 60:[[60, 1]], deep:[[30, .25], [50, .35], [60, .4]], mixed:[[50, .3], [60, .5], [0, .2]]};
 const BEDS = {fam:[[1, .3], [2, .45], [3, .25]], std:[[1, .35], [2, .45], [3, .2]], small:[[0, .2], [1, .5], [2, .3]], senior:[[1, .8], [2, .2]]};
 
-let LIM = null, AMEN = null, STA = null, TRACTS = null, SALES = null, SITE = null, CREDIT = "auto";
+let LIM = null, AMEN = null, STA = null, TRACTS = null, SALES = null, SAFMR = null, SITE = null, CREDIT = "auto";
 function limitFor(p, persons){ // income limit at p% AMI for a (possibly fractional) household size: HUD's 50% limit × p/50
   const l = LIM.l50, i = Math.max(1, Math.min(8, persons)), lo = Math.floor(i), hi = Math.min(8, Math.ceil(i));
   const v = l[lo - 1] + (l[hi - 1] - l[lo - 1]) * (i - lo); return v * p / 50;
@@ -157,7 +176,7 @@ const MI = 1609.34;
 
 async function load(){
   const j = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
-  [LIM, AMEN, STA, TRACTS, SALES] = await Promise.all([j("/grants/data/limits.json"), j("/grants/data/amen.json"), j("/grants/data/stations.json"), j("/grants/data/tracts.json"), j("/lot/data/sales.json")]);
+  [LIM, AMEN, STA, TRACTS, SALES, SAFMR] = await Promise.all([j("/grants/data/limits.json"), j("/grants/data/amen.json"), j("/grants/data/stations.json"), j("/grants/data/tracts.json"), j("/lot/data/sales.json"), j("/grants/data/safmr.json")]);
 }
 const GT = new Map();
 async function layers(lon, lat){
@@ -195,53 +214,72 @@ async function pick(P){
   run();
 }
 
-function model(){
-  const S = SITE, N = Math.max(4, +$("homes").value || 40), mix = MIX[$("mix").value], beds = BEDS[$("beds").value];
+function rates(){
+  const r = $("rate").value !== "" ? +$("rate").value / 100 : LIM.ust10 / 100 + A.spread;
+  const c = $("crate").value !== "" ? +$("crate").value / 100 : (MKT.sofr / 100) + A.cspread;
+  return [r, c];
+}
+function model(rateBump){
+  const S = SITE, N = Math.max(4, +$("homes").value || 40), mix = MIX[$("mix").value], beds = BEDS[$("beds").value], pbv = +$("pbv").value;
+  const [rate0, crate] = rates(), rate = rate0 + (rateBump || 0);
   // building
   const net = beds.reduce((t, [b, s]) => t + s * A.netSf[b], 0), gross = net / A.eff;
   const kind = N <= 6 ? "flats" : N <= 24 ? "low" : N <= 90 ? "mid" : "high";
   const hard0 = N * gross * A.hard[kind].c, cont = hard0 * CITY.contNew, hard = hard0 + cont;
-  const soft = hard0 * A.soft;
+  const soft = Math.max(hard0 * A.soft, A.softMin);
   const landEst = S.lot && S.landPsf ? S.lot * S.landPsf : null;
-  const land = $("land").value !== "" ? +$("land").value : (landEst != null ? landEst : 25000 * N);
-  // income and rents
+  const land = $("pub").checked ? 1 : $("land").value !== "" ? +$("land").value : (landEst != null ? landEst : 25000 * N);
+  // income and rents (vouchers go to the lowest-income homes first)
+  const zip = (S.G.zip || [])[0], fmr = SAFMR && zip ? SAFMR.z[zip] : null;
   const units = [];
   for (const [b, bs] of beds) for (const [p, ps] of mix) units.push({b, p, n:N * bs * ps});
+  units.sort((x, y) => (x.p || 999) - (y.p || 999));
+  let vleft = N * pbv; const U = [];
+  for (const u of units){ if (vleft > 0.01 && u.p > 0){ const v = Math.min(u.n, vleft); vleft -= v; U.push({...u, n:v, v:true}); if (u.n - v > 0.01) U.push({...u, n:u.n - v}); } else U.push(u); }
   const affShare = mix.filter(m => m[0] > 0).reduce((t, m) => t + m[1], 0);
   const avgAmi = mix.filter(m => m[0] > 0).reduce((t, m) => t + m[0] * m[1], 0) / affShare;
-  const mktRent = b => S.T && S.T.rent ? S.T.rent * ({0:.8, 1:.95, 2:1.15, 3:1.35}[b]) : maxRent(80, b) - A.util;
+  const fmrB = b => fmr ? fmr[Math.min(4, b)] : null;
+  const mktRent = b => fmrB(b) ? fmrB(b) - A.ua[b] : S.T && S.T.rent ? S.T.rent * ({0:.8, 1:.95, 2:1.15, 3:1.35}[b]) : maxRent(80, b) - A.ua[b];
   let gpr = 0;
-  for (const u of units){ const r = u.p > 0 ? Math.max(0, maxRent(u.p, u.b) * CITY.rentShare - A.util) : mktRent(u.b); u.rent = r; gpr += u.n * r * 12; }
+  for (const u of U){
+    const tc = Math.max(0, maxRent(u.p, u.b) * CITY.rentShare - A.ua[u.b]);
+    u.rent = u.v ? Math.max(tc, (fmrB(u.b) ? fmrB(u.b) * A.pbvShare - A.ua[u.b] : tc)) : u.p > 0 ? tc : mktRent(u.b);
+    gpr += u.n * u.rent * 12;
+  }
   const egi = gpr * (1 - CITY.vacancy), opex = N * (CITY.opex + CITY.reserve), noi = egi - opex;
-  // reserves (operating: six months of expenses; replacement: capitalized per home)
-  const reserves = opex * A.opRes + N * A.repRes;
-  // developer fee on fee-based costs (City schedule: 15% of first $5M, 10% to $15M, 5% above; capped)
-  const fb = hard + soft, fee = Math.min(CITY.devFeeCap, 0.15 * Math.min(fb, 5e6) + 0.10 * Math.max(0, Math.min(fb, 15e6) - 5e6) + 0.05 * Math.max(0, fb - 15e6), 0.15 * fb);
-  const tdc = land + hard + soft + reserves + fee;
-  // debt
-  const rate = (LIM.ust10 / 100) + A.spread, mr = rate / 12, nper = A.amort * 12;
-  const constant = 12 * mr / (1 - Math.pow(1 + mr, -nper));
+  // permanent loan
+  const mr = rate / 12, nper = A.amort * 12, constant = 12 * mr / (1 - Math.pow(1 + mr, -nper));
   const loan = Math.max(0, noi / CITY.dscr / constant);
-  // tax credits
+  // construction financing: interest while building and leasing up, plus lender fees
+  const months = A.months[kind], cloan = (hard + soft) * A.cl;
+  const cint = cloan * crate * (A.draw * months + A.leaseUp) / 12, fees = cloan * A.cfee + loan * A.pfee;
+  const reserves = opex * A.opRes + N * A.repRes;
+  // developer fee on fee-based costs (city schedule: 15% of first $5M, 10% to $15M, 5% above; capped)
+  const fb = hard + soft + cint + fees, fee = Math.min(CITY.devFeeCap, 0.15 * Math.min(fb, 5e6) + 0.10 * Math.max(0, Math.min(fb, 15e6) - 5e6) + 0.05 * Math.max(0, fb - 15e6), 0.15 * fb);
+  const tdc = land + hard + soft + cint + fees + reserves + fee;
+  // tax credits: construction interest counts in basis; permanent loan fees and reserves don't
   const qct = !!(S.G.qct27 || S.G.qct26), dda = !!S.G.dda, boostOK = qct || dda;
-  const basis = (hard + soft * (1 - A.nonBasis) + fee);
+  const basis = hard + soft * (1 - A.nonBasis) + cint + cloan * A.cfee + fee;
   const qb = basis * (boostOK ? CITY.boost : 1) * affShare;
   const c9 = Math.min(CITY.credit9Max, qb * 0.09), c4 = qb * 0.04;
   const eq9 = c9 * 10 * A.price, eq4 = c4 * 10 * A.price;
   const gap9 = tdc - loan - eq9, gap4 = tdc - loan - eq4;
   let ctype = CREDIT === "auto" ? (N <= 90 && gap9 <= gap4 ? "9" : "4") : CREDIT;
   const credit = ctype === "9" ? c9 : c4, equity = ctype === "9" ? eq9 : eq4, capped = ctype === "9" && qb * 0.09 > CITY.credit9Max;
-  // stack
+  // layer 1: what the deal carries itself
   const after1 = tdc - loan - equity;
   const defer = Math.min(Math.max(0, after1), fee * A.deferMax);
-  const gapLoan = Math.min(Math.max(0, after1 - defer), tdc * CITY.gapMaxShare);
+  const gap = Math.max(0, after1 - defer);
+  // layer 2: public money to apply for, in the usual order, each within its cap
+  let rest = gap; const take = cap => { const t = Math.min(rest, Math.max(0, cap)); rest -= t; return t; };
   const inTif = !!(S.G.tif && S.G.tif.length);
-  const tif = inTif ? Math.min(Math.max(0, after1 - defer - gapLoan), CITY.tifAvgPerHome * N) : 0;
-  const ahp = Math.min(Math.max(0, after1 - defer - gapLoan - tif), A.ahp);
-  const left = Math.max(0, after1 - defer - gapLoan - tif - ahp);
-  const surplus = Math.max(0, -after1);
-  return {N, kind, net, gross, hard0, cont, hard, soft, land, landEst, reserves, fee, tdc, units, gpr, egi, opex, noi, rate, loan, qct, dda, boostOK, basis, qb, ctype, credit, equity, capped,
-          defer, gapLoan, tif, inTif, ahp, left, surplus, affShare, avgAmi, c9, c4};
+  const gapLoan = take(tdc * CITY.gapMaxShare);
+  const tif = inTif ? take(CITY.tifAvgPerHome * N) : 0;
+  const ihda = take(tdc * SOFT.ihdaShare);
+  const ahp = take(A.ahp);
+  const left = rest, surplus = Math.max(0, -after1);
+  return {N, kind, net, gross, hard0, cont, hard, soft, land, landEst, reserves, fee, tdc, units:U, gpr, egi, opex, noi, rate, crate, loan, cloan, cint, fees, months, zip, fmr,
+          qct, dda, boostOK, basis, qb, ctype, credit, equity, capped, defer, gap, gapLoan, tif, inTif, ihda, ahp, left, surplus, affShare, avgAmi, c9, c4, pbv};
 }
 
 function scorecard(M){
@@ -266,7 +304,7 @@ function scorecard(M){
   add("p", $("pub").checked ? 2 : 1, `<b>Publicly owned or donated site</b>${$("pub").checked ? "" : " (tell us if it is)"}.`);
   add("p", (S.nearL && S.nearL.d <= 0.5 * MI) || (S.nearM && S.nearM.d <= 0.5 * MI) ? 2 : 1, `<b>Near transit:</b> ${S.nearL ? `${esc(S.nearL.n)} (L) ${(S.nearL.d / MI).toFixed(2)} mi` : "no L nearby"}${S.nearM ? `, ${esc(S.nearM.n)} (Metra) ${(S.nearM.d / MI).toFixed(2)} mi` : ""}. Bus stops aren't checked here.`);
   add("p", S.F.fl ? 0 : 2, S.F.fl ? `<b>Flood zone ${esc(S.F.fl[0][1])}:</b> a likely problem site characteristic.` : `<b>No flood zone</b> on FEMA's map.`);
-  add("p", (M.ahp > 0 || M.loan > 0) ? 2 : 1, `<b>Non-city money:</b> a first mortgage and Federal Home Loan Bank funds in the stack.`);
+  add("p", (M.ahp > 0 || M.ihda > 0 || M.loan > 0) ? 2 : 1, `<b>Non-city money:</b> a first mortgage${M.ihda > 0 ? ", IHDA funds" : ""}${M.ahp > 0 ? ", Federal Home Loan Bank funds" : ""} in the stack.`);
   add("p", $("ud").checked ? 2 : 1, `<b>Accessibility beyond city standards</b>${$("ud").checked ? "" : " (design choice)"}.`);
   add("p", $("emerg").checked ? 2 : 1, `<b>Emerging developer or vendor</b>${$("emerg").checked ? "" : " on the team?"}.`);
   if (ctype === "Housing Enhancement Area"){
@@ -276,7 +314,7 @@ function scorecard(M){
   } else {
     add("c", (M.qct || M.dda) ? 2 : 0, `<b>Qualified Census Tract or Difficult Development Area:</b> ${M.qct ? "Qualified Census Tract" : M.dda ? "Difficult Development Area" : "neither"}.`);
     add("c", $("mix").value === "mixed" || M.units.some(u => u.p >= 80 || u.p === 0) ? 2 : 0, `<b>Mixed income</b> (homes from 30% of AMI up to 80% or market rate).`);
-    add("c", $("subsidy").checked ? 2 : 1, `<b>Long-term rent subsidy</b> (vouchers or CHA units)${$("subsidy").checked ? "" : "?"}.`);
+    add("c", M.pbv > 0 ? 2 : 1, `<b>Long-term rent subsidy</b> (project-based vouchers)${M.pbv > 0 ? ": " + Math.round(M.pbv * 100) + "% of homes" : "?"}.`);
     add("c", $("nfp").checked ? 2 : 1, `<b>Nonprofit or CHDO sponsor</b>${$("nfp").checked ? "" : "?"}.`);
   }
   return {out, ctype, met:pt.filter(s => s === 2).length, miss:pt.filter(s => s === 0).length, open:pt.filter(s => s === 1).length, total:pt.length, fails:out.filter(o => o[0] === "t" && o[1] === 0).length};
@@ -301,22 +339,30 @@ function run(){
   ];
   const cg = g => C.out.filter(o => o[0] === g).map(o => `<li class="${"nmy"[o[1]]}">${o[2]}</li>`).join("");
   const rowsCost = [
-    ["Land", M.land, $("land").value !== "" ? "your number" : M.landEst != null ? `${S.landN} empty-lot sales nearby, $${S.landPsf}/sq ft` : "assumption: $25,000 a home"],
+    ["Land", M.land, $("pub").checked ? "city-owned land, sold for $1" : $("land").value !== "" ? "your number" : M.landEst != null ? `${S.landN} empty-lot sales nearby, $${S.landPsf}/sq ft` : "assumption: $25,000 a home"],
     ["Construction", M.hard0, `${fmt(M.N * M.gross)} sq ft at $${A.hard[M.kind].c}/sq ft (${A.hard[M.kind].n})`],
     ["Hard cost contingency", M.cont, "5%, the city's standard"],
-    ["Soft costs", M.soft, "design, permits, legal, financing, insurance: 22% of construction"],
+    ["Soft costs", M.soft, M.soft > M.hard0 * A.soft + 1 ? "design, permits, legal, syndication, audits: at least $400,000 however small the building" : "design, permits, legal, insurance, marketing: 17% of construction"],
+    ["Construction loan interest", M.cint, `${mill(M.cloan)} loan at ${(M.crate * 100).toFixed(2)}%, about ${A.months[M.kind]} months building and ${A.leaseUp} leasing up`],
+    ["Loan fees", M.fees, "1.5% of the construction loan, 1% of the mortgage"],
     ["Reserves", M.reserves, "six months of operating costs plus $1,000 a home"],
     ["Developer fee", M.fee, "the city's schedule, capped at $2.5M"],
   ];
-  const colors = {loan:"#2b5da0", eq:"#41b6e6", defer:"#8a97a6", gap:"#7b5ea7", tif:"#c48a2a", ahp:"#2f8f5b", left:"#e4002b"};
-  const parts = [["First mortgage", M.loan, colors.loan, `${(M.rate * 100).toFixed(2)}% for ${A.amort} years at 1.15× debt coverage`], [`${M.ctype}% tax credit equity`, M.equity, colors.eq, `${mill(M.credit)} a year × 10 years × $${A.price.toFixed(2)}${M.boostOK ? ", with the 30% basis boost" : ""}`],
-    ["Deferred developer fee", M.defer, colors.defer, "up to half the fee"], ["City gap loan", M.gapLoan, colors.gap, "up to 20% of cost"], ["TIF", M.tif, colors.tif, M.inTif ? "city average $136,340 a home" : "not in a TIF district"],
-    ["Federal Home Loan Bank AHP", M.ahp, colors.ahp, "up to $2M, competitive"], ["Still to find", M.left, colors.left, ""]].filter(p => p[1] > 0.5);
-  const tot = M.tdc;
+  const colors = {loan:"#2b5da0", eq:"#41b6e6", defer:"#8a97a6", gap:"#7b5ea7", tif:"#c48a2a", ihda:"#4a8a8c", ahp:"#2f8f5b", left:"#e4002b"};
+  const own = [["First mortgage", M.loan, colors.loan, `${(M.rate * 100).toFixed(2)}% for ${A.amort} years at 1.15× debt coverage`], [`${M.ctype}% tax credit equity`, M.equity, colors.eq, `${mill(M.credit)} a year × 10 years × $${A.price.toFixed(2)}${M.boostOK ? ", with the 30% basis boost" : ""}`],
+    ["Deferred developer fee", M.defer, colors.defer, "up to half the fee, paid from cash flow"]].filter(p => p[1] > 0.5);
+  const pub = [["City gap loan", M.gapLoan, colors.gap, "Dept. of Housing, up to 20% of cost; competitive, in the city's round"], ["TIF", M.tif, colors.tif, M.inTif ? "up to the city's 2023–24 average, $136,340 a home; the city decides" : "not in a TIF district"],
+    ["IHDA soft loan", M.ihda, colors.ihda, "Illinois Affordable Housing Trust Fund, HOME or National Housing Trust Fund; up to 10% of cost in Chicago, usually alongside IHDA's own credits or bonds; competitive"],
+    ["Federal Home Loan Bank AHP", M.ahp, colors.ahp, "up to $2M; one round a year, competitive"]].filter(p => p[1] > 0.5);
+  const parts = [...own, ...pub, ["Still to find", M.left, colors.left, ""]].filter(p => p[1] > 0.5);
+  const tot = M.tdc, pubSum = pub.reduce((t, p) => t + p[1], 0);
+  const up = model(0.01), dLoan = M.loan - up.loan;
   const ex = [];
-  if (M.ctype === "4" && M.loan + M.equity > 0) ex.push(`4% credits need tax-exempt bonds for at least 25% of land and building (about ${mill((M.land + M.basis) * A.bondShare)}); the state's bond cap is competitive.`);
+  if (M.ctype === "4" && M.loan + M.equity > 0) ex.push(`4% credits need tax-exempt bonds for at least 25% of land and building (about ${mill((M.land + M.basis) * A.bondShare)}); IHDA and the city share Illinois' bond cap.`);
+  if (M.ctype === "9") ex.push(`9% credits are scarce: the city hands out about ${mill(SOFT.city9)} a year, roughly four or five deals at its $1.8M cap. IHDA also aims about 12% of its own 9% credits at Chicago (a $1.7M cap, and 10% of homes set aside at 30% of AMI for its Statewide Referral Network).`);
   if (M.capped) ex.push("The 9% request hits the city's $1.8M cap; a bigger building usually goes 4% with bonds.");
   if (M.surplus > 0) ex.push(`The sources cover the cost with about ${mill(M.surplus)} to spare; you could deepen affordability or drop the city loan.`);
+  const row = p => `<tr><td>${p[2] ? `<i class="sw" style="background:${p[2]}"></i>` : ""}${esc(p[0])}</td><td class="n">${mill(p[1])}</td><td class="n">${Math.round(p[1] / tot * 100)}%</td><td>${esc(p[3])}</td></tr>`;
   $("out").innerHTML = `
   <div class="card"><h2>${esc(S.label)}</h2><p class="h2s">${esc(C.ctype)}${S.tract ? " · census tract " + esc(S.tract.slice(5)) : ""}</p><div class="facts">${facts.map(f => `<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div></div>
   <div class="card"><h2>City 9% tax credit fit</h2><p class="h2s">Chicago scores applications by thresholds and preferences, not points. This is our reading of the <a href="${QAP}" target="_blank" rel="noopener">2025 Qualified Allocation Plan</a>.</p>
@@ -325,32 +371,41 @@ function run(){
   <div class="card"><h2>What it might cost</h2><p class="h2s">${fmt(M.N)} homes, about ${fmt(M.net)} sq ft each. Total ${mill(M.tdc)}, ${money(M.tdc / M.N)} a home (range ${money(M.tdc / M.N * (1 - A.band))} to ${money(M.tdc / M.N * (1 + A.band))}).</p>
     <table><thead><tr><th>Cost</th><th class="n">Total</th><th class="n">A home</th><th>How</th></tr></thead><tbody>${rowsCost.map(r => `<tr><td>${r[0]}</td><td class="n">${mill(r[1])}</td><td class="n">${money(r[1] / M.N)}</td><td>${esc(r[2])}</td></tr>`).join("")}<tr class="tot"><td>Total</td><td class="n">${mill(M.tdc)}</td><td class="n">${money(M.tdc / M.N)}</td><td>City review trigger: $750,000 a home</td></tr></tbody></table>
     <p class="note">For comparison: the 15 projects the city funded in April 2026 average about $581,000 a home (new and preservation); city-supported new construction averaged $747,000 in 2023.</p></div>
-  <div class="card"><h2>Capital stack</h2><p class="h2s">Rents at ${Math.round(CITY.rentShare * 100)}% of the tax credit limits, ${Math.round(CITY.vacancy * 100)}% vacancy and $${fmt(CITY.opex)} a home in operating costs give about ${mill(M.noi)} a year to pay a mortgage.</p>
+  <div class="card"><h2>Capital stack</h2><p class="h2s">Rents at ${Math.round(CITY.rentShare * 100)}% of the tax credit limits${M.pbv ? ", voucher rents on " + Math.round(M.pbv * 100) + "% of homes" : ""}, ${Math.round(CITY.vacancy * 100)}% vacancy and $${fmt(CITY.opex)} a home in operating costs give about ${mill(M.noi)} a year to pay a mortgage.</p>
     <div class="stack" role="img" aria-label="Capital stack">${parts.map(p => `<div style="width:${(p[1] / tot * 100).toFixed(2)}%;background:${p[2]}" title="${esc(p[0])}: ${mill(p[1])}"></div>`).join("")}</div>
     <div class="key">${parts.map(p => `<span><i style="background:${p[2]}"></i>${esc(p[0])}</span>`).join("")}</div>
-    <table><thead><tr><th>Source</th><th class="n">Amount</th><th class="n">Share</th><th>How</th></tr></thead><tbody>${parts.map(p => `<tr><td>${esc(p[0])}</td><td class="n">${mill(p[1])}</td><td class="n">${Math.round(p[1] / tot * 100)}%</td><td>${esc(p[3])}</td></tr>`).join("")}<tr class="tot"><td>Total cost</td><td class="n">${mill(tot)}</td><td class="n">100%</td><td></td></tr></tbody></table>
-    <p class="gap">${M.left > 0.5 ? `Still to find: <b>${mill(M.left)}</b> (${money(M.left / M.N)} a home).` : `<b>The sources cover it.</b>`} The city put in $217,504 a home on average in 2023–24, counting all its money.</p>
+    <table><thead><tr><th>Source</th><th class="n">Amount</th><th class="n">Share</th><th>How</th></tr></thead><tbody>
+    <tr class="sec"><td colspan="4">What the deal carries itself</td></tr>${own.map(row).join("")}
+    <tr class="sub"><td>Gap before public money</td><td class="n">${mill(M.gap)}</td><td class="n">${Math.round(M.gap / tot * 100)}%</td><td>${money(M.gap / M.N)} a home</td></tr>
+    ${pub.length ? `<tr class="sec"><td colspan="4">Public money it could apply for (none is promised)</td></tr>${pub.map(row).join("")}` : ""}
+    ${M.left > 0.5 ? row(["Still to find", M.left, "", "after every source above"]) : ""}
+    <tr class="tot"><td>Total cost</td><td class="n">${mill(tot)}</td><td class="n">100%</td><td></td></tr></tbody></table>
+    <p class="gap">${M.left > 0.5 ? `Still to find: <b>${mill(M.left)}</b> (${money(M.left / M.N)} a home), even if every application wins.` : M.gap > 0.5 ? `<b>Covered only if the applications win:</b> ${mill(pubSum)} of public money, ${money(pubSum / M.N)} a home.` : `<b>The deal covers itself.</b>`} The city put in $217,504 a home on average in 2023–24, counting all its money.</p>
+    <p class="note"><b>Interest rates matter:</b> each point higher on the mortgage cuts it by about ${mill(dLoan)} (${money(dLoan / M.N)} a home), and the gap grows by the same.</p>
     ${ex.map(e => `<p class="note">${esc(e)}</p>`).join("")}
-    <p class="note">Also worth asking about: Cook County's affordable property tax program (AHSAP) lowers taxes and raises the loan; Illinois Affordable Housing Tax Credit donations; historic credits if the building is listed; CHA or voucher rent subsidy. See the <a href="/grants/?for=developer">grants finder</a>.</p></div>
-  <div class="card"><h2>Rents used</h2><table><thead><tr><th>Home</th><th>For</th><th class="n">Homes</th><th class="n">Rent a month</th></tr></thead><tbody>${M.units.filter(u => u.n >= 0.5).map(u => `<tr><td>${u.b ? u.b + "-bedroom" : "Studio"}</td><td>${u.p ? u.p + "% of AMI" : "Market rate"}</td><td class="n">${fmt(u.n)}</td><td class="n">${money(u.rent)}</td></tr>`).join("")}</tbody></table>
-    <p class="note">Tax credit rents are 30% of the income limit for 1.5 people per bedroom (HUD's method), at ${Math.round(CITY.rentShare * 100)}% (the city's underwriting rule), less $${A.util} for utilities (assumption). ${M.units.some(u => !u.p) ? "Market rents come from the census tract's median rent, scaled by bedroom (assumption)." : ""}</p></div>
+    <p class="note">Not counted but worth asking about: Illinois Affordable Housing Tax Credit donations (the city hands out 24.5% of the state's; donors get 50% of the gift back as a state credit); the Chicago Low-Income Housing Trust Fund's MAUI money for homes at 30% of AMI; the city's housing bond (including the Green Social Housing fund for mixed-income buildings without tax credits); Cook County's affordable property tax program (AHSAP), which lowers taxes and raises the loan; historic credits if the building is listed. The federal 45L and 179D energy credits ended for buildings started after June 30, 2026. See the <a href="/grants/?for=developer">grants finder</a>.</p></div>
+  <div class="card"><h2>Rents used</h2><table><thead><tr><th>Home</th><th>For</th><th class="n">Homes</th><th class="n">Rent a month</th></tr></thead><tbody>${M.units.filter(u => u.n >= 0.5).map(u => `<tr><td>${u.b ? u.b + "-bedroom" : "Studio"}</td><td>${u.p ? u.p + "% of AMI" + (u.v ? ", voucher" : "") : "Market rate"}</td><td class="n">${fmt(u.n)}</td><td class="n">${money(u.rent)}</td></tr>`).join("")}</tbody></table>
+    <p class="note">Tax credit rents are 30% of the income limit for 1.5 people per bedroom (HUD's method), at ${Math.round(CITY.rentShare * 100)}% (the city's underwriting rule), less a utility allowance of $${A.ua[0]}–$${A.ua[3]} a month by size (assumption: tenants pay electricity only). ${M.fmr ? `Voucher and market rents use HUD's Small Area Fair Market Rent for ZIP ${esc(M.zip)} (fiscal ${SAFMR.fy}), less the same allowance; CHA sets the real voucher rent, and HUD caps it at 110% of the fair market rent.` : M.units.some(u => !u.p || u.v) ? "Market rents come from the census tract's median rent, scaled by bedroom (assumption)." : ""}</p></div>
   <div class="card"><h2>Sources and assumptions</h2><ul class="assume">
     <li>City rules: <a href="${QAP}" target="_blank" rel="noopener">2025 Qualified Allocation Plan</a> and <a href="${USG}" target="_blank" rel="noopener">Underwriting Standards Guide</a>: $1.8M 9% cap, 30% basis boost, 1.15 debt coverage, 7% vacancy, $9,500 operating cost and $350 replacement reserve a home, developer fee schedule and $2.5M cap, 5% contingency, rents at 95% of limits, 57% average income cap, 20% city gap loan limit, city averages per home.</li>
     <li>Income limits: HUD ${esc(LIM.label)} for the Chicago area (<a href="${esc(LIM.src)}" target="_blank" rel="noopener">source</a>). Other incomes are HUD's 50% limit scaled by percentage.</li>
-    <li>10-year Treasury ${LIM.ust10.toFixed(2)}% on ${esc(LIM.ust10date)} (<a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates" target="_blank" rel="noopener">U.S. Treasury</a>) plus a 2.00-point spread (assumption), 35-year amortization (assumption).</li>
+    <li>Mortgage: 10-year Treasury ${LIM.ust10.toFixed(2)}% on ${esc(LIM.ust10date)} (<a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates" target="_blank" rel="noopener">U.S. Treasury</a>) plus 2.25 points, 35-year amortization (assumptions, in line with ${MKT.date} quotes of ${MKT.hud} for HUD 221(d)(4) before its ${MKT.mip}% premium and ${MKT.fre} for Freddie Mac 15-year loans, <a href="${MKT.src}" target="_blank" rel="noopener">Northmarq</a>). Construction loan: 30-day average SOFR ${MKT.sofr}% plus 3 points, sized at 65% of hard and soft costs, 55% drawn on average while building and fully drawn during ${A.leaseUp} months of lease-up, 1.5% fee; 1% fee on the mortgage (assumptions).</li>
+    <li>IHDA soft money (Illinois Affordable Housing Trust Fund $55M, HOME $15.7M, National Housing Trust Fund $6.7M statewide in 2026, <a href="${IHDA_PLAN}" target="_blank" rel="noopener">2026 Annual Comprehensive Housing Plan</a>): capped at 10% of total cost for City of Chicago projects, repaid from 25% of surplus cash (<a href="${IHDA_USG}" target="_blank" rel="noopener">IHDA Underwriting Standards Guide, Dec. 2025</a>). IHDA's Chicago 9% set-aside and $1.7M cap: <a href="${IHDA_QAP}" target="_blank" rel="noopener">IHDA 2026 Qualified Allocation Plan</a>. City 9% credits a year: the city's 2025 plan.</li>
     <li>Tax credit price $0.83 a credit (assumption near the national median of $0.827 in Aug–Sept 2026, <a href="https://www.taxcreditadvisor.com/wp-content/uploads/2026/11/TCA-Housing-Tax-Credit-Monitor_November_2026_final.pdf" target="_blank" rel="noopener">Tax Credit Advisor</a>). 4% bond test at 25% of basis for bonds issued after 2025 (<a href="https://www.nixonpeabody.com/-/media/files/alerts/2025/07/lihtc_and_obbba.pdf" target="_blank" rel="noopener">Nixon Peabody</a>).</li>
-    <li>Construction cost per sq ft by building type, 22% soft costs, 10% of soft costs outside eligible basis, 82% efficiency, home sizes, $${A.util} utility allowance, deferring up to half the fee: assumptions, set so a typical 50-home mid-rise lands between the city's 2026 round average and its 2023 new-construction average (<a href="https://chicagoyimby.com/2026/04/city-awards-300-million-to-housing-projects-city-wide.html" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://citythatworks.substack.com/p/construction-costs-for-affordable" target="_blank" rel="noopener">A City That Works</a>).</li>
+    <li>Construction cost per sq ft by building type (IHDA's Chicago limit for tax credit new construction is $420 a sq ft), 17% soft costs with a $400,000 floor (fixed legal, syndication and audit costs), 10% of soft costs outside eligible basis, 82% efficiency, home sizes, utility allowances by size, building time by type, deferring up to half the fee: assumptions, set so a typical 50-home mid-rise lands between the city's 2026 round average and its 2023 new-construction average (<a href="https://chicagoyimby.com/2026/04/city-awards-300-million-to-housing-projects-city-wide.html" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://citythatworks.substack.com/p/construction-costs-for-affordable" target="_blank" rel="noopener">A City That Works</a>).</li>
     <li>Qualified Census Tracts and Small Area Difficult Development Areas: HUD 2026 and 2027 lists. Opportunity Zones, flood zones, landmarks: the lot tool's maps. Amenities: OpenStreetMap contributors (grocery = supermarkets). Poverty and household incomes: Census ACS 2020–2024, the tract plus the tracts touching it.</li>
-    <li>Not modeled: commercial space, parking, environmental cleanup, acquisition of an occupied building, property tax breaks, rent subsidies, construction-period interest beyond the soft-cost share.</li></ul></div>`;
+    <li>Not modeled: commercial space, parking, environmental cleanup, acquisition of an occupied building, property tax breaks, Davis-Bacon or state prevailing wages, the timing of equity pay-ins.</li></ul></div>`;
 }
 
 (async function(){
   await load();
   if (!LIM){ $("out").innerHTML = '<div class="card"><p class="empty">The deal check\'s data is still being prepared.</p></div>'; return; }
   document.querySelectorAll("#credit button").forEach(b => b.onclick = () => { CREDIT = b.dataset.v; document.querySelectorAll("#credit button").forEach(x => x.setAttribute("aria-pressed", x === b)); run(); });
-  ["mix", "beds", "pub", "nfp", "emerg", "ud", "subsidy"].forEach(id => $(id).addEventListener("change", run));
+  ["mix", "beds", "pub", "nfp", "emerg", "ud", "pbv"].forEach(id => $(id).addEventListener("change", run));
   $("homes").addEventListener("input", () => { $("homes").dataset.auto = "0"; run(); });
-  $("land").addEventListener("input", run);
+  $("land").addEventListener("input", run); $("rate").addEventListener("input", run); $("crate").addEventListener("input", run);
+  $("rate").placeholder = ((LIM.ust10 / 100 + A.spread) * 100).toFixed(2); $("crate").placeholder = (MKT.sofr + A.cspread * 100).toFixed(2);
+  $("rateNote").innerHTML = `Starts at the 10-year Treasury (${LIM.ust10.toFixed(2)}%, ${esc(LIM.ust10date)}) + 2.25 points and SOFR (${MKT.sofr}%, ${MKT.date}) + 3 points. Today's quotes: HUD 221(d)(4) ${MKT.hud} plus a ${MKT.mip}% insurance premium; Freddie Mac 15-year ${MKT.fre} (<a href="${MKT.src}" target="_blank" rel="noopener">Northmarq</a>).`;
   const start = () => { if (!window.SCAddr) return setTimeout(start, 50); const h = SCAddr.attach($("q"), $("sugg"), pick, t => $("hint").textContent = t);
     const q0 = new URLSearchParams(location.search).get("q"); if (q0){ $("q").value = q0; h.pickText(); } };
   start();

@@ -16,6 +16,7 @@ Fields
      ["layer", "tif" | "nof" | "qct" | "oz" | "hist"]   address inside that area
      ["income", 65000]              total household income at or below a dollar figure
      ["liheap"]                     the state's monthly LIHEAP income table (data.liheap)
+     ["fpl", 200]                   household income at or below 200% of the federal poverty guideline (data.fpl)
      ["disab"] ["vet"] ["vetdis"]   someone with a disability / a veteran / a veteran with a VA disability rating
   status: [kind, note]   kind = open | rolling | seasonal | round | waitlist | closed
   link: where to apply or read the rules;  src: [[label, url], ...];  note: one line of fine print
@@ -108,6 +109,19 @@ P = [
       link='https://www.chicago.gov/city/en/depts/fss/provdrs/serv/svcs/homeless_prevention.html',
       src=[['City program page', 'https://www.chicago.gov/city/en/depts/fss/provdrs/serv/svcs/homeless_prevention.html']],
       note='For low-income households at risk of eviction or losing income; open regardless of immigration status.', checked=C),
+ dict(id='ihwap', name='Free weatherization (Illinois Home Weatherization Assistance Program)', by='State of Illinois, through local community action agencies (CEDA in Cook County)', for_=['owner', 'renter'], goal=['energy', 'repair'], form='service',
+      amount='Insulation, air sealing, furnace or water heater repair or replacement: up to $20,000 of energy work and $4,000 of health and safety work a home', max=20000,
+      rules=[['fpl', 200]],
+      status=['open', 'Year-round; agencies keep waiting lists.'],
+      link='https://dceo.illinois.gov/communityservices/homeweatherization.html',
+      src=[['Illinois DCEO program page', 'https://dceo.illinois.gov/communityservices/homeweatherization.html']],
+      note='Households that got LIHEAP in the last 12 months qualify automatically. Renters need the landlord\'s permission.', checked=C),
+ dict(id='cha_wait', name='CHA public housing and project-based voucher waiting lists', by='Chicago Housing Authority', for_=['renter'], goal=['rent'], form='service',
+      amount='Rent set at about 30% of income in a CHA apartment or a building with CHA vouchers', max=None, rules=[['chicago'], ['ami', 80]],
+      status=['waitlist', 'Public housing, project-based voucher and PBRA lists are open; the Housing Choice Voucher list is closed.'],
+      link='https://applyonline.thecha.org/home',
+      src=[['CHA waitlist page (updated Aug. 11, 2026)', 'https://thecha.org/node/837']],
+      note='Joining is free; housing authorities never charge to apply. Waits can be long.', checked=C),
  # ---------- storefronts and buildings with businesses ----------
  dict(id='sbif', name='Small Business Improvement Fund (SBIF)', by='City of Chicago Department of Planning and Development', for_=['business', 'landlord'], goal=['storefront'], form='grant',
       amount='Up to $150,000 per commercial property ($250,000 with several tenants or for industrial)', max=250000, rules=[['layer', 'tif']],
@@ -146,6 +160,48 @@ P = [
       link='https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html',
       src=[['Underwriting Standards Guide', 'https://www.chicago.gov/content/dam/city/depts/doh/qap/2025/Underwriting%20Standards%20Guide%20Final.pdf']],
       note='Soft loan repaid from 25% of surplus cash. In 2023–24 the city put in $217,504 per home on average, counting all its sources.', checked=C),
+ dict(id='ihda9', name='IHDA 9% tax credits (City of Chicago set-aside)', by='Illinois Housing Development Authority', for_=['developer', 'nonprofit'], goal=['build'], form='credit',
+      amount='Up to $1.7 million a year for 10 years; IHDA aims about 12% of its 9% credits at Chicago', max=None, rules=[['chicago']],
+      status=['round', 'One round a year under IHDA\'s plan, with a preliminary application first.'],
+      link='https://www.ihda.org/developers/tax-credits/low-income-tax-credit/',
+      src=[['IHDA 2026 Qualified Allocation Plan', 'https://www.ihda.org/wp-content/uploads/2025/07/2026-Qualified-Allocation-Plan_7.1.2025.pdf'], ['IHDA 2026 Annual Comprehensive Housing Plan', 'https://www.ihda.org/wp-content/uploads/2026/01/2026-Annual-Comprehensive-Housing-Plan.pdf']],
+      note='A second door besides the city\'s own credits. Chicago projects must set aside 10% of homes at 30% of area median income for the Statewide Referral Network.', checked=C),
+ dict(id='ihdasoft', name='IHDA soft loans (Trust Fund, HOME, National Housing Trust Fund)', by='Illinois Housing Development Authority', for_=['developer', 'nonprofit'], goal=['build'], form='loan',
+      amount='In Chicago, up to 10% of total development cost', max=None, rules=[['chicago']],
+      status=['round', 'Offered with IHDA\'s tax credit rounds and its supportive housing requests for applications.'],
+      link='https://www.ihda.org/developers/developer-resource-center/',
+      src=[['IHDA Underwriting Standards Guide, Dec. 2025', 'https://www.ihda.org/wp-content/uploads/2025/12/Underwriting-Standards-Guide_December-2025-update-Final.pdf'], ['IHDA 2026 Annual Comprehensive Housing Plan', 'https://www.ihda.org/wp-content/uploads/2026/01/2026-Annual-Comprehensive-Housing-Plan.pdf']],
+      note='Statewide in 2026: Illinois Affordable Housing Trust Fund $55 million, HOME $15.7 million, National Housing Trust Fund $6.7 million (for homes at 30% of area median income). Below-market loans repaid from 25% of surplus cash over at least 30 years.', checked=C),
+ dict(id='ihdamtg', name='IHDA first mortgage (FHA Risk-Sharing)', by='Illinois Housing Development Authority', for_=['developer', 'nonprofit'], goal=['build'], form='loan',
+      amount='Fixed-rate loans of $1 million or more, 17 to 40 years', max=None, rules=[],
+      status=['rolling', 'Rates posted by IHDA and given on request.'],
+      link='https://www.ihda.org/wp-content/uploads/2025/04/IHDA-Permanent-First-Mortgage.pdf',
+      src=[['IHDA term sheet', 'https://www.ihda.org/wp-content/uploads/2025/04/IHDA-Permanent-First-Mortgage.pdf']],
+      note='For tax credit and other income-restricted rentals. 1.15 debt coverage (1.11 with rent subsidy), up to 87% of value (90% with subsidy). State prevailing wages apply.', checked=C),
+ dict(id='fha221', name='FHA 221(d)(4) construction and permanent loan', by='U.S. Department of Housing and Urban Development, through approved lenders', for_=['developer'], goal=['build'], form='loan',
+      amount='One fixed-rate loan for building and the 40 years after', max=None, rules=[],
+      status=['rolling', 'Apply through a HUD-approved lender any time.'],
+      link='https://www.hud.gov/program_offices/housing/mfh/progdesc/rentcoophsg221d3n4',
+      src=[['Northmarq rates, Nov. 11, 2026', 'https://www.northmarq.com/insights/rates-spreads'], ['HUD premium change (Federal Register, June 2025)', 'https://downloads.regulations.gov/HUD-2025-0109-0001/content.html']],
+      note='Quoted at 6.75% to 7.25% on Nov. 11, 2026, plus a 0.25% yearly mortgage insurance premium. Federal Davis-Bacon wages apply.', checked=C),
+ dict(id='chapbv', name='CHA project-based vouchers', by='Chicago Housing Authority', for_=['developer', 'nonprofit'], goal=['build', 'rent'], form='service',
+      amount='Rent help tied to homes in your building, under 15- to 30-year contracts', max=None, rules=[['chicago']],
+      status=['round', 'Competitive; CHA\'s board approves each development.'],
+      link='https://thecha.org/node/2716',
+      src=[['CHA program page', 'https://thecha.org/node/2716']],
+      note='Tenants pay about 30% of income and CHA pays the rest of the contract rent, which lets the building carry a bigger mortgage. Ask DevelopmentFinancing@theCHA.org.', checked=C),
+ dict(id='clihtf', name='Chicago Low-Income Housing Trust Fund', by='Chicago Low-Income Housing Trust Fund', for_=['developer', 'nonprofit', 'landlord'], goal=['build', 'rent'], form='grant',
+      amount='Yearly rent subsidies for up to 20% of a building\'s homes, or forgivable money (MAUI) for homes at 30% of area median income', max=None, rules=[['chicago']],
+      status=['round', 'Ask the Trust Fund about current funding.'],
+      link='https://mayorscaucus.org/low-income-housing-trust-fund-chicago/',
+      src=[['Metropolitan Mayors Caucus case study', 'https://mayorscaucus.org/low-income-housing-trust-fund-chicago/']],
+      note='For households at or below 30% of area median income. Funded by city fees paid in place of affordable homes, city money and the state Rental Housing Support Program.', checked=C),
+ dict(id='hedbond', name='City housing bond: rental production and Green Social Housing fund', by='City of Chicago', for_=['developer', 'nonprofit'], goal=['build'], form='loan',
+      amount='Gap money for 600 to 1,000 affordable rental homes, and low-cost loans for mixed-income buildings that don\'t use tax credits', max=None, rules=[['chicago']],
+      status=['round', 'Awarded through the city\'s housing funding rounds.'],
+      link='https://www.chicago.gov/city/en/sites/business-and-neighborhood-development-strategy/home/housing-allocations.html',
+      src=[['City bond housing allocations', 'https://www.chicago.gov/city/en/sites/business-and-neighborhood-development-strategy/home/housing-allocations.html']],
+      note='Part of the 2024–2028 Housing and Economic Development Bond. Can fund projects outside TIF districts.', checked=C),
  dict(id='ahsap', name='Affordable Housing Special Assessment Program', by='Cook County Assessor', for_=['developer', 'nonprofit', 'landlord'], goal=['build', 'tax'], form='tax',
       amount='Lower property taxes for 10 or 30 years on buildings with affordable homes', max=None, rules=[],
       status=['open', 'Part 1 before the building opens; apply by Sept. 5 to count for that tax year.'],
@@ -188,5 +244,7 @@ for p in P:
     p = dict(p); p['for'] = p.pop('for_'); out.append(p)
 LIHEAP = {'note': '30-day gross household income, program year 2026-27', 'src': 'https://dceo.illinois.gov/communityservices/homeweatherization/communityactionagencies/helpillinoisfamilies.html',
           'by': [3990, 5410, 6830, 8250, 9670, 11090]}
-json.dump({'checked': C, 'programs': out, 'liheap': LIHEAP}, open(os.path.join(ROOT, 'grants', 'data', 'programs.json'), 'w'), indent=1, ensure_ascii=False)
+FPL = {'note': '2026 federal poverty guidelines (48 states)', 'base': 15960, 'add': 5680,
+       'src': 'https://dceo.illinois.gov/communityservices/homeweatherization.html'}   # 200%: $31,920 for 1, $66,000 for 4 (DCEO)
+json.dump({'checked': C, 'programs': out, 'liheap': LIHEAP, 'fpl': FPL}, open(os.path.join(ROOT, 'grants', 'data', 'programs.json'), 'w'), indent=1, ensure_ascii=False)
 print(len(out), 'programs')

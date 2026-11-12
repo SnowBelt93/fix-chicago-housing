@@ -10,7 +10,8 @@ Writes grants/data/:
                  pma = the tract plus every tract touching it (the city's Primary Market Area is "census tracts containing the
                  site and adjacent tracts")
   g/<ix>_<iy>.json  same 0.01° tiles as lot/data/t: {"f": [[kind, name, [[ring as int offsets in 1e-6 deg], …]], …]}
-                 kinds: tr (census tract id), qct26 / qct27 (HUD Qualified Census Tracts), dda (HUD Small Area DDA by ZIP,
+  safmr.json     {"fy", "z": {zip: [studio, 1, 2, 3, 4 bedrooms]}} HUD Small Area Fair Market Rents (gross rent)
+                 kinds: zip (ZIP code area), tr (census tract id), qct26 / qct27 (HUD Qualified Census Tracts), dda (HUD Small Area DDA by ZIP,
                  name = the years), tif (TIF district name)"""
 import gzip, json, math, os, sys, csv, collections, datetime, io
 from shapely.geometry import shape, box, Polygon
@@ -78,6 +79,12 @@ dump('tracts.json', {'mfi': MFI, 'src': 'ACS 2020-2024 5-year, tables B19001, B1
 he = sum(1 for v in T.values() if v['pma'][0] is not None and v['pma'][0] >= .5 and v['pma'][1] is not None and v['pma'][1] <= .2)
 print('tracts', len(T), 'pass Housing Enhancement test', he)
 
+# ---- HUD Small Area Fair Market Rents by ZIP (latest fiscal year), from progress/data/src.json (tools/progress/data.py)
+saf = json.load(open(os.path.join(ROOT, 'progress', 'data', 'src.json')))['safmr']
+fy = max(y for z in saf.values() for y in z)
+dump('safmr.json', {'fy': fy, 'src': 'https://www.huduser.gov/portal/datasets/fmr/smallarea/index.html', 'z': {z: v[fy] for z, v in saf.items() if fy in v}})
+print('SAFMR FY', fy, len(saf), 'ZIPs')
+
 # ---- QCTs, small area DDAs, TIF districts -> tiles
 def qcts(name):
     s = set()
@@ -101,14 +108,15 @@ for i, g in geo.items():
     if i in Q27: feats.append(('qct27', i, g))
 for f in json.load(gz('zcta.geojson.gz'))['features']:
     z = f['properties']['id']; yrs = [y for y, S in ((2026, D26), (2027, D27)) if z in S]
-    if yrs: feats.append(('dda', z + ' (' + ' and '.join(map(str, yrs)) + ')', make_valid(shape(f['geometry']))))
+    g = make_valid(shape(f['geometry'])); feats.append(('zip', z, g))
+    if yrs: feats.append(('dda', z + ' (' + ' and '.join(map(str, yrs)) + ')', g))
 for f in json.load(gz('pl_tif_eejr-xtfb.geojson.gz'))['features']:
     p = f['properties']
     if p.get('repealed_d'): continue
     if p.get('expiration') and p['expiration'][:10] < datetime.date.today().isoformat(): continue
     nm = (p.get('name') or '').strip() + (f" (expires {p['expiration'][:4]})" if p.get('expiration') else '')
     feats.append(('tif', nm, make_valid(shape(f['geometry']))))
-TOL = {'tr': 0.00001, 'qct26': 0.00001, 'qct27': 0.00001, 'dda': 0.00002, 'tif': 0.00001}
+TOL = {'zip': 0.00002, 'tr': 0.00001, 'qct26': 0.00001, 'qct27': 0.00001, 'dda': 0.00002, 'tif': 0.00001}
 tiles = collections.defaultdict(list)
 tk = lambda lon, lat: (int(math.floor((lon + 88) * 100)), int(math.floor((lat - 41) * 100)))
 for kind, nm, g in feats:
