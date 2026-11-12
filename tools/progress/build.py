@@ -828,7 +828,7 @@ def preview():
     rows = []
     def chip(t, kind): return f'<span class="chip {kind}">{t}</span>'
     ys = list(range(2016, 2027))
-    rows.append(('<a href="/progress/homes/">Homes permitted</a>', f'{f(pace)} <small>last 12 months</small>', f(Y[2025]['homes']) + ' <small>in 2025</small>', f'{f(close)} a year', chip('▼ Behind' if pace < close else '▲ On pace', 'bad' if pace < close else 'good'), spark([Y[y]['homes'] for y in ys[:-1]] + [ytd['homes']], partial=True, rng=('2016', '2026'))))
+    rows.append(('<a href="/progress/homes/">Homes permitted</a>', f'{f(pace)} <small>last 12 months</small>', f(Y[2025]['homes']) + ' <small>in 2025</small>', f'{f(close)} a year <small>(our estimate, not the city’s)</small>', chip('▼ Behind' if pace < close else '▲ On pace', 'bad' if pace < close else 'good'), spark([Y[y]['homes'] for y in ys[:-1]] + [ytd['homes']], partial=True, rng=('2016', '2026'))))
     n25, n24 = Y[2025]['homes'] - DEMO[2025], Y[2024]['homes'] - DEMO[2024]
     rows.append(('<a href="/progress/homes/#lost">Homes added after teardowns</a>', f'about {f(round(n25, -1))} <small>in 2025</small>', f'about {f(round(n24, -1))} <small>in 2024</small>', '<span class="tbd">no official target</span>', chip('▲ Up' if n25 > n24 else '▼ Down', 'good' if n25 > n24 else 'bad'), spark([Y[y]['homes'] - DEMO[y] for y in ys[:-1]], rng=('2016', '2025'))))
     if TL and len(TL.get('years', {})) >= 2:
@@ -852,8 +852,8 @@ def preview():
     rows.append(('<a href="/progress/streets/">Traffic deaths</a>', f'{f(de["ytd"])} <small>through {day(de["through"])}</small>', f'{f(de["ytd_prev"])} <small>same dates last year</small>', 'zero <small>(Vision Zero, by 2026)</small>',
                  chip('▲ More' if de['ytd'] > de['ytd_prev'] else '▼ Fewer', 'bad' if de['ytd'] > de['ytd_prev'] else 'good'), spark([de['years'][str(y)] for y in range(2019, 2027)], partial=True, rng=('2019', '2026'))))
     card_rows = ''.join(f'<tr><th scope="row">{a}</th><td class="n">{b}</td><td class="n">{c}</td><td>{d}</td><td>{e}</td><td class="sp">{g}</td></tr>' for a, b, c, d, e, g in rows)
-    rc = card('The scoreboard', 'Each line: where it stands now, a year earlier, the official goal if there is one, and the trend.',
-              f'<div class="tw"><table class="rc"><thead><tr><th>What we count</th><th class="n">Now</th><th class="n">A year earlier</th><th>Official goal</th><th>Direction</th><th>Trend</th></tr></thead><tbody>{card_rows}</tbody></table></div>')
+    rc = card('The scoreboard', 'Each line: where it stands now, a year earlier, the goal, and the trend. The city has an official goal only for traffic deaths; the homes goal is ours, from the housing simulator.',
+              f'<div class="tw"><table class="rc"><thead><tr><th>What we count</th><th class="n">Now</th><th class="n">A year earlier</th><th>Goal</th><th>Direction</th><th>Trend</th></tr></thead><tbody>{card_rows}</tbody></table></div>')
     pace_c = card('At this pace', '', f'<p class="big">{verdict}</p><p class="sub">Holding the gap where it is takes {f(hold)} homes a year (the {f(goal_["built_anyway"])} built in a normal year plus the {f(gr)} a year the shortage grows); closing it by 2041 takes {f(close)}. The pace and the goal are the housing simulator’s, an estimate.</p>')
     laws = card('What happened after each law', 'Homes permitted each year, with the dates the City Council passed citywide housing laws. A chart like this shows timing, not cause: interest rates, the pandemic and costs moved at the same time.', lawchart())
     fun = card('From zoning vote to building permit', 'Zoning changes passed for a new residential building, by the year they passed: how many had a building permit within one and two years.', funnel() + '<p class="sub"><a href="/progress/zoning/">Every year and the finished homes ›</a></p>')
