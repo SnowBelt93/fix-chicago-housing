@@ -2,6 +2,7 @@
 workspace can't reach these hosts). Writes to tools/raw/tracker/:
   permits_nc.csv.gz    every 'PERMIT - NEW CONSTRUCTION' permit since 2006 (City of Chicago, ydr8-5enu), all columns
                        except the contacts (names of owners, architects, contractors are never kept)
+  permits_wreck.csv.gz every demolition permit since 2013: date, description, address, point, ward (no contacts)
   elms_zoning.json.gz  City Clerk eLMS matters that match zoning map amendments / planned developments
   elms_sample.json     a few full matter records (actions, attachments) for inspection
   elms_facets.json     facet values (types, statuses) from the eLMS search endpoint
@@ -38,6 +39,16 @@ header = [header[i] for i in keep]; rows = [[r[i] for i in keep if i < len(r)] f
 with gzip.open(os.path.join(OUT, 'permits_nc.csv.gz'), 'wt', newline='') as f:
     w = csv.writer(f); w.writerow(header); w.writerows(rows)
 print('permits total', len(rows), 'columns', header)
+
+# 1b) demolition permits since 2013, for the count of homes torn down (tools/tracker/teardowns.py). Only the columns
+#     that count needs: no contacts, so no names.
+sel = 'id,permit_,issue_date,work_description,street_number,street_direction,street_name,latitude,longitude,ward,community_area'
+q = urllib.parse.urlencode({'$select': sel, '$where': "permit_type='PERMIT - WRECKING/DEMOLITION' AND issue_date >= '2013-01-01T00:00:00'", '$order': 'id', '$limit': 100000})
+b = get(base + '?' + q)
+if b and b.count(b'\n') > 5000:
+    with gzip.open(os.path.join(OUT, 'permits_wreck.csv.gz'), 'wb') as f: f.write(b)
+    print('demolition permits', b.count(b'\n') - 1, flush=True)
+else: print('demolition permits: download looked short, kept the last copy', flush=True)
 
 # 2) City Clerk eLMS (Legislation API, beta): https://api.chicityclerkelms.chicago.gov/swagger.json
 E = 'https://api.chicityclerkelms.chicago.gov'
