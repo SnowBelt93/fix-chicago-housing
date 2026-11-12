@@ -254,7 +254,7 @@ dialog.sc-fb .sc-fbsend:disabled{opacity:.6}
 
 /* One look for the zoom and compass buttons and the credit on every MapLibre map (transit, lot, street, Bears) */
 .maplibregl-ctrl-group{border-radius:12px !important;border:1px solid var(--sc-line,#e3e5e8);box-shadow:0 1px 4px rgba(20,30,50,.14) !important;overflow:hidden;background:#fff}
-.maplibregl-ctrl-group button{width:36px !important;height:36px !important}
+.maplibregl-ctrl-group button[class^="maplibregl-ctrl-"]{width:36px !important;height:36px !important}   /* MapLibre's own buttons only; a page's text buttons keep their width */
 .maplibregl-ctrl-group button + button{border-top:1px solid var(--sc-line,#e3e5e8) !important}
 .maplibregl-ctrl-attrib{font:11px/1.4 var(--sc-font,system-ui,sans-serif)}
 .maplibregl-ctrl-attrib.maplibregl-compact{border-radius:12px !important}
