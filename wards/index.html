@@ -151,7 +151,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
-let D = null, G = null, W = 1, span = "term", sortK = "w", sortDir = 1;
+let D = null, G = null, SH = null, W = 1, span = "term", sortK = "w", sortDir = 1;
 const KL = {up:"More homes allowed", down:"Fewer homes allowed", pd:"Planned development", same:"Same homes, other changes", other:"Not classified"};
 const VOTE = {Absent:"Absent", Recused:"Recused", "Not Voting":"Didn't vote", Excused:"Excused"};
 const elms = id => id ? `https://chicityclerkelms.chicago.gov/Matter/?matterId=${id}` : null;
@@ -164,11 +164,15 @@ const INFO = {
 };
 document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
 function wmap(){
-  const all = G.flatMap(w => w.polys.flat(2)); let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
-  for (const [x, y] of all){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  /* the picker map. Outlines come from /shape/wardshapes.json (the city's ward map on one shared grid, so neighbors meet exactly);
+     wards.json is the fallback and is still what finds the ward for a location. */
+  const rings = SH ? Object.entries(SH.wards).map(([w, rs]) => [+w, rs.map(r => { const o = []; for (let i = 0; i < r.length; i += 2) o.push([r[i] * SH.q, r[i + 1] * SH.q]); return o; })])
+                   : G.map(w => [w.ward, w.polys.map(p => p[0])]);
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (const [, rs] of rings) for (const r of rs) for (const [x, y] of r){ x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
   const k = Math.cos(41.85 * Math.PI / 180), Wd = 300, H = Wd * (y1 - y0) / ((x1 - x0) * k);
-  const P = ([x, y]) => ((x - x0) * k / ((x1 - x0) * k) * Wd).toFixed(1) + "," + ((y1 - y) / (y1 - y0) * H).toFixed(1);
-  $("map").innerHTML = `<svg viewBox="0 0 ${Wd} ${H.toFixed(0)}">${G.map(w => w.polys.map(poly => `<path d="${poly.map(r => "M" + r.map(P).join("L") + "Z").join("")}" fill="${w.ward === W ? "#2b5da0" : "#dfe4ea"}" stroke="#fff" stroke-width=".8" data-w="${w.ward}" style="cursor:pointer"><title>Ward ${w.ward}</title></path>`).join("")).join("")}</svg>`;
+  const P = ([x, y]) => ((x - x0) / (x1 - x0) * Wd).toFixed(1) + "," + ((y1 - y) / (y1 - y0) * H).toFixed(1);
+  $("map").innerHTML = `<svg viewBox="0 0 ${Wd} ${H.toFixed(0)}">${rings.map(([w, rs]) => `<path d="${rs.map(r => "M" + r.map(P).join("L") + "Z").join("")}" fill="${w === W ? "#2b5da0" : "#d9e4f4"}" stroke="#fff" stroke-width=".7" stroke-linejoin="round" data-w="${w}" style="cursor:pointer"><title>Ward ${w}</title></path>`).join("")}</svg>`;
   $("map").querySelectorAll("path").forEach(p => p.onclick = () => go(+p.dataset.w));
 }
 function go(w){ W = w; try { history.replaceState(null, "", "#" + w); localStorage.setItem("sc-ward", String(w)); } catch (e){} render(); }
@@ -248,8 +252,8 @@ $("span").querySelectorAll("button").forEach(b => b.onclick = () => { span = b.d
 $("wSel").innerHTML = `<option value="0" disabled>Pick a ward</option>` + Array.from({length:50}, (_, i) => `<option value="${i + 1}">Ward ${i + 1}</option>`).join("");
 $("wSel").onchange = e => go(+e.target.value);
 addEventListener("hashchange", () => { const w = +location.hash.slice(1); if (D && w >= 1 && w <= 50 && w !== W){ W = w; render(); } });
-Promise.all([fetch("data/wards.json").then(r => r.json()), fetch("/wards.json").then(r => r.json())]).then(([d, g]) => {
-  D = d; G = g; let w = +location.hash.slice(1); if (!(w >= 1 && w <= 50)) { try { w = +localStorage.getItem("sc-ward"); } catch (e){} } if (!(w >= 1 && w <= 50) && window.SCWard) w = +SCWard.get(); W = w >= 1 && w <= 50 ? w : 0; render();
+Promise.all([fetch("data/wards.json").then(r => r.json()), fetch("/wards.json").then(r => r.json()), fetch("/shape/wardshapes.json").then(r => r.json()).catch(() => null)]).then(([d, g, sh]) => {
+  D = d; G = g; SH = sh; let w = +location.hash.slice(1); if (!(w >= 1 && w <= 50)) { try { w = +localStorage.getItem("sc-ward"); } catch (e){} } if (!(w >= 1 && w <= 50) && window.SCWard) w = +SCWard.get(); W = w >= 1 && w <= 50 ? w : 0; render();
   $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago Permit tracker. Contact details: City of Chicago ward offices dataset.`;
 });
 

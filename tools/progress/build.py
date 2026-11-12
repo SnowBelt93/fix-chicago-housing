@@ -104,7 +104,7 @@ def split(parts, labels=True):
     key = '<div class="key">' + ''.join(f'<span><i style="background: {c};"></i>{esc(n)} · <b>{t[0] if t else f(v)}</b></span>' for n, v, c, *t in parts) + '</div>' if labels else ''
     return bar + key
 
-SHAPES = json.load(open(os.path.join(OUT, 'wardshapes.json')))   # the city's 2023 ward map snapped to one grid, so neighbors share exact borders
+SHAPES = json.load(open(os.path.join(ROOT, 'shape', 'wardshapes.json')))   # the city's 2023 ward map snapped to one grid, so neighbors share exact borders
 def wardmap(color_of, aria, info, w=300):
     """Ward map. info = {ward: text shown when the ward is tapped or hovered}."""
     q = SHAPES['q']; lon0, lon1, lat0, lat1 = -87.945, -87.52, 41.64, 42.03; k = math.cos(math.radians(41.85)); sc = w / ((lon1 - lon0) * k); h = round((lat1 - lat0) * sc)
@@ -117,7 +117,7 @@ def wardmap(color_of, aria, info, w=300):
 def goal(title, text, label=None, url=None, none=False):
     """What the section is measured against: a city program with a target, or a plain 'no official target'."""
     link = f' <a href="{url}" target="_blank" rel="noopener">{label} ›</a>' if url else ''
-    return f'<section class="card pad goalc{" none" if none else ""}"><span class="lab">{"No official target" if none else "The official goal"}</span><h2>{title}</h2><p class="sub">{text}{link}</p></section>'
+    return f'<section class="card pad goalc"><span class="tag{" none" if none else ""}">{"No official target" if none else "The official goal"}</span><h2>{title}</h2><p class="sub">{text}{link}</p></section>'
 
 def tiles(items, cols=4):
     return f'<section class="strip c{cols}">' + ''.join(f'<div class="card tile"><b>{b}</b><span>{s}</span></div>' for b, s in items) + '</section>'
@@ -200,7 +200,7 @@ document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((n
 </html>
 '''
 def top(slug, name, h1, thru):
-    return pills(slug) + f'<div class="top"><p class="eyebrow">{name}</p><h1>{h1}</h1><p class="fine">{thru}</p></div>'
+    return f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> {name}</p><h1>{h1}</h1><p class="fine">{thru}</p></div>'
 def bottom(slug, note, src):
     i = [s for s, _ in SECTIONS].index(slug); prv = SECTIONS[i - 1] if i else None; nxt = SECTIONS[i + 1] if i + 1 < len(SECTIONS) else None
     nav = '<nav class="pn" aria-label="More sections">' + (f'<a class="card" href="/progress/{prv[0]}/"><span>Previous</span><b>‹ {prv[1]}</b></a>' if prv else '<span></span>') + (f'<a class="card nx" href="/progress/{nxt[0]}/"><span>Next</span><b>{nxt[1]} ›</b></a>' if nxt else '') + '</nav>'
@@ -267,11 +267,11 @@ def zoning():
     h1 = 'At least 46% of new homes went up on land the City Council had rezoned in the five years before. Counting big-site plans, it is about two-thirds.'
     st = tiles([('At least 46%', 'of the 69,927 homes permitted 2014–2025 were on land rezoned in the 5 years before'), ('56%', 'were in big-site plans (planned developments), which the Council approves one by one'),
                 ('53% vs. 12%', 'homes in buildings of 5+ vs. 1–4 homes that were on recently rezoned land'), ('3 in 10', 'zoning changes for a new building had a building permit within a year; 4 in 10 within two')])
-    ch = bars([31, 20, 12, 35, 45], ['2021', '2022', '2023', '2024', '2025'], fmt=lambda v: f'{v}%', top=60, h=170, aria='Share of zoning changes for a new building that had a building permit within 12 months, by the year the change passed: 31% for 2021, 20% for 2022, 12% for 2023, 35% for 2024 and 45% for 2025.')
+    ch = bars([31, 20, 12, 35, 45], ['2021', '2022', '2023', '2024', '2025'], fmt=lambda v: f'{v}%', top=60, h=190, aria='Share of zoning changes for a new building that had a building permit within 12 months, by the year the change passed: 31% for 2021, 20% for 2022, 12% for 2023, 35% for 2024 and 45% for 2025.')
     tb = table(['Year passed', 'Zoning changes for a new building', 'Permit within 12 months', 'Within 24 months', 'Homes permitted so far on those sites', 'Of those, finished'],
                [['2021', '42', '31%', '43%', '4,926', '4,142'], ['2022', '51', '20%', '35%', '2,073', '1,300'], ['2023', '57', '12%', '33%', '1,320', '374'], ['2024', '63', '35%', '46%', '1,327', '124'],
                 ['2025', '71', '45%', '<span class="tbd">too early to tell</span>', '721', '28'], ['2026', '57', '<span class="tbd">too early to tell</span>', '<span class="tbd">too early to tell</span>', '97', '0']], right=(1, 2, 3, 4, 5), cls='stack')
-    c1 = card('What followed each year’s votes', 'Zoning changes passed for a new residential building, by the year they passed: the share with a building permit within 12 months.', '<div class="narrow">' + ch + '</div>' + tb)
+    c1 = card('What followed each year’s votes', 'Zoning changes passed for a new residential building, by the year they passed: the share with a building permit within 12 months. Our copies of the applications start in 2021, so earlier years can’t be counted yet.', ch + tb)
     c2 = card('This Council term, since May 2023', '787 zoning changes sorted so far by what the new zoning allows on the lot.',
               split([('More homes per lot', 468, NAVY), ('Same', 217, '#9db9de'), ('Fewer', 72, '#c98a8a'), ('Big-site plans', 30, '#c9ced6')])
               + '<p class="sub">385 more, a third of the term’s total, aren’t sorted yet because the before-and-after zoning couldn’t be read from the paperwork. “More homes per lot” compares what the zoning allows, not what was proposed.</p>')
@@ -389,8 +389,8 @@ def streets():
                                                                                          aria='People seriously hurt in crashes each year: 2,376 in 2019, 1,710 in 2025 and 1,497 through Nov. 6, 2026.'))
     st = tiles([('100 deaths', 'in all of 2025, the fewest since at least 2019. 36 were people walking'), ('1,497', 'people seriously hurt through Nov. 6 (1,485 by that date in 2025)'), ('6 days', 'for half of pothole requests to be fixed; 1 in 10 takes more than 7 weeks'), ('290,090', 'potholes filled through Nov. 6 (221,710 by that date in 2025)')])
     c3 = card('Speed camera violations, millions a year', 'Violations jumped in 2021, when cameras began recording drivers going 6 to 10 mph over the limit.',
-              '<div class="narrow">' + bars([0.86, 0.80, 3.08, 2.73, 2.29, 2.24, 2.44], ys[:-1], fmt=lambda v: f'{v:.2f}', h=150, aria='Speed camera violations in millions a year: under 1 million in 2019 and 2020, 3.08 million in 2021 and 2.44 million in 2025.')
-              + '</div><p class="fine">Red-light cameras recorded 534,385 violations in 2025.</p>')
+              bars([0.86, 0.80, 3.08, 2.73, 2.29, 2.24, 2.44], ys[:-1], fmt=lambda v: f'{v:.2f}', h=170, aria='Speed camera violations in millions a year: under 1 million in 2019 and 2020, 3.08 million in 2021 and 2.44 million in 2025.')
+              + '<p class="fine">Red-light cameras recorded 534,385 violations in 2025.</p>')
     note = ('Deaths are the city’s reviewed Vision Zero list, which is published about a month behind. Serious injuries come from police crash reports, which count a little differently (they show 84 deaths through Nov. 6, against 76 a year earlier). '
             'Pothole figures cover finished repairs only; open requests are not in the data, and counts follow the winter as much as the crews.')
     return page('streets', 'Streets', h1, top('streets', 'Streets', h1, f'Deaths through Sept. 27, 2026 · crashes and potholes through Nov. 6 · checked {SNAP}') + st + '<section class="strip c2 cards">' + c1 + c2 + '</section>' + c3
@@ -456,7 +456,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .lede{margin:0;font-size:15.5px;line-height:23px;color:var(--sc-ink2);max-width:860px}
 .pg .call{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2);background:#f6f7f9;border-radius:12px;padding:12px 14px}
 .pg .note{max-width:980px}.pg .src{max-width:980px}
-.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}
+.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}.pg .eyebrow a{color:var(--sc-navy);text-decoration:none}.pg .eyebrow a:hover{text-decoration:underline}
 .pg .top{display:flex;flex-direction:column;gap:8px}
 .pg .chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--sc-line);color:var(--sc-ink2);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:700;white-space:nowrap;align-self:flex-start}
 .pg .chip.bad{border-color:#b3001e;color:#b3001e}.pg .chip.good{border-color:#1f7a45;color:#1f7a45}.pg .chip.go{border-color:var(--sc-navy);color:var(--sc-navy)}
@@ -476,7 +476,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .tile.row{flex-direction:row;align-items:center;gap:14px}.pg .tile.row > b{flex:none}
 .pg .tile.go{justify-content:space-between}.pg .tile.go b.t{display:block;font-size:15.5px;color:var(--sc-ink)}.pg .tile.go em{font-style:normal;font-weight:600;color:var(--sc-navy);white-space:nowrap}
 /* bar charts */
-.pg .chart{min-width:0}
+.pg .chart{min-width:0;width:100%;max-width:calc(var(--n) * 150px);margin-inline:auto}   /* a chart with few bars sits centered instead of stretching */
 .pg .plot{position:relative;height:calc(var(--ch) + 22px);border-bottom:1px solid #c9ced6;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:12px;align-items:end}
 .pg .bc{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0;position:relative}
 .pg .bc i{display:block}.pg .bc i.cap{background:repeating-linear-gradient(135deg,#8a9099 0 3px,#fff 3px 6px);border:1px solid #c9ced6;border-bottom:0;border-radius:3px 3px 0 0}
@@ -514,7 +514,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .hb > div[data-w]{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}.pg .hb > div.on{background:#eef3fb}
 .pg details.all{border-top:1px solid var(--sc-line);padding-top:12px}.pg details.all summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--sc-navy)}.pg details.all .tw{margin-top:10px;max-height:420px;overflow:auto}
 /* the goal each section is measured against */
-.pg .goalc{border-left:4px solid var(--sc-navy);gap:6px}.pg .goalc.none{border-left-color:#c9ced6}.pg .goalc .lab{font-size:12.5px;color:var(--sc-mute)}.pg .goalc .sub{max-width:860px}
+.pg .goalc{gap:8px}.pg .goalc .tag{align-self:flex-start;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--sc-navy);color:#fff}.pg .goalc .tag.none{background:#eef0f3;color:var(--sc-ink2)}.pg .goalc .sub{max-width:860px}
 /* permitted - torn down = net */
 .pg .eq .tile b i{font-style:normal;color:var(--sc-mute);font-weight:500;margin-right:4px}.pg .eq .tile.sum{border-color:var(--sc-navy)}
 .pg .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.pg .facts > div{background:#f6f7f9;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}.pg .facts b{font-size:20px;letter-spacing:-.02em}.pg .facts span{font-size:13.5px;line-height:19px;color:var(--sc-ink2)}

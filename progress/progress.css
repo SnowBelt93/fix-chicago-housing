@@ -19,7 +19,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .lede{margin:0;font-size:15.5px;line-height:23px;color:var(--sc-ink2);max-width:860px}
 .pg .call{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2);background:#f6f7f9;border-radius:12px;padding:12px 14px}
 .pg .note{max-width:980px}.pg .src{max-width:980px}
-.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}
+.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}.pg .eyebrow a{color:var(--sc-navy);text-decoration:none}.pg .eyebrow a:hover{text-decoration:underline}
 .pg .top{display:flex;flex-direction:column;gap:8px}
 .pg .chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--sc-line);color:var(--sc-ink2);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:700;white-space:nowrap;align-self:flex-start}
 .pg .chip.bad{border-color:#b3001e;color:#b3001e}.pg .chip.good{border-color:#1f7a45;color:#1f7a45}.pg .chip.go{border-color:var(--sc-navy);color:var(--sc-navy)}
@@ -39,7 +39,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .tile.row{flex-direction:row;align-items:center;gap:14px}.pg .tile.row > b{flex:none}
 .pg .tile.go{justify-content:space-between}.pg .tile.go b.t{display:block;font-size:15.5px;color:var(--sc-ink)}.pg .tile.go em{font-style:normal;font-weight:600;color:var(--sc-navy);white-space:nowrap}
 /* bar charts */
-.pg .chart{min-width:0}
+.pg .chart{min-width:0;width:100%;max-width:calc(var(--n) * 150px);margin-inline:auto}   /* a chart with few bars sits centered instead of stretching */
 .pg .plot{position:relative;height:calc(var(--ch) + 22px);border-bottom:1px solid #c9ced6;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:12px;align-items:end}
 .pg .bc{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0;position:relative}
 .pg .bc i{display:block}.pg .bc i.cap{background:repeating-linear-gradient(135deg,#8a9099 0 3px,#fff 3px 6px);border:1px solid #c9ced6;border-bottom:0;border-radius:3px 3px 0 0}
@@ -77,7 +77,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .hb > div[data-w]{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}.pg .hb > div.on{background:#eef3fb}
 .pg details.all{border-top:1px solid var(--sc-line);padding-top:12px}.pg details.all summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--sc-navy)}.pg details.all .tw{margin-top:10px;max-height:420px;overflow:auto}
 /* the goal each section is measured against */
-.pg .goalc{border-left:4px solid var(--sc-navy);gap:6px}.pg .goalc.none{border-left-color:#c9ced6}.pg .goalc .lab{font-size:12.5px;color:var(--sc-mute)}.pg .goalc .sub{max-width:860px}
+.pg .goalc{gap:8px}.pg .goalc .tag{align-self:flex-start;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--sc-navy);color:#fff}.pg .goalc .tag.none{background:#eef0f3;color:var(--sc-ink2)}.pg .goalc .sub{max-width:860px}
 /* permitted - torn down = net */
 .pg .eq .tile b i{font-style:normal;color:var(--sc-mute);font-weight:500;margin-right:4px}.pg .eq .tile.sum{border-color:var(--sc-navy)}
 .pg .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.pg .facts > div{background:#f6f7f9;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}.pg .facts b{font-size:20px;letter-spacing:-.02em}.pg .facts span{font-size:13.5px;line-height:19px;color:var(--sc-ink2)}

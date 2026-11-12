@@ -259,3 +259,8 @@ dialog.sc-fb .sc-fbsend:disabled{opacity:.6}
 .maplibregl-ctrl-attrib{font:11px/1.4 var(--sc-font,system-ui,sans-serif)}
 .maplibregl-ctrl-attrib.maplibregl-compact{border-radius:12px !important}
 .maplibregl-popup-content{border-radius:14px !important;box-shadow:0 8px 28px rgba(20,30,50,.18) !important;font-family:var(--sc-font,system-ui,sans-serif)}
+
+/* One look for map keys (housing, transit, Bears) and for the housing camera buttons, matching the MapLibre controls above */
+.sc-mapkey{background:rgba(255,255,255,.96) !important;border:1px solid var(--sc-line,#e3e5e8) !important;border-radius:12px !important;box-shadow:0 1px 4px rgba(20,30,50,.14) !important;padding:9px 12px !important;font-family:var(--sc-font,system-ui,sans-serif) !important;font-size:12.5px !important;line-height:1.3;color:var(--sc-ink2,#3d434b) !important}
+.mapctl{background:#fff !important;border:1px solid var(--sc-line,#e3e5e8) !important;border-radius:12px !important;box-shadow:0 1px 4px rgba(20,30,50,.14) !important}
+.mapctl button{width:36px !important;height:36px !important}
