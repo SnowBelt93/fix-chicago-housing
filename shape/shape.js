@@ -286,3 +286,78 @@ window.scMap = {
     });
   }
 };
+
+/* Español. A reader picks the language with the EN/ES button in the header (or ?lang=es in a link); it is remembered in this
+   browser as sc-lang. Translations live in /shape/es.json, keyed by the English text, so pages stay one file each:
+     t: {"English text": "Texto en español"}            a text node or attribute whose whole text matches
+     h: {"English with <b>tags</b>": "Español con <b>etiquetas</b>"}   an element whose inner HTML matches (for sentences with links or bold)
+     r: [["^(\\d[\\d,]*) homes$", "$1 viviendas"]]       patterns for text with numbers in it (hr: the same for inner HTML;
+                                                         w: words a pattern can look up, written {{Nov}} in its replacement;
+                                                         [[$1]] in a replacement translates that captured piece with t)
+   Anything without a translation stays in English. New text added by a page later (a simulator's results, a pop-up) is
+   translated as it appears. Elements marked translate="no" (names, addresses, codes) are left alone. */
+(function(){
+  const KEY = "sc-lang", qs = new URLSearchParams(location.search).get("lang");
+  let lang = "en"; try { if (qs === "es" || qs === "en") localStorage.setItem(KEY, qs); lang = localStorage.getItem(KEY) || "en"; } catch (e) { if (qs) lang = qs; }
+  window.scLang = lang;
+  window.scSetLang = l => { try { localStorage.setItem(KEY, l); } catch (e) {} const u = new URL(location.href); u.searchParams.delete("lang"); location.replace(u.toString()); };
+  const norm = s => s.replace(/\s+/g, " ").trim();
+  function button(){
+    const r = document.querySelector(".sc-head .sc-r"); if (!r || r.querySelector(".sc-lang")) return;
+    const b = document.createElement("button"); b.type = "button"; b.className = "sc-btn sc-lang"; b.setAttribute("translate", "no");
+    b.textContent = lang === "es" ? "EN" : "ES"; b.setAttribute("aria-label", lang === "es" ? "Read this site in English" : "Leer este sitio en español"); b.lang = lang === "es" ? "en" : "es";
+    b.onclick = () => window.scSetLang(lang === "es" ? "en" : "es");
+    const fb = r.querySelector(".sc-fbbtn, .sc-menubtn"); fb ? r.insertBefore(b, fb) : r.appendChild(b);
+    document.querySelectorAll("footer nav").forEach(n => { if (n.querySelector(".sc-langlink")) return;
+      const a = document.createElement("a"); a.href = "?lang=" + (lang === "es" ? "en" : "es"); a.className = "sc-langlink"; a.setAttribute("translate", "no");
+      a.textContent = lang === "es" ? "English" : "Español"; a.lang = lang === "es" ? "en" : "es"; n.appendChild(a); });
+  }
+  function offer(){   // one quiet offer for readers whose browser is set to Spanish
+    if (lang !== "en") return; let seen = null; try { seen = localStorage.getItem("sc-lang-offer"); } catch (e) {}
+    if (seen || !/^es\b/i.test(navigator.language || "")) return;
+    const d = document.createElement("div"); d.className = "sc-langoffer"; d.lang = "es"; d.setAttribute("role", "region"); d.setAttribute("aria-label", "Idioma");
+    d.innerHTML = '<span>Este sitio también está en español.</span><button type="button" class="sc-btn primary">Leer en español</button><button type="button" class="sc-btn" aria-label="Cerrar">No, gracias</button>';
+    const done = () => { try { localStorage.setItem("sc-lang-offer", "1"); } catch (e) {} d.remove(); };
+    d.querySelectorAll("button")[0].onclick = () => { done(); window.scSetLang("es"); }; d.querySelectorAll("button")[1].onclick = done;
+    document.body.appendChild(d);
+  }
+  function go(){ button(); offer(); if (lang === "es") translate(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(go, 0)); else setTimeout(go, 0);
+  if (lang !== "es") return;
+  document.documentElement.lang = "es"; document.documentElement.classList.add("sc-es");
+  let T = null, H = null, R = [], HR = [];
+  const SKIP = "script,style,code,pre,textarea,[translate=no],.sc-lang,.sc-langlink";
+  let W = {};   // words used inside patterns: "{{Nov}}" in a replacement becomes W.Nov (month and day names)
+  const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.+?)\]\]/g, (m, w) => T[norm(w)] != null ? T[norm(w)] : w);   // [[text]]: translate that piece too
+  function tr(s){ const k = norm(s); if (!k) return null; if (T[k] != null) return T[k];
+    for (const [re, to] of R) if (re.test(k)) return words(k.replace(re, to)); return null; }
+  function text(n){ const v = tr(n.nodeValue); if (v != null && v !== norm(n.nodeValue)){ const m = n.nodeValue.match(/^\s*/)[0], e = n.nodeValue.match(/\s*$/)[0]; n.nodeValue = m + v + e; } }
+  function attrs(el){ for (const a of ["aria-label", "placeholder", "title", "alt", "data-t"]){ const v = el.getAttribute && el.getAttribute(a); if (v){ const t = tr(v); if (t != null) el.setAttribute(a, t); } } }
+  function walk(root){
+    if (root.nodeType === 3){ if (!root.parentElement || !root.parentElement.closest(SKIP)) text(root); return; }
+    if (root.nodeType !== 1 || root.closest(SKIP)) return;
+    const it = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {acceptNode: n => n.nodeType === 1 && n.matches(SKIP) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+    const todo = []; let n = root;
+    do { todo.push(n); } while ((n = it.nextNode()));
+    const done = new Set();
+    for (const x of todo){
+      if (x.nodeType === 1){
+        attrs(x);
+        if (H && x.childElementCount && x.childElementCount < 12){ const k = norm(x.innerHTML); let v = H[k];
+          if (v == null) for (const [re, to] of HR) if (re.test(k)){ v = words(k.replace(re, to)); break; }
+          if (v != null){ x.innerHTML = v; x.querySelectorAll("*").forEach(c => done.add(c)); x.childNodes.forEach(c => done.add(c)); done.add(x); continue; } }
+      } else if (!done.has(x) && !(x.parentElement && done.has(x.parentElement))) text(x);
+    }
+  }
+  function translate(){
+    fetch("/shape/es.json").then(r => r.json()).then(d => {
+      T = d.t || {}; H = d.h || {}; R = (d.r || []).map(([a, b]) => [new RegExp(a), b]); HR = (d.hr || []).map(([a, b]) => [new RegExp(a), b]); W = d.w || {};
+      if (document.title){ const t = tr(document.title); if (t) document.title = t; }
+      walk(document.body);
+      let q = new Set(), busy = false;
+      new MutationObserver(ms => { for (const m of ms){ if (m.type === "characterData") q.add(m.target); else m.addedNodes.forEach(x => q.add(x)); }
+        if (!busy){ busy = true; requestAnimationFrame(() => { busy = false; const L = [...q]; q = new Set(); L.forEach(x => x.isConnected && walk(x)); }); } })
+        .observe(document.body, {childList: true, subtree: true, characterData: true});
+    }).catch(() => {});
+  }
+})();

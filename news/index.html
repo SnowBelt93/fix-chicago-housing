@@ -95,7 +95,7 @@ function render(){
   items.forEach((i, n) => {
     const d = new Date(i.d.replace("Z", ":00Z")), k = d.toLocaleDateString("en-US", {weekday:"long", month:"long", day:"numeric"});
     if (k !== day){ day = k; h += `<div class="day">${k}</div>`; }
-    h += `<a class="item${n === 0 && !q && !since ? " lead" : ""}" href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${pic(i)}</div><div class="tx"><b>${esc(i.t)}</b>${i.x ? `<p class="sm">${esc(i.x)}</p>` : ""}<span>${esc(i.s)}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${myWard && (i.w || []).includes(myWard) ? ` <span class="t" style="background:#eef3fa;color:#1d4580">Ward ${myWard}</span>` : ""}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></div></a>`;
+    h += `<a class="item${n === 0 && !q && !since ? " lead" : ""}" href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${pic(i)}</div><div class="tx"><b translate="no" lang="en">${esc(i.t)}</b>${i.x ? `<p class="sm" translate="no" lang="en">${esc(i.x)}</p>` : ""}<span>${esc(i.s)}${i.g.slice(0, 2).map(g => `<span class="t">${(TOP.find(t => t[0] === g) || [, g])[1]}</span>`).join("")}${myWard && (i.w || []).includes(myWard) ? ` <span class="t" style="background:#eef3fa;color:#1d4580">Ward ${myWard}</span>` : ""}${last && i.d > last ? ` <span class="t" style="background:#e3f3e8;color:#1f7a45">New</span>` : ""}</span></div></a>`;
     if (items.length >= 4 && n === Math.min(7, items.length - 1)) h += `<div data-ad="news"></div>`;
   });
   $("list").innerHTML = h;

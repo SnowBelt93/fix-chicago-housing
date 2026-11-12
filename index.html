@@ -179,9 +179,11 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 .ywwho .al{display:flex;align-items:center;gap:12px}
 .ywwho img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--sc-seg)}
 .ywwho .al b{display:block;font-size:16px} .ywwho .al span{font-size:13px;color:var(--sc-mute)}
-.ywwho .ct{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.ywwho .ct{display:flex;flex-direction:column;gap:0;font-size:14px}
 .ywwho .ct a{text-decoration:none;font-weight:500}
-.ywwho .chg{font:inherit;font-size:13px;color:var(--sc-mute);background:none;border:0;padding:0;text-decoration:underline;cursor:pointer;align-self:flex-start}
+.ywwho .ct a{padding:4px 0}
+@media (pointer:coarse){ .ywwho .ct a{padding:7px 0} }
+.ywwho .chg{font:inherit;font-size:13px;color:var(--sc-mute);background:none;border:0;padding:8px 0;margin:-8px 0;text-decoration:underline;cursor:pointer;align-self:flex-start}
 .ywnew{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .ywnew span{font-size:13.5px;font-weight:600;padding:5px 10px;border-radius:10px;background:#eef7f1;color:#1f6b44}
 .ywnew span.z{background:var(--sc-seg);color:var(--sc-mute)}
@@ -301,7 +303,7 @@ loadPlans();
       const items = pool.filter(i => PLAN.includes(i.s)).concat(pool.filter(i => !PLAN.includes(i.s))).filter(i => (per[i.s] = (per[i.s] || 0) + 1) <= 3).slice(0, 8).sort((a, b) => a.d < b.d ? 1 : -1);
       const fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
       const origin = u => { try { return new URL(u).origin; } catch (e){ return ""; } };
-      document.getElementById("wkNews").innerHTML = items.map(i => `<a href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${i.i ? `<img src="${esc(i.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : `<img class="logo" src="${esc(origin(i.u))}/favicon.ico" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`}</div><div class="tx">${seen && i.d > seen ? '<span class="new">New</span>' : ""}<b>${esc(i.t)}</b><small>${esc(i.s)} · ${day(i.d)}</small></div></a>`).join("") || "<p>No stories yet.</p>";
+      document.getElementById("wkNews").innerHTML = items.map(i => `<a href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${i.i ? `<img src="${esc(i.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : `<img class="logo" src="${esc(origin(i.u))}/favicon.ico" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`}</div><div class="tx">${seen && i.d > seen ? '<span class="new">New</span>' : ""}<b translate="no" lang="en">${esc(i.t)}</b><small>${esc(i.s)} · ${day(i.d)}</small></div></a>`).join("") || "<p>No stories yet.</p>";
       if (fresh) document.getElementById("weekNote").textContent = fresh + " new " + (fresh === 1 ? "story" : "stories") + " since your last visit";
       try { localStorage.setItem("sc-home-seen", d.updated); } catch (e){}
     }).catch(() => (document.getElementById("wkNews").innerHTML = "<p>Not available right now.</p>"));
@@ -324,6 +326,7 @@ loadPlans();
     if (!f) return;
     const a = document.getElementById("feat"); a.href = f.u; a.target = "_blank"; a.rel = "noopener";
     document.getElementById("featK").textContent = "In the news";
+    for (const id of ["featT", "featX"]){ const e = document.getElementById(id); e.setAttribute("translate", "no"); e.lang = "en"; }   // outlets' own words stay as written
     document.getElementById("featT").textContent = f.t; if (f.x) document.getElementById("featX").textContent = f.x;
     document.getElementById("featS").textContent = f.s + " · " + new Date(f.d.replace("Z", ":00Z")).toLocaleDateString("en-US", {month:"short", day:"numeric"}) + " · More in Chicago planning news";
     if (f.i){ const im = document.getElementById("featImg"); im.onerror = () => { im.src = "/shape/art/hero.webp"; im.className = "art"; }; im.referrerPolicy = "no-referrer"; im.src = f.i; }
@@ -356,7 +359,7 @@ loadPlans();
     const A = D.ald, f = D.fresh, origin = location.origin.replace(/^https?:/, "");
     note.textContent = since ? "Since you last looked " + day(since) : "";
     const chips = since ? [f.news ? f.news + " new " + (f.news === 1 ? "story" : "stories") : "", f.z ? f.z + " zoning " + (f.z === 1 ? "change" : "changes") + " passed" : "", f.homes ? fmt(f.homes) + " homes permitted" : ""].filter(Boolean) : [];
-    const news = D.news.slice(0, 5).map(i => '<li>' + (since && i.d > since ? '<span class="nw">New</span>' : "") + '<a href="' + esc(i.u) + '" target="_blank" rel="noopener">' + esc(i.t) + '</a><small>' + esc(i.s) + ' · ' + day(i.d) + (i.exact ? "" : " · nearby") + '</small></li>').join("");
+    const news = D.news.slice(0, 5).map(i => '<li>' + (since && i.d > since ? '<span class="nw">New</span>' : "") + '<a href="' + esc(i.u) + '" target="_blank" rel="noopener" translate="no" lang="en">' + esc(i.t) + '</a><small>' + esc(i.s) + ' · ' + day(i.d) + (i.exact ? "" : " · nearby") + '</small></li>').join("");
     const tag = z => z.k === "pd" ? '<span class="tg pd">Planned development</span>' : z.hf != null && z.ht != null ? (z.ht > z.hf ? '<span class="tg">More homes</span>' : z.ht < z.hf ? '<span class="tg dn">Fewer homes</span>' : '<span class="tg eq">Same homes</span>') : "";
     const zs = D.z.slice(0, 3).map(z => '<li>' + tag(z) + '<a href="/wards/#' + n + '">' + esc(z.a) + '</a><small>' + (z.f && z.t ? esc(z.f) + " → " + esc(z.t) + " · " : "") + "passed " + day(z.d) + '</small></li>').join("");
     const ps = D.permits.filter(p => +p.homes >= 2).slice(0, 2).map(p => '<li><a href="/tracker/#near">' + esc(p.addr) + '</a><small>' + fmt(p.homes) + ' homes permitted · ' + day(p.date) + '</small></li>').join("");

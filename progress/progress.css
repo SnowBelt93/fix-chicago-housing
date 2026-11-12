@@ -15,6 +15,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .hd{display:flex;flex-direction:column;gap:4px}
 /* embed button on a card, the embed dialog, and the embed pages (/embed/<id>/) */
 .pg .hd .embb{order:2;align-self:flex-start;margin-top:4px;border:1px solid var(--sc-line);background:#fff;color:var(--sc-navy);font:600 12.5px var(--sc-font);border-radius:999px;padding:4px 11px;cursor:pointer}
+@media (pointer:coarse){ .pg .hd .embb{min-height:34px;padding:6px 14px} }
 @media (min-width:700px){ .pg .hd{position:relative;padding-right:84px} .pg .hd .embb{position:absolute;right:0;top:-2px;margin:0} }
 .pg .hd .embb:hover{border-color:var(--sc-navy)}
 dialog.embd{border:0;border-radius:18px;padding:22px 24px;max-width:min(560px,calc(100vw - 32px));width:100%;box-shadow:0 20px 60px rgba(20,30,50,.25);font-family:var(--sc-font);color:var(--sc-ink)}
@@ -64,6 +65,8 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 .pg .pair{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 /* horizontal bars */
 .pg .hb{display:flex;flex-direction:column;gap:8px}.pg .hb > div{display:grid;gap:10px;align-items:center;font-size:13.5px}
+.pg .hb > div > span{min-width:0;overflow-wrap:anywhere}
+@media (max-width:420px){ .pg .hb > div{gap:8px;font-size:13px} }
 .pg .hb .tr{height:9px;background:#eef0f3;border-radius:5px}.pg .hb .tr i{display:block;height:100%;background:var(--sc-navy);border-radius:5px}.pg .hb b{text-align:right;white-space:nowrap}
 .pg .split{display:flex;gap:2px;height:16px;border-radius:5px;overflow:hidden}
 .pg .fin{display:flex;flex-direction:column;gap:9px}.pg .fin > div{display:grid;grid-template-columns:44px minmax(0,1fr) 150px;gap:10px;align-items:center}

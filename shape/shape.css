@@ -309,3 +309,8 @@ dialog.sc-menu .sc-menu-g a:not([aria-current]):hover{background:var(--sc-chip)}
 @media (max-width:640px){ .sc-head .sc-nav{display:none !important} .sc-menubtn{display:inline-flex} .sc-head .sc-l{flex:1;min-width:0} .sc-head .sc-brand span{display:inline;font-size:17px} }
 @media (max-width:340px){ .sc-head .sc-brand span{display:none} }
 @media (prefers-reduced-motion:no-preference){ dialog.sc-menu[open]{animation:scMenuSlide .2s ease-out} @keyframes scMenuSlide{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}} }
+
+/* language switch (shape.js "Español") */
+.sc-head .sc-lang{min-height:32px;padding:0 10px;font-size:13px;font-weight:700;letter-spacing:.02em}
+@media (pointer:coarse){ .sc-head .sc-lang{min-height:40px;min-width:40px} }
+.sc-langoffer{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;background:#fff;border:1px solid var(--sc-line);border-radius:16px;box-shadow:0 10px 30px rgba(20,30,50,.18);padding:10px 12px 10px 16px;font:14px var(--sc-font);color:var(--sc-ink);max-width:calc(100vw - 24px)}
