@@ -14,6 +14,7 @@ integer offsets from the tile corner in 1e-6 degrees. Kinds:
 Nothing here names a private person: the landmark files' architect column is dropped at download and again here."""
 import gzip, json, math, os, sys, collections
 from shapely.geometry import shape, box, Polygon, MultiPolygon, mapping
+from shapely import make_valid
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RAW = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(ROOT), 'fch-main', 'tools', 'raw', 'lot')
 OUT = os.path.join(ROOT, 'lot', 'data', 'r'); os.makedirs(OUT, exist_ok=True)
@@ -27,7 +28,7 @@ feats = []   # (kind, name, detail, shapely geometry)
 g = load('ov_landmark_districts.geojson.gz')
 for f in (g or {}).get('features', []):
     p = f['properties']; nm = p.get('NAME') or p.get('name') or p.get('DISTRICT') or p.get('district_name') or p.get('DIST_NAME') or 'Landmark district'
-    feats.append(('ld', str(nm).title() if str(nm).isupper() else str(nm), date(str(p.get('DESIGNATED') or p.get('date') or '')), shape(f['geometry'])))
+    feats.append(('ld', str(nm).title() if str(nm).isupper() else str(nm), date(str(p.get('DATE_') or p.get('DESIGNATED') or p.get('date') or '')), shape(f['geometry'])))
 g = load('ov_uct4-hrvh.geojson.gz')
 for f in (g or {}).get('features', []):
     p = f['properties']; feats.append(('il', p.get('name') or 'Chicago Landmark', date(p.get('landmark')), shape(f['geometry'])))
@@ -57,6 +58,12 @@ print(collections.Counter(k for k, *_ in feats))
 TOL = {'hr': 0.000004, 'il': 0.000004, 'nr': 0.000006, 'ld': 0.00001, 'ssa': 0.00002, 'oz': 0.00002, 'fl': 0.00001}
 tiles = collections.defaultdict(list)
 for kind, nm, det, geo in feats:
+    if kind == 'ld':   # the shapefile's parts arrive as one polygon's rings: rebuild as outer rings minus holes
+        rs = [Polygon(r) for r in [geo.exterior] + list(geo.interiors)] if isinstance(geo, Polygon) else [geo]
+        outer = [r for r in rs if not r.exterior.is_ccw]; holes = [r for r in rs if r.exterior.is_ccw]
+        from shapely.ops import unary_union
+        geo = unary_union([make_valid(r) for r in outer]).difference(unary_union([make_valid(r) for r in holes])) if outer else unary_union([make_valid(r) for r in rs])
+    geo = make_valid(geo)
     if geo.is_empty: continue
     geo = geo.simplify(TOL[kind], preserve_topology=True)
     x0, y0, x1, y1 = geo.bounds
