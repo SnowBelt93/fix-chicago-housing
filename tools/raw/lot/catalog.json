@@ -151,14 +151,6 @@
   "cols": [],
   "want": false
  },
- "mf4j-r5g9": {
-  "name": "National Register of Historic Places - Map",
-  "type": "map",
-  "updated": "2026-08-10T20:30:08.000Z",
-  "desc": "Map of buildings and districts in Chicago which are listed on the National Register of Historic Places (NRHP) or designated as National Historic Landmarks (NHL).",
-  "cols": [],
-  "want": true
- },
  "bqx3-yhry": {
   "name": "National Register of Historic Places",
   "type": "dataset",
@@ -179,6 +171,14 @@
    "individual",
    "address"
   ],
+  "want": true
+ },
+ "mf4j-r5g9": {
+  "name": "National Register of Historic Places - Map",
+  "type": "map",
+  "updated": "2026-08-10T20:30:08.000Z",
+  "desc": "Map of buildings and districts in Chicago which are listed on the National Register of Historic Places (NRHP) or designated as National Historic Landmarks (NHL).",
+  "cols": [],
   "want": true
  },
  "g5sm-atjv": {
@@ -734,20 +734,6 @@
   ],
   "want": false
  },
- "keda-fhtt": {
-  "name": "TIF Balance Sheets - Greater Southwest Industrial Corridor (East)",
-  "type": "filter",
-  "updated": "2025-02-28T21:22:08.000Z",
-  "desc": "Combined statements of revenues, expenditures, and changes in fund balances for the year ending December 31, 2009.",
-  "cols": [
-   "description",
-   "amount",
-   "tif_name",
-   "tif_id",
-   "reporting_category"
-  ],
-  "want": false
- },
  "hn8b-xuti": {
   "name": "TIF Balance Sheets - Greater Southwest Industrial Corridor (West)",
   "type": "filter",
@@ -759,6 +745,20 @@
    "tif_id",
    "description",
    "tif_name"
+  ],
+  "want": false
+ },
+ "keda-fhtt": {
+  "name": "TIF Balance Sheets - Greater Southwest Industrial Corridor (East)",
+  "type": "filter",
+  "updated": "2025-02-28T21:22:08.000Z",
+  "desc": "Combined statements of revenues, expenditures, and changes in fund balances for the year ending December 31, 2009.",
+  "cols": [
+   "description",
+   "amount",
+   "tif_name",
+   "tif_id",
+   "reporting_category"
   ],
   "want": false
  },
@@ -919,14 +919,6 @@
   "cols": [],
   "want": false
  },
- "x9du-wfiv": {
-  "name": "Boundaries - Special Service Areas (deprecated October 2014)",
-  "type": "map",
-  "updated": "2024-04-24T18:51:01.000Z",
-  "desc": "Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercial and residential areas. The enhanced services and programs are in addition to s",
-  "cols": [],
-  "want": false
- },
  "uvpn-q65m": {
   "name": "Boundaries - Special Service Areas (deprecated January 2024)",
   "type": "dataset",
@@ -945,6 +937,33 @@
    "objectid",
    "status",
    "the_geom"
+  ],
+  "want": false
+ },
+ "x9du-wfiv": {
+  "name": "Boundaries - Special Service Areas (deprecated October 2014)",
+  "type": "map",
+  "updated": "2024-04-24T18:51:01.000Z",
+  "desc": "Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercial and residential areas. The enhanced services and programs are in addition to s",
+  "cols": [],
+  "want": false
+ },
+ "i35c-ftqu": {
+  "name": "Boundaries - Special Service Areas (deprecated January 2022)",
+  "type": "dataset",
+  "updated": "2022-08-23T20:45:22.000Z",
+  "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
+  "cols": [
+   "the_geom",
+   "ref_no",
+   "objectid",
+   "comm_area",
+   "shape_area",
+   "ward",
+   "shape_leng",
+   "status",
+   "objectid_1",
+   "name"
   ],
   "want": false
  },
@@ -977,23 +996,12 @@
   ],
   "want": false
  },
- "i35c-ftqu": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2022)",
-  "type": "dataset",
-  "updated": "2022-08-23T20:45:22.000Z",
-  "desc": "OUTDATED. See the current data at https://data.cityofchicago.org/d/kjav-iyuj -- Special Service Areas (SSA) boundaries in Chicago. The Special Service Area program is a mechanism used to fund expanded services and programs through a localized property tax levy within contiguous industrial, commercia",
-  "cols": [
-   "the_geom",
-   "ref_no",
-   "objectid",
-   "comm_area",
-   "shape_area",
-   "ward",
-   "shape_leng",
-   "status",
-   "objectid_1",
-   "name"
-  ],
+ "c4sc-3f6n": {
+  "name": "Boundaries - Special Service Areas (deprecated January 2022) - Map",
+  "type": "map",
+  "updated": "2022-08-23T21:02:02.000Z",
+  "desc": "Map of Boundaries - Special Service Areas (deprecated January 2022)",
+  "cols": [],
   "want": false
  },
  "9fit-fndz": {
@@ -1012,14 +1020,6 @@
    "name",
    "objectid"
   ],
-  "want": false
- },
- "c4sc-3f6n": {
-  "name": "Boundaries - Special Service Areas (deprecated January 2022) - Map",
-  "type": "map",
-  "updated": "2022-08-23T21:02:02.000Z",
-  "desc": "Map of Boundaries - Special Service Areas (deprecated January 2022)",
-  "cols": [],
   "want": false
  },
  "vqvu-rchz": {
@@ -1614,7 +1614,7 @@
  "5k2z-suxx": {
   "name": "Relocated Vehicles",
   "type": "dataset",
-  "updated": "2026-11-12T16:18:49.000Z",
+  "updated": "2026-11-12T18:46:48.000Z",
   "desc": "This dataset presents current and former locations of vehicles that have been relocated by the City of Chicago within the last 90 days. Vehicles may be relocated, but not impounded, due to inoperability, accident, severe weather, special events, construction or other work being performed in a thorou",
   "cols": [
    "relocated_to_suffix",
@@ -1710,37 +1710,6 @@
   ],
   "want": false
  },
- "umwj-yc4m": {
-  "name": "Tax Increment Financing (TIF) Annual Report - Itemized List of Expenditures from the Special Tax Allocation Fund",
-  "type": "dataset",
-  "updated": "2026-08-31T15:21:43.000Z",
-  "desc": "An itemized list of all the expenditures in a fund balance for each TIF district during the Reporting Year.\n\nFor the detailed reports for each TIF district for each year, please see https://www.chicago.gov/city/en/depts/dcd/supp_info/tif-district-annual-reports-2004-present.html.",
-  "cols": [
-   "report_year",
-   "school_districts",
-   "library_districts",
-   "tif_number",
-   "public_works",
-   "renovation_rehab_etc",
-   "administrative_cost",
-   "site_preparation_costs",
-   "new_housing",
-   "removing_contaminants",
-   "job_training",
-   "financing_costs",
-   "tif_district",
-   "interest_cost",
-   "in_lieu_of_taxes",
-   "cost_of_studies",
-   "other",
-   "capital_costs",
-   "job_training_retraining",
-   "marketing_sites",
-   "day_care_services",
-   "relocation_costs"
-  ],
-  "want": false
- },
  "h6r6-h5c9": {
   "name": "Budget Survey 2021",
   "type": "dataset",
@@ -1803,6 +1772,37 @@
    "reallocate_from_infrastructure_services",
    "additional_resources_community",
    "reallocate_from_city_development"
+  ],
+  "want": false
+ },
+ "umwj-yc4m": {
+  "name": "Tax Increment Financing (TIF) Annual Report - Itemized List of Expenditures from the Special Tax Allocation Fund",
+  "type": "dataset",
+  "updated": "2026-08-31T15:21:43.000Z",
+  "desc": "An itemized list of all the expenditures in a fund balance for each TIF district during the Reporting Year.\n\nFor the detailed reports for each TIF district for each year, please see https://www.chicago.gov/city/en/depts/dcd/supp_info/tif-district-annual-reports-2004-present.html.",
+  "cols": [
+   "report_year",
+   "school_districts",
+   "library_districts",
+   "tif_number",
+   "public_works",
+   "renovation_rehab_etc",
+   "administrative_cost",
+   "site_preparation_costs",
+   "new_housing",
+   "removing_contaminants",
+   "job_training",
+   "financing_costs",
+   "tif_district",
+   "interest_cost",
+   "in_lieu_of_taxes",
+   "cost_of_studies",
+   "other",
+   "capital_costs",
+   "job_training_retraining",
+   "marketing_sites",
+   "day_care_services",
+   "relocation_costs"
   ],
   "want": false
  },
@@ -2028,19 +2028,19 @@
   "cols": [],
   "want": false
  },
- "cauq-8yn6": {
-  "name": "Boundaries - Community Areas - Map",
-  "type": "map",
-  "updated": "2025-04-22T23:06:37.000Z",
-  "desc": "Map of Chicago community areas.",
-  "cols": [],
-  "want": false
- },
  "9wp7-iasj": {
   "name": "Boundaries - Neighborhoods",
   "type": "file",
   "updated": "2012-10-04T21:59:17.000Z",
   "desc": "Neighborhood boundaries in Chicago, as developed by the Office of Tourism. These boundaries are approximate and names are not official. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
+  "cols": [],
+  "want": false
+ },
+ "cauq-8yn6": {
+  "name": "Boundaries - Community Areas - Map",
+  "type": "map",
+  "updated": "2025-04-22T23:06:37.000Z",
+  "desc": "Map of Chicago community areas.",
   "cols": [],
   "want": false
  },
@@ -2108,14 +2108,6 @@
   "cols": [],
   "want": false
  },
- "5jrd-6zik": {
-  "name": "Boundaries - Census Tracts - 2010 - Map",
-  "type": "map",
-  "updated": "2026-09-29T21:31:53.000Z",
-  "desc": "Map of Census tract boundaries used in Chicago for the 2010 Census.",
-  "cols": [],
-  "want": false
- },
  "p293-wvbd": {
   "name": "Boundaries - Wards (2023-)",
   "type": "dataset",
@@ -2131,6 +2123,14 @@
    "globalid",
    "ward"
   ],
+  "want": false
+ },
+ "5jrd-6zik": {
+  "name": "Boundaries - Census Tracts - 2010 - Map",
+  "type": "map",
+  "updated": "2026-09-29T21:31:53.000Z",
+  "desc": "Map of Census tract boundaries used in Chicago for the 2010 Census.",
+  "cols": [],
   "want": false
  },
  "igwz-8jzy": {
@@ -2170,19 +2170,19 @@
   "cols": [],
   "want": false
  },
- "uvpq-qeeq": {
-  "name": "Boundaries - Ward Precincts (2013-2022) - Map",
-  "type": "map",
-  "updated": "2026-03-17T20:34:08.000Z",
-  "desc": "Map of Ward Precincts (2013-2022)",
-  "cols": [],
-  "want": false
- },
  "5gv8-ktcg": {
   "name": "Boundaries - Curb Lines",
   "type": "file",
   "updated": "2011-08-28T20:02:20.000Z",
   "desc": "Curb lines for the city of Chicago. Curb lines mark the points where curbs meet the edge of the street pavement.  To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
+  "cols": [],
+  "want": false
+ },
+ "uvpq-qeeq": {
+  "name": "Boundaries - Ward Precincts (2013-2022) - Map",
+  "type": "map",
+  "updated": "2026-03-17T20:34:08.000Z",
+  "desc": "Map of Ward Precincts (2013-2022)",
   "cols": [],
   "want": false
  },
@@ -2267,6 +2267,14 @@
   "cols": [],
   "want": false
  },
+ "eg5e-qm3q": {
+  "name": "Boundaries - City - KML",
+  "type": "file",
+  "updated": "2011-11-18T20:34:21.000Z",
+  "desc": "KML file of boundary for the city of Chicago. To view or use these files, special GIS software, such as Google Earth, is required.",
+  "cols": [],
+  "want": false
+ },
  "a9rt-upwk": {
   "name": "Boundaries - Conservation Areas",
   "type": "file",
@@ -2283,14 +2291,6 @@
   "cols": [],
   "want": false
  },
- "eg5e-qm3q": {
-  "name": "Boundaries - City - KML",
-  "type": "file",
-  "updated": "2011-11-18T20:34:21.000Z",
-  "desc": "KML file of boundary for the city of Chicago. To view or use these files, special GIS software, such as Google Earth, is required.",
-  "cols": [],
-  "want": false
- },
  "6piy-vbxa": {
   "name": "Boundaries - Ward Precincts (2023-2024)",
   "type": "dataset",
@@ -2304,14 +2304,6 @@
    "ward",
    "the_geom"
   ],
-  "want": false
- },
- "f4sz-sn2p": {
-  "name": "Ward Offices and Boundaries Map",
-  "type": "map",
-  "updated": "2026-10-07T03:12:24.000Z",
-  "desc": "Aldermanic ward offices overlaid on ward boundaries.",
-  "cols": [],
   "want": false
  },
  "dj47-wfun": {
@@ -2348,11 +2340,11 @@
   ],
   "want": false
  },
- "5xt8-wz7f": {
-  "name": "Boundaries - Planning Districts - Historical",
-  "type": "file",
-  "updated": "2022-05-24T16:51:45.000Z",
-  "desc": "Planning district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
+ "f4sz-sn2p": {
+  "name": "Ward Offices and Boundaries Map",
+  "type": "map",
+  "updated": "2026-10-07T03:12:24.000Z",
+  "desc": "Aldermanic ward offices overlaid on ward boundaries.",
   "cols": [],
   "want": false
  },
@@ -2364,6 +2356,14 @@
   "cols": [],
   "want": false
  },
+ "5xt8-wz7f": {
+  "name": "Boundaries - Planning Districts - Historical",
+  "type": "file",
+  "updated": "2022-05-24T16:51:45.000Z",
+  "desc": "Planning district boundaries in Chicago. To view or use these files, compression software and special GIS software, such as ESRI ArcGIS, is required.",
+  "cols": [],
+  "want": false
+ },
  "2wek-zf5g": {
   "name": "Boundaries - Planning Regions - Map",
   "type": "map",
@@ -2372,11 +2372,11 @@
   "cols": [],
   "want": false
  },
- "atkq-s364": {
-  "name": "Boundaries - Ward Precincts (2023-2024) - Map",
+ "pt6c-hxpp": {
+  "name": "Boundaries - Census Tracts - 2000 - Map",
   "type": "map",
-  "updated": "2026-03-17T20:13:08.000Z",
-  "desc": "Map of the ward precinct boundaries in Chicago for 2023-2024.",
+  "updated": "2026-09-18T22:33:50.000Z",
+  "desc": "Map of the 2000 Census Tracts.",
   "cols": [],
   "want": false
  },
@@ -2399,40 +2399,6 @@
    "second_street_direction",
    "row_id",
    "odd_even"
-  ],
-  "want": false
- },
- "fpwt-snya": {
-  "name": "Chicago Energy Benchmarking - 2016 Data Reported in 2017",
-  "type": "filter",
-  "updated": "2025-02-05T17:38:17.000Z",
-  "desc": "The Chicago Building Energy Use Benchmarking Ordinance calls on existing municipal, commercial, and residential buildings larger than 50,000 square feet to track whole-building energy use, report to the City annually, and verify data accuracy every three years. The law, which phases in from 2014-201",
-  "cols": [
-   "natural_gas_use_kbtu",
-   "year_built",
-   "zip_code",
-   "latitude",
-   "weather_normalized_source_eui_kbtu_sq_ft",
-   "source_eui_kbtu_sq_ft",
-   "site_eui_kbtu_sq_ft",
-   "ghg_intensity_metric_tons_co2e_sq_ft",
-   "all_other_fuel_use_kbtu",
-   "district_steam_use_kbtu",
-   "weather_normalized_site_eui_kbtu_sq_ft",
-   "energy_star_score",
-   "data_year",
-   "number_of_buildings",
-   "property_name",
-   "primary_property_type_epa_calculated",
-   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
-   "address",
-   "district_chilled_water_use_kbtu",
-   "benchmarking_id",
-   "total_ghg_emissions_metric_tons_co2e",
-   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
-   "location",
-   "longitude",
-   "community_area"
   ],
   "want": false
  },
@@ -2467,6 +2433,74 @@
    "number_of_buildings",
    "year_built",
    "all_other_fuel_use_kbtu"
+  ],
+  "want": false
+ },
+ "j2ev-2azp": {
+  "name": "Chicago Energy Benchmarking - 2017 Data Reported in 2018",
+  "type": "filter",
+  "updated": "2025-02-05T17:38:17.000Z",
+  "desc": "The Chicago Building Energy Use Benchmarking Ordinance calls on existing municipal, commercial, and residential buildings larger than 50,000 square feet to track whole-building energy use, report to the City annually, and verify data accuracy every three years. The law, which phases in from 2014-201",
+  "cols": [
+   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
+   "primary_property_type_epa_calculated",
+   "data_year",
+   "weather_normalized_source_eui_kbtu_sq_ft",
+   "site_eui_kbtu_sq_ft",
+   "number_of_buildings",
+   "weather_normalized_site_eui_kbtu_sq_ft",
+   "community_area",
+   "energy_star_score",
+   "benchmarking_id",
+   "property_name",
+   "address",
+   "zip_code",
+   "source_eui_kbtu_sq_ft",
+   "ghg_intensity_metric_tons_co2e_sq_ft",
+   "latitude",
+   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
+   "natural_gas_use_kbtu",
+   "location",
+   "district_chilled_water_use_kbtu",
+   "all_other_fuel_use_kbtu",
+   "district_steam_use_kbtu",
+   "longitude",
+   "total_ghg_emissions_metric_tons_co2e",
+   "year_built"
+  ],
+  "want": false
+ },
+ "fpwt-snya": {
+  "name": "Chicago Energy Benchmarking - 2016 Data Reported in 2017",
+  "type": "filter",
+  "updated": "2025-02-05T17:38:17.000Z",
+  "desc": "The Chicago Building Energy Use Benchmarking Ordinance calls on existing municipal, commercial, and residential buildings larger than 50,000 square feet to track whole-building energy use, report to the City annually, and verify data accuracy every three years. The law, which phases in from 2014-201",
+  "cols": [
+   "natural_gas_use_kbtu",
+   "year_built",
+   "zip_code",
+   "latitude",
+   "weather_normalized_source_eui_kbtu_sq_ft",
+   "source_eui_kbtu_sq_ft",
+   "site_eui_kbtu_sq_ft",
+   "ghg_intensity_metric_tons_co2e_sq_ft",
+   "all_other_fuel_use_kbtu",
+   "district_steam_use_kbtu",
+   "weather_normalized_site_eui_kbtu_sq_ft",
+   "energy_star_score",
+   "data_year",
+   "number_of_buildings",
+   "property_name",
+   "primary_property_type_epa_calculated",
+   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
+   "address",
+   "district_chilled_water_use_kbtu",
+   "benchmarking_id",
+   "total_ghg_emissions_metric_tons_co2e",
+   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
+   "location",
+   "longitude",
+   "community_area"
   ],
   "want": false
  },
@@ -2518,37 +2552,41 @@
   ],
   "want": false
  },
- "j2ev-2azp": {
-  "name": "Chicago Energy Benchmarking - 2017 Data Reported in 2018",
+ "jn94-it7m": {
+  "name": "Chicago Energy Benchmarking - 2019 Data Reported in 2020",
   "type": "filter",
-  "updated": "2025-02-05T17:38:17.000Z",
+  "updated": "2025-02-28T21:21:52.000Z",
   "desc": "The Chicago Building Energy Use Benchmarking Ordinance calls on existing municipal, commercial, and residential buildings larger than 50,000 square feet to track whole-building energy use, report to the City annually, and verify data accuracy every three years. The law, which phases in from 2014-201",
   "cols": [
-   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
-   "primary_property_type_epa_calculated",
+   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
+   "all_other_fuel_use_kbtu",
+   "chicago_energy_rating",
+   "district_chilled_water_use_kbtu",
    "data_year",
-   "weather_normalized_source_eui_kbtu_sq_ft",
-   "site_eui_kbtu_sq_ft",
-   "number_of_buildings",
-   "weather_normalized_site_eui_kbtu_sq_ft",
-   "community_area",
-   "energy_star_score",
-   "benchmarking_id",
    "property_name",
    "address",
-   "zip_code",
-   "source_eui_kbtu_sq_ft",
-   "ghg_intensity_metric_tons_co2e_sq_ft",
-   "latitude",
-   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
-   "natural_gas_use_kbtu",
    "location",
-   "district_chilled_water_use_kbtu",
-   "all_other_fuel_use_kbtu",
-   "district_steam_use_kbtu",
+   "benchmarking_id",
+   "zip_code",
+   "year_built",
+   "primary_property_type_epa_calculated",
+   "energy_star_score",
    "longitude",
-   "total_ghg_emissions_metric_tons_co2e",
-   "year_built"
+   "site_eui_kbtu_sq_ft",
+   "weather_normalized_site_eui_kbtu_sq_ft",
+   "exempt_from_chicago_energy_rating",
+   "number_of_buildings",
+   "latitude",
+   "district_steam_use_kbtu",
+   "reporting_status",
+   "natural_gas_use_kbtu",
+   "source_eui_kbtu_sq_ft",
+   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
+   "ghg_intensity_metric_tons_co2e_sq_ft",
+   "community_area",
+   "weather_normalized_source_eui_kbtu_sq_ft",
+   "water_use_kgal",
+   "total_ghg_emissions_metric_tons_co2e"
   ],
   "want": false
  },
@@ -2625,44 +2663,6 @@
    "data_year",
    "location",
    "zip_code"
-  ],
-  "want": false
- },
- "jn94-it7m": {
-  "name": "Chicago Energy Benchmarking - 2019 Data Reported in 2020",
-  "type": "filter",
-  "updated": "2025-02-28T21:21:52.000Z",
-  "desc": "The Chicago Building Energy Use Benchmarking Ordinance calls on existing municipal, commercial, and residential buildings larger than 50,000 square feet to track whole-building energy use, report to the City annually, and verify data accuracy every three years. The law, which phases in from 2014-201",
-  "cols": [
-   "electricity_use_grid_purchase_and_generated_from_onsite_renewable_systems_kbtu",
-   "all_other_fuel_use_kbtu",
-   "chicago_energy_rating",
-   "district_chilled_water_use_kbtu",
-   "data_year",
-   "property_name",
-   "address",
-   "location",
-   "benchmarking_id",
-   "zip_code",
-   "year_built",
-   "primary_property_type_epa_calculated",
-   "energy_star_score",
-   "longitude",
-   "site_eui_kbtu_sq_ft",
-   "weather_normalized_site_eui_kbtu_sq_ft",
-   "exempt_from_chicago_energy_rating",
-   "number_of_buildings",
-   "latitude",
-   "district_steam_use_kbtu",
-   "reporting_status",
-   "natural_gas_use_kbtu",
-   "source_eui_kbtu_sq_ft",
-   "property_gross_floor_area_epa_calculated_buildings_sq_ft",
-   "ghg_intensity_metric_tons_co2e_sq_ft",
-   "community_area",
-   "weather_normalized_source_eui_kbtu_sq_ft",
-   "water_use_kgal",
-   "total_ghg_emissions_metric_tons_co2e"
   ],
   "want": false
  },

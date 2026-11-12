@@ -246,17 +246,17 @@
   }
  },
  "cps": {
-  "4g38-vs8v": {
-   "name": "Chicago Public Schools - School Locations SY1718",
-   "type": "map",
-   "updated": "2024-04-24T18:50:35.000Z",
-   "cols": [],
-   "got": 0
-  },
   "3fhj-xtn5": {
    "name": "Chicago Public Schools - School Locations SY1415",
    "type": "map",
    "updated": "2024-04-24T18:50:06.000Z",
+   "cols": [],
+   "got": 0
+  },
+  "4g38-vs8v": {
+   "name": "Chicago Public Schools - School Locations SY1718",
+   "type": "map",
+   "updated": "2024-04-24T18:50:35.000Z",
    "cols": [],
    "got": 0
   },
@@ -318,12 +318,6 @@
     "lat"
    ]
   },
-  "t2hk-erkw": {
-   "name": "Chicago Public Schools - School Locations SY2324 - Map",
-   "type": "map",
-   "updated": "2025-09-29T22:00:24.000Z",
-   "cols": []
-  },
   "tz49-n8ze": {
    "name": "Chicago Public Schools - School Locations SY1920",
    "type": "dataset",
@@ -345,6 +339,12 @@
     "grades"
    ]
   },
+  "t2hk-erkw": {
+   "name": "Chicago Public Schools - School Locations SY2324 - Map",
+   "type": "map",
+   "updated": "2025-09-29T22:00:24.000Z",
+   "cols": []
+  },
   "x9yh-x8zu": {
    "name": "Chicago Public Schools - School Locations SY0708",
    "type": "map",
@@ -365,42 +365,16 @@
     "grade_cat"
    ]
   },
-  "hexd-c4gn": {
-   "name": "Chicago Public Schools - School Locations SY2425",
-   "type": "dataset",
-   "updated": "2025-09-29T21:53:17.000Z",
-   "cols": [
-    "school_id",
-    "address",
-    "lat",
-    "the_geom",
-    "long",
-    "short_name",
-    "grade_cat"
-   ]
-  },
   "6qik-a75t": {
    "name": "Chicago Public Schools - School Locations SY1112",
    "type": "map",
    "updated": "2024-04-24T18:50:56.000Z",
    "cols": []
   },
-  "cvn9-pbt9": {
-   "name": "Chicago Public Schools - School Locations SY1011",
-   "type": "map",
-   "updated": "2024-04-24T18:50:25.000Z",
-   "cols": []
-  },
   "qsgm-ub2r": {
    "name": "Chicago Public Schools - School Locations SY0910",
    "type": "map",
    "updated": "2024-04-24T18:51:11.000Z",
-   "cols": []
-  },
-  "grmh-ksdn": {
-   "name": "Chicago Public Schools - School Locations SY1314",
-   "type": "map",
-   "updated": "2024-04-24T18:51:53.000Z",
    "cols": []
   },
   "vfmh-nkyk": {
@@ -423,10 +397,36 @@
    "updated": "2024-04-24T18:50:10.000Z",
    "cols": []
   },
+  "grmh-ksdn": {
+   "name": "Chicago Public Schools - School Locations SY1314",
+   "type": "map",
+   "updated": "2024-04-24T18:51:53.000Z",
+   "cols": []
+  },
   "9p4q-n8rz": {
    "name": "Chicago Public Schools - School Locations SY0809",
    "type": "map",
    "updated": "2024-04-24T18:50:48.000Z",
+   "cols": []
+  },
+  "hexd-c4gn": {
+   "name": "Chicago Public Schools - School Locations SY2425",
+   "type": "dataset",
+   "updated": "2025-09-29T21:53:17.000Z",
+   "cols": [
+    "school_id",
+    "address",
+    "lat",
+    "the_geom",
+    "long",
+    "short_name",
+    "grade_cat"
+   ]
+  },
+  "cvn9-pbt9": {
+   "name": "Chicago Public Schools - School Locations SY1011",
+   "type": "map",
+   "updated": "2024-04-24T18:50:25.000Z",
    "cols": []
   }
  },
