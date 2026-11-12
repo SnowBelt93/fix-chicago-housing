@@ -37,6 +37,7 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .cal li.off{opacity:.55}
 .cal li.more{border-style:dashed;align-items:center} .cal li.more a{color:var(--sc-navy);font-weight:600}
 .cal li.hot{border-color:#c9d8ee;background:#f7faff}
+.cal .hz{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:var(--sc-navy);color:#fff;font-size:11.5px;font-weight:600;vertical-align:2px;white-space:nowrap}
 .cal .dt{flex:none;width:52px;text-align:center;border-radius:10px;background:var(--sc-seg);padding:6px 0;line-height:1.1}
 .cal .dt b{display:block;font-size:20px} .cal .dt span{font-size:11.5px;font-weight:600;color:var(--sc-mute)}
 .cal .bd{font-size:15px;font-weight:600;line-height:1.3} .cal .mt{font-size:13px;color:var(--sc-mute);margin-top:2px;line-height:1.45}
@@ -90,7 +91,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/" aria-current="page">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes permitted</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/lost/">Homes lost</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/" aria-current="page">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -119,7 +120,8 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     <section class="card">
       <h2>Zoning changes in this ward <button class="ib" data-i="zoning" aria-label="About zoning changes">i</button></h2>
       <p class="sub">Every rezoning the City Council passed at an address inside today's ward lines: the zoning before and after, and how many homes each allows on a typical lot. Each one is marked by whether it allowed more or fewer homes on the lot. Most rezonings pass together in one Council roll call, so the alderperson's vote is nearly always yes; the ones they introduced personally say more.</p>
-      <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">Since May 2023</button><button role="radio" aria-checked="false" data-k="all">Since 2013</button></div>
+      <div class="seg2" role="radiogroup" id="span"><button role="radio" aria-checked="true" data-k="term">This Council term</button><button role="radio" aria-checked="false" data-k="all">All years on record</button></div>
+      <p class="fine" id="spanNote"></p>
       <div class="nums" id="znums"></div>
       <p class="fine" id="zby"></p>
       <div class="zlist" id="zlist"></div>
@@ -132,7 +134,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   </section>
   <section class="card" id="calCard" hidden>
     <h2>Coming up at City Hall <button class="ib" data-i="cal" aria-label="About the hearing calendar">i</button></h2>
-    <p class="sub">The next City Council and committee meetings. Zoning changes go through the Zoning Committee, then the full Council. Anyone can send written comment before the deadline or sign up to speak.</p>
+    <p class="sub">The next City Council and committee meetings. Zoning changes go through the Zoning Committee, then the full Council. Anyone can send written comment before the deadline or sign up to speak. Meetings in blue are where housing and zoning get voted on: the full Council, the Zoning Committee and the Housing Committee.</p>
     <ul class="cal" id="cal"></ul>
     <div class="subcal"><span>Get every meeting in your own calendar. It updates itself.</span><a class="sc-btn" id="calApple" href="/api/calendar.ics">Apple or Outlook</a><a class="sc-btn" id="calGoogle" href="#" target="_blank" rel="noopener">Google Calendar</a></div>
   </section>
@@ -195,6 +197,7 @@ function followUI(){
 $("followBtn").addEventListener("click", () => { if (SCWard.get() === W) SCWard.clear(); else SCWard.set(W); followUI(); });
 function renderZ(){
   const w = D.wards[W - 1], rows = span === "term" ? w.z.filter(z => z.d >= "2023-05-15") : w.z;
+  $("spanNote").textContent = span === "term" ? "The current City Council took office on May 15, 2023, so this counts what the ward's sitting alderperson has been part of." : "Every zoning change in our records, which start in 2013. Earlier ones are not in the data we collect from the City Clerk.";
   const dir = z => z.hf != null && z.ht != null ? (z.ht > z.hf ? 1 : z.ht < z.hf ? -1 : 0) : null;   // homes allowed on a typical lot, before vs after
   const more = L => L.filter(z => dir(z) === 1).length, fewer = L => L.filter(z => dir(z) === -1).length, by = rows.filter(z => z.by);
   $("znums").innerHTML = `<div><b>${rows.length}</b><span>zoning changes passed</span></div><div><b>${more(rows)}</b><span>allowed more homes</span></div><div><b>${fewer(rows)}</b><span>allowed fewer homes</span></div>` +
@@ -267,7 +270,7 @@ fetch("data/meetings.json").then(r => r.json()).then(m => {
   const note = x => { if (!x.n) return ""; let t = x.n.replace(/\b[ORS]\d{4}-\d+\s*/g, "").replace(/\s*pursuant to .*$/i, "");
     if (/Budget/.test(x.b)) t = "Budget hearing: " + t.split(",")[0].trim(); return t.length > 110 ? t.slice(0, 108).replace(/\s+\S*$/, "") + "…" : t; };
   $("cal").innerHTML = up.map(x => { const d = new Date(x.d), [nm, what] = PLAIN[x.b], n = note(x);
-    return `<li class="${HOT.test(x.b) ? "hot" : ""}${/cancel/i.test(x.st) ? " off" : ""}"><div class="dt"><span>${d.toLocaleDateString("en-US", {...tz, month:"short"})}</span><b>${d.toLocaleDateString("en-US", {...tz, day:"numeric"})}</b></div><div><div class="bd">${nm}${/cancel/i.test(x.st) ? " (canceled)" : ""}</div><div class="mt">${(n || what).replace(/</g, "&lt;")}<br>${d.toLocaleDateString("en-US", {...tz, weekday:"long"})}, ${d.toLocaleTimeString("en-US", {...tz, hour:"numeric", minute:"2-digit"})} · ${x.loc}${x.c ? `<br>Written comment due ${x.c}` : ""}</div><div class="ln"><a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${x.id}" target="_blank" rel="noopener">Details</a>${x.ag ? `<a href="${x.ag}" target="_blank" rel="noopener">Agenda</a>` : ""}</div></div></li>`; }).join("") +
+    return `<li class="${HOT.test(x.b) ? "hot" : ""}${/cancel/i.test(x.st) ? " off" : ""}"><div class="dt"><span>${d.toLocaleDateString("en-US", {...tz, month:"short"})}</span><b>${d.toLocaleDateString("en-US", {...tz, day:"numeric"})}</b></div><div><div class="bd">${nm}${/cancel/i.test(x.st) ? " (canceled)" : ""}${HOT.test(x.b) ? `<span class="hz">Votes on housing or zoning</span>` : ""}</div><div class="mt">${(n || what).replace(/</g, "&lt;")}<br>${d.toLocaleDateString("en-US", {...tz, weekday:"long"})}, ${d.toLocaleTimeString("en-US", {...tz, hour:"numeric", minute:"2-digit"})} · ${x.loc}${x.c ? `<br>Written comment due ${x.c}` : ""}</div><div class="ln"><a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${x.id}" target="_blank" rel="noopener">Details</a>${x.ag ? `<a href="${x.ag}" target="_blank" rel="noopener">Agenda</a>` : ""}</div></div></li>`; }).join("") +
     (rest ? `<li class="more"><div class="mt">Plus ${rest} other committee meeting${rest > 1 ? "s" : ""}. They are on the <a href="https://chicityclerkelms.chicago.gov/" target="_blank" rel="noopener">City Clerk's site</a>.</div></li>` : "");
   $("calCard").hidden = false;
 }).catch(() => {});

@@ -246,3 +246,24 @@ window.scWhenReady = fn => { if (document.readyState === "loading") addEventList
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(add, 0)); else setTimeout(add, 0);
 })();
+
+/* One look for every map. scMap.style(map) recolors the OpenFreeMap base map (or a page's plain fallback) to the shared
+   land, water and park colors, so the housing, transit, lot, street and Bears maps read as one site. It only touches the base
+   style's own background, water and green layers; a page's own layers are left alone. Call it right after the map loads.
+   scMap.blank() is the plain base to start from where the tiles aren't available. */
+window.scMap = {
+  land: "#eef1f4", water: "#8cc4e8", green: "#cfe4c3",
+  blank(extra){ return Object.assign({version:8, sources:{}, layers:[{id:"bg", type:"background", paint:{"background-color":"#eef1f4"}}]}, extra || {}); },
+  style(map, opt){
+    opt = opt || {};
+    (map.getStyle().layers || []).forEach(l => { const id = l.id;
+      try {
+        if (l.type === "background") map.setPaintProperty(id, "background-color", scMap.land);
+        else if (l.type === "fill" && /water/.test(id)) map.setPaintProperty(id, "fill-color", scMap.water);
+        else if (l.type === "line" && /waterway|river|canal/.test(id)) map.setPaintProperty(id, "line-color", scMap.water);
+        else if (l.type === "fill" && /park|wood|forest|grass|cemetery|golf|pitch|landcover/.test(id)) map.setPaintProperty(id, "fill-color", scMap.green);
+        else if (opt.noBuildings && /building/.test(id)) map.setLayoutProperty(id, "visibility", "none");
+      } catch (e) {}
+    });
+  }
+};

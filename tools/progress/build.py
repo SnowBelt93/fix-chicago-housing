@@ -32,11 +32,12 @@ PROJ = [('The 78', 10000, 0, 'Under way', 'Fire stadium broke ground Mar. 3, 202
         ('Bronzeville Lakefront', 6800, 0, 'Stalled', 'Partners left; the city gave the owners until June 15, 2026 to file a new infrastructure plan. No public update since', 'The Real Deal', 'May 28, 2026', 'https://therealdeal.com/chicago/2026/05/28/chicago-megadevelopment-owners-considering-project-merge/'),
         ('North Union', 2656, 649, 'Partly built', '920 N. Wells (238 homes) and 868 N. Wells (411) are finished; the next two buildings filed bigger plans in Oct. 2026, not yet approved', 'Chicago YIMBY', 'Oct. 30, 2026', 'https://chicagoyimby.com/2026/10/next-phases-of-north-union-receive-density-bump.html'),
         ('Cabrini-Green (Chicago Housing Authority)', 4080, 0, 'Planning', 'Final plan presented Oct. 2026: about 4,100 homes on 16 sites; rezoning comes next, no date yet for developers', 'Chicago YIMBY', 'Oct. 10, 2026', 'https://chicagoyimby.com/2026/10/city-presents-final-version-of-cabrini-now-framework-plan.html')]
+BOND = 'https://www.chicago.gov/content/dam/city/sites/business-and-neighborhood-development-strategy/pdf/Housing-and-Economic-Development-Bond-Book-(Updated-2024.07.03).pdf'
 RENT = dict(zip(range(2019, 2027), [1606, 1656, 1574, 1743, 1871, 1964, 2056, 2190]))          # Zillow ZORI, each January
 CPI = {int(k): v for k, v in json.load(open(os.path.join(ROOT, 'budget', 'data', 'budget.json')))['cpi'].items()}   # CPI-U annual averages; 2026 = months published so far
 
 # ---------------------------------------------------------------- live numbers
-ytd, goal, l12 = T['ytd'], T['goal'], T['last12']
+ytd, goal_, l12 = T['ytd'], T['goal'], T['last12']
 Y = {y['year']: y for y in T['years']}
 THRU = day(T['through']); UPDATED = day(T['updated'], True)
 pct = round(100 * ytd['homes'] / ytd['needed_so_far']); vs = round(100 * (ytd['homes'] / ytd['prev'] - 1))
@@ -73,7 +74,7 @@ WR = sorted(((w['ward'], w['last12'], WH[w['ward']], 1000 * w['last12'] / WH[w['
 CITY = 1000 * sum(r[1] for r in WR) / sum(r[2] for r in WR); LOW = sum(1 for r in WR if r[3] < 1); ZERO = [r[0] for r in sorted(WR) if r[1] == 0]
 
 # ---------------------------------------------------------------- pieces
-SECTIONS = [('homes', 'Homes permitted'), ('zoning', 'After the zoning vote'), ('room', 'Room to grow'), ('lost', 'Homes lost'), ('affordable', 'Affordable'),
+SECTIONS = [('homes', 'Homes added'), ('zoning', 'After the zoning vote'), ('room', 'Room to grow'), ('affordable', 'Affordable'),
             ('rents', 'Rents and prices'), ('transit', 'Transit'), ('streets', 'Streets'), ('projects', 'Big projects')]
 HATCH = lambda c, bg: f'repeating-linear-gradient(135deg, {c} 0 3px, {bg} 3px 6px)'
 SEQ = ['#dbe6f3', '#b3c9e6', '#7fa3d1', '#4f7cb8', '#1f4d8f']
@@ -95,7 +96,7 @@ def bars(vals, labels, fmt=f, short=None, refs=(), partial=False, plabel='', top
 
 def hbars(rows, unit='', maxv=None, w=62):
     m = maxv or max(abs(r[1]) for r in rows)
-    return '<div class="hb">' + ''.join(f'<div style="grid-template-columns: {w}px minmax(0, 1fr) auto;"><span>{esc(n)}</span><div class="tr"><i style="width: {max(1.5, 100 * abs(v) / m):.0f}%;"></i></div><b>{t}</b></div>' for n, v, t in rows) + '</div>'
+    return '<div class="hb">' + ''.join(f'<div{(" data-w=" + n[5:]) if n.startswith("Ward ") else ""} style="grid-template-columns: {w}px minmax(0, 1fr) auto;"><span>{esc(n)}</span><div class="tr"><i style="width: {max(1.5, 100 * abs(v) / m):.0f}%;"></i></div><b>{t}</b></div>' for n, v, t in rows) + '</div>'
 
 def split(parts, labels=True):
     tot = sum(p[1] for p in parts)
@@ -103,13 +104,20 @@ def split(parts, labels=True):
     key = '<div class="key">' + ''.join(f'<span><i style="background: {c};"></i>{esc(n)} · <b>{t[0] if t else f(v)}</b></span>' for n, v, c, *t in parts) + '</div>' if labels else ''
     return bar + key
 
-def wardmap(color_of, aria, w=270):
-    lon0, lon1, lat0, lat1 = -87.94, -87.52, 41.64, 42.03; k = math.cos(math.radians(41.85)); sc = w / ((lon1 - lon0) * k); h = round((lat1 - lat0) * sc)
+SHAPES = json.load(open(os.path.join(OUT, 'wardshapes.json')))   # the city's 2023 ward map snapped to one grid, so neighbors share exact borders
+def wardmap(color_of, aria, info, w=300):
+    """Ward map. info = {ward: text shown when the ward is tapped or hovered}."""
+    q = SHAPES['q']; lon0, lon1, lat0, lat1 = -87.945, -87.52, 41.64, 42.03; k = math.cos(math.radians(41.85)); sc = w / ((lon1 - lon0) * k); h = round((lat1 - lat0) * sc)
     d = ''
-    for x in WARDS:
-        path = ''.join('M' + 'L'.join(f'{(c[0] - lon0) * k * sc:.1f},{(lat1 - c[1]) * sc:.1f}' for c in p[0][::2]) + 'Z' for p in x['polys'])
-        d += f'<path d="{path}" fill="{color_of(x["ward"])}" stroke="#fff" stroke-width="0.8"><title>Ward {x["ward"]}</title></path>'
-    return f'<svg class="wmap" viewBox="0 0 {w} {h}" role="img" aria-label="{esc(aria)}">{d}</svg>'
+    for wd, rings in SHAPES['wards'].items():
+        path = ''.join('M' + ' '.join(f'{(r[i] * q - lon0) * k * sc:.1f},{(lat1 - r[i + 1] * q) * sc:.1f}' for i in range(0, len(r), 2)) + 'Z' for r in rings)
+        d += f'<path d="{path}" fill="{color_of(int(wd))}" data-w="{wd}" data-t="{esc(info[int(wd)])}" tabindex="0" role="button" aria-label="Ward {wd}: {esc(info[int(wd)])}"/>'
+    return (f'<svg class="wmap" viewBox="0 0 {w} {h}" role="group" aria-label="{esc(aria)}">{d}</svg>'
+            '<p class="winfo" aria-live="polite">Tap or point at a ward to see its numbers.</p>')
+def goal(title, text, label=None, url=None, none=False):
+    """What the section is measured against: a city program with a target, or a plain 'no official target'."""
+    link = f' <a href="{url}" target="_blank" rel="noopener">{label} ›</a>' if url else ''
+    return f'<section class="card pad goalc{" none" if none else ""}"><span class="lab">{"No official target" if none else "The official goal"}</span><h2>{title}</h2><p class="sub">{text}{link}</p></section>'
 
 def tiles(items, cols=4):
     return f'<section class="strip c{cols}">' + ''.join(f'<div class="card tile"><b>{b}</b><span>{s}</span></div>' for b, s in items) + '</section>'
@@ -172,6 +180,20 @@ def page(slug, title, desc, main):
 <script src="/shape/shape.js"></script>
 <script>
 /* "In N days" on the decisions coming up */
+/* ward maps: point at or tap a ward (or a ward in the lists beside it) */
+document.querySelectorAll(".mapr").forEach(box => {{
+  const info = box.querySelector(".winfo"), svg = box.querySelector(".wmap"); if (!svg) return; let pinned = null;
+  const show = w => {{ const p = svg.querySelector('path[data-w="' + w + '"]'); if (!p) return;
+    svg.querySelectorAll("path.on").forEach(e => e.classList.remove("on")); box.querySelectorAll(".hb .on").forEach(e => e.classList.remove("on"));
+    p.classList.add("on"); svg.appendChild(p); box.querySelectorAll('.hb [data-w="' + w + '"]').forEach(e => e.classList.add("on"));
+    info.innerHTML = "<b>Ward " + w + "</b> · " + p.dataset.t + ' · <a href="/wards/#' + w + '">Ward ' + w + "’s record ›</a>"; }};
+  const over = e => {{ const t = e.target.closest("[data-w]"); if (t && pinned === null) show(t.dataset.w); }};
+  const pick = e => {{ const t = e.target.closest("[data-w]"); if (!t || e.target.closest("a")) return; pinned = t.dataset.w; show(pinned); }};
+  box.addEventListener("pointerover", over); box.addEventListener("focusin", over); box.addEventListener("click", pick);
+  box.addEventListener("keydown", e => {{ if (e.key === "Enter" || e.key === " ") {{ pick(e); if (e.target.matches("path")) e.preventDefault(); }} }});
+}});
+document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => {{ const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
+  e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; }});
 document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; }});
 </script>
 </body>
@@ -190,18 +212,25 @@ def yearchart(net, h=210):
     vals = [ytd['homes'] if y == 2026 else Y[y]['homes'] for y in YEARS]
     return bars(vals, [str(y) if True else '' for y in YEARS], short=lambda v: f'{v / 1000:.1f}k', top=11000, partial=True, plabel='so far', h=h,
                 caps=[DEMO[y] for y in YEARS] if net else None,
-                refs=[(goal['close'], f'{f(goal["close"])} a year closes the gap by 2041', f'{f(goal["close"])} closes the gap', RED), (goal['hold'], f'{f(goal["hold"])} keeps it from growing', f'{f(goal["hold"])} holds it', MUTE)],
-                aria=f'Homes permitted each year, 2016 to 2026: {f(Y[2016]["homes"])} in 2016, {f(Y[2025]["homes"])} in 2025 and {f(ytd["homes"])} so far in 2026. Every year is below the {f(goal["close"])} a year needed.')
+                refs=[(goal_['close'], f'{f(goal_["close"])} a year closes the gap by 2041', f'{f(goal_["close"])} closes the gap', RED), (goal_['hold'], f'{f(goal_["hold"])} keeps it from growing', f'{f(goal_["hold"])} holds it', MUTE)],
+                aria=f'Homes permitted each year, 2016 to 2026: {f(Y[2016]["homes"])} in 2016, {f(Y[2025]["homes"])} in 2025 and {f(ytd["homes"])} so far in 2026. Every year is below the {f(goal_["close"])} a year needed.')
 PACE = f'<span class="chip {"bad" if behind else "good"}">{"▼ Behind pace" if behind else "▲ On pace"}</span>'
 def homes():
-    strip = ('<section class="strip c3 lead3">'
-             f'<div class="card tile">{PACE}{meter(pct)}<span><b class="in">{pct}%</b> of the {f(ytd["needed_so_far"])} homes needed by {THRU} · <b class="in">{"▼" if vs < 0 else "▲"} {abs(vs)}%</b> vs. this date last year</span></div>'
-             f'<div class="card tile"><b>{f(l12["homes"])}</b><span>homes permitted in the last 12 months, in {f(l12["projects"])} projects</span></div>'
-             f'<div class="card tile"><b>About {f(net26)}</b><span>so far this year after subtracting homes in buildings torn down</span></div></section>')
+    d26 = round(DEMO[2026] / 10) * 10
+    strip = ('<section class="strip c4 eq">'
+             f'<div class="card tile"><b>{f(ytd["homes"])}</b><span>homes permitted this year, through {THRU}</span></div>'
+             f'<div class="card tile"><b><i>−</i> about {f(d26)}</b><span>homes in buildings torn down (estimate, through Nov. 6)</span></div>'
+             f'<div class="card tile sum"><b><i>=</i> about {f(net26)}</b><span>net gain: homes permitted minus homes torn down</span></div>'
+             f'<div class="card tile">{PACE}{meter(pct)}<span><b class="in">{pct}%</b> of the {f(ytd["needed_so_far"])} homes needed by {THRU} · <b class="in">{"▼" if vs < 0 else "▲"} {abs(vs)}%</b> permitted vs. this date last year</span></div></section>')
     n25 = round((Y[2025]['homes'] - DEMO[2025]) / 10) * 10
-    c1 = card('Permitted each year, minus homes torn down', 'The solid part of each bar is what’s left after subtracting homes in buildings that got a demolition permit that year.',
-              yearchart(True, 230) + key([('New homes after teardowns', NAVY, ''), ('Homes in buildings torn down (estimate)', HATCH('#8a9099', '#fff'), ' border: 1px solid #c9ced6; box-sizing: border-box;'), ('2026 so far', HATCH(NAVY, '#9db9de'), '')])
-              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. The goal pace counts homes added, so the gap is wider than the permit count alone shows.</p>')
+    c1 = card('Homes permitted each year, and what was left after teardowns', 'The whole bar is homes permitted. The hatched cap is homes in buildings that got a demolition permit that year; the solid part is the gain.',
+              yearchart(True, 230) + key([('Net gain', NAVY, ''), ('Homes in buildings torn down (estimate)', HATCH('#8a9099', '#fff'), ' border: 1px solid #c9ced6; box-sizing: border-box;'), ('2026 so far', HATCH(NAVY, '#9db9de'), '')])
+              + f'<p class="call">In 2025: <b>{f(Y[2025]["homes"])}</b> permitted − about <b>{f(round(DEMO[2025] / 100) * 100)}</b> torn down = about <b>{f(n25)}</b> more homes. Teardowns are down by half since 2013, when about 1,900 homes were in torn-down buildings.</p>')
+    lostc = ('<section class="card pad" id="lost"><div class="hd"><h2>Other ways homes are lost or gained</h2><p class="cap">These are not in the net figure above: the records only let us count part of each.</p></div><div class="facts">'
+             '<div><b>At least 525</b><span>buildings lost homes in a renovation since 2019, at least 688 homes in all. 374 became single-family homes; 331 had been two-flats</span></div>'
+             '<div><b>At least 281</b><span>buildings gained homes in a renovation since 2019, at least 379 homes</span></div>'
+             '<div><b>3,767</b><span>homes and rooms are registered with the city as short-term rentals</span></div>'
+             '<div><b>About 1 in 4</b><span>demolition permits mention fire damage, a court order or a vacant building</span></div></div></section>')
     rows = ''
     for y in range(2019, 2027):
         r = Y[y]; v = ytd['homes'] if y == 2026 else r['homes']; fi, ex = r['finished'], r['expired']; bu = max(0, v - fi - ex); p = lambda x: 100 * x / v
@@ -214,19 +243,24 @@ def homes():
     BIN = [(6, NAVY, '6 or more'), (3, '#5f8fcc', '3–6'), (1, '#a9c3e6', '1–3'), (0.0001, '#d9e4f4', 'Under 1'), (-1, '#eceef1', 'None')]
     rate = {r[0]: r[3] for r in WR}; col = lambda w: next(c for t, c, _ in BIN if rate[w] >= t)
     raw = sorted(WR, key=lambda r: -r[1])
+    info = {r[0]: f'{f(r[1])} homes permitted in the last 12 months · {r[3]:.1f} for every 1,000 homes there' for r in WR}
+    allw = table(['Ward', 'Homes permitted, last 12 months', 'Per 1,000 homes there', 'Homes in the ward (2020 Census)'], [[f'<a href="/wards/#{r[0]}">Ward {r[0]}</a>', f(r[1]), f'{r[3]:.1f}', f(r[2])] for r in raw], right=(1, 2, 3))
     c3 = card('Where the homes are going', 'Homes permitted in the last 12 months, by ward. Wards differ in size, so the map shows homes per 1,000 already there.',
-              '<div class="mapr"><div class="mp">' + wardmap(col, 'Map of Chicago’s 50 wards shaded by homes permitted per 1,000 existing homes in the last 12 months. The highest rates are near downtown and on the Near West and Near Northwest sides.')
+              '<div class="mapr"><div class="mp">' + wardmap(col, 'Map of Chicago’s 50 wards shaded by homes permitted per 1,000 existing homes in the last 12 months. The highest rates are near downtown and on the Near West and Near Northwest sides.', info)
               + key([(t, c, '') for _, c, t in BIN]) + '</div><div class="lists"><div><h3>Most homes permitted</h3>' + hbars([(f'Ward {r[0]}', r[1], f(r[1])) for r in raw[:6]])
               + '</div><div><h3>Most for its size <span>(per 1,000 homes)</span></h3>' + hbars([(f'Ward {r[0]}', r[3], f'{r[3]:.0f}') for r in WR[:6]])
-              + f'</div><p class="call"><b>{LOW} of 50 wards</b> permitted less than 1 new home for every 1,000 they have. {len(ZERO)} permitted none{" (Wards " + ", ".join(map(str, ZERO)) + ")" if ZERO else ""}. The city as a whole: <b>{CITY:.1f}</b> per 1,000.</p></div></div>')
+              + f'</div><p class="call"><b>{LOW} of 50 wards</b> permitted less than 1 new home for every 1,000 they have. {len(ZERO)} permitted none{" (Wards " + ", ".join(map(str, ZERO)) + ")" if ZERO else ""}. The city as a whole: <b>{CITY:.1f}</b> per 1,000.</p></div></div>'
+              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
     c4 = ('<section class="strip c2"><div class="card tile row"><b>580</b><span>coach houses and basement homes have cleared the city’s first step since citywide rules began this spring. Cleared is not built.</span></div>'
           '<a class="card tile row go" href="/tracker/"><span><b class="t">Every project, ward and zoning approval</b>Search the full list by address or ward</span><em>Open ›</em></a></section>')
-    note = ('The pace is the housing simulator’s goal, an estimate: Chicago’s share of the regional shortage, closed by 2041. Over 2010–2025 our total is within 1% of the Census permit survey; single years differ by 8% on average. '
-            'Torn-down homes are an estimate through Nov. 6: each demolition permit is matched to the building it removed (other fair ways of matching give 660 to 860 for 2025), and most teardowns are followed by a new building that the permit count includes. '
+    g = goal('The city has not set a citywide target for new homes', f'The pace on this page is our own yardstick: Chicago’s share of the region’s housing shortage, closed by 2041 ({f(goal_["close"])} homes a year). The nearest official plan is the 2024–2028 Housing and Economic Development Bond, which projects 600 to 1,000 affordable rental homes, 750 homes on empty lots in neighborhoods and 600 or more mixed-income homes every five years from a new city fund.', 'The bond plan', BOND, none=True)
+    note = ('The pace is the housing simulator’s goal, an estimate: Chicago’s share of the regional shortage, closed by 2041. Over 2010–2025 our permit total is within 1% of the Census permit survey; single years differ by 8% on average. '
+            'Torn-down homes are an estimate through Nov. 6: each demolition permit is matched to the nearest building in the city’s 2013 footprints (within 25 m) to read how many homes it held. Other fair ways of matching give 660 to 860 for 2025. Most teardowns are followed by a new building, which the permit count includes. '
+            'Renovation figures come from permits whose wording states the change (for example “convert from 3 units to 2”), leaving out permits that expired or were cancelled. We catch roughly half of the cuts and fewer of the additions, so both are floors, and neither is subtracted or added in the net figure. '
             'Homes per ward come from the 2020 Census. “Finished” means the city marked the permit complete or issued a certificate of occupancy. Coach house applications are counted from Mar. 31, 2026; the 2021–2025 pilot cleared 907.')
-    h1 = f'Chicago has permitted {f(ytd["homes"])} homes so far this year. It needed {f(ytd["needed_so_far"])} by now to stay on pace.'
-    return page('homes', 'Homes permitted', h1, top('homes', 'Homes permitted', h1, f'Permits through {THRU}, 2026 · updated every morning') + strip + c1 + c2 + c3 + c4
-                + bottom('homes', note, 'City of Chicago building permits (new construction and demolition); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications.'))
+    h1 = f'So far this year: {f(ytd["homes"])} homes permitted, about {f(d26)} torn down, a net gain of about {f(net26)}.'
+    return page('homes', 'Homes added', h1, top('homes', 'Homes added', h1, f'Permits through {THRU}, 2026, updated every morning · teardowns through Nov. 6') + strip + c1 + c2 + c3 + lostc + c4 + g
+                + bottom('homes', note, 'City of Chicago building permits (new construction, demolition and renovation); City of Chicago 2013 building footprints; Census Building Permits Survey; 2020 Census housing counts by block; City of Chicago ADU pre-approval applications and shared housing registrations.'))
 
 # ---------------------------------------------------------------- the snapshot sections
 def zoning():
@@ -247,9 +281,11 @@ def zoning():
             'The table counts the 341 zoning changes since 2021 (of 2,093) whose application clearly describes a new residential building and no conversion of an existing one. A permit counts if it is for new construction inside the rezoned area on the zoning map, or at the same address, on or after the vote. '
             'Among those that got a permit, half got it within 9 months. For 2025, the 12-month figure covers the 60 passed by early November 2025.')
     return page('zoning', 'After the zoning vote', h1, top('zoning', 'After the zoning vote', h1, f'Permits through Nov. 6, 2026 · zoning votes through Oct. 14 · checked {SNAP}') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>'
+                + goal('The city has no target for how fast a rezoning turns into homes', 'Its Cut the Tape initiative, begun in 2024, is the program meant to speed approvals and permits. It reports steps taken, not a number to hit.', 'Cut the Tape', 'https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html', none=True)
                 + bottom('zoning', note, 'City Clerk legislation records and zoning applications; Chicago zoning map (the ordinance number and date on each district); City of Chicago building permits.'))
 
 ROOM_FILLS = ['#7fa3d1', '#7fa3d1', '#1f4d8f', '#7fa3d1', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#7fa3d1', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#4f7cb8', '#1f4d8f', '#1f4d8f', '#b3c9e6', '#b3c9e6', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#b3c9e6', '#1f4d8f', '#7fa3d1', '#7fa3d1', '#1f4d8f', '#1f4d8f', '#4f7cb8', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#dbe6f3', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#7fa3d1', '#b3c9e6']
+ROOM_BAND = dict(zip(SEQ, ['under 500', '500 to 1,000', '1,000 to 2,000', '2,000 to 4,000', 'more than 4,000']))
 def room():
     h1 = 'Today’s zoning allows about 110,000 more homes on empty private lots outside downtown. Nearly everything else it allows would mean replacing a building.'
     fill = {w['ward']: ROOM_FILLS[i] for i, w in enumerate(WARDS)}
@@ -259,7 +295,7 @@ def room():
               + '<p class="call">Only the first group could be built without replacing or adding to a building that stands there now.</p>')
     st = tiles([('33,327', 'empty private lots outside downtown'), ('1,525', 'homes of empty-lot room in the typical ward'), ('About 1 in 4', 'lots with homes hold more homes than today’s rules would let anyone build'), ('6 in 10', 'of those are over by one home, such as a two-flat on a single-family lot')])
     c2 = card('Room on empty lots, by ward', 'Homes today’s zoning allows on empty private lots.',
-              '<div class="mapr"><div class="mp">' + wardmap(lambda w: fill[w], 'Map of Chicago’s 50 wards shaded by how many homes today’s zoning allows on empty lots. Most room is on the South and West sides.')
+              '<div class="mapr"><div class="mp">' + wardmap(lambda w: fill[w], 'Map of Chicago’s 50 wards shaded by how many homes today’s zoning allows on empty lots. Most room is on the South and West sides.', {w: 'room for ' + ROOM_BAND[fill[w]] + ' homes on empty lots' for w in fill})
               + key([(t, c, '') for t, c in zip(['Under 500', '500–1,000', '1,000–2,000', '2,000–4,000', '4,000+'], SEQ)]) + '</div><div class="lists"><div><h3>Most room</h3>'
               + hbars([('Ward 28', 6979, '6,979'), ('Ward 20', 6948, '6,948'), ('Ward 16', 6557, '6,557'), ('Ward 27', 5334, '5,334'), ('Ward 24', 5201, '5,201')])
               + '</div><div><h3>Least room</h3>' + hbars([('Ward 31', 486, '486'), ('Ward 35', 428, '428'), ('Ward 33', 352, '352'), ('Ward 38', 334, '334'), ('Ward 42', 0, '0')], maxv=6979)
@@ -267,34 +303,30 @@ def room():
     c3 = card('Downtown is counted apart, and roughly', '', '<p class="sub">Downtown zoning limits floor area, not homes per lot. Unused floor area there works out to somewhere between <b>46,000 and 80,000</b> more homes at 900 sq ft each. Building heights and lot sizes are missing for hundreds of downtown lots, so this is a rough range and those lots are left out.</p>')
     note = ('For each lot: the homes its zoning district allows (lot size ÷ the district’s minimum lot area per home) minus the homes there now. Lot sizes are the Cook County Assessor’s; 51,854 of the 110,000 are on lots with a measured size and the rest assume a standard 3,125 sq ft lot. '
             'City-owned and other tax-exempt land, railroads, planned developments, manufacturing districts and parks are left out. Two-flats that an exception allows in some single-family districts are counted as over.')
-    return page('room', 'Room to grow', h1, top('room', 'Room to grow', h1, f'Zoning map and Assessor lots, 2026 · checked {SNAP}') + lede + c1 + st + c2 + c3
+    return page('room', 'Room to grow', h1, top('room', 'Room to grow', h1, f'Zoning map and Assessor lots, 2026 · checked {SNAP}') + lede + c1 + st + c2 + c3 + goal('No city program sets a target for building on empty lots', 'This section is context for the others: it shows how much could be built without changing any zoning.', none=True)
                 + bottom('room', note, 'Chicago zoning map; Chicago Zoning Ordinance §17-2-0303 and downtown floor-area rules; Cook County Assessor parcels and characteristics; City of Chicago building footprints.'))
 
-def lost():
-    h1 = 'About 800 homes were in buildings torn down in 2025, roughly one for every five permitted.'
-    ys = list(range(2013, 2027))
-    c1 = card('Homes in buildings with a demolition permit, each year', 'An estimate: each permit is matched to the building it removed.',
-              bars([DEMO[y] for y in ys], [f'’{str(y)[2:]}' for y in ys], partial=True, plabel='so far', short=lambda v: f'{v / 1000:.1f}k' if v >= 1000 else str(v), h=190,
-                   aria='Homes in buildings with a demolition permit each year: about 1,900 in 2013, falling to about 800 in 2025 and 677 so far in 2026.'))
-    st = tiles([('Down by half', 'since 2013, when about 1,900 homes were in torn-down buildings'), ('About 1 in 4', 'demolition permits mention fire damage, a court order or a vacant building'),
-                ('At least 525', 'buildings lost homes in a renovation since 2019, at least 688 homes in all'), ('374', 'of those became single-family homes; 331 were two-flats'),
-                ('At least 281', 'buildings gained homes in a renovation, at least 379 homes'), ('3,767', 'homes and rooms registered with the city as short-term rentals')], cols=3)
-    note = ('How we count teardowns: each demolition permit is matched to the nearest building in the city’s 2013 footprints (within 25 m) to read how many homes it held. Other fair ways of matching give 660 to 860 for 2025. Most teardowns are followed by a new building, which the permit count includes. '
-            'Renovation figures come from permits whose wording states the change (for example “convert from 3 units to 2”), leaving out permits that expired or were cancelled. We catch roughly half of the cuts and fewer of the additions, so both are floors and the two should not be subtracted.')
-    return page('lost', 'Homes lost', h1, top('lost', 'Homes lost', h1, f'Demolition permits through Nov. 6, 2026 · checked {SNAP}') + c1 + st
-                + bottom('lost', note, 'City of Chicago demolition and renovation permits; City of Chicago 2013 building footprints; City of Chicago shared housing registrations.'))
-
+AFF_WARD = {1: 490, 2: 202, 3: 3921, 4: 2390, 5: 436, 6: 382, 7: 280, 8: 308, 9: 885, 10: 257, 11: 287, 12: 30, 13: 87, 14: 239, 15: 196, 16: 766, 17: 308, 18: 250, 19: 0, 20: 1877, 21: 462, 22: 180, 23: 89, 24: 1063, 25: 359,
+            26: 1212, 27: 3427, 28: 2051, 29: 480, 30: 0, 31: 412, 32: 344, 33: 187, 34: 242, 35: 199, 36: 175, 37: 133, 38: 131, 39: 477, 40: 110, 41: 85, 42: 34, 43: 68, 44: 333, 45: 208, 46: 1016, 47: 229, 48: 842, 49: 1178, 50: 233}   # homes on the city list (dated Dec. 30, 2024) by 2023 ward
 def affordable():
     h1 = 'The city’s list shows 29,550 affordable rental homes in 598 buildings. It was last updated in December 2024.'
     st = tiles([('29,550', 'homes on the list, which the city says is not complete'), ('About 1 in 3', 'are for seniors (10,759 homes)'), ('156 buildings', 'with 1,727 homes are there because the city requires affordable homes in bigger new buildings (the ARO)'), ('Not counted', 'public housing (CHA) and rent vouchers')])
+    BIN = [(2000, SEQ[4], '2,000 or more'), (1000, SEQ[3], '1,000–2,000'), (250, SEQ[2], '250–1,000'), (1, SEQ[1], 'Under 250'), (0, '#eceef1', 'None')]
+    col = lambda w: next(c for t, c, _ in BIN if AFF_WARD[w] >= t)
+    rk = sorted(AFF_WARD.items(), key=lambda r: -r[1])
+    allw = table(['Ward', 'Homes on the city’s list'], [[f'<a href="/wards/#{w}">Ward {w}</a>', f(v)] for w, v in rk], right=(1,))
     c1 = card('Where the listed homes are', 'Homes on the city’s list, by ward.',
-              '<div class="lists two"><div><h3>Most homes on the list</h3>' + hbars([('Ward 3', 3921, '3,921'), ('Ward 27', 3427, '3,427'), ('Ward 4', 2390, '2,390'), ('Ward 28', 2051, '2,051'), ('Ward 20', 1877, '1,877')])
-              + '</div><div><h3>Fewest</h3>' + hbars([('Ward 42', 34, '34'), ('Ward 12', 30, '30'), ('Ward 19', 0, '0'), ('Ward 30', 0, '0')], maxv=3921)
-              + '</div><p class="call">Wards 19 and 30 have no building on the list. That is not the same as no affordable housing.</p></div>')
+              '<div class="mapr"><div class="mp">' + wardmap(col, 'Map of Chicago’s 50 wards shaded by affordable rental homes on the city’s list. The most are on the Near South, Near West and West sides.', {w: f'{f(v)} homes on the city’s list' for w, v in AFF_WARD.items()})
+              + key([(t, c, '') for _, c, t in BIN]) + '</div><div class="lists"><div><h3>Most homes on the list</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[:6]])
+              + '</div><div><h3>Fewest</h3>' + hbars([(f'Ward {w}', v, f(v)) for w, v in rk[-6:]], maxv=rk[0][1])
+              + '</div><p class="call">Wards 19 and 30 have no building on the list. That is not the same as no affordable housing.</p></div></div>'
+              + f'<details class="all"><summary>All 50 wards</summary>{allw}</details>')
+    c2 = card('Is the number growing?', '', '<p class="sub">The city’s list cannot say. It gives each building’s address and number of homes but not the year it opened, and the city has published one version of it, dated Dec. 30, 2024. Until it publishes another, there is no second point to compare.</p>')
+    g = goal('The 2024–2028 housing bond', 'The city’s Housing and Economic Development Bond plan projects 600 to 1,000 affordable rental homes built or preserved, and 600 or more mixed-income homes every five years from its new Green Social Housing fund. The city has not published a running count against those figures.', 'The bond plan', "https://www.chicago.gov/content/dam/city/sites/business-and-neighborhood-development-strategy/pdf/Housing-and-Economic-Development-Bond-Book-(Updated-2024.07.03).pdf")
     note = ('The list is the Department of Housing’s “Affordable Rental Housing Developments”: buildings the city financed, plus those built under its affordable requirements rule. The city describes it as among the thousands of homes it supports and provides it as a courtesy. '
             'Ward totals place each building by its map location on the 2023 ward map.')
-    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list dated Dec. 30, 2024 · checked {SNAP}') + st + c1
-                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated Dec. 30, 2024); 2023 ward boundaries.'))
+    return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list dated Dec. 30, 2024 · checked {SNAP}') + st + c1 + c2 + g
+                + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated Dec. 30, 2024); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024).'))
 
 def rents():
     h1 = 'The typical asking rent is $2,311, up 5.7% in a year.'
@@ -311,27 +343,43 @@ def rents():
               [['House', '$230,000', '$295,000', '$284,900', '$320,000', '<b>+39%</b>'], ['Condo', '$260,000', '$288,000', '$280,000', '$329,000', '<b>+27%</b>'], ['2- to 6-flat', '$275,000', '$375,000', '$375,000', '$450,000', '<b>+64%</b>']], right=(1, 2, 3, 4, 5)))
     note = ('Asking rent is Zillow’s Observed Rent Index for the city: rents advertised for homes on the market, all sizes, smoothed. It runs above what sitting tenants pay. The 2026-dollar figures use the national Consumer Price Index (yearly averages; 2026 is the average of the months published so far, so the last step is an estimate). '
             'Sale prices are the median of what sold that year, not the same homes. They come from the Cook County Assessor’s sales in Chicago, leaving out sales under $10,000, resales within a year, unusual deeds and multi-parcel sales.')
-    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through Sept. 2026 · sales through 2025 · checked {SNAP}') + st + c1 + c2
+    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through Sept. 2026 · sales through 2025 · checked {SNAP}') + st + c1 + c2 + goal('No city program sets a target for rents or sale prices', 'Rents and prices are the result the other sections add up to, so this section is a readout, not a scorecard.', none=True)
                 + bottom('rents', note, 'Zillow Observed Rent Index (city of Chicago); Census American Community Survey 2024; Cook County Assessor parcel sales; Bureau of Labor Statistics CPI-U.'))
 
+PMO = 'https://nita.illinois.gov/uploads/files/general/Transit-Funding/Improving-the-System/2026-06-Report-on-Project-Management-Oversight-1.pdf'
+# name, budget, status, chip class, where it stands, due, source label, source date, url.  Budgets and percentages: NITA's June 2026 oversight report (budgets as of March 2026, status as of late May).
+CTA_PROJ = [('Red Line Extension', '$5.75 billion', 'Under way', 'go', '5.5 miles and four new stations from 95th to 130th. Broke ground Apr. 24, 2026; 20% complete in June', 'In service 2030', 'CTA', 'Apr. 24, 2026', 'https://www.transitchicago.com/cta-celebrates-start-of-the-historic-red-line-extension-project-by-breaking-ground-at-the-future-michigan-avenue-station/'),
+            ('Red and Purple Modernization, phase one', '$2.2 billion', 'Nearly done', 'good', 'Two miles of rebuilt track, four rebuilt stations and the bypass at Belmont. Builders reported the main work finished July 1, 2026', 'Final sign-off Nov. 2026 to April 2027', 'Construction Dive', 'July 6, 2026', 'https://www.constructiondive.com/news/fluor-walsh-substantial-completion-chicago-red-line/824503/'),
+            ('State/Lake station rebuild', 'Not in the report', 'Under way', 'go', 'The Loop station closed Jan. 5, 2026 to be replaced by a new, fully accessible one. The city’s transportation department is building it', 'Opens 2029', 'CTA', 'Dec. 4, 2025', 'https://www.transitchicago.com/construction-to-begin-in-january-on-new-fully-accessible-statelake-cta-station/'),
+            ('Blue Line Forest Park branch, phase one', '$126.7 million', 'Behind schedule', 'bad', 'Track and station work at Racine, Morgan and Hermitage. 80% complete in June', 'February 2027', 'NITA oversight report', 'June 2026', PMO),
+            ('New 7000-series rail cars', '$713.7 million', 'Under way', 'go', '252 cars delivered and accepted by June', 'March 2027', 'NITA oversight report', 'June 2026', PMO),
+            ('Elevators at more stations (All Stations Accessibility)', '$25.6 million to $88.7 million each', 'Mixed', '', 'Austin (Green Line) reopened fully accessible in Aug. 2026. Irving Park and Belmont (Blue) are in design; California (Blue) has to be bid again', '2028 to 2029', 'WTTW', 'Aug. 7, 2026', 'https://news.wttw.com/2026/08/07/officials-celebrate-completion-25m-project-improve-accessibility-cta-green-line-station'),
+            ('Tap-to-pay fare system upgrade (Ventra)', '$127.2 million', 'Under way', 'go', 'The behind-the-scenes move to new systems was 90% done in June', 'December 2027', 'NITA oversight report', 'June 2026', PMO)]
+NITA_SUM = 'https://nita.illinois.gov/uploads/files/general/NITA-Act-Summary-June-2026-Update.pdf'
+NITA_DATES = [('2026-06-01', 'June 1, 2026', 'The law takes effect. The regional board approves a quarter-point sales tax increase'), ('2026-09-01', 'Sept. 1, 2026', 'New boards are seated at the regional agency (NITA), CTA, Metra and Pace'),
+              ('2026-12-31', 'Dec. 31, 2026', 'The first regional budget under the new law must pass'), ('2027-07-01', 'July 1, 2027', 'Transit ambassadors start work on the system'),
+              ('2027-12-31', 'Dec. 31, 2027', 'Service standards for buses and trains adopted'), ('2028-06-01', 'Mid-2028', 'Fare capping and income-based fares in place'),
+              ('2030-02-01', 'Feb. 1, 2030', 'One fare system across CTA, Metra and Pace')]
 def transit():
     h1 = 'CTA carried 70% of its 2019 rides in 2025, counted the same way. So far in 2026, rides are up 2.6%.'
     ys = list(range(2015, 2026))
     c1 = card('Rides on CTA, Metra and Pace, millions a year', 'Every year is counted the old way, so the years compare fairly.',
               bars([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], [f'’{str(y)[2:]}' for y in ys], h=190, aria='Rides on CTA, Metra and Pace in millions a year: 626 in 2015, 550 in 2019, 231 in 2020 and 381 in 2025.'))
     st = tiles([('70%', 'of 2019 rides on CTA in 2025: buses 78%, the L 62%'), ('62%', 'of 2019 rides on Metra: 37.9 million in 2025, up 8% in a year'), ('67%', 'of 2019 rides on Pace buses: 16.4 million in 2025'), ('▲ 2.6%', 'CTA rides, Jan.–Aug. 2026 vs. 2025: buses +1.9%, the L +3.7%')])
-    sg = lambda v: ('+' if v > 0 else '−') + f'{abs(v):.1f}%'
-    routes = [('9 Ashland', 9.6), ('53 Pulaski*', 18.7), ('79 79th', 0.3), ('66 Chicago', -12.0), ('8 Halsted', -5.6), ('3 King Drive', 2.6)]
-    div = '<div class="dv">' + ''.join(f'<div><span>{n}</span><div class="ax"><i class="{"up" if v > 0 else "dn"}" style="width: {abs(v) / 20 * 50:.1f}%;"></i></div><b>{sg(v)}</b></div>' for n, v in routes) + '</div>'
-    c2 = card('The six busiest bus routes, this year vs. last', 'Weekday riders, Jan.–Aug. 2026 vs. 2025.', div + '<p class="fine">*The 53 was extended in Aug. 2025.</p>')
-    c3 = card('L stations closest to 2019', 'Yearly entries, 2025 vs. 2019.', hbars([('Morgan (Green, Pink)', 118, '118%'), ('Cermak-Chinatown', 115, '115%'), ('Cermak-McCormick Place', 98, '98%'), ('Grand (Blue)', 95, '95%')], w=170)
-              + '<p class="fine">CTA’s 2025 counting change added about 2% on the L.</p>')
+    rows = [[f'<b>{n}</b>', f'<span class="chip {c}">{stt}</span>', b, t, due, f'<a href="{u}" target="_blank" rel="noopener">{src}</a><br>{d}'] for n, b, stt, c, t, due, src, d, u in CTA_PROJ]
+    c2 = card('CTA’s big projects', 'What is being built, what it costs and when it is due.', table(['Project', 'Status', 'Budget', 'Where it stands', 'Due', 'Source'], rows, cls='stack proj')
+              + f'<p class="fine">Budgets, percentages and due dates are from the regional agency’s <a href="{PMO}" target="_blank" rel="noopener">June 2026 oversight report</a> unless the row links elsewhere. That report rates the Red Line Extension on schedule.</p>')
+    li = ''.join(f'<li data-date="{iso}"><span class="when">{d}</span><span class="what">{t}</span><span class="st"></span></li>' for iso, d, t in NITA_DATES)
+    c3 = card('The new transit law’s deadlines', 'In 2025 the state replaced the regional transit agency with a stronger one (NITA) and gave it new money. These are dates the law sets.',
+              f'<ol class="dl">{li}</ol><p class="fine">Dates are from the agency’s <a href="{NITA_SUM}" target="_blank" rel="noopener">summary of the law (June 2026)</a>. A passed date means the deadline has gone by; we don’t yet track whether each was met. <a href="/learn/#nita">What the law changed ›</a></p>')
     c4 = card('What the agencies report', '', table(['', ''], [['More CTA service scheduled, 2025 vs. 2024', '<b>+14%</b>'], ['Rider growth on frequent bus routes', '<b>21%</b>'], ['Rider growth on other routes', '<b>11%</b>'], ['Door-to-door rides for riders with disabilities', '<b>6.2M</b>']], right=(1,), cls='plain')
               + '<p class="fine">Frequent routes come every 10 minutes or better; they were chosen because they were already busy. Door-to-door rides are 144% of 2019.</p>')
+    g = goal('The 2025 transit law', 'There is no official ridership target. What the law does set is the list of deadlines above, plus a rule that fares and other income cover 25% of running costs from 2028 and 20% from 2029.', 'The agency’s summary', NITA_SUM)
     note = ('In 2025 CTA changed how it counts riders: new fareboxes and passenger counters, and rides the old system missed. That added 5.9% to its 2025 total (8.5% on buses, 2.4% on the L). '
-            'On the new count 2025 was 338.0 million rides; on the old count, 319.2 million, which is the figure compared with 2019 here. The 2026 gain compares two years on the new count.')
-    return page('transit', 'Transit', h1, top('transit', 'Transit', h1, f'CTA through Aug. 2026 · Metra and Pace through 2025 · checked {SNAP}') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>' + c4
-                + bottom('transit', note, 'CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily and bus-route ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026) and proposed 2027 budget.'))
+            'On the new count 2025 was 338.0 million rides; on the old count, 319.2 million, which is the figure compared with 2019 here. The 2026 gain compares two years on the new count. '
+            'Project budgets are as of March 2026 and status as of late May 2026, except where a row cites a later story.')
+    return page('transit', 'Transit', h1, top('transit', 'Transit', h1, f'CTA rides through Aug. 2026 · Metra and Pace through 2025 · projects as of June to Aug. 2026 · checked {SNAP}') + st + c1 + c2 + '<section class="strip c2 cards">' + c3 + c4 + '</section>' + g
+                + bottom('transit', note, 'CTA ridership restatement memo (Mar. 20, 2026); CTA annual ridership reports 2019 and 2025; CTA daily ridership (Chicago Data Portal); RTA regional ridership; NITA 2025 ridership release (Jan. 30, 2026); NITA Report on Project Management Oversight (June 2026); NITA Act summary (June 2026).'))
 
 def streets():
     h1 = '82 people have died in traffic this year through Sept. 27, up from 71 by that date in 2025.'
@@ -346,6 +394,7 @@ def streets():
     note = ('Deaths are the city’s reviewed Vision Zero list, which is published about a month behind. Serious injuries come from police crash reports, which count a little differently (they show 84 deaths through Nov. 6, against 76 a year earlier). '
             'Pothole figures cover finished repairs only; open requests are not in the data, and counts follow the winter as much as the crews.')
     return page('streets', 'Streets', h1, top('streets', 'Streets', h1, f'Deaths through Sept. 27, 2026 · crashes and potholes through Nov. 6 · checked {SNAP}') + st + '<section class="strip c2 cards">' + c1 + c2 + '</section>' + c3
+                + goal('Vision Zero: no traffic deaths or serious injuries by 2026', 'The city’s 2017 Vision Zero Action Plan set this year as its deadline to eliminate traffic deaths and serious injuries. Through Sept. 27, 82 people had died, and 1,497 had been seriously hurt through Nov. 6.', 'The action plan', 'https://www.chicago.gov/content/dam/city/sites/complete-streets/pdfs/17_0612%20VZ%20Action%20Plan_FOR%20WEB.pdf')
                 + bottom('streets', note, 'City of Chicago Vision Zero traffic fatalities, traffic crashes, pothole repairs, and speed and red-light camera violations (Chicago Data Portal).'))
 
 def projects():
@@ -356,7 +405,7 @@ def projects():
     c1 = card('', '', table(['Project', 'Status', 'Homes built so far', 'Where it stands', 'Source'], rows, right=(2,), cls='stack proj'))
     st = tiles([(f(tot), 'homes planned across the six projects'), (f(built), 'homes finished, in two buildings at North Union'), ('3 of 6', 'have broken ground: The 78, Foundry Park and the 1901 Project. None of the three has started on homes')], cols=3)
     note = f'Home counts are each project’s published plan. “Built so far” counts finished homes only. Each status comes from the dated news story linked with that project, checked {SNAP}.'
-    return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP}') + st + c1
+    return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP}') + st + c1 + goal('Each project has its own approved plan', 'There is no citywide target for these sites. The home counts here are what each plan, approved by the Plan Commission and City Council, says it will build.', none=True)
                 + bottom('projects', note, 'Home counts: each project’s Plan Commission approval or published plan. Status: the dated story linked on each row. North Union homes built: Power Construction project pages.'))
 
 # ---------------------------------------------------------------- overview
@@ -364,19 +413,18 @@ def overview():
     built = sum(p[2] for p in PROJ); tot = sum(p[1] for p in PROJ)
     SECS = [('zoning', '3 in 10', 'zoning changes for a new building get a permit within a year', spark([31, 20, 12, 35, 45], rng=('Passed 2021', '2025')), '45% for 2025’s votes, the most in five years'),
             ('room', '110,000', 'more homes allowed today on empty lots outside downtown', minisplit([(110, NAVY), (171, '#9db9de'), (203, '#d9e4f4')], 'Empty lots · shop lots · lots with homes'), 'About 484,000 on paper, mostly under standing buildings'),
-            ('lost', 'About 800', 'homes were in buildings torn down in 2025 (estimate)', spark([DEMO[y] for y in range(2013, 2026)], rng=('2013', '2025')), '▼ Down by half since 2013'),
             ('affordable', '29,550', 'homes on the city’s affordable rental list', minisplit([(10759, NAVY), (18791, '#d9e4f4')], 'For seniors · everyone else'), 'About 1 in 3 are for seniors · list dated Dec. 2024'),
             ('rents', '$2,311', 'typical asking rent, Sept. 2026', spark([RENT[y] for y in range(2019, 2027)], rng=('2019', '2026')), '▲ Up 5.7% in a year'),
-            ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% so far in 2026'),
-            ('streets', '82 deaths', 'in traffic this year through Sept. 27', spark([120, 153, 186, 160, 136, 130, 100, 82], partial=True, rng=('2019', '2026 so far')), '▲ Up from 71 by that date in 2025'),
+            ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% in 2026 · 7 big projects tracked'),
+            ('streets', '82 deaths', 'in traffic this year through Sept. 27', spark([120, 153, 186, 160, 136, 130, 100, 82], partial=True, rng=('2019', '2026 so far')), 'The city’s goal for 2026 was zero'),
             ('projects', f'{f(built)} of {f(tot)}', 'homes built in six big projects', minisplit([(built, NAVY), (tot - built, '#d9e4f4')], 'Built · planned'), '3 of the 6 have broken ground')]
     name = dict(SECTIONS)
     head = (f'<div class="otop"><div><h1>Progress</h1><p>What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.</p></div><span class="upd">Updated {UPDATED}</span></div>')
     lead = (f'<a class="card lead" href="/progress/homes/"><div class="l"><span class="lab">Homes permitted in 2026</span><div class="n"><b>{f(ytd["homes"])}</b>{PACE}</div>'
             f'<p class="sub">Chicago needed <b>{f(ytd["needed_so_far"])}</b> by {THRU} to stay on pace to end its share of the housing shortage by 2041.</p>'
             f'<div class="m">{meter(pct)}<p class="fine"><span><b>{pct}%</b> of the pace</span><span>{f(ytd["needed_so_far"])} needed by now</span></p></div>'
-            f'<div class="mini"><div><b>{"▼" if vs < 0 else "▲"} {abs(vs)}%</b><span>vs. this date last year ({f(ytd["prev"])})</span></div><div><b>About {f(net26)}</b><span>after homes torn down this year</span></div></div>'
-            f'<span class="go">Homes permitted ›</span></div><div class="r"><span class="cap">Homes permitted each year</span>{yearchart(False, 190)}</div></a>')
+            f'<div class="mini"><div><b>{"▼" if vs < 0 else "▲"} {abs(vs)}%</b><span>vs. this date last year ({f(ytd["prev"])})</span></div><div><b>About {f(net26)}</b><span>net gain after homes torn down</span></div></div>'
+            f'<span class="go">Homes added ›</span></div><div class="r"><span class="cap">Homes permitted each year</span>{yearchart(False, 190)}</div></a>')
     def dec(href, mon, d, iso, title, what):
         return (f'<a class="card dec" href="{href}"><span class="dt"><span>{mon}</span><b>{d}</b></span><span class="tx"><b>{title}</b><span>{what}</span></span><span class="go" data-until="{iso}"></span></a>')
     decs = ('<section class="blk"><h2>Decisions coming up</h2><div class="strip c2">'
@@ -450,7 +498,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .dv .ax i{position:absolute;top:1px;bottom:1px;border-radius:3px}.pg .dv .ax i.up{left:50%;background:var(--sc-navy)}.pg .dv .ax i.dn{right:50%;background:#c98a8a}.pg .dv b{text-align:right}
 /* ward maps with lists */
 .pg .mapr{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start}
-.pg .mp{display:flex;flex-direction:column;gap:10px;flex:none;width:270px;max-width:100%}.pg .wmap{width:100%;height:auto;display:block}
+.pg .mp{display:flex;flex-direction:column;gap:10px;flex:none;width:320px;max-width:100%}.pg .wmap{width:100%;height:auto;display:block}
 .pg .lists{display:grid;grid-template-columns:1fr 1fr;gap:20px 28px;flex:1 1 380px;min-width:0;align-content:start}.pg .lists .call{grid-column:1/-1}
 /* tables */
 .pg .tw{overflow-x:auto}
@@ -459,6 +507,21 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg td{padding:10px 6px;border-bottom:1px solid #f1f2f4;vertical-align:top}.pg td.n,.pg th.n{text-align:right;white-space:nowrap}
 .pg table.plain thead{display:none}.pg .tbd{color:var(--sc-mute);font-size:12.5px}
 .pg table.proj td:last-child{color:var(--sc-mute);white-space:nowrap;font-size:13px}.pg table.proj td:last-child a{color:inherit}
+/* ward map: hover and tap */
+.pg .wmap path{stroke:#fff;stroke-width:.7;stroke-linejoin:round;cursor:pointer;outline:none}
+.pg .wmap path.on,.pg .wmap path:focus-visible{stroke:#1a1d21;stroke-width:1.8}
+.pg .winfo{margin:0;font-size:13px;line-height:18px;color:var(--sc-ink2);min-height:36px}.pg .winfo b{color:var(--sc-ink)}
+.pg .hb > div[data-w]{cursor:pointer;border-radius:6px;padding:2px 4px;margin:-2px -4px}.pg .hb > div.on{background:#eef3fb}
+.pg details.all{border-top:1px solid var(--sc-line);padding-top:12px}.pg details.all summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--sc-navy)}.pg details.all .tw{margin-top:10px;max-height:420px;overflow:auto}
+/* the goal each section is measured against */
+.pg .goalc{border-left:4px solid var(--sc-navy);gap:6px}.pg .goalc.none{border-left-color:#c9ced6}.pg .goalc .lab{font-size:12.5px;color:var(--sc-mute)}.pg .goalc .sub{max-width:860px}
+/* permitted - torn down = net */
+.pg .eq .tile b i{font-style:normal;color:var(--sc-mute);font-weight:500;margin-right:4px}.pg .eq .tile.sum{border-color:var(--sc-navy)}
+.pg .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.pg .facts > div{background:#f6f7f9;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}.pg .facts b{font-size:20px;letter-spacing:-.02em}.pg .facts span{font-size:13.5px;line-height:19px;color:var(--sc-ink2)}
+/* deadlines */
+.pg ol.dl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}.pg ol.dl li{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid #f1f2f4;font-size:14px}
+.pg ol.dl .when{font-weight:600;white-space:nowrap}.pg ol.dl .what{color:var(--sc-ink2)}.pg ol.dl .st{font-size:12px;font-weight:700;white-space:nowrap;color:var(--sc-mute)}
+.pg ol.dl li.past .when,.pg ol.dl li.past .what{color:var(--sc-mute)}.pg ol.dl li.next .st{color:#fff;background:var(--sc-navy);border-radius:999px;padding:2px 9px}
 /* previous / next */
 .pg .pn{display:flex;justify-content:space-between;gap:12px}.pg .pn a{padding:12px 18px;min-width:220px}.pg .pn a span{display:block;font-size:12.5px;color:var(--sc-mute)}.pg .pn a b{font-size:15.5px}.pg .pn .nx{text-align:right;margin-left:auto}
 /* overview */
@@ -486,7 +549,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .spark > div{display:flex;align-items:flex-end;gap:3px;height:34px}.pg .spark > div i{flex:1;border-radius:2px 2px 0 0}
 .pg .spark > div.ms{align-items:center;gap:2px}.pg .spark > div.ms i{flex:none;height:10px;border-radius:0}.pg .spark > div.ms i:first-child{border-radius:5px 0 0 5px}.pg .spark > div.ms i:last-child{border-radius:0 5px 5px 0}
 .pg .spark p{display:flex;justify-content:space-between;margin:3px 0 0;font-size:11px;color:var(--sc-mute)}
-@media (max-width:1000px){ .pg .grid4{grid-template-columns:repeat(2,minmax(0,1fr))} .pg .strip.c4{grid-template-columns:1fr 1fr} .pg .strip.lead3{grid-template-columns:1fr 1fr} .pg .strip.lead3 > :first-child{grid-column:1/-1} }
+@media (max-width:1000px){ .pg .facts{grid-template-columns:1fr 1fr} .pg .grid4{grid-template-columns:repeat(2,minmax(0,1fr))} .pg .strip.c4{grid-template-columns:1fr 1fr} .pg .strip.lead3{grid-template-columns:1fr 1fr} .pg .strip.lead3 > :first-child{grid-column:1/-1} }
 @media (max-width:760px){
   .pg main{padding:14px 12px 40px;gap:16px}
   .pg h1{font-size:23px}.pg .otop h1{font-size:28px}.pg .otop p{font-size:14.5px}
@@ -509,12 +572,13 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
   .pg table.stack td{display:block;border:0;padding:0;text-align:left !important;white-space:normal !important;font-size:13.5px}
   .pg table.stack td:first-child{grid-column:1/-1;font-size:15px;font-weight:600}
   .pg table.stack td:not(:first-child)::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--sc-mute)}
-  .pg table.proj td:nth-child(4),.pg table.proj td:nth-child(5){grid-column:1/-1}.pg table.proj td:nth-child(2)::before{content:none}
+  .pg table.proj td:nth-child(4),.pg table.proj td:last-child{grid-column:1/-1} .pg ol.dl li{grid-template-columns:86px minmax(0,1fr)} .pg ol.dl .st{grid-column:2}.pg table.proj td:nth-child(2)::before{content:none}
 }
 '''
 
+MOVED = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Homes added · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/homes/#lost"><link rel="canonical" href="/progress/homes/"></head><body><p><a href="/progress/homes/#lost">Homes lost is now part of Homes added.</a></p></body></html>\n'
 def main():
-    pages = {'': overview(), 'homes': homes(), 'zoning': zoning(), 'room': room(), 'lost': lost(), 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects()}
+    pages = {'': overview(), 'homes': homes(), 'zoning': zoning(), 'room': room(), 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects()}
     for slug, html in pages.items():
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, 'index.html'), 'w').write(html)
