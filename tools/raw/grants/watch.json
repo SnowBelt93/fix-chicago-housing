@@ -14,7 +14,8 @@
   "ok": "2026-11-12"
  },
  "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/home-repair-program.html": {
-  "hash": "daccb063ad01fe41",
+  "changed": "2026-11-12",
+  "hash": "0e857e88002d9ab2",
   "ids": [
    "hrp"
   ],
@@ -83,7 +84,8 @@
   "ok": "2026-11-12"
  },
  "https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html": {
-  "hash": "22d4b677c244ba4e",
+  "changed": "2026-11-12",
+  "hash": "fe4998af0748df95",
   "ids": [
    "gap",
    "lihtc4",
