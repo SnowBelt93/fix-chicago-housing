@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What People Picked · Shape Chicago</title>
+<meta name="description" content="What people chose most in Shape Chicago's housing, transit, budget and pension simulators: the neighborhoods they rezoned, the policies they turned on, the lines they drew and the budget choices they made.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="What people picked in Shape Chicago">
+<meta property="og:description" content="The neighborhoods people rezoned, the policies they turned on, the lines they drew and the budget choices they made.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-housing.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{max-width:var(--sc-w-wide);margin:0 auto;padding:36px max(24px,env(safe-area-inset-left)) 64px}
+h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:0 0 10px}
+.lede{font-size:17px;line-height:1.5;color:var(--sc-ink2);margin:0 0 22px;max-width:42em}
+.kinds{display:inline-flex;margin:0 0 20px;max-width:100%;overflow-x:auto}
+.basis{font-size:14.5px;color:var(--sc-mute);margin:-6px 0 18px;line-height:1.5}
+.basis b{color:var(--sc-ink);font-weight:600}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.card{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:20px 22px;min-width:0}
+.card.full{grid-column:1/-1}
+.card h2{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+.card .sub{font-size:14px;color:var(--sc-mute);margin:0 0 14px;line-height:1.45}
+.card h3{font-size:14px;font-weight:600;margin:18px 0 8px;color:var(--sc-ink2)}
+.tops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.tops div{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:14px 16px}
+.tops b{display:block;font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.tops span{font-size:13.5px;color:var(--sc-mute);line-height:1.35;display:block;margin-top:4px}
+/* horizontal bars */
+.bars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.bars li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;font-size:14.5px;align-items:baseline}
+.bars .t{min-width:0;overflow-wrap:anywhere}
+.bars .t small{display:block;font-size:12.5px;color:var(--sc-mute);font-weight:400}
+.bars .v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bars .track{grid-column:1/-1;height:8px;border-radius:4px;background:#eef1f4;overflow:hidden}
+.bars .track i{display:block;height:100%;background:var(--sc-navy);border-radius:4px}
+.bars li.cut .track i{background:#c4001f}
+.bars li[data-a]{cursor:pointer;border-radius:8px;margin:-3px -6px;padding:3px 6px}
+.bars li[data-a]:hover,.bars li[data-a].on{background:#f1f5fb}
+/* two-sided bars (cut | add) */
+.dbars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.dbars li{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center;font-size:14px}
+.dbars .l{display:flex;justify-content:flex-end;height:10px} .dbars .r{display:flex;height:10px}
+.dbars .l i{background:#c4001f;border-radius:4px 0 0 4px;height:100%} .dbars .r i{background:var(--sc-navy);border-radius:0 4px 4px 0;height:100%}
+.dbars .l,.dbars .r{background:#f3f5f7}
+.dbars .hd{font-size:12.5px;color:var(--sc-mute)} .dbars .hd span:nth-child(2){text-align:right}
+.dbars .n{font-size:12.5px;color:var(--sc-mute);font-weight:400;display:block}
+/* stacked 100% bars */
+.stk{display:flex;flex-direction:column;gap:14px}
+.stk .row b{display:block;font-size:14.5px;font-weight:600;margin:0 0 6px}
+.stk .bar{display:flex;height:26px;border-radius:7px;overflow:hidden;background:#eef1f4}
+.stk .bar i{display:block;height:100%;min-width:2px}
+.stk .row p{margin:5px 0 0;font-size:13px;color:var(--sc-mute)}
+.lg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--sc-ink2);margin-top:14px}
+.lg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+/* map */
+.mapw{display:flex;flex-direction:column;align-items:center;gap:10px}
+.mapw svg{width:100%;max-width:520px;height:auto}
+.mapw svg path.a{cursor:pointer;transition:opacity .15s}
+.mapw svg path.a.hl{stroke:#1a1d21;stroke-width:6}
+.cap{font-size:14px;color:var(--sc-ink2);min-height:1.5em;text-align:center;margin:0}
+.ramp{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--sc-mute)}
+.ramp i{display:block;width:140px;height:10px;border-radius:5px;background:linear-gradient(90deg,#e7ebef,#9cc4e6,#2b5da0,#14335f)}
+.empty{background:#fff;border:1px dashed var(--sc-line2);border-radius:16px;padding:28px;text-align:center;color:var(--sc-ink2);font-size:15.5px;line-height:1.5}
+.empty .sc-btn{display:inline-flex;align-items:center;margin-top:12px;text-decoration:none}
+.note{font-size:13px;color:var(--sc-mute);line-height:1.5;margin:14px 0 0}
+.more{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0}
+.more .sc-btn{display:inline-flex;align-items:center;text-decoration:none}
+@media (max-width:900px){ .grid{grid-template-columns:1fr} }
+@media (max-width:640px){ main{padding:24px 16px 48px} h1{font-size:30px} .lede{font-size:15.5px} .tops{grid-template-columns:1fr 1fr} .tops div:last-child{grid-column:1/-1} .tops b{font-size:24px} .card{padding:18px 16px} .dbars li{grid-template-columns:minmax(0,1fr) 70px 70px} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+  <h1>What people picked</h1>
+  <p class="lede">The choices people made most in the simulators. Housing counts every plan someone ran to 2041, with no names attached. Transit, budget and pensions count the plans people chose to share.</p>
+  <div class="kinds sc-seg" role="radiogroup" aria-label="Which simulator" id="kinds"><button type="button" role="radio" aria-checked="true" data-k="housing">Housing</button><button type="button" role="radio" aria-checked="false" data-k="transit">Transit</button><button type="button" role="radio" aria-checked="false" data-k="budget">Budget</button><button type="button" role="radio" aria-checked="false" data-k="pensions">Pensions</button></div>
+  <div id="out"><div class="empty">Loading…</div></div>
+  <p class="note">This shows what people using these tools chose, not what Chicago as a whole wants: anyone can try a plan, some people try several, and nobody here was picked at random. Updated every five minutes.</p>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
+<script>
+const S = window.SCPlans, $ = id => document.getElementById(id), esc = S.esc, fmt = S.fmt;
+const MIN = 3;   // fewer plans than this: say so instead of drawing shares of almost nothing
+let D = null, G = null, LV = null, kind = "housing";
+try { const k = new URLSearchParams(location.search).get("sim"); if (["housing", "transit", "budget", "pensions"].includes(k)) kind = k; } catch (e) {}
+const pct = (n, of) => of ? Math.round(n / of * 100) : 0;
+const pctTxt = (n, of) => { const p = of ? n / of * 100 : 0; return p > 0 && p < 1 ? "<1%" : Math.round(p) + "%"; };
+const bar = (label, n, of, o) => { o = o || {}; const w = of ? Math.max(n ? 1.5 : 0, n / (o.max || of) * 100) : 0;
+  return '<li class="' + (o.cls || "") + '"' + (o.a ? ' data-a="' + o.a + '" tabindex="0"' : "") + '><span class="t">' + esc(label) + (o.small ? '<small>' + esc(o.small) + '</small>' : "") + '</span><span class="v">' + (o.v != null ? esc(o.v) : pctTxt(n, of)) + '</span><span class="track"><i style="width:' + w.toFixed(1) + '%"></i></span></li>'; };
+const few = (n, what, href, go) => '<div class="empty">' + (n ? "Only " + n + " " + what + (n === 1 ? " has" : " have") + " been shared so far" : "No " + what + " shared yet") + '. Once a few more are in, this page shows what people picked most.<br><a class="sc-btn primary" href="' + href + '">' + go + '</a></div>';
+const tops = a => '<div class="tops">' + a.map(([b, s]) => '<div><b>' + esc(b) + '</b><span>' + esc(s) + '</span></div>').join("") + '</div>';
+
+/* ---------- housing: every finished run ---------- */
+function shade(t){ // 0..1 → light gray to deep navy
+  const st = [[231,235,239],[156,196,230],[43,93,160],[20,51,95]], x = Math.max(0, Math.min(1, t)) * 3, i = Math.min(2, Math.floor(x)), f = x - i;
+  return "rgb(" + st[i].map((v, k) => Math.round(v + (st[i + 1][k] - v) * f)).join(",") + ")";
+}
+function housing(){
+  const H = D.housing, n = H.n;
+  if (n < MIN) return few(n, n === 1 ? "plan" : "plans", "/housing/", "Open the housing simulator").replace("been shared", "been run to 2041");
+  const ar = H.area.map((c, i) => [i, c]).slice(1).filter(x => x[1]).sort((a, b) => b[1] - a[1]), mx = ar.length ? ar[0][1] : 1;
+  const on = S.BIT_KEYS.map(k => [k, H.on[k] || 0]), good = on.filter(([k]) => !S.CUT.has(k)).sort((a, b) => b[1] - a[1]), cut = on.filter(([k]) => S.CUT.has(k)).sort((a, b) => b[1] - a[1]);
+  const lv = H.lv, near = lv.tod.slice(1).reduce((s, v) => s + v, 0);
+  const topTier = lv.tod.map((v, i) => [i, v]).slice(1).sort((a, b) => b[1] - a[1])[0];
+  let h = '<p class="basis">Based on <b>' + fmt(n) + '</b> plans run to 2041.</p>';
+  h += tops([[pctTxt(H.hoods, n), "rezoned at least one neighborhood"], [pctTxt(near, n), "allowed more homes near the L"], [good[0] && good[0][1] ? S.SHORT[good[0][0]] : "–", good[0] && good[0][1] ? "most turned-on policy (" + pctTxt(good[0][1], n) + " of plans)" : "no policy turned on yet"]]);
+  // map + list
+  let m = '<svg viewBox="-10 -10 ' + (G.w + 20) + ' 1020" role="img" aria-label="Map: share of plans that rezoned each neighborhood">';
+  for (const a in G.areas){ const c = H.area[a] || 0; m += '<path class="a" data-a="' + a + '" d="' + G.areas[a] + '" fill="' + shade(c / mx) + '" stroke="#fff" stroke-width="3"><title>' + esc(S.AREAS[a]) + ': ' + pctTxt(c, n) + ' of plans</title></path>'; }
+  for (const [x, y] of G.L) m += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#fff" stroke="#5a6069" stroke-width="1.5" pointer-events="none"/>';
+  m += '</svg>';
+  h += '<div class="grid"><section class="card"><h2>Neighborhoods people rezoned</h2><p class="sub">Darker means more plans changed its zoning one neighborhood at a time. Station-area and main-street zoning are below.</p><div class="mapw">' + m + '<p class="cap" id="cap" aria-live="polite">Point at a neighborhood</p><div class="ramp">Fewer plans<i></i>More</div></div></section>';
+  h += '<section class="card"><h2>Rezoned most</h2><p class="sub">Share of plans that changed each neighborhood.</p><ul class="bars" id="hoodList">' + (ar.length ? ar.slice(0, 12).map(([a, c]) => bar(S.AREAS[a], c, n, {max: mx, a})).join("") : '<li>No neighborhood rezoned yet.</li>') + '</ul></section>';
+  // policies
+  h += '<section class="card"><h2>Policies people turned on</h2><p class="sub">Share of plans with each policy on.</p><ul class="bars">' + good.map(([k, c]) => bar(S.SHORT[k], c, n)).join("") + '</ul>';
+  h += '<h3>Policies that cut housing</h3><ul class="bars">' + cut.map(([k, c]) => bar(S.SHORT[k], c, n, {cls: "cut"})).join("") + '</ul></section>';
+  // how far people went
+  const tierBar = (title, arr, maxT) => { const tot = arr.reduce((s, v) => s + v, 0) || 1; let b = ""; for (let t = 0; t <= maxT; t++) if (arr[t]) b += '<i style="width:' + (arr[t] / tot * 100).toFixed(2) + '%;background:' + (t ? S.COLOR[t] : "#dfe3e8") + '" title="' + (t ? S.TIER[t] : "No change") + ': ' + pctTxt(arr[t], tot) + '"></i>';
+    const best = arr.map((v, i) => [i, v]).sort((a, b) => b[1] - a[1])[0];
+    return '<div class="row"><b>' + title + '</b><div class="bar" role="img" aria-label="' + title + ': ' + arr.map((v, i) => v ? (i ? S.TIER[i] : "no change") + " " + pctTxt(v, tot) : "").filter(Boolean).join(", ") + '">' + b + '</div><p>Most common: ' + (best[0] ? S.TIER[best[0]] : "no change") + ' (' + pctTxt(best[1], tot) + ')</p></div>'; };
+  const optBar = (title, arr, labels, cols) => { const tot = arr.reduce((s, v) => s + v, 0) || 1; let b = "", lg = []; arr.forEach((v, i) => { if (v){ b += '<i style="width:' + (v / tot * 100).toFixed(2) + '%;background:' + cols[i] + '" title="' + labels[i] + ': ' + pctTxt(v, tot) + '"></i>'; lg.push(labels[i] + " " + pctTxt(v, tot)); } });
+    return '<div class="row"><b>' + title + '</b><div class="bar" role="img" aria-label="' + title + ': ' + lg.join(", ") + '">' + b + '</div><p>' + esc(lg.join(" · ")) + '</p></div>'; };
+  h += '<section class="card"><h2>How far people went</h2><p class="sub">The tallest buildings each plan allowed, by place.</p><div class="stk">' + tierBar("Near the L", lv.tod, 6) + tierBar("Near Metra", lv.metra, 4) + tierBar("On main streets", lv.corr, 4) + '</div>'
+    + '<div class="lg"><span><i style="background:#dfe3e8"></i>No change</span>' + [1, 2, 3, 4, 5, 6].map(t => '<span><i style="background:' + S.COLOR[t] + '"></i>' + S.TIER[t] + '</span>').join("") + '</div>'
+    + '<h3>Other choices</h3><div class="stk">' + optBar("Old offices turned into homes", lv.office, ["None", "10%", "25%", "50%"], ["#dfe3e8", "#9cc4e6", "#2b5da0", "#14335f"])
+    + optBar("Short-term rentals", lv.str, ["No limit", "Limits", "Tight limits"], ["#dfe3e8", "#9cc4e6", "#2b5da0"])
+    + optBar("Affordable homes required", [lv.aro[3] || 0, lv.aro[0] || 0, lv.aro[1] || 0, lv.aro[2] || 0], ["None", "10%", "20% (today)", "30%"], ["#e8b7bf", "#9cc4e6", "#dfe3e8", "#2b5da0"]) + '</div></section></div>';
+  h += '<div class="more"><a class="sc-btn primary" href="/housing/">Try your own plan</a><a class="sc-btn" href="/plans/">See the plans people shared</a></div>';
+  return h;
+}
+function wireHousing(){
+  const cap = $("cap"), list = $("hoodList"), H = D.housing; if (!cap) return;
+  const svg = cap.previousElementSibling;
+  const show = a => { svg.querySelectorAll("path.a").forEach(p => p.classList.toggle("hl", p.dataset.a === String(a))); list && list.querySelectorAll("li[data-a]").forEach(l => l.classList.toggle("on", l.dataset.a === String(a)));
+    cap.textContent = a ? S.AREAS[a] + ": " + pctTxt(H.area[a] || 0, H.n) + " of plans rezoned it" : "Point at a neighborhood"; };
+  svg.querySelectorAll("path.a").forEach(p => { p.addEventListener("mouseenter", () => show(p.dataset.a)); p.addEventListener("click", () => show(p.dataset.a)); });
+  svg.addEventListener("mouseleave", () => show(0));
+  list && list.querySelectorAll("li[data-a]").forEach(l => { l.addEventListener("mouseenter", () => show(l.dataset.a)); l.addEventListener("focus", () => show(l.dataset.a)); l.addEventListener("click", () => show(l.dataset.a)); });
+}
+
+/* ---------- transit: shared plans ---------- */
+function transit(){
+  const T = D.transit || [], n = T.length;
+  if (n < MIN) return few(n, n === 1 ? "transit plan" : "transit plans", "/transit/", "Open the transit simulator");
+  const named = {}, modes = {}, metra = {}, clean = {}; let fresh = 0, lines = 0;
+  const MN = {s:"Subway lines", e:"Elevated lines", st:"Streetcar lines", b:"Bus rapid transit lines", i:"New stations on L lines", l:"Bus lanes"};
+  for (const [code] of T){
+    const t = S.tparse(code), seenN = new Set(t.named), seenM = new Set(t.metra), seenC = new Set(t.clean);
+    seenN.forEach(x => named[x] = (named[x] || 0) + 1); seenM.forEach(x => metra[x] = (metra[x] || 0) + 1); seenC.forEach(x => clean[x] = (clean[x] || 0) + 1);
+    if (t.fresh) fresh++;
+    for (const kk in t.n) modes[kk] = (modes[kk] || 0) + 1;   // lines people drew (not one of the site's proposals)
+  }
+  const sort = o => Object.entries(o).sort((a, b) => b[1] - a[1]);
+  const N = sort(named), M = sort(metra), C = sort(clean), Mo = sort(modes);
+  // every shared line on one map
+  const [x0, y0, x1, y1] = G.b, k = Math.cos((y0 + y1) / 2 * Math.PI / 180), sc = 1000 / (y1 - y0), X = lon => (lon - x0) * k * sc, Y = lat => (y1 - lat) * sc;
+  let m = '<svg viewBox="-10 -10 ' + (G.w + 20) + ' 1020" role="img" aria-label="Map of every line in the shared transit plans">';
+  for (const a in G.areas) m += '<path d="' + G.areas[a] + '" fill="#e7ebef" stroke="#fff" stroke-width="3"/>';
+  for (const [x, y] of G.L) m += '<circle cx="' + x + '" cy="' + y + '" r="4" fill="#aab2ba"/>';
+  const op = Math.max(0.12, Math.min(0.7, 3 / Math.sqrt(n)));
+  for (const [, st] of T) for (const L of (st && st.shape) || []){ let d = ""; for (let i = 1; i + 1 < L.length; i += 2){ d += (i === 1 ? "M" : "L") + X(L[i]).toFixed(0) + " " + Y(L[i + 1]).toFixed(0); lines++; }
+    if (d) m += '<path d="' + d + '" fill="none" stroke="' + S.TCOL[L[0]] + '" stroke-opacity="' + op.toFixed(2) + '" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>'; }
+  m += '</svg>';
+  let h = '<p class="basis">Based on <b>' + fmt(n) + '</b> shared transit plans.</p>';
+  h += tops([[N[0] ? N[0][0] : "–", N[0] ? "added most (" + pctTxt(N[0][1], n) + " of plans)" : "no proposal added yet"], [pctTxt(T.filter(([c]) => S.tparse(c).metra.length).length, n), "upgraded at least one Metra line"], [pctTxt(T.filter(([c]) => S.tparse(c).clean.length).length, n), "made the fleet cleaner"]]);
+  h += '<div class="grid"><section class="card"><h2>Every line people shared</h2><p class="sub">Where lines overlap the color gets stronger, so the darkest routes are the ones people drew or added most.</p><div class="mapw">' + m
+    + '<div class="lg"><span><i style="background:' + S.TCOL[0] + '"></i>Rail</span><span><i style="background:' + S.TCOL[2] + '"></i>Streetcar</span><span><i style="background:' + S.TCOL[3] + '"></i>Bus rapid transit</span><span><i style="background:' + S.TCOL[4] + '"></i>Metra</span><span><i style="background:' + S.TCOL[5] + '"></i>Bus lane</span></div></div></section>';
+  h += '<section class="card"><h2>Proposals added most</h2><p class="sub">Share of plans that switched each one on.</p><ul class="bars">' + (N.length ? N.slice(0, 12).map(([t, c]) => bar(t, c, n)).join("") : "<li>None yet.</li>") + '</ul>'
+    + (Mo.length ? '<h3>Lines people drew themselves</h3><ul class="bars">' + Mo.map(([kk, c]) => bar(MN[kk], c, n)).join("") + '</ul>' : "") + '</section>';
+  h += '<section class="card"><h2>Metra upgrades</h2><p class="sub">Share of plans that run each line all day.</p><ul class="bars">' + (M.length ? M.map(([t, c]) => bar(t.replace(/ all-day trains$/, ""), c, n)).join("") : "<li>None yet.</li>") + '</ul></section>';
+  h += '<section class="card"><h2>Cleaner transit</h2><p class="sub">Share of plans with each switch on.</p><ul class="bars">' + ["Electric buses", "Electric Metra", "Clean power grid"].map(t => bar(t, clean[t] || 0, n)).join("") + '</ul>'
+    + (fresh ? '<p class="note">' + pctTxt(fresh, n) + ' of plans started from scratch, redrawing the network.</p>' : "") + '</section></div>';
+  h += '<div class="more"><a class="sc-btn primary" href="/transit/">Draw your own line</a><a class="sc-btn" href="/plans/?sim=transit">See the plans people shared</a></div>';
+  return h;
+}
+
+/* ---------- budget: shared plans ---------- */
+function budget(){
+  const B = D.budget || [], n = B.length;
+  if (n < MIN) return few(n, n === 1 ? "budget plan" : "budget plans", "/budget/", "Open the budget simulator");
+  if (!LV) return '<div class="empty">Couldn\'t load the budget options. Try again in a bit.</div>';
+  const Ls = LV.levers, ch = Ls.map(() => ({n: 0, v: {}})), dep = {};
+  for (const [code] of B){
+    const m = code.match(/^b2\.([-\d.]+)~([-\d:,]*)$/); if (!m) continue;
+    const v = m[1].split(".");
+    Ls.forEach((l, i) => { const raw = v[i]; if (raw === undefined) return;
+      let val = l.type === "income" ? (raw.slice(1).split("").some(d => d !== "0") ? 1 : 0) : +raw;
+      if (!isFinite(val) || val === (l.type === "income" ? 0 : l.start)) return;
+      ch[i].n++; ch[i].v[val] = (ch[i].v[val] || 0) + 1; });
+    for (const kv of m[2].split(",").filter(Boolean)){ const [id, p] = kv.split(":"); const q = +p; if (!q) continue; const o = dep[id] || (dep[id] = {cut: 0, add: 0}); q < 0 ? o.cut++ : o.add++; }
+  }
+  const choiceTxt = (l, c) => { const best = Object.entries(c.v).sort((a, b) => b[1] - a[1])[0]; if (!best) return "";
+    const val = +best[0], share = " (" + pctTxt(best[1], c.n) + " of those)";
+    if (l.type === "opts") return "Most picked: " + l.opts[val] + share;
+    if (l.type === "range") return "Most picked: " + (val > 0 ? "+" : "−") + "$" + Math.abs(val) + " million" + share;
+    if (l.type === "income") return "Some city income tax";
+    return ""; };
+  const rows = Ls.map((l, i) => [l, ch[i]]).filter(([, c]) => c.n).sort((a, b) => b[1].n - a[1].n);
+  const GRP = {tax:"Taxes", dept:"Savings", one:"One-time", else:"Ideas", state:"Ask Springfield", add:"Spending"};
+  const st = B.map(([, s]) => s || {}), bal = st.filter(s => s.left != null && s.left <= 0.05).length, spr = st.filter(s => (s.state || 0) > 0.05).length, oneT = st.filter(s => (s.one || 0) > 0.05).length;
+  const ptax = Ls.findIndex(l => l.id === "ptax");
+  let h = '<p class="basis">Based on <b>' + fmt(n) + '</b> shared budget plans.</p>';
+  h += tops([[pctTxt(bal, n), "close the whole 2027 gap"], [pctTxt(oneT, n), "use some one-time money"], [pctTxt(spr, n), "count on Springfield or the voters"]]);
+  h += '<div class="grid"><section class="card"><h2>Options people changed most</h2><p class="sub">Share of plans that moved each option away from today.</p><ul class="bars">' + (rows.length ? rows.slice(0, 16).map(([l, c]) => bar(l.t, c.n, n, {small: [GRP[l.g], choiceTxt(l, c)].filter(Boolean).join(" · ")})).join("") : "<li>No changes yet.</li>") + '</ul></section>';
+  const D2 = Object.entries(dep).map(([id, o]) => [id, o, o.cut + o.add]).sort((a, b) => b[2] - a[2]), dm = D2.length ? Math.max(...D2.map(([, o]) => Math.max(o.cut, o.add))) : 1;
+  const nm = id => { const t = (LV.depts && LV.depts[id]) || "Department " + id; return t[0].toUpperCase() + t.slice(1); };
+  h += '<section class="card"><h2>Departments people funded up or down</h2><p class="sub">How many plans cut or raised each department\'s 2027 budget.</p>' + (D2.length
+    ? '<ul class="dbars"><li class="hd"><span></span><span>Cut</span><span>Raised</span></li>' + D2.slice(0, 14).map(([id, o]) => '<li><span>' + esc(nm(id)) + '<span class="n">' + (o.cut ? o.cut + " cut" : "") + (o.cut && o.add ? ", " : "") + (o.add ? o.add + " raised" : "") + '</span></span><span class="l" aria-hidden="true"><i style="width:' + (o.cut / dm * 100).toFixed(1) + '%"></i></span><span class="r" aria-hidden="true"><i style="width:' + (o.add / dm * 100).toFixed(1) + '%"></i></span></li>').join("") + '</ul>'
+    : '<p class="note">No plan has changed a department yet.</p>');
+  if (ptax >= 0 && ch[ptax].n){ const up = Object.entries(ch[ptax].v).filter(([v]) => +v > 0).reduce((s, [, c]) => s + c, 0); h += '<p class="note">Property tax: ' + pctTxt(up, n) + ' of plans raised the levy and ' + pctTxt(ch[ptax].n - up, n) + ' cut it.</p>'; }
+  h += '</section></div><div class="more"><a class="sc-btn primary" href="/budget/">Balance it yourself</a><a class="sc-btn" href="/plans/?sim=budget">See the plans people shared</a></div>';
+  return h;
+}
+
+/* ---------- pensions: shared plans ---------- */
+function pensions(){
+  const P = D.pensions || [], n = P.length;
+  if (n < MIN) return few(n, n === 1 ? "pension plan" : "pension plans", "/pensions/", "Open the pensions simulator");
+  const cnt = (f, k) => { const o = new Array(k).fill(0); for (const [code] of P){ const p = S.pparse(code); if (p) o[f(p)]++; } return o; };
+  const opt = (title, arr, labels, cols) => { const tot = arr.reduce((s, v) => s + v, 0) || 1, lg = []; let b = ""; arr.forEach((v, i) => { if (v){ b += '<i style="width:' + (v / tot * 100).toFixed(2) + '%;background:' + cols[i] + '"></i>'; lg.push(labels[i] + " " + pctTxt(v, tot)); } });
+    return '<div class="row"><b>' + title + '</b><div class="bar" role="img" aria-label="' + title + ': ' + lg.join(", ") + '">' + b + '</div><p>' + esc(lg.join(" · ")) + '</p></div>'; };
+  const C3 = ["#dfe3e8", "#2b5da0", "#c4001f"], C4 = ["#dfe3e8", "#9cc4e6", "#2b5da0", "#14335f"];
+  const pay = cnt(p => p.pay, 3), by = cnt(p => p.by, 4), bond = cnt(p => p.bond, 3), pool = cnt(p => p.pool, 3), ret = cnt(p => p.ret, 4), extra = cnt(p => p.extra > 0 ? 1 : 0, 2);
+  const y = P.map(([, s]) => s && s.y90).filter(Boolean).sort((a, b) => a - b), med = y.length ? y[Math.floor(y.length / 2)] : null, broke = P.filter(([, s]) => s && s.broke).length;
+  let h = '<p class="basis">Based on <b>' + fmt(n) + '</b> shared pension plans.</p>';
+  h += tops([[med ? String(med) : "–", "middle year plans reach 90% funded (state law: 2058)"], [pctTxt(pay[1] + pay[2], n), "changed the payment schedule"], [pctTxt(bond[1] + bond[2], n), "borrowed with a pension bond"]]);
+  h += '<div class="grid"><section class="card full"><h2>What people chose</h2><p class="sub">Share of shared plans picking each option.</p><div class="stk">'
+    + opt("How much the city pays", pay, ["State law", "Pay it off fully", "Freeze at 2026"], C3)
+    + opt("Reach 90% funded by", by, ["The law's dates", "2050", "2045", "2040"], C4)
+    + opt("Extra money every year", extra, ["None", "Some"], ["#dfe3e8", "#2b5da0"])
+    + opt("Pension bond", bond, ["No", "$5B", "$10B"], ["#dfe3e8", "#9cc4e6", "#2b5da0"])
+    + opt("Pool the funds' investments", pool, ["No", "+0.25% a year", "+0.5% a year"], ["#dfe3e8", "#9cc4e6", "#2b5da0"])
+    + opt("What the investments earn", ret, ["4%", "5.5%", "The funds' own assumption", "8%"], ["#c4001f", "#e8b7bf", "#dfe3e8", "#2b5da0"])
+    + '</div>' + (broke ? '<p class="note">' + pctTxt(broke, n) + ' of plans had a fund run out of money.</p>' : "") + '</section></div>';
+  h += '<div class="more"><a class="sc-btn primary" href="/pensions/">Try your own plan</a><a class="sc-btn" href="/plans/?sim=pensions">See the plans people shared</a></div>';
+  return h;
+}
+
+function draw(){
+  document.querySelectorAll("#kinds button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.k === kind)));
+  if (!D){ $("out").innerHTML = '<div class="empty">This page fills in once the site is connected to its plan gallery.</div>'; return; }
+  try { $("out").innerHTML = ({housing, transit, budget, pensions})[kind](); } catch (e) { console.error(e); $("out").innerHTML = '<div class="empty">Couldn\'t draw this right now.</div>'; }
+  if (kind === "housing") wireHousing();
+}
+document.querySelectorAll("#kinds button").forEach(b => b.addEventListener("click", () => {
+  kind = b.dataset.k; try { history.replaceState(null, "", kind === "housing" ? location.pathname : "?sim=" + kind); } catch (e) {} draw();
+}));
+Promise.all([fetch("/api/community").then(r => r.ok ? r.json() : null).catch(() => null), S.geo(), fetch("/budget/data/levers.json").then(r => r.json()).catch(() => null)])
+  .then(([d, g, lv]) => { D = d; G = g; LV = lv; draw(); });
+</script>
+</body>
+</html>

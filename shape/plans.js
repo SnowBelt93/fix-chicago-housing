@@ -1,7 +1,8 @@
 /* Shape Chicago: plan cards for the plans people shared from the simulators (home page and /plans/): housing first, then
    transit, budget and pensions (SIMS, near the end).
    Reads a plan code (the same format as housing/index.html encodePlan/decodePlan) and draws a small map of what it rezones,
-   the main choices as chips, the numbers, and an Endorse button. Nothing people type is shown: titles come from the plan itself.
+   the main choices as chips, the numbers, and an Endorse button. A plan's name and "by" name are what its sharer typed
+   (checked by worker/names.js) or, if they kept the suggestion, one from NAMES.
    Map data: /plans/areas.json from tools/prep_plancards.py. */
 (function(){
   const ALPHA = "0123456789abcdefghijklmno", B32 = "0123456789abcdefghijklmnopqrstuv";
@@ -52,8 +53,8 @@
     for (const k of BIT_KEYS) if (p.on[k] && CUT.has(k)) out.push({t: SHORT[k], kind:"cut"});
     return out;
   }
-  // Plan names: the person who shares a plan picks one from this list (Chicago streets and Chicago-isms), so names are
-  // memorable and nobody types anything. Index stored as `nm`; plans shared before names existed get one from their id.
+  // Suggested plan names (Chicago streets and Chicago-isms): the share box offers one, and a plan whose sharer kept the
+  // suggestion stores its index as `nm`; plans shared before names existed get one from their id.
   // Append only: changing the order renames shared plans.
   const NAMES = ["Kedzie", "Milwaukee Avenue", "Halsted", "Ashland", "Western Avenue", "Cicero", "Pulaski", "Damen", "Clark Street", "Broadway",
     "Sheridan Road", "Archer Avenue", "Ogden", "Cermak", "Roosevelt Road", "Division Street", "Belmont", "Fullerton", "Diversey", "Lawrence Avenue",
@@ -66,7 +67,8 @@
     "Windy City", "Hawk", "Dibs", "Polar Vortex", "Hot Dog Stand", "Italian Beef", "Tavern Cut", "Brown Line", "Pink Line", "Blue Line",
     "Red Line", "Green Line", "Orange Line", "Purple Line", "Yellow Line", "Metra", "Bike Lane", "Block Party", "Street Festival", "Six Corners"];
   const hashN = s => { let h = 2166136261; for (const ch of String(s)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return Math.abs(h); };
-  const nameOf = P => "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN("p" + (P.id || P.code)) % NAMES.length] + " Plan";
+  // a plan's name: what its sharer typed (checked on the server), else one from NAMES
+  const nameOf = P => P.title ? P.title : "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN("p" + (P.id || P.code)) % NAMES.length] + " Plan";
   // what kind of plan it is, from its biggest moves
   function kind(p){
     const c = choices(p), z = c.filter(x => x.kind === "zone"), pol = c.filter(x => x.kind === "policy").length, ar = Object.values(p.areas).filter(Boolean);
@@ -125,6 +127,8 @@
     b.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); endorse(P.id, b); });
     return b;
   }
+  // "By Maria from Pilsen · today", "From a neighbor · 3 days ago"
+  const who = (P, place) => (P.author ? "By " + esc(P.author) + (place ? " from " + esc(place) : "") : place ? "From " + esc(place) : "From a neighbor") + " · " + ago(P.ts);
   const ago = ts => { const d = (Date.now() - ts) / 864e5; return d < 1 ? "today" : d < 2 ? "yesterday" : d < 30 ? Math.floor(d) + " days ago" : new Date(ts).toLocaleDateString("en-US", {month:"short", day:"numeric", year: d > 300 ? "numeric" : undefined}); };
 
   // one card: map, grade, title, numbers, what it does, endorse
@@ -136,7 +140,7 @@
     const g = String(P.grade || "–"), cut = c.some(x => x.kind === "cut");
     const rent = P.rent && P.rentno ? (P.rent < P.rentno ? "$" + fmt(P.rentno - P.rent) + " less rent a month" : P.rent > P.rentno ? "$" + fmt(P.rent - P.rentno) + " more rent a month" : "Rent about the same") : "";
     a.innerHTML = '<div class="pmapw">' + map(p, G) + '<span class="pgr" data-g="' + esc(g) + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + STAR + '"/></svg><i>' + esc(g) + '</i></span>' + (p.g !== 3 ? '<span class="pmode' + (p.g < 3 ? " hard" : "") + '">' + MODE(p.g) + '</span>' : "") + '</div>'
-      + '<div class="pbody"><span class="pkind k-' + K.c + '">' + K.t + '</span><b class="pt">' + esc(nameOf(P)) + '</b><span class="psum">' + esc(title(p)) + '</span><span class="pwho">' + (P.hood && AREAS[P.hood] ? "From " + esc(AREAS[P.hood]) : "From a neighbor") + ' · ' + ago(P.ts) + '</span>'
+      + '<div class="pbody"><span class="pkind k-' + K.c + '">' + K.t + '</span><b class="pt">' + esc(nameOf(P)) + '</b><span class="psum">' + esc(title(p)) + '</span><span class="pwho">' + who(P, P.hood && AREAS[P.hood] ? AREAS[P.hood] : "") + '</span>'
       + '<div class="pnums"><span><b>' + fmt(P.homes) + '</b> homes by 2041</span>' + (rent ? '<span>' + rent + ' by 2041</span>' : "") + '</div>'
       + '<ul class="pchips">' + c.slice(0, opt.all ? 99 : 5).map(x => '<li class="' + x.kind + '">' + esc(x.t) + '</li>').join("") + (!opt.all && c.length > 5 ? '<li class="more">+' + (c.length - 5) + ' more</li>' : "") + '</ul>'
       + (cut ? '<span class="pwarn">Includes policies that cut housing</span>' : "") + '<div class="pfoot"><span class="popen">See the plan</span></div></div>';
@@ -287,7 +291,7 @@
       key: '<span><i style="background:#2b5da0"></i>Share of what the funds owe that they hold</span>',
     },
   };
-  const simName = P => "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN(P.kind + (P.id || P.code)) % NAMES.length] + " Plan";
+  const simName = P => P.title ? P.title : "The " + NAMES[P.nm != null && NAMES[P.nm] ? P.nm : hashN(P.kind + (P.id || P.code)) % NAMES.length] + " Plan";
   const SLS = "sc-sliked";
   const sliked = () => { try { return new Set(JSON.parse(localStorage.getItem(SLS) || "[]")); } catch (e) { return new Set(); } };
   function simEndorseBtn(P){
@@ -308,38 +312,106 @@
     const a = document.createElement("a"), kd = K.kind(P), c = K.chips(P), nums = K.nums(P);
     a.className = "pcard sim-" + P.kind; a.href = "/plans/#" + P.kind + "-" + P.id;
     a.innerHTML = '<div class="pmapw">' + K.art(P, G) + '<span class="pmode sim">' + K.label + '</span></div>'
-      + '<div class="pbody"><span class="pkind k-' + kd.c + '">' + esc(kd.t) + '</span><b class="pt">' + esc(simName(P)) + '</b><span class="psum">' + esc(K.sum(P)) + '</span><span class="pwho">From a neighbor · ' + ago(P.ts) + '</span>'
+      + '<div class="pbody"><span class="pkind k-' + kd.c + '">' + esc(kd.t) + '</span><b class="pt">' + esc(simName(P)) + '</b><span class="psum">' + esc(K.sum(P)) + '</span><span class="pwho">' + who(P, "") + '</span>'
       + '<div class="pnums">' + nums.slice(0, 2).map(n => '<span><b>' + esc(n[0]) + '</b> ' + esc(n[1]) + '</span>').join("") + '</div>'
       + '<ul class="pchips">' + c.slice(0, 5).map(x => '<li class="' + x.kind + '">' + esc(x.t) + '</li>').join("") + (c.length > 5 ? '<li class="more">+' + (c.length - 5) + ' more</li>' : "") + '</ul>'
       + '<div class="pfoot"><span class="popen">See the plan</span></div></div>';
     a.querySelector(".pfoot").prepend(simEndorseBtn(P));
     return a;
   }
-  // The "share with neighbors" box each simulator shows: pick one of the site's names, post the plan and its numbers.
-  // get() returns {code, stats} at the moment of posting (or null when there is nothing to share yet).
+  // Plans this browser shared keep a private token, so their sharer can delete them later: {"<kind>-<id>": token}
+  const OWN = "sc-own";
+  const owned = () => { try { return JSON.parse(localStorage.getItem(OWN) || "{}") || {}; } catch (e) { return {}; } };
+  const ownTok = (kind, id) => owned()[kind + "-" + id] || null;
+  function newTok(){ const a = new Uint8Array(16); crypto.getRandomValues(a); return [...a].map(x => x.toString(16).padStart(2, "0")).join(""); }
+  function keepTok(kind, id, tok){ const o = owned(); o[kind + "-" + id] = tok; try { localStorage.setItem(OWN, JSON.stringify(o)); } catch (e) {} }
+  function dropTok(kind, id){ const o = owned(); delete o[kind + "-" + id]; try { localStorage.setItem(OWN, JSON.stringify(o)); } catch (e) {} }
+
+  // "Delete this plan": asks once more in place (no browser dialogs), then removes it from Neighbors' plans
+  function deleteBtn(kind, id, done){
+    const w = document.createElement("span"); w.className = "pdel";
+    const tok = ownTok(kind, id); if (!tok) return w;
+    w.innerHTML = '<button type="button" class="pdelgo">Delete this plan</button><span class="pdelask" hidden>Delete it for good? <button type="button" class="pdelyes">Yes, delete</button><button type="button" class="pdelno">Keep it</button></span><span class="pdelmsg" role="status"></span>';
+    const go = w.querySelector(".pdelgo"), ask = w.querySelector(".pdelask"), msg = w.querySelector(".pdelmsg");
+    go.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); go.hidden = true; ask.hidden = false; w.querySelector(".pdelyes").focus(); });
+    w.querySelector(".pdelno").addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); ask.hidden = true; go.hidden = false; go.focus(); });
+    w.querySelector(".pdelyes").addEventListener("click", async e => { e.preventDefault(); e.stopPropagation();
+      msg.textContent = "Deleting…"; ask.hidden = true;
+      try {
+        const r = await fetch("/api/delete", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({kind, id, tok})});
+        if (r.status === 403){ dropTok(kind, id); msg.textContent = "This browser can't delete that plan."; return; }
+        if (!r.ok) throw 0;
+        dropTok(kind, id);
+        if (kind === "housing") try { localStorage.setItem(MINE, JSON.stringify(mine().filter(n => n !== id))); } catch (e2) {}
+        else try { localStorage.setItem(SMINE, JSON.stringify(JSON.parse(localStorage.getItem(SMINE) || "[]").filter(n => n !== id))); } catch (e2) {}
+        msg.textContent = "Deleted. It's gone from Neighbors' plans.";
+        done && done();
+      } catch (e2) { msg.textContent = "Couldn't reach the plan gallery. Try again in a bit."; ask.hidden = false; }
+    });
+    return w;
+  }
+  // "Report this name": three reports from different people hide a typed name
+  function reportBtn(kind, P){
+    const w = document.createElement("span"); w.className = "prep";
+    if (!P.title && !P.author) return w;
+    w.innerHTML = '<button type="button">Report this name</button><span role="status"></span>';
+    const b = w.querySelector("button"), m = w.querySelector("span");
+    b.addEventListener("click", async e => { e.preventDefault(); e.stopPropagation(); b.disabled = true;
+      try { const r = await fetch("/api/report", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({kind, id:P.id})}); if (!r.ok) throw 0;
+        b.hidden = true; m.textContent = "Thanks. Names that several people report are hidden.";
+      } catch (e2) { b.disabled = false; m.textContent = "Couldn't send that. Try again in a bit."; } });
+    return w;
+  }
+
+  // The "share with neighbors" box every simulator shows: name the plan (or take a suggested one), an optional
+  // "by" name, then post. kind "housing" posts get() (the housing tool's numbers) to /api/plan; the others post
+  // {kind, code, stats} from get() to /api/splan. The server checks both names and says why it refused one.
   const SMINE = "sc-my-splans";
-  function shareBox(host, kind, get){
+  function shareBox(host, kind, get, opt){
+    opt = opt || {};
     let nm = Math.floor(Math.random() * NAMES.length);
+    const sug = () => "The " + NAMES[nm] + " Plan";
     host.classList.add("pshare");
-    host.innerHTML = '<p class="pshn">Share it as <b></b><button type="button" class="pshalt">Pick another name</button></p><button type="button" class="sc-btn primary pshgo">Add it to Neighbors\' plans</button><p class="pshfine">Only the plan and its numbers are shared, under a name from our list. No account, nothing you typed.</p><p class="pshmsg" role="status"></p>';
-    const nmEl = host.querySelector(".pshn b"), go = host.querySelector(".pshgo"), msg = host.querySelector(".pshmsg");
-    const show = () => { nmEl.textContent = "The " + NAMES[nm] + " Plan"; }; show();
-    host.querySelector(".pshalt").addEventListener("click", () => { nm = (nm + 1 + Math.floor(Math.random() * (NAMES.length - 1))) % NAMES.length; show(); });
+    host.innerHTML = '<label class="pshl"><span class="pshlt">Name your plan</span><input class="pshname" maxlength="60" autocomplete="off" spellcheck="true"></label>'
+      + '<button type="button" class="pshalt">Suggest a name</button>'
+      + '<label class="pshl"><span class="pshlt">Your name <i>(optional)</i></span><input class="pshby" maxlength="24" autocomplete="off" placeholder="A first name or nickname"></label>'
+      + '<p class="pshfine">Don\'t use your full name. Names with swearing, insults, links or contact details are turned away.</p>'
+      + '<button type="button" class="sc-btn primary pshgo">' + (opt.go || "Add it to Neighbors' plans") + '</button><p class="pshmsg" role="status"></p><div class="pshafter"></div>';
+    const nmIn = host.querySelector(".pshname"), byIn = host.querySelector(".pshby"), go = host.querySelector(".pshgo"), msg = host.querySelector(".pshmsg");
+    nmIn.placeholder = sug(); nmIn.value = sug();
+    host.querySelector(".pshalt").addEventListener("click", () => { nm = (nm + 1 + Math.floor(Math.random() * (NAMES.length - 1))) % NAMES.length; nmIn.value = sug(); nmIn.placeholder = sug(); nmIn.removeAttribute("aria-invalid"); });
+    [nmIn, byIn].forEach(i => i.addEventListener("input", () => { i.removeAttribute("aria-invalid"); if (go.textContent === "Shared"){ go.textContent = opt.go || "Add it to Neighbors' plans"; go.disabled = false; } }));
     go.addEventListener("click", async () => {
       const d = get(); if (!d || !d.code){ msg.textContent = "There's nothing to share yet. Make a change first."; return; }
+      let title = nmIn.value.replace(/\s+/g, " ").trim(); const author = byIn.value.replace(/\s+/g, " ").trim();
+      const listed = title === sug(); if (!title){ title = sug(); nmIn.value = title; }
+      if (title.length < 3){ msg.textContent = "Give the plan a name of at least 3 characters."; nmIn.setAttribute("aria-invalid", "true"); nmIn.focus(); return; }
+      if (author && author.length < 2){ msg.textContent = "Your name needs at least 2 characters, or leave it empty."; byIn.setAttribute("aria-invalid", "true"); byIn.focus(); return; }
       go.disabled = true; msg.textContent = "Sharing…";
+      const tok = newTok(), names = {nm, title: listed ? "" : title, author, tok};
+      const url = kind === "housing" ? "/api/plan" : "/api/splan";
+      const body = kind === "housing" ? Object.assign({}, d, {gallery: 1}, names) : Object.assign({kind, code: d.code, stats: d.stats || {}}, names);
       try {
-        const r = await fetch("/api/splan", {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({kind, code:d.code, stats:d.stats || {}, nm})});
+        const r = await fetch(url, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)});
         if (r.status === 429){ msg.textContent = "That's a lot of plans for one day. Try again tomorrow."; go.disabled = false; return; }
+        if (r.status === 400){ const j = await r.json().catch(() => ({}));
+          if (j.error === "name"){ const el = j.field === "author" ? byIn : nmIn; el.setAttribute("aria-invalid", "true"); el.focus(); msg.textContent = j.why || "Try another name."; go.disabled = false; return; }
+          throw 0; }
         if (!r.ok) throw 0; const j = await r.json();
-        try { const ids = JSON.parse(localStorage.getItem(SMINE) || "[]"); if (!ids.includes(j.id)) ids.push(j.id); localStorage.setItem(SMINE, JSON.stringify(ids.slice(-40))); } catch (e) {}
-        msg.innerHTML = 'Shared as <b>' + esc("The " + NAMES[nm] + " Plan") + '</b>. <a href="/plans/#' + kind + "-" + j.id + '">See it in Neighbors\' plans</a>';
-        go.textContent = "Shared"; host.querySelector(".pshalt").hidden = true; host.querySelector(".pshfine").hidden = true;
+        keepTok(kind, j.id, tok);
+        const KEY = kind === "housing" ? MINE : SMINE;
+        try { const ids = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!ids.includes(j.id)) ids.push(j.id); localStorage.setItem(KEY, JSON.stringify(ids.slice(-40))); } catch (e) {}
+        const href = "/plans/#" + (kind === "housing" ? "" : kind + "-") + j.id;
+        msg.innerHTML = 'Shared as <b>' + esc(title) + '</b>' + (author ? ' by ' + esc(author) : "") + '. <a href="' + href + '">See it in Neighbors\' plans</a>';
+        go.textContent = "Shared";
+        const after = host.querySelector(".pshafter"); after.innerHTML = "";
+        after.append(deleteBtn(kind, j.id, () => { go.textContent = opt.go || "Add it to Neighbors' plans"; go.disabled = false; msg.textContent = ""; after.innerHTML = ""; }));
+        opt.done && opt.done(j.id);
       } catch (e) { msg.textContent = "Couldn't reach the plan gallery. Try again in a bit."; go.disabled = false; }
     });
   }
 
   window.SCPlans = {decode, choices, title, kind, nameOf, NAMES, hashN, map, card, geo, endorseBtn, myNews, mine, AREAS, MODE, fmt, esc, ago, STAR,
-    SIMS, simCard, simName, simEndorseBtn, shareBox, tparse, pparse, money};
+    SIMS, simCard, simName, simEndorseBtn, shareBox, deleteBtn, reportBtn, ownTok, owned, tparse, pparse, money, BIT_KEYS, SHORT, CUT, TIER, COLOR, TCOL, METRA};
 
 })();

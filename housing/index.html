@@ -1481,7 +1481,7 @@ body.playing #sky{opacity:1}
 
   <header class="sc-head">
     <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+      <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Housing<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/" aria-current="page">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
     <div class="sc-r"><span class="sc-fan fanline">Not affiliated with the City of Chicago.</span><button class="sc-btn" id="lookBtn" type="button">Sources</button><button class="sc-btn sc-share" id="shareTop" type="button">Share</button></div>
   </header>
   <section class="sc-bar hbar" id="hud" aria-live="polite">
@@ -1981,9 +1981,9 @@ body.playing #sky{opacity:1}
       </section>
       <section class="rsec rcomm">
         <div class="eyebrow">Add it to the community</div>
-        <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select><button class="btn" id="resPublish" type="button">Share with neighbors</button></div>
-        <div class="pname"><span>Its name: <b id="pnName">–</b></span><button type="button" class="linkbtn" id="pnShuffle">Pick another name</button></div>
-        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no names, no accounts). Sharing adds yours to Neighbors' plans under the name above, where people can endorse it; your neighborhood shows what neighbors chose.</p>
+        <div class="crow"><select class="txt homeHood" id="homeHoodRes" aria-label="Where do you live? (optional)"><option value="0">Where do you live? (optional)</option></select></div>
+        <div id="resShareBox"></div>
+        <p class="small ptally">Finished plans are counted anonymously in "What other people chose" (no accounts). Sharing adds yours to Neighbors' plans, where people can endorse it; you can delete it later from this browser.</p>
       </section>
 
       <p class="small whyhard" id="resHard" hidden><b>Too easy?</b> That beat Chicago's share of the region's shortage. <button type="button" class="linkbtn" id="resHardBtn">Try hard mode</button>: the city builds the whole region's 297,087 homes, the way it would if Chicago grew back toward its 1950 size.</p>
@@ -4337,7 +4337,7 @@ function stopPlay(finished){
 }
 function showResult(){
   submitPlan(false).then(ok => { if (ok) loadCommunity(); });
-  $("resPublish").disabled = false; fillHoodSelects();
+  fillHoodSelects();
   const ys = Array.from({length: YEARS + 1}, (_, y) => y);
   const homes = ys.map(planHomesAt);
   const noShort = ys.map(y => target() + gapGrowth() * y);
@@ -4374,7 +4374,8 @@ function showResult(){
   personaRows($("resPersonas"), homes[end]);
   $("resEd").textContent = plan.g < 3 ? "Hard mode edition" : plan.g === 4 ? "Every ward edition" : "Final edition";
   lastResult = {code: encodePlan(plan), hard: plan.g < 3, homes: homes[end], goal: needed(), grade: gradeFor(homes[end] / needed() * 100), short: planShort[end], closedAt, rent: rPlan[end], rentDiff: rNo[end] - rPlan[end], rentHi: rHi[end], rentNo: rNo[end], aff: totals(false).aff};
-  try { nameFor(lastResult.code); } catch (e) {}
+  try { if (window.SCPlans && API_OK) SCPlans.shareBox($("resShareBox"), "housing", () => { const t = totals(false); return {code: encodePlan(plan), homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood,
+    rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0))}; }, {go: "Share with neighbors", done(){ lastSubmitted = encodePlan(plan) + "g"; galSort = "new"; loadCommunity(); }}); } catch (e) {}
   prepPlanLink();
   $("result").hidden = false;
 }
@@ -4742,12 +4743,12 @@ async function renderGallery(){
     el.innerHTML = "";
     plans.forEach(P => {
       const d = document.createElement("div"); d.className = "gi";
-      const who = P.hood ? "A plan from " + hoodName(P.hood) : "A plan";
+      const who = window.SCPlans ? SCPlans.nameOf(P) : P.hood ? "A plan from " + hoodName(P.hood) : "A plan";
       d.innerHTML = '<div><b></b><span></span></div><button type="button" class="op">Open</button><button type="button" class="lk"></button>';
       d.querySelector("b").textContent = who;
-      d.querySelector("span").textContent = fmt(P.homes) + " homes · grade " + P.grade;
+      d.querySelector("span").textContent = (P.author ? "By " + P.author + " · " : "") + (P.hood ? hoodName(P.hood) + " · " : "") + fmt(P.homes) + " homes · grade " + P.grade;
       const lk = d.querySelector(".lk"); lk.textContent = (liked.has(P.id) ? "Endorsed · " : "Endorse · ") + P.likes; lk.classList.toggle("liked", liked.has(P.id));
-      d.querySelector(".op").addEventListener("click", () => { const p = decodePlan(P.code); if (!p) return; plan = p; unlockAll(true); recompute(); renderTargets(); toast("Opened " + who.toLowerCase() + ". Remix away."); });
+      d.querySelector(".op").addEventListener("click", () => { const p = decodePlan(P.code); if (!p) return; plan = p; unlockAll(true); recompute(); renderTargets(); toast("Opened " + who + ". Remix away."); });
       lk.addEventListener("click", async () => { if (liked.has(P.id)) return; try { const r = await api("/api/like/" + P.id, {}); liked.add(P.id); lsSet("fch-liked", [...liked]); lk.textContent = "Endorsed · " + r.likes; lk.classList.add("liked"); } catch (e) {} });
       el.appendChild(d);
     });
@@ -4755,33 +4756,20 @@ async function renderGallery(){
 }
 document.querySelectorAll("#galSort button").forEach(b => b.addEventListener("click", () => { galSort = b.dataset.s; document.querySelectorAll("#galSort button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderGallery(); }));
 async function loadCommunity(){
-  if (!API_OK){ document.querySelectorAll(".comm").forEach(e => e.hidden = true); $("resPublish").closest(".group").hidden = true; return; }
+  if (!API_OK){ document.querySelectorAll(".comm").forEach(e => e.hidden = true); $("resShareBox").closest(".rcomm").hidden = true; return; }
   try { communityStats = await api("/api/stats" + (homeHood ? "?hood=" + homeHood : "")); } catch (e) { communityStats = null; }
   renderStats(); renderGallery(); renderPolicies();
 }
-// the plan's public name: picked from Chicago streets and Chicago-isms (shape/plans.js NAMES), never typed
-const planName = {i:0, code:""};
-function nameFor(code){
-  const S = window.SCPlans; if (!S) return;
-  if (planName.code !== code){ planName.code = code; planName.i = S.hashN(code) % S.NAMES.length; }
-  $("pnName").textContent = "The " + S.NAMES[planName.i] + " Plan";
-}
-$("pnShuffle").addEventListener("click", () => { const S = window.SCPlans; if (!S) return; planName.i = (planName.i + 1 + Math.floor(Math.random() * (S.NAMES.length - 1))) % S.NAMES.length; $("pnName").textContent = "The " + S.NAMES[planName.i] + " Plan"; });
 async function submitPlan(gallery){
   const code = encodePlan(plan), t = totals(false), key = code + (gallery ? "g" : "");
   if (!API_OK || key === lastSubmitted || t.total < 1) return false;
   try {
     const r = await api("/api/plan", {code, homes: Math.round(t.total), grade: gradeFor(t.total / needed() * 100), hood: homeHood, gallery: gallery ? 1 : 0,
-      rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0)), nm: planName.i});
+      rent: Math.round(rentWithPlan(YEARS, t.total)), rentNo: Math.round(rentNoChange(YEARS)), aff: Math.max(0, Math.round(t.aff || 0))});
     if (gallery && r && r.id){ const M = lsGet("fch-my-plans", []); if (!M.includes(r.id)) M.push(r.id); lsSet("fch-my-plans", M.slice(-40)); }   // so the home page and /plans/ can show your plans' endorsements
     lastSubmitted = key; return true;
   } catch (e) { return false; }
 }
-$("resPublish").addEventListener("click", async () => {
-  const ok = await submitPlan(true);
-  toast(ok ? "Shared with neighbors. See it on the Neighbors' plans page." : "Couldn't share it right now. Try again in a bit.");
-  if (ok){ $("resPublish").disabled = true; galSort = "new"; loadCommunity(); }
-});
 $("doAlder").addEventListener("click", async () => {
   const t = totals(false);
   const note = "Hi, I'm a constituent. I used Fix Chicago Housing and my plan builds " + fmt(t.total) + " homes by 2041 by legalizing more housing near transit and on our corridors. Here's the plan: " + planLink() + "\n\nWould you support zoning changes like these in our ward?";

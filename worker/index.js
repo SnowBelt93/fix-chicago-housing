@@ -1,17 +1,23 @@
 // Shape Chicago API: anonymous plan gallery, "what other people chose", neighborhood stats, and private feedback.
 // Static files are served by Workers Assets; only /api/* reaches this script.
-// Nothing people type is ever shown on the site: plan titles are generated from the plan, and feedback is
-// stored privately (read with GET /api/feedback?key=<FEEDBACK_KEY>, a secret set in the Worker's settings).
+// What people type: a shared plan may carry a name and an optional "by" name, both checked in worker/names.js (no
+// swearing or slurs, no links or contact details, nothing that looks official); three reports from different people
+// hide them again. Feedback is stored privately (read with GET /api/feedback?key=<FEEDBACK_KEY>, a Worker secret).
+// Whoever shares a plan gets a private token (kept in their browser) that lets them delete it later.
 
 const BIT_KEYS = ["build","stair","adu","lots","pre","permits","mpls","camb","small","park","vac","social","comm","mega","down","pmin","mora","rentc","xfer","vland"];
 const B32 = "0123456789abcdefghijklmnopqrstuv";
 const CODE_RE = /^(?:(?:u4[0-9a-o]{39}[0-4][0-4][0-4][0-3][0-2][0-2][0-9a-v]{3}|u5[0-9a-o]{39}[0-5][0-4][0-4][0-3][0-2][0-2][0-9a-v]{4})[0-2][0-4]|u6[0-6]{77}[0-6][0-4][0-4][0-3][0-2][0-3][0-9a-v]{4}[0-4][0-4][0-3]{10})$/;
-const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff, nm";
+const NAMECOLS = "CASE WHEN nameoff = 1 THEN NULL ELSE title END AS title, CASE WHEN nameoff = 1 THEN NULL ELSE author END AS author";
+const COLS = "id, code, homes, grade, hood, likes, ts, rent, rentno, aff, nm, " + NAMECOLS;
+const SCOLS = "id, kind, code, stats, nm, likes, ts, " + NAMECOLS;
+const TOK = /^[0-9a-f]{32}$/;
 const GRADES = new Set(["A+","A","B","C","D","F","–"]);
 
-// Plans from the other simulators (transit, budget, pensions). Stored: the plan code, a name picked from the site's list,
-// and a few numbers the simulator worked out (so cards don't have to re-run the models). Never any text people typed:
-// transit line names are dropped unless they are one of the site's own proposal names (cleanTransit).
+// Plans from the other simulators (transit, budget, pensions). Stored: the plan code, its name (typed and checked, or one
+// picked from the site's list), an optional "by" name, and a few numbers the simulator worked out (so cards don't have to
+// re-run the models). Transit line names typed inside the simulator are dropped unless they are one of the site's own
+// proposal names (cleanTransit): they aren't checked, so they never reach the page.
 const T_PT = "-?[0-9a-z]{1,6},-?[0-9a-z]{1,6}(?:,[LM][A-Za-z0-9_-]{1,40})?";
 const T_DRAW = new RegExp("^x?(?:st|[sebil])(?:\\d{1,3}(?:_\\d)?|undefined|NaN)\\.(?:" + T_PT + ")(?:;" + T_PT + "){0,79}\\.");
 const T_OTHER = /^(?:C[01]{3}|F[0-9a-z]{1,12}\.[0-9a-z]{1,12}\.(?:a|n|[of][0-9A-Za-z-]{1,900})|x?M[A-Z-]{1,6}\.\d{1,3}(?:_\d)?\.[01](?:\.[a-z0-9-]{1,16})?)$/;
@@ -50,6 +56,7 @@ async function cleanTransit(code, url, env){
 import { Resvg, initWasm } from "@resvg/resvg-wasm";
 import RESVG_WASM from "@resvg/resvg-wasm/index_bg.wasm";
 import { cardSvg } from "./card.js";
+import { checkName } from "./names.js";
 import FONT_400 from "./fonts-400.bin";
 import FONT_600 from "./fonts-600.bin";
 import FONT_700 from "./fonts-700.bin";
@@ -221,26 +228,38 @@ export class Community {
     this.sql.exec(`CREATE TABLE IF NOT EXISTS splans (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, code TEXT NOT NULL, stats TEXT NOT NULL, nm INTEGER,
       likes INTEGER NOT NULL DEFAULT 0, who TEXT NOT NULL, ts INTEGER NOT NULL)`);
     this.sql.exec(`CREATE TABLE IF NOT EXISTS slikes (plan INTEGER NOT NULL, who TEXT NOT NULL, PRIMARY KEY (plan, who))`);
+    // Nov 12: typed names, an owner token (hashed) to delete, and reports that hide a name after three people flag it
+    for (const t of ["plans", "splans"]) for (const c of ["title TEXT", "author TEXT", "own TEXT", "nameoff INTEGER NOT NULL DEFAULT 0"]) try { this.sql.exec(`ALTER TABLE ${t} ADD COLUMN ${c}`); } catch (e) {}
+    this.sql.exec(`CREATE TABLE IF NOT EXISTS reports (kind TEXT NOT NULL, id INTEGER NOT NULL, who TEXT NOT NULL, ts INTEGER NOT NULL, PRIMARY KEY (kind, id, who))`);
     this.env = env;
     this.cache = null;
   }
 
+  // a plan's typed name and "by" name, checked; returns {title, author} or a ready 400 response
+  async names(b){
+    const t = checkName(b.title, "title"); if (!t.ok) return {bad: json({error: "name", field: "title", why: t.why}, 400)};
+    const a = checkName(b.author, "author"); if (!a.ok) return {bad: json({error: "name", field: "author", why: a.why}, 400)};
+    return {title: t.value || null, author: a.value || null, own: TOK.test(String(b.tok || "")) ? await hash("own|" + b.tok) : null};
+  }
+
   // transit, budget and pensions plans people chose to share (see SIM above)
-  addSim(b, who){
+  async addSim(b, who){
     const kind = String(b.kind || ""), code = String(b.code || "");
     if (!SIM[kind] || !code || !SIM[kind].ok(code)) return json({error: "invalid plan"}, 400);
+    const N = await this.names(b); if (N.bad) return N.bad;
     const stats = JSON.stringify(simStats(kind, b.stats || {})), nmv = Math.round(+b.nm), nm = b.nm != null && nmv >= 0 && nmv <= 999 ? nmv : null;
     if (this.sql.exec("SELECT COUNT(*) AS n FROM splans WHERE who = ?", who).one().n >= 20) return json({error: "slow down"}, 429);
     const dup = this.sql.exec("SELECT id FROM splans WHERE who = ? AND kind = ? AND code = ?", who, kind, code).toArray()[0];
     let id;
-    if (dup){ this.sql.exec("UPDATE splans SET stats = ?, nm = COALESCE(?, nm), ts = ? WHERE id = ?", stats, nm, Date.now(), dup.id); id = dup.id; }
-    else id = this.sql.exec("INSERT INTO splans (kind, code, stats, nm, who, ts) VALUES (?, ?, ?, ?, ?, ?) RETURNING id", kind, code, stats, nm, who, Date.now()).one().id;
+    if (dup){ this.sql.exec("UPDATE splans SET stats = ?, nm = COALESCE(?, nm), title = ?, author = ?, own = COALESCE(?, own), nameoff = 0, ts = ? WHERE id = ?", stats, nm, N.title, N.author, N.own, Date.now(), dup.id); id = dup.id; }
+    else id = this.sql.exec("INSERT INTO splans (kind, code, stats, nm, title, author, own, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", kind, code, stats, nm, N.title, N.author, N.own, who, Date.now()).one().id;
+    this.comm = null;
     return json({ok: true, id});
   }
-  simRow(r){ let stats = {}; try { stats = JSON.parse(r.stats); } catch (e) {} return {id: r.id, kind: r.kind, code: r.code, stats, nm: r.nm, likes: r.likes, ts: r.ts}; }
+  simRow(r){ let stats = {}; try { stats = JSON.parse(r.stats); } catch (e) {} return {id: r.id, kind: r.kind, code: r.code, stats, nm: r.nm, title: r.title, author: r.author, likes: r.likes, ts: r.ts}; }
   simGallery(kind, sort, limit){
     const where = SIM[kind] ? "WHERE kind = '" + kind + "'" : "", order = sort === "top" ? "likes DESC, ts DESC" : "ts DESC";
-    return json({plans: this.sql.exec(`SELECT id, kind, code, stats, nm, likes, ts FROM splans ${where} ORDER BY ${order} LIMIT ${Math.max(1, Math.min(60, Math.round(limit) || 30))}`).toArray().map(r => this.simRow(r))});
+    return json({plans: this.sql.exec(`SELECT ${SCOLS} FROM splans ${where} ORDER BY ${order} LIMIT ${Math.max(1, Math.min(60, Math.round(limit) || 30))}`).toArray().map(r => this.simRow(r))});
   }
   simLike(id, who){
     if (!this.sql.exec("SELECT 1 FROM splans WHERE id = ?", id).toArray().length) return json({error: "not found"}, 404);
@@ -280,7 +299,10 @@ export class Community {
     const day = new Date().toISOString().slice(0, 10);
     const who = await hash((req.headers.get("x-ip") || "0") + "|" + day + "|fch");
     try {
-      if (path === "/api/plan" && req.method === "POST") return this.addPlan(await req.json(), who);
+      if (path === "/api/plan" && req.method === "POST") return await this.addPlan(await req.json(), who);
+      if (path === "/api/delete" && req.method === "POST") return await this.removePlan(await req.json());
+      if (path === "/api/report" && req.method === "POST") return this.report(await req.json(), who);
+      if (path === "/api/community" && req.method === "GET") return this.community();
       if (path === "/api/feedback" && req.method === "POST") return this.addFeedback(await req.json(), who);
       if (path === "/api/feedback" && req.method === "GET") return json({feedback: this.sql.exec("SELECT id, text, page, ts FROM feedback ORDER BY ts DESC LIMIT 500").toArray()});
       if (path === "/api/stats" && req.method === "GET") return this.stats(+url.searchParams.get("hood") || 0);
@@ -294,14 +316,14 @@ export class Community {
       if (path === "/api/card" && req.method === "POST") return this.addCard(await req.json(), who);
       const cm = path.match(/^\/api\/card\/([0-9a-f]{12})$/);
       if (cm && req.method === "GET"){ const r = this.sql.exec("SELECT code, homes, grade, goal, rent, rentno, mode FROM cards WHERE id = ?", cm[1]).toArray()[0]; return r ? json(r) : json({error: "not found"}, 404); }
-      if (path === "/api/splan" && req.method === "POST") return this.addSim(await req.json(), who);
+      if (path === "/api/splan" && req.method === "POST") return await this.addSim(await req.json(), who);
       if (path === "/api/sgallery" && req.method === "GET") return this.simGallery(String(url.searchParams.get("kind") || ""), url.searchParams.get("sort") === "top" ? "top" : "new", +url.searchParams.get("limit") || 30);
       if (path === "/api/splans" && req.method === "GET"){
         const ids = String(url.searchParams.get("ids") || "").split(",").map(Number).filter(n => n > 0).slice(0, 40);
-        return json({plans: ids.length ? this.sql.exec(`SELECT id, kind, code, stats, nm, likes, ts FROM splans WHERE id IN (${ids.join(",")})`).toArray().map(r => this.simRow(r)) : []});
+        return json({plans: ids.length ? this.sql.exec(`SELECT ${SCOLS} FROM splans WHERE id IN (${ids.join(",")})`).toArray().map(r => this.simRow(r)) : []});
       }
       const sm = path.match(/^\/api\/splan\/(\d+)$/);
-      if (sm && req.method === "GET"){ const r = this.sql.exec("SELECT id, kind, code, stats, nm, likes, ts FROM splans WHERE id = ?", +sm[1]).toArray()[0]; return r ? json(this.simRow(r)) : json({error: "not found"}, 404); }
+      if (sm && req.method === "GET"){ const r = this.sql.exec(`SELECT ${SCOLS} FROM splans WHERE id = ?`, +sm[1]).toArray()[0]; return r ? json(this.simRow(r)) : json({error: "not found"}, 404); }
       const sl = path.match(/^\/api\/slike\/(\d+)$/);
       if (sl && req.method === "POST") return this.simLike(+sl[1], who);
       if (path === "/api/bears/pick" && req.method === "POST") return this.bearsPick(await req.json(), who, day);
@@ -328,9 +350,10 @@ export class Community {
     return json(d);
   }
 
-  addPlan(b, who){
+  async addPlan(b, who){
     const code = String(b.code || ""), homes = Math.round(+b.homes), grade = String(b.grade || ""), hood = Math.round(+b.hood || 0), gallery = b.gallery ? 1 : 0;
     if (!CODE_RE.test(code) || !(homes >= 0 && homes <= 3000000) || !GRADES.has(grade) || !(hood >= 0 && hood <= 77)) return json({error: "invalid plan"}, 400);
+    const N = gallery ? await this.names(b) : {title: null, author: null, own: null}; if (N.bad) return N.bad;
     const num = (v, lo, hi) => { v = Math.round(+v); return v >= lo && v <= hi ? v : null; };
     const rent = num(b.rent, 300, 20000), rentno = num(b.rentNo, 300, 20000), aff = num(b.aff, 0, 3000000), nm = num(b.nm, 0, 999);   // nm: index into the plan-name list in shape/plans.js
     const n = this.sql.exec("SELECT COUNT(*) AS n FROM plans WHERE who = ?", who).one().n;
@@ -338,9 +361,12 @@ export class Community {
     // the same person re-running the same plan updates their row instead of stacking duplicates
     const dup = this.sql.exec("SELECT id, gallery FROM plans WHERE who = ? AND code = ?", who, code).toArray()[0];
     let id;
-    if (dup){ this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, rent = ?, rentno = ?, aff = ?, nm = COALESCE(?, nm), ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, rent, rentno, aff, nm, Date.now(), dup.id); id = dup.id; }
-    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, rent, rentno, aff, nm, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, rent, rentno, aff, nm, who, Date.now()).one().id;
-    this.cache = null;
+    if (dup){
+      this.sql.exec("UPDATE plans SET homes = ?, grade = ?, hood = ?, gallery = ?, rent = ?, rentno = ?, aff = ?, nm = COALESCE(?, nm), ts = ? WHERE id = ?", homes, grade, hood, dup.gallery || gallery, rent, rentno, aff, nm, Date.now(), dup.id); id = dup.id;
+      if (gallery) this.sql.exec("UPDATE plans SET title = ?, author = ?, own = COALESCE(?, own), nameoff = 0 WHERE id = ?", N.title, N.author, N.own, id);
+    }
+    else id = this.sql.exec("INSERT INTO plans (code, homes, grade, hood, gallery, rent, rentno, aff, nm, title, author, own, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id", code, homes, grade, hood, gallery, rent, rentno, aff, nm, N.title, N.author, N.own, who, Date.now()).one().id;
+    this.cache = null; this.comm = null;
     return json({ok: true, id});
   }
 
@@ -354,6 +380,60 @@ export class Community {
       this.sql.exec("INSERT INTO cards (id, code, homes, grade, goal, rent, rentno, mode, who, ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", id, code, homes, grade, goal, rent, rentno, mode, who, Date.now());
     }
     return json({ok: true, id});
+  }
+
+  // delete a shared plan with the token its sharer's browser kept. Housing plans leave the gallery (the finished run still
+  // counts, anonymously, in "what other people chose"); other plans are removed outright.
+  async removePlan(b){
+    const kind = String(b.kind || ""), id = Math.round(+b.id), tok = String(b.tok || "");
+    if (!TOK.test(tok) || !(id > 0) || !(kind === "housing" || SIM[kind])) return json({error: "invalid"}, 400);
+    const own = await hash("own|" + tok), T = kind === "housing" ? "plans" : "splans";
+    const r = this.sql.exec(`SELECT own FROM ${T} WHERE id = ?`, id).toArray()[0];
+    if (!r) return json({ok: true, gone: true});
+    if (!r.own || r.own !== own) return json({error: "not yours"}, 403);
+    if (kind === "housing") this.sql.exec("UPDATE plans SET gallery = 0, title = NULL, author = NULL, own = NULL WHERE id = ?", id);
+    else { this.sql.exec("DELETE FROM splans WHERE id = ?", id); this.sql.exec("DELETE FROM slikes WHERE plan = ?", id); }
+    this.cache = null; this.comm = null;
+    return json({ok: true});
+  }
+
+  // "Report this name": three different people → the typed name and "by" name are hidden (the list name shows instead).
+  // The first report also lands in the private feedback inbox so it can be looked at.
+  report(b, who){
+    const kind = String(b.kind || ""), id = Math.round(+b.id);
+    if (!(id > 0) || !(kind === "housing" || SIM[kind])) return json({error: "invalid"}, 400);
+    const T = kind === "housing" ? "plans" : "splans", r = this.sql.exec(`SELECT title, author FROM ${T} WHERE id = ?`, id).toArray()[0];
+    if (!r || (!r.title && !r.author)) return json({ok: true});
+    if (this.sql.exec("SELECT COUNT(*) AS n FROM reports WHERE who = ? AND ts > ?", who, Date.now() - 864e5).one().n >= 20) return json({error: "slow down"}, 429);
+    try { this.sql.exec("INSERT INTO reports (kind, id, who, ts) VALUES (?, ?, ?, ?)", kind, id, who, Date.now()); } catch (e) { return json({ok: true}); }
+    const n = this.sql.exec("SELECT COUNT(*) AS n FROM reports WHERE kind = ? AND id = ?", kind, id).one().n;
+    if (n === 1) this.sql.exec("INSERT INTO feedback (text, page, who, ts) VALUES (?, 'report', ?, ?)", `Reported plan name (${kind} #${id}): "${r.title || ""}" by "${r.author || ""}"`, who, Date.now());
+    if (n >= 3) this.sql.exec(`UPDATE ${T} SET nameoff = 1 WHERE id = ?`, id);
+    this.comm = null;
+    return json({ok: true, hidden: n >= 3});
+  }
+
+  // What everyone picked: housing from every finished simulation (anonymous), the others from shared plans.
+  // Raw codes go to the page, which knows how to read them; cached for five minutes.
+  community(){
+    if (this.comm && Date.now() - this.comm.t < 300e3) return json(this.comm.d, 200, {"cache-control": "public, max-age=300"});
+    const rows = this.sql.exec("SELECT code FROM plans ORDER BY ts DESC LIMIT 20000").toArray();
+    const area = new Array(78).fill(0), on = {}, lv = {tod: [], metra: [], corr: [], office: [], str: [], aro: []}; let n = 0, hoods = 0;
+    for (const r of rows){
+      const f = features(r.code); if (!f) continue; n++;
+      BIT_KEYS.forEach(k => { if (f[k]) on[k] = (on[k] || 0) + 1; });
+      for (const k in lv){ const v = Math.max(0, Math.min(7, f[k] | 0)); lv[k][v] = (lv[k][v] || 0) + 1; }
+      let any = 0;
+      if (r.code[1] === "6"){ for (let i = 0; i < 77; i++) if (r.code[2 + i] !== "0"){ area[i + 1]++; any = 1; } }
+      else for (let i = 0; i < 39; i++){ const v = parseInt(r.code[2 + i], 25); if (Math.floor(v / 5)){ area[1 + 2 * i]++; any = 1; } if (v % 5 && 2 + 2 * i <= 77){ area[2 + 2 * i]++; any = 1; } }
+      hoods += any;
+    }
+    const sims = {};
+    for (const k of Object.keys(SIM)) sims[k] = this.sql.exec("SELECT code, stats FROM splans WHERE kind = ? ORDER BY ts DESC LIMIT 500", k).toArray().map(r => { let s = {}; try { s = JSON.parse(r.stats); } catch (e) {} return [r.code, k === "transit" ? {shape: s.shape || []} : s]; });
+    for (const k in lv) for (let i = 0; i < lv[k].length; i++) lv[k][i] = lv[k][i] || 0;
+    const d = {housing: {n, on, lv, area, hoods}, transit: sims.transit, budget: sims.budget, pensions: sims.pensions, t: Date.now()};
+    this.comm = {t: Date.now(), d};
+    return json(d, 200, {"cache-control": "public, max-age=300"});
   }
 
   addFeedback(b, who){

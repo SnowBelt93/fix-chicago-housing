@@ -4,6 +4,7 @@
   "type": "module",
   "description": "Worker dependencies for Shape Chicago (the site itself has no build step).",
   "dependencies": {
-    "@resvg/resvg-wasm": "2.6.2"
+    "@resvg/resvg-wasm": "2.6.2",
+    "obscenity": "^0.4.6"
   }
 }

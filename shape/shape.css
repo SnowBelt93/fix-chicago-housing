@@ -224,6 +224,19 @@ body.sc-gray{background:var(--sc-page)}
 .pshalt{font:inherit;font-size:14px;font-weight:600;color:var(--sc-navy);background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .pshfine,.pshmsg{margin:0;font-size:13px;color:var(--sc-mute);line-height:1.45}
 .pshmsg:empty{display:none} .pshmsg{color:var(--sc-ink2);font-size:14px} .pshmsg a{font-weight:600}
+.pshl{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;color:var(--sc-ink);width:100%;max-width:420px}
+.pshl i{font-style:normal;font-weight:400;color:var(--sc-mute)}
+.pshl input{font:inherit;font-size:16px;font-weight:400;color:var(--sc-ink);background:#fff;border:1px solid #c9cfd6;border-radius:8px;padding:9px 11px;min-height:42px;box-sizing:border-box;width:100%}
+.pshl input:focus{outline:2px solid var(--sc-navy);outline-offset:1px;border-color:var(--sc-navy)}
+.pshl input[aria-invalid="true"]{border-color:#c4001f;box-shadow:0 0 0 1px #c4001f}
+.pshalt{margin-top:-4px}
+.pshafter:empty{display:none}
+.pdel,.prep{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px;color:var(--sc-ink2)}
+.pdel button,.prep button{font:inherit;font-size:14px;font-weight:600;background:none;border:0;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:2px;color:var(--sc-navy)}
+.pdel .pdelgo,.pdel .pdelyes{color:#b0001c}
+.pdel .pdelyes{background:#b0001c;color:#fff;text-decoration:none;border-radius:999px;padding:6px 14px}
+.prep button{color:var(--sc-mute);font-weight:500}
+.pdelmsg:empty,.prep span:empty{display:none}
 .pkind{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 8px;border-radius:8px;background:#eef3fa;color:#1d4580}
 .pkind.k-tall{background:#e3f1f2;color:#0b5f67} .pkind.k-mm{background:#e8f5fb;color:#14607f} .pkind.k-hood{background:#f1ecf8;color:#5b3e8c}
 .pkind.k-main{background:#fff3e0;color:#8a4b00} .pkind.k-pol{background:#eef7f1;color:#1f6b44} .pkind.k-all{background:#1a1d21;color:#fff} .pkind.k-cut{background:#fdecef;color:#a0001b}

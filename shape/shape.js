@@ -127,7 +127,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/wards/","Wards"],["/progress/","Progress"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/lot/","Your lot"],["/bears/","Bears stadium"],["/plans/","Neighbors' plans"],["/community/","What people picked"],["/wards/","Wards"],["/progress/","Progress"],["/tracker/","Permit tracker"],["/news/","News"],["/learn/","Learn"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
