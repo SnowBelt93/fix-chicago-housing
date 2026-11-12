@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decisions · Progress · Shape Chicago</title>
+<meta name="description" content="Votes coming up on Chicago’s money, homes and transit.">
+<meta property="og:title" content="Decisions">
+<meta property="og:description" content="Votes coming up on Chicago’s money, homes and transit.">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-progress.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css">
+<link rel="stylesheet" href="/progress/progress.css">
+</head>
+<body class="pg">
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>Votes coming up on Chicago’s money, homes and transit.</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div><div class="strip c2"><a class="card dec" href="/progress/decisions/transit-budget-2027/"><span class="dt"><span>DEC</span><b>10</b></span><span class="tx"><b>The first regional transit budget</b><span>$5.04 billion for CTA, Metra and Pace · comments close Dec. 4</span></span><span class="go" data-until="2026-12-10"></span></a><a class="card dec" href="/progress/decisions/city-budget-2027/"><span class="dt"><span>DEC</span><b>31</b></span><span class="tx"><b>The 2027 city budget</b><span>$882 million gap to close · the Council must pass a budget by year’s end</span></span><span class="go" data-until="2026-12-31"></span></a></div><p class="fine note">Bills in Springfield have their own page: <a href="/progress/springfield/">In Springfield ›</a></p>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago, CTA, Metra or Pace.</footer>
+<script src="/shape/shape.js"></script>
+<script>
+/* "In N days" on the decisions coming up */
+/* ward maps: point at or tap a ward (or a ward in the lists beside it) */
+document.querySelectorAll(".mapr").forEach(box => {
+  const info = box.querySelector(".winfo"), svg = box.querySelector(".wmap"); if (!svg) return; let pinned = null;
+  const show = w => { const p = svg.querySelector('path[data-w="' + w + '"]'); if (!p) return;
+    svg.querySelectorAll("path.on").forEach(e => e.classList.remove("on")); box.querySelectorAll(".hb .on").forEach(e => e.classList.remove("on"));
+    p.classList.add("on"); svg.appendChild(p); box.querySelectorAll('.hb [data-w="' + w + '"]').forEach(e => e.classList.add("on"));
+    info.innerHTML = "<b>Ward " + w + "</b> · " + p.dataset.t + ' · <a href="/wards/#' + w + '">Ward ' + w + "’s record ›</a>"; };
+  const over = e => { const t = e.target.closest("[data-w]"); if (t && pinned === null) show(t.dataset.w); };
+  const pick = e => { const t = e.target.closest("[data-w]"); if (!t || e.target.closest("a")) return; pinned = t.dataset.w; show(pinned); };
+  box.addEventListener("pointerover", over); box.addEventListener("focusin", over); box.addEventListener("click", pick);
+  box.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { pick(e); if (e.target.matches("path")) e.preventDefault(); } });
+});
+document.querySelectorAll("ol.dl li[data-date]").forEach((e, i, all) => { const past = new Date(e.dataset.date + "T23:59:59") < Date.now(), next = !past && (i === 0 || new Date(all[i - 1].dataset.date + "T23:59:59") < Date.now());
+  e.classList.add(past ? "past" : next ? "next" : "later"); e.querySelector(".st").textContent = past ? "Date passed" : next ? "Next" : ""; });
+(function(){ const sel = document.getElementById("zipSel"), out = document.getElementById("zipOut"); if (!sel) return;
+  const D = JSON.parse(document.getElementById("zipData").textContent), usd = v => v == null ? "–" : "$" + v.toLocaleString("en-US"), BR = ["Studio", "One bedroom", "Two bedrooms", "Three bedrooms", "Four bedrooms"];
+  const show = () => { const d = D[sel.value]; if (!d) return; const up = Math.round(100 * (d.r[2] / d.r19 - 1));
+    out.innerHTML = '<div class="facts">' + d.r.map((v, i) => "<div><b>" + usd(v) + "</b><span>" + BR[i] + ", fiscal 2027</span></div>").join("") + "</div>"
+      + '<p class="sub" style="margin-top:12px">A two-bedroom in ' + sel.value + " was figured at " + usd(d.r19) + " for fiscal 2019, so the figure is " + (up >= 0 ? "up " : "down ") + Math.abs(up) + "% in eight years."
+      + (d.p == null ? " There is no house price index for this ZIP code." : " House prices there " + (d.p >= 0 ? "rose " : "fell ") + Math.abs(d.p) + "% from 2019 to 2025.") + "</p>"; };
+  sel.addEventListener("change", show); show(); })();
+document.querySelectorAll("[data-until]").forEach(e => { const d = Math.ceil((new Date(e.dataset.until + "T12:00:00") - Date.now()) / 864e5); e.textContent = d > 1 ? "In " + d + " days" : d === 1 ? "Tomorrow" : d === 0 ? "Today" : "Passed"; });
+</script>
+</body>
+</html>

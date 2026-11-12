@@ -26,6 +26,7 @@ except Exception: SRC = {}
 
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
+TODAY = __import__('time').strftime('%Y-%m-%d')
 # homes in buildings with a demolition permit, by year: counted every morning by tools/tracker/teardowns.py (main) into
 # tracker/teardowns.json; the fixed numbers below (through Nov. 6, 2026) are only the fallback when that file is missing
 DEMO = dict(zip(range(2013, 2027), [1913, 1607, 1564, 1855, 1417, 1434, 1417, 856, 958, 875, 692, 665, 803, 677])); DEMO_THRU = '2026-11-06'
@@ -85,7 +86,7 @@ CITY = 1000 * sum(r[1] for r in WR) / sum(r[2] for r in WR); LOW = sum(1 for r i
 
 # ---------------------------------------------------------------- pieces
 SECTIONS = [('homes', 'Homes added'), ('zoning', 'After the zoning vote'), ('room', 'Room to grow'), ('affordable', 'Affordable'),
-            ('rents', 'Rents and prices'), ('transit', 'Transit'), ('streets', 'Streets'), ('projects', 'Big projects')]
+            ('rents', 'Rents and prices'), ('transit', 'Transit'), ('streets', 'Streets'), ('projects', 'Big projects'), ('capital', 'Capital spending'), ('springfield', 'In Springfield')]
 HATCH = lambda c, bg: f'repeating-linear-gradient(135deg, {c} 0 3px, {bg} 3px 6px)'
 SEQ = ['#dbe6f3', '#b3c9e6', '#7fa3d1', '#4f7cb8', '#1f4d8f']
 
@@ -491,6 +492,150 @@ def projects():
     return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP}') + st + c1 + goal('Each project has its own approved plan', 'There is no citywide target for these sites. The home counts here are what each plan, approved by the Plan Commission and City Council, says it will build.', none=True)
                 + bottom('projects', note, 'Home counts: each project’s Plan Commission approval or published plan. Status: the dated story linked on each row. North Union homes built: Power Construction project pages.'))
 
+# ---------------------------------------------------------------- capital spending (snapshot: the city's PDFs, read by hand)
+# The five-year Capital Improvement Program, 2025–2029: program totals from the charts on pp. 6–22 (they add to $18.1B).
+# Information technology isn't printed as a total; it is what's left of the pie ($175.5M), so it's labeled that way.
+CIP_URL = 'https://www.chicago.gov/content/dam/city/depts/obm/supp_info/CIP/City%20of%20Chicago%202025-2029%20CIP.pdf'
+CIP = [('O’Hare and Midway airports', 5980.4), ('Water system', 3673.3), ('Streets, bridges and transit', 3033.5), ('Sewers', 1893.0), ('Neighborhood streets, alleys and lights', 1447.3),
+       ('Economic development', 816.5), ('City vehicles', 459.9), ('City buildings', 388.4), ('Information technology and other', 175.5), ('Lakefront and shoreline', 150.0), ('Public spaces (City Space)', 86.5)]
+def kd(v): return f'${v / 1e6:.2f}M' if v >= 995e3 else f'${v / 1e3:.0f}K'
+def capital():
+    try: M = json.load(open(os.path.join(ROOT, 'wards', 'data', 'menu.json')))
+    except Exception: M = None
+    tot = sum(v for _, v in CIP)
+    rows = [(n, v, f'${v / 1000:.1f}B' if v >= 1000 else f'${v:.0f}M') for n, v in CIP]
+    c1 = card('The city’s five-year building plan, 2025–2029', f'${tot / 1000:.1f} billion by program. About 40% is borrowing repaid from airport, water and sewer revenue; the rest comes from city bonds, TIF, federal, state and other money.',
+              hbars(rows, w=250) + f'<p class="fine">The plan is updated each year; this is the most recent one the city has published. Information technology isn’t printed as its own total; it’s the rest of the ${tot / 1000:.1f} billion.</p>')
+    body = ''
+    if M:
+        R = M['rows']; com = sum(r[2] for r in R); bud = sum(r[1] for r in R); left = sum(r[5] for r in R); items = sum(r[12] for r in R)
+        cats = [(c[1], sum(r[6 + i] for r in R)) for i, c in enumerate(M['cats'])]; cats.sort(key=lambda x: -x[1])
+        c2 = card('Ward street money: what alderpeople picked', f'${com / 1e6:.1f} million committed of ${bud / 1e6:.0f} million for 2026, through Sept. 30. Every ward gets $1.5 million a year.',
+                  hbars([(n, v, f'${v / 1e6:.1f}M') for n, v in cats], w=190))
+        pct = {r[0]: r[2] / r[1] * 100 for r in R}
+        BINS = [(99.5, '#1f4d8f', 'All of it'), (90, '#4f7cb8', '90–99%'), (70, '#9db9de', '70–89%'), (0, '#dbe6f3', 'Under 70%')]
+        col = lambda w: next(c for t, c, _ in BINS if pct.get(w, 0) >= t)
+        info = {r[0]: f'${r[2] / 1e6:.2f}M committed of $1.5M ({pct[r[0]]:.0f}%) · {r[12]} projects' for r in R}
+        most = sorted(R, key=lambda r: -r[5])[:6]; side = sorted(R, key=lambda r: -r[7])[:6]
+        c3 = card('Ward by ward', 'Share of each ward’s 2026 street money committed by Sept. 30.',
+                  '<div class="mapr"><div class="mp">' + wardmap(col, 'Map of Chicago’s 50 wards shaded by the share of their 2026 street money committed by Sept. 30.', info) + key([(t, c, '') for _, c, t in BINS])
+                  + '</div><div class="lists"><div><h3>Most money not yet committed <span>(incl. past years)</span></h3>' + hbars([(f'Ward {r[0]}', r[5], kd(r[5])) for r in most])
+                  + '</div><div><h3>Most on sidewalks</h3>' + hbars([(f'Ward {r[0]}', r[7], kd(r[7])) for r in side])
+                  + f'</div><p class="call"><b>{sum(1 for r in R if r[2] >= r[1] - 1)} of 50 wards</b> had committed all $1.5 million by Sept. 30. Each ward’s page lists what its money went to.</p></div></div>')
+        body = c2 + c3
+        tl = tiles([(f'${tot / 1000:.1f}B', 'in the city’s five-year building plan, 2025–2029'), ('$6.0B', 'of it for O’Hare and Midway airports'), (f'${com / 1e6:.1f}M', f'of ${bud / 1e6:.0f}M in ward street money committed by Sept. 30, 2026'), (f(items), 'ward street projects listed: repaving, sidewalks, speed humps, lights')])
+    else:
+        tl = tiles([(f'${tot / 1000:.1f}B', 'in the city’s five-year building plan, 2025–2029')], cols=1)
+    h1 = f'Chicago plans ${tot / 1000:.1f} billion in building and repairs over five years. Each ward also gets $1.5 million a year for street projects its alderperson picks.'
+    note = ('Program totals are the five-year plan’s own charts. Ward street money is the city’s third-quarter report: we read each project’s type and estimated cost and grouped the types. Our totals match each ward’s committed total except Ward 16, where the listed projects add up to $7,730 more. '
+            'The plan lists what the city intends to spend, not what it spent.')
+    g = goal('The plan is the city’s own list of intended projects', 'There is no outside target for capital spending. The five-year plan says what the city intends to build and how it expects to pay; the ward money has to be committed by each alderperson, and what isn’t committed carries over.', 'The 2025–2029 plan (PDF)', CIP_URL, none=True)
+    return page('capital', 'Capital spending', h1, top('capital', 'Capital spending', h1, f'Five-year plan 2025–2029 · ward street money through Sept. 30, 2026 · checked Nov. 11, 2026') + tl + c1 + body + g
+                + bottom('capital', note, f'{src("City of Chicago, 2025–2029 Capital Improvement Program", CIP_URL)} · {src("City of Chicago, 2026 Q3 Aldermanic Menu Report", M["url"]) if M else ""}'))
+
+# ---------------------------------------------------------------- In Springfield (daily: tracker/bills.json from the bill job on main)
+# Every House and Senate bill of the current General Assembly that touches Chicago's housing, transit, budget, pensions or
+# property taxes (topic rules in tools/bills/fetch.py on main). WATCH gives a few bills a plain name; each was checked
+# against the bill's own synopsis. Shell bills ("makes a technical change") are left out by the fetcher.
+WATCH = {
+    'HB5626': 'The BUILD Act: up to 4–8 homes on single-family lots by lot size, coach houses everywhere, single-stair buildings, no parking minimums for small homes',
+}
+TOPIC = {'housing': 'Housing and zoning', 'transit': 'Transit', 'budget': 'City budget and taxes', 'pensions': 'City pensions', 'property': 'Property taxes'}
+VANDALIA = 'https://www.vandaliaradio.com/2026/10/19/163417/'
+def springfield():
+    try: B = json.load(open(os.path.join(ROOT, 'tracker', 'bills.json')))
+    except Exception: B = None
+    if not B or not B.get('bills'):
+        h1 = 'Bills in Springfield that would change Chicago’s housing, transit and budget.'
+        return page('springfield', 'In Springfield', h1, top('springfield', 'In Springfield', h1, 'The bill list is being gathered') + '<p class="sub">The first download of bill statuses hasn’t finished yet. Check back tomorrow.</p>' + bottom('springfield', '', ''))
+    L = B['bills']; n = len(L)
+    cnt = lambda st: sum(1 for b in L if b['st'] == st)
+    law, sent, both, one, out, com = cnt(6), cnt(5) , cnt(4), cnt(3), cnt(2), cnt(1) + cnt(0)
+    vet = sum(1 for b in L if b['lab'] == 'Vetoed'); sent -= vet
+    made = B.get('made', '')
+    h1 = f'{f(n)} bills in this session of the General Assembly would change Chicago’s housing, transit, budget, pensions or property taxes. {f(law)} have become law.'
+    tl = tiles([(f(law), 'became law'), (f(sent + both), 'passed both chambers, waiting on the governor'), (f(one), 'passed one chamber'), (f(com + out), 'still in committee or waiting for a vote')])
+    def row(b):
+        name = WATCH.get(b['id']) or b['t'].title().replace(' Cd-', ' Code: ').replace('-', ' – ')
+        cls = 'good' if b['st'] == 6 else 'go' if b['st'] >= 3 else ''
+        tags = ''.join(f'<span class="btag">{TOPIC[t]}</span>' for t in b['tp'])
+        last = b['last']; when = day(last[0], True) if last[0] else ''
+        hist = ''.join(f'<li><span>{day(d, True) if d else ""}</span> {esc(c)}: {esc(a)}</li>' for d, c, a in b['hist'])
+        return (f'<li class="bill" data-tp="{" ".join(b["tp"])}" data-st="{b["st"]}"><div class="bh"><a class="bid" href="{b["url"]}" target="_blank" rel="noopener">{b["id"][:2]} {b["id"][2:]}</a>'
+                f'<span class="chip {cls}">{esc(b["lab"])}</span>{tags}</div><b class="bt">{esc(name)}</b>'
+                f'<p class="fine">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(last[2])}</p>'
+                f'<details><summary>What it does</summary><p class="sub">{esc(b["syn"])}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist">{hist}</ol>' if hist else '') + '</details></li>')
+    order = sorted(L, key=lambda b: (-(b['id'] in WATCH), -b['st'], b['last'][0] and -int(b['last'][0].replace('-', '')) or 0))
+    filt = ('<div class="bfilt" role="group" aria-label="Show bills about"><button type="button" aria-pressed="true" data-t="">All</button>'
+            + ''.join(f'<button type="button" aria-pressed="false" data-t="{k}">{v} <span>{sum(1 for b in L if k in b["tp"])}</span></button>' for k, v in TOPIC.items())
+            + '</div><div class="bfilt" role="group" aria-label="Show bills that"><button type="button" aria-pressed="true" data-s="0">Any stage</button><button type="button" aria-pressed="false" data-s="3">Passed a chamber or more</button><button type="button" aria-pressed="false" data-s="6">Became law</button></div>')
+    c1 = card('Every bill on these topics', f'Newest action first within each stage. Bill names are the legislature’s own short titles unless we give a plain one. Tap a number for the bill’s official page.',
+              filt + f'<ol class="bills" id="bills">{"".join(row(b) for b in order)}</ol><p class="fine" id="bcount"></p>')
+    g = goal('Bills die when the session ends', 'This General Assembly’s term ends in January 2027. Bills that haven’t passed both chambers by then have to be filed again and start over. The governor said in October that his housing plan may wait until the new session.', 'Vandalia Radio, Oct. 19, 2026', VANDALIA)
+    note = ('A bill is listed if what it amends (the Illinois Compiled Statutes sections) or its synopsis is about zoning and housing, the transit agencies, Chicago’s taxes and budget, the four city pension funds, or property taxes in Cook County. '
+            'Some listed bills only touch a topic in passing; bills that change only a title or make technical changes are left out. Stages come from each bill’s list of actions.')
+    js = ('<script>(function(){const L=[...document.querySelectorAll("#bills .bill")],F=document.querySelectorAll(".bfilt button");let t="",s=0;'
+          'const go=()=>{let n=0;L.forEach(e=>{const ok=(!t||e.dataset.tp.split(" ").includes(t))&&+e.dataset.st>=s;e.hidden=!ok;if(ok)n++;});document.getElementById("bcount").textContent=n+" bills shown";};'
+          'F.forEach(b=>b.addEventListener("click",()=>{const g=b.parentNode;g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));if("t" in b.dataset)t=b.dataset.t;else s=+b.dataset.s;go();}));go();})();</script>')
+    return page('springfield', 'In Springfield', h1, top('springfield', 'In Springfield', h1, f'Bill statuses from the Illinois General Assembly, updated every morning · last updated {day(made, True) if made else ""}') + tl + c1 + g
+                + bottom('springfield', note, src('Illinois General Assembly bill status files', 'https://www.ilga.gov/ftp/legislation/104/BillStatus/')) + js)
+
+# ---------------------------------------------------------------- decisions coming up
+# Big votes with a date. Facts only: what's on the table, who decides, the dates, how to weigh in, sources. Each has a
+# `checked` date: update the text and the date together when the story moves. A decision whose vote date has passed
+# drops off the overview (DECISIONS, `vote`); its page keeps saying the vote date has passed until it's updated.
+def src(t, u): return f'<a href="{u}" target="_blank" rel="noopener">{t}</a>'
+CBS_BUDGET = 'https://www.cbsnews.com/chicago/news/chicago-city-council-mayor-budget-plan-2027-nonstarter/'
+OV27 = 'https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Recommendation/2027_Budget_Overview/2027_Budget_Overview%20(1).pdf'
+FOX_BUDGET = 'https://www.fox32chicago.com/news/chicago-city-council-draws-budget-battle-lines-ahead-dec-30-deadline'
+NITA_BUDGET = 'https://nita.illinois.gov/about-rta/press-releases/northern-illinois-transit-authoritys-first-regional-budget-proposal-expands-service-creates-jobs-and-improves-safety-across-six-counties'
+NITA_COMMENT = 'https://nita.illinois.gov/transit-funding/2027-regional-transit-budget'
+DECISIONS = [
+  {'slug': 'city-budget-2027', 'vote': '2026-12-31', 'what': 'Deadline', 'mon': 'DEC', 'd': '31', 'checked': 'Nov. 11, 2026',
+   'name': 'The 2027 city budget', 'card': '$882 million gap to close · the Council must pass a budget by year’s end',
+   'h1': 'The City Council has until the end of the year to pass a 2027 budget that closes an $882 million gap.',
+   'who': 'The Mayor proposes the budget and the City Council passes it. It takes 26 of the 50 alderpeople’s votes.',
+   'tiles': [('$882M', 'gap between what the city expects to collect and to spend in 2027'), ('26 votes', 'needed in the City Council to pass a budget'), ('28', 'alderpeople signed a letter on Nov. 10 calling the Mayor’s plan a “non-starter”')],
+   'sides': [('The Mayor’s plan', ['Bring back a head tax on big employers: $25 a month per worker at companies with 125 or more full-time workers, about $101 million a year', 'Raise the tax on leased equipment and cloud software from 15% to 20%, about $234 million a year', 'Put $75 million from the parking meter deal toward 2027 pension payments', 'Savings, one-time money and other fees for the rest (each one is in the budget simulator)']),
+             ('What the 28 alderpeople wrote', ['No more than $300 million in new or higher taxes', 'No head tax and no lease tax increase (the lease tax went from 11% to 15% in the 2026 budget)', 'Collect more of the money people and businesses already owe the city', 'The Council voted 44–6 to spend the $75 million on an extra pension payment this year instead'])],
+   'dates': [('2026-10-31', 'October', 'The Mayor sends his 2027 budget to the City Council'), ('2026-11-10', 'Nov. 10', 'Department hearings end; 28 alderpeople send their letter'),
+             ('2026-12-09', 'Dec. 8–9', 'Next full City Council meetings (a final vote may come later)'), ('2026-12-31', 'Dec. 31', 'Deadline to pass a 2027 budget. Last year’s passed on Dec. 20')],
+   'weigh': [('Email your alderperson', '/wards/', 'Find your ward, how to reach its office and the Council meetings coming up'), ('Try closing the gap yourself', '/budget/', 'Every tax, cut and one-time option, with what it costs you'), ('Follow the news', '/news/', 'Headlines on the budget from Chicago outlets, updated every few hours')],
+   'sources': [src('CBS Chicago, Nov. 11, 2026', CBS_BUDGET), src('City of Chicago, 2027 Budget Overview', OV27), src('FOX 32, Sept. 28, 2026', FOX_BUDGET)],
+   'note': 'The head tax, lease tax and parking meter figures are the Mayor’s office estimates as reported by CBS Chicago. The gap is the city’s own figure.'},
+  {'slug': 'transit-budget-2027', 'vote': '2026-12-10', 'what': 'Board vote', 'mon': 'DEC', 'd': '10', 'checked': 'Nov. 11, 2026',
+   'name': 'The first regional transit budget', 'card': '$5.04 billion for CTA, Metra and Pace · comments close Dec. 4',
+   'h1': 'The new regional transit agency votes Dec. 10 on its first budget: $5.04 billion to run CTA, Metra and Pace in 2027.',
+   'who': 'The Northern Illinois Transit Authority (NITA), set up by the 2025 state transit law, writes one budget for CTA, Metra and Pace. Its board votes on it.',
+   'tiles': [('$5.04B', 'to run CTA, Metra and Pace in 2027'), ('$1.3B', 'of that is new money from the 2025 transit law'), ('$9.73B', 'for repairs and new projects, 2027–2031'), ('No increase', 'in fares in 2027')],
+   'sides': [('What the new money would add', ['More CTA routes in the Frequent Bus Network, and six more CTA bus routes running all night', 'Sunday service on some Pace routes', 'More Rock Island trains on Metra', 'Free transfers between CTA and Pace; reduced fares and student fares made permanent', 'Transit ambassadors (summer 2027) and a fare gate pilot']),
+             ('Repairs and projects, 2027–2031', ['$3.29 billion for the Red Line Extension', 'More than 200 electric or hybrid buses for CTA and Pace', '$483 million for Metra rail cars', '$218 million for Pace buses', '$990 million of the five-year total is new money from the law'])],
+   'dates': [('2026-11-02', 'Nov. 2', 'Proposed budget released'), ('2026-11-12', 'Nov. 12', 'Public hearing at the board meeting (comments from about 4 p.m.), 175 W. Jackson Blvd. and on Zoom'),
+             ('2026-12-04', 'Dec. 4', 'Written comments close'), ('2026-12-10', 'Dec. 10', 'Board votes, 9 a.m.'), ('2026-12-31', 'Dec. 31', 'The law’s deadline for the first regional budget')],
+   'weigh': [('Comment on the budget', NITA_COMMENT, 'NITA’s page with the full proposal and how to comment'), ('See what new service does', '/transit/', 'Switch on proposals and see riders, cost and trip times'), ('What the 2025 law changed', '/learn/#nita', 'One minute on the new agency and its money')],
+   'sources': [src('NITA press release, Nov. 2026', NITA_BUDGET), src('NITA: 2027 regional transit budget', NITA_COMMENT)],
+   'note': 'All figures are from NITA’s proposal. The board can change it before the vote.'},
+]
+def decision(D):
+    li = ''.join(f'<li data-date="{iso}"><span class="when">{d}</span><span class="what">{t}</span><span class="st"></span></li>' for iso, d, t in D['dates'])
+    sides = ''.join(f'<section class="card pad"><h2>{t}</h2><ul class="dot">' + ''.join(f'<li>{x}</li>' for x in L) + '</ul></section>' for t, L in D['sides'])
+    weigh = ''.join(f'<a class="card wy" href="{u}"' + (' target="_blank" rel="noopener"' if u.startswith('http') else '') + f'><b>{t} ›</b><span>{x}</span></a>' for t, u, x in D['weigh'])
+    body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> <a href="/progress/decisions/">Decisions</a></p><h1>{D["h1"]}</h1>'
+            f'<p class="fine">{D["what"]}: <span data-until="{D["vote"]}"></span> · checked {D["checked"]}</p></div>'
+            + tiles(D['tiles'], cols=len(D['tiles']))
+            + card('Who decides', '', f'<p class="sub">{D["who"]}</p>')
+            + f'<div class="strip c2">{sides}</div>'
+            + card('The dates', '', f'<ol class="dl">{li}</ol>')
+            + f'<section class="blk"><h2>How to weigh in</h2><div class="strip c3">{weigh}</div></section>'
+            + f'<p class="fine note">{D["note"]}</p><p class="fine src"><b>Sources:</b> {" · ".join(D["sources"])}</p>')
+    return page('decisions/' + D['slug'], D['name'], D['h1'], body)
+def decisions_index():
+    cards = ''.join(f'<a class="card dec" href="/progress/decisions/{D["slug"]}/"><span class="dt"><span>{D["mon"]}</span><b>{D["d"]}</b></span><span class="tx"><b>{D["name"]}</b><span>{D["card"]}</span></span><span class="go" data-until="{D["vote"]}"></span></a>' for D in sorted(DECISIONS, key=lambda D: D['vote']))
+    h1 = 'Votes coming up on Chicago’s money, homes and transit.'
+    body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>{h1}</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>'
+            f'<div class="strip c2">{cards}</div><p class="fine note">Bills in Springfield have their own page: <a href="/progress/springfield/">In Springfield ›</a></p>')
+    return page('decisions', 'Decisions', h1, body)
+
 # ---------------------------------------------------------------- overview
 def overview():
     built = sum(p[2] for p in PROJ); tot = sum(p[1] for p in PROJ)
@@ -500,7 +645,8 @@ def overview():
             ('rents', '$2,311', 'typical asking rent, Sept. 2026', spark([RENT[y] for y in range(2019, 2027)], rng=('2019', '2026')), '▲ Up 5.7% in a year'),
             ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% in 2026 · 7 big projects tracked'),
             ('streets', '82 deaths', 'in traffic this year through Sept. 27', spark([120, 153, 186, 160, 136, 130, 100, 82], partial=True, rng=('2019', '2026 so far')), 'The city’s goal for 2026 was zero'),
-            ('projects', f'{f(built)} of {f(tot)}', 'homes built in six big projects', minisplit([(built, NAVY), (tot - built, '#d9e4f4')], 'Built · planned'), '3 of the 6 have broken ground')]
+            ('projects', f'{f(built)} of {f(tot)}', 'homes built in six big projects', minisplit([(built, NAVY), (tot - built, '#d9e4f4')], 'Built · planned'), '3 of the 6 have broken ground'),
+            ('capital', '$18.1B', 'in the city’s five-year building plan, 2025–2029', minisplit([(5980, NAVY), (3673 + 1893, '#7fa3d1'), (3034 + 1447, '#b3c9e6'), (2024, '#d9e4f4')], 'Airports · water and sewers · streets · the rest'), 'Plus $1.5M a year per ward for street projects')]
     name = dict(SECTIONS)
     head = (f'<div class="otop"><div><h1>Progress</h1><p>What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.</p></div><span class="upd">Updated {UPDATED}</span></div>')
     lead = (f'<a class="card lead" href="/progress/homes/"><div class="l"><span class="lab">Homes permitted in 2026</span><div class="n"><b>{f(ytd["homes"])}</b>{PACE}</div>'
@@ -510,9 +656,9 @@ def overview():
             f'<span class="go">Homes added ›</span></div><div class="r"><span class="cap">Homes permitted each year</span>{yearchart(False, 190)}</div></a>')
     def dec(href, mon, d, iso, title, what):
         return (f'<a class="card dec" href="{href}"><span class="dt"><span>{mon}</span><b>{d}</b></span><span class="tx"><b>{title}</b><span>{what}</span></span><span class="go" data-until="{iso}"></span></a>')
-    decs = ('<section class="blk"><h2>Decisions coming up</h2><div class="strip c2">'
-            + dec('/learn/#nita', 'DEC', '10', '2026-12-10', 'The first regional transit budget', '$5.04 billion · comments close Dec. 4')
-            + dec('/budget/', 'DEC', '31', '2026-12-31', 'The 2027 city budget', '$882.4 million gap to close · try closing it yourself') + '</div></section>')
+    up = sorted([D for D in DECISIONS if D['vote'] >= TODAY], key=lambda D: D['vote'])
+    decs = ('<section class="blk"><h2>Decisions coming up <a class="more" href="/progress/decisions/">All ›</a></h2><div class="strip c2">'
+            + ''.join(dec(f'/progress/decisions/{D["slug"]}/', D['mon'], D['d'], D['vote'], D['name'], D['card']) for D in up[:2]) + '</div></section>') if up else ''
     cards = ''.join(f'<a class="card sec" href="/progress/{k}/"><span class="t">{name[k]}<span aria-hidden="true">›</span></span><span class="n{" sm" if len(n) > 9 else ""}">{n}</span><span class="d">{d}</span>{g}<span class="ch">{c}</span></a>' for k, n, d, g, c in SECS)
     grid = f'<section class="blk"><h2>Everything else we count</h2><div class="grid4">{cards}</div></section>'
     foot = '<p class="fine src">Each section lists its own sources and shows the date its data runs through. Homes permitted updates every morning; the other sections were last checked ' + SNAP + '.</p>'
@@ -624,6 +770,19 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg .go{font-size:14px;font-weight:600;color:var(--sc-navy)}
 .pg .blk{display:flex;flex-direction:column;gap:10px}
 .pg .dec{display:flex;gap:14px;align-items:center;padding:14px 16px}
+.pg ol.bills{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.pg li.bill{padding:14px 0;border-bottom:1px solid #f1f2f4;display:flex;flex-direction:column;gap:5px}.pg li.bill[hidden]{display:none}
+.pg .bh{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}.pg .bid{font-weight:700;font-size:14px;text-decoration:none;min-width:64px}
+.pg .btag{font-size:12px;font-weight:600;color:var(--sc-ink2);background:#f1f3f6;border-radius:999px;padding:2px 9px}
+.pg .bt{font-size:15.5px;font-weight:600;line-height:21px}
+.pg li.bill details summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--sc-navy)}.pg li.bill details .sub{margin-top:6px}
+.pg ol.bhist{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:3px}.pg ol.bhist span{display:inline-block;min-width:96px;color:var(--sc-mute)}
+.pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
+.pg .bfilt button span{font-weight:400;color:var(--sc-mute)}.pg .bfilt button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}.pg .bfilt button[aria-pressed="true"] span{color:#d9e4f4}
+.pg .blk h2 .more{font-size:14px;font-weight:600;margin-left:10px;text-decoration:none}
+.pg ul.dot{margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;font-size:14.5px;line-height:21px;color:var(--sc-ink2)}
+.pg ul.dot li::marker{color:var(--sc-navy)}
+.pg a.wy{display:flex;flex-direction:column;gap:4px;padding:16px 18px}.pg a.wy b{font-size:15.5px;color:var(--sc-navy)}.pg a.wy span{font-size:13.5px;color:var(--sc-ink2);line-height:19px}
 .pg .dec .dt{flex:none;width:54px;border:1px solid var(--sc-line);border-radius:12px;overflow:hidden;text-align:center}.pg .dec .dt span{display:block;background:#e4002b;color:#fff;font-size:11.5px;font-weight:700;padding:2px 0}.pg .dec .dt b{display:block;font-size:22px;line-height:32px}
 .pg .dec .tx{flex:1;min-width:0}.pg .dec .tx b{display:block;font-size:15.5px}.pg .dec .tx span{font-size:13.5px;color:var(--sc-ink2)}.pg .dec .go{white-space:nowrap}
 .pg .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
@@ -664,7 +823,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 
 MOVED = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Homes added · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/homes/#lost"><link rel="canonical" href="/progress/homes/"></head><body><p><a href="/progress/homes/#lost">Homes lost is now part of Homes added.</a></p></body></html>\n'
 def main():
-    pages = {'': overview(), 'homes': homes(), 'zoning': zoning(), 'room': room(), 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects()}
+    pages = {'decisions': decisions_index(), **{'decisions/' + D['slug']: decision(D) for D in DECISIONS}, '': overview(), 'homes': homes(), 'zoning': zoning(), 'room': room(), 'lost': MOVED, 'affordable': affordable(), 'rents': rents(), 'transit': transit(), 'streets': streets(), 'projects': projects(), 'capital': capital(), 'springfield': springfield()}
     for slug, html in pages.items():
         d = os.path.join(OUT, slug); os.makedirs(d, exist_ok=True)
         open(os.path.join(d, 'index.html'), 'w').write(html)

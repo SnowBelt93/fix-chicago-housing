@@ -55,6 +55,11 @@ main{max-width:1180px;margin:0 auto;padding:20px 20px 60px;display:flex;flex-dir
 .tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:8px;margin-left:6px;vertical-align:1px}
 .tag.more{background:#e3f3e8;color:#1f7a45} .tag.fewer{background:#fbe3e6;color:#b4152d} .tag.afford{background:#e7eefb;color:#2b5da0} .tag.budget{background:var(--sc-seg);color:var(--sc-ink2)}
 .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden}
+.mbars{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.mbars .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;font-size:14px;align-items:baseline}
+.mbars .r small{display:block;font-size:12px;color:var(--sc-mute)}
+.mbars .r b{font-weight:600;font-variant-numeric:tabular-nums}
+.mbars .t{grid-column:1/-1;height:8px;border-radius:4px;background:#eef1f4;overflow:hidden}.mbars .t i{display:block;height:100%;background:var(--sc-navy);border-radius:4px}
 .nums div{background:#fff;padding:12px 12px} .nums b{display:block;font-size:24px;font-weight:600;letter-spacing:-.02em} .nums span{font-size:12px;color:var(--sc-mute);line-height:1.35;display:block}
 .nums .up b{color:#1f7a45} .nums .down b{color:#b4152d}
 .zlist{margin-top:14px;max-height:420px;overflow:auto}
@@ -91,7 +96,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <body>
 <header class="sc-head">
   <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/" aria-current="page">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/tracker/" class="sc-simalt">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/lot/">Your lot</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Neighbors' plans</a><a href="/community/" class="sc-simalt">What people picked</a></div></div><a href="/wards/" aria-current="page">Wards</a><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes added</a><a href="/progress/zoning/">After the zoning vote</a><a href="/progress/room/">Room to grow</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/projects/">Big projects</a><a href="/progress/capital/">Capital spending</a><a href="/progress/springfield/">In Springfield</a><a href="/progress/decisions/" class="sc-simalt">Decisions coming up</a><a href="/tracker/">Permit tracker</a></div></div><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main>
@@ -132,6 +137,12 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     <p class="sub" id="psub"></p>
     <div class="nums" id="pnums"></div>
   </section>
+  <section class="card wardonly" id="menuCard" hidden>
+    <h2>Neighborhood street money <button class="ib" data-i="menu" aria-label="About the aldermanic menu">i</button></h2>
+    <p class="sub" id="msub"></p>
+    <div class="nums" id="mnums"></div>
+    <div class="mbars" id="mbars"></div>
+  </section>
   <section class="card" id="calCard" hidden>
     <h2>Coming up at City Hall <button class="ib" data-i="cal" aria-label="About the hearing calendar">i</button></h2>
     <p class="sub">The next City Council and committee meetings. Zoning changes go through the Zoning Committee, then the full Council. Anyone can send written comment before the deadline or sign up to speak. Meetings in blue are where housing and zoning get voted on: the full Council, the Zoning Committee and the Housing Committee.</p>
@@ -160,6 +171,7 @@ const INFO = {
   votes: ["About these votes", `<p>Citywide laws about housing that had a recorded roll call with at least one No vote, plus the 2025 and 2026 budgets. Laws passed unanimously or by voice vote aren't listed, since every ward voted the same way. Each line says what the law does and how this ward's alderperson at the time voted.</p><p class="src">Roll calls: City Clerk eLMS (each vote links to its record).</p>`],
   zoning: ["About zoning changes", `<p>Each rezoning is read from the ordinance or the applicant's narrative, which name the district before and after. "Homes on a typical lot" is how many homes each district allows on a standard 25 by 125 foot Chicago lot under the zoning code's minimum lot area per home (§17-2-0303), so you can compare before and after. A planned development has its own rules set in its ordinance. Some scanned documents can't be read; those show a question mark.</p><p>For this term (since May 2023), each row shows the alderperson's own vote when the City Clerk recorded a roll call on it. Many rezonings pass together in one vote; when no roll call is on file, the row says so.</p><p>Addresses are placed in today's ward lines (the 2023 map), so changes before 2023 may have been in a different ward.</p><p class="src">Sources: City Clerk eLMS ordinances, narratives and roll calls; Chicago Zoning Ordinance §17-2-0303.</p>`],
   cal: ["About the hearing calendar", `<p>Meetings come from the City Clerk's legislation system (eLMS) and are checked once a day, so a meeting added or moved today may not show yet. Times are Chicago time. The clerk's page for each meeting has the agenda, the notice, how to send public comment and, afterwards, the video.</p><p>Zoning changes are heard by the Committee on Zoning, Landmarks and Building Standards, then voted on by the full City Council. Budget hearings run through the Committee on Budget and Government Operations.</p><p><a href="https://chicityclerkelms.chicago.gov/Meetings/" target="_blank" rel="noopener">All meetings at the City Clerk</a></p>`],
+  menu: ["About the aldermanic menu", `<p>Every ward gets $1.5 million a year in city bond money, called the aldermanic menu, for small projects the alderperson picks from a list: repaving, sidewalks, speed humps, street lights and the like. Money not committed carries over to the next year.</p><p>These numbers are the city's own report through Sept. 30, 2026 (the third-quarter report, dated Oct. 13, 2026). We read each project's type and estimated cost from the report and grouped the types; our totals match each ward's committed total, except Ward 16, where the listed projects add up to $7,730 more. Projects listed at $0 are paid from other money and don't count against the $1.5 million.</p><p><a href="https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf" target="_blank" rel="noopener">City of Chicago: 2026 Q3 Aldermanic Menu Report (PDF)</a></p>`],
   permits: ["About permits", `<p>Homes in new-construction building permits, counted the way the <a href="/tracker/">Permit tracker</a> counts them (it matches the Census count for Chicago within 1%). The ward comes from the permit record.</p>`],
 };
 document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
@@ -191,7 +203,7 @@ function render(){
   $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
     const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Voted yes" : x === "Nay" ? "Voted no" : x ? VOTE[x] || x : "Not on the Council then";
     return `<div class="vote"><b>${v.t}</b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
-  renderZ(); renderP(); wmap(); renderAll(); followUI();
+  renderZ(); renderP(); renderM(); wmap(); renderAll(); followUI();
 }
 function followUI(){
   const f = window.SCWard && SCWard.get() === W, b = $("followBtn");
@@ -217,13 +229,27 @@ function renderP(){
   $("psub").textContent = "Homes in new-construction permits in this ward over the last three full years and this year, from the Permit tracker.";
   $("pnums").innerHTML = p ? `<div><b>${p.homes.toLocaleString("en-US")}</b><span>homes permitted</span></div><div><b>${p.projects}</b><span>buildings</span></div><div><b>${p.last12}</b><span>homes in the last 12 months</span></div><div><b>#${all.indexOf(p.homes) + 1}</b><span>of 50 wards</span></div>` : `<p class="fine">No permit data.</p>`;
 }
+// aldermanic menu: $1.5M a ward a year (wards/data/menu.json, read from the city's quarterly PDF)
+let M = null;
+const usd = v => "$" + (v >= 1e6 ? (v / 1e6).toFixed(2).replace(/0$/, "") + "M" : v >= 1e4 ? Math.round(v / 1e3) + "K" : Math.round(v).toLocaleString("en-US"));
+function renderM(){
+  const c = $("menuCard"); if (!M || !W){ c.hidden = true; return; }
+  const r = M.rows.find(x => x[0] === W); if (!r){ c.hidden = true; return; } c.hidden = false;
+  const [, budget, committed, , carry, cumulative] = r, cats = r.slice(6, 12), mx = Math.max(...cats, 1);
+  const order = M.cats.map((k, i) => [k, cats[i]]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+  const rank = M.rows.map(x => x[2]).sort((a, b) => b - a).indexOf(committed) + 1;
+  $("msub").textContent = `Every ward gets ${usd(budget)} a year for small street projects the alderperson picks. Here is what Ward ${W} had committed by Sept. 30, 2026, and on what.`;
+  $("mnums").innerHTML = `<div><b>${usd(committed)}</b><span>committed of ${usd(budget)} for 2026</span></div><div><b>${Math.round(committed / budget * 100)}%</b><span>of this year's money committed</span></div><div><b>${usd(cumulative)}</b><span>not yet committed${carry >= 1000 ? `, counting ${usd(carry)} left from past years` : ""}</span></div><div><b>${r[12]}</b><span>projects listed</span></div>`;
+  $("mbars").innerHTML = order.map(([k, v]) => `<div class="r"><span>${k[1]}<small>${k[2]}</small></span><b>${usd(v)}</b><span class="t"><i style="width:${(v / mx * 100).toFixed(1)}%"></i></span></div>`).join("");
+}
+fetch("data/menu.json").then(r => r.json()).then(m => { M = m; if (D) { renderM(); renderAll(); } }).catch(() => {});
 function renderAll(){
-  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["up", "Allowed more homes"], ["down", "Allowed fewer homes"], ["homes", "Homes permitted"]];
+  const cols = [["w", "Ward"], ["name", "Alderperson"], ["n", "Zoning changes this term"], ["up", "Allowed more homes"], ["down", "Allowed fewer homes"], ["homes", "Homes permitted"], ["menu", "Street money committed, 2026"]];
   const rows = D.wards.map(w => { const t = w.z.filter(z => z.d >= "2023-05-15"), ok = t.filter(z => z.hf != null && z.ht != null);
-    return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, up: ok.filter(z => z.ht > z.hf).length, down: ok.filter(z => z.ht < z.hf).length, homes: w.permits?.homes || 0}; });
+    return {w: w.w, name: w.ald.name.split(",")[0], n: t.length, up: ok.filter(z => z.ht > z.hf).length, down: ok.filter(z => z.ht < z.hf).length, homes: w.permits?.homes || 0, menu: M ? (M.rows.find(x => x[0] === w.w) || [])[2] || 0 : 0}; });
   rows.sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortDir);
   $("all").innerHTML = `<tr>${cols.map(([k, t]) => `<th data-k="${k}">${t}${sortK === k ? (sortDir < 0 ? " ↓" : " ↑") : ""}</th>`).join("")}</tr>` +
-    rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.n}</td><td>${r.up}</td><td>${r.down}</td><td>${r.homes.toLocaleString("en-US")}</td></tr>`).join("");
+    rows.map(r => `<tr data-w="${r.w}" class="${r.w === W ? "me" : ""}"><td>${r.w}</td><td style="text-align:left">${r.name}</td><td>${r.n}</td><td>${r.up}</td><td>${r.down}</td><td>${r.homes.toLocaleString("en-US")}</td><td>${M ? Math.round(r.menu / 15e3) + "%" : "–"}</td></tr>`).join("");
   $("all").querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === "w" || k === "name" ? 1 : -1); sortK = k; renderAll(); });
   $("all").querySelectorAll("tr[data-w]").forEach(tr => tr.onclick = () => { go(+tr.dataset.w); window.scrollTo({top:0, behavior:"smooth"}); });
 }
@@ -254,7 +280,7 @@ $("wSel").onchange = e => go(+e.target.value);
 addEventListener("hashchange", () => { const w = +location.hash.slice(1); if (D && w >= 1 && w <= 50 && w !== W){ W = w; render(); } });
 Promise.all([fetch("data/wards.json").then(r => r.json()), fetch("/wards.json").then(r => r.json()), fetch("/shape/wardshapes.json").then(r => r.json()).catch(() => null)]).then(([d, g, sh]) => {
   D = d; G = g; SH = sh; let w = +location.hash.slice(1); if (!(w >= 1 && w <= 50)) { try { w = +localStorage.getItem("sc-ward"); } catch (e){} } if (!(w >= 1 && w <= 50) && window.SCWard) w = +SCWard.get(); W = w >= 1 && w <= 50 ? w : 0; render();
-  $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago Permit tracker. Contact details: City of Chicago ward offices dataset.`;
+  $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago Permit tracker. Contact details: City of Chicago ward offices dataset. Street money: City of Chicago, <a href="https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf" target="_blank" rel="noopener">2026 Q3 Aldermanic Menu Report</a>.`;
 });
 
 /* the bodies that decide housing, streets and money, in plain words; the clerk's page lists the rest */
