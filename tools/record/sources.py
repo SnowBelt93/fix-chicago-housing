@@ -163,22 +163,5 @@ for sname, head, hit in cut('rtams_cta_bus', 'https://www.rtams.org/sites/defaul
     rows += [[sname] + r for r in hit]
 if rows: save('rtams_cta_bus.csv.gz', rows, gz=True)
 
-# 8) Pace's monthly service data: what is in the zip
-b = get('https://www.pacebus.com/sites/default/files/2026-11/ServiceData-Sept2026.zip')
-if b:
-    try:
-        z = zipfile.ZipFile(io.BytesIO(b)); PEEK['pace_service'] = {'files': [(i.filename, i.file_size) for i in z.infolist()]}
-        for i in z.infolist()[:6]:
-            raw = z.read(i)
-            if i.filename.lower().endswith(('.xlsx', '.xls')):
-                for sname, rws in sheets(raw, i.filename):
-                    first = []
-                    for r in rws:
-                        first.append(r)
-                        if len(first) >= 8: break
-                    peek_rows('pace_service', i.filename + ' / ' + sname, first, 8)
-            elif i.filename.lower().endswith(('.csv', '.txt')): PEEK['pace_service'][i.filename] = raw.decode('latin-1').splitlines()[:6]
-    except Exception as e: PEEK['pace_service'] = {'error': str(e)[:300]}
-
 json.dump(PEEK, open(os.path.join(OUT, 'peek.json'), 'w'), indent=1)
 print('sources done', len(PEEK), flush=True)

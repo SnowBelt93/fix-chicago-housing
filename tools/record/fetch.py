@@ -9,7 +9,7 @@ Steps (commit message "[steps: a b]" picks some; default all):
            -> tools/raw/record/<id>.csv.gz
   files    downloads the URLs listed in tools/record/files.json -> tools/raw/record/files/<name>
   sources  tools/record/sources.py: federal, county and RTA files cut down to their Chicago rows -> tools/raw/record/src/
-  sources2 tools/record/sources2.py: federal monthly ridership, Pace and Metra by month, the tax-credit list (run by name)
+  sources2 tools/record/sources2.py: federal monthly ridership, Metra by month, the tax-credit list (run by name)
 """
 import urllib.request, urllib.parse, json, os, re, time, gzip, sys, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -74,7 +74,6 @@ PROBE = {
     'cta_meeting_moment': 'https://www.transitchicago.com/meetingthemoment/',
     'metra_performance': 'https://metra.com/performance-measures',
     'metra_ridership': 'https://metra.com/ridership-reports',
-    'pace_performance': 'https://www.pacebus.com/performance-measures',
     'rta_dashboards': 'https://www.rtachicago.org/dashboards',
     'rtams_ridership': 'https://rtams.org/ridership',
     'rtams_system': 'https://rtams.org/dataset/system-ridership',
@@ -100,8 +99,6 @@ PROBE = {
     'hud_lihtc': 'https://www.huduser.gov/portal/datasets/lihtc/property.html',
     'hud_safmr': 'https://www.huduser.gov/portal/datasets/fmr/smallarea/index.html',
     'fhfa_hpi': 'https://www.fhfa.gov/data/hpi/datasets?tab=additional-data',
-    'pace_schedules': 'https://www.pacebus.com/route-and-schedule-data',
-    'pace_developers': 'https://www.pacebus.com/developers',
     'chicago_menu': 'https://www.chicago.gov/city/en/depts/obm/provdrs/cap_improve/svcs/aldermanic-menu-program.html',
     'chicago_cip': 'https://www.chicago.gov/city/en/depts/obm/provdrs/cap_improve.html',
     'cook_clerk_rates': 'https://www.cookcountyclerkil.gov/property-taxes/tax-extension-and-rates',
@@ -110,13 +107,10 @@ PROBE = {
     'census_bps_west': 'https://www2.census.gov/econ/bps/Place/West%20Region/',
     'census_bps_northeast': 'https://www2.census.gov/econ/bps/Place/Northeast%20Region/',
     # second pass: the pages the first pass could not find
-    'pace_gtfs': 'https://pacebus.com/route-timetable-data-services',
-    'pace_gtfs_mdb': 'https://mobilitydatabase.org/feeds/gtfs/mdb-2347',
     'ntd_monthly_catalog': 'https://catalog.data.gov/dataset/complete-monthly-ridership-with-adjustments-and-estimates',
     'ntd_modal_catalog': 'https://catalog.data.gov/dataset/monthly-modal-time-series',
     'chicago_capital_pubs': 'https://www.chicago.gov/city/en/depts/obm/provdrs/budget/svcs/CapitalPublications.html',
     'rtams_datasets': 'https://rtams.org/datasets',
-    'rtams_pace': 'https://rtams.org/dataset/pace-ridership',
     'rtams_metra_ds': 'https://rtams.org/dataset/metra-ridership',
     'ilga_home': 'https://www.ilga.gov/Legislation',
     'idot_traffic': 'https://idot.illinois.gov/transportation-system/network-overview/highway-system/illinois-travel-statistics.html',

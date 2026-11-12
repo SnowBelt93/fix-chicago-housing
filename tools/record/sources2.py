@@ -2,10 +2,9 @@
 Like sources.py: download, keep only what is about Chicago, write small files to tools/raw/record/src/, and note each
 file's layout in peek2.json. Nothing with a person's name is kept.
   ntd_monthly_chicago.csv.gz  federal monthly transit ridership (National Transit Database), agencies in the Chicago area
-  rtams_pace_monthly.csv.gz   Pace ridership by route and month (RTA)
   rtams_metra_line.csv.gz     Metra ridership by line and month (RTA)
   lihtc_chicago.csv           HUD's tax-credit housing list, Chicago projects (no contact or company columns)
-peek2.json also lists what is inside Pace's schedule feed and the first lines of the city's aldermanic menu report."""
+peek2.json also lists the first lines of the city's aldermanic menu report."""
 import urllib.request, urllib.parse, json, os, re, io, csv, gzip, zipfile, subprocess, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), 'raw', 'record', 'src'); os.makedirs(OUT, exist_ok=True)
@@ -45,33 +44,11 @@ for key, vid in (('ntd_monthly', '8bui-9xvu'), ('ntd_modal', '5ti2-5uiv')):
             if key == 'ntd_monthly' or len(b) < 30_000_000: gzip.open(os.path.join(OUT, key + '_chicago.csv.gz'), 'wb').write(b); print('saved', key, len(lines), flush=True)
     except Exception as e: PEEK[key] = {'error': str(e)[:300]}
 
-# 2) RTA tables: Pace by route and month, Metra by line and month
-b = get('https://rtams.org/sites/default/files/documents/2026-06/Pace_Monthly_Ridership_2003_2026.xlsx')
-if b:
-    try:
-        rows = []
-        for sname, rws in xlsx_rows(b):
-            n = 0
-            for r in rws:
-                n += 1; rows.append([sname] + r)
-                if n <= 4: PEEK.setdefault('rtams_pace', {}).setdefault(sname, []).append([c[:30] for c in r[:40]])
-            PEEK['rtams_pace'][sname + ' #rows'] = n
-        save('rtams_pace_monthly.csv.gz', rows)
-    except Exception as e: PEEK['rtams_pace'] = {'error': str(e)[:300]}
+# 2) RTA tables: Metra by line and month (Pace data is left out: Kyle, Nov 12, 2026)
 b = get('https://rtams.org/sites/default/files/documents/2026-08/Metra_Monthly_Ridership_by_Line_2003_2026.csv')
 if b:
     PEEK['rtams_metra_line'] = b.decode('latin-1').splitlines()[:5]
     gzip.open(os.path.join(OUT, 'rtams_metra_line.csv.gz'), 'wb').write(b); print('saved metra line', len(b), flush=True)
-
-# 3) Pace's schedule feed: what is in it (the feed itself is used by the transit tool's own download, not kept here)
-b = get('https://pacebus.com/sites/default/files/2026-10/GTFS.zip', timeout=600)
-if b:
-    try:
-        z = zipfile.ZipFile(io.BytesIO(b)); PEEK['pace_gtfs'] = {'bytes': len(b), 'files': {}}
-        for i in z.infolist():
-            raw = z.read(i).decode('utf-8', 'replace').splitlines()
-            PEEK['pace_gtfs']['files'][i.filename] = {'lines': len(raw), 'head': raw[:3]}
-    except Exception as e: PEEK['pace_gtfs'] = {'error': str(e)[:300]}
 
 # 4) HUD's tax-credit list: Chicago projects only, and never the contact or company columns
 b = get('https://www.huduser.gov/lihtc/lihtcpub.zip', timeout=900)

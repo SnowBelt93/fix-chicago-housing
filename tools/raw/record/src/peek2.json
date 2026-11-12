@@ -119,39 +119,6 @@
   ],
   "filter": "upper(primary_uza_name) like '%CHICAGO%'"
  },
- "rtams_pace": {
-  "Pace_Monthly_Ridership_2003_202": [
-   [
-    "ROUTE",
-    "MONTH",
-    "YEAR",
-    "DAY_TYPE",
-    "AVG_RIDES"
-   ],
-   [
-    "100",
-    "4",
-    "2026",
-    "Weekday",
-    "1358"
-   ],
-   [
-    "100",
-    "4",
-    "2026",
-    "Saturday",
-    "1271"
-   ],
-   [
-    "100",
-    "4",
-    "2026",
-    "Sunday - Holiday",
-    "1082"
-   ]
-  ],
-  "Pace_Monthly_Ridership_2003_202 #rows": 93270
- },
  "rtams_metra_line": [
   "\u00ef\u00bb\u00bfLONGNAME,YEAR,MONTH,RIDES,RIDERSHIP_ID",
   "BNSF,2002,12,1138803,10",
@@ -159,89 +126,6 @@
   "BNSF,2002,10,1238187,10",
   "BNSF,2002,9,1195322,10"
  ],
- "pace_gtfs": {
-  "bytes": 10365028,
-  "files": {
-   "agency.txt": {
-    "lines": 2,
-    "head": [
-     "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
-     "50113,\"PACE\",https://www.pacebus.com,America/Chicago,en,847-364-PACE,https://www.pacebus.com/fares,passenger.services@pacebus.com"
-    ]
-   },
-   "calendar.txt": {
-    "lines": 48,
-    "head": [
-     "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
-     "2026-06-BT-Weekday-01,1,1,1,1,1,0,0,20261102,20261218",
-     "2026-08-FX-Weekday-01,1,1,1,1,1,0,0,20261102,20261218"
-    ]
-   },
-   "calendar_dates.txt": {
-    "lines": 23,
-    "head": [
-     "service_id,date,exception_type",
-     "2026-06-BT-Weekday-01,20261126,2",
-     "2026-08-FX-Weekday-01,20261126,2"
-    ]
-   },
-   "feed_info.txt": {
-    "lines": 2,
-    "head": [
-     "feed_publisher_name,feed_publisher_url,feed_lang,default_lang,feed_start_date,feed_end_date,feed_version,feed_contact_url",
-     "\"PACE\",https://www.pacebus.com,en,en,20261101,20261219,20261101,https://www.pacebus.com/route-timetable-data-services"
-    ]
-   },
-   "routes.txt": {
-    "lines": 135,
-    "head": [
-     "agency_id,route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color",
-     "50113,100,,\"Pulse Milwaukee Line\",,3,https://www.pacebus.com/route/pulse-milwaukee-line,814C9E,FFFFFF",
-     "50113,101,,\"Pulse Dempster Line\",,3,https://www.pacebus.com/route/pulse-dempster-line,814C9E,FFFFFF"
-    ]
-   },
-   "shapes.txt": {
-    "lines": 599166,
-    "head": [
-     "shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence,shape_dist_traveled",
-     "1000030,41.969992,-87.762087,10001,",
-     "1000030,41.970068,-87.761999,10002,"
-    ]
-   },
-   "stop_times.txt": {
-    "lines": 734840,
-    "head": [
-     "trip_id,arrival_time,departure_time,stop_id,stop_sequence,pickup_type,drop_off_type,shape_dist_traveled,timepoint,geo_node_id",
-     "15425137,06:35:00,06:35:00,715s0935,1,0,0,,1,28789",
-     "15425137,06:36:00,06:36:00,715n0930,2,0,0,,0,28607"
-    ]
-   },
-   "stops.txt": {
-    "lines": 13766,
-    "head": [
-     "stop_id,stop_name,stop_desc,stop_lat,stop_lon,zone_id,geo_node_id,stop_code",
-     "101e0001,\"Dempster - Skokie CTA Station\",,42.0407233,-87.7528316,,37589,37589",
-     "101n0001,\"O'Hare MMF Bay 9\",,41.9933733,-87.88274,,37590,37590"
-    ]
-   },
-   "trips.txt": {
-    "lines": 14256,
-    "head": [
-     "route_id,service_id,trip_id,direction_id,block_id,bikes_allowed,direction_text,wheelchair_accessible,shape_id",
-     "715,2026-06-BT-Weekday-01,15425137,0,2488144,1,North,1,7150201",
-     "715,2026-06-BT-Weekday-01,15425138,0,2488144,1,North,1,7150201"
-    ]
-   },
-   "license_terms.txt": {
-    "lines": 32,
-    "head": [
-     "Limited License Agreement and Terms of Use",
-     "",
-     "Pace, the Suburban Bus Division of the Regional Transportation Authority (\ufffdLicensor\ufffd or \ufffdPace\ufffd) owns and maintains certain electronic route and arrival data (\ufffdPace\ufffds Data\ufffd). Pace hereby grants you (Licensee\ufffd) non-exclusive, limited and revocable rights to use, reproduce and redistribute Pace\ufffds Data to assist you with mass transportation. Pace has the right, at any time, to change, modify, correct, add or delete any or all of the data on this website, temporarily or permanently, without notice to Licensee. By submitting a query or using the data you agree to be bound by all the terms and conditions set forth herein."
-    ]
-   }
-  }
- },
  "lihtc": {
   "error": "WorksheetProperties.__init__() got an unexpected keyword argument 'synchVertical'"
  },
