@@ -76,13 +76,16 @@ export default {
     if (wf && +wf[1] >= 1 && +wf[1] <= 50) return wardFeed(+wf[1], url, env);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
     if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || (req.headers.get("x-feedback-key") || url.searchParams.get("key")) !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
+    const admin = url.pathname === "/api/admin/remove" && req.method === "POST";
+    if (admin && (!env.FEEDBACK_KEY || req.headers.get("x-feedback-key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
     const ip = req.headers.get("cf-connecting-ip") || "0";
     let body = req.method === "POST" ? await req.text() : undefined;
     if (url.pathname === "/api/splan" && req.method === "POST"){   // transit plans: drop any line names people typed before the plan is stored
       try { const b = JSON.parse(body); if (b && b.kind === "transit"){ b.code = await cleanTransit(b.code, url, env); body = JSON.stringify(b); } } catch (e) { return json({error: "bad request"}, 400); }
     }
-    const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip}, body});
+    // only this handler can mark a request as the site owner's (the key was checked above); headers from outside are dropped
+    const fwd = new Request(req.url, {method: req.method, headers: {"content-type": "application/json", "x-ip": ip, ...(admin ? {"x-admin": "1"} : {})}, body});
     return stub.fetch(fwd);
   },
 };
@@ -301,6 +304,7 @@ export class Community {
     try {
       if (path === "/api/plan" && req.method === "POST") return await this.addPlan(await req.json(), who);
       if (path === "/api/delete" && req.method === "POST") return await this.removePlan(await req.json());
+      if (path === "/api/admin/remove" && req.method === "POST" && req.headers.get("x-admin") === "1") return this.adminRemove(await req.json());
       if (path === "/api/report" && req.method === "POST") return this.report(await req.json(), who);
       if (path === "/api/community" && req.method === "GET") return this.community();
       if (path === "/api/feedback" && req.method === "POST") return this.addFeedback(await req.json(), who);
@@ -388,11 +392,22 @@ export class Community {
     const kind = String(b.kind || ""), id = Math.round(+b.id), tok = String(b.tok || "");
     if (!TOK.test(tok) || !(id > 0) || !(kind === "housing" || SIM[kind])) return json({error: "invalid"}, 400);
     const own = await hash("own|" + tok), T = kind === "housing" ? "plans" : "splans";
-    const r = this.sql.exec(`SELECT own FROM ${T} WHERE id = ?`, id).toArray()[0];
+    const r = this.sql.exec(`SELECT own FROM ${T} WHERE id = ?` + (kind === "housing" ? "" : " AND kind = '" + kind + "'"), id).toArray()[0];
     if (!r) return json({ok: true, gone: true});
     if (!r.own || r.own !== own) return json({error: "not yours"}, 403);
     if (kind === "housing") this.sql.exec("UPDATE plans SET gallery = 0, title = NULL, author = NULL, own = NULL WHERE id = ?", id);
     else { this.sql.exec("DELETE FROM splans WHERE id = ?", id); this.sql.exec("DELETE FROM slikes WHERE plan = ?", id); }
+    this.cache = null; this.comm = null;
+    return json({ok: true});
+  }
+
+  // the site owner removes any shared plan (with the feedback key; see the front handler). Same effect as the sharer's delete.
+  adminRemove(b){
+    const kind = String(b.kind || ""), id = Math.round(+b.id);
+    if (!(id > 0) || !(kind === "housing" || SIM[kind])) return json({error: "invalid"}, 400);
+    if (kind === "housing") this.sql.exec("UPDATE plans SET gallery = 0, title = NULL, author = NULL, own = NULL WHERE id = ?", id);
+    else { if (!this.sql.exec("SELECT 1 FROM splans WHERE id = ? AND kind = ?", id, kind).toArray().length) return json({error: "not found"}, 404);
+      this.sql.exec("DELETE FROM splans WHERE id = ?", id); this.sql.exec("DELETE FROM slikes WHERE plan = ?", id); }
     this.cache = null; this.comm = null;
     return json({ok: true});
   }

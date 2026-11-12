@@ -30,29 +30,41 @@ p.lead{color:var(--sc-ink2);margin:0 0 20px}
   <h1>Feedback inbox</h1>
   <p class="lead">Notes people sent from the Feedback button. Only someone with the key can read them.</p>
   <form class="key" id="keyForm"><input id="key" type="password" autocomplete="off" placeholder="Feedback key" aria-label="Feedback key"><button class="sc-btn" type="submit">Open</button></form>
+  <form class="key" id="rmForm" hidden><input id="rm" autocomplete="off" placeholder="Remove a shared plan: paste its link, like …/plans/#transit-12" aria-label="Link of a shared plan to remove"><button class="sc-btn" type="submit">Remove</button></form>
+  <p id="rmMsg" class="fine" role="status"></p>
   <div class="chips" id="pages"></div>
   <p id="msg"></p>
   <div id="list"></div>
 </main>
 <script>
 const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-let ALL = [], page = "";
+let ALL = [], page = "", KEY = "";
+// remove any shared plan (housing: off the gallery, names erased; other simulators: deleted)
+async function remove(kind, id){
+  $("rmMsg").textContent = "Removing…";
+  try { const r = await fetch("/api/admin/remove", {method:"POST", headers:{"content-type":"application/json", "x-feedback-key": KEY}, body: JSON.stringify({kind, id})});
+    $("rmMsg").textContent = r.ok ? `Removed ${kind} plan #${id}.` : "Couldn't remove it (" + r.status + ")."; } catch (e){ $("rmMsg").textContent = "Couldn't reach the site."; }
+}
 function draw(){
   const pages = [...new Set(ALL.map(f => f.page || "/"))].sort();
   $("pages").innerHTML = ALL.length ? [["", "All " + ALL.length], ...pages.map(p => [p, p + " " + ALL.filter(f => (f.page || "/") === p).length])].map(([p, t]) => `<button type="button" data-p="${esc(p)}" aria-pressed="${p === page}">${esc(t)}</button>`).join("") : "";
   $("pages").querySelectorAll("button").forEach(b => b.onclick = () => { page = b.dataset.p; draw(); });
   const rows = ALL.filter(f => !page || (f.page || "/") === page);
-  $("list").innerHTML = rows.map(f => `<div class="note"><small>${new Date(f.ts).toLocaleString("en-US", {dateStyle:"medium", timeStyle:"short"})} · ${esc(f.page || "/")}</small><p>${esc(f.text)}</p></div>`).join("");
+  $("list").innerHTML = rows.map(f => { const m = f.page === "report" && String(f.text).match(/\((housing|transit|budget|pensions) #(\d+)\)/);
+    return `<div class="note"><small>${new Date(f.ts).toLocaleString("en-US", {dateStyle:"medium", timeStyle:"short"})} · ${esc(f.page || "/")}</small><p>${esc(f.text)}</p>${m ? `<p style="margin-top:8px"><a href="/plans/#${m[1] === "housing" ? "" : m[1] + "-"}${m[2]}" target="_blank">See the plan</a> · <button class="sc-btn" type="button" data-k="${m[1]}" data-i="${m[2]}">Remove it</button></p>` : ""}</div>`; }).join("");
+  $("list").querySelectorAll("button[data-k]").forEach(b => b.onclick = () => remove(b.dataset.k, +b.dataset.i));
   $("msg").textContent = ALL.length ? "" : "No notes yet.";
 }
 async function load(key){
   $("msg").textContent = "Loading…";
   try { const r = await fetch("/api/feedback", {headers:{"x-feedback-key": key}});
     if (r.status === 403){ $("msg").textContent = "That key didn't work, or no key is set on the site yet."; $("list").innerHTML = ""; return; }
-    ALL = (await r.json()).feedback || []; try { localStorage.setItem("sc-fb-key", key); } catch (e){}
+    ALL = (await r.json()).feedback || []; KEY = key; $("rmForm").hidden = false; try { localStorage.setItem("sc-fb-key", key); } catch (e){}
     draw();
   } catch (e){ $("msg").textContent = "Couldn't load the notes."; }
 }
+$("rmForm").onsubmit = e => { e.preventDefault(); const m = $("rm").value.match(/#(?:(transit|budget|pensions)-)?(\d+)\s*$/);
+  if (!m){ $("rmMsg").textContent = "Paste the plan's link from Neighbors' plans, ending in #12 or #transit-12."; return; } remove(m[1] || "housing", +m[2]); };
 $("keyForm").onsubmit = e => { e.preventDefault(); const k = $("key").value.trim(); if (k) load(k); };
 try { const k = localStorage.getItem("sc-fb-key"); if (k){ $("key").value = k; load(k); } } catch (e){}
 </script>
