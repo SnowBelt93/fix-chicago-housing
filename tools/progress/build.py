@@ -406,7 +406,7 @@ def zoning_live():
     pc = lambda t: TBD if t[0] is None else f'{t[0]}%'
     tb = table(['Year passed', 'Zoning changes with homes', 'Permit within 12 months', 'Within 24 months', 'Homes planned', 'Homes permitted so far', 'Of those, finished'],
                [[str(r['y']), f(r['n']), pc(r['s12']), pc(r['s24']), f(r['planned']), f(r['homes']), f(r['fin'])] for r in FR], right=(1, 2, 3, 4, 5, 6), cls='stack')
-    c1 = card('What followed each year’s votes', 'Zoning changes the City Council passed whose application gives a number of homes, by the year they passed: the share with a building permit at the same address within 12 and 24 months. Our copies of the applications start in 2021. Updated every morning.', ch + tb, emb='zoning-follow')
+    c1 = card('What followed each year’s votes', 'Zoning changes the City Council passed whose application gives a number of homes, by the year they passed: the share with a building permit for new homes on the rezoned site within 12 and 24 months. Our copies of the applications start in 2021. Updated every morning.', ch + tb, emb='zoning-follow')
     if WJ:
         C = term_classes(); tot = sum(C.values()); none = C.get('none', 0) + C.get('other', 0)
         c2 = card('This Council term, since May 15, 2023', f'{f(tot)} zoning changes, sorted by what the new zoning allows on the lot.',
@@ -419,7 +419,7 @@ def zoning_live():
     c3 = card('Newest approvals', f'Passed by the City Council on {day(lastd, True)}.' if lastd else '', hbars([(esc(r['title'][:40]), r['homes'], f'{f(r["homes"])} homes') for r in newest], w=190)
               + '<p class="sub"><a href="/wards/">See every zoning change in your ward ›</a></p>') if newest else ''
     note = ('A zoning change is the Council changing what can be built on a lot. Why “at least” in the first figure: the zoning map keeps only the latest change on each site, so earlier ones are lost and the true share is higher; that figure and the 56% come from our Nov. 9, 2026 analysis of permits 2014–2025. '
-            'The table counts zoning changes since 2021 whose application gives a number of homes. A permit counts if it is for new construction at the same street and a house number within 8 of the rezoned address, on the same side, within six years. '
+            'The table counts zoning changes since 2021 whose application gives a number of homes. A permit counts if it is for new homes inside the area the change rezoned (from the city’s zoning map, matched by ordinance number), or on the same street within 8 house numbers of the rezoned address on the same side, on or after the vote. '
             'A year shows a share only once at least half its zoning changes are 12 (or 24) months old; the share counts only those.')
     rbody, rnote, rsrc = room_parts()
     thru = dt.date.fromisoformat(T['through'][:10])
