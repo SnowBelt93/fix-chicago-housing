@@ -362,7 +362,8 @@ window.scMap = {
   let T = null, H = null, R = [], HR = [];
   const SKIP = "script,style,code,pre,textarea,[translate=no],.sc-lang,.sc-langlink";
   let W = {};   // words used inside patterns: "{{Nov}}" in a replacement becomes W.Nov (month and day names)
-  const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.+?)\]\]/g, (m, w) => T[norm(w)] != null ? T[norm(w)] : w);   // [[text]]: translate that piece too
+  let depth = 0;   // [[text]] in a replacement: translate that piece too (exact text, then patterns, at most 3 levels deep)
+  const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.+?)\]\]/g, (m, w) => { if (depth > 2) return w; depth++; const t = tr(w); depth--; return t != null ? t : w; });
   function tr(s){ const k = norm(s); if (!k) return null; if (T[k] != null) return T[k];
     for (const [re, to] of R) if (re.test(k)) return words(k.replace(re, to)); return null; }
   function text(n){ const v = tr(n.nodeValue); if (v != null && v !== norm(n.nodeValue)){ const m = n.nodeValue.match(/^\s*/)[0], e = n.nodeValue.match(/\s*$/)[0]; n.nodeValue = m + v + e; } }
@@ -480,7 +481,7 @@ window.scMap = {
     const src = RM ? A + (k === "star" ? "star_still.png" : k + "_still.png") : A + k + ".webp";
     return k === "star" ? `<span class="sc-spinrow" role="status"><img class="sc-spin" src="${src}" alt="" width="28" height="27">${t}</span>`
       : `<div class="sc-loading" role="status"><img src="${src}" alt="" width="${w}" height="${h}"><span>${t}</span></div>`; };
-  const RX = /^(Loading|Checking|Cargando|Comprobando|Wczytywanie|Ładowanie|Sprawdzanie|正在加载|加载中|正在检查)\b?.*(…|\.\.\.)$/;
+  const RX = /^(Loading|Checking|Cargando|Comprobando|Wczytywanie|Ładowanie|Sprawdzanie|正在加载|加载中|正在检查).*(…|\.\.\.)$/;
   function up(root){
     if (!root.querySelectorAll) return;
     root.querySelectorAll("p,div,li,h1,span,b").forEach(el => {

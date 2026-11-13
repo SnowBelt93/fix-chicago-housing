@@ -24,12 +24,21 @@ def write(lang, T, H, R, HR, W):
 T, H, R, HR, W = {}, {}, [], [], {}
 for m in load(os.path.join(ROOT, 'tools', 'site', 'es')):
     T.update(getattr(m, 'T', {})); H.update(getattr(m, 'H', {})); R += getattr(m, 'R', []); HR += getattr(m, 'HR', []); W.update(getattr(m, 'W', {}))
+# tools/site/all/*.py: all three languages in one table per page: T = {English: (Spanish, Chinese, Polish)}, H the same,
+# R / HR = [[pattern, Spanish, Chinese, Polish]]. Files are named x_<page>.py so their module names never clash.
+ALL = load(os.path.join(ROOT, 'tools', 'site', 'all')) if os.path.isdir(os.path.join(ROOT, 'tools', 'site', 'all')) else []
+for m in ALL:
+    T.update({k: v[0] for k, v in getattr(m, 'T', {}).items()}); H.update({k: v[0] for k, v in getattr(m, 'H', {}).items()})
+    R += [[a, x[0]] for a, *x in getattr(m, 'R', [])]; HR += [[a, x[0]] for a, *x in getattr(m, 'HR', [])]
 write('es', T, H, R, HR, W)
 # Chinese and Polish
 mods = load(os.path.join(ROOT, 'tools', 'site', 'zhpl'))
 if mods:
     for i, lang in enumerate(('zh', 'pl')):
         T, H, R, HR, W = {}, {}, [], [], {}
+        for m in ALL:
+            T.update({k: v[i + 1] for k, v in getattr(m, 'T', {}).items()}); H.update({k: v[i + 1] for k, v in getattr(m, 'H', {}).items()})
+            R += [[a, x[i + 1]] for a, *x in getattr(m, 'R', [])]; HR += [[a, x[i + 1]] for a, *x in getattr(m, 'HR', [])]
         for m in mods:
             T.update({k: v[i] for k, v in getattr(m, 'T', {}).items()}); H.update({k: v[i] for k, v in getattr(m, 'H', {}).items()})
             R += [[a, x[i]] for a, *x in getattr(m, 'R', [])]; HR += [[a, x[i]] for a, *x in getattr(m, 'HR', [])]; W.update({k: v[i] for k, v in getattr(m, 'W', {}).items()})
