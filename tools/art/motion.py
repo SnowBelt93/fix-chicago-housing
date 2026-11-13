@@ -23,11 +23,11 @@ def rise(i, n):
     steps = n - 4                                   # floors climb, then it sits finished for a few frames
     if i < steps:
         fl = 1 + int(6 * i / steps); frame_up(0, y0, 12, 11, fl, done=max(0, fl - 2))
-        crane(7.5, y0 + 9, 0, 26, 13, ang=math.radians(200 + 4 * i), m=mat("star", rough=0.45))
+        crane(7.5, y0 + 9, 0, 23, 13, ang=math.radians(200 + 4 * i), m=mat("star", rough=0.45))
         hardhat(-4, y0 - 1.5); hardhat(3.5, y0 - 1.2, "#e07a3f")
     else:
         midrise(0, y0, W=12, floors=6, D=11, seed=4, balconies=False); star(0, y0 + 5.5, 19.6, 1.2)
-    rig(44, target=(0, 0, 6), elev=26, azim=-62, sun=(46, -28), sun_e=3.3, world="#eef3f8", world_e=0.62)
+    rig(52, target=(0, 0, 9), elev=26, azim=-62, sun=(46, -28), sun_e=3.3, world="#eef3f8", world_e=0.62)
 
 def hardhat(x, y, vest="#f2c53d"):
     person(x, y, vest, 1.0); sphere(x, y, 0.14 + 1.8 * PS[0], 0.23 * PS[0], mat("#f4f5f6", rough=0.4), sub=2, sz=0.7)
@@ -40,10 +40,10 @@ def train(i, n):
     ltrain(x, 1.5, 7.9, cars=2, stripe="#8a5a36")
     for k in range(4): tree(-24 + k * 16, 6.5, 0.8)
     for k, c in enumerate(("#5f7d8c", "navy", "gold")): car(-18 + k * 15 + (i * 1.2) % 4, -5, c)
-    rig(46, target=(0, 0, 4), elev=22, azim=-74, sun=(46, -28), sun_e=3.3, world="#eef3f8", world_e=0.62)
+    rig(58, target=(0, 0, 6), elev=22, azim=-74, sun=(46, -28), sun_e=3.3, world="#eef3f8", world_e=0.62)
 
 def spin(i, n):
-    o = star(0, 0, 0, 2.2, thick=0.7, upright=True)
+    o = star(0, 0, 0, 2.2, thick=0.7, upright=True); o.location[2] = 2.3
     o.rotation_euler[2] = math.pi * i / n          # a coin-like turn: the star is symmetric, so half a turn loops
     rig(7, target=(0, 0, 2.2), elev=8, azim=-90, sun=(40, -30), sun_e=3.0, world="#eef3f8", world_e=0.7)
 

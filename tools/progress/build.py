@@ -7,7 +7,7 @@ script afterwards, so the pages follow the data). Everything else is a snapshot 
 Nov. 9, 2026 (SNAP below, each with the date its data runs through) until those get their own daily jobs.
 Homes per ward come from the 2020 Census blocks in bears/data/blocks.bin.
 Every figure here was checked in the Nov. 9 review (Claude Docs "Shape Chicago - Progress review")."""
-import json, math, os, re, struct, sys, datetime as dt
+import json, math, os, re, struct, sys, collections, datetime as dt
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, 'progress')
@@ -28,7 +28,10 @@ except Exception: SRC = {}
 def _load(n):
     try: return json.load(open(os.path.join(ROOT, 'tracker', n + '.json')))
     except Exception: return None
-STR = _load('streets'); AFF = _load('affordable'); TL = _load('timelines')
+STR = _load('streets'); AFF = _load('affordable'); TL = _load('timelines'); RN = _load('rents')
+ZF = (T.get('zoning') or {}).get('follow')          # every zoning change passed since 2021 with a home count: [date, homes, first permit, homes permitted, homes finished]
+try: WJ = json.load(open(os.path.join(ROOT, 'wards', 'data', 'wards.json')))
+except Exception: WJ = None
 
 # ---------------------------------------------------------------- snapshot (Nov. 9, 2026 analyses)
 SNAP = 'Nov. 9, 2026'
@@ -46,7 +49,7 @@ ROOM_CLASS = None
 PROJ = [('The 78', 10000, 0, 'Under way', 'Fire stadium broke ground Mar. 3, 2026, to open for the 2028-29 season; no date yet for homes', 'Chicago Sun-Times', 'Mar. 3, 2026', 'https://chicago.suntimes.com/real-estate/2026/03/03/chicago-fire-football-club-breaks-ground-650-million-stadium-78'),
         ('Foundry Park', 3737, 0, 'Under way', 'Broke ground Oct. 21, 2026; phase one has 725+ homes. Council approved its $201.6M property-tax subsidy (TIF) in Sept. 2026', 'Chicago Sun-Times', 'Oct. 21, 2026', 'https://chicago.suntimes.com/real-estate/2026/10/21/foundry-park-developers-break-ground-3-billion-project'),
         ('1901 Project', 5000, 0, 'Under way', 'Construction began summer 2026 with a music hall due in 2028; no date yet for homes', 'Chicago Sun-Times', 'Sept. 18, 2026', 'https://chicago.suntimes.com/real-estate/2026/09/18/music-venue-expected-to-be-centerpiece-of-7-billion-development-project-near-united-center'),
-        ('Bronzeville Lakefront', 6800, 0, 'Stalled', 'Partners left; the city gave the owners until June 15, 2026 to file a new infrastructure plan. No public update since', 'The Real Deal', 'May 28, 2026', 'https://therealdeal.com/chicago/2026/05/28/chicago-megadevelopment-owners-considering-project-merge/'),
+        ('Bronzeville Lakefront', 6800, 0, 'Planning', 'On Nov. 12, 2026 the owners and Capri Investment Group pitched a $10 billion plan around a domed 75,000-seat Bears stadium, with 5,000+ homes on and near the site. An updated infrastructure plan is due to the city Dec. 14. The Bears declined to comment', 'Chicago Sun-Times', 'Nov. 12, 2026', 'https://chicago.suntimes.com/bears-stadium/2026/11/12/michael-reese-hospital-developers-10-billion-stadium-bears'),
         ('North Union', 2656, 649, 'Partly built', '920 N. Wells (238 homes) and 868 N. Wells (411) are finished; the next two buildings filed bigger plans in Oct. 2026, not yet approved', 'Chicago YIMBY', 'Oct. 30, 2026', 'https://chicagoyimby.com/2026/10/next-phases-of-north-union-receive-density-bump.html'),
         ('Cabrini-Green (Chicago Housing Authority)', 4080, 0, 'Planning', 'Final plan presented Oct. 2026: about 4,100 homes on 16 sites; rezoning comes next, no date yet for developers', 'Chicago YIMBY', 'Oct. 10, 2026', 'https://chicagoyimby.com/2026/10/city-presents-final-version-of-cabrini-now-framework-plan.html')]
 BOND = 'https://www.chicago.gov/content/dam/city/sites/business-and-neighborhood-development-strategy/pdf/Housing-and-Economic-Development-Bond-Book-(Updated-2024.07.03).pdf'
@@ -337,7 +340,30 @@ def timelines_card():
                 + f'<p class="sub">Half of all new home permits in {cur} took between {a["p25"]} and {a["p75"]} days. This counts only the city’s part, from application to permit: design, zoning changes and financing come before it. The city changed how it records application dates in late 2023, so earlier years aren’t compared.</p>', emb='homes-timelines')
 
 # ---------------------------------------------------------------- the snapshot sections
+def follow_rows():
+    """Per year passed: zoning changes with a home count, share with a permit within 12 and 24 months, homes permitted so far, homes finished."""
+    today = dt.date.fromisoformat(TODAY); out = []
+    for y in range(2021, today.year + 1):
+        R = [r for r in ZF if r[0][:4] == str(y)]
+        if not R: continue
+        def share(days):
+            ripe = [r for r in R if dt.date.fromisoformat(r[0]) + dt.timedelta(days=days) <= today]
+            if len(ripe) < max(5, len(R) // 2): return None, len(ripe)
+            ok = sum(1 for r in ripe if r[2] and (dt.date.fromisoformat(r[2]) - dt.date.fromisoformat(r[0])).days <= days)
+            return round(100 * ok / len(ripe)), len(ripe)
+        out.append(dict(y=y, n=len(R), s12=share(365), s24=share(730), homes=sum(r[3] for r in R), fin=sum(r[4] for r in R), planned=sum(r[1] for r in R)))
+    return out
+
+def term_classes():
+    """This Council term's zoning changes by what the new zoning allows, from the ward records (wards/data/wards.json)."""
+    C = collections.Counter()
+    for w in WJ['wards']:
+        for z in w.get('z', []):
+            if z.get('d', '') >= '2023-05-15': C[z.get('k') or 'none'] += 1
+    return C
+
 def zoning():
+    if ZF: return zoning_live()
     h1 = 'At least 46% of new homes went up on land the City Council had rezoned in the five years before. Counting big-site plans, it is about two-thirds.'
     st = tiles([('At least 46%', 'of the 69,927 homes permitted 2014–2025 were on land rezoned in the 5 years before'), ('56%', 'were in big-site plans (planned developments), which the Council approves one by one'),
                 ('53% vs. 12%', 'homes in buildings of 5+ vs. 1–4 homes that were on recently rezoned land'), ('3 in 10', 'zoning changes for a new building had a building permit within a year; 4 in 10 within two')])
@@ -358,6 +384,39 @@ def zoning():
     return page('zoning', 'Zoning', h1, top('zoning', 'Zoning', h1, f'Permits through Nov. 6, 2026 · zoning votes through Oct. 14 · zoning map and Assessor lots, 2026 · checked {SNAP}') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>' + rbody
                 + goal('The city has no target for how fast a rezoning turns into homes', 'Its Cut the Tape initiative, begun in 2024, is the program meant to speed approvals and permits. It reports steps taken, not a number to hit.', 'Cut the Tape', 'https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html', none=True)
                 + bottom('zoning', note + ' Room to grow: ' + rnote, 'City Clerk legislation records and zoning applications; Chicago zoning map (the ordinance number and date on each district); City of Chicago building permits. ' + rsrc))
+
+def zoning_live():
+    FR = follow_rows(); TBD = '<span class="tbd">too early to tell</span>'
+    full = [r for r in FR if r['s12'][0] is not None]; lastfull = full[-1] if full else None
+    h1 = (f'Of the zoning changes the City Council passed in {lastfull["y"]} for buildings with homes, {lastfull["s12"][0]}% had a building permit within a year.' if lastfull else 'How fast zoning changes turn into building permits.')
+    st = tiles([('At least 46%', 'of the 69,927 homes permitted 2014–2025 were on land rezoned in the 5 years before (analysis of Nov. 9, 2026)'), ('56%', 'were in big-site plans (planned developments), which the Council approves one by one'),
+                (f'{lastfull["s12"][0]}%' if lastfull else '–', f'of {lastfull["y"]}’s zoning changes for homes had a permit within a year' if lastfull else 'not enough data yet'),
+                (f'{f(sum(r["homes"] for r in FR))}', f'homes permitted so far on sites rezoned since 2021, of {f(sum(r["planned"] for r in FR))} planned')])
+    ch = bars([r['s12'][0] for r in full], [str(r['y']) for r in full], fmt=lambda v: f'{v}%', top=max(60, max([r['s12'][0] for r in full] + [0]) + 10), h=190,
+              aria='Share of zoning changes for homes with a building permit within 12 months, by year passed: ' + ', '.join(f'{r["s12"][0]}% for {r["y"]}' for r in full) + '.') if full else ''
+    pc = lambda t: TBD if t[0] is None else f'{t[0]}%'
+    tb = table(['Year passed', 'Zoning changes with homes', 'Permit within 12 months', 'Within 24 months', 'Homes planned', 'Homes permitted so far', 'Of those, finished'],
+               [[str(r['y']), f(r['n']), pc(r['s12']), pc(r['s24']), f(r['planned']), f(r['homes']), f(r['fin'])] for r in FR], right=(1, 2, 3, 4, 5, 6), cls='stack')
+    c1 = card('What followed each year’s votes', 'Zoning changes the City Council passed whose application gives a number of homes, by the year they passed: the share with a building permit at the same address within 12 and 24 months. Our copies of the applications start in 2021. Updated every morning.', ch + tb, emb='zoning-follow')
+    if WJ:
+        C = term_classes(); tot = sum(C.values()); none = C.get('none', 0) + C.get('other', 0)
+        c2 = card('This Council term, since May 15, 2023', f'{f(tot)} zoning changes, sorted by what the new zoning allows on the lot.',
+                  split([('More homes per lot', C.get('up', 0), NAVY), ('Same', C.get('same', 0), '#9db9de'), ('Fewer', C.get('down', 0), '#c98a8a'), ('Big-site plans', C.get('pd', 0), '#c9ced6')])
+                  + f'<p class="sub">{f(none)} more aren’t sorted yet because the before-and-after zoning couldn’t be read from the paperwork. “More homes per lot” compares what the zoning allows, not what was proposed.</p>')
+    else: c2 = ''
+    rec = (T.get('zoning') or {}).get('recent') or []
+    lastd = rec[0]['final'] if rec else None
+    newest = sorted([r for r in rec if r['final'] == lastd], key=lambda r: -r['homes'])[:5]
+    c3 = card('Newest approvals', f'Passed by the City Council on {day(lastd, True)}.' if lastd else '', hbars([(esc(r['title'][:40]), r['homes'], f'{f(r["homes"])} homes') for r in newest], w=190)
+              + '<p class="sub"><a href="/wards/">See every zoning change in your ward ›</a></p>') if newest else ''
+    note = ('A zoning change is the Council changing what can be built on a lot. Why “at least” in the first figure: the zoning map keeps only the latest change on each site, so earlier ones are lost and the true share is higher; that figure and the 56% come from our Nov. 9, 2026 analysis of permits 2014–2025. '
+            'The table counts zoning changes since 2021 whose application gives a number of homes. A permit counts if it is for new construction at the same street and a house number within 8 of the rezoned address, on the same side, within six years. '
+            'A year shows a share only once at least half its zoning changes are 12 (or 24) months old; the share counts only those.')
+    rbody, rnote, rsrc = room_parts()
+    thru = dt.date.fromisoformat(T['through'][:10])
+    return page('zoning', 'Zoning', h1, top('zoning', 'Zoning', h1, f'Permits through {THRU} · zoning votes through {day(lastd) if lastd else "–"} · updated every morning') + st + c1 + '<section class="strip c2 cards">' + c2 + c3 + '</section>' + rbody
+                + goal('The city has no target for how fast a rezoning turns into homes', 'Its Cut the Tape initiative, begun in 2024, is the program meant to speed approvals and permits. It reports steps taken, not a number to hit.', 'Cut the Tape', 'https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2025/may/Cut-the-Tape-Year-of-Progress.html', none=True)
+                + bottom('zoning', note + ' Room to grow: ' + rnote, 'City Clerk legislation records and zoning applications; City of Chicago building permits; ward records on this site. ' + rsrc))
 
 ROOM_FILLS = ['#7fa3d1', '#7fa3d1', '#1f4d8f', '#7fa3d1', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#1f4d8f', '#4f7cb8', '#7fa3d1', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#4f7cb8', '#1f4d8f', '#1f4d8f', '#b3c9e6', '#b3c9e6', '#1f4d8f', '#4f7cb8', '#4f7cb8', '#b3c9e6', '#1f4d8f', '#7fa3d1', '#7fa3d1', '#1f4d8f', '#1f4d8f', '#4f7cb8', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#dbe6f3', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#4f7cb8', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#dbe6f3', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#b3c9e6', '#7fa3d1', '#b3c9e6']
 ROOM_BAND = dict(zip(SEQ, ['under 500', '500 to 1,000', '1,000 to 2,000', '2,000 to 4,000', 'more than 4,000']))
@@ -439,19 +498,34 @@ def affordable():
     return page('affordable', 'Affordable', h1, top('affordable', 'Affordable', h1, f'City list last updated {upd} · federal count through 2025 · checked {day(TODAY, True) if AFF else SNAP}') + st + c1 + c2 + g
                 + bottom('affordable', note, 'City of Chicago Department of Housing, Affordable Rental Housing Developments (Chicago Data Portal, updated ' + upd + '); 2023 ward boundaries; Housing and Economic Development Bond Book (July 2024); U.S. Department of Housing and Urban Development, Picture of Subsidized Households, 2014–2025.'))
 
+def SALE_ROWS(SL):
+    rows = []
+    for k, lab in (('house', 'House'), ('condo', 'Condo'), ('flats', '2- to 6-flat')):
+        m = SL['median'][k]; v = [m.get(y) for y in ('2019', '2021', '2023', '2025')]
+        rows.append([lab] + [f'${f(x)}' if x else '–' for x in v] + ([f'<b>{"+" if v[3] >= v[0] else "−"}{abs(round(100 * (v[3] / v[0] - 1)))}%</b>'] if v[0] and v[3] else ['–']))
+    return rows
+
 def rents():
-    h1 = 'The typical asking rent is $2,311, up 5.7% in a year.'
-    ys = list(range(2019, 2027)); real = {y: RENT[y] * CPI[2026] / CPI[y] for y in ys}
-    up = round(100 * (RENT[2026] / RENT[2019] - 1)); upr = round(100 * (real[2026] / real[2019] - 1))
+    R = dict(RENT); lat, latv, yoy = '2026-09', 2311, 5.7; SL = None
+    if RN and RN.get('rent'):                                   # daily: Zillow's monthly series and the Assessor's sales (tools/tracker/rents_daily.py)
+        S = RN['rent']['series']; ks = sorted(S); lat, latv = ks[-1], S[ks[-1]]
+        prev = S.get(f'{int(lat[:4]) - 1}{lat[4:]}'); yoy = round(100 * (latv / prev - 1), 1) if prev else None
+        for y in range(2019, int(lat[:4]) + 1):
+            if f'{y}-01' in S: R[y] = S[f'{y}-01']
+    if RN and RN.get('sales'): SL = RN['sales']
+    latm = f'{MON[int(lat[5:]) - 1]} {lat[:4]}'
+    h1 = f'The typical asking rent is ${f(latv)}' + (f', {"up" if yoy >= 0 else "down"} {abs(yoy)}% in a year.' if yoy is not None else '.')
+    ys = [y for y in range(2019, 2027) if y in R]; real = {y: R[y] * CPI[2026] / CPI[y] for y in ys}
+    up = round(100 * (R[2026] / R[2019] - 1)); upr = round(100 * (real[2026] / real[2019] - 1))
     money = lambda v: f'${f(v)}'
-    two = ('<div class="pair"><div><h3>As advertised</h3>' + bars([RENT[y] for y in ys], [f'’{str(y)[2:]}' for y in ys], fmt=money, short=lambda v: f'${v / 1000:.1f}k', top=2500, h=170, aria='Typical asking rent each January, 2019 to 2026, as advertised: $1,606 in 2019 rising to $2,190 in 2026.')
+    two = ('<div class="pair"><div><h3>As advertised</h3>' + bars([R[y] for y in ys], [f'’{str(y)[2:]}' for y in ys], fmt=money, short=lambda v: f'${v / 1000:.1f}k', top=2500, h=170, aria='Typical asking rent each January, 2019 to 2026, as advertised: $1,606 in 2019 rising to $2,190 in 2026.')
            + '</div><div><h3>In 2026 dollars</h3>' + bars([round(real[y]) for y in ys], [f'’{str(y)[2:]}' for y in ys], fmt=money, short=lambda v: f'${v / 1000:.1f}k', top=2500, h=170, color='#5f8fcc',
-                                                         aria=f'Typical asking rent each January in 2026 dollars: ${f(real[2019])} in 2019, dipping in 2021 and reaching $2,190 in 2026.') + '</div></div>')
+                                                         aria=f'Typical asking rent each January in 2026 dollars: ${f(real[2019])} in 2019, dipping in 2021 and reaching ${f(R[ys[-1]])} in {ys[-1]}.') + '</div></div>')
     c1 = card('Typical asking rent each January', 'The same rents twice: as advertised, and after taking out inflation.', two
               + f'<p class="call">Asking rents are up <b>{up}%</b> since January 2019. After inflation, they are up about <b>{upr}%</b>: most of the rise matched prices in general.</p>')
-    st = tiles([('$2,311', 'asking rent for a home on the market, Sept. 2026 (Zillow)'), ('$1,440', 'what the typical renter pays, all renters (Census, 2024)'), ('31% vs. 26%', 'rise in asking rents vs. consumer prices, 2019 to 2025'), ('20% fewer', 'houses sold in 2025 than in 2019 (10,369 vs. 12,944)')])
+    st = tiles([(f'${f(latv)}', f'asking rent for a home on the market, {latm} (Zillow)'), ('$1,440', 'what the typical renter pays, all renters (Census, 2024)'), ('31% vs. 26%', 'rise in asking rents vs. consumer prices, 2019 to 2025'), (lambda a, b: (f'{abs(round(100 * (a / b - 1)))}% {"fewer" if a < b else "more"}', f'houses sold in 2025 than in 2019 ({f(a)} vs. {f(b)})'))(SL['count']['house'].get('2025', 0), SL['count']['house'].get('2019', 1)) if SL and SL['count']['house'].get('2019') else ('20% fewer', 'houses sold in 2025 than in 2019 (10,369 vs. 12,944)')])
     c2 = card('Sale prices', 'Median sale price in Chicago, not adjusted for inflation.', table(['', '2019', '2021', '2023', '2025', 'Since 2019'],
-              [['House', '$230,000', '$295,000', '$284,900', '$320,000', '<b>+39%</b>'], ['Condo', '$260,000', '$288,000', '$280,000', '$329,000', '<b>+27%</b>'], ['2- to 6-flat', '$275,000', '$375,000', '$375,000', '$450,000', '<b>+64%</b>']], right=(1, 2, 3, 4, 5)))
+              (SALE_ROWS(SL) if SL else [['House', '$230,000', '$295,000', '$284,900', '$320,000', '<b>+39%</b>'], ['Condo', '$260,000', '$288,000', '$280,000', '$329,000', '<b>+27%</b>'], ['2- to 6-flat', '$275,000', '$375,000', '$375,000', '$450,000', '<b>+64%</b>']]), right=(1, 2, 3, 4, 5)))
     zc = ''
     SF = SRC.get('safmr') or {}; FH = SRC.get('fhfa') or {}
     Z = sorted(z for z, v in SF.items() if v.get('2027') and v.get('2019') and v['2027'][2] and v['2019'][2])
@@ -470,7 +544,7 @@ def rents():
     note = ('ZIP code rents are HUD’s Small Area Fair Market Rents for fiscal 2027 and 2019: for each ZIP code, the rent plus utilities that 40% of recently rented standard homes come in under. HUD builds them from Census surveys a few years old plus a trend, so they trail the market; no ZIP code can be set above 150% of the metro area’s figure or below the state’s minimum (HUD, fiscal 2027 Small Area Fair Market Rent methodology). ZIP code price changes are the Federal Housing Finance Agency’s yearly house price index, which follows repeat sales and refinancings of the same homes and is published only where there are enough of them. '
             'Asking rent is Zillow’s Observed Rent Index for the city: rents advertised for homes on the market, all sizes, smoothed. It runs above what sitting tenants pay. The 2026-dollar figures use the national Consumer Price Index (yearly averages; 2026 is the average of the months published so far, so the last step is an estimate). '
             'Sale prices are the median of what sold that year, not the same homes. They come from the Cook County Assessor’s sales in Chicago, leaving out sales under $10,000, resales within a year, unusual deeds and multi-parcel sales.')
-    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through Sept. 2026 · sales through 2025 · checked {SNAP}') + st + c1 + zc + c2 + goal('No city program sets a target for rents or sale prices', 'Rents and prices are the result the other sections add up to, so this section is a readout, not a scorecard.', none=True)
+    return page('rents', 'Rents and prices', h1, top('rents', 'Rents and prices', h1, f'Rents through {latm} · sales through 2025 · ' + ('updated every morning' if RN else f'checked {SNAP}')) + st + c1 + zc + c2 + goal('No city program sets a target for rents or sale prices', 'Rents and prices are the result the other sections add up to, so this section is a readout, not a scorecard.', none=True)
                 + bottom('rents', note, 'Zillow Observed Rent Index (city of Chicago); Census American Community Survey 2024; Cook County Assessor parcel sales; Bureau of Labor Statistics CPI-U; HUD Small Area Fair Market Rents, fiscal 2019 and 2027; Federal Housing Finance Agency house price index by ZIP code.'))
 
 PMO = 'https://nita.illinois.gov/uploads/files/general/Transit-Funding/Improving-the-System/2026-06-Report-on-Project-Management-Oversight-1.pdf'
@@ -577,8 +651,19 @@ def projects():
     rows = [[f'<b>{n}</b>', f'<span class="chip {cls[s]}">{s}</span>', f'{f(b)} of {f(h)}', t, f'<a href="{u}" target="_blank" rel="noopener">{src}</a><br>{d}'] for n, h, b, s, t, src, d, u in PROJ]
     c1 = card('', '', table(['Project', 'Status', 'Homes built so far', 'Where it stands', 'Source'], rows, right=(2,), cls='stack proj'))
     st = tiles([(f(tot), 'homes planned across the six projects'), (f(built), 'homes finished, in two buildings at North Union'), ('3 of 6', 'have broken ground: The 78, Foundry Park and the 1901 Project. None of the three has started on homes')], cols=3)
-    note = f'Home counts are each project’s published plan. “Built so far” counts finished homes only. Each status comes from the dated news story linked with that project, checked {SNAP}.'
-    return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP}') + st + c1 + goal('Each project has its own approved plan', 'There is no citywide target for these sites. The home counts here are what each plan, approved by the Plan Commission and City Council, says it will build.', none=True)
+    # the latest headlines that name each project, from the news feed (refreshed every few hours; this page rebuilds every morning)
+    try: NW = json.load(open(os.path.join(ROOT, 'news', 'data', 'news.json')))['items']
+    except Exception: NW = []
+    KEYS = {'The 78': r'\bThe 78\b', 'Foundry Park': r'Foundry Park', '1901 Project': r'1901 Project|\b1901\b', 'Bronzeville Lakefront': r'Bronzeville Lakefront|Michael Reese',
+            'North Union': r'North Union', 'Cabrini-Green': r'Cabrini'}
+    news = []
+    for n, *_ in PROJ:
+        rx = re.compile(KEYS.get(n, re.escape(n)), re.I)
+        hits = sorted([it for it in NW if rx.search(it.get('t', '') + ' ' + it.get('x', ''))], key=lambda it: it['d'], reverse=True)[:3]
+        if hits: news.append(f'<div class="pnews"><h3>{esc(n)}</h3><ul class="dot">' + ''.join(f'<li><a href="{esc(it["u"])}" target="_blank" rel="noopener" translate="no">{esc(it["t"])}</a> <span class="fine">{esc(it["s"])}, {day(it["d"][:10], True)}</span></li>' for it in hits) + '</ul></div>')
+    c2 = card('In the news lately', 'The newest headlines naming each project, from the Chicago outlets on our News page.', ''.join(news)) if news else ''
+    note = f'Home counts are each project’s published plan. “Built so far” counts finished homes only. Each status comes from the dated news story linked with that project, checked {SNAP}; the news list updates every morning.'
+    return page('projects', 'Big projects', h1, top('projects', 'Big projects', h1, f'Each project checked on the date shown · checked {SNAP} · news updated every morning') + st + c1 + c2 + goal('Each project has its own approved plan', 'There is no citywide target for these sites. The home counts here are what each plan, approved by the Plan Commission and City Council, says it will build.', none=True)
                 + bottom('projects', note, 'Home counts: each project’s Plan Commission approval or published plan. Status: the dated story linked on each row. North Union homes built: Power Construction project pages.'))
 
 # ---------------------------------------------------------------- capital spending (snapshot: the city's PDFs, read by hand)
