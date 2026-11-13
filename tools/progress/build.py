@@ -243,11 +243,16 @@ document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((n
 </html>
 '''
 ART = {k: os.path.exists(os.path.join(ROOT, 'shape', 'art', 'progress', k + '.webp')) for k in ('homes', 'zoning', 'affordable', 'rents', 'transit', 'streets', 'capital', 'projects', 'springfield', 'decisions')}
+def webp_size(fn):
+    """Width and height of a WebP file from its header (standard library only: the Actions runner has no Pillow)."""
+    d = open(fn, 'rb').read(40); k = d[12:16]
+    if k == b'VP8X': return 1 + int.from_bytes(d[24:27], 'little'), 1 + int.from_bytes(d[27:30], 'little')
+    if k == b'VP8L': b = int.from_bytes(d[21:25], 'little'); return 1 + (b & 0x3FFF), 1 + ((b >> 14) & 0x3FFF)
+    return int.from_bytes(d[26:28], 'little') & 0x3FFF, int.from_bytes(d[28:30], 'little') & 0x3FFF
 def art(slug):
     """The section's clay picture beside the headline (tools/art/learn2.py p_<slug>), or nothing."""
     if not ART.get(slug): return ''
-    from PIL import Image
-    w, h = Image.open(os.path.join(ROOT, 'shape', 'art', 'progress', slug + '.webp')).size
+    w, h = webp_size(os.path.join(ROOT, 'shape', 'art', 'progress', slug + '.webp'))
     return f'<img class="sc-pgart" src="/shape/art/progress/{slug}.webp" width="{w}" height="{h}" alt="" decoding="async">'
 def top(slug, name, h1, thru):
     PINFO.setdefault(slug, {}).update(name=name, thru=thru)
