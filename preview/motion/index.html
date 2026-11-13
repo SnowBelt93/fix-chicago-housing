@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Clay motion samples · Shape Chicago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css">
+<style>
+body{margin:0;background:var(--sc-page,#f3f5f7);font-family:var(--sc-font);color:var(--sc-ink)}
+main{max-width:1040px;margin:0 auto;padding:36px 20px 64px}
+h1{font-size:36px;letter-spacing:-.02em;margin:0 0 8px}
+.lede{font-size:17px;line-height:1.5;color:#3d434b;max-width:720px;margin:0 0 28px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.card h2{font-size:19px;margin:0}.card p{margin:0;font-size:14.5px;line-height:1.5;color:#4a515a}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#eef3fa;color:#2b5da0}
+.tag.css{background:#f1f0ea;color:#6b5a2e}
+.stage{background:#f7f8f6;border-radius:14px;min-height:230px;display:grid;place-items:center;position:relative;overflow:hidden}
+.load{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;color:#3d434b}
+.load img{display:block;max-width:100%;height:auto}
+.load b{font-size:15px}
+.spinrow{display:flex;align-items:center;gap:12px;font-size:15px}
+.spinrow img{width:58px;height:auto}
+.btn{align-self:flex-start;font:600 14px var(--sc-font);background:#2b5da0;color:#fff;border:0;border-radius:999px;padding:9px 16px;cursor:pointer;min-height:38px}
+/* D: icons pop in */
+.pop{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+.pop img{width:72px;height:72px;object-fit:contain;opacity:0;transform:scale(.55) translateY(10px)}
+.pop.go img{animation:pop .55s cubic-bezier(.3,1.6,.5,1) forwards}
+.pop.go img:nth-child(2){animation-delay:.07s}.pop.go img:nth-child(3){animation-delay:.14s}.pop.go img:nth-child(4){animation-delay:.21s}.pop.go img:nth-child(5){animation-delay:.28s}.pop.go img:nth-child(6){animation-delay:.35s}
+@keyframes pop{to{opacity:1;transform:none}}
+/* E: hover lift */
+.hov{display:flex;gap:16px}
+.hov a{display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:#1a1d21;font-size:13px;font-weight:600;padding:10px 12px;border-radius:14px;border:1px solid #e3e6ea;background:#fff;transition:transform .18s,box-shadow .18s,border-color .18s}
+.hov img{width:64px;height:64px;object-fit:contain;transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.hov a:hover{transform:translateY(-3px);border-color:#2b5da0;box-shadow:0 8px 20px rgba(43,93,160,.16)}
+.hov a:hover img{transform:rotate(-6deg) scale(1.08)}
+/* F: A+ burst */
+.burst{position:relative;width:100%;height:230px;display:grid;place-items:center}
+.grade{font:700 44px var(--sc-font);color:#fff;width:96px;height:96px;display:grid;place-items:center;clip-path:polygon(50% 0,61% 31%,93% 25%,72% 50%,93% 75%,61% 69%,50% 100%,39% 69%,7% 75%,28% 50%,7% 25%,39% 31%);background:#e4002b}
+.burst.go .grade{animation:gpop .5s cubic-bezier(.3,1.7,.5,1)}
+@keyframes gpop{from{transform:scale(.4) rotate(-30deg)}to{transform:none}}
+.burst i{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px;background:url(star_still.png) center/contain no-repeat;opacity:0}
+.burst.go i{animation:fly 1.1s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:var(--d)}
+@keyframes fly{0%{opacity:0;transform:translate(0,0) scale(.3) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r))}}
+/* G: page change */
+.pages{position:relative;width:82%;height:180px}
+.pg{position:absolute;inset:0;background:#fff;border:1px solid #dfe3e8;border-radius:14px;padding:16px;display:flex;gap:14px;align-items:center;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s}
+.pg img{width:120px;height:auto}
+.pg b{display:block;font-size:17px}.pg span{font-size:13px;color:#5a6069}
+.pg.out{transform:translateX(-30%) scale(.96);opacity:0}.pg.in{transform:translateX(30%) scale(.96);opacity:0}
+.note{font-size:13px;color:#5a6069;margin-top:26px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}h1{font-size:28px}}
+@media (prefers-reduced-motion:reduce){.pop img{opacity:1;transform:none;animation:none!important}.burst i{display:none}.pg{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>Clay motion samples</h1>
+<p class="lede">Seven small moving pieces in the clay look, so you can pick before we add any to the site. The first three are rendered in Blender frame by frame; the last four are light CSS motion on the clay pictures we already have. All of them stop for people who turn motion off on their phone or computer.</p>
+
+<div class="grid">
+<section class="card"><span class="tag">Rendered</span><h2>1 · Map loading</h2><p>A mid-rise goes up floor by floor while the housing map loads its buildings. Would replace today's neighborhood outline loader.</p>
+  <div class="stage"><div class="load"><img src="rise.webp" width="384" height="285" alt="A clay mid-rise going up floor by floor"><b>Loading 485,000 Chicago buildings…</b><span>28 of 77 neighborhoods</span></div></div></section>
+
+<section class="card"><span class="tag">Rendered</span><h2>2 · Page waiting</h2><p>The red star turns like a coin while a page waits on data. Small enough for buttons and cards.</p>
+  <div class="stage"><div class="spinrow"><img src="star.webp" width="178" height="170" alt="The red six-point star turning">Loading the 2027 budget…</div></div></section>
+
+<section class="card"><span class="tag">Rendered</span><h2>3 · Transit loading</h2><p>An L train crosses on the elevated tracks while the transit tool builds its network. Could also sit in empty states ("Draw a line to see riders").</p>
+  <div class="stage"><div class="load"><img src="train.webp" width="454" height="208" alt="A clay L train crossing on the elevated tracks"><b>Building today's network…</b></div></div></section>
+
+<section class="card"><span class="tag css">Light motion</span><h2>4 · Opening a tool</h2><p>When a section opens, its clay icons pop in one after another.</p>
+  <div class="stage"><div class="pop" id="pop"><img src="/shape/art/icons/coach_house.webp" alt=""><img src="/shape/art/icons/single_stair.webp" alt=""><img src="/shape/art/icons/office_conversion.webp" alt=""><img src="/shape/art/icons/city_lots.webp" alt=""><img src="/shape/art/icons/bus_lane.webp" alt=""><img src="/shape/art/icons/short_term_rentals.webp" alt=""></div></div>
+  <button class="btn" type="button" data-replay="pop">Play again</button></section>
+
+<section class="card"><span class="tag css">Light motion</span><h2>5 · Hover and tap</h2><p>Cards lift, and the clay picture tips a little, when you point at them or tap.</p>
+  <div class="stage"><div class="hov"><a href="#"><img src="/shape/art/icons/z_3flat.webp" alt="">Three-flat</a><a href="#"><img src="/shape/art/icons/z_mid.webp" alt="">Mid-rise</a><a href="#"><img src="/shape/art/icons/subway.webp" alt="">Subway</a></div></div></section>
+
+<section class="card"><span class="tag css">Light motion</span><h2>6 · Reaching A+</h2><p>The grade star stamps in and clay stars fly out. Would replace today's flat confetti.</p>
+  <div class="stage"><div class="burst" id="burst"><div class="grade">A+</div></div></div>
+  <button class="btn" type="button" data-replay="burst">Play again</button></section>
+
+<section class="card"><span class="tag css">Light motion</span><h2>7 · Moving between pages</h2><p>The next page slides in with its clay picture as you go from one tool to another.</p>
+  <div class="stage"><div class="pages" id="pages"><div class="pg"><img src="/shape/art/budget.webp" alt=""><div><b>Balance the Chicago Budget</b><span>Close the $882M gap</span></div></div><div class="pg in"><img src="/shape/art/pensions.webp" alt=""><div><b>Pay Down Chicago's Pensions</b><span>See what each path costs</span></div></div></div></div>
+  <button class="btn" type="button" id="next">Next page</button></section>
+</div>
+<p class="note">Preview only: this page isn't linked anywhere on the site.</p>
+</main>
+<script>
+const burst = document.getElementById("burst");
+for (let k = 0; k < 14; k++){ const i = document.createElement("i"), a = k / 14 * Math.PI * 2 + Math.random() * .3, r = 90 + Math.random() * 70;
+  i.style.cssText = `--x:${Math.cos(a) * r}px;--y:${Math.sin(a) * r * .75}px;--r:${(Math.random() - .5) * 540}deg;--d:${Math.random() * .12}s`; burst.appendChild(i); }
+const play = id => { const e = document.getElementById(id); e.classList.remove("go"); void e.offsetWidth; e.classList.add("go"); };
+document.querySelectorAll("[data-replay]").forEach(b => b.onclick = () => play(b.dataset.replay));
+new IntersectionObserver(es => es.forEach(e => e.isIntersecting && play(e.target.id)), {threshold: .5}).observe(document.getElementById("pop"));
+new IntersectionObserver(es => es.forEach(e => e.isIntersecting && play(e.target.id)), {threshold: .5}).observe(burst);
+document.querySelectorAll(".hov a").forEach(a => a.onclick = e => e.preventDefault());
+document.getElementById("next").onclick = () => { const [a, b] = document.querySelectorAll("#pages .pg"); a.classList.add("out"); b.classList.remove("in");
+  setTimeout(() => { a.classList.remove("out"); a.classList.add("in"); a.parentNode.appendChild(a); }, 480); };
+</script>
+</body>
+</html>
