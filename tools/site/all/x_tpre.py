@@ -79,8 +79,8 @@ _RUN = r' Running it: ' + _M + r' a year\.'
 R = [
     ['^' + _M + r' \((.+)\)\.' + _RUN + '$', '$1 ([[$2]]). Operarlo: $3 al año.', '$1（[[$2]]）。运营：每年 $3。', '$1 ([[$2]]). Eksploatacja: $3 rocznie.'],
     ['^' + _M + r' \((.+)\)\.$', '$1 ([[$2]]).', '$1（[[$2]]）。', '$1 ([[$2]]).'],
-    ['^' + _M + r' in (\d{4} Q\d) dollars \(' + _M + r' (.+)\)\.' + _RUN + '$', '$1 en dólares de $2 ($3, [[$4]]). Operarlo: $5 al año.', '$1，按 $2 美元计（$3，[[$4]]）。运营：每年 $5。', '$1 w dolarach z $2 ($3, [[$4]]). Eksploatacja: $5 rocznie.'],
-    ['^' + _M + r' in (\d{4} Q\d) dollars \(' + _M + r' (.+)\)\.$', '$1 en dólares de $2 ($3, [[$4]]).', '$1，按 $2 美元计（$3，[[$4]]）。', '$1 w dolarach z $2 ($3, [[$4]]).'],
+    ['^' + _M + r' in (\d{4}(?: Q\d)?) dollars \(' + _M + r' (.+)\)\.' + _RUN + '$', '$1 en dólares de $2 ($3 [[$4]]). Operarlo: $5 al año.', '$1，按 $2 美元计（$3 [[$4]]）。运营：每年 $5。', '$1 w dolarach z $2 ($3 [[$4]]). Eksploatacja: $5 rocznie.'],
+    ['^' + _M + r' in (\d{4}(?: Q\d)?) dollars \(' + _M + r' (.+)\)\.$', '$1 en dólares de $2 ($3 [[$4]]).', '$1，按 $2 美元计（$3 [[$4]]）。', '$1 w dolarach z $2 ($3 [[$4]]).'],
     [r'^no estimate \((.+)\)\.$', 'sin estimación ([[$1]]).', '没有估计（[[$1]]）。', 'brak szacunku ([[$1]]).'],
     [r'^([\d,]+) (.+)\. The tool counts riders on the line itself, so the two measure different things\.$', '$1 [[$2]]. La herramienta cuenta los usuarios de la propia línea, así que las dos cifras miden cosas distintas.', '$1 [[$2]]。本工具计算的是线路本身的乘客，所以两者衡量的不是同一件事。', '$1 [[$2]]. Narzędzie liczy pasażerów samej linii, więc obie liczby mierzą co innego.'],
 ]
