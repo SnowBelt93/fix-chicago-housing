@@ -339,6 +339,7 @@ const CITY_SHARE_BILL = 4457 / 5;          // median Chicago residential bill $4
 const S = {
   forecast:["2027 Budget Forecast and Overview (City of Chicago)", "https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Recommendation/2027_Budget_Overview/2027_Budget_Overview%20(1).pdf"],
   release:["Mayor's 2027 budget press release", "https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2026/october/fair-share-budget.html"],
+  wttwmeter:["WTTW, Nov. 2, 2026: Council puts the $75M toward 2026 pension payments", "https://news.wttw.com/2026/11/02/city-council-votes-44-6-add-75m-parking-meter-sale-pension-payments-opening-new-budget"],
   ipi:["Illinois Policy, Oct. 2026", "https://www.illinoispolicy.org/chicago-2027-budget-johnson-tax-hikes/"],
   bga:["BGA budget explorer", "https://chicagobudget.bettergov.org/2027/budget-overview"],
   budgit:["Budgit, Citizens' Guide to the 2026 budget", "https://budgitusblog.budgit.org/wp-content/uploads/2026/05/Citizens-Guide-to-Chicagos-2026-Budget.pdf"],
@@ -440,7 +441,7 @@ const L = [
   {id:"proj", g:"one", kind:"one", who:"risk", t:"Count on better revenue forecasts", type:"sw", amt:61.4, mayor:1, info:"Raise the estimates for taxes the city already collects. If the economy slows, the money doesn't show up and the city cuts mid-year.", s:["forecast"]},
   {id:"tif", g:"one", kind:"one", who:"none", t:"Declare a bigger TIF surplus", type:"opts", opts:[["Forecast", 0], ["$522M", 42.9], ["$750M", 94.4], ["$1B", 150.9]], mayor:1,
    info:"Money sitting in tax increment financing districts goes back to the city, schools and county. The city keeps about 23%; CPS gets about 55%. Amounts are the city's extra share beyond the forecast; the larger options use the Mayor's plan's 22.6% share (an assumption). 2026 declared a record $1 billion.", s:["forecast", "budgit"]},
-  {id:"meter", g:"one", kind:"one", who:"none", t:"Spend the parking meter deal's upfront payment", type:"sw", amt:75, mayor:1, info:"A one-time payment from the recent parking meter sale.", s:["forecast", "ipi"]},
+  {id:"meter", g:"one", kind:"one", who:"none", t:"Spend the parking meter deal's upfront payment", type:"sw", amt:75, mayor:1, info:"A one-time payment from the recent parking meter sale. On Nov. 2, 2026 the City Council voted 44–6 to put this $75 million toward this year's pension payments instead, so counting it for 2027 would mean undoing that vote (WTTW).", s:["forecast", "ipi", "wttwmeter"]},
   {id:"cat", g:"one", kind:"one", who:"none", t:"Use the Catalyst Fund's money", type:"sw", amt:37.7, mayor:1, info:"One-time revenue from the Chicago Community Catalyst Fund.", s:["forecast"]},
   {id:"amn", g:"one", kind:"one", who:"drive", t:"Vehicle ticket amnesty", type:"sw", amt:6, mayor:1, info:"People with old vehicle debt pay the original fines; the city waives late fees.", s:["release"]},
   {id:"freeze", g:"one", kind:"one", who:"svc", t:"Freeze hiring for a year", type:"opts", opts:[["No", 0], ["Low", 143.7], ["High", 161.7]], mayor:0,
