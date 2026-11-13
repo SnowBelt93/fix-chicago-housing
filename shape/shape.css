@@ -337,6 +337,6 @@ html.sc-zh body{word-break:normal;line-break:strict}
 /* bigger tap areas found in the Nov. 12 sweep (links in tables, Springfield bill numbers, deal check assumption rows) */
 @media (pointer:coarse){
   td a,.pg .bid{display:inline-block;padding:10px 0;margin:-10px 0}
-  .prow input{min-height:40px} .prow .rst{width:40px;height:40px}
+  .prow{grid-template-columns:minmax(0,1fr) 96px 40px} .prow input{min-height:40px} .prow .rst{width:40px;height:40px}
   .tbtn{min-height:40px}
 }
