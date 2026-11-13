@@ -783,9 +783,15 @@ def springfield():
                 f'<p class="fine">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(act(last[2]))}{" · rewritten by an amendment" if b.get("rewritten") else ""}</p>'
                 f'<details><summary>What it does</summary><p class="sub">{esc(syn_clean(b["syn"]))}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist">{hist}</ol>' if hist else '') + '</details></li>')
     order = sorted(L, key=lambda b: (-(b['id'] in WATCH), -b['st'], -int((b['last'][0] or '0').replace('-', ''))))
-    filt = ('<div class="bfilt" role="group" aria-label="Show bills about"><button type="button" aria-pressed="true" data-t="">All</button>'
-            + ''.join(f'<button type="button" aria-pressed="false" data-t="{k}">{v} <span>{sum(1 for b in L if k in b["tp"])}</span></button>' for k, v in TOPIC.items())
-            + '</div><div class="bfilt" role="group" aria-label="Show bills that"><button type="button" aria-pressed="true" data-s="0">Any stage</button><button type="button" aria-pressed="false" data-s="3">Passed a chamber or more</button><button type="button" aria-pressed="false" data-s="6">Became law</button></div>')
+    STAGES = (('0', 'Any stage'), ('3', 'Passed a chamber or more'), ('6', 'Became law'))
+    cnt = {k: sum(1 for b in L if k in b["tp"]) for k in TOPIC}
+    filt = ('<div class="bfilts"><div class="frow"><span class="flab">Topic</span><div class="bfilt" role="group" aria-label="Topic"><button type="button" aria-pressed="true" data-t="">All <span>' + str(len(L)) + '</span></button>'
+            + ''.join(f'<button type="button" aria-pressed="false" data-t="{k}">{v} <span>{cnt[k]}</span></button>' for k, v in TOPIC.items())
+            + '</div></div><div class="frow"><span class="flab">Stage</span><div class="bfilt seg" role="group" aria-label="Stage">'
+            + ''.join(f'<button type="button" aria-pressed="{str(k == "0").lower()}" data-s="{k}">{v}</button>' for k, v in STAGES)
+            + '</div></div><div class="bsels"><label><span>Topic</span><select data-f="t"><option value="">All (' + str(len(L)) + ')</option>'
+            + ''.join(f'<option value="{k}">{v} ({cnt[k]})</option>' for k, v in TOPIC.items())
+            + '</select></label><label><span>Stage</span><select data-f="s">' + ''.join(f'<option value="{k}">{v}</option>' for k, v in STAGES) + '</select></label></div></div>')
     c1 = card('Every bill on these topics', f'Newest action first within each stage. Bill names are the legislature’s own short titles unless we give a plain one. Tap a number for the bill’s official page.',
               filt + f'<ol class="bills" id="bills">{"".join(row(b) for b in order)}</ol><p class="fine" id="bcount"></p><button type="button" class="sc-btn" id="bmore" hidden>Show 20 more</button>')
     g = goal('Bills die when the session ends', 'This General Assembly’s term ends in January 2027. Bills that haven’t passed both chambers by then have to be filed again and start over. The governor said in October that his housing plan may wait until the new session.', 'Vandalia Radio, Oct. 19, 2026', VANDALIA)
@@ -793,7 +799,8 @@ def springfield():
             'Some listed bills only touch a topic in passing; bills that change only a title or make technical changes are left out. Stages come from each bill’s list of actions.')
     js = ('<script>(function(){const L=[...document.querySelectorAll("#bills .bill")],F=document.querySelectorAll(".bfilt button");let t="",s=0;'
           'let lim=20;const M=document.getElementById("bmore");const go=()=>{let n=0;L.forEach(e=>{const ok=(!t||e.dataset.tp.split(" ").includes(t))&&+e.dataset.st>=s;e.hidden=!ok||n>=lim;if(ok)n++;});document.getElementById("bcount").textContent="Showing "+Math.min(n,lim)+" of "+n+" bills";M.hidden=n<=lim;};M.addEventListener("click",()=>{lim+=20;go();});'
-          'F.forEach(b=>b.addEventListener("click",()=>{const g=b.parentNode;g.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));if("t" in b.dataset)t=b.dataset.t;else s=+b.dataset.s;lim=20;go();}));go();})();</script>')
+          'const S=document.querySelectorAll(".bsels select");const sync=()=>{F.forEach(x=>x.setAttribute("aria-pressed",String("t" in x.dataset?x.dataset.t===t:+x.dataset.s===s)));S.forEach(x=>x.value=x.dataset.f==="t"?t:String(s));lim=20;go();};'
+          'F.forEach(b=>b.addEventListener("click",()=>{if("t" in b.dataset)t=b.dataset.t;else s=+b.dataset.s;sync();}));S.forEach(x=>x.addEventListener("change",()=>{if(x.dataset.f==="t")t=x.value;else s=+x.value;sync();}));go();})();</script>')
     return page('springfield', 'In Springfield', h1, top('springfield', 'In Springfield', h1, f'Bill statuses from the Illinois General Assembly, updated every morning · last updated {day(made, True) if made else ""}') + tl + c1 + g
                 + bottom('springfield', note, src('Illinois General Assembly bill status files', 'https://www.ilga.gov/ftp/legislation/104/BillStatus/')) + js)
 
@@ -1099,7 +1106,13 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 .pg .bt{font-size:15.5px;font-weight:600;line-height:21px}
 .pg li.bill details summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--sc-navy)}.pg li.bill details .sub{margin-top:6px}
 .pg ol.bhist{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:3px}.pg ol.bhist span{display:inline-block;min-width:96px;color:var(--sc-mute)}
-.pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
+.pg .bfilts{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--sc-line);border-bottom:1px solid var(--sc-line);padding:12px 0;margin:4px 0 8px}
+.pg .frow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start}.pg .flab{font-size:13px;font-weight:600;color:var(--sc-mute);padding-top:8px}
+.pg .bfilt.seg{display:inline-flex;flex-wrap:wrap;gap:2px;background:var(--sc-seg,#eef1f4);border-radius:999px;padding:3px;justify-self:start}.pg .bfilt.seg button{border:0;background:transparent;min-height:32px}
+.pg .bsels{display:none;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.pg .bsels label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--sc-mute)}
+.pg .bsels select{font:inherit;font-size:14px;font-weight:500;color:var(--sc-ink);min-height:42px;padding:0 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff;min-width:0;width:100%}
+@media (max-width:640px){.pg .frow{display:none}.pg .bsels{display:grid}}
+.pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
 .pg .bfilt button span{font-weight:400;color:var(--sc-mute)}.pg .bfilt button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}.pg .bfilt button[aria-pressed="true"] span{color:#d9e4f4}
 .pg [id]{scroll-margin-top:84px}
 .pg .h2big{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:10px 0 0}.pg .sub2{margin-top:6px;padding-top:18px;border-top:1px solid var(--sc-line)}

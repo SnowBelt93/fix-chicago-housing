@@ -246,13 +246,22 @@ body.sc-gray{background:var(--sc-page)}
 
 /* Nov 9 review: "Not affiliated" stays in view at every width. Reading pages get the shared footer
    (<footer class="sc-foot" data-sc-foot>, filled by shape.js); tools show .sc-fanline in their panel once the header drops its copy. */
-.sc-foot{border-top:1px solid var(--sc-line);margin-top:12px;font-family:var(--sc-font)}
-.sc-foot-in{max-width:1200px;margin:0 auto;padding:28px 20px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
-.sc-foot .sc-brand{font-size:15px} .sc-foot .sc-brand svg{width:18px;height:18px} .sc-foot .sc-brand span{display:inline}
-.sc-foot nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
-.sc-foot nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
+.sc-foot{border-top:1px solid var(--sc-line);margin-top:12px;font-family:var(--sc-font);background:#fff}
+.sc-foot-in{max-width:1200px;margin:0 auto;padding:32px 20px 28px;display:grid;grid-template-columns:minmax(200px,1.2fr) 3.8fr;gap:24px 32px;font-size:14px;color:var(--sc-mute)}
+.sc-fbrand p{margin:10px 0 0;font-size:13px;line-height:1.45;max-width:240px}
+.sc-foot a.sc-brand,.sc-foot a.sc-brand:visited,.sc-foot a.sc-brand:hover{font-size:16px;color:var(--sc-ink);text-decoration:none} .sc-foot .sc-brand svg{width:18px;height:18px} .sc-foot .sc-brand span{display:inline}
+.sc-foot nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 24px}
+.sc-fcol{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sc-fcol h2{font-size:13px;font-weight:600;color:var(--sc-ink);margin:0 0 6px;letter-spacing:0}
+.sc-foot nav a{color:var(--sc-ink2);text-decoration:none;padding:4px 0;line-height:1.3}
 .sc-foot nav a:hover{color:var(--sc-navy);text-decoration:underline}
-@media (max-width:760px){ .sc-foot-in{flex-direction:column;align-items:flex-start;padding-inline:16px} .sc-foot nav{justify-content:flex-start} }
+.sc-fextra{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;border-top:1px solid var(--sc-line);padding-top:16px;font-size:13px}
+.sc-fextra:empty{display:none}
+.sc-fextra a{color:var(--sc-ink2);text-decoration:none} .sc-fextra a:hover{color:var(--sc-navy);text-decoration:underline}
+.sc-fextra .sc-fblink{margin-right:auto}
+.sc-fextra .sc-foot-extra{margin:0}
+@media (max-width:860px){ .sc-foot-in{grid-template-columns:1fr} .sc-fbrand p{max-width:none} }
+@media (max-width:560px){ .sc-foot-in{padding:26px 16px 22px} .sc-foot nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px} }
 .sc-fanline{display:none;margin:14px 0 0;font-size:12px;line-height:1.4;color:var(--sc-mute)}
 @media (max-width:1180px){ .sc-fanline{display:block} }
 /* touch targets: nav pills 36 px; on touch screens option pills and buttons are at least 40 px tall, footer links sit in 44 px rows,
@@ -264,7 +273,7 @@ body.sc-gray{background:var(--sc-page)}
   .ib::after{content:"";position:absolute;inset:-14px;border-radius:50%}
   .sc-seg button,.seg2 button,.opts button,.chip,.chips button,.tabs button,.sc-btn{min-height:40px !important;box-sizing:border-box}
   footer nav{row-gap:0 !important}
-  footer nav a{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box}
+  footer nav a,.sc-fextra a{display:flex;align-items:center;min-height:40px;box-sizing:border-box;padding:0}
 }
 
 /* feedback button and form (shape.js scFeedback) */
@@ -331,7 +340,8 @@ html.sc-zh body{word-break:normal;line-break:strict}
 .sc-atl a{font-size:14px;font-weight:500;color:var(--sc-ink);text-decoration:none;border-radius:999px;padding:7px 13px;white-space:nowrap;min-height:36px;display:inline-flex;align-items:center}
 .sc-atl a:hover{background:#eef1f4}
 .sc-atl a[aria-current="page"]{background:var(--sc-navy);color:#fff}
-@media (max-width:420px){ .sc-atl{width:100%} .sc-atl a{flex:1;justify-content:center;padding:7px 6px;font-size:13px;text-align:center} }
+.sc-atshort{display:none}
+@media (max-width:560px){ .sc-atl{display:flex;width:100%;box-sizing:border-box} .sc-atl a{flex:1;justify-content:center;padding:7px 6px;text-align:center} .sc-atlong{display:none} .sc-atshort{display:inline} }
 @media print{ .sc-atabs{display:none} }
 
 /* bigger tap areas found in the Nov. 12 sweep (links in tables, Springfield bill numbers, deal check assumption rows) */
@@ -352,3 +362,16 @@ html.sc-zh body{word-break:normal;line-break:strict}
 @media (max-width:760px){.sc-pghead{grid-template-columns:minmax(0,1fr);gap:4px}.sc-pghead .sc-pgart{order:-1;max-height:140px;width:auto;max-width:100%;justify-self:start}}
 @media print{.sc-pghead{display:block}.sc-pghead .sc-pgart{display:none}}
 .sc-head.sc-tight .sc-brand span{display:none}
+
+/* the name is ink on every page (some pages color every link navy) */
+a.sc-brand,a.sc-brand:visited,a.sc-brand:hover{color:var(--sc-ink) !important;text-decoration:none !important}
+
+/* phones: the header is the name plus one Menu button; language and feedback sit at the foot of the menu */
+.sc-menu-foot{border-top:1px solid var(--sc-line);margin:0 6px 24px;padding-top:14px;display:flex;flex-direction:column;gap:12px}
+.sc-menu-lang{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;background:var(--sc-seg,#eef1f4);border-radius:12px;padding:3px}
+.sc-menu-lang button{all:unset;box-sizing:border-box;text-align:center;min-height:40px;border-radius:9px;font:600 14px var(--sc-font);color:var(--sc-ink2);cursor:pointer}
+.sc-menu-lang button[aria-pressed="true"]{background:var(--sc-navy);color:#fff}
+.sc-menu-lang button:focus-visible{outline:2px solid var(--sc-navy);outline-offset:1px}
+.sc-menu-fb{align-self:flex-start}
+dialog.sc-menu .sc-menu-more{margin-bottom:10px}
+@media (max-width:640px){ .sc-head .sc-langw,.sc-head .sc-fbbtn{display:none !important} }

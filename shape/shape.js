@@ -97,9 +97,14 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
       g.querySelectorAll(".sc-simmenu a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.classList.contains("sc-simalt") ? ' class="alt"' : "") + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; });
       html += '</div>'; });
     html += '<div class="sc-menu-g sc-menu-more">'; nav.querySelectorAll(":scope > a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; }); html += '</div>';
+    // language and feedback live here on phones, so the header keeps the name and one Menu button
+    const LN = [["en", "English"], ["es", "Español"], ["zh", "中文"], ["pl", "Polski"]], cur = window.scLang || "en";
+    html += '<div class="sc-menu-foot"><div class="sc-menu-lang" role="group" aria-label="Language">' + LN.map(([k, n]) => '<button type="button" translate="no" data-lang="' + k + '"' + (k === cur ? ' aria-pressed="true"' : ' aria-pressed="false"') + '>' + n + '</button>').join("") + '</div><button type="button" class="sc-btn sc-menu-fb">Send feedback</button></div>';
     dlg.innerHTML = html; document.body.appendChild(dlg);
     btn.addEventListener("click", () => { dlg.showModal(); const c = dlg.querySelector('[aria-current="page"]'); c && c.scrollIntoView({block:"center"}); });
-    dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest("[data-close]")) dlg.close(); });
+    dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest("[data-close]")) dlg.close();
+      const l = e.target.closest("[data-lang]"); if (l && l.dataset.lang !== (window.scLang || "en") && window.scSetLang) window.scSetLang(l.dataset.lang);
+      if (e.target.closest(".sc-menu-fb") && window.scFeedback){ dlg.close(); window.scFeedback(); } });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 /* keep the current page's tab visible when the tab bar scrolls (phones) */
@@ -146,16 +151,20 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Zoning and rules"],["/grants/","Grants and help"],["/deal/","Affordable deal check"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/about/","About"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["Simulators", [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/plans/","Plans people made"]]],
+    ["Your address", [["/lot/","Zoning and rules"],["/grants/","Grants and help"],["/deal/","Affordable deal check"]]],
+    ["Follow along", [["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"]]],
+    ["About", [["/about/","About this site"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
   function footer(){
-    /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
+    /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand,
+       four columns of page links, and a bottom row (feedback, languages, support) that later scripts fill (.sc-fextra) */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
       const line = el.textContent.trim() || "Not affiliated with the City of Chicago.";
-      el.innerHTML = `<div class="sc-foot-in"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a><span>${esc(line)}</span><nav aria-label="All pages">${FOOT.map(([h, t]) => `<a href="${h}">${esc(t)}</a>`).join("")}</nav></div>`;
+      el.innerHTML = `<div class="sc-foot-in"><div class="sc-fbrand"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a><p>${esc(line)}</p></div><nav aria-label="All pages">${FOOT.map(([h, L]) => `<div class="sc-fcol"><h2>${esc(h)}</h2>${L.map(([u, t]) => `<a href="${u}">${esc(t)}</a>`).join("")}</div>`).join("")}</nav><div class="sc-fextra"></div></div>`;
       el.removeAttribute("data-sc-foot");
     });
     const f = document.querySelector("footer");
-    if (f && !f.querySelector('a[href="/support/"]') && !f.querySelector(".sc-foot-extra")){
+    if (f && !f.querySelector('a[href="/support/"]') && !f.querySelector(".sc-foot-extra, .sc-fextra")){
       const p = document.createElement("p"); p.className = "sc-foot-extra";
       p.innerHTML = `<span data-support></span>`;
       (f.querySelector(".wrap, .fw") || f).appendChild(p);
@@ -260,7 +269,7 @@ window.scWhenReady = fn => { if (document.readyState === "loading") addEventList
       b.innerHTML = ICON + "<span>Feedback</span>"; b.onclick = window.scFeedback;
       const fan = r.querySelector(".sc-fan"); if (fan && fan.nextSibling) r.insertBefore(b, fan.nextSibling); else r.appendChild(b);
     }
-    document.querySelectorAll("footer nav").forEach(n => { if (n.querySelector(".sc-fblink")) return;
+    document.querySelectorAll("footer").forEach(f => { const n = f.querySelector(".sc-fextra") || f.querySelector("nav"); if (!n || n.querySelector(".sc-fblink")) return;
       const a = document.createElement("a"); a.href = "#feedback"; a.className = "sc-fblink"; a.textContent = "Feedback"; a.onclick = e => { e.preventDefault(); window.scFeedback(); }; n.appendChild(a); });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(add, 0)); else setTimeout(add, 0);
@@ -321,7 +330,7 @@ window.scMap = {
     document.addEventListener("click", e => { if (!w.contains(e.target)) close(); });
     w.addEventListener("keydown", e => { if (e.key === "Escape"){ close(); b.focus(); } });
     w.append(b, m); const fb = r.querySelector(".sc-fbbtn, .sc-menubtn"); fb ? r.insertBefore(w, fb) : r.appendChild(w);
-    document.querySelectorAll("footer nav").forEach(n => { if (n.querySelector(".sc-langlink")) return;
+    document.querySelectorAll("footer").forEach(f => { const n = f.querySelector(".sc-fextra") || f.querySelector("nav"); if (!n || n.querySelector(".sc-langlink")) return;
       for (const [k, L] of Object.entries(LANGS)){ if (k === lang) continue;
         const a = document.createElement("a"); a.href = "?lang=" + k; a.className = "sc-langlink"; a.setAttribute("translate", "no"); a.textContent = L.n; a.lang = L.html; n.appendChild(a); } });
   }
@@ -401,14 +410,14 @@ window.scMap = {
    linking the three, each carrying ?q=<address>. Pages call window.scSetAddr(label) when someone picks an address; the address is
    kept in this browser (localStorage "sc-addr") so the next tab opens on it. */
 (function(){
-  const TABS = [["/lot/", "Zoning and rules"], ["/grants/", "Grants and help"], ["/deal/", "Affordable deal check"]];
+  const TABS = [["/lot/", "Zoning and rules", "Zoning"], ["/grants/", "Grants and help", "Grants"], ["/deal/", "Affordable deal check", "Deal check"]];   // long and phone labels
   const get = () => { try { return localStorage.getItem("sc-addr") || ""; } catch(e){ return ""; } };
   function draw(){
     const a = get();
     document.querySelectorAll("[data-atabs]").forEach(el => {
       const here = location.pathname.replace(/index\.html$/, "");
-      el.innerHTML = `<span class="sc-athd">Your address${a ? ": <b translate=\"no\"></b>" : ""}</span><span class="sc-atl">` + TABS.map(([h, n]) =>
-        `<a href="${h}${a ? "?q=" + encodeURIComponent(a) : ""}"${here === h ? ' aria-current="page"' : ""}>${n}</a>`).join("") + "</span>";
+      el.innerHTML = `<span class="sc-athd">Your address${a ? ": <b translate=\"no\"></b>" : ""}</span><span class="sc-atl">` + TABS.map(([h, n, sh]) =>
+        `<a href="${h}${a ? "?q=" + encodeURIComponent(a) : ""}"${here === h ? ' aria-current="page"' : ""}><span class="sc-atlong">${n}</span><span class="sc-atshort">${sh}</span></a>`).join("") + "</span>";
       const b = el.querySelector("b"); if (b) b.textContent = a;
     });
   }

@@ -49,8 +49,17 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
 .empty{color:var(--sc-mute);font-size:14px;padding:20px 4px}
 .fine{font-size:12px;color:var(--sc-mute);line-height:1.55;margin-top:24px}
 .fine a{color:var(--sc-mute)}
-.follow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-@media (max-width:700px){ .item .sm{font-size:13.5px;-webkit-line-clamp:3} .item{grid-template-columns:96px minmax(0,1fr);gap:12px} .item .ph{width:96px;height:72px} .item b{font-size:15px} .item.lead b{font-size:19px} .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .bar input{margin-left:0;width:100%} .sc-fan{display:none} }
+.follow{display:flex;gap:6px 20px;flex-wrap:wrap;margin-top:12px}
+.tlink{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--sc-navy);min-height:32px}
+.tlink:hover{text-decoration:underline} .tlink:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px;border-radius:4px}
+.tlink svg{width:14px;height:14px}
+.tlink[aria-pressed="true"]{color:var(--sc-ink)}
+.filters{border-top:1px solid var(--sc-line);border-bottom:1px solid var(--sc-line);padding:12px 0;margin:14px 0 6px;display:flex;flex-direction:column;gap:10px}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap}
+.ctl{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px}
+.ctl select,.ctl input{font:inherit;font-size:14px;min-height:38px;box-sizing:border-box;padding:0 12px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink);min-width:0;width:100%}
+.ctl .topicsel{display:none}
+@media (max-width:700px){ .item .sm{font-size:13.5px;-webkit-line-clamp:3} .item{grid-template-columns:96px minmax(0,1fr);gap:12px} .item .ph{width:96px;height:72px} .item b{font-size:15px} .item.lead b{font-size:19px} .top{grid-template-columns:1fr} .top img{display:none} main{padding:16px 12px 40px} .chiprow{display:none} .ctl{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} .ctl .topicsel{display:block} .ctl input{grid-column:1/-1} .sc-fan{display:none} }
 /* Nov 8: one hover rule for everything you can open (see shape.css) */
 @media (hover:hover){ .item{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .item:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
 @media (prefers-reduced-motion:reduce){ .item:hover{transform:none} }
@@ -66,10 +75,10 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
   <section class="top">
     <div><h1>Chicago planning news</h1>
       <p>Every new story about Chicago housing, development, zoning, transit and the city budget, from local newsrooms, in one list. Headlines link straight to the outlet.</p>
-      <div class="follow"><button class="sc-btn" id="newOnly">Show what's new since my last visit</button><a class="sc-btn" href="/news/feed.xml" style="display:inline-flex;align-items:center;text-decoration:none">Follow in a feed reader</a></div></div>
+      <div class="follow"><button type="button" class="tlink" id="newOnly" aria-pressed="false">New since my last visit</button><a class="tlink" href="/news/feed.xml"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="13" r="1.6" fill="currentColor"/><path d="M2 7.5a6.5 6.5 0 0 1 6.5 6.5M2 2.5A11.5 11.5 0 0 1 13.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>RSS feed</a></div></div>
     <img src="/shape/art/news.webp" width="880" height="600" alt="" id="art" onerror="this.remove()">
   </section>
-  <div class="bar" id="chips"></div>
+  <div class="filters" id="chips"></div>
   <div id="list"><p class="empty">Loading…</p></div>
   <p class="fine" id="srcs"></p>
 </main>
@@ -103,12 +112,16 @@ function render(){
   window.scShowAds && window.scShowAds();
 }
 function chips(){
-  $("chips").innerHTML = (myWard ? `<button class="chip" data-k="ward" aria-pressed="${topic === "ward"}">Ward ${myWard}</button>` : "") + TOP.map(([k, t]) => `<button class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("") + `<select class="srcsel" id="src" aria-label="Filter by outlet"><option value="">Every outlet</option>${[...new Set(D.items.map(i => i.s))].sort().map(n => `<option${n === src ? " selected" : ""}>${esc(n)}</option>`).join("")}</select><input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines">`;
+  const T = (myWard ? [["ward", "Ward " + myWard]] : []).concat(TOP);
+  $("chips").innerHTML = `<div class="chiprow" role="group" aria-label="Topic">${T.map(([k, t]) => `<button type="button" class="chip" data-k="${k}" aria-pressed="${k === topic}">${t}</button>`).join("")}</div>`
+    + `<div class="ctl"><select class="topicsel" id="topicSel" aria-label="Topic">${T.map(([k, t]) => `<option value="${k}"${k === topic ? " selected" : ""}>${t}</option>`).join("")}</select>`
+    + `<select id="src" aria-label="Filter by outlet"><option value="">Every outlet</option>${[...new Set(D.items.map(i => i.s))].sort().map(n => `<option${n === src ? " selected" : ""}>${esc(n)}</option>`).join("")}</select><input type="search" id="q" placeholder="Search headlines" aria-label="Search headlines"></div>`;
   $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => { topic = b.dataset.k; chips(); render(); });
+  $("topicSel").onchange = e => { topic = e.target.value; chips(); render(); };
   $("src").onchange = e => { src = e.target.value; render(); };
   $("q").value = q; $("q").oninput = e => { q = e.target.value.toLowerCase(); render(); };
 }
-$("newOnly").onclick = () => { since = since ? null : last; $("newOnly").textContent = since ? "Show everything" : "Show what's new since my last visit"; render(); };
+$("newOnly").onclick = () => { since = since ? null : last; $("newOnly").textContent = since ? "Show everything" : "New since my last visit"; $("newOnly").setAttribute("aria-pressed", String(!!since)); render(); };
 fetch("data/news.json").then(r => r.json()).then(d => {
   D = d; chips(); render();
   if (!last) $("newOnly").style.display = "none";

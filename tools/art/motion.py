@@ -33,13 +33,15 @@ def hardhat(x, y, vest="#f2c53d"):
     person(x, y, vest, 1.0); sphere(x, y, 0.14 + 1.8 * PS[0], 0.23 * PS[0], mat("#f4f5f6", rough=0.4), sub=2, sz=0.7)
 
 def train(i, n):
-    slab(60, 16); box(0, -4, 0, 59.5, 5, 0.05, mat(ASPHALT, rough=0.9), bevel=0.02)
-    box(0, 4.5, 0, 59.5, 6.5, 0.08, mat(GRASS, rough=0.95), bevel=0.04)
-    el_track([(-30, 1.5), (30, 1.5)], z=7.0)
-    x = -46 + 62 * i / n                            # two cars cross the frame; the last frame meets the first
+    # The scene runs well past the frame, so the train enters and leaves out of view and the loop has no jump.
+    slab(124, 16); box(0, -4, 0, 123.5, 5, 0.05, mat(ASPHALT, rough=0.9), bevel=0.02)
+    box(0, 4.5, 0, 123.5, 6.5, 0.08, mat(GRASS, rough=0.95), bevel=0.04)
+    el_track([(-62, 1.5), (62, 1.5)], z=7.0)
+    x = -84 + 132 * i / n                           # back of the two-car train starts off the left edge, ends off the right
     ltrain(x, 1.5, 7.9, cars=2, stripe="#8a5a36")
-    for k in range(4): tree(-24 + k * 16, 6.5, 0.8)
-    for k, c in enumerate(("#5f7d8c", "navy", "gold")): car(-18 + k * 15 + (i * 1.2) % 4, -5, c)
+    for k in range(8): tree(-56 + k * 16, 6.5, 0.8)
+    for k, c in enumerate(("#5f7d8c", "navy", "gold", "#c9ced3")):   # traffic below drives the other way, one full lap a loop
+        car(60 - ((k * 30 + 120 * i / n) % 120), -5, c, flip=True)
     rig(58, target=(0, 0, 6), elev=22, azim=-74, sun=(46, -28), sun_e=3.3, world="#eef3f8", world_e=0.62)
 
 def spin(i, n):

@@ -58,9 +58,8 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (max-width:860px){
   .wrap{grid-template-columns:1fr;gap:20px;padding:28px 16px 48px}
   h1{font-size:34px} .intro p{font-size:16px}
-  nav.toc{position:static;display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
-  .toc h3{display:none} .toc ul{flex-direction:row;margin:0;gap:6px}
-  .toc a{white-space:nowrap;background:var(--sc-seg);border-radius:16px;padding:7px 12px;font-size:13.5px}
+  nav.toc{display:none}
+  .tocsel{display:flex} .topic{scroll-margin-top:72px}
   .topic h2{font-size:22px} .topic .lead{font-size:17px}
   footer .fw{flex-direction:column;align-items:flex-start;padding-inline:16px}
 }
@@ -113,6 +112,10 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 @media (prefers-reduced-motion:reduce){ .bar i{transition:none} }
 /* Nov 8: selected = solid navy */
 .toc a.on{background:var(--sc-navy) !important;color:#fff !important}
+/* phones: one "Jump to a topic" menu instead of a row of pills (sticky under the header) */
+.tocsel{display:none;position:sticky;top:0;z-index:5;align-items:center;gap:10px;margin:0 -16px;padding:10px 16px;background:var(--sc-page,#f3f5f7);border-bottom:1px solid var(--sc-line)}
+.tocsel label{font-size:13px;font-weight:600;color:var(--sc-ink2);white-space:nowrap}
+.tocsel select{flex:1;min-width:0;font:500 15px var(--sc-font);color:var(--sc-ink);background:#fff;border:1px solid var(--sc-line);border-radius:10px;padding:0 12px;min-height:42px}
 /* Nov 8: one hover rule for everything you can open (see shape.css) */
 @media (hover:hover){ .involve a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .involve a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
 @media (prefers-reduced-motion:reduce){ .involve a:hover{transform:none} }
@@ -347,7 +350,15 @@ document.querySelectorAll("#pRid .cards2 button").forEach(b => b.onclick = () =>
   $("ridOut").innerHTML = `${b.dataset.r === "b" ? '<b class="good">Right.</b>' : '<b class="bad">Not quite.</b>'} The Red Line Extension adds about <b>1,400</b> new transit trips a weekday. The line beside the Blue Line adds about <b>40</b>: it gets almost nobody anywhere faster than the Blue Line already does, so its riders would mostly just switch lines.`; });
 // highlight the topic you're reading
 const links = [...document.querySelectorAll(".toc a")], byId = Object.fromEntries(links.map(a => [a.hash.slice(1), a]));
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ links.forEach(a => a.classList.remove("on")); const a = byId[e.target.id]; if (a) a.classList.add("on"); } }), {rootMargin: "-30% 0px -60% 0px"});
+// phones: the same list as one menu, grouped by chapter
+const toc = document.querySelector("nav.toc"), tsel = document.createElement("div"); tsel.className = "tocsel";
+tsel.innerHTML = '<label for="tocSel">Jump to</label><select id="tocSel"></select>';
+const sel = tsel.querySelector("select"); let grp = null;
+toc.querySelectorAll("h3, a").forEach(n => { if (n.tagName === "H3"){ grp = document.createElement("optgroup"); grp.label = n.textContent; sel.appendChild(grp); }
+  else { const o = document.createElement("option"); o.value = n.hash.slice(1); o.textContent = n.textContent; (grp || sel).appendChild(o); } });
+sel.onchange = () => { const t = document.getElementById(sel.value); if (t){ t.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); history.replaceState(null, "", "#" + sel.value); } };
+toc.after(tsel);
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ links.forEach(a => a.classList.remove("on")); const a = byId[e.target.id]; if (a) a.classList.add("on"); sel.value = e.target.id; } }), {rootMargin: "-30% 0px -60% 0px"});
 document.querySelectorAll(".topic").forEach(t => io.observe(t));
 </script>
 </body>

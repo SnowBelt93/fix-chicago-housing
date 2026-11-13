@@ -12,6 +12,8 @@ T = {
     "Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.":
         ('回答几个问题，看看你在芝加哥可能符合哪些项目：每项提供多少、是否开放、去哪里申请。你输入的内容不会离开本页面。', 'Odpowiedz na kilka pytań i zobacz programy w Chicago, do których możesz się kwalifikować: ile dają, czy są otwarte i gdzie składać wniosek. Nic, co wpiszesz, nie opuszcza tej strony.'),
     "Some of this page's data didn't load. Check your connection, then refresh.": ('本页部分数据没有加载。请检查网络后刷新。', 'Część danych tej strony się nie wczytała. Sprawdź połączenie i odśwież.'), 'Refresh': ('刷新', 'Odśwież'),
+    'Follow along': ('持续关注', 'Śledź na bieżąco'), 'About this site': ('关于本网站', 'O tej stronie'),
+    'New since my last visit': ('自我上次访问以来的新内容', 'Nowe od mojej ostatniej wizyty'), 'RSS feed': ('RSS 订阅', 'Kanał RSS'), 'Jump to': ('跳到', 'Przejdź do'),
     'Got it': ('知道了', 'Rozumiem'), 'Start': ('开始', 'Zacznij'), "Let's go": ('开始吧', 'Zaczynamy'),
 }
 R = [['^(.+) · Shape Chicago$', '[[$1]] · Shape Chicago', '[[$1]] · Shape Chicago']]

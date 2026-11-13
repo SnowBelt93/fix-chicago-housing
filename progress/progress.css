@@ -140,7 +140,13 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 .pg .bt{font-size:15.5px;font-weight:600;line-height:21px}
 .pg li.bill details summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--sc-navy)}.pg li.bill details .sub{margin-top:6px}
 .pg ol.bhist{margin:8px 0 0;padding:0;list-style:none;font-size:13px;color:var(--sc-ink2);display:flex;flex-direction:column;gap:3px}.pg ol.bhist span{display:inline-block;min-width:96px;color:var(--sc-mute)}
-.pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
+.pg .bfilts{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--sc-line);border-bottom:1px solid var(--sc-line);padding:12px 0;margin:4px 0 8px}
+.pg .frow{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start}.pg .flab{font-size:13px;font-weight:600;color:var(--sc-mute);padding-top:8px}
+.pg .bfilt.seg{display:inline-flex;flex-wrap:wrap;gap:2px;background:var(--sc-seg,#eef1f4);border-radius:999px;padding:3px;justify-self:start}.pg .bfilt.seg button{border:0;background:transparent;min-height:32px}
+.pg .bsels{display:none;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}.pg .bsels label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--sc-mute)}
+.pg .bsels select{font:inherit;font-size:14px;font-weight:500;color:var(--sc-ink);min-height:42px;padding:0 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff;min-width:0;width:100%}
+@media (max-width:640px){.pg .frow{display:none}.pg .bsels{display:grid}}
+.pg .bfilt{display:flex;flex-wrap:wrap;gap:6px;margin:0}.pg .bfilt button{font:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink2);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:36px}
 .pg .bfilt button span{font-weight:400;color:var(--sc-mute)}.pg .bfilt button[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}.pg .bfilt button[aria-pressed="true"] span{color:#d9e4f4}
 .pg [id]{scroll-margin-top:84px}
 .pg .h2big{font-size:24px;line-height:1.25;letter-spacing:-.01em;margin:10px 0 0}.pg .sub2{margin-top:6px;padding-top:18px;border-top:1px solid var(--sc-line)}

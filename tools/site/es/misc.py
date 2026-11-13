@@ -12,6 +12,8 @@ T = {
     "Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.":
         'Responde unas preguntas y ve los programas para los que podrías calificar en Chicago: cuánto da cada uno, si está abierto y dónde solicitarlo. Nada de lo que escribes sale de esta página.',
     "Some of this page's data didn't load. Check your connection, then refresh.": 'Parte de los datos de esta página no cargó. Revisa tu conexión y vuelve a cargar.', 'Refresh': 'Volver a cargar',
+    'Follow along': 'Sigue de cerca', 'About this site': 'Sobre este sitio',
+    'New since my last visit': 'Nuevo desde mi última visita', 'RSS feed': 'Fuente RSS', 'Jump to': 'Ir a',
     'Got it': 'Entendido', 'Start': 'Empezar', "Let's go": 'Vamos',
 }
 R = [['^(.+) · Shape Chicago$', '[[$1]] · Shape Chicago']]
