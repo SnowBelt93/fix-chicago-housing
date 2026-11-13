@@ -9,7 +9,7 @@ import os, re, sys
 SIMS = [('/housing/', 'Housing'), ('/transit/', 'Transit'), ('/budget/', 'Budget'), ('/pensions/', 'Pensions'), ('/bears/', 'Bears stadium'),
         None, ('/plans/', 'Plans people made')]
 # one address, three tools (they share the address through shape.js scSetAddr and show the same tab row)
-ADDR = [('/lot/', 'Zoning and rules'), ('/grants/', 'Grants and help'), ('/deal/', 'Affordable deal check')]
+ADDR = [('/lot/', 'Zoning and rules'), ('/grants/', 'Grants and help'), ('/deal/', 'Affordable deal check')]   # the same three names everywhere: menu, tabs, titles, footer
 PROG = [('/progress/', 'Overview'), ('/progress/homes/', 'Homes'), ('/progress/zoning/', 'Zoning'), ('/progress/affordable/', 'Affordable'),
         ('/progress/rents/', 'Rents and prices'), ('/progress/transit/', 'Transit'), ('/progress/streets/', 'Streets'),
         ('/progress/capital/', 'City money'), ('/progress/projects/', 'Big projects'),

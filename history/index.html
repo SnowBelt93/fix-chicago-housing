@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chicago Then and Now · Shape Chicago</title>
+<title>Chicago then and now · Shape Chicago</title>
 <meta name="description" content="Watch Chicago's buildings go up year by year since the Great Fire, see how each neighborhood's population rose and fell, and find old photos of buildings that still stand or are gone.">
 <meta property="og:title" content="Chicago then and now">
 <meta property="og:description" content="Every Chicago building by the year it went up, and each neighborhood's population since 1930.">
@@ -217,5 +218,6 @@ function play(){
 $("yr").addEventListener("input", e => { if (timer) play(); setYear(+e.target.value); });
 $("play").onclick = play;
 </script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("history", {title:"Chicago then and now", body:'<p>Every building in the city, colored by the decade it went up. Press play to watch Chicago grow from 1870 to today, or tap a neighborhood to see how its population changed.</p>'}));</script>
 </body>
 </html>

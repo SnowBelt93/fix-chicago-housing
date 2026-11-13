@@ -7,7 +7,8 @@
   "compatibility_date": "2025-09-01",
   "assets": {
     "directory": ".",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    "not_found_handling": "404-page"
   },
   "durable_objects": {
     "bindings": [{ "name": "COMMUNITY", "class_name": "Community" }]

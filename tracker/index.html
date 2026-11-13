@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chicago Permit Tracker · Shape Chicago</title>
+<title>Permit tracker · Shape Chicago</title>
 <meta name="description" content="How many new homes Chicago is permitting, where, and how that compares with the pace needed to close its housing shortage. Updated daily from public City of Chicago data.">
-<meta property="og:title" content="Chicago Permit Tracker">
+<meta property="og:title" content="Permit tracker">
 <meta property="og:description" content="New homes permitted in Chicago vs. the pace needed to close the shortage. Updated daily from public data.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-tracker.jpg">
 <meta property="og:image:width" content="1200">
@@ -528,5 +529,6 @@ function drawMap(D){
   new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1){ if (n.tagName === 'TABLE') cardify(n); else scan(n); } }))).observe(document.body, {childList:true, subtree:true});
   scan(document); })();
 </script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("tracker", {title:"Permit tracker", body:"<p>Every new home Chicago has permitted since 2006, updated daily from the city's permit data. See whether the city is on pace, which wards are building, and what's permitted near you.</p>", art:"/shape/art/tracker.webp"}));</script>
 </body>
 </html>

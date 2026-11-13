@@ -12,10 +12,10 @@
 <link rel="canonical" href="https://fixchicagohousing.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2b5da0">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23e4002b' d='M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z'/%3E%3C/svg%3E">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <link rel="stylesheet" href="/shape/shape.css">
 <script src="/shape/shape.js" defer></script>
 <script src="/shape/plans.js" defer></script>
@@ -1349,8 +1349,8 @@ dialog.sc-info .goaleq{font-weight:600;color:var(--sc-ink)}
 }
 
 /* v49: one typeface outside the newspaper. Pop-ups, tips and captions use Instrument Sans; the results front page keeps Big Shoulders */
-body{--f-display:var(--sc-font)}
-.paper{--f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif}
+body{--f-display:var(--sc-font);--f-body:var(--sc-font);--f-data:var(--sc-font)}
+.paper{--f-display:"Big Shoulders Display", "Arial Narrow", "Helvetica Neue", sans-serif;--f-body:"Public Sans", "Helvetica Neue", Arial, sans-serif;--f-data:"Public Sans", "Helvetica Neue", Arial, sans-serif}
 .card:not(.paper) h2{font-weight:600 !important;letter-spacing:-.02em;line-height:1.12}
 .tip b{font-weight:600;letter-spacing:-.01em}
 .gp .n{font-size:23px !important;white-space:nowrap;letter-spacing:-.02em}
@@ -3551,7 +3551,7 @@ const deckgl = new deck.Deck({
     else if (layer.id === "busy") text = object.name + ": about " + fmt(object.rides) + " riders enter on an average weekday (CTA, 2025)";
     else if (layer.id === "corrLines") text = corrName(object.name);
     else if (layer.id === "mega") text = object.n + ": " + fmt(object.homes) + " homes planned, not yet built\n" + object.st + (plan.p.mega ? "" : "\nPolicies → Get the megaprojects built");
-    return text ? {text, style:{fontFamily:"Public Sans, Arial, sans-serif", fontSize:"12px", background:"#1b2320", color:"#fff", borderRadius:"6px", padding:"6px 8px"}} : null;
+    return text ? {text, style:{fontFamily:"Instrument Sans, Arial, sans-serif", fontSize:"12px", background:"#1b2320", color:"#fff", borderRadius:"6px", padding:"6px 8px"}} : null;
   },
   onClick: (info) => { if (info.layer && info.layer.id === "areas" && info.object && isOpen("hoods")) selectArea(info.object.properties.num, true); },
 });
@@ -3697,7 +3697,7 @@ function layers(){
     L.push(new deck.PathLayer({id:"edgeGlow", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:B.glow, getWidth:9, widthUnits:"pixels"}));
     L.push(new deck.PathLayer({id:"edge", parameters:FLAT, data:META.cityOutline, getPath:d => d, getColor:B.edge, getWidth:1.6, widthUnits:"pixels"}));
     if (B.towns && META.towns && zoomBandNow < 2) L.push(new deck.TextLayer({id:"towns", data:META.towns, getPosition:d => [d[1], d[2]], getText:d => d[0], getSize:11, sizeUnits:"pixels",
-      getColor:B.towns, fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:2, outlineColor:B.townHalo, parameters:{depthCompare:"always"}}));
+      getColor:B.towns, fontFamily:"Instrument Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:2, outlineColor:B.townHalo, parameters:{depthCompare:"always"}}));
     }
   }
   L.push(new deck.GeoJsonLayer({
@@ -3752,7 +3752,7 @@ function layers(){
   }
   if (META.streetLabels && zoomBandNow >= 1 && !USING_BASEMAP) L.push(new deck.TextLayer({id:"stLabels", data:zoomBandNow === 2 ? META.streetLabels : META.streetLabels.filter(l => l[4] === 1 || l[4] === 2),
     getPosition:d => [d[0], d[1], 2], getText:d => d[3], getAngle:d => d[2], getSize:zoomBandNow === 2 ? 14 : 11.5, sizeUnits:"pixels",
-    getColor:[70,82,100,230], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
+    getColor:[70,82,100,230], fontFamily:"Instrument Sans, Arial, sans-serif", fontWeight:600, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,230],
     billboard:false, updateTriggers:{getSize:zoomBandNow}}));
   wardLayers(L);
   if (wardShown && WARDS){ const W = WARDS.find(w => w.ward === wardSel); if (W) L.push(new deck.PathLayer({id:"ward", data:W.polys.flatMap(p => p.map(r => ({path:r}))), parameters:FLAT, getPath:d => d.path, getWidth:4, widthUnits:"pixels", getColor:[228,0,43,230]})); }
@@ -3774,7 +3774,7 @@ function layers(){
   L.push(new deck.ScatterplotLayer({id:"mega", data:MEGA, pickable:true, getPosition:d => [d.lon, d.lat, 6], getRadius:plan.p.mega ? 9 : 7, radiusUnits:"pixels", billboard:true,
     getFillColor:plan.p.mega ? [91,63,140,240] : [255,255,255,235], stroked:true, getLineColor:[91,63,140,255], lineWidthMinPixels:2.5, parameters:{depthCompare:"always"}, updateTriggers:{getFillColor:plan.p.mega, getRadius:plan.p.mega}}));
   if (zoomBandNow >= 1) L.push(new deck.TextLayer({id:"megaLbl", data:MEGA, getPosition:d => [d.lon, d.lat, 6], getText:d => d.n, getSize:12, sizeUnits:"pixels", getPixelOffset:[0, -16],
-    getColor:[60,40,100,255], fontFamily:"Public Sans, Arial, sans-serif", fontWeight:700, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,240], parameters:{depthCompare:"always"}}));
+    getColor:[60,40,100,255], fontFamily:"Instrument Sans, Arial, sans-serif", fontWeight:700, fontSettings:{sdf:true}, outlineWidth:3, outlineColor:[255,255,255,240], parameters:{depthCompare:"always"}}));
   L.push(new deck.ScatterplotLayer({id:"stations", data:META.stations, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:P ? [31,27,58,230] : [27,35,32,230], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2, updateTriggers:{getFillColor:look}}));
   if (META.metra && isOpen("metra")) L.push(new deck.ScatterplotLayer({id:"metraDots", data:META.metra, pickable:true, getPosition:d => [d.lon, d.lat, 4], getRadius:4, radiusUnits:"pixels", radiusMinPixels:2.5, getFillColor:[79,127,168,235], stroked:true, getLineColor:[255,255,255], lineWidthMinPixels:1.2}));
   return L;

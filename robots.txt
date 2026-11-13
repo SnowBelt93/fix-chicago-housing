@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /feedback/
+Disallow: /embed/
+
+Sitemap: https://shape-chicago.hd9bt6x5mn.workers.dev/sitemap.xml

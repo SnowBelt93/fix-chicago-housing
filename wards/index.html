@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your Ward · Shape Chicago</title>
+<title>Your ward · Shape Chicago</title>
 <meta name="description" content="How your alderperson voted on Chicago's housing laws, every zoning change passed in your ward since 2013, and how many homes got permits.">
-<meta property="og:title" content="Your Ward's Housing Record">
+<meta property="og:title" content="Your ward's Housing Record">
 <meta property="og:description" content="Votes, zoning changes and new homes, ward by ward.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -172,7 +173,7 @@ const INFO = {
   zoning: ["About zoning changes", `<p>Each rezoning is read from the ordinance or the applicant's narrative, which name the district before and after. "Homes on a typical lot" is how many homes each district allows on a standard 25 by 125 foot Chicago lot under the zoning code's minimum lot area per home (§17-2-0303), so you can compare before and after. A planned development has its own rules set in its ordinance. Some scanned documents can't be read; those show a question mark.</p><p>For this term (since May 2023), each row shows the alderperson's own vote when the City Clerk recorded a roll call on it. Many rezonings pass together in one vote; when no roll call is on file, the row says so.</p><p>Addresses are placed in today's ward lines (the 2023 map), so changes before 2023 may have been in a different ward.</p><p class="src">Sources: City Clerk eLMS ordinances, narratives and roll calls; Chicago Zoning Ordinance §17-2-0303.</p>`],
   cal: ["About the hearing calendar", `<p>Meetings come from the City Clerk's legislation system (eLMS) and are checked once a day, so a meeting added or moved today may not show yet. Times are Chicago time. The clerk's page for each meeting has the agenda, the notice, how to send public comment and, afterwards, the video.</p><p>Zoning changes are heard by the Committee on Zoning, Landmarks and Building Standards, then voted on by the full City Council. Budget hearings run through the Committee on Budget and Government Operations.</p><p><a href="https://chicityclerkelms.chicago.gov/Meetings/" target="_blank" rel="noopener">All meetings at the City Clerk</a></p>`],
   menu: ["About the aldermanic menu", `<p>Every ward gets $1.5 million a year in city bond money, called the aldermanic menu, for small projects the alderperson picks from a list: repaving, sidewalks, speed humps, street lights and the like. Money not committed carries over to the next year.</p><p>These numbers are the city's own report through Sept. 30, 2026 (the third-quarter report, dated Oct. 13, 2026). We read each project's type and estimated cost from the report and grouped the types; our totals match each ward's committed total, except Ward 16, where the listed projects add up to $7,730 more. Projects listed at $0 are paid from other money and don't count against the $1.5 million.</p><p><a href="https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf" target="_blank" rel="noopener">City of Chicago: 2026 Q3 Aldermanic Menu Report (PDF)</a></p>`],
-  permits: ["About permits", `<p>Homes in new-construction building permits, counted the way the <a href="/tracker/">Permit tracker</a> counts them (it matches the Census count for Chicago within 1%). The ward comes from the permit record.</p>`],
+  permits: ["About permits", `<p>Homes in new-construction building permits, counted the way the <a href="/tracker/">permit tracker</a> counts them (it matches the Census count for Chicago within 1%). The ward comes from the permit record.</p>`],
 };
 document.querySelectorAll(".ib[data-i]").forEach(b => b.onclick = () => info(...INFO[b.dataset.i]));
 function wmap(){
@@ -280,7 +281,7 @@ $("wSel").onchange = e => go(+e.target.value);
 addEventListener("hashchange", () => { const w = +location.hash.slice(1); if (D && w >= 1 && w <= 50 && w !== W){ W = w; render(); } });
 Promise.all([fetch("data/wards.json").then(r => r.json()), fetch("/wards.json").then(r => r.json()), fetch("/shape/wardshapes.json").then(r => r.json()).catch(() => null)]).then(([d, g, sh]) => {
   D = d; G = g; SH = sh; let w = +location.hash.slice(1); if (!(w >= 1 && w <= 50)) { try { w = +localStorage.getItem("sc-ward"); } catch (e){} } if (!(w >= 1 && w <= 50) && window.SCWard) w = +SCWard.get(); W = w >= 1 && w <= 50 ? w : 0; render();
-  $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago Permit tracker. Contact details: City of Chicago ward offices dataset. Street money: City of Chicago, <a href="https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf" target="_blank" rel="noopener">2026 Q3 Aldermanic Menu Report</a>.`;
+  $("srcs").innerHTML = `Votes and rezonings: City of Chicago Office of the City Clerk (eLMS), ${D.zoningSince.slice(0, 4)} to today, updated daily. Ward lines: 2023 map. Permits: the Shape Chicago permit tracker. Contact details: City of Chicago ward offices dataset. Street money: City of Chicago, <a href="https://www.chicago.gov/content/dam/city/depts/obm/2027_Operations/CAPITAL/Aldermanic_Menu/Q3_2026_Aldermanic_Menu_Report.pdf" target="_blank" rel="noopener">2026 Q3 Aldermanic Menu Report</a>.`;
 });
 
 /* the bodies that decide housing, streets and money, in plain words; the clerk's page lists the rest */
@@ -311,5 +312,6 @@ fetch("data/meetings.json").then(r => r.json()).then(m => {
   document.getElementById("calApple").href = "webcal://" + u;
   document.getElementById("calGoogle").href = "https://calendar.google.com/calendar/r?cid=" + encodeURIComponent("webcal://" + u); })();
 </script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("wards", {title:"Your ward", body:'<p>Pick your ward or type your address. See your alderperson, how they voted on housing, the zoning changes in your ward, the homes permitted and the meetings coming up at City Hall.</p>', art:"/shape/art/wards.webp"}));</script>
 </body>
 </html>

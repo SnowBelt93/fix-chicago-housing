@@ -340,3 +340,8 @@ html.sc-zh body{word-break:normal;line-break:strict}
   .prow{grid-template-columns:minmax(0,1fr) 96px 40px} .prow input{min-height:40px} .prow .rst{width:40px;height:40px}
   .tbtn{min-height:40px}
 }
+
+/* skip link (shape.js): hidden until it has keyboard focus */
+.sc-skip{position:fixed;left:12px;top:-60px;z-index:1000;background:var(--sc-navy);color:#fff;font:600 15px var(--sc-font);padding:10px 16px;border-radius:10px;text-decoration:none;transition:top .15s}
+.sc-skip:focus{top:12px;outline:2px solid #fff;outline-offset:-4px}
+[tabindex="-1"]:focus{outline:none}

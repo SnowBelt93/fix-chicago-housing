@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Grants finder · Shape Chicago</title>
+<title>Grants and help · Shape Chicago</title>
 <meta name="description" content="Answer a few questions and see the city, county, state and federal housing programs you might qualify for in Chicago, with what each pays, when it's open and where to apply. Nothing you type leaves your browser.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -235,7 +236,7 @@ function nextDate(m, d){ const now = new Date(), y = now.getFullYear(); let t = 
 function remindIcs(p){
   const [m, d, txt] = p.remind, t = nextDate(m, d), pad = n => String(n).padStart(2, "0");
   const day = `${t.getFullYear()}${pad(t.getMonth() + 1)}${pad(t.getDate())}`, nx = new Date(t.getTime() + 864e5), day2 = `${nx.getFullYear()}${pad(nx.getMonth() + 1)}${pad(nx.getDate())}`;
-  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//Grants finder//EN", "BEGIN:VEVENT", `UID:${p.id}-${day}@shapechicago`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//Grants and help//EN", "BEGIN:VEVENT", `UID:${p.id}-${day}@shapechicago`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${day2}`, `SUMMARY:Check if ${p.name} is open`, `DESCRIPTION:${(txt + " " + p.link).replace(/[,;]/g, "\\$&")}`, `URL:${p.link}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"})); a.download = p.id + "-reminder.ics"; document.body.appendChild(a); a.click(); a.remove();
   toast("Reminder for " + t.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}));

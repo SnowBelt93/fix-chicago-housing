@@ -146,7 +146,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     });
   }
   window.scShowAds = () => load().then(render);
-  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Your lot"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/about/","About"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
+  const FOOT = [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/lot/","Zoning and rules"],["/grants/","Grants and help"],["/deal/","Affordable deal check"],["/plans/","Plans people made"],["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"],["/about/","About"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand and page links */
     document.querySelectorAll("footer[data-sc-foot]").forEach(el => {
@@ -391,7 +391,7 @@ window.scMap = {
    linking the three, each carrying ?q=<address>. Pages call window.scSetAddr(label) when someone picks an address; the address is
    kept in this browser (localStorage "sc-addr") so the next tab opens on it. */
 (function(){
-  const TABS = [["/lot/", "Zoning and rules"], ["/grants/", "Grants and help"], ["/deal/", "Deal check"]];
+  const TABS = [["/lot/", "Zoning and rules"], ["/grants/", "Grants and help"], ["/deal/", "Affordable deal check"]];
   const get = () => { try { return localStorage.getItem("sc-addr") || ""; } catch(e){ return ""; } };
   function draw(){
     const a = get();
@@ -405,4 +405,17 @@ window.scMap = {
   window.scSetAddr = label => { if (!label) return; try { localStorage.setItem("sc-addr", label); } catch(e){} draw(); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", draw); else draw();
   addEventListener("pageshow", draw);
+})();
+
+/* Skip link: the first Tab on any page jumps past the header to the page's content (main, or the tool panel on map pages). */
+(function(){
+  function add(){
+    if (document.querySelector(".sc-skip")) return;
+    const t = document.querySelector("main, #panel, aside#panel, .sheet, .panel, [role=main]"); if (!t) return;
+    if (!t.id) t.id = "sc-main"; if (!t.hasAttribute("tabindex")) t.setAttribute("tabindex", "-1");
+    const a = document.createElement("a"); a.className = "sc-skip"; a.href = "#" + t.id; a.textContent = "Skip to content";
+    a.addEventListener("click", e => { e.preventDefault(); t.focus({preventScroll:false}); t.scrollIntoView({block:"start"}); });
+    document.body.prepend(a);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
 })();

@@ -178,6 +178,7 @@ def page(slug, title, desc, main):
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title) + ' · ' if slug else ''}Progress · Shape Chicago</title>
 <meta name="description" content="{esc(desc)}">
@@ -756,7 +757,7 @@ def decisions_index():
     h1 = 'Votes coming up on Chicago’s money, homes and transit.'
     body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>{h1}</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>'
             f'<div class="strip c2">{cards}</div><p class="fine note">Bills in Springfield have their own page: <a href="/progress/springfield/">In Springfield ›</a></p>')
-    return page('decisions', 'Decisions', h1, body)
+    return page('decisions', 'Decisions coming up', h1, body)
 
 # ---------------------------------------------------------------- overview
 def overview():
