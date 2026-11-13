@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155517
+     "count": 155520
     },
     {
      "value": "Committee on Finance",
-     "count": 13899
+     "count": 13908
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10614
+     "count": 10627
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118273
+     "count": 118286
     },
     {
      "value": "Claim",
-     "count": 29694
+     "count": 29702
     },
     {
      "value": "Resolution",
@@ -186,7 +186,7 @@
     },
     {
      "value": "Order",
-     "count": 9267
+     "count": 9268
     },
     {
      "value": "Appointment",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 635
+     "count": 638
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167354
+     "count": 167356
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2221
+     "count": 2243
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 100
+     "count": 101
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29987
+     "count": 29994
     },
     {
      "value": "Reilly, Brendan",
@@ -288,7 +288,7 @@
     },
     {
      "value": "Quinn, Marty",
-     "count": 3350
+     "count": 3359
     },
     {
      "value": "Smith, Michele",
@@ -323,12 +323,12 @@
      "count": 2290
     },
     {
-     "value": "Laurino, Margaret",
-     "count": 2181
+     "value": "Dowell, Pat",
+     "count": 2184
     },
     {
-     "value": "Dowell, Pat",
-     "count": 2180
+     "value": "Laurino, Margaret",
+     "count": 2181
     },
     {
      "value": "Coleman, Stephanie D.",
@@ -504,7 +504,7 @@
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 747
+     "count": 748
     },
     {
      "value": "Suarez, Regner Ray",
@@ -524,7 +524,7 @@
     },
     {
      "value": "Lee, Nicole T.",
-     "count": 596
+     "count": 598
     },
     {
      "value": "Cullerton, Timothy M.",
@@ -576,7 +576,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 394
+     "count": 395
     },
     {
      "value": "Thomas, Latasha R.",
@@ -704,7 +704,7 @@
     },
     {
      "value": "Yancy, Desmon C.",
-     "count": 78
+     "count": 79
     },
     {
      "value": "Lyle, Freddrenna",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169848
+     "count": 169872
     },
     {
      "value": "YES",
-     "count": 12140
+     "count": 12141
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7596
+     "count": 7621
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30005
+     "count": 30012
     },
     {
      "value": "42",
@@ -912,7 +912,7 @@
     },
     {
      "value": "13",
-     "count": 3470
+     "count": 3479
     },
     {
      "value": "43",
@@ -920,7 +920,7 @@
     },
     {
      "value": "11",
-     "count": 3352
+     "count": 3354
     },
     {
      "value": "25",
@@ -988,7 +988,7 @@
     },
     {
      "value": "31",
-     "count": 1977
+     "count": 1978
     },
     {
      "value": "37",
@@ -1028,7 +1028,7 @@
     },
     {
      "value": "06",
-     "count": 1627
+     "count": 1628
     },
     {
      "value": "41",
@@ -1056,7 +1056,7 @@
     },
     {
      "value": "05",
-     "count": 1274
+     "count": 1275
     },
     {
      "value": "20",
@@ -1084,7 +1084,7 @@
     },
     {
      "value": "Finance",
-     "count": 62
+     "count": 66
     },
     {
      "value": "Budget",
@@ -1169,15 +1169,15 @@
     },
     {
      "value": "Referred",
-     "count": 1850
+     "count": 1870
     },
     {
      "value": "Placed on File",
-     "count": 1658
+     "count": 1660
     },
     {
      "value": "Direct Introduction",
-     "count": 295
+     "count": 297
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1193,7 +1193,7 @@
     },
     {
      "value": "Accepted",
-     "count": 97
+     "count": 98
     },
     {
      "value": "Recommended to Pass",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163755
+     "count": 163780
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181988,
-  "pages": 181988
+  "count": 182013,
+  "pages": 182013
  }
 }
