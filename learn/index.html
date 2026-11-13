@@ -79,6 +79,10 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 .out b{color:var(--sc-ink)}
 .out .big{display:block;font-size:30px;font-weight:700;color:var(--sc-ink);line-height:1.1;margin-bottom:4px}
 .good{color:#1f7a45}.bad{color:#b3261e}
+.dstack{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:14px 0 8px;border:1px solid var(--sc-line)}.dstack span{display:block;height:100%;transition:width .4s}
+.dkey{list-style:none;padding:0;margin:0;display:grid;gap:4px;font-size:15px}.dkey li{display:flex;gap:8px;align-items:baseline}.dkey i{width:12px;height:12px;border-radius:3px;flex:none;transform:translateY(1px)}.dkey b{margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:8px}
+@media (prefers-reduced-motion:reduce){.dstack span{transition:none}}
+
 .cards3 .ic .vote button.on{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
 .lotview{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:22px;align-items:center;margin-top:12px}
 .lotpic{position:relative;aspect-ratio:900/633;border-radius:14px;background:linear-gradient(180deg,#f6f8f5,#e8ede7);overflow:hidden}
@@ -121,7 +125,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main class="wrap">
-  <div class="intro"><h1>Learn by playing with it</h1><p>Six short chapters, twelve questions. Start with why Chicago is short on homes, then the rules that shape what gets built, who decides, how transit is built and paid for, and how the city got built in the first place. Guess first, then move the sliders. Every number comes from a source you can check.</p>
+  <div class="intro"><h1>Learn by playing with it</h1><p>Six short chapters, thirteen questions. Start with why Chicago is short on homes, then the rules that shape what gets built, who decides, how transit is built and paid for, and how the city got built in the first place. Guess first, then move the sliders. Every number comes from a source you can check.</p>
     <div class="involve">
       <a href="https://www.chicago.gov/city/en/depts/mayor/iframe/lookup_ward_and_alderman.html" target="_blank" rel="noopener"><b>Find your alderperson</b><span>They decide most zoning changes in your ward</span></a>
       <a href="https://chicityclerkelms.chicago.gov/Search/Meeting" target="_blank" rel="noopener"><b>See what's up for a vote</b><span>City Council's zoning committee agendas</span></a>
@@ -129,7 +133,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
       <a href="https://www.transitchicago.com/betterstreetsforbuses/" target="_blank" rel="noopener"><b>Weigh in on bus lanes</b><span>CTA and CDOT's Better Streets for Buses</span></a>
     </div>
   </div>
-  <nav class="toc" aria-label="Topics"><h3>Housing: the problem</h3><ul><li><a href="#shortage">How fast do we need to build?</a></li><li><a href="#rents">Does building lower rent?</a></li></ul><h3>Housing: the rules</h3><ul><li><a href="#zoning">How many homes fit on a lot?</a></li><li><a href="#illegal">Legal or illegal?</a></li></ul><h3>Housing: who decides, and who pays</h3><ul><li><a href="#prerogative">Who really decides?</a></li><li><a href="#aro">How much should be affordable?</a></li><li><a href="#megaprojects">How do megaprojects get paid for?</a></li></ul><h3>Transit: what it costs and who pays</h3><ul><li><a href="#modes">What can $2 billion buy?</a></li><li><a href="#funding">Who pays for a new line?</a></li></ul><h3>Transit: who runs it, and who rides</h3><ul><li><a href="#nita">What did NITA prevent?</a></li><li><a href="#riders">Which line gets riders?</a></li></ul><h3>How Chicago got built</h3><ul><li><a href="#history">When did your block go up?</a></li></ul></nav>
+  <nav class="toc" aria-label="Topics"><h3>Housing: the problem</h3><ul><li><a href="#shortage">How fast do we need to build?</a></li><li><a href="#rents">Does building lower rent?</a></li></ul><h3>Housing: the rules</h3><ul><li><a href="#zoning">How many homes fit on a lot?</a></li><li><a href="#illegal">Legal or illegal?</a></li></ul><h3>Housing: who decides, and who pays</h3><ul><li><a href="#prerogative">Who really decides?</a></li><li><a href="#aro">How much should be affordable?</a></li><li><a href="#deal">Who pays for an affordable building?</a></li><li><a href="#megaprojects">How do megaprojects get paid for?</a></li></ul><h3>Transit: what it costs and who pays</h3><ul><li><a href="#modes">What can $2 billion buy?</a></li><li><a href="#funding">Who pays for a new line?</a></li></ul><h3>Transit: who runs it, and who rides</h3><ul><li><a href="#nita">What did NITA prevent?</a></li><li><a href="#riders">Which line gets riders?</a></li></ul><h3>How Chicago got built</h3><ul><li><a href="#history">When did your block go up?</a></li></ul></nav>
   <div>
 <div class="part" id="part-why"><h2>Housing: the problem</h2><p>Why rents keep rising, and how far Chicago is from building enough.</p></div>
 <section class="topic" id="shortage"><h2>How fast does Chicago need to build?</h2><img class="art" src="/shape/art/learn/shortage.webp" width="1671" height="720" alt="" loading="lazy" decoding="async">
@@ -194,6 +198,20 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <p>Projects of 10 or more homes that need a zoning change, city land or city money must rent 10–20% of units below market. A higher share means more affordable homes in each building, but some buildings stop making financial sense. Studies of real cities mostly find little or no drop in building; a Los Angeles model finds a bigger one. The numbers above are the housing tool's middle estimate.</p>
 <p class="try"><a href="/housing/">Turn the dial in Policies</a><span>And watch the homes and affordable homes change.</span></p>
 <p class="src">Sources: <a href="https://www.chicago.gov/city/en/sites/affordable-requirements-ordinance/home/for-developers.html" target="_blank" rel="noopener">City of Chicago, ARO</a> · <a href="https://ternercenter.berkeley.edu/wp-content/uploads/2024/04/Inclusionary-Zoning-Paper-April-2024-Final.pdf" target="_blank" rel="noopener">Terner Center, 2024</a></p></section>
+<section class="topic" id="deal"><h2>Who pays for an affordable building?</h2>
+<div class="play" id="pDeal">
+  <p class="q">A new 50-home building in Chicago costs about $37 million. Its rents are set low on purpose. How much of the cost can those rents pay back?</p>
+  <div class="chips" id="dealChips"><button type="button" data-g="half">About half</button><button type="button" data-g="quarter">About a quarter</button><button type="button" data-g="tenth">Less than a tenth</button></div>
+  <div class="out" id="dealOut"></div>
+  <div id="dealBox" hidden>
+    <div class="chips" id="dealCr" role="radiogroup" aria-label="Tax credit"><button type="button" role="radio" aria-checked="false" data-c="9">9% credits (competitive)</button><button type="button" role="radio" aria-checked="false" data-c="4">4% credits with bonds</button></div>
+    <div class="dstack" id="dealBar" role="img"></div>
+    <ul class="dkey" id="dealKey"></ul>
+  </div>
+</div>
+<p>The rents in a tax credit building are capped so people earning about 60% of the area median or less can afford them. That leaves enough to pay back only a small mortgage. Most of the money comes from investors who buy federal tax credits, and the rest, the gap, has to come from public sources the developer competes for: the city's housing money, TIF, state loans and others. Interest rates matter less than you might think here, because the mortgage is such a small slice.</p>
+<p class="try"><a href="/deal/">Try a real address in the deal check</a><span>Change the homes, the rents and every assumption, and see the gap move.</span></p>
+<p class="src">Numbers: the deal check's defaults for a 50-home, five-story building at 3251 W. Division St., Nov. 2026 (a real 44-home building there cost $36 million). Sources: <a href="https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html" target="_blank" rel="noopener">City of Chicago, 2025 Qualified Allocation Plan</a> · <a href="https://chicagoyimby.com/2026/05/city-council-approves-affordable-development-in-humboldt-park.html" target="_blank" rel="noopener">Chicago YIMBY, May 2026</a></p></section>
 <section class="topic" id="megaprojects"><h2>How do megaprojects get paid for?</h2><img class="art" src="/shape/art/learn/megaprojects.webp" width="1693" height="720" alt="" loading="lazy" decoding="async">
 <div class="play" id="pTif">
   <p class="q">With tax increment financing, an area's property taxes are frozen at today's level for 23 years, and the growth pays for roads and utilities there. Say a site pays $10 million a year today. How fast will its taxes grow?</p>
@@ -291,6 +309,16 @@ function rents(){ const N = +$("rtN").value, r = e => 1440 * Math.pow(1 + N / 12
 $("rtN").oninput = rents; rents();
 // prerogative
 pick($("prChips"), "a", a => { $("prOut").innerHTML = a === "1" ? `<b class="good">Right: usually just one.</b> Your alderperson. The rest of the Council almost always follows the local alderperson on zoning in their ward.` : `<b class="bad">On paper, yes. In practice, usually just one:</b> your alderperson. The Council almost always defers on zoning in their ward.`; });
+
+// Who pays for an affordable building: the deal check's defaults, 50 homes, five stories, 7.2% mortgage (Nov. 2026)
+const DEAL = {9:[["Mortgage the rents can repay", 2.45, "#2b5da0"], ["Tax credit investors", 14.9, "#5f8fcf"], ["Developer waits for part of its fee", 1.25, "#a9c2e6"], ["The gap: public money it must win", 18.2, "#e4002b"]],
+              4:[["Mortgage the rents can repay", 2.45, "#2b5da0"], ["Tax credit investors", 11.6, "#5f8fcf"], ["Developer waits for part of its fee", 1.25, "#a9c2e6"], ["The gap: public money it must win", 21.6, "#e4002b"]]};
+function drawDeal(c){ const L = DEAL[c], T = L.reduce((t, x) => t + x[1], 0);
+  $("dealBar").innerHTML = L.map(x => `<span style="width:${(x[1] / T * 100).toFixed(1)}%;background:${x[2]}"></span>`).join("");
+  $("dealBar").setAttribute("aria-label", L.map(x => `${x[0]}: ${Math.round(x[1] / T * 100)}%`).join(", "));
+  $("dealKey").innerHTML = L.map(x => `<li><i style="background:${x[2]}"></i>${x[0]}<b>$${x[1].toFixed(1)}M · ${Math.round(x[1] / T * 100)}%</b></li>`).join(""); }
+pick($("dealChips"), "g", g => { $("dealOut").innerHTML = g === "tenth" ? `<b class="good">Right: about 7%.</b> The rents cover a mortgage of about $2.5 million on a $37 million building.` : `<b class="bad">Less than that: about 7%.</b> The rents cover a mortgage of about $2.5 million on a $37 million building.`; $("dealBox").hidden = false; if (!$("dealCr").querySelector(".on")) $("dealCr").querySelector('[data-c="9"]').click(); });
+pick($("dealCr"), "c", drawDeal);
 // ARO: the housing tool's middle estimate (none 1.2, 10% 1.1, 20% 1.0, 30% 0.95 times the homes built at 20%)
 const ARO = {0:1.2, 10:1.1, 20:1.0, 30:0.95};
 pick($("aroChips"), "s", v => { const k = ARO[v], homes = 100 * k, aff = homes * v / 100;
