@@ -418,7 +418,7 @@ function projects(D){
     const w = $('#wardSel').value;
     const list = D.projects.filter(p => !w || p.ward === w);
     $('#projCount').textContent = `${fmt(list.length)} buildings, ${fmt(list.reduce((a, p) => a + p.homes, 0))} homes`;
-    $('#projTable').innerHTML = `<div class="scroll" style="max-height:none;border:0"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${list.slice(0, projN).map(p => `<tr><td style="white-space:nowrap">${dstr(p.date)}</td><td>${esc(p.addr)}<div class="what">${esc(p.what)}</div></td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td><span class="stamp st-${p.stage}">${p.partial ? 'Foundation' : STAGE[p.stage]}</span></td></tr>`).join('')}</tbody></table></div>`;
+    $('#projTable').innerHTML = `<div class="scroll" style="max-height:none;border:0"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${list.slice(0, projN).map(p => `<tr><td style="white-space:nowrap">${dstr(p.date)}</td><td translate="no">${esc(p.addr)}<div class="what" translate="no" lang="en">${esc(p.what)}</div></td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td><span class="stamp st-${p.stage}">${p.partial ? 'Foundation' : STAGE[p.stage]}</span></td></tr>`).join('')}</tbody></table></div>`;
     $('#moreBtn').style.display = list.length > projN ? '' : 'none';
   };
   $('#wardSel').onchange = () => { projN = 25; draw(); };
@@ -428,7 +428,7 @@ function projects(D){
 
 function zoning(D){
   const el = $('#zoneTable'); if (!el) return;
-  el.innerHTML = `<table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th><th>Permit yet?</th></tr></thead><tbody>${D.zoning.recent.map(z => `<tr><td style="white-space:nowrap">${z.final ? dstr(z.final) : ''}</td><td>${esc(z.title)}<div class="what">${z.mid ? `<a href="https://chicityclerkelms.chicago.gov/Matter/?matterId=${encodeURIComponent(z.mid)}" target="_blank" rel="noopener">${esc(z.rec)}</a>` : esc(z.rec)}</div></td><td class="num">${fmt(z.homes)}</td><td>${z.first_permit ? `<span class="stamp st-finished">Yes, ${dstr(z.first_permit)}</span>` : '<span class="stamp st-none">Not yet</span>'}</td></tr>`).join('')}</tbody></table>`;
+  el.innerHTML = `<table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th><th>Permit yet?</th></tr></thead><tbody>${D.zoning.recent.map(z => `<tr><td style="white-space:nowrap">${z.final ? dstr(z.final) : ''}</td><td translate="no">${esc(z.title)}<div class="what">${z.mid ? `<a href="https://chicityclerkelms.chicago.gov/Matter/?matterId=${encodeURIComponent(z.mid)}" target="_blank" rel="noopener">${esc(z.rec)}</a>` : esc(z.rec)}</div></td><td class="num">${fmt(z.homes)}</td><td>${z.first_permit ? `<span class="stamp st-finished">Yes, ${dstr(z.first_permit)}</span>` : '<span class="stamp st-none">Not yet</span>'}</td></tr>`).join('')}</tbody></table>`;
 }
 
 // near you: your ward (from your location, a pick, or a street search) and what's permitted around you
@@ -449,7 +449,7 @@ function nearYou(D){
       <div class="hn"><b>${fmt(w.homes)}</b><span>homes permitted since ${y0}: #${ranked.indexOf(w.ward) + 1} of 50 wards</span></div>
       <div class="hn"><b>${fmt(w.last12)}</b><span>in the last 12 months</span></div>${close}
     </div>
-    ${list.length ? `<div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Status</th></tr></thead><tbody>${list.map(p => `<tr><td>${dstr(p.date)}</td><td>${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="lede">No buildings of 5+ homes permitted here since ' + y0 + '.</p>'}
+    ${list.length ? `<div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Status</th></tr></thead><tbody>${list.map(p => `<tr><td>${dstr(p.date)}</td><td translate="no">${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="lede">No buildings of 5+ homes permitted here since ' + y0 + '.</p>'}
     <div class="doit"><b>Want more homes here?</b> Zoning changes in your ward go through your alderperson and City Council's zoning committee. <a href="https://www.chicago.gov/city/en/depts/mayor/iframe/lookup_ward_and_alderman.html" target="_blank" rel="noopener">Find your alderperson</a>, see what's on the <a href="https://chicityclerkelms.chicago.gov/Search/Meeting" target="_blank" rel="noopener">zoning committee agenda</a>, or <a href="/housing/">try rezoning your neighborhood</a>.</div>`;
   };
   $('#nearWard').onchange = e => { $('#nearQ').value = ''; showWard(e.target.value); };
@@ -457,8 +457,8 @@ function nearYou(D){
     const q = e.target.value.trim().toLowerCase(); $('#nearWard').value = '';
     if (q.length < 3){ out.innerHTML = ''; return; }
     const ps = D.projects.filter(p => p.addr.toLowerCase().includes(q)).slice(0, 12), zs = ((D.zoning || {}).recent || []).filter(z => (z.title || '').toLowerCase().includes(q)).slice(0, 8);
-    out.innerHTML = (ps.length ? `<h3 class="nh">Buildings permitted</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${ps.map(p => `<tr><td>${dstr(p.date)}</td><td>${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '') +
-      (zs.length ? `<h3 class="nh">Zoning changes passed</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th></tr></thead><tbody>${zs.map(z => `<tr><td>${dstr(z.final)}</td><td>${esc(z.title)}</td><td class="num">${fmt(z.homes)}</td></tr>`).join('')}</tbody></table></div>` : '') ||
+    out.innerHTML = (ps.length ? `<h3 class="nh">Buildings permitted</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Permitted</th><th>Address</th><th class="num">Homes</th><th>Ward</th><th>Status</th></tr></thead><tbody>${ps.map(p => `<tr><td>${dstr(p.date)}</td><td translate="no">${esc(p.addr)}</td><td class="num">${fmt(p.homes)}</td><td>${esc(p.ward)}</td><td>${STAGE[p.stage] || ''}</td></tr>`).join('')}</tbody></table></div>` : '') +
+      (zs.length ? `<h3 class="nh">Zoning changes passed</h3><div class="scroll" style="max-height:none"><table><thead><tr><th>Passed</th><th>Where</th><th class="num">Homes planned</th></tr></thead><tbody>${zs.map(z => `<tr><td>${dstr(z.final)}</td><td translate="no">${esc(z.title)}</td><td class="num">${fmt(z.homes)}</td></tr>`).join('')}</tbody></table></div>` : '') ||
       `<p class="lede">Nothing of 5+ homes on a street matching “${esc(q)}” since ${y0}.</p>`;
   };
   $('#nearGeo').onclick = () => {

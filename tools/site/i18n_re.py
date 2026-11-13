@@ -23,3 +23,15 @@ def P(en, *tr):
         for k in range(n, 0, -1): t = t.replace('#' + str(k), '$' + str(k)).replace('@' + str(k), '[[$' + str(k) + ']]')
         out.append(t)
     return [pat] + out
+
+# Q(english, spanish, chinese, polish): a pattern row from a script template, with {} where the page fills something in.
+# In the translations write {1}, {2}… for those pieces in order; each piece is translated too when it can be.
+def Q(en, *tr):
+    parts = en.split('{}'); n = len(parts) - 1
+    pat = '^' + '(.+?)'.join(_re.escape(p) for p in parts) + '$'
+    out = []
+    for t in tr:
+        t = t.replace('$', '$$')
+        for k in range(n, 0, -1): t = t.replace('{' + str(k) + '}', '[[$' + str(k) + ']]')
+        out.append(t)
+    return [pat] + out
