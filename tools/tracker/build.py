@@ -200,6 +200,10 @@ def main():
     zrecent = [dict(rec=z['rec'], mid=z['mid'], final=z['final'], title=re.sub(r'\s*-\s*App(?:lication)? No\.?.*$', '', re.sub(r'^Zoning Reclassification Map No\. [0-9A-Z-]+ at ', '', z['title']))[:110], homes=z['homes'],
                     permitted=sum(j['homes'] for j in z['projects']) or 0, first_permit=str(min(j['date'] for j in z['projects'])) if z['projects'] else None)
                for z in sorted(Z, key=lambda z: z['final'] or '', reverse=True) if z['passed'] and z['homes'] and z['final'] >= str(last.year - 2)]
+    # every zoning change passed since 2021 whose application gives a home count: [date passed, homes, first permit or None, homes permitted, homes finished]
+    zfollow = [[z['final'], z['homes'], str(min(j['date'] for j in z['projects'])) if z['projects'] else None,
+                min(z['homes'], sum(j['homes'] for j in z['projects'])), sum(j['homes'] for j in z['projects'] if j['stage'] == 'finished')]
+               for z in sorted(Z, key=lambda z: z['final'] or '') if z['passed'] and z['homes'] and (z['final'] or '') >= '2021']
     # time from zoning approval to first permit, for matched projects
     lags = sorted((min(j['date'] for j in z['projects']) - datetime.date.fromisoformat(z['final'])).days
                   for z in Z if z['passed'] and z['final'] and z['projects'] and z['homes'])
@@ -226,7 +230,7 @@ def main():
                 ytd=dict(year=last.year, homes=ytd_now, prev=ytd_prev, days=day_of_year, needed_so_far=round(CLOSE * day_of_year / 365)),
                 last12=dict(homes=sum(j['homes'] for j in recent12), projects=len(recent12), big=sum(j['homes'] for j in recent12 if j['homes'] >= 5)),
                 years=years, wards=wards, areas=areas, projects=plist, points=pts,
-                zoning=dict(years=zyears, recent=zrecent[:150], with_text=len(texted), lag_days_median=lags[len(lags) // 2] if lags else None, lag_n=len(lags)),
+                zoning=dict(years=zyears, recent=zrecent[:150], follow=zfollow, with_text=len(texted), lag_days_median=lags[len(lags) // 2] if lags else None, lag_n=len(lags)),
                 accuracy=acc, unknown_recent=unknown, geo=geo())
     json.dump(data, open(os.path.join(OUT, 'data.json'), 'w'), separators=(',', ':'))
     print('tracker/data.json', os.path.getsize(os.path.join(OUT, 'data.json')), 'bytes; through', last, '; ytd', ytd_now, 'vs', ytd_prev, '; zoning with text', len(texted))
