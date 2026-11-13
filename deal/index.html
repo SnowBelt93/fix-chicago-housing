@@ -187,7 +187,9 @@ details.fold[open]>summary{margin-bottom:12px}
   <fieldset><div class="row2">
     <div><label class="lab" for="homes">Homes</label><input type="number" id="homes" min="4" max="400" step="1" inputmode="numeric"></div>
     <div><label class="lab" for="land">Land price <span class="sub">($)</span></label><input type="number" id="land" min="0" step="1000" inputmode="numeric" placeholder="estimate"></div>
-  </div><p class="note" id="homesNote"></p></fieldset>
+  </div><p class="note" id="homesNote"></p>
+  <label class="lab" for="btype" style="margin-top:10px">Building</label>
+  <select id="btype"><option value="auto">Pick from the number of homes</option><option value="flats">Three-story flats, no elevator</option><option value="low">Four-story walk-up or small elevator building</option><option value="mid">Five- to seven-story building</option><option value="high">High-rise</option></select></fieldset>
   <fieldset><div class="row2">
     <div><label class="lab" for="rate">Mortgage rate <span class="sub">(%)</span></label><input type="number" id="rate" min="3" max="12" step="0.05" inputmode="decimal"></div>
     <div><label class="lab" for="crate">Construction loan <span class="sub">(%)</span></label><input type="number" id="crate" min="3" max="14" step="0.05" inputmode="decimal"></div>
@@ -247,7 +249,7 @@ function toast(t){ const e = $("toast"); e.textContent = t; e.classList.add("on"
 const QAP = "https://www.chicago.gov/content/dam/city/depts/doh/qap/2025/2025%20QAP%20Final.pdf";
 const USG = "https://www.chicago.gov/content/dam/city/depts/doh/qap/2025/Underwriting%20Standards%20Guide%20Final.pdf";
 const CITY = {credit9Max:1.8e6, gapMaxShare:0.20, devFeeCap:2.5e6, dscr:1.15, vacancy:0.07, opex:9500, reserve:350, contNew:0.05, rentShare:0.95, avgCap:57, boost:1.30, cityAvgPerHome:217504, tifAvgPerHome:136340};
-const KIND = {flats:{c:320, n:"three-story flats, no elevator", m:12}, low:{c:360, n:"four-story walk-up or small elevator building", m:16}, mid:{c:400, n:"five- to seven-story building", m:20}, high:{c:460, n:"high-rise", m:26}};
+const KIND = {flats:{c:340, n:"three-story flats, no elevator", m:12}, low:{c:400, n:"four-story walk-up or small elevator building", m:16}, mid:{c:450, n:"five- to seven-story building", m:20}, high:{c:510, n:"high-rise", m:26}};
 /* market rates, read by hand: Northmarq "Rates and spreads", Nov. 11, 2026 (30-day average SOFR 3.91%; HUD 221(d)(4) 6.75–7.25% before the
    0.25% mortgage insurance premium; Freddie Mac 15-year fixed 6.34–6.54%) */
 const MKT = {sofr:3.91, date:"Nov. 11, 2026", src:"https://www.northmarq.com/insights/rates-spreads", hud:"6.75–7.25%", mip:0.25, fre:"6.34–6.54%"};
@@ -367,7 +369,7 @@ function model(opt){
   opt = opt || {};
   const S = SITE, pbv = +$("pbv").value, units = unitList();
   const N = Math.max(1, units.reduce((t, u) => t + u.n, 0));
-  const kind = N <= 6 ? "flats" : N <= 24 ? "low" : N <= 90 ? "mid" : "high"; KINDNOW = kind;
+  const bt = $("btype").value, kind = bt !== "auto" && KIND[bt] ? bt : N <= 6 ? "flats" : N <= 24 ? "low" : N <= 90 ? "mid" : "high"; KINDNOW = kind;
   const P = k => pv(k, kind);
   const [rate0, crate] = rates(), rate = rate0 + (opt.rateBump || 0);
   // building
@@ -559,7 +561,7 @@ function run(){
   <div class="card"><details class="fold"><summary><h2>What it might cost</h2></summary>
     <p class="h2s">${fmt(M.N)} homes, about ${fmt(M.net)} sq ft each. Total ${mill(M.tdc)}, ${money(M.tdc / M.N)} a home (range ${money(M.tdc / M.N * (1 - BAND))} to ${money(M.tdc / M.N * (1 + BAND))}).</p>
     <table><thead><tr><th>Cost</th><th class="n">Total</th><th class="n">A home</th><th>How</th></tr></thead><tbody>${costRows(M).map(r => `<tr><td>${r[0]}</td><td class="n">${mill(r[1])}</td><td class="n">${money(r[1] / M.N)}</td><td>${esc(r[2])}</td></tr>`).join("")}<tr class="tot"><td>Total</td><td class="n">${mill(M.tdc)}</td><td class="n">${money(M.tdc / M.N)}</td><td>City review trigger: $750,000 a home</td></tr></tbody></table>
-    <p class="note">For comparison: the 15 projects the city funded in April 2026 average about $581,000 a home (new and preservation); city-supported new construction averaged $747,000 in 2023.</p></details></div>
+    <p class="note">For comparison: the 15 projects the city funded in April 2026 average about $581,000 a home (new and preservation); city-supported new construction averaged $747,000 in 2023. Recent new buildings: 44 homes at 3251 W. Division, five stories, $36 million ($818,000 a home); 51 homes at 132 N. Kedzie, five stories, $41 million ($804,000); 183 homes in LeClaire Courts phase one, two six-story buildings with child care and shops, about $127 million ($694,000) (<a href="https://chicagoyimby.com/2026/05/city-council-approves-affordable-development-in-humboldt-park.html" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://chicagoyimby.com/?p=90547" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://chicagoyimby.com/2025/07/funding-approved-for-leclaire-courts-in-garfield-ridge.html" target="_blank" rel="noopener">Chicago YIMBY</a>).</p></details></div>
   <div class="card"><details class="fold"><summary><h2>Rents used</h2></summary><table><thead><tr><th>Home</th><th>For</th><th class="n">Homes</th><th class="n">Rent a month</th></tr></thead><tbody>${M.units.filter(u => u.n >= 0.5).map(u => `<tr><td>${u.b ? u.b + "-bedroom" : "Studio"}</td><td>${u.p ? u.p + "% of AMI" + (u.v ? ", voucher" : "") : "Market rate"}</td><td class="n">${fmt(u.n)}</td><td class="n">${money(u.rent)}</td></tr>`).join("")}</tbody></table>
     <p class="note">Tax credit rents are 30% of the income limit for 1.5 people per bedroom (HUD's method), at ${Math.round(pv("rentShare") * 100)}% (the city's underwriting rule), less a utility allowance by size. ${M.fmr ? `Voucher and market rents use HUD's Small Area Fair Market Rent for ZIP ${esc(M.zip)} (fiscal ${SAFMR.fy}), less the same allowance; CHA sets the real voucher rent, and HUD caps it at 110% of the fair market rent.` : M.units.some(u => !u.p || u.v) ? "Market rents come from the census tract's median rent, scaled by bedroom (assumption)." : ""}</p></details></div>
   <div class="card noprint"><h2>Scenarios</h2><p class="h2s">Save versions of this deal and compare them side by side. They stay in this browser.</p><div id="scen"></div></div>
@@ -569,7 +571,7 @@ function run(){
     <li>Mortgage: 10-year Treasury ${LIM.ust10.toFixed(2)}% on ${esc(LIM.ust10date)} (<a href="https://home.treasury.gov/resource-center/data-chart-center/interest-rates" target="_blank" rel="noopener">U.S. Treasury</a>) plus 2.25 points (assumption, in line with ${MKT.date} quotes of ${MKT.hud} for HUD 221(d)(4) before its ${MKT.mip}% premium and ${MKT.fre} for Freddie Mac 15-year loans, <a href="${MKT.src}" target="_blank" rel="noopener">Northmarq</a>). Construction loan: 30-day average SOFR ${MKT.sofr}% plus 3 points; 55% drawn on average while building and fully drawn while leasing up; 1.5% fee; 1% fee on the mortgage (assumptions).</li>
     <li>IHDA soft money (Illinois Affordable Housing Trust Fund $55M, HOME $15.7M, National Housing Trust Fund $6.7M statewide in 2026, <a href="${IHDA_PLAN}" target="_blank" rel="noopener">2026 Annual Comprehensive Housing Plan</a>): capped at 10% of total cost for City of Chicago projects, repaid from 25% of surplus cash (<a href="${IHDA_USG}" target="_blank" rel="noopener">IHDA Underwriting Standards Guide, Dec. 2025</a>). IHDA's Chicago 9% set-aside and $1.7M cap: <a href="${IHDA_QAP}" target="_blank" rel="noopener">IHDA 2026 Qualified Allocation Plan</a>.</li>
     <li>Tax credit price default $0.83 a credit (near the national median of $0.827 in Aug–Sept 2026, <a href="https://www.taxcreditadvisor.com/wp-content/uploads/2026/11/TCA-Housing-Tax-Credit-Monitor_November_2026_final.pdf" target="_blank" rel="noopener">Tax Credit Advisor</a>). 4% bond test at 25% of basis for bonds issued after 2025 (<a href="https://www.nixonpeabody.com/-/media/files/alerts/2025/07/lihtc_and_obbba.pdf" target="_blank" rel="noopener">Nixon Peabody</a>).</li>
-    <li>Defaults that are our assumptions (every one can be changed under Assumptions): construction cost per sq ft by building type ($320 flats, $360 four-story, $400 five- to seven-story, $460 high-rise; IHDA's Chicago limit for tax credit new construction is $420), home sizes, 82% rentable share, 17% soft costs with a $400,000 floor, utility allowances, building and lease-up time, construction loan size, deferring up to half the fee, $25,000 a home for land when no sales are known. Set so a typical 50-home mid-rise lands between the city's 2026 round average and its 2023 new-construction average (<a href="https://chicagoyimby.com/2026/04/city-awards-300-million-to-housing-projects-city-wide.html" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://citythatworks.substack.com/p/construction-costs-for-affordable" target="_blank" rel="noopener">A City That Works</a>).</li>
+    <li>Defaults that are our assumptions (every one can be changed under Assumptions): construction cost per sq ft by building type ($340 flats, $400 four-story, $450 five- to seven-story, $510 high-rise; IHDA's Chicago limit for tax credit new construction is $420, and recent city deals run above it), home sizes, 82% rentable share, 17% soft costs with a $400,000 floor, utility allowances, building and lease-up time, construction loan size, deferring up to half the fee, $25,000 a home for land when no sales are known. Set so a typical 50-home mid-rise lands near the city's 2023 new-construction average and a little under recent five-story deals, which often include shops or community rooms (<a href="https://chicagoyimby.com/2026/04/city-awards-300-million-to-housing-projects-city-wide.html" target="_blank" rel="noopener">Chicago YIMBY</a>, <a href="https://citythatworks.substack.com/p/construction-costs-for-affordable" target="_blank" rel="noopener">A City That Works</a>).</li>
     <li>Qualified Census Tracts and Small Area Difficult Development Areas: HUD 2026 and 2027 lists. Opportunity Zones, flood zones, landmarks: the lot tool's maps. Amenities: OpenStreetMap contributors (grocery = supermarkets). Poverty and household incomes: Census ACS 2020–2024, the tract plus the tracts touching it.</li>
     <li>Not modeled: commercial space, parking, environmental cleanup, acquisition of an occupied building, property tax breaks, Davis-Bacon or state prevailing wages, the timing of equity pay-ins.</li></ul></details></div>`;
   $("out").querySelectorAll("[data-act]").forEach(b => b.onclick = () => ACT[b.dataset.act]());
@@ -632,14 +634,14 @@ function setHand(on){
 /* ---------- state in the link and this browser ---------- */
 function state(){
   return {q:SITE ? SITE.label : $("q").value, h:+$("homes").value || 0, land:$("land").value, rate:$("rate").value, crate:$("crate").value, credit:CREDIT,
-          mix:$("mix").value, beds:$("beds").value, pbv:$("pbv").value, chk:["pub", "nfp", "emerg", "ud"].filter(id => $(id).checked), ov:OV, grid:GRID};
+          mix:$("mix").value, beds:$("beds").value, pbv:$("pbv").value, bt:$("btype").value, chk:["pub", "nfp", "emerg", "ud"].filter(id => $(id).checked), ov:OV, grid:GRID};
 }
 function applyState(s){
   if (!s) return;
   if (s.h){ $("homes").value = s.h; $("homes").dataset.auto = "0"; }
   $("land").value = s.land || ""; $("rate").value = s.rate || ""; $("crate").value = s.crate || "";
   CREDIT = s.credit || "auto"; document.querySelectorAll("#credit button").forEach(x => x.setAttribute("aria-pressed", x.dataset.v === CREDIT));
-  if (s.mix) $("mix").value = s.mix; if (s.beds) $("beds").value = s.beds; if (s.pbv) $("pbv").value = s.pbv;
+  if (s.mix) $("mix").value = s.mix; if (s.beds) $("beds").value = s.beds; if (s.pbv) $("pbv").value = s.pbv; $("btype").value = s.bt || "auto";
   ["pub", "nfp", "emerg", "ud"].forEach(id => $(id).checked = (s.chk || []).includes(id));
   OV = s.ov || {}; $("params").querySelectorAll("input").forEach(i => i.value = "");
   GRID = s.grid || null; $("handMix").hidden = !GRID; $("presetMix").hidden = !!GRID; $("homes").disabled = !!GRID;
@@ -739,7 +741,7 @@ function mbar(M, C){
   if (!LIM){ $("out").innerHTML = '<div class="card"><p class="empty">The deal check\'s data is still being prepared.</p></div>'; return; }
   buildDrawer(); syncDrawer();
   document.querySelectorAll("#credit button").forEach(b => b.onclick = () => { CREDIT = b.dataset.v; document.querySelectorAll("#credit button").forEach(x => x.setAttribute("aria-pressed", x === b)); run(); });
-  ["mix", "beds", "pub", "nfp", "emerg", "ud", "pbv"].forEach(id => $(id).addEventListener("change", run));
+  ["mix", "beds", "pub", "nfp", "emerg", "ud", "pbv", "btype"].forEach(id => $(id).addEventListener("change", run));
   $("homes").addEventListener("input", () => { $("homes").dataset.auto = "0"; later(); });
   ["land", "rate", "crate"].forEach(id => $(id).addEventListener("input", later));
   $("mixToggle").onclick = () => setHand(!GRID);
