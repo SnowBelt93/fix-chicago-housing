@@ -16,7 +16,7 @@ T = {
     'Not affiliated with the City of Chicago, CTA, Metra or Pace.': ('与芝加哥市政府、CTA、Metra 和 Pace 均无关。', 'Niezwiązane z miastem Chicago, CTA, Metrą ani Pace.'),
     'Send feedback': ('发送反馈', 'Wyślij uwagi'), 'Feedback': ('反馈', 'Uwagi'), 'Menu': ('菜单', 'Menu'), 'Pages': ('页面', 'Strony'),
     'Close': ('关闭', 'Zamknij'), 'All pages': ('所有页面', 'Wszystkie strony'),
-    'For reporters': ('媒体专区', 'Dla dziennikarzy'), 'Support': ('支持我们', 'Wesprzyj'), 'Privacy': ('隐私', 'Prywatność'), 'Terms': ('条款', 'Warunki'),
+    'For media': ('媒体专区', 'Dla mediów'), 'Support': ('支持我们', 'Wesprzyj'), 'Privacy': ('隐私', 'Prywatność'), 'Terms': ('条款', 'Warunki'),
     "Something wrong, confusing or missing? Say what you'd change.": ('有错误、看不懂或缺了什么？告诉我们你想改什么。', 'Coś jest nie tak, niejasne albo czegoś brakuje? Napisz, co byś zmienił.'),
     'Your note': ('你的留言', 'Twoja wiadomość'), 'Send': ('发送', 'Wyślij'),
     "Notes are anonymous, so we can't reply. Please leave out names and contact details.": ('留言是匿名的，我们无法回复。请不要写姓名或联系方式。', 'Wiadomości są anonimowe, więc nie możemy odpowiedzieć. Nie podawaj nazwisk ani danych kontaktowych.'),
@@ -31,7 +31,7 @@ T = {
     'Embed this chart': ('嵌入这张图表', 'Osadź ten wykres'), 'Embed code': ('嵌入代码', 'Kod do osadzenia'), 'Link to this chart': ('图表链接', 'Link do wykresu'),
     'Copy embed code': ('复制嵌入代码', 'Kopiuj kod'), 'Copy link': ('复制链接', 'Kopiuj link'),
     'Free to use with credit to Shape Chicago. It updates itself when the numbers change.': ('注明 Shape Chicago 即可免费使用。数字变化时会自动更新。', 'Możesz używać za darmo, podając Shape Chicago jako źródło. Aktualizuje się sam, gdy zmieniają się liczby.'),
-    'More charts and how to cite them:': ('更多图表和引用方式：', 'Więcej wykresów i jak je cytować:'), 'For reporters ›': ('媒体专区 ›', 'Dla dziennikarzy ›'),
+    'More charts and how to cite them:': ('更多图表和引用方式：', 'Więcej wykresów i jak je cytować:'), 'For media ›': ('媒体专区 ›', 'Dla mediów ›'),
     'Date passed': ('日期已过', 'Termin minął'), 'Today': ('今天', 'Dziś'), 'Tomorrow': ('明天', 'Jutro'), 'Passed': ('已通过', 'Przyjęte'),
     'Endorse': ('支持', 'Poprzyj'), 'See the plan': ('查看方案', 'Zobacz plan'), 'All plans': ('所有方案', 'Wszystkie plany'),
 }

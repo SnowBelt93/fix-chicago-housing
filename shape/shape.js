@@ -154,7 +154,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
   const FOOT = [["Simulators", [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/plans/","Plans people made"]]],
     ["Your address", [["/lot/","Zoning and rules"],["/grants/","Grants and help"],["/deal/","Affordable deal check"]]],
     ["Follow along", [["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"]]],
-    ["About", [["/about/","About this site"],["/press/","For reporters"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
+    ["About", [["/about/","About this site"],["/press/","For media"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand,
        four columns of page links, and a bottom row (feedback, languages, support) that later scripts fill (.sc-fextra) */
@@ -510,4 +510,48 @@ window.scMap = {
     new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1){ up(n.parentNode || n); popin(n);
       const g = n.matches && n.matches("b.good") ? n : n.querySelector && n.querySelector("b.good"); if (g && /^Right/.test(g.textContent)) window.scBurst(g); } }))).observe(document.body, {childList: true, subtree: true}); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+})();
+
+/* Switch rows slide (Kyle, Nov. 13, 2026): in every gray switch row (.sc-seg .seg .seg2 .tabs .stabs) the navy highlight
+   glides to the option you pick instead of jumping. One absolutely placed pill (.sc-thumb) follows the picked button;
+   the buttons themselves go transparent (html .sc-slide in shape.css). Red when the picked option is .hard. */
+(function(){
+  if (window.scSlideOn) return; window.scSlideOn = true;
+  const TRACK = ".sc-seg,.seg,.seg2,.tabs,.stabs";
+  const PICK = '[aria-pressed="true"],[aria-checked="true"],[aria-selected="true"],[aria-current="page"],.on';
+  const ok = t => !t.closest(".sc-head,dialog.sc-menu") && !t.classList.contains("sc-noslide");
+  const ro = "ResizeObserver" in window ? new ResizeObserver(es => es.forEach(e => place(e.target))) : null;
+  function thumb(t){   // pages that redraw a row (innerHTML) drop the pill: put it back
+    let th = t.querySelector(":scope > .sc-thumb");
+    if (!th){ th = document.createElement("span"); th.className = "sc-thumb"; th.setAttribute("aria-hidden", "true"); t.insertBefore(th, t.firstChild); }
+    return th;
+  }
+  function place(t){
+    if (![...t.children].some(c => c.tagName === "BUTTON")) return;
+    const th = thumb(t);
+    const b = [...t.children].find(c => c.tagName === "BUTTON" && c.matches(PICK) && c.offsetParent !== null);
+    if (!b || !b.offsetWidth){ th.style.opacity = "0"; return; }
+    const first = th.style.opacity !== "1";
+    if (first) th.style.transition = "none";
+    th.style.width = b.offsetWidth + "px"; th.style.height = b.offsetHeight + "px";
+    th.style.transform = "translate(" + b.offsetLeft + "px," + b.offsetTop + "px)";
+    th.classList.toggle("hard", b.classList.contains("hard"));
+    th.style.opacity = "1";
+    if (first){ th.offsetWidth; th.style.transition = ""; }
+  }
+  function arm(t){
+    if (t.dataset.scSlide || !ok(t)) return;
+    if (![...t.children].some(c => c.tagName === "BUTTON")) return;
+    t.dataset.scSlide = "1"; t.classList.add("sc-slide");
+    if (getComputedStyle(t).position === "static") t.style.position = "relative";
+    new MutationObserver(ms => { if (ms.some(m => !(m.target.classList && m.target.classList.contains("sc-thumb")))) place(t); }).observe(t, {subtree:true, childList:true, attributes:true, attributeFilter:["aria-pressed","aria-checked","aria-selected","aria-current","class","hidden","style"]});
+    if (ro){ ro.observe(t); [...t.children].forEach(c => c.tagName === "BUTTON" && ro.observe(c)); }
+    place(t); requestAnimationFrame(() => place(t));
+  }
+  const scan = root => (root.querySelectorAll ? root.querySelectorAll(TRACK) : []).forEach(arm);
+  let q = 0; const later = () => { if (q) return; q = requestAnimationFrame(() => { q = 0; scan(document); }); };
+  const go = () => { scan(document); new MutationObserver(later).observe(document.body, {childList:true, subtree:true}); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+  window.addEventListener("load", () => document.querySelectorAll(".sc-slide").forEach(place));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => document.querySelectorAll(".sc-slide").forEach(place));
 })();

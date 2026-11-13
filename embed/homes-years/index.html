@@ -44,7 +44,7 @@ document.querySelectorAll(".embb").forEach(b => b.addEventListener("click", () =
   d.innerHTML = '<h2>Embed this chart</h2><p>Free to use with credit to Shape Chicago. It updates itself when the numbers change.</p>'
     + '<label for="embc">Embed code</label><textarea id="embc" rows="4" readonly></textarea><label for="embl">Link to this chart</label><input id="embl" readonly>'
     + '<div class="row"><button type="button" class="sc-btn primary" id="embcp">Copy embed code</button><button type="button" class="sc-btn" id="emblc">Copy link</button><a class="sc-btn" href="' + src + '" target="_blank" rel="noopener">Preview</a><button type="button" class="sc-btn" id="embx">Close</button></div>'
-    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For reporters ›</a></p>';
+    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For media ›</a></p>';
   d.querySelector("#embc").value = code; d.querySelector("#embl").value = location.origin + location.pathname + "#" + id;
   const cp = (t, btn) => navigator.clipboard.writeText(t).then(() => { const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = o, 1400); });
   d.querySelector("#embcp").onclick = e => cp(code, e.target); d.querySelector("#emblc").onclick = e => cp(d.querySelector("#embl").value, e.target); d.querySelector("#embx").onclick = () => d.close();

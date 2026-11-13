@@ -407,9 +407,9 @@ html body .seg::before{display:none !important}
 html body .sheet .tabs > button{padding:0 9px !important;font-size:13.5px !important}
 html body #layers{gap:4px !important}
 
-html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button,html body button.chip{min-height:34px;padding:0 14px !important;border:1px solid var(--sc-line2) !important;border-radius:999px !important;background:#fff !important;color:var(--sc-ink2) !important;font:600 14px/1.2 var(--sc-font) !important;box-sizing:border-box;cursor:pointer;box-shadow:none !important}
-html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:is([aria-pressed="true"],[aria-checked="true"],.on),html body button.chip[aria-pressed="true"]{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
-html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:not([aria-pressed="true"]):not([aria-checked="true"]):not(.on):hover,html body button.chip:not([aria-pressed="true"]):hover{border-color:var(--sc-navy) !important;color:var(--sc-ink) !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:not(.sc-switch),html body button.chip{min-height:34px;padding:0 14px !important;border:1px solid var(--sc-line2) !important;border-radius:999px !important;background:#fff !important;color:var(--sc-ink2) !important;font:600 14px/1.2 var(--sc-font) !important;box-sizing:border-box;cursor:pointer;box-shadow:none !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:not(.sc-switch):is([aria-pressed="true"],[aria-checked="true"],.on),html body button.chip[aria-pressed="true"]{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:not(.sc-switch):not([aria-pressed="true"]):not([aria-checked="true"]):not(.on):hover,html body button.chip:not([aria-pressed="true"]):hover{border-color:var(--sc-navy) !important;color:var(--sc-ink) !important}
 html body :is(.chips,.opts,.tryrow,.chiprow,.bfilt:not(.seg)) > button span{font-weight:400;opacity:.75}
 html body .bfilt.seg > button{border:0 !important}
 
@@ -419,7 +419,7 @@ html body :is(select,input,textarea):not(.sc-head *):focus-visible{outline:2px s
 html body button.ib{width:22px !important;height:22px !important;min-height:0 !important;padding:0 !important;border-radius:50% !important;border:1px solid var(--sc-line2) !important;background:#fff !important;color:var(--sc-ink2) !important;font:700 12px/1 var(--sc-font) !important;display:inline-grid;place-items:center;flex:none;cursor:pointer}
 html body button.ib:hover{border-color:var(--sc-navy) !important;color:var(--sc-navy) !important}
 @media (pointer:coarse){
-  html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button,html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt) > button,html body button.chip{min-height:40px}
+  html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button,html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt) > button:not(.sc-switch),html body button.chip{min-height:40px}
   html body :is(.sc-btn,.btn,button.nbtn,button.more):not(.sc-head *){min-height:44px}
 }
 @media (max-width:640px){ html body :is(select,input[type=text],input[type=search],input[type=number],input[type=email],input:not([type]),textarea):not(.sc-head *){font-size:16px} }
@@ -491,3 +491,12 @@ html body .sc-pghead.noart{grid-template-columns:minmax(0,1fr) !important}
 @media (pointer:coarse){ html{overflow-x:clip} }
 
 .sc-fcol a{white-space:normal !important;overflow-wrap:anywhere;max-width:100%}
+
+/* sliding highlight in every switch row (shape.js "Switch rows slide") */
+.sc-slide > .sc-thumb{position:absolute;left:0;top:0;z-index:0;border-radius:999px;background:var(--sc-navy);pointer-events:none;opacity:0;transition:transform .3s cubic-bezier(.3,.8,.25,1),width .3s cubic-bezier(.3,.8,.25,1),height .3s,background-color .3s,opacity .15s}
+.sc-slide > .sc-thumb.hard{background:var(--sc-hard,#b3001e)}
+html body .sc-slide > button{position:relative;z-index:1;transition:color .2s}
+html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs).sc-slide.sc-slide:not(.sc-head *) > button{background:transparent !important}
+@media (prefers-reduced-motion:reduce){ .sc-slide > .sc-thumb{transition:none} }
+/* the on/off switch keeps its shape everywhere, whatever row it sits in (an iPad touch rule had stretched it into a pill) */
+html body button.sc-switch{width:46px !important;height:28px !important;min-height:0 !important;min-width:0 !important;padding:0 !important;border:0 !important;border-radius:14px !important;flex:none !important;box-sizing:border-box !important}

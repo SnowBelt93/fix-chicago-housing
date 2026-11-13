@@ -34,8 +34,8 @@ H = {
         'Pedirte que abras una cuenta, ni usar redes de anuncios o cookies de rastreo (<a href="/privacy/">Privacidad</a> detalla exactamente lo que recibimos).',
     'Spotted something wrong? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Send a note</a> with the page and what\'s off. We fix errors and list the ones that changed a number here.':
         '¿Viste algo mal? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Mándanos una nota</a> con la página y lo que está mal. Corregimos los errores y aquí anotamos los que cambiaron un número.',
-    'Charts and figures are free to use and embed with credit. See <a href="/press/">For reporters</a>. Terms of use are <a href="/terms/">here</a>.':
-        'Las gráficas y cifras se pueden usar e insertar gratis citando la fuente. Mira <a href="/press/">Para periodistas</a>. Los términos de uso están <a href="/terms/">aquí</a>.',
+    'Charts and figures are free to use and embed with credit. See <a href="/press/">For media</a>. Terms of use are <a href="/terms/">here</a>.':
+        'Las gráficas y cifras se pueden usar e insertar gratis citando la fuente. Mira <a href="/press/">Para medios</a>. Los términos de uso están <a href="/terms/">aquí</a>.',
     "<b>Nov. 12, 2026:</b> City budget decision page: the Mayor's employer head tax is now the city's own estimate, about $114 million a year (it said about $101 million, a later news estimate that is still noted). Bears page: Arlington Park and Hammond are the team's two options, and the stadium bill could get a vote in the fall veto session.":
         '<b>12 de noviembre de 2026:</b> Página de la decisión del presupuesto: el impuesto por empleado que propone el alcalde ahora usa la estimación de la propia ciudad, unos $114 millones al año (decía unos $101 millones, una estimación periodística posterior que sigue anotada). Página de los Bears: Arlington Park y Hammond son las dos opciones del equipo, y la ley del estadio podría votarse en la sesión de otoño.',
 }

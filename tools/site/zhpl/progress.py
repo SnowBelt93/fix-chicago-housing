@@ -1,4 +1,4 @@
-# Progress overview (/progress/), the news page (/news/) and For reporters (/press/): {English: (中文, Polski)}
+# Progress overview (/progress/), the news page (/news/) and For media (/press/): {English: (中文, Polski)}
 T = {
     'Progress · Shape Chicago': ('进展 · Shape Chicago', 'Postępy · Shape Chicago'),
     'What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.':
@@ -32,7 +32,7 @@ T = {
         ('来自 Block Club Chicago、Chicago Sun-Times、WBEZ、WTTW News、Chicago Reader、Chicago YIMBY、Streetsblog Chicago、South Side Weekly、Capitol News Illinois、Illinois Answers Project、CBS Chicago、NBC Chicago、ABC7 Chicago、WGN News、FOX 32 Chicago、Bisnow Chicago、Chicago Agent、Austin Weekly News、Metropolitan Planning Council、Better Government Association 的公开订阅源。每三小时检查一次；报道保留约六周。每条摘要是媒体自己对报道的简短描述。请到原媒体阅读全文。报道按关键词挑选，难免有少量不相关的内容。',
          'Z publicznych kanałów Block Club Chicago, Chicago Sun-Times, WBEZ, WTTW News, Chicago Reader, Chicago YIMBY, Streetsblog Chicago, South Side Weekly, Capitol News Illinois, Illinois Answers Project, CBS Chicago, NBC Chicago, ABC7 Chicago, WGN News, FOX 32 Chicago, Bisnow Chicago, Chicago Agent, Austin Weekly News, Metropolitan Planning Council i Better Government Association. Sprawdzane co trzy godziny; artykuły zostają około sześciu tygodni. Każde streszczenie to krótki opis samej redakcji. Pełne artykuły czytaj u źródła. Artykuły wybieramy po słowach kluczowych, więc czasem trafi się coś nie na temat.'),
     # press
-    'For Reporters · Shape Chicago': ('媒体专区 · Shape Chicago', 'Dla dziennikarzy · Shape Chicago'), 'For reporters': ('媒体专区', 'Dla dziennikarzy'),
+    'For Media · Shape Chicago': ('媒体专区 · Shape Chicago', 'Dla mediów · Shape Chicago'), 'For media': ('媒体专区', 'Dla mediów'),
     'Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.':
         ('下面每张图表都可以放进你的报道。市政府或联邦政府公布新数字时会自动更新，每张都列出了来源。', 'Każdy wykres poniżej możesz umieścić w swoim artykule. Każdy aktualizuje się sam, gdy miasto lub rząd federalny publikuje nowe liczby, i każdy podaje źródła.'),
     'Using our charts and numbers': ('使用我们的图表和数字', 'Korzystanie z naszych wykresów i liczb'),

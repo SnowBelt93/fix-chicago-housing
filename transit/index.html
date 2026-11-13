@@ -902,7 +902,7 @@ function afterGraph(only){
   if (only){ if (SOLOG.has(key)) return SOLOG.get(key); } else if (AFTER && AFTER.key === key) return AFTER;
   const W = NW.net.walk, extra = new Map(), hw = NW.hw.slice(), ns = [], posName = new Map();   // new stops: {x, y}; posName: a new line's ride nodes → its name
   const add = (a, b, w) => { let l = extra.get(a); if (!l) extra.set(a, l = []); l.push(b, w); };
-  let next = NW.N; const extraHw = [];
+  let next = NW.N, cut = null; const extraHw = [];   // cut: bus rides (ride node → next stop) that no longer run
   for (const L of only || active()){
     if (L.type === "metra"){
       const r = "metra:" + L.line;
@@ -932,13 +932,21 @@ function afterGraph(only){
     if (L.type !== "draw" || L.pts.length < 2) continue;
     if (L.mode === "lane"){ for (const q of laneSegs(L)) add(q.from, q.to, q.run * (1 - LANE_GAIN[1])); continue; }   // a faster way along the same bus
     const M = MODES[L.mode], mpm = M.speed * MI / 60;    // meters a minute, with stops
+    let hd = L.head;
+    if (M.kind === "bus"){   // the buses it replaces stop running alongside, and it runs at least as often as they did together
+      if (!cut) cut = new Uint8Array(NW.N - NW.nS);
+      const best = new Map();
+      for (const q of replacedSegs(L)){ cut[q.from - NW.nS] = 1; if (q.hw < 999) best.set(q.r, Math.min(best.get(q.r) || 999, q.hw)); }
+      let f = 0; for (const h of best.values()) f += 1 / h;
+      if (f > 0) hd = Math.min(hd, 1 / f);
+    }
     const sid = L.pts.map(p => { const id = next++; ns.push({id, x:p.x, y:p.y, name:L.name}); return id; });
     for (const order of [sid, sid.slice().reverse()]){
       const pos = order.map(() => next++); pos.forEach(v => posName.set(v, {name:L.name, mine:true}));
       order.forEach((st, k) => {
         if (k < order.length - 1){
           const a = ns.find(q => q.id === st), b2 = ns.find(q => q.id === order[k + 1]);
-          add(st, pos[k], L.head / 2); extraHw[pos[k]] = L.head;
+          add(st, pos[k], hd / 2); extraHw[pos[k]] = hd;
           add(pos[k], pos[k + 1], Math.hypot(b2.x - a.x, b2.y - a.y) / mpm);
         }
         if (k > 0) add(pos[k], st, 0);
@@ -960,7 +968,7 @@ function afterGraph(only){
     for (const o of ns) if (o !== q){ const d = Math.hypot(o.x - q.x, o.y - q.y); if (d <= NW.net.xferM) add(q.id, o.id, d / W); }
     near(NW.zg, q.x, q.y, NW.net.accessM, z => NW.Z.x[z], z => NW.Z.y[z], (z, d2) => { let l = zExtra.get(z); if (!l) zExtra.set(z, l = []); l.push(q.id, Math.sqrt(d2) / W); });
   }
-  const G = {key, extra, hw, ns, next, zExtra, posName, off:freshOff(), stopSet:new Set(ns.map(q => q.id))};
+  const G = {key, extra, hw, ns, next, zExtra, posName, off:freshOff(), cut, stopSet:new Set(ns.map(q => q.id))};
   if (only){ if (SOLOG.size > 40) SOLOG.clear(); SOLOG.set(key, G); return G; }
   return AFTER = G;
 }
@@ -973,17 +981,17 @@ function search(x, y, g, cutoff, ovt = 1){
   const W = NW.net.walk, A = NW.net.accessM;
   near(NW.sg, x, y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => push(k, ovt * Math.sqrt(d2) / W));
   if (g) for (const q of g.ns){ const d = Math.hypot(q.x - x, q.y - y); if (d <= A) push(q.id, ovt * d / W); }
-  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N, off = g && g.off;   // off: today's routes switched off (start from scratch)
+  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N, off = g && g.off, cut = g && g.cut;   // off: today's routes switched off (start from scratch); cut: bus rides a new line replaced
   const isStop = v => v < nS || (g && g.stopSet && g.stopSet.has(v));
   while (heap.length){
     const [d, v] = pop(); if (d > dist[v]) continue;
     if (v < N){
       const a = NW.adj[v], vs = v < nS;
-      for (let i = 0; i < a.length; i += 2){ const to = a[i]; if (off && to >= nS && off[to - nS]) continue; let w = a[i + 1]; if (w < 0) w = ovt * hw[to - nS] / 2; else if (vs && to < nS) w *= ovt; push(to, d + w); }
+      for (let i = 0; i < a.length; i += 2){ const to = a[i]; if (off && to >= nS && off[to - nS]) continue; if (cut && to === v + 1 && !vs && cut[v - nS]) continue; let w = a[i + 1]; if (w < 0) w = ovt * hw[to - nS] / 2; else if (vs && to < nS) w *= ovt; push(to, d + w); }
     }
     const e = g && g.extra.get(v);
     if (e){ const vs = ovt !== 1 && isStop(v);
-      for (let i = 0; i < e.length; i += 2){ const to = e[i]; if (off && to >= nS && to < N && off[to - nS]) continue; push(to, d + (vs && e[i + 1] > 0 ? ovt : 1) * e[i + 1]); } }
+      for (let i = 0; i < e.length; i += 2){ const to = e[i]; if (off && to >= nS && to < N && off[to - nS]) continue; if (cut && v >= nS && v < N && to === v + 1 && cut[v - nS]) continue; push(to, d + (vs && e[i + 1] > 0 ? ovt : 1) * e[i + 1]); } }
   }
   return dist;
 }
@@ -1158,19 +1166,19 @@ function tripCompute(L, r, done){
       let b = T0C.get(z); if (!b){ b = zoneTimes(Z.x[z], Z.y[z], baseG(), TM, T.ovt || 1); if (T0C.size > 1500) T0C.clear(); T0C.set(z, b); }
       const a = zoneTimes(Z.x[z], Z.y[z], g, TM, T.ovt || 1);
       for (let d = 0; d < nz; d++){
-        const t1 = a[d]; if (!(t1 < TM)) continue;
-        const t0v = Math.min(b[d], TM); if (!(t1 < t0v - 0.25)) continue;   // only trips the line makes faster
+        const t1 = Math.min(a[d], TM), t0v = Math.min(b[d], TM); if (Math.abs(t1 - t0v) <= 0.25) continue;   // only trips the line changes: faster,
+        // or slower where a BRT or streetcar took away the bus they rode (those count against it)
         const dist = Math.hypot(Z.x[z] - Z.x[d], Z.y[z] - Z.y[d]), c = carMin(dist), e = Math.exp(-T.gamma * c);
         pairs++;
         if (Wk[z] && Z.jobs[d]){   // people living here, working there
           const f = Wk[z] * Z.jobs[d] * e / S[z], u = P.const + P.no_car * NC[z] + P.ln_jobs_density * LNJ[d] + P.ln_density * LND[z];
           const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
-          nw += f * (p1 - p0); gr += f * p1; dm += f * (p1 - p0) * dist;
+          nw += f * (p1 - p0); if (t1 < TM) gr += f * p1; dm += f * (p1 - p0) * dist;
         }
         if (!inA[d] && Wk[d] && Z.jobs[z]){   // people living there, working here (same minutes both ways)
           const f = Wk[d] * Z.jobs[z] * e / S[d], u = P.const + P.no_car * NC[d] + P.ln_jobs_density * LNJ[z] + P.ln_density * LND[d];
           const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
-          nw += f * (p1 - p0); gr += f * p1; dm += f * (p1 - p0) * dist;
+          nw += f * (p1 - p0); if (t1 < TM) gr += f * p1; dm += f * (p1 - p0) * dist;
         }
       }
     }
@@ -1596,8 +1604,10 @@ function evaluate(){
       // where buses already run along most of the line, start from their real riders on this stretch
       const {cnt, samples} = routeCover(st);
       let base = 0, baseTrips = 0, baseMi = 0; L.onStreet = [];
+      const rep = NW ? new Set(replacedSegs(L).map(q => q.r.replace(/^cta:/, ""))) : null;   // the same routes the travel-time network takes off this street
       for (const [r, k] of cnt){
         if (k < Math.max(10, samples * 0.3) || !NET.bus[r].rides) continue;   // runs along at least 30% of the line and 2 km
+        if (rep && !rep.has(String(NET.bus[r].id))) continue;
         const share = Math.min(1, k * 200 / NET.bus[r].lenM);
         base += NET.bus[r].rides * share; baseTrips += NET.bus[r].trips; L.onStreet.push(NET.bus[r].short);
         baseMi += NET.bus[r].trips * share * NET.bus[r].lenM / MI;   // bus miles a weekday on this stretch, withdrawn when the new line opens
@@ -1720,7 +1730,20 @@ function busSegs(){
   return BUSSEG;
 }
 // the bus stop-to-stop rides that run along the lane: both stops within LANE_NEAR of it
-function laneSegs(L){
+function laneSegs(L){ return alongSegs(L); }
+// BRT and streetcar lines replace the buses on their street (Kyle, Nov. 13, 2026): every bus route that runs along the new line
+// for at least 800 m (or half the line, if shorter) stops running on that stretch; its riders take the new line there.
+const REPLACE_MIN_M = 800;   // shorter overlaps (a route crossing or sharing a block or two) keep running (assumption)
+function replacedSegs(L){
+  const key = lineKey(L); if (L._repKey === key) return L._rep;
+  const segs = alongSegs(L), byPat = new Map();
+  for (const q of segs){ const a = byPat.get(q.pat) || []; a.push(q); byPat.set(q.pat, a); }
+  const need = Math.min(REPLACE_MIN_M, 0.5 * pathLen(laneShape(L))), out = [];
+  const segM = q => { const k = q.from - q.pat.base, a = q.pat.s[k], b = q.pat.s[k + 1]; return Math.hypot(NW.sx[b] - NW.sx[a], NW.sy[b] - NW.sy[a]); };
+  for (const a of byPat.values()) if (a.reduce((t, q) => t + segM(q), 0) >= need) out.push(...a);
+  L._repKey = key; L._rep = out; return out;
+}
+function alongSegs(L){
   const key = lineKey(L); if (L._segKey === key) return L._segs;
   const S = busSegs(), out = []; if (!S) return out;
   const path = laneShape(L), seen = new Set();
@@ -2376,7 +2399,7 @@ const SOLO = {};
 function soloRiders(P){
   if (SOLO[P.id] != null || !NW) return SOLO[P.id];
   const keep = lines, L = presetToLine(P); lines = [L];
-  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.waiting ? null : Math.max(0, L.newRiders || 0); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
+  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.waiting ? null : (L.newRiders || 0); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
   lines = keep; return SOLO[P.id];
 }
 function openGroup(g){
@@ -2481,7 +2504,7 @@ function renderBar(){   // the plan's effects, in the shared Shape Chicago metri
   }
   evaluate();
   const wait = A.some(L => L.waiting);
-  const net = A.reduce((a, L) => a + (L.type === "metra" ? L.riders[0] : Math.max(0, L.newRiders || 0)), 0);
+  const net = A.reduce((a, L) => a + (L.type === "metra" ? L.riders[0] : (L.newRiders || 0)), 0);   // a line that loses trips counts against the plan
   const cap = A.reduce((a, L) => [a[0] + L.capitalToday[0], a[1] + L.capitalToday[1]], [0, 0]);
   const op = A.reduce((a, L) => a + L.opYear, 0), cars = A.reduce((a, L) => a + (L.carTrips[0] + L.carTrips[1]) / 2, 0);
   const co2 = A.reduce((a, L) => a + co2Mid(L), 0);
@@ -2542,16 +2565,23 @@ function openLine(L){
   // riders, with what goes into them behind (i)
   let why = "";
   if (isM) why += `<p>${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."} Riders come from Metra's 2018 station counts scaled to today, and how riders responded to more trains in Boston.</p>`;
-  else if (isR) why += `<p>Trips a weekday that move to transit because this ${isI ? "station" : "line"} gets people there faster. The tool looks at every neighborhood within 1.5 miles of ${isI ? "it" : "its stations"}: where the people who live there work, and where the people who work there live (fit to Census home-to-work flows), and how long each trip takes by transit today, by transit with ${isI ? "the new stop" : "this line"}, and by car. How many switch for a given time saving comes from how people actually get to work in each census tract today (the fit explains ${Math.round(TRIPM.fit.tract_r2 * 100)}% of the difference between tracts). A trip that isn't faster counts for nothing, so a line next to one Chicago already has adds almost no one. Trips that aren't commutes are scaled from today's ridership.</p><p>About ${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit and just get there faster` : ""}. The range is the model's typical miss for a single station (about a third either way).</p>`;
+  else if (isR) why += `<p>Trips a weekday that move to transit because this ${isI ? "station" : "line"} gets people there faster. The tool looks at every neighborhood within 1.5 miles of ${isI ? "it" : "its stations"}: where the people who live there work, and where the people who work there live (fit to Census home-to-work flows), and how long each trip takes by transit today, by transit with ${isI ? "the new stop" : "this line"}, and by car. How many switch for a given time saving comes from how people actually get to work in each census tract today (the fit explains ${Math.round(TRIPM.fit.tract_r2 * 100)}% of the difference between tracts). A trip that isn't faster counts for nothing, so a line next to one Chicago already has adds almost no one. Trips that aren't commutes are scaled from today's ridership.</p><p>About ${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit${M.kind === "bus" && NW && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}` : ""}. The range is the model's typical miss for a single station (about a third either way).</p>`;
   else if (isI) why += `<p>People entering the new station on a weekday, from the same model of today's L stations, with the trains that already pass by (${L.near ? "as many as stop at " + esc(L.near.name.split(" (")[0]) : "the line's service"}). Only the people and jobs nearby that aren't already within a 10-minute walk of an L or Metra station (${Math.round((L.newShare || 0) * 100)}% here) count as new riders; the rest would have walked to a station on either side. A single station's estimate is typically off by about 37%.</p>`;
   else if (M.kind === "rail") why += `<p>New riders a weekday. A model of today's L stations (the people and jobs near each, its buses, how often trains come, and how many jobs you can reach in 45 minutes) says about ${num(L.riders)} people would board at its stations. Most people near a new station already have one: only those with no L station within a 10-minute walk count as new riders (half of them where a Metra station is that close), plus the share the model ties to faster trips (more jobs within 45 minutes). The rest would just switch from a station they already use. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
   else why += `<p>Starts from the ${num(L.baseBus)} people who ride the ${L.onStreet.join(" and ")} bus${L.onStreet.length > 1 ? "es" : ""} on this street today, which the new line replaces. Riders rise or fall with how often it comes compared with those buses${L.mode === "brt" ? ", plus 31% for faster BRT service (Cleveland and Los Angeles gained 26–51%)" : ""}.</p>`;
+  if (isR && !isI && M.kind === "bus" && NW){   // the buses this line replaces (afterGraph cuts them where they run along it)
+    const rs = [...new Set(replacedSegs(L).map(q => q.r))].map(r => ROUTE_NAME(r).name.replace(/ \(.*\)$/, ""));
+    if (rs.length) why += `<p>The ${rs.length > 1 ? rs.slice(0, -1).join(", ") + " and " + rs[rs.length - 1] + " stop" : rs[0] + " stops"} running where ${rs.length > 1 ? "they run" : "it runs"} along this line: the ${M.name.toLowerCase()} replaces ${rs.length > 1 ? "them" : "it"} there, so ${rs.length > 1 ? "their" : "its"} riders take the new line instead and count as trips that already go by transit. Trips that get slower without the bus, like ones from a stop between two of your stations, count against the line.</p>`;
+  }
   if (!isM && !isR && L.shifted > 50) why += `<p>The ${L.feeder.routes.map(r => NET.bus[r].short).join(", ")} bus${L.feeder.routes.length > 1 ? "es" : ""} that end at today's last stop would run to the new one instead, bringing about ${num(L.shifted)} riders who now board there.</p>`;
   if (!isM && !isR && L.lost - (L.shifted || 0) > 200) why += `<p>About ${num(L.lost - (L.shifted || 0))} would switch from nearby L stations.</p>`;
   if (!isM && !isR && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders, from people who can now reach more jobs within 45 minutes.</p>`;
-  let h = `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isR ? "new transit trips a weekday" : isM ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
-  if (isR && L.riders > 50) h += `<p class="note">${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit and just get there faster` : ""}.</p>`;
+  const loses = isR && L.newRiders < -50;   // a BRT or streetcar with few stations can leave bus riders worse off than today
+  let h = loses ? `<div class="big-num"><span class="n">${num(-L.newRiders)}</span><span class="l">fewer transit trips a weekday<br>riders lose the bus between your stations</span>${ib("riders", "Where the riders come from", why)}</div>`
+    : `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isR ? "new transit trips a weekday" : isM ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
+  if (loses) h += `<p class="note">It replaces the bus on its street, and its stations are far apart, so trips from the stops in between get slower. Add stations about every half mile, or run it more often.</p>`;
+  else if (isR && L.riders > 50) h += `<p class="note">${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit${M && M.kind === "bus" && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}` : ""}.</p>`;
   if (isI) h += `<p class="note">Trains stop as often as they do at ${L.near ? esc(L.near.name.split(" (")[0]) : "the next station"}: about every ${L.head} minutes.</p>`;
   else h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
@@ -2732,12 +2762,12 @@ function searchPath(x, y, g, cutoff){
   const W = NW.net.walk, A = NW.net.accessM;
   near(NW.sg, x, y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => push(k, Math.sqrt(d2) / W, -1));
   if (g) for (const q of g.ns){ const d = Math.hypot(q.x - x, q.y - y); if (d <= A) push(q.id, d / W, -1); }
-  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N, off = g && g.off;
+  const hw = g ? g.hw : NW.hw, nS = NW.nS, N = NW.N, off = g && g.off, cut = g && g.cut;
   while (heap.length){
     const [d, v] = pop(); if (d > dist[v]) continue;
-    if (v < N){ const a = NW.adj[v]; for (let i = 0; i < a.length; i += 2){ const to = a[i]; if (off && to >= nS && off[to - nS]) continue; let w = a[i + 1]; if (w < 0) w = hw[to - nS] / 2; push(to, d + w, v); } }
+    if (v < N){ const a = NW.adj[v]; for (let i = 0; i < a.length; i += 2){ const to = a[i]; if (off && to >= nS && off[to - nS]) continue; if (cut && v >= nS && to === v + 1 && cut[v - nS]) continue; let w = a[i + 1]; if (w < 0) w = hw[to - nS] / 2; push(to, d + w, v); } }
     const e = g && g.extra.get(v);
-    if (e) for (let i = 0; i < e.length; i += 2){ const to = e[i]; if (off && to >= nS && to < N && off[to - nS]) continue; push(to, d + e[i + 1], v); }
+    if (e) for (let i = 0; i < e.length; i += 2){ const to = e[i]; if (off && to >= nS && to < N && off[to - nS]) continue; if (cut && v >= nS && v < N && to === v + 1 && cut[v - nS]) continue; push(to, d + e[i + 1], v); }
   }
   return {dist, prev};
 }
@@ -3133,6 +3163,7 @@ function openSources(){
   <p>The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between ${"buses or trains"}, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. "Hours saved" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less. Check: the average resident of the region can reach about 196,000 jobs within 45 minutes by transit in the tool; the University of Minnesota\'s Access Across America (2018, 7–9am, <a href="https://cts-d10resmod-prd.oit.umn.edu/pdf/cts-20-01.pdf" target="_blank" rel="noopener">Table 2</a>) gives Chicago 125,826 within 40 minutes and 228,599 within 50, about 177,000 at 45. Not included: Pace buses, and services with no midday trips (they come back when a Metra upgrade adds them). New rail stations don't count bus routes that run along the line itself, only ones that cross it, so adding stations doesn't keep adding the same buses.</p>
   <h3>Riders on BRT or a streetcar</h3>
   <p>Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to ${Bm.n} CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about ${Math.round((Math.exp(Bm.median_abs_log_error) - 1) * 100)}%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf" target="_blank" rel="noopener">FTA before-and-after studies, 2012</a>, p. 5). The range runs from 5%, the low end of what FTA says is common (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf" target="_blank" rel="noopener">FTA, Characteristics of BRT</a>, p. E-6: gains "of between 5 and 25 percent are common"), to 51% on LA's Orange Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA Report 0004</a>, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA</a>, <a href="https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership" target="_blank" rel="noopener">FTA</a>). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">Kansas City</a>, <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50213.pdf" target="_blank" rel="noopener">Detroit</a>, NTD 2024).</p>
+  <p>In the travel-time network and the trip model, a BRT or streetcar takes the place of every CTA bus route that runs along it for at least 800 m (or half the line, if it's shorter; an assumption): those buses stop running on that stretch, and the new line runs at least as often as they did together. Trips that get slower without them, like ones from a stop between two of the new stations or ones that now change vehicles twice, count against the line.</p>
   <h3>Metra upgrades</h3>
   <p>Station boardings from Metra's fall 2018 counts (<a href="${S.metra_counts ? S.metra_counts.page : "#"}" target="_blank" rel="noopener">Illinois data hub</a>), scaled to today by Metra's trips in 2024 vs. 2018 (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf" target="_blank" rel="noopener">NTD 2024</a>: 35.1M; <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2018/50118.pdf" target="_blank" rel="noopener">NTD 2018</a>: 68.4M) and 2025's 8% growth (<a href="https://www.progressiverailroading.com/passenger_rail/news/CTA-Metra-logged-rail-ridership-growth-in-2025--76274" target="_blank" rel="noopener">Progressive Railroading</a>): ×${NET.metraScale}. Each line's riders are twice its boardings outside downtown, since downtown terminals serve several lines. Riders rise 0.41% per 1% more trains where trains came every 10–50 minutes and 0.76% where they came less often, from Boston's commuter rail experiments (<a href="https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf" target="_blank" rel="noopener">TCRP Report 95, ch. 9</a>, Table 9-5, p. 9-12). Studies cover service increases up to about double (Tri-Rail +60% trains, Boston &amp; Maine +77%), so the tool doesn't go past double. Wires: Caltrain's electrification, $2.44B for 52 miles (<a href="https://masstransitmag.com/rail/infrastructure/article/21249277/caltrain-electrification-project-cost-increases-but-still-on-schedule-for-2024" target="_blank" rel="noopener">Mass Transit</a>).</p>
   <h3>Cost to build, per mile</h3>

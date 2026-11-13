@@ -232,7 +232,7 @@ document.querySelectorAll(".embb").forEach(b => b.addEventListener("click", () =
   d.innerHTML = '<h2>Embed this chart</h2><p>Free to use with credit to Shape Chicago. It updates itself when the numbers change.</p>'
     + '<label for="embc">Embed code</label><textarea id="embc" rows="4" readonly></textarea><label for="embl">Link to this chart</label><input id="embl" readonly>'
     + '<div class="row"><button type="button" class="sc-btn primary" id="embcp">Copy embed code</button><button type="button" class="sc-btn" id="emblc">Copy link</button><a class="sc-btn" href="' + src + '" target="_blank" rel="noopener">Preview</a><button type="button" class="sc-btn" id="embx">Close</button></div>'
-    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For reporters ›</a></p>';
+    + '<p style="margin:14px 0 0;font-size:12.5px">More charts and how to cite them: <a href="/press/">For media ›</a></p>';
   d.querySelector("#embc").value = code; d.querySelector("#embl").value = location.origin + location.pathname + "#" + id;
   const cp = (t, btn) => navigator.clipboard.writeText(t).then(() => {{ const o = btn.textContent; btn.textContent = "Copied"; setTimeout(() => btn.textContent = o, 1400); }});
   d.querySelector("#embcp").onclick = e => cp(code, e.target); d.querySelector("#emblc").onclick = e => cp(d.querySelector("#embl").value, e.target); d.querySelector("#embx").onclick = () => d.close();
@@ -1167,6 +1167,7 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
   .pg table.stack td:not(:first-child)::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--sc-mute)}
   .pg table.proj td:nth-child(4),.pg table.proj td:last-child{grid-column:1/-1} .pg ol.dl li{grid-template-columns:86px minmax(0,1fr)} .pg ol.dl .st{grid-column:2}.pg table.proj td:nth-child(2)::before{content:none}
 }
+@media (max-width:480px){.pg .chip{white-space:normal}}
 '''
 
 MOVED_ROOM = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Zoning · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/zoning/#room"><link rel="canonical" href="/progress/zoning/"></head><body><p><a href="/progress/zoning/#room">Room to grow is now part of Zoning.</a></p></body></html>\n'
@@ -1212,9 +1213,9 @@ def press(rows):
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>For Reporters · Shape Chicago</title>
+<title>For Media · Shape Chicago</title>
 <meta name="description" content="Charts on Chicago housing, zoning, transit and streets that you can embed in a story, free with credit, plus how we count.">
-<meta property="og:title" content="For reporters · Shape Chicago"><meta property="og:image" content="{SITE}/shape/art/og-progress.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="For media · Shape Chicago"><meta property="og:image" content="{SITE}/shape/art/og-progress.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/shape/shape.css"><link rel="stylesheet" href="/progress/progress.css">
@@ -1232,7 +1233,7 @@ def press(rows):
 <body class="pg">
 {hd}
 <main class="pr sc-main sc-listw">
-<div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › For reporters</p><h1>For reporters</h1><p class="sc-lede">Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.</p></div><img class="sc-pgart" src="/shape/art/press.webp" width="900" height="420" alt="" decoding="async"></div>
+<div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › For media</p><h1>For media</h1><p class="sc-lede">Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.</p></div><img class="sc-pgart" src="/shape/art/press.webp" width="900" height="420" alt="" decoding="async"></div>
 <section class="card pad"><div class="hd"><h2>Using our charts and numbers</h2></div>
 <p class="sub">Our charts, tables and the figures we calculate are free to use, quote and embed. Please credit <b>Shape Chicago</b> and link to the page the number came from. The underlying data belongs to the agencies that publish it; each chart names them.</p>
 <p class="sub">Shape Chicago is a fan-made project. It is not affiliated with the City of Chicago, CTA, Metra or Pace, and it takes no side in elections. Estimates are labeled as estimates, and each section ends with how we count.</p>

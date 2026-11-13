@@ -1,4 +1,4 @@
-# Progress overview (/progress/), the news page (/news/) and For reporters (/press/)
+# Progress overview (/progress/), the news page (/news/) and For media (/press/)
 T = {
     'Progress · Shape Chicago': 'Avances · Shape Chicago',
     'What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.':
@@ -27,7 +27,7 @@ T = {
     "From the public feeds of Block Club Chicago, Chicago Sun-Times, WBEZ, WTTW News, Chicago Reader, Chicago YIMBY, Streetsblog Chicago, South Side Weekly, Capitol News Illinois, Illinois Answers Project, CBS Chicago, NBC Chicago, ABC7 Chicago, WGN News, FOX 32 Chicago, Bisnow Chicago, Chicago Agent, Austin Weekly News, Metropolitan Planning Council, Better Government Association. Checked every three hours; stories stay for about six weeks. Each summary is the outlet's own short description of its story. Read the full stories at the outlets. Stories are picked by keywords, so a few misses get through.":
         'De las fuentes públicas de Block Club Chicago, Chicago Sun-Times, WBEZ, WTTW News, Chicago Reader, Chicago YIMBY, Streetsblog Chicago, South Side Weekly, Capitol News Illinois, Illinois Answers Project, CBS Chicago, NBC Chicago, ABC7 Chicago, WGN News, FOX 32 Chicago, Bisnow Chicago, Chicago Agent, Austin Weekly News, Metropolitan Planning Council y Better Government Association. Se revisan cada tres horas; las noticias quedan unas seis semanas. Cada resumen es la descripción breve del propio medio, en inglés. Lee las noticias completas en cada medio. Se eligen por palabras clave, así que se cuela alguna que no viene al caso.',
     # press
-    'For Reporters · Shape Chicago': 'Para periodistas · Shape Chicago', 'For reporters': 'Para periodistas',
+    'For Media · Shape Chicago': 'Para medios · Shape Chicago', 'For media': 'Para medios',
     'Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.':
         'Cada gráfico de abajo puede ir en tu nota. Cada uno se actualiza solo cuando la ciudad o el gobierno federal publican cifras nuevas, y cada uno indica sus fuentes.',
     'Using our charts and numbers': 'Cómo usar nuestros gráficos y cifras',

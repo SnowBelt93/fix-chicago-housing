@@ -1478,6 +1478,21 @@ body.playing #sky{opacity:1}
 .target[aria-pressed="true"]{border-color:var(--sc-navy) !important;box-shadow:inset 0 0 0 2px var(--sc-navy) !important;background:#eef3fa !important}
 .pname{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:8px 0 0;font-size:14px}
 .pname b{font-weight:600}
+
+html body #illegalBtn{white-space:normal !important;padding:9px 16px !important;line-height:1.3 !important;text-align:center;max-width:100%}
+/* hard mode block: a small red tag instead of a red rule across the top (Kyle, Nov. 13, 2026) */
+html body .hardmode{border-top:1px solid var(--sc-line) !important;padding-top:14px !important;margin-top:10px !important}
+.hardtag{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;background:#fdecef;color:var(--sc-hard,#b3001e);font:700 12.5px/1 var(--sc-font);padding:5px 10px 5px 8px;border-radius:999px}
+.hardtag svg{width:12px;height:12px;fill:currentColor}
+/* Nov. 13, 2026 (Kyle, iPad): the tab row is its own pill inside the panel and the expand button sits beside it, never on top of a tab */
+@media (min-width:860px){
+  html body .sheet.sheet .tabs{margin:10px 54px 4px 10px !important;padding:3px !important;gap:0 !important;justify-content:space-between !important;flex:none !important}
+  html body .sheet.sheet .tabs > button{padding:0 7px !important;font-size:13.5px !important}
+  html body.wide .sheet.sheet .tabs{margin:14px 64px 6px 16px !important;justify-content:flex-start !important;gap:2px !important;align-self:flex-start;width:max-content;max-width:calc(100% - 80px)}
+  html body.wide .sheet.sheet .tabs > button{padding:0 14px !important;font-size:14px !important}
+  html body .sheet.sheet .widebtn{top:16px !important;right:12px !important;width:34px !important;height:34px !important;min-height:0 !important;padding:0 !important;border-radius:50% !important;white-space:nowrap}
+  html body.wide .sheet.sheet .widebtn{top:20px !important;right:18px !important}
+}
 </style>
 
 <div id="app">
@@ -2750,7 +2765,7 @@ function renderTargets(){
   btn(3, el);   // normal mode: the city's own share
   const hard = document.createElement("div"); hard.className = "hardmode";
   const perYear = Math.round(((TARGETS[0].n + GAP_GROWTH * YEARS) / YEARS + CITY_PACE) / 100) * 100;
-  hard.innerHTML = '<h3>Hard mode: Chicago takes the whole region\'s gap</h3><p class="small"></p><p class="small whyhard"><b>Why try it?</b> Chicago had 3,620,962 people in 1950 (<a href="https://www.census.gov/programs-surveys/decennial-census/decade/decennial-facts.1950.html" target="_blank" rel="noopener">Census</a>) and 2,746,388 in 2020 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/POP010220" target="_blank" rel="noopener">Census</a>), about 875,000 fewer people paying for streets, pipes, schools and L lines built for a bigger city. Growth spreads those costs over more taxpayers, helps close the $882 million budget gap (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>) and fills trains and buses.</p><p class="small pickest">Pick the estimate to beat:</p>';
+  hard.innerHTML = '<span class="hardtag"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg>Hard mode</span><h3>Chicago takes the whole region\'s gap</h3><p class="small"></p><p class="small whyhard"><b>Why try it?</b> Chicago had 3,620,962 people in 1950 (<a href="https://www.census.gov/programs-surveys/decennial-census/decade/decennial-facts.1950.html" target="_blank" rel="noopener">Census</a>) and 2,746,388 in 2020 (<a href="https://www.census.gov/quickfacts/fact/table/chicagocityillinois/POP010220" target="_blank" rel="noopener">Census</a>), about 875,000 fewer people paying for streets, pipes, schools and L lines built for a bigger city. Growth spreads those costs over more taxpayers, helps close the $882 million budget gap (<a href="https://news.wttw.com/2026/09/03/chicago-faces-882m-budget-gap-2027-johnson-touts-smaller-expected-election-year" target="_blank" rel="noopener">WTTW</a>) and fills trains and buses.</p><p class="small pickest">Pick the estimate to beat:</p>';
   hard.querySelector("p").textContent = "The suburbs keep building only at today's pace, and the city closes the entire region's shortage, putting Chicago back at the center of the region's growth. With Up for Growth's estimate that's about " + fmt(perYear) + " homes a year inside city limits, about two and a half times the roughly 9,500 Chicago approved in its strong 2023 and six times the 3,916 it permitted in 2025 (";
   { const a = document.createElement("a"); a.href = "https://therealdeal.com/data/chicago/2026/new-chicago-housing-units-up-12/"; a.target = "_blank"; a.rel = "noopener"; a.textContent = "TRD Data"; const c = document.createElement("a"); c.href = "https://www.census.gov/construction/bps/"; c.target = "_blank"; c.rel = "noopener"; c.textContent = "Census"; hard.querySelector("p").append(a, ", ", c, ")."); }
   [0, 1, 2].forEach(i => btn(i, hard));
