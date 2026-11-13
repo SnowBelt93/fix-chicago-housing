@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Fix Chicago Housing · Shape Chicago</title>
@@ -12,7 +15,7 @@
 <link rel="canonical" href="https://fixchicagohousing.com/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2b5da0">
-<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest"><script src="/shape/guard.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@600;700;800;900&family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -1478,7 +1481,7 @@ body.playing #sky{opacity:1}
 
 <div id="app">
   <div id="basemap" aria-hidden="true"></div>
-  <div id="map" aria-label="3D map of Chicago buildings"></div>
+  <div id="map" role="application" aria-label="3D map of Chicago buildings. Arrow keys or W A S D move, Q and E turn, plus and minus zoom."></div>
   <div id="sky" aria-hidden="true"></div>
   <div class="loading" id="loading"><div class="ldcard"><svg id="ldMap" aria-hidden="true"></svg><b id="ldTxt">Loading 485,000 Chicago buildings…</b><span id="ldSub">0 of 77 neighborhoods</span></div></div>
 
@@ -4917,3 +4920,4 @@ boot().catch(e => { console.error(e); $("loading").textContent = "Couldn't load 
 })();
 
 </script>
+</html>

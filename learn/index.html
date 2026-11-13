@@ -155,7 +155,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 <section class="topic" id="zoning"><h2>How many homes fit on a Chicago lot?</h2><img class="art" src="/shape/art/learn/zoning.webp" width="1800" height="670" alt="" loading="lazy" decoding="async">
 <div class="play" id="pZoning">
   <p class="q">A typical Chicago lot is 25 by 125 feet. Pick its zoning:</p>
-  <div class="chips" role="radiogroup" aria-label="Zoning district"><button type="button" role="radio" data-d="RS-3">RS-3</button><button type="button" role="radio" data-d="RT-4">RT-4</button><button type="button" role="radio" data-d="RM-5">RM-5</button><button type="button" role="radio" data-d="RM-6">RM-6</button></div>
+  <div class="chips" role="radiogroup" aria-label="Zoning district"><button type="button" role="radio" aria-checked="false" data-d="RS-3">RS-3</button><button type="button" role="radio" aria-checked="false" data-d="RT-4">RT-4</button><button type="button" role="radio" aria-checked="false" data-d="RM-5">RM-5</button><button type="button" role="radio" aria-checked="false" data-d="RM-6">RM-6</button></div>
   <div class="lotview"><div class="lotpic" id="zPic"><img data-d="RS-3" src="/shape/art/learn/lot_rs3.webp" width="900" height="633" alt="One city lot with a brick bungalow, a back yard and a garage on the alley." decoding="async"><img data-d="RT-4" src="/shape/art/learn/lot_rt4.webp" width="900" height="633" alt="The same lot with a three-story greystone three-flat, back porches and a garage." loading="lazy" decoding="async"><img data-d="RM-5" src="/shape/art/learn/lot_rm5.webp" width="900" height="633" alt="The same lot with a deeper three-story brick building holding six homes, and parking off the alley." loading="lazy" decoding="async"><img data-d="RM-6" src="/shape/art/learn/lot_rm6.webp" width="900" height="633" alt="The same lot with a five-story building holding ten homes, and parking off the alley." loading="lazy" decoding="async"></div><div class="out" id="zOut"></div></div>
 </div>
 <p>Chicago sorts every lot into a district, and each district caps homes with a minimum lot area per home. RS districts are mostly houses, RT two- and three-flats, RM apartment buildings. 41% of the city is zoned for single-family homes or two-flats only, and allowing more takes a City Council vote.</p>
@@ -255,7 +255,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 
 // ---------- the playable bits ----------
 const $ = id => document.getElementById(id), fmt = n => Math.round(n).toLocaleString("en-US"), money = v => v >= 1e9 ? "$" + (v / 1e9).toFixed(1).replace(/\.0$/, "") + "B" : "$" + Math.round(v / 1e6) + "M";
-const pick = (box, attr, fn) => { const bs = [...box.querySelectorAll("button")]; bs.forEach(b => b.onclick = () => { bs.forEach(x => { x.setAttribute("aria-checked", x === b); x.classList.toggle("on", x === b); }); fn(b.dataset[attr]); }); };
+const pick = (box, attr, fn) => { const bs = [...box.querySelectorAll("button")]; bs.forEach(b => b.onclick = () => { bs.forEach(x => { x.setAttribute(x.getAttribute("role") === "radio" ? "aria-checked" : "aria-pressed", x === b); x.classList.toggle("on", x === b); }); fn(b.dataset[attr]); }); };
 // zoning: homes on a 25×125 lot (3,125 sq ft) by minimum lot area per home (§17-2-0303); RM-5 capped at 6 like the housing tool
 const ZD = {"RS-3":{mla:2500, n:1, what:"one house", see:"Shown: a bungalow, a back yard and a garage on the alley."}, "RT-4":{mla:1000, n:3, what:"a three-flat", see:"Shown: three floors with one home on each."}, "RM-5":{mla:400, n:6, what:"a six-flat (7 by the rule; most lots fit 6)", see:"Shown: three floors with two homes on each, one in front and one in back."}, "RM-6":{mla:300, n:10, what:"a 10-home mid-rise", see:"Shown: five floors with two homes on each."}};
 function drawLot(d){   // the same 25 by 125 foot lot, modeled four times: show the picture for the chosen district
@@ -275,7 +275,7 @@ function ilScore(){ const done = Object.keys(ilAns).length, right = IL.filter((c
   if ($("ilAgain")) $("ilAgain").onclick = () => { for (const k in ilAns) delete ilAns[k]; $("ilCards").querySelectorAll("button").forEach(x => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); }); IL.forEach((c, i) => $("ilA" + i).innerHTML = ""); ilScore(); }; }
 $("ilCards").querySelectorAll("button").forEach(b => b.onclick = () => {
   const i = +b.dataset.i, c = IL[i], said = b.dataset.v === "1", right = said === c.ok; ilAns[i] = said;
-  b.parentNode.querySelectorAll("button").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+  b.parentNode.querySelectorAll("button").forEach(x => { x.classList.toggle("on", x === b); x.setAttribute(x.getAttribute("role") === "radio" ? "aria-checked" : "aria-pressed", x === b); });
   $("ilA" + i).innerHTML = `<b class="${right ? "good" : "bad"}">${right ? "Right" : "Nope"}: ${c.ok ? "legal" : "illegal"}.</b> ${c.why}`;
   ilScore();
 });

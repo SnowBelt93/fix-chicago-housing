@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest"><script src="/shape/guard.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zoning and rules · Shape Chicago</title>
 <meta name="description" content="Type a Chicago address or tap a lot: see its zoning, how many homes the rules allow, whether today's building could be built today, and what would change that.">
@@ -206,6 +206,9 @@ function zoneInfo(raw){
   return {z, fam:"?", name:"Zoning not recognized", unknown:true};
 }
 const FAM_COLOR = {R:"#7fb6d9", B:"#b48fd1", C:"#c99ad1", D:"#2b5da0", PD:"#e0a24a", M:"#9aa3ad", P:"#8cc084", "?":"#cfd4da"};
+function inkOn(hex){   // dark or white text, whichever reads better on this background
+  const c = (hex || "#2b5da0").replace("#", "").match(/../g).map(x => { const v = parseInt(x, 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  const L = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; return (L + 0.05) / 0.0802 > 1.05 / (L + 0.05) ? "#16324f" : "#fff"; }
 function famColor(z){ const i = zoneInfo(z); if (i.fam === "R"){ return /^RS/.test(i.z) ? "#cfe3f1" : /^RT/.test(i.z) ? "#9fcbe8" : "#5ea2d4"; } return FAM_COLOR[i.fam]; }
 /* the next step up, as people usually ask for it in a zoning change */
 const UP = {"RS-1":"RT-4", "RS-2":"RT-4", "RS-3":"RT-4", "RT-3.5":"RT-4", "RT-4":"RM-5", "RT-4A":"RM-5", "RM-4.5":"RM-5", "RM-5":"RM-6", "RM-5.5":"RM-6", "RM-6":"RM-6.5"};
@@ -411,7 +414,7 @@ function show(T, k, fly){
     <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}</p>
     <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sRules">Rules</a><a href="#sBuild">Build more</a><a href="#sPrice">Prices</a><a href="#sBiz">Businesses</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print</button></nav>
     <section id="sOver" class="sec">
-    ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${/^(RS|RT)/.test(I.z) ? "#16324f" : "#fff"}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
+    ${zc ? `<div class="zchip"><i style="background:${famColor(zc)};color:${inkOn(famColor(zc))}">${esc(zc)}</i>${esc(I.name)}</div>` : ""}
     <div class="big"><div class="n">${bigN}</div><div class="t">${bigT}</div></div>
     ${verdict}
     ${floorsOK ? `<div class="masskey"><span style="--k:#9aa3ad">Building now</span><span style="--k:rgba(43,93,160,.45)">Biggest the rules allow: ${floorsOK} ${floorsOK === 1 ? "story" : "stories"}</span></div>` : ""}

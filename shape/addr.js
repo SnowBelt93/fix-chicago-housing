@@ -62,7 +62,7 @@
       list.hidden = !top.length; input.setAttribute("aria-expanded", String(!!top.length));
       list.querySelectorAll("button").forEach(b => b.onclick = () => { list.hidden = true; go(m ? +m[1] : null, b.dataset.s, onPick, hint); });
     }
-    input.setAttribute("role", "combobox"); input.setAttribute("aria-autocomplete", "list"); list.setAttribute("role", "listbox"); list.hidden = true;
+    input.setAttribute("role", "combobox"); input.setAttribute("aria-autocomplete", "list"); input.setAttribute("aria-expanded", "false"); if (!input.getAttribute("aria-label") && !(input.labels && input.labels.length)) input.setAttribute("aria-label", "Chicago address"); list.setAttribute("role", "listbox"); list.hidden = true;
     input.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(suggest, 120); });
     input.addEventListener("focus", streets, {once:true});
     input.addEventListener("keydown", async e => {

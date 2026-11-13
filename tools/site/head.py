@@ -4,6 +4,7 @@ tools/progress/build.py writes the same links into the pages it makes (ICONS the
 import os, re
 ICONS = ('<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32">'
          '<link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">')
+GUARD = '<script src="/shape/guard.js"></script>'   # data guard: a note with Refresh if a data file fails (pages that fetch data)
 def run(root):
     n = 0
     for dp, dn, fn in os.walk(root):
@@ -11,8 +12,11 @@ def run(root):
         for f in fn:
             if not f.endswith('.html'): continue
             p = os.path.join(dp, f); s = open(p, encoding='utf-8').read()
-            if 'rel="manifest"' in s or '<head>' not in s: continue
-            s = re.sub(r'(<meta charset="utf-8">)', r'\1\n' + ICONS, s, count=1)
+            if '<head>' not in s: continue
+            t = s
+            if 'rel="manifest"' not in s: s = re.sub(r'(<meta charset="utf-8">)', r'\1\n' + ICONS, s, count=1)
+            if 'shape/guard.js' not in s and f == 'index.html' and 'fetch(' in s: s = s.replace(ICONS, ICONS + GUARD, 1)
+            if s == t: continue
             open(p, 'w', encoding='utf-8').write(s); n += 1
     return n
 if __name__ == '__main__':

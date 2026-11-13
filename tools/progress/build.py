@@ -909,7 +909,7 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 .pg .lede{margin:0;font-size:15.5px;line-height:23px;color:var(--sc-ink2);max-width:860px}
 .pg .call{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2);background:#f6f7f9;border-radius:12px;padding:12px 14px}
 .pg .note{max-width:980px}.pg .src{max-width:980px}
-.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}.pg .eyebrow a{color:var(--sc-navy);text-decoration:none}.pg .eyebrow a:hover{text-decoration:underline}
+.pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}.pg .eyebrow a{color:var(--sc-navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(43,93,160,.45)}.pg .eyebrow a:hover{text-decoration-color:currentColor}
 .pg .top{display:flex;flex-direction:column;gap:8px}
 .pg .chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--sc-line);color:var(--sc-ink2);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:700;white-space:nowrap;align-self:flex-start}
 .pg .chip.bad{border-color:#b3001e;color:#b3001e}.pg .chip.good{border-color:#1f7a45;color:#1f7a45}.pg .chip.go{border-color:var(--sc-navy);color:var(--sc-navy)}

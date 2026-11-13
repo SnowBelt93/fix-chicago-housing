@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest"><script src="/shape/guard.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pay Down Chicago's Pensions · Shape Chicago</title>
 <meta name="description" content="Chicago's four city pension funds are about a quarter funded. Choose how much the city pays, what the investments earn and whether to borrow, and see when each fund reaches 90% and what it costs.">
@@ -301,7 +301,8 @@ function chart(id, T, B, f, fmt, fixedMax, line, bars){
   const vals = xs.map(f).concat(bs.map(f));
   const max = fixedMax ? Math.max(fixedMax, Math.min(1.6, Math.max(...vals))) : Math.max(...vals) * 1.08;
   const x = y => P.l + (y - 2025) / 40 * (W - P.l - P.r), yv = v => H - P.b - Math.max(0, Math.min(v, max)) / max * (H - P.t - P.b);
-  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  const last = xs[xs.length - 1], hd = $(id).closest("section, .card, div").querySelector("h2, h3"), lbl = `${hd ? hd.textContent.trim() + ". " : ""}Your plan, 2025 to 2065: ${fmt(f(xs[0]))} in 2025, ${fmt(f(last))} in ${last.y}.`;
+  let g = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${lbl.replace(/"/g, "&quot;")}">`;
   for (let k = 0; k <= 4; k++){ const v = max * k / 4; g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(v)}" y2="${yv(v)}" stroke="#e6e9ed"/><text x="${P.l - 8}" y="${yv(v) + 4}" text-anchor="end" font-size="11" fill="#5a6069">${fmt(v)}</text>`; }
   for (let y = 2025; y <= 2065; y += step) g += `<text x="${x(y)}" y="${H - 7}" text-anchor="${y === 2065 ? "end" : "middle"}" font-size="11" fill="#5a6069">${y}</text>`;
   if (line) g += `<line x1="${P.l}" x2="${W - P.r}" y1="${yv(line[0])}" y2="${yv(line[0])}" stroke="#1f7a45" stroke-dasharray="4 4"/><text x="${W - P.r}" y="${yv(line[0]) - 5}" text-anchor="end" font-size="11" fill="#1f7a45">${line[1]}</text>`;

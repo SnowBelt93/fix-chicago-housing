@@ -11,6 +11,7 @@ T = {
         ('选择你的选区或输入地址。查看你的市议员、他们在住房问题上的投票、你选区的分区变更、获批的住房，以及市政厅即将召开的会议。', 'Wybierz okręg albo wpisz adres. Zobacz swojego radnego, jak głosował w sprawach mieszkań, zmiany strefowania w okręgu, wydane pozwolenia i najbliższe posiedzenia w ratuszu.'),
     "Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.":
         ('回答几个问题，看看你在芝加哥可能符合哪些项目：每项提供多少、是否开放、去哪里申请。你输入的内容不会离开本页面。', 'Odpowiedz na kilka pytań i zobacz programy w Chicago, do których możesz się kwalifikować: ile dają, czy są otwarte i gdzie składać wniosek. Nic, co wpiszesz, nie opuszcza tej strony.'),
+    "Some of this page's data didn't load. Check your connection, then refresh.": ('本页部分数据没有加载。请检查网络后刷新。', 'Część danych tej strony się nie wczytała. Sprawdź połączenie i odśwież.'), 'Refresh': ('刷新', 'Odśwież'),
     'Got it': ('知道了', 'Rozumiem'), 'Start': ('开始', 'Zacznij'), "Let's go": ('开始吧', 'Zaczynamy'),
 }
 R = [['^(.+) · Shape Chicago$', '[[$1]] · Shape Chicago', '[[$1]] · Shape Chicago']]
