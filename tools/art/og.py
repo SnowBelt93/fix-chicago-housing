@@ -15,6 +15,16 @@ PAGES = [
     ("transit", "og_transit.png", "Expand Chicago Transit", "Switch on real proposals or draw your own line, and see riders, cost and cars off the road."),
     ("tracker", "og_tracker.png", "Chicago Permit Tracker", "Every new-home permit since 2006, updated daily from the city's own data."),
     ("progress", "progress.png", "Progress", "What Chicago built, rezoned and ran, counted from public records and updated daily."),
+    ("budget", "budget.png", "Balance the Chicago Budget", "Close the 2027 gap your way: every tax, cut and one-time option, with what it costs you."),
+    ("pensions", "pensions.png", "Pay Down Chicago's Pensions", "See what it takes to fill the four city pension funds, and what each path costs."),
+    ("bears", "stadium.png", "Where Should the Bears Play?", "Compare every proposed site on trains, parking, hotels and what's in the way."),
+    ("lot", "lot.png", "Zoning and rules", "Look up any Chicago address: what its zoning allows, the rules on it and what sells nearby."),
+    ("grants", "grants.png", "Grants and help", "City, county, state and federal programs you might qualify for, and where to apply."),
+    ("deal", "deal.png", "Affordable deal check", "A first look at one site: tax credit fit, cost and how the money could stack up."),
+    ("learn", "zoning.png", "Learn", "Short, hands-on explainers on how Chicago builds homes, runs transit and pays for it."),
+    ("news", "news.png", "Chicago planning news", "Headlines on housing, transit and the budget from Chicago outlets, every few hours."),
+    ("wards", "wards.png", "Your ward", "Your alderperson's votes, the rezonings and permits in your ward, and meetings coming up."),
+    ("plans", "plans.png", "Plans people made", "Housing, transit, budget and pension plans Chicagoans built and shared."),
 ]
 ONLY = set(sys.argv[3].split(",")) if len(sys.argv) > 3 else None
 
@@ -41,7 +51,7 @@ for key, art, title, sub in PAGES:
     if key == "home":
         a = a.resize((int(a.width * 0.66), int(a.height * 0.66)), Image.LANCZOS); im.paste(a, (W - a.width + 30, H - a.height + 26), a)
     else:
-        k = {"housing": 0.66, "transit": 0.6, "tracker": 0.6, "progress": 0.56}[key]
+        k = {"housing": 0.66, "transit": 0.6, "tracker": 0.6, "progress": 0.56}.get(key) or min(660 / a.width, 470 / a.height)
         a = a.resize((int(a.width * k), int(a.height * k)), Image.LANCZOS)
         if key == "transit":   # its ground runs off both ends: trim the left and fade that edge into the background
             a = a.crop((int(a.width * 0.22), 0, a.width, a.height))
@@ -51,7 +61,8 @@ for key, art, title, sub in PAGES:
                 for y in range(a.height): px[x, y] = v
             from PIL import ImageChops
             a.putalpha(ImageChops.multiply(a.getchannel("A"), ramp))
-        im.paste(a, (W - a.width + 40, H - a.height - 20), a)
+        old = key in ("housing", "transit", "tracker", "progress")
+        im.paste(a, (W - a.width + 40, H - a.height - 20) if old else (W - a.width - 36, (H - a.height) // 2 + 30), a)
     # brand
     s = 1.6; ox, oy = 64, 50
     d.polygon([(ox + x * s, oy + y * s) for x, y in STARP], fill=STAR)

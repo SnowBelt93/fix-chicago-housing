@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Grants and help · Shape Chicago</title>
 <meta name="description" content="Answer a few questions and see the city, county, state and federal housing programs you might qualify for in Chicago, with what each pays, when it's open and where to apply. Nothing you type leaves your browser.">
-<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-home.jpg">
+<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-grants.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,9 +112,11 @@ details.no .prog{opacity:.75}
 </header>
 <main>
 <nav class="sc-atabs" data-atabs aria-label="Your address"></nav>
+<div class="sc-pghead"><div>
 <h1 id="ttl">Find money and help in Chicago</h1>
 <p class="lede">Answer a few questions and see the city, county, state and federal programs you might qualify for in Chicago: what each pays, whether it's open, and where to apply.</p>
 <p class="priv">Nothing you type leaves this page. No account. Programs you star stay in this browser.</p>
+</div><img class="sc-pgart" src="/shape/art/grants.webp" width="900" height="318" alt="" decoding="async"></div>
 
 <div class="grid">
 <form class="card" id="f" onsubmit="return false" autocomplete="off">
@@ -357,6 +359,6 @@ async function fetchG(lon, lat){
   if (ONLYLIST && matchMedia("(max-width:900px)").matches) setTimeout(() => $("out").scrollIntoView(), 300);
 })();
 </script>
-<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("grants", {title:"Find money and help in Chicago", body:"<p>Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.</p>"}));</script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("grants", {title:"Find money and help in Chicago", art:"/shape/art/grants.webp", body:"<p>Answer a few questions and see the programs you might qualify for in Chicago, with what each pays, whether it's open, and where to apply. Nothing you type leaves this page.</p>"}));</script>
 </body>
 </html>

@@ -345,3 +345,9 @@ html.sc-zh body{word-break:normal;line-break:strict}
 .sc-skip{position:fixed;left:12px;top:-60px;z-index:1000;background:var(--sc-navy);color:#fff;font:600 15px var(--sc-font);padding:10px 16px;border-radius:10px;text-decoration:none;transition:top .15s}
 .sc-skip:focus{top:12px;outline:2px solid #fff;outline-offset:-4px}
 [tabindex="-1"]:focus{outline:none}
+
+/* Page header with a clay picture beside the title (grants, deal check, plans, 404). Phones: the picture sits small above the title. */
+.sc-pghead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:28px;align-items:center}
+.sc-pghead .sc-pgart{width:100%;height:auto;display:block}
+@media (max-width:760px){.sc-pghead{grid-template-columns:minmax(0,1fr);gap:4px}.sc-pghead .sc-pgart{order:-1;max-height:140px;width:auto;max-width:100%;justify-self:start}}
+@media print{.sc-pghead{display:block}.sc-pghead .sc-pgart{display:none}}

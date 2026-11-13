@@ -280,7 +280,74 @@ def history():
     person(-36, f + 9.2); person(-14, f + 9.0); person(-13.2, f + 9.3, h=0.7); person(6, f + 9.4); person(26, f + 8.9)
     hardhat(36, by - 1.6); hardhat(40, by - 1.2, "#e07a3f")
 
-TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders")}
+
+# ---------- pages: grants finder, deal check, plans people made, page not found ----------
+def ladder(x, y, z0, h, lean=0.0):
+    st = mat("#c9ccc8", rough=0.5, metal=0.4)
+    for dx in (-0.25, 0.25): box(x + dx, y, z0, 0.08, 0.08, h, st, bevel=0)
+    for k in range(int(h / 0.4)): box(x, y, z0 + 0.3 + k * 0.4, 0.5, 0.06, 0.05, st, bevel=0)
+
+def deal():
+    by = street_base(88, 34); f = -17
+    midrise(-16, by, W=30, floors=6, D=13, panel="#e7e2d8", aff=0.55, seed=12, col2="#9fb4c7")   # the building: most windows lit green = affordable homes
+    flats(-41, by, floors=3, D=12, porch=True); fence(-35.5, by - 3.0, -35.5, by + 11, h=1.1)
+    # what pays for it, as stacks of coins on the lawn beside it: a small mortgage, tall tax credit equity, a little deferred fee, and the tall gap
+    paved(19, by + 4.5, 34, 15, col="#e9e4da")
+    for x, n, col in ((7, 3, "lt3"), (14, 15, "navy"), (21, 2, "lt6"), (28, 18, "star")): coins(x, by + 4.5, n, col=col, r=2.1)
+    hardhat(33, by + 1.5); person(36, by + 2.2); person(10.5, by - 1.2, h=0.95)
+    street_life(88, f, seed=9, skip=((2, 36),))
+    crowd(-30, -4, f + 8.4, f + 10.2, 6, seed=12)
+
+def grants():
+    by = street_base(92, 34); f = -17
+    bungalow(-34, by, D=11)                                                                  # a roof getting fixed
+    ladder(-28.6, by + 1.2, 0.1, 4.6); hardhat(-29.6, by + 0.6); hardhat(-34, by + 5.5, "#e07a3f")
+    box(-34, by + 5.5, 4.9, 0.9, 0.6, 0.35, mat("#6f6b66", rough=0.9), bevel=0.05)          # a bundle of shingles up top
+    flats(-17, by, floors=3, D=12, porch=True)                                               # a three-flat with a new back porch
+    fence(-24.5, by - 3.0, -24.5, by + 11, h=1.1); fence(-10.5, by - 3.0, -10.5, by + 11, h=1.1)
+    midrise(6, by, W=20, floors=2, D=12, panel="#e4ddcf", seed=8, balconies=False)          # storefronts with new awnings
+    cottage(24, by)                                                                          # a cottage getting new windows
+    ladder(27.6, by - 1.0, 0.1, 2.6); hardhat(28.6, by - 1.6, "#2e9d57")
+    coins(37, by + 1.5, 7, r=1.6); coins(40.5, by + 2.2, 4, r=1.6)                           # the help: a little gold in the yard
+    street_life(92, f, seed=10, skip=((34, 44),))
+    crowd(-8, 18, f + 8.4, f + 10.2, 7, seed=10)
+
+def plans():
+    w, d = 32, 20; slab(w, d); paved(0, 0, w - 2, d - 2, col="#e9e4da", h=0.1)               # a community room floor
+    tb = mat("#b48a62", rough=0.6)
+    box(0, 0, 0.1, 22, 11, 0.12, tb, bevel=0.05, name="top"); box(0, 0, 1.15, 22, 11, 0.15, tb, bevel=0.05)
+    for dx in (-10, 10):
+        for dy in (-4.6, 4.6): box(dx, dy, 0.1, 0.5, 0.5, 1.05, tb, bevel=0.02)
+    z = 1.3; box(0, 0, z, 20.5, 9.6, 0.06, mat("#eef1f4", rough=0.9), bevel=0.02)            # the map on the table
+    box(-1, -1.2, z + 0.06, 20.5, 0.5, 0.01, mat("#c3c8c6", rough=0.9), bevel=0); box(3, 0, z + 0.06, 0.5, 9.6, 0.01, mat("#c3c8c6", rough=0.9), bevel=0)
+    box(-8.5, 3.2, z + 0.06, 3.2, 3.4, 0.01, mat("#cfe4c3", rough=0.95), bevel=0)            # a park
+    box(9.2, 0, z + 0.06, 2.2, 9.6, 0.01, mat("#8cc4e8", rough=0.3), bevel=0)                # the lake
+    rnd = random.Random(4); cols = ["#cfd4da", "#7ec8ec", "#41b6e6", "#2b5da0", "#0f7c86", "#cfd4da", "#cfd4da"]
+    for i in range(-9, 8):
+        for j in range(-4, 5):
+            x, y = i * 1.05, j * 1.0
+            if abs(y + 1.2) < 0.6 or abs(x - 3) < 0.6 or (-10.2 < x < -6.8 and 1.4 < y < 4.9): continue
+            c = rnd.choice(cols); hgt = {"#cfd4da": 0.25, "#7ec8ec": 0.4, "#41b6e6": 0.6, "#2b5da0": 1.1, "#0f7c86": 2.0}[c] * (0.8 + rnd.random() * 0.4)
+            box(x, y, z + 0.07, 0.75, 0.7, hgt, mat(c, rough=0.6), bevel=0.04)
+    el = mat("star", rough=0.45); box(-1, 2.6, z + 0.07, 18, 0.18, 0.5, el, bevel=0.03)        # someone's new line in red
+    for x in (-9, -4, 1, 6): cyl(x, 2.6, z + 0.07, 0.32, 0.65, el, verts=16, bevel=0.03)
+    for (x, y, c) in ((-12.6, -2, "navy"), (-12.6, 2.2, "gold"), (-6, -6.4, "star"), (0, -6.6, "green"), (5.5, -6.3, "#7a5ea8"), (-3, 6.4, "#e07a3f"), (4, 6.6, "#5f7d8c"), (12.6, 1.5, "#8a5a36")):
+        person(x, y, c, h=1.15)
+
+def lost():
+    w, d = 86, 30; slab(w, d); f = -d / 2; W = w - 0.5
+    box(0, f + 3.0, 0, W, 5.6, 0.05, mat(ASPHALT, rough=0.9), bevel=0.02); box(0, f + 5.95, 0, W, 0.3, 0.2, mat("curb", rough=0.8), bevel=0.04)
+    box(0, f + 8.6, 0, W, 5.0, 0.16, mat("curb", rough=0.85), bevel=0.03); box(0, f + 20.3, 0, W, 18.4, 0.08, mat(GRASS, rough=0.95), bevel=0.04)
+    yy = f + 18
+    el_track([(-44, yy), (6, yy)], z=7.0); ltrain(-30, yy, 7.9, cars=2, stripe="#8a5a36")   # the line just stops
+    box(4.4, yy, 7.9, 0.7, 4.6, 1.6, mat("star", rough=0.45), bevel=0.15)                    # a bumper at the end of the track
+    for dx in (-1.3, 1.3): box(4.4, yy + dx, 9.5, 0.3, 0.3, 0.3, mat("gold", emit=2.0), bevel=0.05)
+    person(10, f + 9.6, "navy"); person(11.4, f + 9.2, "gold", h=0.9)                         # two riders looking up at where it should go
+    for x in (16, 26, 36): tree(x, f + 22, 1.0)
+    for x in (-38, -20, -6): tree(x, f + 25, 0.9)
+    street_life(86, f, seed=13, trees=False)
+
+TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost")}
 
 # ---------- the lot exhibit: one standard 25 x 125 ft lot (7.6 x 38 m), four districts ----------
 LOTW, LOTD = 7.6, 38.0
