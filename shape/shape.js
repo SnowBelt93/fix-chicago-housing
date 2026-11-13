@@ -365,7 +365,7 @@ window.scMap = {
   let depth = 0;   // [[text]] in a replacement: translate that piece too (exact text, then patterns, at most 3 levels deep)
   const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.*?)\]\]/g, (m, w) => { if (!w.trim()) return w; if (depth > 2) return w; depth++; const t = tr(w); depth--; return t != null ? t : w; });
   function tr(s){ const k = norm(s); if (!k) return null; if (T[k] != null) return T[k];
-    for (const [re, to] of R) if (re.test(k)) return words(k.replace(re, to)); return null; }
+    for (const [re, to] of R) if (re.test(k)){ const v = words(k.replace(re, to)); if (v !== k) return v; } return null; }
   function text(n){ const v = tr(n.nodeValue); if (v != null && v !== norm(n.nodeValue)){ const m = n.nodeValue.match(/^\s*/)[0], e = n.nodeValue.match(/\s*$/)[0]; n.nodeValue = m + v + e; } }
   function attrs(el){ for (const a of ["aria-label", "placeholder", "title", "alt", "data-t"]){ const v = el.getAttribute && el.getAttribute(a); if (v){ const t = tr(v); if (t != null) el.setAttribute(a, t); } } }
   function walk(root){

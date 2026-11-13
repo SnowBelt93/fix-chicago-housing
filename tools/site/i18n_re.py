@@ -26,9 +26,15 @@ def P(en, *tr):
 
 # Q(english, spanish, chinese, polish): a pattern row from a script template, with {} where the page fills something in.
 # In the translations write {1}, {2}… for those pieces in order; each piece is translated too when it can be.
+# {#} in the English stands for a number or money amount only ($1,234 / 12.5% / $3.2M), which keeps short rows like
+# '{#} a home' from swallowing whole sentences.
 def Q(en, *tr):
-    parts = en.split('{}'); n = len(parts) - 1
-    pat = '^' + '(.+?)'.join(_re.escape(p) for p in parts) + '$'
+    bits = _re.split(r'(\{#?\})', en); n = 0; pat = '^'
+    for b in bits:
+        if b == '{}': pat += '(.+?)'; n += 1
+        elif b == '{#}': pat += '(' + _NUM + ')'; n += 1
+        else: pat += _re.escape(b)
+    pat += '$'
     out = []
     for t in tr:
         t = t.replace('$', '$$')
