@@ -129,7 +129,7 @@
   }
   // "By Maria from Pilsen · today", "From a neighbor · 3 days ago"
   const who = (P, place) => (P.author ? "By " + esc(P.author) + (place ? " from " + esc(place) : "") : place ? "From " + esc(place) : "From a neighbor") + " · " + ago(P.ts);
-  const ago = ts => { const d = (Date.now() - ts) / 864e5; return d < 1 ? "today" : d < 2 ? "yesterday" : d < 30 ? Math.floor(d) + " days ago" : new Date(ts).toLocaleDateString("en-US", {month:"short", day:"numeric", year: d > 300 ? "numeric" : undefined}); };
+  const ago = ts => { const d = (Date.now() - ts) / 864e5; return d < 1 ? "today" : d < 2 ? "yesterday" : d < 30 ? Math.floor(d) + " days ago" : (window.scFmt ? scFmt.date(ts, {year: d > 300 ? undefined : false}) : new Date(ts).toDateString()); };
 
   // one card: map, grade, title, numbers, what it does, endorse
   function card(P, G, opt){

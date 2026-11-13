@@ -181,7 +181,7 @@ async function one(id){
     $("acts").insertBefore(S.endorseBtn(P), $("copy"));
     more("housing", P);
     $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } setTimeout(() => $("copy").textContent = "Copy link", 1800); });
-  } catch (e) { el.innerHTML = '<a class="back" href="#">← All plans</a><div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now.") + '</div>'; }
+  } catch (e) { el.innerHTML = '<a class="back" href="#">← All plans</a><div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now. Refresh the page to try again.") + '</div>'; }
 }
 // one transit, budget or pensions plan
 async function oneSim(k, id){
@@ -202,7 +202,7 @@ async function oneSim(k, id){
     $("acts").insertBefore(S.simEndorseBtn(P), $("copy"));
     more(k, P);
     $("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(location.href); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed"; } setTimeout(() => $("copy").textContent = "Copy link", 1800); });
-  } catch (e) { el.innerHTML = back + '<div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now.") + '</div>'; }
+  } catch (e) { el.innerHTML = back + '<div class="empty">' + (e === 404 ? "This plan isn't in the gallery anymore." : "Couldn't load this plan right now. Refresh the page to try again.") + '</div>'; }
 }
 function route(){
   const id = +(location.hash.match(/^#(\d+)$/) || [])[1] || 0, sm = location.hash.match(/^#(transit|budget|pensions)-(\d+)$/);

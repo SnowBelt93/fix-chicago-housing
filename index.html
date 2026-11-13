@@ -298,7 +298,7 @@ async function loadPlans(){
     el.innerHTML = ""; const hs = (plans || []).slice(0, Math.max(1, 4 - sims.length));
     hs.forEach(P => { const c = S.card(P, G); if (c) el.appendChild(c); });
     sims.slice(0, 4 - hs.length).forEach(P => { const c = S.simCard(P, G); if (c) el.appendChild(c); });
-  } catch (e) { el.innerHTML = '<div class="empty">Plans people share show up here.</div>'; }
+  } catch (e) { el.innerHTML = '<div class="empty">Plans people share show up here. Couldn\'t reach the gallery just now; <a href="/plans/">see all plans</a>.</div>'; }
   const N = await S.myNews(); if (!N || !N.plans.length) return;
   const fresh = N.plans.reduce((s, x) => s + x.fresh, 0);
   if (fresh){ const m = document.getElementById("mine"); m.innerHTML = '<b>Your ' + (N.plans.length === 1 ? "plan has" : "plans have") + ' ' + S.fmt(fresh) + ' new ' + (fresh === 1 ? "endorsement" : "endorsements") + '</b> since you last looked. <a href="/plans/">See them</a>'; m.hidden = false; N.mark(); }
@@ -308,7 +308,7 @@ loadPlans();
 /* This week: the newest news, zoning changes and permits, loaded when the section comes into view. */
 (function(){
   const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  const day = d => new Date(d.length > 10 ? d.replace("Z", ":00Z") : d + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  const day = d => scFmt.date(d, {year:false});
   let seen = null; try { seen = localStorage.getItem("sc-home-seen"); } catch (e){}
   function go(){
     fetch("/news/data/news.json").then(r => r.json()).then(d => {
@@ -343,7 +343,7 @@ loadPlans();
     document.getElementById("featK").textContent = "In the news";
     for (const id of ["featT", "featX"]){ const e = document.getElementById(id); e.setAttribute("translate", "no"); e.lang = "en"; }   // outlets' own words stay as written
     document.getElementById("featT").textContent = f.t; if (f.x) document.getElementById("featX").textContent = f.x;
-    document.getElementById("featS").textContent = f.s + " · " + new Date(f.d.replace("Z", ":00Z")).toLocaleDateString("en-US", {month:"short", day:"numeric"}) + " · More in Chicago planning news";
+    document.getElementById("featS").textContent = f.s + " · " + scFmt.date(f.d, {year:false}) + " · More in Chicago planning news";
     if (f.i){ const im = document.getElementById("featImg"); im.onerror = () => { im.src = "/shape/art/hero.webp"; im.className = "art"; }; im.referrerPolicy = "no-referrer"; im.src = f.i; }
   }).catch(() => {});
   document.getElementById("featImg").className = "art";
@@ -351,7 +351,7 @@ loadPlans();
   fetch("/wards/data/meetings.json").then(r => r.json()).then(m => {
     const up = m.meetings.find(x => Date.parse(x.d) > Date.now() - 2 * 3600e3 && /City Council|Zoning|Housing/.test(x.b) && !/cancel/i.test(x.st));
     if (!up) return; const d = new Date(up.d);
-    document.getElementById("pMeet").textContent = d.toLocaleDateString("en-US", {timeZone:"America/Chicago", month:"short", day:"numeric"});
+    document.getElementById("pMeet").textContent = scFmt.date(d, {year:false});
     document.getElementById("pMeetL").textContent = "next " + (up.b === "City Council" ? "City Council meeting" : up.b.replace(/^Committee on /, "").replace(/,.*$/, "").toLowerCase() + " hearing");
   }).catch(() => {});
 })();
@@ -359,7 +359,7 @@ loadPlans();
 /* Your ward: pick it once (no account), then its news, zoning, permits, alderperson and ways to weigh in */
 (function(){
   const S = window.SCWard, box = document.getElementById("yw"), note = document.getElementById("ywNote"), esc = S.esc;
-  const day = d => new Date(String(d).length > 10 ? String(d).replace("Z", ":00Z") : d + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  const day = d => scFmt.date(String(d), {year:false});
   const fmt = n => Number(n).toLocaleString("en-US");
   const name = a => (a.name || "").split(",").reverse().join(" ").trim();
   const last = a => (a.name || "").split(",")[0].trim();
@@ -379,7 +379,7 @@ loadPlans();
     const zs = D.z.slice(0, 3).map(z => '<li>' + tag(z) + '<a href="/wards/#' + n + '">' + esc(z.a) + '</a><small>' + (z.f && z.t ? esc(z.f) + " → " + esc(z.t) + " · " : "") + "passed " + day(z.d) + '</small></li>').join("");
     const ps = D.permits.filter(p => +p.homes >= 2).slice(0, 2).map(p => '<li><a href="/tracker/#near">' + esc(p.addr) + '</a><small>' + fmt(p.homes) + ' homes permitted · ' + day(p.date) + '</small></li>').join("");
     const zm = D.zoningMeet, tz = {timeZone:"America/Chicago"};
-    const meetTxt = zm ? new Date(zm.d).toLocaleDateString("en-US", {...tz, weekday:"short", month:"short", day:"numeric"}) + (zm.c ? ". Written comments by " + esc(zm.c.replace(/, \d{4}/, "")) : "") : "";
+    const meetTxt = zm ? scFmt.date(zm.d, {weekday:"short", year:false}) + (zm.c ? ". Written comments by " + esc(zm.c.replace(/, \d{4}/, "")) : "") : "";
     box.innerHTML = '<div class="ywcard"><div class="ywgrid"><div class="ywwho"><span class="wn">Ward ' + n + '</span>'
       + (A.name ? '<div class="al">' + (A.photo ? '<img src="' + esc(A.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : "") + '<div><b>' + esc(name(A)) + '</b><span>Alderperson</span></div></div>' : "")
       + '<div class="ct">' + (A.email ? '<a href="mailto:' + esc(A.email) + '">' + esc(A.email) + '</a>' : "") + (A.phone ? '<a href="tel:' + esc(A.phone.replace(/[^\d+]/g, "")) + '">' + esc(A.phone) + '</a>' : "") + (A.web ? '<a href="' + esc(A.web) + '" target="_blank" rel="noopener">Ward website</a>' : "") + '</div>'

@@ -1,6 +1,7 @@
 /* One way to write dates and numbers on every page (Nov. 12, 2026):
      scFmt.date("2026-11-12")      → "Nov. 12, 2026"   (AP months: March–July spelled out, Sept.)
-     scFmt.date(d, {year:false})   → "Nov. 12"
+     scFmt.date(d, {year:false})   → "Nov. 12";  {weekday:true} → "Thursday, Nov. 12, 2026" ("short" → "Thu., …")
+     scFmt.month(d)                → "Nov. 2025"   (all dates are shown in Chicago time)
      scFmt.dateTime(d)             → "Nov. 12, 2026, 9:05 p.m."
      scFmt.money(882.4e6)          → "$882M"; 1.24e9 → "$1.2B"; 4.5e6 → "$4.5M"; 45000 → "$45,000"
      scFmt.num(3916)               → "3,916"
@@ -8,14 +9,20 @@
 window.scFmt = window.scFmt || (function(){
   const MON = ["Jan.", "Feb.", "March", "April", "May", "June", "July", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
   const toD = d => d instanceof Date ? d : typeof d === "number" ? new Date(d) : /^\d{4}-\d{2}-\d{2}$/.test(d) ? new Date(d + "T12:00:00") : new Date(String(d).replace(/T(\d\d:\d\d)Z$/, "T$1:00Z"));
-  const date = (d, o) => { d = toD(d); if (isNaN(d)) return ""; return MON[d.getMonth()] + " " + d.getDate() + ((o && o.year === false) ? "" : ", " + d.getFullYear()); };
-  const time = d => { d = toD(d); let h = d.getHours(), m = d.getMinutes(); const ap = h < 12 ? "a.m." : "p.m."; h = h % 12 || 12; return h + (m ? ":" + String(m).padStart(2, "0") : "") + " " + ap; };
+  const P = (d, o) => { const f = new Intl.DateTimeFormat("en-US", Object.assign({timeZone: "America/Chicago"}, o)); const r = {}; f.formatToParts(d).forEach(x => r[x.type] = x.value); return r; };
+  const WD = {Mon: "Mon.", Tue: "Tue.", Wed: "Wed.", Thu: "Thu.", Fri: "Fri.", Sat: "Sat.", Sun: "Sun."};
+  const date = (d, o) => { d = toD(d); if (isNaN(d)) return ""; o = o || {};
+    const r = P(d, {year: "numeric", month: "numeric", day: "numeric", weekday: o.weekday === "short" ? "short" : "long"});
+    const w = o.weekday ? (o.weekday === "short" ? WD[r.weekday] || r.weekday : r.weekday) + ", " : "";
+    return w + MON[+r.month - 1] + " " + (+r.day) + (o.year === false ? "" : ", " + r.year); };
+  const month = d => { d = toD(d); if (isNaN(d)) return ""; const r = P(d, {year: "numeric", month: "numeric"}); return MON[+r.month - 1] + " " + r.year; };
+  const time = d => { d = toD(d); const r = P(d, {hour: "numeric", minute: "2-digit", hour12: true}); return (+r.hour) + (r.minute !== "00" ? ":" + r.minute : "") + " " + (r.dayPeriod === "AM" ? "a.m." : "p.m."); };
   const num = (n, dp) => n == null || isNaN(n) ? "–" : Number(n).toLocaleString("en-US", {maximumFractionDigits: dp || 0, minimumFractionDigits: dp || 0});
   const money = n => { if (n == null || isNaN(n)) return "–"; const s = n < 0 ? "−" : "", a = Math.abs(n);
     if (a >= 1e9) return s + "$" + (a / 1e9).toFixed(a >= 1e10 ? 0 : 1).replace(/\.0$/, "") + "B";
     if (a >= 1e6) return s + "$" + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1).replace(/\.0$/, "") + "M";
     return s + "$" + num(a); };
-  return {date, time, dateTime: d => date(d) + ", " + time(d), num, money, pct: (x, dp) => x == null || isNaN(x) ? "–" : (x * 100).toFixed(dp || 0) + "%", MON};
+  return {date, month, time, dateTime: d => date(d) + ", " + time(d), num, money, pct: (x, dp) => x == null || isNaN(x) ? "–" : (x * 100).toFixed(dp || 0) + "%", MON};
 })();
 
 /* Data guard, loaded first on every page that reads data files. If one of this site's data files (JSON, building files) fails to

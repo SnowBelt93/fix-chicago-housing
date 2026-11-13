@@ -206,7 +206,7 @@ function render(){
   $("contact").innerHTML = [w.ald.phone && `Ward office ${w.ald.phone}`, w.ald.email && `<a href="mailto:${w.ald.email}">${w.ald.email}</a>`, w.ald.web && `<a href="${w.ald.web}" target="_blank" rel="noopener">Website</a>`].filter(Boolean).join(" · ");
   $("votes").innerHTML = D.votes.map((v, i) => { const x = w.votes[i][1];
     const c = x === "Yea" ? "yes" : x === "Nay" ? "no" : "na", lab = x === "Yea" ? "Voted yes" : x === "Nay" ? "Voted no" : x ? VOTE[x] || x : "Not on the Council then";
-    return `<div class="vote"><b>${v.t}</b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${new Date(v.d + "T12:00").toLocaleDateString("en-US", {month:"short", year:"numeric"})}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
+    return `<div class="vote"><b>${v.t}</b><span class="v ${c}">${lab}</span><p>${v.yes} Passed ${v.tally}, ${scFmt.month(v.d)}. <a href="${elms(v.id)}" target="_blank" rel="noopener">Record</a></p></div>`; }).join("");
   renderZ(); renderP(); renderM(); wmap(); renderAll(); followUI();
 }
 function followUI(){

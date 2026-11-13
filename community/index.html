@@ -202,7 +202,7 @@ function transit(){
 function budget(){
   const B = D.budget || [], n = B.length;
   if (n < MIN) return few(n, n === 1 ? "budget plan" : "budget plans", "/budget/", "Open the budget simulator");
-  if (!LV) return '<div class="empty">Couldn\'t load the budget options. Try again in a bit.</div>';
+  if (!LV) return '<div class="empty">Couldn\'t load the budget options. Refresh the page to try again.</div>';
   const Ls = LV.levers, ch = Ls.map(() => ({n: 0, v: {}})), dep = {};
   for (const [code] of B){
     const m = code.match(/^b2\.([-\d.]+)~([-\d:,]*)$/); if (!m) continue;
@@ -263,7 +263,7 @@ function pensions(){
 function draw(){
   document.querySelectorAll("#kinds button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.k === kind)));
   if (!D){ $("out").innerHTML = '<div class="empty">This page fills in once the site is connected to its plan gallery.</div>'; return; }
-  try { $("out").innerHTML = ({housing, transit, budget, pensions})[kind](); } catch (e) { console.error(e); $("out").innerHTML = '<div class="empty">Couldn\'t draw this right now.</div>'; }
+  try { $("out").innerHTML = ({housing, transit, budget, pensions})[kind](); } catch (e) { console.error(e); $("out").innerHTML = '<div class="empty">Couldn\'t draw this right now. Refresh the page to try again.</div>'; }
   if (kind === "housing") wireHousing();
 }
 document.querySelectorAll("#kinds button").forEach(b => b.addEventListener("click", () => {

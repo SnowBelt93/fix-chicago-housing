@@ -242,7 +242,7 @@ function remindIcs(p){
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//Grants and help//EN", "BEGIN:VEVENT", `UID:${p.id}-${day}@shapechicago`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${day2}`, `SUMMARY:Check if ${p.name} is open`, `DESCRIPTION:${(txt + " " + p.link).replace(/[,;]/g, "\\$&")}`, `URL:${p.link}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"})); a.download = p.id + "-reminder.ics"; document.body.appendChild(a); a.click(); a.remove();
-  toast("Reminder set for " + t.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}));
+  toast("Reminder set for " + scFmt.date(t));
 }
 function card(p, res, s){
   const st = p.status || ["", ""], old = (Date.now() - new Date(p.checked + "T12:00:00").getTime()) / 864e5 > 90;
@@ -257,7 +257,7 @@ function card(p, res, s){
     <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">How to apply</a><button type="button" class="ghost" data-more="${esc(p.id)}" aria-expanded="${open}">${open ? "Less" : "Details"}</button>${p.remind && st[0] !== "open" ? `<button type="button" class="ghost" data-remind="${esc(p.id)}">Remind me when it opens</button>` : ""}</div>
     <div class="more" ${open ? "" : "hidden"}>${window.scLang && scLang !== "en" ? `<p class="fine">Program details come from each agency in English.</p>` : ""}<p lang="en" translate="no"><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
       <p lang="en" translate="no">${esc(st[1])}</p>${p.note ? `<p class="fine" lang="en" translate="no">${esc(p.note)}</p>` : ""}
-      <p class="srcs"><span>Source:</span> <span lang="en" translate="no">${src}</span> · <span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}</span>${old ? " · <span>may be out of date</span>" : ""}</p></div></article>`;
+      <p class="srcs"><span>Source:</span> <span lang="en" translate="no">${src}</span> · <span class="${old ? "stale" : ""}">Checked ${scFmt.date(p.checked)}</span>${old ? " · <span>may be out of date</span>" : ""}</p></div></article>`;
 }
 function render(){
   const A = answers(), roles = [...SEL], has = r => SEL.has(r);
@@ -342,7 +342,7 @@ async function fetchG(lon, lat){
 (async function(){
   [DATA, LIM] = await Promise.all([fetch("data/programs.json").then(r => r.json()), fetch("data/limits.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
   if (LIM) $("limYr").textContent = `Income limits use HUD's ${LIM.label} for the Chicago area.`;
-  $("checkedNote").innerHTML = `Programs last checked ${new Date(DATA.checked + "T12:00:00").toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"})}. Something wrong or missing? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Tell us</a>.`;
+  $("checkedNote").innerHTML = `Programs last checked ${scFmt.date(DATA.checked)}. Something wrong or missing? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Tell us</a>.`;
   const setRole = (r, on) => { on ? SEL.add(r) : SEL.delete(r); const b = document.querySelector(`#role [data-r="${r}"]`); b && b.setAttribute("aria-pressed", on); };
   document.querySelectorAll("#role button").forEach(b => b.onclick = () => { setRole(b.dataset.r, !SEL.has(b.dataset.r)); ONLYLIST = false; render(); });
   ["size", "inc", "a60", "a65", "dis", "vet", "vetdis", "live", "units", "first"].forEach(id => $(id).addEventListener(id === "inc" ? "input" : "change", render));

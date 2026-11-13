@@ -480,7 +480,7 @@ window.scMap = {
     const src = RM ? A + (k === "star" ? "star_still.png" : k + "_still.png") : A + k + ".webp";
     return k === "star" ? `<span class="sc-spinrow" role="status"><img class="sc-spin" src="${src}" alt="" width="28" height="27">${t}</span>`
       : `<div class="sc-loading" role="status"><img src="${src}" alt="" width="${w}" height="${h}"><span>${t}</span></div>`; };
-  const RX = /^(Loading|Cargando|Wczytywanie|Ładowanie|正在加载|加载中)\b?.*(…|\.\.\.)$/;
+  const RX = /^(Loading|Checking|Cargando|Comprobando|Wczytywanie|Ładowanie|Sprawdzanie|正在加载|加载中|正在检查)\b?.*(…|\.\.\.)$/;
   function up(root){
     if (!root.querySelectorAll) return;
     root.querySelectorAll("p,div,li,h1,span,b").forEach(el => {

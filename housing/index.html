@@ -1751,7 +1751,7 @@ body.playing #sky{opacity:1}
         </div>
         <div class="group">
           <div class="eyebrow">Saved on this device</div>
-          <div class="list" id="myPlans"><div class="empty">No saved plans yet.</div></div>
+          <div class="list" id="myPlans"><div class="empty">No saved plans yet. Give this plan a name and tap Save.</div></div>
         </div>
        </div><div class="col">
         <div class="group comm" id="commBox">
@@ -1880,7 +1880,7 @@ body.playing #sky{opacity:1}
     <div class="card" role="dialog" aria-modal="true" aria-labelledby="introTitle">
       <h2 id="introTitle">Congrats, you run housing now. Don't screw it up.</h2>
       <a class="clip" href="https://www.axios.com/local/chicago/2025/10/22/chicago-rent-35-percent-increase-post-pandemic" target="_blank" rel="noopener">
-        <span class="src">Axios Chicago · Oct 22, 2025</span>
+        <span class="src">Axios Chicago · Oct. 22, 2025</span>
         <b>Rent in Chicago is rising faster than in other major cities</b>
         <span class="sub">Up 35% since before the pandemic, per Zillow. Your job: build enough homes to stop it.</span>
       </a>
@@ -2099,7 +2099,7 @@ const vacantPriv = (k) => META && META.vacantByArea ? META.areas.reduce((s, m) =
 const vacantLeft = (k) => Math.max(0, vacantPriv(k) - Object.values(AREAS).reduce((s, A) => s + (k && !inScope(k, A) ? 0 : (A.vacUsed || 0)), 0));
 const aduScoped = () => META ? META.areas.reduce((s, m) => s + (inScope("adu", m) ? (m.adu || 0) : 0), 0) : aduLots;
 // transit riders from homes near stations (ETOD 2020: near CTA stations with new development, 25.4% commute by train, 12.5% by bus)
-const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = (394e6 - 30e6) / 317e6, CTA_FARES = 394e6 - 30e6;   // CTA FY2026 proposed budget, less the ~$30M given up when the adopted budget dropped the fare increase (Sun-Times, Nov 12, 2025)
+const TRANSIT_SHARE = 0.254 + 0.125, RIDES_PER_COMMUTER = 2 * 250, FARE_PER_RIDE = (394e6 - 30e6) / 317e6, CTA_FARES = 394e6 - 30e6;   // CTA FY2026 proposed budget, less the ~$30M given up when the adopted budget dropped the fare increase (Sun-Times, Nov. 12, 2025)
 // policies that cut supply (all game assumptions, anchored on the research cited on each card):
 // share of the homes Chicago builds anyway that each one costs, and how much each cuts rezoned projects
 const WORSE_BASE = {down:0.25, pmin:0.10, mora:0.15, rentc:0.30, xfer:0.05};
@@ -4745,7 +4745,7 @@ async function renderGallery(){
     const q = galSort === "hood" ? "/api/gallery?sort=new&hood=" + homeHood : "/api/gallery?sort=" + galSort;
     if (galSort === "hood" && !homeHood){ el.innerHTML = '<div class="empty">Pick where you live above to see your neighbors\' plans.</div>'; return; }
     const {plans} = await api(q);
-    if (!plans.length){ el.innerHTML = '<div class="empty">No plans posted yet.</div>'; return; }
+    if (!plans.length){ el.innerHTML = '<div class="empty">No plans posted yet. Run your plan to 2041 and share it from the front page.</div>'; return; }
     el.innerHTML = "";
     plans.forEach(P => {
       const d = document.createElement("div"); d.className = "gi";
@@ -4758,7 +4758,7 @@ async function renderGallery(){
       lk.addEventListener("click", async () => { if (liked.has(P.id)) return; try { const r = await api("/api/like/" + P.id, {}); liked.add(P.id); lsSet("fch-liked", [...liked]); lk.textContent = "Endorsed · " + r.likes; lk.classList.add("liked"); } catch (e) {} });
       el.appendChild(d);
     });
-  } catch (e) { el.innerHTML = '<div class="empty">The gallery is offline right now.</div>'; }
+  } catch (e) { el.innerHTML = '<div class="empty">The gallery is offline right now. Try again in a few minutes; your own plans stay saved in this browser.</div>'; }
 }
 document.querySelectorAll("#galSort button").forEach(b => b.addEventListener("click", () => { galSort = b.dataset.s; document.querySelectorAll("#galSort button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderGallery(); }));
 async function loadCommunity(){
@@ -4785,7 +4785,7 @@ $("doAlder").addEventListener("click", async () => {
 function myPlans(){ return lsGet("upzone-plans", []); }
 function renderMyPlans(){
   const el = $("myPlans"), list = myPlans(); el.innerHTML = "";
-  if (!list.length){ el.innerHTML = '<div class="empty">No saved plans yet.</div>'; return; }
+  if (!list.length){ el.innerHTML = '<div class="empty">No saved plans yet. Give this plan a name and tap Save.</div>'; return; }
   list.slice().reverse().forEach(rec => {
     const row = document.createElement("div"); row.className = "item";
     row.innerHTML = '<div class="main"><b></b><span></span></div><button class="btn" type="button">Open</button><button class="btn quiet" type="button">Delete</button>';

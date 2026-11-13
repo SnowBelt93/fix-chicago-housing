@@ -513,7 +513,7 @@ async function rules(lon, lat, pts){
   if (F.hr && !F.il) out.push(`<div class="c2"><b>Rated ${esc(F.hr[0][1].toLowerCase())} in the Chicago Historic Resources Survey</b><span>A demolition permit for this building can be held up to 90 days while the city looks at ways to save it, such as landmark status.${src("hr")}</span></div>`);
   if (F.nr) out.push(`<div class="c2"><b>On the National Register of Historic Places: ${esc(F.nr[0][0])}</b><span>${F.nr[0][1] === "district" ? "A listed historic district." : "A listed building."} Listing is an honor, not a limit on private work. A rehab of a listed rental or commercial building can qualify for the federal 20% historic tax credit.${src("nr")}</span></div>`);
   if (F.fl) out.push(`<div class="c2"><b>In a FEMA flood zone (${esc(F.fl[0][1])})</b><span>Federally backed mortgages here require flood insurance, and new buildings and big additions must meet the city's flood rules. Check the official map before you buy or build.${src("fl")}</span></div>`);
-  if (F.oz) out.push(`<div class="c2"><b>In a federal Opportunity Zone</b><span>Census tract ${esc(F.oz[0][1].slice(5))}. Investors who put capital gains into new building or major rehab here can cut their federal taxes. This is the 2018 map: new zones take effect January 1, 2027, and the current ones end after 2028.${src("oz")}</span></div>`);
+  if (F.oz) out.push(`<div class="c2"><b>In a federal Opportunity Zone</b><span>Census tract ${esc(F.oz[0][1].slice(5))}. Investors who put capital gains into new building or major rehab here can cut their federal taxes. This is the 2018 map: new zones take effect Jan. 1, 2027, and the current ones end after 2028.${src("oz")}</span></div>`);
   if (F.ssa) out.push(`<div class="c2"><b>In Special Service Area #${esc(F.ssa[0][1])}${F.ssa[0][0] ? " (" + esc(F.ssa[0][0]) + ")" : ""}</b><span>Property owners here pay a small extra property tax that funds local services such as street cleaning, safety programs and events.${src("ssa")}</span></div>`);
   box.innerHTML = (out.length ? out.join("") : `<div class="c2"><b>No special rules found</b><span>Not a Chicago Landmark or in a landmark district, not rated in the historic survey, not on the National Register, and not in a flood zone, Opportunity Zone or Special Service Area.</span></div>`)
     + `<p class="how" style="margin-top:6px">Checked against city, federal and FEMA maps. A quick check, not a title search: easements, deed limits and pending landmark nominations aren't included.</p>`;
@@ -544,7 +544,7 @@ const SODA = "https://data.cityofchicago.org/resource/";
 const sq = s => s.replace(/'/g, "''");
 async function enrich(lon, lat, A, ward){
   const tok = (enrich.tok = (enrich.tok || 0) + 1), live = () => tok === enrich.tok;
-  const day = d => new Date(d).toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
+  const day = d => scFmt.date(d);
   fetch(SODA + "eejr-xtfb.json?$select=name,expiration&$where=" + encodeURIComponent(`intersects(the_geom,'POINT (${lon} ${lat})')`)).then(r => r.json()).then(d => { if (!live()) return; $("rTif").textContent = d && d[0] ? d[0].name + (d[0].expiration ? ", ends " + new Date(d[0].expiration).getFullYear() : "") : "None"; }).catch(() => { $("rTif").textContent = "Not available"; });
   if (A){
     const where = `street_number='${sq(A.num)}' AND street_direction='${sq(A.dir)}' AND street_name='${sq(A.street)}'`;
@@ -560,7 +560,7 @@ async function enrich(lon, lat, A, ward){
   if (ward) fetch("/wards/data/wards.json").then(r => r.json()).then(W => { if (!live()) return; const w = W.wards[ward - 1]; if (!w) return; const a = w.ald, nm = a.name.replace(/^(.*?), (.*)$/, "$2 $1");
     $("nAld").innerHTML = `${a.photo ? `<img src="${esc(a.photo)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<div><b>Ald. ${esc(nm)}, Ward ${ward}</b><span>${[a.phone && "Ward office " + esc(a.phone), a.email && `<a href="mailto:${esc(a.email)}">${esc(a.email)}</a>`].filter(Boolean).join(" · ")}</span></div>`; }).catch(() => {});
   fetch("/wards/data/meetings.json").then(r => r.json()).then(M => { if (!live()) return; const z = M.meetings.find(x => /Zoning/.test(x.b) && Date.parse(x.d) > Date.now() && !/cancel/i.test(x.st));
-    if (z) $("nHear").innerHTML = `Next zoning hearing: <a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(z.id)}" target="_blank" rel="noopener">${new Date(z.d).toLocaleDateString("en-US", {timeZone:"America/Chicago", weekday:"long", month:"long", day:"numeric"})}</a>.`; }).catch(() => {});
+    if (z) $("nHear").innerHTML = `Next zoning hearing: <a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=${esc(z.id)}" target="_blank" rel="noopener">${scFmt.date(z.d, {weekday:true, year:false})}</a>.`; }).catch(() => {});
   fetch("/tracker/data.json").then(r => r.json()).then(T => { if (!live()) return;
     const y0 = T.ytd.year - 3; let n = 0, h = 0;
     for (const p of T.points) if (p[3] >= y0 && Math.hypot((p[0] - lon) * KX, (p[1] - lat) * KY) <= 805){ n++; h += p[2]; }

@@ -696,7 +696,7 @@ const OCC = 1.5;             // people per car trip (NHTS 2022)
 const tripsPer = L => L.trip ? 1 : L.type !== "metra" && MODES[L.mode].kind === "rail" ? 2 : 1;   // trips per counted rider (station entries are one way; the trip model counts trips)
 const CAR_OCC_NEW = [1.1, 1.25];   // people per car on the commute trips that switch (assumption, ACS-style carpool share)
 const CIRCUITY = 1.2;        // road miles per straight-line mile for a rail rider's trip to the Loop (assumption)
-// NITA (Northern Illinois Transit Authority Act, PA 104-0457, signed Dec 16, 2025; NITA began Sept 1, 2026)
+// NITA (Northern Illinois Transit Authority Act, PA 104-0457, signed Dec. 16, 2025; NITA began Sept. 1, 2026)
 const NITA_NEW_OP = 1.3e9;   // new operating money NITA expects in 2027 under the NITA Act (NITA proposed 2027 budget, Metro Magazine Nov. 3, 2026; was $1.2B in the Sept. 1 launch release); WBEZ: "$1.5 billion per year"
 const NITA_FAREBOX = [0.25, 0.20]; // share of running costs fares must cover systemwide, 20% from 2029 (MPC companion guide to the Act, bill p. 306)
 /* money: today's dollars, funding, benefit-cost (USDOT BCA guidance, 2026 update) */
@@ -2960,7 +2960,7 @@ function openSummary(){
   save(); evaluate();
   const st = planStats(null), F = A.map(L => ({L, f:fundOf(L)}));
   const title = (() => { try { return localStorage.getItem("sc-sum-title") || "My Chicago transit plan"; } catch (e){ return "My Chicago transit plan"; } })();
-  const today = new Date().toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"});
+  const today = scFmt.date(new Date());
   const rows = F.map(({L, f}) => { const isM = L.type === "metra", r = isM ? L.riders[0] : Math.max(0, L.newRiders || 0);   // added riders, as in the headline
     return `<tr><td>${esc(L.name)}</td><td>${isM ? "Metra all-day trains" : MODES[L.mode].name}</td><td>${num(r)}</td><td>${f.cap ? money(f.cap) : "$0"}</td><td>${f.official ? esc(f.official) : f.opens}</td></tr>`; }).join("");
   $("sumBody").innerHTML = `<div class="sumtop"><input id="sumTitle" value="${esc(title)}" aria-label="Plan title" maxlength="70"><div class="sbtns"><button class="btn" type="button" id="sumCopy">Copy link</button><button class="btn dark" type="button" id="sumPrint">Print or save as PDF</button><button class="btn" type="button" id="sumClose">Close</button></div></div>
