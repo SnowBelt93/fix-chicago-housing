@@ -482,7 +482,42 @@ def about():
     for x in (-44, -29, -14, 6, 24): tree(x, f + 10.5, 0.8)
     crowd(-46, 46, f + 7.4, f + 9.8, 12, seed=32)
 
-TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost", "p_homes", "p_zoning", "p_affordable", "p_rents", "p_transit", "p_streets", "p_capital", "p_projects", "p_springfield", "p_decisions", "about")}
+def learn_head():
+    """Neighbors around a table-sized model of their block (Learn)."""
+    f = street_flat(70, 34)
+    flats(-24, f + 13, floors=3, D=11, porch=True); sixflat(-8, f + 13, D=11); cottage(24, f + 13)
+    for x in (-32, -16, 8, 30): tree(x, f + 10.5, 0.8)
+    wood = mat("#b89a78", rough=0.7); box(8, f + 4.2, 0.95, 9.0, 4.6, 0.25, wood, bevel=0.08)        # the table
+    for sx in (-4, 4):
+        for sy in (-1.9, 1.9): box(8 + sx, f + 4.2 + sy, 0.12, 0.25, 0.25, 0.85, wood, bevel=0.03)
+    cols = ("#d8d0bd", "#d4a55c", "#a65a42", "#d7dadd", "#8fa9b8", "#cfc6b2")
+    for k, (dx, h) in enumerate(((-3.2, 0.5), (-2.0, 0.8), (-0.8, 0.5), (0.6, 1.4), (2.0, 0.6), (3.2, 0.9))):   # tiny buildings
+        box(8 + dx, f + 4.6, 1.2, 0.9, 1.4, h, mat(cols[k], rough=0.6), bevel=0.05)
+    box(8, f + 3.3, 1.21, 8.4, 0.6, 0.02, mat(ASPHALT, rough=0.9), bevel=0.01)
+    for k, (dx, dy, c) in enumerate(((-5.6, 0, "#2b5da0"), (5.6, 0.3, "#e07a3f"), (-2.4, -3.0, "#6b8f71"), (2.6, -3.0, "#d7a13b"), (0, 3.2, "#8f3b34"))):
+        person(8 + dx, f + 4.2 + dy, c, 1.25)
+    bus(-20, f + 2.8, stripe="navy"); car(28, f + 1.8, "#5f7d8c")
+
+def press():
+    """A newsstand and a camera on the sidewalk (For reporters)."""
+    f = street_flat(56, 30)
+    flats(-16, f + 12, floors=3, D=11, wall="#cfc6b2"); midrise(6, f + 12, W=16, floors=4, D=12, seed=7)
+    for x in (-24, -6, 18): tree(x, f + 9.6, 0.8)
+    k = mat("#2f6b4f", rough=0.5); box(-4, f + 7.4, 0.16, 4.2, 2.4, 2.6, k, bevel=0.08); box(-4, f + 6.0, 2.8, 4.8, 1.2, 0.18, mat("#e8e4d8", rough=0.6), bevel=0.04)
+    for j in range(5): box(-5.6 + j * 0.8, f + 6.1, 1.0 + (j % 2) * 0.05, 0.62, 0.5, 0.9, mat("#f4f2ec" if j % 2 else "#e9e3d5", rough=0.7), bevel=0.02)
+    for sx in (-0.35, 0.0, 0.35): cyl(6 + sx, f + 7.2 + (0.3 if sx == 0 else -0.15), 0.16, 0.05, 1.45, "ink", verts=8, bevel=0)   # tripod
+    box(6, f + 7.15, 1.75, 0.7, 0.45, 0.45, mat("#2d3238", rough=0.4), bevel=0.06); cyl(6, f + 6.85, 1.78, 0.16, 0.3, mat("#1a1d21", rough=0.3), verts=16)
+    person(7.2, f + 7.6, "#2b5da0", 1.15); person(-1.2, f + 7.0, "#d7a13b", 1.15); person(1.0, f + 7.8, "#8f3b34", 1.15)
+    car(-18, f + 1.8, "#c9ced3"); bus(16, f + 2.8, stripe="navy")
+
+def legal():
+    """A three-flat's mailboxes: what's yours stays yours (Privacy and Terms)."""
+    f = street_flat(44, 30)
+    flats(-6, f + 12, floors=3, D=11, porch=True, wall="#d8d0bd"); flats(8, f + 12, floors=3, D=11, wall="#cfc6b2")
+    mailboxes(-6, f + 6.6, 3); tree(-17, f + 9.6, 0.8); tree(17, f + 9.6, 0.8)
+    person(-3.4, f + 7.4, "#2b5da0", 1.15); car(-10, f + 1.8, "#d7a13b")
+
+TOPICS = {k: globals()[k] for k in ("learn_head", "press", "legal", "history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost", "p_homes", "p_zoning", "p_affordable", "p_rents", "p_transit", "p_streets", "p_capital", "p_projects", "p_springfield", "p_decisions", "about")}
 
 # ---------- the lot exhibit: one standard 25 x 125 ft lot (7.6 x 38 m), four districts ----------
 LOTW, LOTD = 7.6, 38.0

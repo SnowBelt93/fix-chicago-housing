@@ -71,13 +71,11 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
     <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/">Zoning and rules</a><a href="/grants/">Grants and help</a><a href="/deal/">Affordable deal check</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/" aria-current="page">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
-<main>
-  <section class="top">
-    <div><h1>Chicago planning news</h1>
-      <p>Every new story about Chicago housing, development, zoning, transit and the city budget, from local newsrooms, in one list. Headlines link straight to the outlet.</p>
-      <div class="follow"><button type="button" class="tlink" id="newOnly" aria-pressed="false">New since my last visit</button><a class="tlink" href="/news/feed.xml"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="13" r="1.6" fill="currentColor"/><path d="M2 7.5a6.5 6.5 0 0 1 6.5 6.5M2 2.5A11.5 11.5 0 0 1 13.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>RSS feed</a></div></div>
-    <img src="/shape/art/news.webp" width="880" height="600" alt="" id="art" onerror="this.remove()">
-  </section>
+<main class="sc-main sc-listw">
+  <div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › News</p><h1>Chicago planning news</h1>
+    <p class="sc-lede">Every new story about Chicago housing, development, zoning, transit and the city budget, from local newsrooms, in one list. Headlines link straight to the outlet.</p><p class="sc-updated" id="upd"></p>
+    <div class="follow"><button type="button" class="tlink" id="newOnly" aria-pressed="false">New since my last visit</button><a class="tlink" href="/news/feed.xml"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="13" r="1.6" fill="currentColor"/><path d="M2 7.5a6.5 6.5 0 0 1 6.5 6.5M2 2.5A11.5 11.5 0 0 1 13.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>RSS feed</a></div></div>
+    <img class="sc-pgart" src="/shape/art/news.webp" width="880" height="600" alt="" decoding="async"></div>
   <div class="filters" id="chips"></div>
   <div id="list"><p class="empty">Loading…</p></div>
   <p class="fine" id="srcs"></p>
@@ -128,6 +126,7 @@ fetch("data/news.json").then(r => r.json()).then(d => {
   const ok = Object.entries(d.sources).filter(([, n]) => n >= 0).map(([s]) => s);
   $("srcs").innerHTML = `From the public feeds of ${ok.join(", ")}. Checked every three hours; stories stay for about six weeks. Each summary is the outlet's own short description of its story. Read the full stories at the outlets. Stories are picked by keywords, so a few misses get through.`;
   try { localStorage.setItem("sc-news-seen", d.updated); } catch (e){}
+  if (d.updated && window.scFmt) $("upd").textContent = "Updated " + scFmt.dateTime(d.updated) + ". Checked every three hours.";
 }).catch(() => { $("list").innerHTML = `<p class="empty">The news list isn't available right now.</p>`; });
 </script>
 </body>

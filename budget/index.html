@@ -490,7 +490,7 @@ const DEPT_INFO = {"57":"Patrol, detectives and 911 response. About 93% of its m
   "35":"Buys goods and services for the city.", "3":"Investigates waste and fraud in city government.", "33":"Hiring, testing and labor relations.", "30":"Hearings on city tickets and violations.",
   "28":"Invests the city's cash.", "5":"Writes the budget."};
 const SUBICON = {"Property tax":"b_property", "Sales tax":"b_sales", "Taxes on businesses":"b_biz", "Taxes on what people buy":"b_buy", "Cars and driving":"b_drive", "Savings ideas":"b_savings", "The city could do it":"b_people", "Needs a state law":"b_state", "Public safety":"b_safety", "City services":"b_services", "Running the city":"b_civic"};
-const subh = t => `<h4 class="subh">${SUBICON[t] ? `<img src="/shape/art/icons/${SUBICON[t]}.webp" width="40" height="40" alt="" loading="lazy">` : ""}${t}</h4>`;
+const subh = t => `<h4 class="subh" data-popin>${SUBICON[t] ? `<img src="/shape/art/icons/${SUBICON[t]}.webp" width="40" height="40" alt="" loading="lazy">` : ""}${t}</h4>`;
 const DGROUPS = [["Public safety", ["57", "59", "51", "58", "60"]], ["City services", ["81", "50", "84", "41", "21", "54", "67", "70", "73", "72"]],
   ["Running the city", ["38", "27", "31", "39", "15", "6", "1", "25", "35", "3", "33", "30", "28", "5"]]];
 const st = {}; const dpct = {};
@@ -619,6 +619,7 @@ function renderBar(){
   $("gapN").textContent = left > 0.05 ? m(left) : left < -0.05 ? m(-left) : "$0";
   $("gapN").className = left <= 0.05 ? "ok" : "bad";
   $("gapL").textContent = left > 0.05 ? "still to close in 2027" : left < -0.05 ? "extra: a surplus" : "balanced";
+  { const closed = left <= 0.05; if (closed && window.__gapOpen === true && window.scBurst) scBurst($("gapN")); window.__gapOpen = !closed; }   // clay stars when the gap closes
   $("tRec").style.width = Math.min(100, 100 * T.rec / need) + "%";
   $("tOne").style.width = Math.max(0, Math.min(100 - 100 * T.rec / need, 100 * T.one / need)) + "%";
   $("track").setAttribute("aria-label", `${Math.round(Math.min(100, 100 * (T.rec + T.one) / need))}% of the gap closed`);

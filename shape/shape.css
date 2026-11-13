@@ -90,10 +90,10 @@ dialog.sc-info[open]::backdrop{animation:scFade .24s ease-out}
 /* Moving between Shape Chicago pages: the header stays put while the page underneath cross-fades (browsers that support it) */
 @view-transition { navigation: auto; }
 .sc-head { view-transition-name: sc-head; }
-::view-transition-old(root) { animation: 180ms cubic-bezier(.4,0,1,1) both sc-vt-out; }
-::view-transition-new(root) { animation: 260ms cubic-bezier(.2,.8,.2,1) both sc-vt-in; }
-@keyframes sc-vt-out { to { opacity: 0; } }
-@keyframes sc-vt-in { from { opacity: 0; transform: translateY(6px); } }
+::view-transition-old(root) { animation: 220ms cubic-bezier(.4,0,1,1) both sc-vt-out; }
+::view-transition-new(root) { animation: 320ms cubic-bezier(.2,.8,.2,1) both sc-vt-in; }
+@keyframes sc-vt-out { to { opacity: 0; transform: translateX(-4%) scale(.985); } }
+@keyframes sc-vt-in { from { opacity: 0; transform: translateX(4%) scale(.985); } }
 @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
 
 /* the on/off switch every tool uses (housing policies, transit proposals and routes, budget options) */
@@ -375,3 +375,115 @@ a.sc-brand,a.sc-brand:visited,a.sc-brand:hover{color:var(--sc-ink) !important;te
 .sc-menu-fb{align-self:flex-start}
 dialog.sc-menu .sc-menu-more{margin-bottom:10px}
 @media (max-width:640px){ .sc-head .sc-langw,.sc-head .sc-fbbtn{display:none !important} }
+
+/* ======================================================================================================
+   ONE SET OF CONTROLS (Nov. 12, 2026). Every page's buttons, switches, chips, menus and fields look the same.
+   Pages kept their own class names, so this maps them all here; "html body" + !important wins over page styles.
+     Button       .sc-btn .btn .nbtn button.more          40 px pill, white with a gray edge; primary = navy
+     Switch row   .sc-seg .seg .seg2 .tabs .stabs #layers  gray track, options 34 px pills, picked = navy
+     Chips        .chips .opts .tryrow .chiprow .bfilt      34 px pills with a gray edge, picked = navy
+     Fields       select, text/search/number inputs         40 px, 10 px corners, gray edge
+     (i)          .ib                                       22 px circle
+   On touch screens options and chips grow to 40 px. New pages: use .sc-btn, .sc-seg, .chips and plain fields.
+   ====================================================================================================== */
+html{accent-color:var(--sc-navy)}
+html body :is(.sc-btn,.btn,button.nbtn,button.more):not(.sc-head *):not(.sc-switch){min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink);font:600 14px/1.2 var(--sc-font);box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;text-decoration:none;white-space:nowrap}
+html body :is(.sc-btn,.btn,button.nbtn,button.more):not(.sc-head *):not(.sc-switch):hover{background:var(--sc-seg)}
+html body :is(.sc-btn.primary,.sc-btn.sc-primary,.btn.primary,.btn.dark,button.nbtn):not(.sc-head *){background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+html body :is(.sc-btn.primary,.sc-btn.sc-primary,.btn.primary,.btn.dark,button.nbtn):not(.sc-head *):hover{background:var(--sc-navy2);border-color:var(--sc-navy2)}
+html body .btn.quiet{background:transparent !important;border-color:transparent !important;color:var(--sc-navy) !important;border-radius:999px !important}
+html body #playRow > button{border-radius:999px !important}
+html body .btn.quiet:hover{background:var(--sc-seg)}
+html body :is(.sc-btn,.btn):disabled{opacity:.45;cursor:default}
+html body .btn[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
+
+html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *){background:var(--sc-seg) !important;border:0 !important;border-radius:999px !important;padding:3px !important;gap:2px !important;box-shadow:none !important}
+html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button{min-height:34px;padding:0 14px !important;border:0 !important;border-radius:999px !important;background:transparent !important;color:var(--sc-ink2) !important;font:600 14px/1.15 var(--sc-font) !important;box-shadow:none !important;box-sizing:border-box;cursor:pointer}
+html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button:is([aria-pressed="true"],[aria-checked="true"],[aria-selected="true"],[aria-current="page"],.on){background:var(--sc-navy) !important;color:#fff !important}
+html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button:not([aria-pressed="true"]):not([aria-checked="true"]):not([aria-selected="true"]):not(.on):hover{background:rgba(255,255,255,.75) !important;color:var(--sc-ink) !important}
+html body .sc-seg > button.hard{color:var(--sc-hard,#b3001e) !important}
+html body .sc-seg > button.hard[aria-checked="true"]{background:var(--sc-hard,#b3001e) !important;color:#fff !important}
+html body .seg::before{display:none !important}
+html body .sheet .tabs > button{padding:0 9px !important;font-size:13.5px !important}
+html body #layers{gap:4px !important}
+
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button,html body button.chip{min-height:34px;padding:0 14px !important;border:1px solid var(--sc-line2) !important;border-radius:999px !important;background:#fff !important;color:var(--sc-ink2) !important;font:600 14px/1.2 var(--sc-font) !important;box-sizing:border-box;cursor:pointer;box-shadow:none !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:is([aria-pressed="true"],[aria-checked="true"],.on),html body button.chip[aria-pressed="true"]{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt:not(.seg)) > button:not([aria-pressed="true"]):not([aria-checked="true"]):not(.on):hover,html body button.chip:not([aria-pressed="true"]):hover{border-color:var(--sc-navy) !important;color:var(--sc-ink) !important}
+html body :is(.chips,.opts,.tryrow,.chiprow,.bfilt:not(.seg)) > button span{font-weight:400;opacity:.75}
+html body .bfilt.seg > button{border:0 !important}
+
+html body :is(select,input[type=text],input[type=search],input[type=number],input[type=email],input[type=url],input:not([type]),textarea):not(.sc-head *):not(.maplibregl-ctrl *):not(.incbox input):not(dialog.sc-menu *){min-height:40px;box-sizing:border-box;border:1px solid var(--sc-line2);border-radius:10px;background-color:#fff;color:var(--sc-ink);font:400 15px/1.3 var(--sc-font);padding:0 12px}
+html body textarea:not(.sc-head *){padding:10px 12px;min-height:96px}
+html body :is(select,input,textarea):not(.sc-head *):focus-visible{outline:2px solid var(--sc-navy);outline-offset:1px;border-color:var(--sc-navy)}
+html body button.ib{width:22px !important;height:22px !important;min-height:0 !important;padding:0 !important;border-radius:50% !important;border:1px solid var(--sc-line2) !important;background:#fff !important;color:var(--sc-ink2) !important;font:700 12px/1 var(--sc-font) !important;display:inline-grid;place-items:center;flex:none;cursor:pointer}
+html body button.ib:hover{border-color:var(--sc-navy) !important;color:var(--sc-navy) !important}
+@media (pointer:coarse){
+  html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs):not(.sc-head *) > button,html body :is(.chips,.opts,.tryrow,.chiprow,.vote,#layers,.bfilt) > button,html body button.chip{min-height:40px}
+  html body :is(.sc-btn,.btn,button.nbtn,button.more):not(.sc-head *){min-height:44px}
+}
+@media (max-width:640px){ html body :is(select,input[type=text],input[type=search],input[type=number],input[type=email],input:not([type]),textarea):not(.sc-head *){font-size:16px} }
+
+html.sc-nofan .sc-head .sc-fan{display:none !important}
+html.sc-nofan .sc-fanline,html.sc-nofan .fan2{display:block !important}
+html.sc-nofan .credit .cfan{display:inline !important}
+
+/* ======================================================================================================
+   ONE PAGE HEADER AND ONE PAGE WIDTH (Nov. 12, 2026). Every reading page:
+     <main class="sc-main [sc-narrow]">
+       <div class="sc-pghead"><div>
+         <p class="sc-trail"><a href="/">Home</a> › …</p>     where you are (the address pages use their tab row instead)
+         <h1>Short page name</h1>
+         <p class="sc-lede">One or two sentences: what this page answers.</p>
+         <p class="sc-updated">Updated … / Data through …</p>  when the page has data
+       </div><img class="sc-pgart" …></div>                   the page's clay picture
+   .sc-main is 1180 px wide with the same padding everywhere; .sc-narrow keeps text below the header at 720 px.
+   ====================================================================================================== */
+html body main.sc-main{max-width:var(--sc-w-wide) !important;margin:0 auto !important;padding:36px max(24px,env(safe-area-inset-left)) 72px !important;box-sizing:border-box !important}
+html body main.sc-main.sc-narrow > :not(.sc-pghead):not(.sc-atabs){max-width:var(--sc-w-text) !important}
+html body main.sc-main.sc-listw > :not(.sc-pghead){max-width:var(--sc-w-list) !important}
+html body .sc-pghead{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,340px) !important;gap:36px !important;align-items:center !important;margin:0 0 28px !important;padding:0 !important}
+html body .sc-pghead > div{min-width:0 !important}
+html body .sc-pghead .sc-pgart{width:100% !important;height:auto !important;max-height:220px !important;object-fit:contain !important;justify-self:end !important;display:block !important}
+html body .sc-pghead :is(.sc-trail,.eyebrow){font:500 13.5px/1.4 var(--sc-font) !important;color:var(--sc-mute) !important;margin:0 0 10px !important;letter-spacing:0 !important;text-transform:none !important}
+html body .sc-pghead :is(.sc-trail,.eyebrow) a{color:var(--sc-mute) !important;text-decoration:underline !important;text-decoration-color:var(--sc-line2) !important;text-underline-offset:3px !important}
+html body .sc-pghead :is(.sc-trail,.eyebrow) a:hover{color:var(--sc-navy) !important;text-decoration-color:currentColor !important}
+html body .sc-pghead h1{font:600 40px/1.1 var(--sc-font) !important;letter-spacing:-.025em !important;color:var(--sc-ink) !important;margin:0 0 12px !important;max-width:none !important}
+html body .sc-pghead .sc-lede{font:400 18px/1.5 var(--sc-font) !important;color:var(--sc-ink2) !important;margin:0 !important;max-width:64ch !important}
+html body .sc-pghead .sc-updated{font:400 13px/1.45 var(--sc-font) !important;color:var(--sc-mute) !important;margin:12px 0 0 !important}
+html body .sc-pghead .sc-lede + .sc-lede{margin-top:10px !important}
+@media (max-width:760px){
+  html body main.sc-main{padding:20px 16px 56px !important}
+  html body .sc-pghead{grid-template-columns:minmax(0,1fr) !important;gap:10px !important;margin-bottom:20px !important}
+  html body .sc-pghead .sc-pgart{order:-1 !important;max-height:150px !important;width:auto !important;max-width:100% !important;justify-self:start !important}
+  html body .sc-pghead h1{font-size:30px !important}
+  html body .sc-pghead .sc-lede{font-size:17px !important}
+}
+@media print{ html body .sc-pghead{display:block !important} html body .sc-pghead .sc-pgart{display:none !important} }
+html body .sc-pghead.noart{grid-template-columns:minmax(0,1fr) !important}
+
+/* clay motion (shape.js): loaders, pop-in, hover tip, A+ burst, page slide */
+.sc-loading{display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 12px;text-align:center;font:600 15px/1.4 var(--sc-font);color:var(--sc-ink2)}
+.sc-loading img{width:192px;height:auto;max-width:70%}
+.sc-spinrow{display:inline-flex;align-items:center;gap:10px;font:inherit;color:var(--sc-ink2)}
+.sc-spin{width:28px;height:auto;flex:none}
+[data-popin].sc-popready :is(img,svg.picon){opacity:0;transform:scale(.6) translateY(8px)}
+[data-popin].sc-popgo :is(img,svg.picon){animation:sc-pop .5s cubic-bezier(.3,1.6,.5,1) forwards}
+[data-popin].sc-popgo > :nth-child(2) :is(img,svg.picon),[data-popin].sc-popgo > :nth-child(2):is(img){animation-delay:.06s}
+[data-popin].sc-popgo > :nth-child(3) :is(img,svg.picon),[data-popin].sc-popgo > :nth-child(3):is(img){animation-delay:.12s}
+[data-popin].sc-popgo > :nth-child(4) :is(img,svg.picon),[data-popin].sc-popgo > :nth-child(4):is(img){animation-delay:.18s}
+[data-popin].sc-popgo > :nth-child(5) :is(img,svg.picon),[data-popin].sc-popgo > :nth-child(5):is(img){animation-delay:.24s}
+[data-popin].sc-popgo > :nth-child(6) :is(img,svg.picon),[data-popin].sc-popgo > :nth-child(6):is(img){animation-delay:.3s}
+[data-popin].sc-popgo > :nth-child(n+7) :is(img,svg.picon){animation-delay:.36s}
+@keyframes sc-pop{to{opacity:1;transform:none}}
+/* hover tip: the clay picture in a card you can open tips a little */
+@media (hover:hover){
+  :is([data-popin] a,[data-popin] button,.dmodes button,.tier,a.pcard) img{transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+  :is([data-popin] a,[data-popin] button,.dmodes button,.tier,a.pcard):hover img{transform:rotate(-5deg) scale(1.07)}
+}
+.sc-burst{position:fixed;z-index:200;pointer-events:none;width:0;height:0}
+.sc-burst i{position:absolute;left:-15px;top:-15px;width:30px;height:30px;background:url(/shape/art/motion/star_still.png) center/contain no-repeat;opacity:0;animation:sc-fly 1.1s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes sc-fly{0%{opacity:0;transform:translate(0,0) scale(.3) rotate(0)}15%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r))}}
+.sc-stamp{animation:sc-gpop .5s cubic-bezier(.3,1.7,.5,1)}
+@keyframes sc-gpop{from{transform:scale(.5) rotate(-12deg)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){ [data-popin].sc-popready :is(img,svg.picon){opacity:1;transform:none;animation:none !important} .sc-stamp{animation:none} }

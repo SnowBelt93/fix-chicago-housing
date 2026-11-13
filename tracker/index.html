@@ -221,6 +221,8 @@ section[id]{scroll-margin-top:56px}
 @media (max-width:700px){ .hnums{grid-template-columns:1fr} .hn b{font-size:22px} }
 /* Nov 8: selected = solid navy */
 body.next .seg button[aria-pressed=true]{background:var(--sc-navy);color:#fff;box-shadow:none}
+body.next .hero{background:transparent !important;border:0 !important;padding:36px 0 8px !important}
+.wrap{max-width:var(--sc-w-wide) !important;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -244,7 +246,7 @@ const fmt = n => n == null ? '–' : Math.round(n).toLocaleString('en-US');
 const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const dstr = s => { const d = new Date(s + 'T12:00:00'); return d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); };
+const dstr = s => window.scFmt ? scFmt.date(s) : s;
 const STAGE = {finished:'Finished', building:'Under way', expired:'Permit expired'};
 
 fetch('data.json', {cache:'no-cache'}).then(r => r.json()).then(render).catch(e => {
@@ -260,15 +262,15 @@ function render(D){
   const app = $('#app');
   app.innerHTML = `
   <div class="hero"><div class="wrap">
-    <p class="crumb"><a href="/progress/">Progress</a> › <a href="/progress/homes/">Homes</a> › Every permit</p>
-    <h1>Every permit, project and zoning approval</h1>
-    <p>Search new buildings by ward, street or address, follow them from zoning to keys, and see what got permitted near you. The year's totals and the pace Chicago needs are on <a href="/progress/homes/">Homes</a>.</p>
+    <div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › <a href="/progress/">Progress</a> › <a href="/progress/homes/">Homes</a> › Every permit</p>
+    <h1>Permit tracker</h1>
+    <p class="sc-lede">Every permit, project and zoning approval for new homes. Search by ward, street or address, follow buildings from zoning to keys, and see what got permitted near you. The year's totals and the pace Chicago needs are on <a href="/progress/homes/">Homes</a>.</p>
+    <p class="sc-updated">Permits issued through ${dstr(D.through)}. Updated every morning from the City of Chicago's open data.</p></div><img class="sc-pgart" src="/shape/art/tracker.webp" width="800" height="380" alt="" decoding="async"></div>
     <div class="hnums">
       <div class="hn ${behind > 0 ? 'bad' : 'good'}"><b>${behind > 0 ? 'Behind' : 'On pace'}</b><span>${behind > 0 ? `${fmt(behind)} homes short of the pace for ${now.year}` : `ahead of the pace for ${now.year}`}</span></div>
       <div class="hn"><b>${fmt(D.last12.homes)}</b><span>homes permitted in the last 12 months</span></div>
       <div class="hn"><b>${fmt(G.close)}</b><span>homes a year to close the gap by 2041 (${lastFull ? fmt(lastFull.homes) + ' in ' + lastFull.year : ''})</span></div>
     </div>
-    <div class="asof">Permits issued through ${dstr(D.through)}. Updated every morning from the City of Chicago's open data.</div>
   </div></div>
   <nav class="secnav" aria-label="On this page"><div class="wrap">
     <a href="#pipeline">Pipeline</a><a href="#where">By ward</a><a href="#near">Near you</a><a href="#years">By year</a><a href="#projects">Buildings</a>${D.zoning && D.zoning.recent && D.zoning.recent.length ? '<a href="#zoning">Zoning</a>' : ''}<a href="#method">How we count</a>

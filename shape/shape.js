@@ -453,3 +453,59 @@ window.scMap = {
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
   addEventListener("resize", fit); addEventListener("load", fit);
 })();
+
+/* The page tabs must never be cut off. When the header's "Not affiliated…" line would squeeze them, it moves out of the
+   header (html.sc-nofan) and the tool's own copy of the line (.sc-fanline, housing's credit, transit's panel) shows instead. */
+(function(){
+  function fit(){
+    const h = document.querySelector(".sc-head"), n = h && h.querySelector(".sc-nav"); if (!n) return;
+    document.documentElement.classList.remove("sc-nofan");
+    if (n.scrollWidth > n.clientWidth + 2 && h.querySelector(".sc-fan")) document.documentElement.classList.add("sc-nofan");
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fit); else fit();
+  addEventListener("resize", fit); if (document.fonts) document.fonts.ready.then(fit);
+})();
+
+
+/* Clay motion on every page (Kyle, Nov. 12, 2026; samples at /preview/motion/). Off for people who turn motion off.
+   - Waiting: any text that reads "Loading…" becomes the turning star (inline) or, for a page-sized wait (.empty, a hero),
+     the mid-rise going up floor by floor. scLoading(text, "rise"|"train"|"star") returns the same markup for scripts.
+   - Pop-in: clay pictures inside [data-popin] pop in one after another when they scroll into view.
+   - A+ burst: scBurst(element) stamps clay stars out from an element (a balanced budget, a right answer).
+   Housing keeps its own loader and confetti. */
+(function(){
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches, A = "/shape/art/motion/";
+  const SZ = {rise: [192, 142], train: [280, 130], star: [56, 53]};
+  window.scLoading = (t, k) => { k = k || "star"; const [w, h] = SZ[k];
+    const src = RM ? A + (k === "star" ? "star_still.png" : k + "_still.png") : A + k + ".webp";
+    return k === "star" ? `<span class="sc-spinrow" role="status"><img class="sc-spin" src="${src}" alt="" width="28" height="27">${t}</span>`
+      : `<div class="sc-loading" role="status"><img src="${src}" alt="" width="${w}" height="${h}"><span>${t}</span></div>`; };
+  const RX = /^(Loading|Cargando|Wczytywanie|Ładowanie|正在加载|加载中)\b?.*(…|\.\.\.)$/;
+  function up(root){
+    if (!root.querySelectorAll) return;
+    root.querySelectorAll("p,div,li,h1,span,b").forEach(el => {
+      if (el.children.length || el.closest(".sc-loading,.sc-spinrow,#loading,.ldcard,.loading,[data-noload]")) return;
+      const t = (el.textContent || "").trim(); if (!t || t.length > 90 || !RX.test(t)) return;
+      const big = el.matches(".empty") || !!el.closest(".hero");
+      el.innerHTML = window.scLoading(t, big ? "rise" : "star");
+    });
+  }
+  function popin(root){
+    (root.querySelectorAll ? root.querySelectorAll("[data-popin]:not(.sc-popready)") : []).forEach(c => {
+      c.classList.add("sc-popready"); if (RM) { c.classList.add("sc-popgo"); return; }
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ c.classList.add("sc-popgo"); io.disconnect(); } }), {threshold: .25});
+      io.observe(c);
+    });
+  }
+  window.scBurst = el => {
+    if (RM || !el) return; const r = el.getBoundingClientRect(), box = document.createElement("div"); box.className = "sc-burst";
+    box.style.left = (r.left + r.width / 2) + "px"; box.style.top = (r.top + r.height / 2) + "px";
+    for (let k = 0; k < 14; k++){ const i = document.createElement("i"), a = k / 14 * Math.PI * 2 + Math.random() * .3, d = 70 + Math.random() * 60;
+      i.style.cssText = `--x:${Math.cos(a) * d}px;--y:${Math.sin(a) * d * .8}px;--r:${(Math.random() - .5) * 540}deg;animation-delay:${Math.random() * .1}s`; box.appendChild(i); }
+    document.body.appendChild(box); el.classList.remove("sc-stamp"); void el.offsetWidth; el.classList.add("sc-stamp"); setTimeout(() => box.remove(), 1400);
+  };
+  function go(){ up(document.body); popin(document.body);
+    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1){ up(n.parentNode || n); popin(n);
+      const g = n.matches && n.matches("b.good") ? n : n.querySelector && n.querySelector("b.good"); if (g && /^Right/.test(g.textContent)) window.scBurst(g); } }))).observe(document.body, {childList: true, subtree: true}); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+})();

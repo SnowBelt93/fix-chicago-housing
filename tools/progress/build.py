@@ -196,7 +196,7 @@ def page(slug, title, desc, main):
 </head>
 <body class="pg">
 {header(slug)}
-<main>
+<main class="sc-main">
 {main}
 </main>
 <footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago, CTA, Metra or Pace.</footer>
@@ -256,9 +256,10 @@ def art(slug):
     return f'<img class="sc-pgart" src="/shape/art/progress/{slug}.webp" width="{w}" height="{h}" alt="" decoding="async">'
 def top(slug, name, h1, thru):
     PINFO.setdefault(slug, {}).update(name=name, thru=thru)
-    t = f'<p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> {name}</p><h1>{h1}</h1><p class="fine">{thru}</p>'
+    t = (f'<p class="sc-trail"><a href="/">Home</a> › <a href="/progress/">Progress</a> › {name}</p><h1>{name}</h1>'
+         f'<p class="sc-lede">{h1}</p><p class="sc-updated">{thru}</p>')
     a = art(slug)
-    return f'<div class="top sc-pghead"><div>{t}</div>{a}</div>' if a else f'<div class="top">{t}</div>'
+    return f'<div class="top sc-pghead"><div>{t}</div>{a}</div>' if a else f'<div class="top sc-pghead noart"><div>{t}</div></div>'
 def bottom(slug, note, src):
     PINFO.setdefault(slug, {}).update(src=src)
     i = [s for s, _ in SECTIONS].index(slug); prv = SECTIONS[i - 1] if i else None; nxt = SECTIONS[i + 1] if i + 1 < len(SECTIONS) else None
@@ -849,8 +850,8 @@ def decision(D):
     li = ''.join(f'<li data-date="{iso}"><span class="when">{d}</span><span class="what">{t}</span><span class="st"></span></li>' for iso, d, t in D['dates'])
     sides = ''.join(f'<section class="card pad"><h2>{t}</h2><ul class="dot">' + ''.join(f'<li>{x}</li>' for x in L) + '</ul></section>' for t, L in D['sides'])
     weigh = ''.join(f'<a class="card wy" href="{u}"' + (' target="_blank" rel="noopener"' if u.startswith('http') else '') + f'><b>{t} ›</b><span>{x}</span></a>' for t, u, x in D['weigh'])
-    body = (f'<div class="top sc-pghead"><div><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> <a href="/progress/decisions/">Decisions</a></p><h1>{D["h1"]}</h1>'
-            f'<p class="fine">{D["what"]}: <span data-until="{D["vote"]}"></span> · checked {D["checked"]}</p></div>{art("decisions")}</div>'
+    body = (f'<div class="top sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › <a href="/progress/">Progress</a> › <a href="/progress/decisions/">Decisions coming up</a></p><h1>{D["name"]}</h1>'
+            f'<p class="sc-lede">{D["h1"]}</p><p class="sc-updated">{D["what"]}: <span data-until="{D["vote"]}"></span> · checked {D["checked"]}</p></div>{art("decisions")}</div>'
             + tiles(D['tiles'], cols=len(D['tiles']))
             + card('Who decides', '', f'<p class="sub">{D["who"]}</p>')
             + f'<div class="strip c2">{sides}</div>'
@@ -861,14 +862,18 @@ def decision(D):
 def decisions_index():
     cards = ''.join(f'<a class="card dec" href="/progress/decisions/{D["slug"]}/"><span class="dt"><span>{D["mon"]}</span><b>{D["d"]}</b></span><span class="tx"><b>{D["name"]}</b><span>{D["card"]}</span></span><span class="go" data-until="{D["vote"]}"></span></a>' for D in sorted(DECISIONS, key=lambda D: D['vote']))
     h1 = 'Votes coming up on Chicago’s money, homes and transit.'
-    body = (f'<div class="top sc-pghead"><div><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>{h1}</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>{art("decisions")}</div>'
+    body = (f'<div class="top sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › <a href="/progress/">Progress</a> › Decisions coming up</p><h1>Decisions coming up</h1><p class="sc-lede">{h1} Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>{art("decisions")}</div>'
             f'<div class="strip c2">{cards}</div><p class="fine note">Bills in Springfield have their own page: <a href="/progress/springfield/">In Springfield ›</a></p>')
     return page('decisions', 'Decisions coming up', h1, body)
 
 # ---------------------------------------------------------------- overview
 def overview():
     built = sum(p[2] for p in PROJ); tot = sum(p[1] for p in PROJ)
-    SECS = [('zoning', '3 in 10', 'zoning changes for a new building get a permit within a year', spark([31, 20, 12, 35, 45], rng=('Passed 2021', '2025')), '45% for 2025’s votes, the most in five years'),
+    zfull = [r for r in follow_rows() if r['s12'][0] is not None] if ZF else []
+    zsec = (('zoning', f'{zfull[-1]["s12"][0]}%', f'of {zfull[-1]["y"]}’s zoning changes for new homes had a building permit within a year', spark([r['s12'][0] for r in zfull], rng=(f'Passed {zfull[0]["y"]}', str(zfull[-1]["y"]))),
+             ('The highest' if zfull[-1]['s12'][0] >= max(r['s12'][0] for r in zfull) else 'The best year was ' + str(max(zfull, key=lambda r: r['s12'][0])['y'])) + ' since 2021')
+            if zfull else ('zoning', '3 in 10', 'zoning changes for a new building get a permit within a year', spark([31, 20, 12, 35, 45], rng=('Passed 2021', '2025')), '45% for 2025’s votes, the most in five years'))
+    SECS = [zsec,
             ('affordable', '29,550', 'homes on the city’s affordable rental list', minisplit([(10759, NAVY), (18791, '#d9e4f4')], 'For seniors · everyone else'), 'About 1 in 3 are for seniors · list dated Dec. 2024'),
             ('rents', '$2,311', 'typical asking rent, Sept. 2026', spark([RENT[y] for y in range(2019, 2027)], rng=('2019', '2026')), '▲ Up 5.7% in a year'),
             ('transit', '70%', 'of 2019’s CTA rides in 2025, counted the same way', spark([626, 605, 586, 571, 550, 231, 226, 285, 331, 367, 381], rng=('2015', '2025')), '▲ Up 2.6% in 2026 · 7 big projects tracked'),
@@ -877,7 +882,8 @@ def overview():
             ('springfield', *spr_card()),
             ('capital', '$18.1B', 'in the city’s five-year building plan, 2025–2029', minisplit([(5980, NAVY), (3673 + 1893, '#7fa3d1'), (3034 + 1447, '#b3c9e6'), (2024, '#d9e4f4')], 'Airports · water and sewers · streets · the rest'), 'Plus $1.5M a year per ward for street projects')]
     name = dict(SECTIONS)
-    head = (f'<div class="otop"><div><h1>Progress</h1><p>What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.</p></div><span class="upd">Updated {UPDATED}</span></div>')
+    head = (f'<div class="top sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › Progress</p><h1>Progress</h1><p class="sc-lede">What Chicago built, rezoned and ran, and where its big projects stand. Counted from public records and updated every day.</p>'
+            f'<p class="sc-updated">Updated {UPDATED}</p></div><img class="sc-pgart" src="/shape/art/progress.webp" width="800" height="380" alt="" decoding="async"></div>')
     lead = (f'<a class="card lead" href="/progress/homes/"><div class="l"><span class="lab">Homes permitted in 2026</span><div class="n"><b>{f(ytd["homes"])}</b>{PACE}</div>'
             f'<p class="sub">Chicago needed <b>{f(ytd["needed_so_far"])}</b> by {THRU} to stay on pace to end its share of the housing shortage by 2041.</p>'
             f'<div class="m">{meter(pct)}<p class="fine"><span><b>{pct}%</b> of the pace</span><span>{f(ytd["needed_so_far"])} needed by now</span></p></div>'
@@ -1225,8 +1231,8 @@ def press(rows):
 </head>
 <body class="pg">
 {hd}
-<main class="pr">
-<div class="top"><h1>For reporters</h1><p class="lede">Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.</p></div>
+<main class="pr sc-main sc-listw">
+<div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › For reporters</p><h1>For reporters</h1><p class="sc-lede">Every chart below can go in your story. Each one updates itself when the city or the federal government publishes new numbers, and each lists its sources.</p></div><img class="sc-pgart" src="/shape/art/press.webp" width="900" height="420" alt="" decoding="async"></div>
 <section class="card pad"><div class="hd"><h2>Using our charts and numbers</h2></div>
 <p class="sub">Our charts, tables and the figures we calculate are free to use, quote and embed. Please credit <b>Shape Chicago</b> and link to the page the number came from. The underlying data belongs to the agencies that publish it; each chart names them.</p>
 <p class="sub">Shape Chicago is a fan-made project. It is not affiliated with the City of Chicago, CTA, Metra or Pace, and it takes no side in elections. Estimates are labeled as estimates, and each section ends with how we count.</p>

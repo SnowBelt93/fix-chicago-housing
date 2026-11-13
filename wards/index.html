@@ -92,6 +92,8 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .subcal .sc-btn{display:inline-flex;align-items:center;text-decoration:none}
 .follow{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px;font-size:13.5px;color:var(--sc-mute)}
 .follow .sc-btn{min-height:36px}
+.hero{background:transparent !important;box-shadow:none !important;padding:0 !important;border-radius:0 !important}
+.hero .sc-trail{font:500 13.5px/1.4 var(--sc-font);color:var(--sc-mute);margin:0 0 10px}.hero .sc-trail a{color:var(--sc-mute);text-decoration:underline;text-decoration-color:var(--sc-line2);text-underline-offset:3px}
 </style>
 </head>
 <body>
@@ -100,9 +102,10 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
     <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/">Zoning and rules</a><a href="/grants/">Grants and help</a><a href="/deal/">Affordable deal check</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/" aria-current="page">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
-<main>
+<main class="sc-main">
   <section class="hero">
     <div>
+      <p class="sc-trail"><a href="/">Home</a> › Your ward</p>
       <img id="hPhoto" class="aphoto" alt="" hidden referrerpolicy="no-referrer" onerror="this.hidden=true">
       <h1 id="hTitle">Your ward's housing record</h1>
       <p class="ald" id="hAld">How your alderperson voted on housing, what got rezoned, and what got built.</p>

@@ -1556,7 +1556,7 @@ body.playing #sky{opacity:1}
               <div class="fact"><b id="hoodAdded">–</b><span>new homes</span></div>
               <div class="fact"><b id="hoodReplaced">–</b><span>homes replaced</span></div>
             </div>
-            <div class="tiers" id="hoodTiers"></div>
+            <div class="tiers" data-popin id="hoodTiers"></div>
           </div>
           <p class="small trafficnote">Rezoning far from jobs and transit adds homes, and more traffic: households there drive more (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
           <div class="sub">Rezoned so far: <span id="touched">0%</span> of the city's buildings</div>
@@ -1570,27 +1570,27 @@ body.playing #sky{opacity:1}
         <div class="tool" id="tool-tod">
           <h3>What can go up near the L?</h3>
           <p>The shaded zones reach a half mile from each station, about a ten-minute walk.</p>
-          <div class="tiers" id="todTiers"></div>
+          <div class="tiers" data-popin id="todTiers"></div>
           <p class="small" id="todNote" hidden>Tower: about 30 stories within ¼ mile of the 26 busiest L stations, on sites of about a quarter block; high-rise near the rest. Supertall: about 60 stories at the busiest stations inside the downtown core, towers at the other busy stations. Both together are capped at downtown's forecast leasing pace.</p>
         </div>
         <div class="tool" id="tool-metra" data-unlock="metra">
           <h3>Near Metra stations in the city</h3>
           <p>The same idea for the 74 Metra stops inside Chicago.</p>
-          <div class="tiers" id="metraTiers"></div>
+          <div class="tiers" data-popin id="metraTiers"></div>
         </div>
         <div class="tool" id="tool-types" data-unlock="hoods">
           <h3>Zone by neighborhood type</h3>
           <p>Set the rules for a whole kind of neighborhood at once.</p>
-          <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" id="typeTiers0"></div></div>
-          <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" id="typeTiers1"></div></div>
-          <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" id="typeTiers2"></div></div>
+          <div class="typerow"><div class="tt"><b>Downtown core</b><span id="typeHint0"></span></div><div class="tiers" data-popin id="typeTiers0"></div></div>
+          <div class="typerow"><div class="tt"><b>Mixed neighborhoods</b><span id="typeHint1"></span></div><div class="tiers" data-popin id="typeTiers1"></div></div>
+          <div class="typerow"><div class="tt"><b>Single-family areas</b><span id="typeHint2"></span></div><div class="tiers" data-popin id="typeTiers2"></div></div>
           <p class="small">Sets every neighborhood of that type at once. Tap any neighborhood on the map to change just that one. Only the downtown core can go to towers.</p>
           <p class="small trafficnote">Traffic: new neighbors far from jobs and transit drive more, so homes there add more car trips than homes near jobs and the L (<a href="https://www.sacog.ca.gov/home/showpublisheddocument/1622/638355569619400000" target="_blank" rel="noopener">Ewing &amp; Cervero</a>).</p>
         </div>
         <div class="tool" id="tool-corr" data-unlock="corr">
           <h3>Apartments over shops on 38 main streets</h3>
           <p>Ashland, Western, Milwaukee, Halsted, Clark, Broadway, Cicero, 63rd, 79th and more. Applies to lots facing the street.</p>
-          <div class="tiers" id="corrTiers"></div>
+          <div class="tiers" data-popin id="corrTiers"></div>
         </div>
         <div class="tool" id="tool-office" data-unlock="office">
           <h3>Turn empty Loop offices into apartments</h3>
