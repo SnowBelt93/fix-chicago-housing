@@ -79,6 +79,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 #tSave td.good{color:#1f7a45;font-weight:600}
 .panel .lede{margin:0 0 14px;font-size:14.5px;line-height:1.5;color:var(--sc-ink2)}
 .ctl.dim{opacity:.45;pointer-events:none}
+.yr{margin:6px 0 0;font-size:13px;color:var(--sc-mute)}.yr.up{color:#9a3412}.yr.down{color:#1f7a45}
 </style>
 </head>
 <body>
@@ -90,6 +91,7 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 <section class="bar" aria-label="Your pension plan">
   <div class="k"><b id="kFr">–</b><span>funded today (all four funds)</span></div>
   <div class="k"><b id="k90">–</b><span id="k90l">reaches 90% funded</span></div>
+  <div class="k"><b id="kNow">–</b><span id="kNowL">city pays in 2027</span></div>
   <div class="k hide"><b id="kCost">–</b><span>city pays 2026–2060, in today's dollars</span></div>
   <div class="k hide"><b id="kPeak">–</b><span>biggest yearly payment</span></div>
   <div class="btns"><button class="sc-btn" id="reset">Back to state law</button><button class="sc-btn" id="shareBtn">Share</button></div>
@@ -98,17 +100,21 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
   <section class="panel" aria-label="Your choices">
     <p class="lede">Chicago's four pension funds hold about 27 cents for every dollar they owe. Change how the city pays and invests, and see what it costs and when they reach 90%. <button class="ib" data-i="intro" aria-label="About the four funds">i</button></p>
     <div class="ctl"><h3><img src="/shape/art/icons/p_pay.webp" width="40" height="40" alt="">How much the city pays <button class="ib" data-i="pay" aria-label="About payments">i</button></h3>
-      <div class="opts" id="oPay"></div><p id="pPay"></p></div>
+      <div class="opts" id="oPay"></div><p class="yr" id="y_oPay"></p><p id="pPay"></p></div>
     <div class="ctl"><h3><img src="/shape/art/icons/p_returns.webp" width="40" height="40" alt="">Reach the goal by <button class="ib" data-i="by" aria-label="About the deadline">i</button></h3>
-      <div class="opts" id="oBy"></div></div>
+      <div class="opts" id="oBy"></div><p class="yr" id="y_oBy"></p></div>
     <div class="ctl"><h3><img src="/shape/art/icons/b_civic.webp" width="40" height="40" alt="">Pool the four funds' investments <button class="ib" data-i="pool" aria-label="About pooling">i</button></h3>
-      <div class="opts" id="oPool"></div></div>
+      <div class="opts" id="oPool"></div><p class="yr" id="y_oPool"></p></div>
     <div class="ctl"><h3><img src="/shape/art/icons/p_extra.webp" width="40" height="40" alt="">Extra money every year <button class="ib" data-i="extra" aria-label="About extra payments">i</button></h3>
-      <input type="range" id="rExtra" min="0" max="1000" step="25" value="0" aria-label="Extra payment each year"><div class="rrow"><span>$0</span><b id="vExtra">$0</b><span>$1B a year</span></div></div>
+      <input type="range" id="rExtra" min="0" max="1000" step="25" value="0" aria-label="Extra payment each year"><div class="rrow"><span>$0</span><b id="vExtra">$0</b><span>$1B a year</span></div><p class="yr" id="y_rExtra"></p></div>
+    <div class="ctl"><h3><img src="/shape/art/icons/p_extra.webp" width="40" height="40" alt="">Keep the city's extra "advance" payment <button class="ib" data-i="adv" aria-label="About the advance payment">i</button></h3>
+      <div class="opts" id="oAdv"></div><p class="yr" id="y_oAdv"></p></div>
+    <div class="ctl"><h3><img src="/shape/art/icons/b_civic.webp" width="40" height="40" alt="">A one-time deposit in 2027 <button class="ib" data-i="dep" aria-label="About a one-time deposit">i</button></h3>
+      <div class="opts" id="oDep"></div><p class="yr" id="y_oDep"></p></div>
     <div class="ctl"><h3><img src="/shape/art/icons/p_bond.webp" width="40" height="40" alt="">Borrow now with a pension bond <button class="ib" data-i="bond" aria-label="About pension bonds">i</button></h3>
-      <div class="opts" id="oBond"></div></div>
+      <div class="opts" id="oBond"></div><p class="yr" id="y_oBond"></p></div>
     <div class="ctl"><h3><img src="/shape/art/icons/p_returns.webp" width="40" height="40" alt="">What the investments earn <button class="ib" data-i="ret" aria-label="About returns">i</button></h3>
-      <div class="opts" id="oRet"></div>
+      <div class="opts" id="oRet"></div><p class="yr" id="y_oRet"></p>
       <div class="swrow" style="margin-top:10px"><span style="font-size:13.5px">A market crash in 2028 (−25%)</span><button class="sc-switch" id="crash" role="switch" aria-checked="false" aria-label="A market crash in 2028"></button></div></div>
     <div class="ctl"><h3><img src="/shape/art/icons/p_cut.webp" width="40" height="40" alt="">Cut benefits? <button class="ib" data-i="cut" aria-label="Why benefit cuts aren't here">i</button></h3>
       <p>Not an option here: the Illinois Constitution protects the benefits of current workers and retirees, and the state Supreme Court struck down Chicago's attempt in 2016.</p></div>
@@ -165,6 +171,9 @@ const S = {
   ctw:["A City That Works: the state of Chicago pensions (2025)", "https://citythatworks.substack.com/p/a-2025-update-on-the-state-of-chicago"],
   ilcon:["Illinois Constitution, Article XIII, Section 5 (pension protection)", "https://law.counselstack.com/constitution/il/XIII/5"],
   ctwr:["Civic Federation: Chicago pensions", "https://civicfed.org/node/1216"],
+  rel27:["Mayor's 2027 budget press release ($363 million supplemental pension payment)", "https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2026/october/fair-share-budget.html"],
+  wttwmeter:["WTTW, Nov. 2, 2026: Council puts the parking meter payment toward pensions", "https://news.wttw.com/2026/11/02/city-council-votes-44-6-add-75m-parking-meter-sale-pension-payments-opening-new-budget"],
+  skyway:["Chicago Skyway: 2005 lease for $1.83 billion (Wikipedia)", "https://en.wikipedia.org/wiki/Chicago_Skyway"],
   bud:["City of Chicago budget ordinance appropriations, 2026 (Chicago Data Portal)", "https://data.cityofchicago.org/browse?q=budget%20ordinance%20appropriations"],
 };
 const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
@@ -175,7 +184,9 @@ const INFL = 0.025;                                               // assumption:
 const RETS = [[0.04, "4%"], [0.055, "5.5%"], [null, "What funds assume (about 6.7%)"], [0.08, "8%"]];
 const BYS = [[0, "The law's dates"], [2050, "2050"], [2045, "2045"], [2040, "2040"]];
 const POOLS = [[0, "No"], [0.0025, "+0.25% a year"], [0.005, "+0.5% a year"]];   // assumption: extra return from pooling the four funds' investments
-const LAW = {pay:"law", extra:0, bond:0, ret:2, crash:false, by:0, pool:0}, st = {...LAW};
+const ADVS = [[0, "No"], [363, "Yes, $363M a year"]];   // the city's own extra "advance" payment: $363M planned for 2027 (Mayor's 2027 budget); kept flat (assumption)
+const DEPS = [[0, "No"], [1e6, "$1B"], [2e6, "$2B"]];       // $ thousands: a one-time deposit in 2027, e.g. from selling or leasing a city asset
+const LAW = {pay:"law", extra:0, bond:0, ret:2, crash:false, by:0, pool:0, adv:0, dep:0}, st = {...LAW};
 const Y0 = 2025, Y1 = 2070;
 
 /* one fund, one year */
@@ -205,17 +216,20 @@ function run(opt){
     for (let y = Y0; y <= Y1; y++){
       const r = ret(y) ?? f.d + (opt.pool || 0), tgt = opt.by ? Math.min(f.tgt, opt.by) : f.tgt;
       let er;
+      const nc = Math.max(0, (f.sc - f.ee) / f.pay * s.pay);   // the cost of benefits workers earn this year, after their own contributions
       if (y === 2025) er = f.er25;
       else if (opt.pay === "freeze") er = f.s26;
       else {
         const goal = opt.pay === "full" ? 1 : 0.9;
-        if (y <= tgt) er = solvePct({...f, tgt}, s, y, goal) * s.pay;
+        if (y <= tgt) er = Math.max(nc, solvePct({...f, tgt}, s, y, goal) * s.pay);
         else { // after the deadline: pay what keeps the fund at its goal next year, on the fund's own assumed return
           const k = f.b / f.tpl, b = k * s.tpl, ee = f.ee / f.pay * s.pay, sc = f.sc / f.pay * s.pay;
           const tplN = s.tpl * (1 + f.d + f.eps) + sc - b * Math.sqrt(1 + f.d);
-          er = Math.max(0, (goal * tplN - s.fnp * (1 + f.d)) / Math.sqrt(1 + f.d) - ee + b); }
+          er = Math.max(nc, (goal * tplN - s.fnp * (1 + f.d)) / Math.sqrt(1 + f.d) - ee + b); }   // never less than this year's benefits (Nov. 13, 2026)
       }
       if (y >= 2026) er += opt.extra * 1e3 * share;
+      if (y >= 2027) er += (opt.adv || 0) * 1e3 * share;
+      if (y === 2027 && opt.dep) er += opt.dep * share;
       if (y === 2027 && opt.bond) s = {...s, fnp: s.fnp + opt.bond * share};
       let n = stepF(f, s, er, r);
       if (n.fnp < 0){ if (broke == null) broke = y; er += -n.fnp / Math.sqrt(1 + r); n.fnp = 0; }
@@ -259,6 +273,14 @@ function render(){
   $("tFunds").innerHTML = `<tr><th>Fund</th><th class="n">Funded, 2025</th><th class="n">90% in</th><th class="n">100% in</th><th class="n">Owed, 2025</th></tr>` +
     Object.entries(R.funds).map(([k, v]) => { const f = D.funds[k], r0 = v.rows[0];
       return `<tr><td>${f.name}<br><span class="fine">State law: 90% by ${f.tgt}</span></td><td class="n">${pct(r0.fnp / r0.tpl)}</td><td class="n ${v.y90 && v.y90 <= f.tgt ? "" : "warn"}">${v.broke ? `<span class="warn">Broke in ${v.broke}</span>` : v.y90 || "After 2070"}</td><td class="n">${v.y100 || "After 2070"}</td><td class="n">${money(r0.tpl - r0.fnp)}</td></tr>`; }).join("");
+  // 2027: what the city pays this coming year, and how much each choice adds or saves on its own (Kyle, Nov. 13)
+  const y27 = R => { const t = R.tot.find(t => t.y === 2027); return t.er + t.ds; }, b27 = y27(BASE), m27 = y27(R), d27 = m27 - b27;
+  $("kNow").textContent = money(m27); $("kNowL").textContent = Math.abs(d27) < 5e3 ? "city pays in 2027" : `in 2027: ${d27 > 0 ? "+" : "−"}${money(Math.abs(d27))} vs. state law`;
+  const ret = RETS[st.ret][0], law0 = {...LAW, ret: RETS[LAW.ret][0]};
+  const one = (k, v) => y27(run({...law0, [k]: v})) - b27;
+  const fx = (id, k, v) => { const el = $(id); if (!el) return; const d = one(k, v); el.textContent = Math.abs(d) < 5e3 ? "" : `Your choice here, alone: ${d > 0 ? "+" : "−"}${money(Math.abs(d))} in 2027`; el.className = "yr" + (d > 0 ? " up" : " down"); };
+  fx("y_oPay", "pay", st.pay); fx("y_oBy", "by", st.by); fx("y_oPool", "pool", st.pool); fx("y_oAdv", "adv", st.adv); fx("y_oDep", "dep", st.dep); fx("y_oBond", "bond", st.bond); fx("y_rExtra", "extra", st.extra);
+  $("y_oRet").textContent = ret == null ? "" : "Returns don't change the 2027 payment much: the law sets payments using the funds' own assumed return, so a gap shows up in later years.";
   renderSave();
   save();
 }
@@ -318,21 +340,24 @@ function opts(id, list, key, cast){
   $(id).querySelectorAll("button").forEach(b => b.onclick = () => { st[key] = cast(list[+b.dataset.i], +b.dataset.i); syncCtl(); render(); });
 }
 function syncCtl(){
-  opts("oPay", PAYS, "pay", o => o[0]); opts("oBond", BONDS, "bond", o => o[0]); opts("oRet", RETS, "ret", (o, i) => i); opts("oBy", BYS, "by", o => o[0]); opts("oPool", POOLS, "pool", o => o[0]);
+  opts("oPay", PAYS, "pay", o => o[0]); opts("oBond", BONDS, "bond", o => o[0]); opts("oRet", RETS, "ret", (o, i) => i); opts("oBy", BYS, "by", o => o[0]); opts("oPool", POOLS, "pool", o => o[0]); opts("oAdv", ADVS, "adv", o => o[0]); opts("oDep", DEPS, "dep", o => o[0]);
   $("oBy").closest(".ctl").classList.toggle("dim", st.pay === "freeze");
   $("pPay").textContent = st.pay === "law" ? "Each year the funds set the payment that gets them to 90% on time, assuming their own investment returns. If returns fall short, later payments rise." :
     st.pay === "full" ? "Same method, but aiming for 100% funded by the same years." : "The city keeps paying its 2026 amount, never more.";
   $("rExtra").value = st.extra; $("vExtra").textContent = st.extra ? "+$" + st.extra + "M a year" : "$0";
   $("crash").setAttribute("aria-checked", st.crash);
 }
-function save(){ try { history.replaceState(null, "", "#p2." + [PAYS.findIndex(p => p[0] === st.pay), st.extra, BONDS.findIndex(b => b[0] === st.bond), st.ret, +st.crash, BYS.findIndex(b => b[0] === st.by), POOLS.findIndex(p => p[0] === st.pool)].join(".")); } catch (e){} }
-function load(){ const h = location.hash.match(/^#p([12])\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)(?:\.(\d)\.(\d))?$/); if (!h) return;
+function save(){ try { history.replaceState(null, "", "#p3." + [PAYS.findIndex(p => p[0] === st.pay), st.extra, BONDS.findIndex(b => b[0] === st.bond), st.ret, +st.crash, BYS.findIndex(b => b[0] === st.by), POOLS.findIndex(p => p[0] === st.pool), ADVS.findIndex(a => a[0] === st.adv), DEPS.findIndex(d => d[0] === st.dep)].join(".")); } catch (e){} }
+function load(){ const h = location.hash.match(/^#p([123])\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)(?:\.(\d)\.(\d))?(?:\.(\d)\.(\d))?$/); if (!h) return;
+  if (h[9] && ADVS[+h[9]]) st.adv = ADVS[+h[9]][0]; if (h[10] && DEPS[+h[10]]) st.dep = DEPS[+h[10]][0];
   if (PAYS[+h[2]]) st.pay = PAYS[+h[2]][0]; st.extra = Math.min(1000, +h[3]); if (BONDS[+h[4]]) st.bond = BONDS[+h[4]][0]; if (RETS[+h[5]]) st.ret = +h[5]; st.crash = h[6] === "1";
   if (h[7] && BYS[+h[7]]) st.by = BYS[+h[7]][0]; if (h[8] && POOLS[+h[8]]) st.pool = POOLS[+h[8]][0]; }
 function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
 const INFO = {
-  pay: ["How much the city pays", `<p>State law sets a payment that rises each year until the funds are 90% full. State laws passed in 2015 and 2017 set the city's payments: an amount each year, as a steady share of payroll, that brings the police and fire funds to 90% funded by 2055 and the municipal and laborers' funds by 2058. The 2026 budget pays about $2.64 billion before the city's extra "advance" payments ($120 million in 2026, $364 million planned for 2027).</p><p>"Pay it off fully" aims for 100% by the same years. "Freeze" keeps paying the 2026 amount, which is what underfunding looked like before 2015: the debt keeps growing.</p><p class="src">Sources: ${src("ov26", "fc27")}</p>`],
+  pay: ["How much the city pays", `<p>State law sets a payment that rises each year until the funds are 90% full. State laws passed in 2015 and 2017 set the city's payments: an amount each year, as a steady share of payroll, that brings the police and fire funds to 90% funded by 2055 and the municipal and laborers' funds by 2058. The 2026 budget pays about $2.64 billion before the city's extra "advance" payments ($120 million in 2026, $364 million planned for 2027).</p><p>"Pay it off fully" aims for 100% by the same years. "Freeze" keeps paying the 2026 amount, which is what underfunding looked like before 2015: the debt keeps growing.</p><p>Under state law or "pay it off," the city never pays less than the cost of the benefits workers earn that year (after their own contributions). That matters when returns run high: at 8%, the funds pull ahead of their 6.7% assumption, so the law asks for less each year, and once they pass the goal the city pays only for new benefits.</p><p class="src">Sources: ${src("ov26", "fc27")}</p>`],
   extra: ["Extra money every year", `<p>Anything paid beyond the legal amount, split among the funds by how much each is owed. The city's own advance payments did this from 2023 to 2025 ($820.5 million in all), mostly from budget surpluses. Under state law, extra money now doesn't finish the job sooner: the funds still aim for 90% by the same years, so later required payments shrink instead, and the earlier dollars save more because they're invested longer. To finish sooner, pick \"Pay it off fully.\" Every extra dollar has to come from somewhere in the city budget.</p><p class="src">Source: ${src("fc27")}</p>`],
+  adv: ["The city's advance payment", `<p>Since 2023 the city has paid more into the funds than state law requires, mostly from budget surpluses: nearly $1.1 billion so far. The Mayor's 2027 budget keeps it going with a $363 million supplemental payment. This option keeps paying that every year from 2027 on (holding it at $363 million is an assumption; the real amount changes each year). Turn it off to see the law's minimum alone. When the Mayor proposed cutting it for 2026, S&P lowered the city's outlook and the Council restored it.</p><p>Sources: ${src("rel27", "fc27")}.</p>`],
+  dep: ["A one-time deposit", `<p>Put a lump sum into the funds once, in 2027, without borrowing: for example money from selling or leasing a city property, or a surplus. It's split among the funds by how much each is owed. It works like a pension bond without the loan payments, so it saves more, but the city has to have the money. For scale: the recent parking meter deal brought in a $75 million upfront payment, and the Skyway lease brought $1.83 billion in 2005.</p><p>Sources: ${src("wttwmeter", "skyway")}.</p>`],
   bond: ["Pension bonds", `<p>A pension bond is a bet that the funds will earn more than the loan costs. The city borrows now, puts the money in the funds in 2027, and repays the bond over 30 years at 6% (an assumption about Chicago's borrowing cost). It's a bet: if the funds earn more than the bond costs, it saves money; if not, it adds to the debt. Bond payments show in pink.</p>`],
   by: ["Reach the goal sooner", `<p>State law sets the deadlines: 90% funded by 2055 for police and fire, and 2058 for municipal workers and laborers. Picking an earlier year re-solves each fund's yearly payment to hit the goal by then (or by its legal date, if that's sooner). Payments rise right away, but because the money is invested longer, the total cost usually falls. This works with "State law" (90%) and "Pay it off fully" (100%).</p><p class="src">Sources: ${src("acfr", "fc27")}</p>`],
   pool: ["Pool the investments", `<p>Each fund invests on its own today. Pooling the money in one larger fund can lower fees and open up investments small funds can't easily make. When Illinois pooled about 650 suburban and downstate police and fire funds in 2019, the governor's office estimated $820 million to $2.5 billion more in returns over five years. Chicago's four funds are already large, so the gain would be smaller; +0.25% and +0.5% a year are assumptions, not estimates for Chicago. Pooling needs a state law.</p><p>The law still sets payments using each fund's own assumed return, so extra returns lower later payments rather than today's.</p><p class="src">Sources: <a href="https://capitolnewsillinois.com/NEWS/pritzker-signs-pension-consolidation-bill-into-law" target="_blank" rel="noopener">Capitol News Illinois: Pritzker signs pension consolidation bill (2019)</a></p>`],

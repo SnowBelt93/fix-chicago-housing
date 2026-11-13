@@ -517,7 +517,31 @@ def legal():
     mailboxes(-6, f + 6.6, 3); tree(-17, f + 9.6, 0.8); tree(17, f + 9.6, 0.8)
     person(-3.4, f + 7.4, "#2b5da0", 1.15); car(-10, f + 1.8, "#d7a13b")
 
-TOPICS = {k: globals()[k] for k in ("learn_head", "press", "legal", "history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost", "p_homes", "p_zoning", "p_affordable", "p_rents", "p_transit", "p_streets", "p_capital", "p_projects", "p_springfield", "p_decisions", "about")}
+def news_head():
+    """Newspaper boxes on a corner, a reader on the bench (News)."""
+    f = street_flat(56, 30)
+    flats(-18, f + 12, floors=3, D=11, porch=True, wall="#cfc6b2"); flats(-6, f + 12, floors=3, D=11, wall="#a65a42"); midrise(12, f + 12, W=16, floors=5, D=12, seed=11)
+    for j, c in enumerate(("#2b5da0", "#8fc3e6", "#e4002b", "#f2f2ee", "#2f6b4f")):
+        x = -4 + j * 1.15; box(x, f + 6.4, 0.14, 0.95, 0.8, 1.15, mat(c, rough=0.45), bevel=0.06)
+        box(x, f + 6.0, 0.8, 0.7, 0.04, 0.32, mat("#f4f5f6", rough=0.6), bevel=0.01)
+    wood = mat("#b89a78", rough=0.7); box(5.6, f + 6.6, 0.55, 2.6, 0.6, 0.12, wood, bevel=0.03)
+    for sx in (-1.1, 1.1): box(5.6 + sx, f + 6.6, 0.14, 0.12, 0.5, 0.42, mat("#3d434b", rough=0.5), bevel=0.02)
+    person(5.0, f + 6.7, "#d7a13b", 1.15); box(5.0, f + 6.25, 1.25, 0.7, 0.05, 0.5, mat("#f4f2ec", rough=0.8), bevel=0.01)
+    person(-8.0, f + 7.2, "#2b5da0", 1.15)
+    for x in (-24, -12, 22): tree(x, f + 9.6, 0.8)
+    car(-16, f + 1.8, "#c9ced3"); bus(14, f + 2.8, stripe="navy")
+
+def storefront():
+    """A main street of small shops with awnings (Advertise)."""
+    f = street_flat(56, 30)
+    for x, W, fl, pan, sd in ((-17, 10, 2, "#c98a6b", 3), (-5.5, 11, 3, "#d8d0bd", 9), (6, 10, 2, "#9fb6c4", 14), (19, 12, 4, "#d7dadd", 21)):
+        midrise(x, f + 12, W=W, floors=fl, D=11, panel=pan, seed=sd, balconies=False)
+    box(-1.8, f + 5.6, 0.14, 0.9, 0.5, 1.1, mat("#1a1d21", rough=0.6), bevel=0.04)        # sidewalk sign
+    person(-8.0, f + 5.4, "#2b5da0", 1.15); person(3.4, f + 5.0, "#d7a13b", 1.15); person(12.5, f + 5.6, "#8f3b34", 1.15)
+    for x in (-24, 26): tree(x, f + 4.8, 0.8)
+    car(-14, f + 1.8, "#5f7d8c"); car(8, f + 1.8, "#d7a13b")
+
+TOPICS = {k: globals()[k] for k in ("news_head", "storefront", "learn_head", "press", "legal", "history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost", "p_homes", "p_zoning", "p_affordable", "p_rents", "p_transit", "p_streets", "p_capital", "p_projects", "p_springfield", "p_decisions", "about")}
 
 # ---------- the lot exhibit: one standard 25 x 125 ft lot (7.6 x 38 m), four districts ----------
 LOTW, LOTD = 7.6, 38.0

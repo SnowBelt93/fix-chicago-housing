@@ -187,8 +187,8 @@
     return o;
   }
   function pparse(code){
-    const m = String(code || "").match(/^p2\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)\.(\d)\.(\d)$/); if (!m) return null;
-    return {pay:+m[1], extra:+m[2], bond:+m[3], ret:+m[4], crash:m[5] === "1", by:+m[6], pool:+m[7]};
+    const m = String(code || "").match(/^p[23]\.(\d)\.(\d+)\.(\d)\.(\d)\.(\d)\.(\d)\.(\d)(?:\.(\d)\.(\d))?$/); if (!m) return null;
+    return {pay:+m[1], extra:+m[2], bond:+m[3], ret:+m[4], crash:m[5] === "1", by:+m[6], pool:+m[7], adv:+(m[8] || 0), dep:+(m[9] || 0)};
   }
   const SIMS = {
     transit: {
@@ -265,6 +265,8 @@
         if (o.extra) c.push({t:"+$" + fmt(o.extra) + "M extra a year", kind:"zone"});
         if (o.bond) c.push({t:["", "$5B", "$10B"][o.bond] + " pension bond", kind:"policy"});
         if (o.pool) c.push({t:"Pooled investing", kind:"policy"});
+        if (o.adv) c.push({t:"Keeps the advance payment", kind:"policy"});
+        if (o.dep) c.push({t:(o.dep === 1 ? "$1B" : "$2B") + " one-time deposit", kind:"policy"});
         if (o.ret !== 2) c.push({t:"Assumes " + ["4%", "5.5%", "", "8%"][o.ret] + " returns", kind:"more"});
         if (o.crash) c.push({t:"Tested against a 2028 crash", kind:"more"});
         return c; },

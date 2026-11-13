@@ -58,7 +58,7 @@ T = {
     'What Chicago built, rezoned and ran, counted from public records: homes permitted against the pace, what followed each zoning vote, rents, transit rides and street safety.':
         'Lo que Chicago construyó, rezonificó y operó, contado con registros públicos: viviendas permitidas frente al ritmo necesario, qué siguió a cada voto de zonificación, alquileres, viajes en transporte y seguridad vial.',
     'Homes · zoning · rents · transit · streets': 'Viviendas · zonificación · alquileres · transporte · calles', 'See the numbers': 'Ver las cifras',
-    'A row of newspaper boxes in navy, blue, red and white in front of a brick flat and a new mid-rise.': 'Una fila de cajas de periódicos azul marino, azul, rojo y blanco frente a un edificio de ladrillo y uno nuevo de altura media.',
+    'Newspaper boxes and a reader on a bench in front of two flats and a new mid-rise.': 'Cajas de periódicos y una persona leyendo en una banca frente a dos edificios de departamentos y uno nuevo de altura media.',
     'Every 3 hours': 'Cada 3 horas',
     'Every new story on Chicago housing, development, zoning, transit and the budget from local newsrooms, in one list.': 'Cada noticia nueva sobre vivienda, desarrollo, zonificación, transporte y presupuesto de Chicago, de los medios locales, en una sola lista.',
     'Block Club · Sun-Times · WBEZ · WTTW · more': 'Block Club · Sun-Times · WBEZ · WTTW · y más', 'Read the news': 'Leer las noticias',

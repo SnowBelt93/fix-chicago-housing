@@ -63,7 +63,7 @@ T = {
     'What Chicago built, rezoned and ran, counted from public records: homes permitted against the pace, what followed each zoning vote, rents, transit rides and street safety.':
         ('根据公开记录统计芝加哥建了什么、改了哪些分区、运营得如何：获批住房与所需进度的对比、每次分区投票之后发生了什么、租金、公交出行和街道安全。', 'Co Chicago zbudowało, przestrefowało i prowadziło, policzone z rejestrów publicznych: mieszkania z pozwoleniem wobec potrzebnego tempa, co wydarzyło się po każdym głosowaniu ws. strefowania, czynsze, przejazdy transportem i bezpieczeństwo na ulicach.'),
     'Homes · zoning · rents · transit · streets': ('住房 · 分区 · 租金 · 交通 · 街道', 'Mieszkania · strefowanie · czynsze · transport · ulice'), 'See the numbers': ('查看数字', 'Zobacz liczby'),
-    'A row of newspaper boxes in navy, blue, red and white in front of a brick flat and a new mid-rise.': ('一排深蓝、浅蓝、红色和白色的报箱，后面是一栋砖砌公寓和一栋新的中层楼。', 'Rząd skrzynek z gazetami w kolorach granatowym, niebieskim, czerwonym i białym przed ceglaną kamienicą i nowym średniowysokim blokiem.'),
+    'Newspaper boxes and a reader on a bench in front of two flats and a new mid-rise.': ('报箱和长椅上读报的人，后面是两栋公寓和一栋新的中层楼。', 'Skrzynki z gazetami i czytelnik na ławce przed dwiema kamienicami i nowym średniowysokim blokiem.'),
     'Every 3 hours': ('每 3 小时', 'Co 3 godziny'),
     'Every new story on Chicago housing, development, zoning, transit and the budget from local newsrooms, in one list.': ('本地媒体关于芝加哥住房、开发、分区、交通和预算的每一篇新报道，汇总在一起。', 'Każdy nowy artykuł lokalnych redakcji o mieszkaniach, inwestycjach, strefowaniu, transporcie i budżecie Chicago w jednym miejscu.'),
     'Block Club · Sun-Times · WBEZ · WTTW · more': ('Block Club · Sun-Times · WBEZ · WTTW · 更多', 'Block Club · Sun-Times · WBEZ · WTTW · i inne'), 'Read the news': ('阅读新闻', 'Czytaj wiadomości'),

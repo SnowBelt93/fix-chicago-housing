@@ -11,6 +11,7 @@ const out = L.map(l => {
   const o = {id: l.id, t: l.t, g: l.g, sub: l.sub || "", kind: l.kind, type: l.type, start: l.type === "income" ? 0 : (l.start || 0)};
   if (l.type === "opts") o.opts = l.opts.map(x => x[0]);
   if (l.type === "range"){ o.min = l.min; o.max = l.max; o.step = l.step; }
+  if (l.gone) o.gone = 1;   // kept only so older plan codes still line up
   return o;
 });
 // department names as the simulator shows them (its short() function), for "<dept id>:<percent>" in plan codes

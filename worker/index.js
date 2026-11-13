@@ -26,7 +26,7 @@ const SIM = {
     num: {n:[0, 80], rail:[0, 80], bus:[0, 80], metra:[0, 20], riders:[0, 5e6], cap:[0, 1e12], op:[-2e10, 5e10], cars:[0, 5e6]}},
   budget: {ok: c => /^b2\.[-\d.]{1,500}~[-\d:,]{0,800}$/.test(c),
     num: {left:[-50000, 50000], need:[0, 50000], rec:[0, 50000], one:[0, 50000], cost:[0, 50000], state:[0, 50000], home:[-50000, 50000], yes:[0, 50]}},   // $ millions; home = $ a year for a typical homeowner
-  pensions: {ok: c => /^p2\.\d\.\d{1,9}\.\d\.\d\.\d\.\d\.\d$/.test(c),
+  pensions: {ok: c => /^p[23]\.\d\.\d{1,9}\.\d\.\d\.\d\.\d\.\d(?:\.\d\.\d)?$/.test(c),
     num: {y90:[0, 2100], cost:[0, 1e10], base:[0, 1e10], peak:[0, 1e9], peakY:[2025, 2100], broke:[0, 2100]}},   // $ thousands, as the simulator counts
 };
 function simStats(kind, b){

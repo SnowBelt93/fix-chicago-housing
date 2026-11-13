@@ -219,7 +219,7 @@ function budget(){
     if (l.type === "range") return "Most picked: " + (val > 0 ? "+" : "−") + "$" + Math.abs(val) + " million" + share;
     if (l.type === "income") return "Some city income tax";
     return ""; };
-  const rows = Ls.map((l, i) => [l, ch[i]]).filter(([, c]) => c.n).sort((a, b) => b[1].n - a[1].n);
+  const rows = Ls.map((l, i) => [l, ch[i]]).filter(([l, c]) => c.n && !l.gone).sort((a, b) => b[1].n - a[1].n);
   const GRP = {tax:"Taxes", dept:"Savings", one:"One-time", else:"Ideas", state:"Ask Springfield", add:"Spending"};
   const st = B.map(([, s]) => s || {}), bal = st.filter(s => s.left != null && s.left <= 0.05).length, spr = st.filter(s => (s.state || 0) > 0.05).length, oneT = st.filter(s => (s.one || 0) > 0.05).length;
   const ptax = Ls.findIndex(l => l.id === "ptax");

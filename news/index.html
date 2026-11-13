@@ -75,7 +75,7 @@ main{max-width:860px;margin:0 auto;padding:22px 20px 60px}
   <div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › News</p><h1>Chicago planning news</h1>
     <p class="sc-lede">Every new story about Chicago housing, development, zoning, transit and the city budget, from local newsrooms, in one list. Headlines link straight to the outlet.</p><p class="sc-updated" id="upd"></p>
     <div class="follow"><button type="button" class="tlink" id="newOnly" aria-pressed="false">New since my last visit</button><a class="tlink" href="/news/feed.xml"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="13" r="1.6" fill="currentColor"/><path d="M2 7.5a6.5 6.5 0 0 1 6.5 6.5M2 2.5A11.5 11.5 0 0 1 13.5 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>RSS feed</a></div></div>
-    <img class="sc-pgart" src="/shape/art/news.webp" width="880" height="600" alt="" decoding="async"></div>
+    <img class="sc-pgart" src="/shape/art/news.webp" width="1000" height="437" alt="" decoding="async"></div>
   <div class="filters" id="chips"></div>
   <div id="list"><p class="empty">Loading…</p></div>
   <p class="fine" id="srcs"></p>
@@ -126,7 +126,7 @@ fetch("data/news.json").then(r => r.json()).then(d => {
   const ok = Object.entries(d.sources).filter(([, n]) => n >= 0).map(([s]) => s);
   $("srcs").innerHTML = `From the public feeds of ${ok.join(", ")}. Checked every three hours; stories stay for about six weeks. Each summary is the outlet's own short description of its story. Read the full stories at the outlets. Stories are picked by keywords, so a few misses get through.`;
   try { localStorage.setItem("sc-news-seen", d.updated); } catch (e){}
-  if (d.updated && window.scFmt) $("upd").textContent = "Updated " + scFmt.dateTime(d.updated) + ". Checked every three hours.";
+  if (d.updated && window.scFmt) $("upd").textContent = ("Updated " + scFmt.dateTime(d.updated) + ".").replace(/\.\.$/, ".") + " Checked every three hours.";
 }).catch(() => { $("list").innerHTML = `<p class="empty">The news list isn't available right now. Refresh the page in a minute.</p>`; });
 </script>
 </body>

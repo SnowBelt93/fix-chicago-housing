@@ -5,9 +5,9 @@
 <link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest"><script src="/shape/guard.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Balance the Chicago Budget · Shape Chicago</title>
-<meta name="description" content="Chicago's 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close the gap, see who pays, and compare with past years and the Mayor's plan.">
+<meta name="description" content="Chicago's 2027 budget starts $918.5 million short. Pick real taxes, cuts and one-time fixes to close the gap, see who pays, and compare with past years and the Mayor's plan.">
 <meta property="og:title" content="Balance the Chicago Budget">
-<meta property="og:description" content="Close Chicago's $882.4 million 2027 gap with real options. See who pays.">
+<meta property="og:description" content="Close Chicago's $918.5 million 2027 gap with real options. See who pays.">
 <meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-budget.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -225,6 +225,13 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 }
 /* Nov 8: selected = solid navy */
 .tab[aria-selected="true"],.seg2 button[aria-checked="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
+.saves{margin-top:14px;border-top:1px solid var(--sc-line);padding-top:14px}
+.saverow{display:flex;gap:8px;flex-wrap:wrap}.saverow input{flex:1 1 200px;min-width:0}
+#saveList{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+#saveList li{display:flex;gap:6px;align-items:stretch}
+#saveList .sv-open{flex:1;min-width:0;text-align:left;background:#fff;border:1px solid var(--sc-line);border-radius:12px;padding:8px 12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+#saveList .sv-open:hover{border-color:var(--sc-navy)}#saveList .sv-open span{font-size:13px;color:var(--sc-mute)}
+#saveList .sv-del{width:40px;border:1px solid var(--sc-line);border-radius:12px;background:#fff;font-size:18px;color:var(--sc-mute);cursor:pointer}
 </style>
 </head>
 <body>
@@ -234,7 +241,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <section class="bar" aria-label="Your budget">
-  <div class="gapm"><b id="gapN">$882.4M</b><span id="gapL">still to close in 2027</span></div>
+  <div class="gapm"><b id="gapN">$918.5M</b><span id="gapL">still to close in 2027</span></div>
   <div class="meter">
     <div class="track" role="img" id="track" aria-label="How much of the gap is closed"><i class="rec" id="tRec"></i><i class="one" id="tOne"></i></div>
     <div class="mlab"><span style="--k:var(--sc-navy)">Lasting fixes</span><span style="--k:#a9c3e3">One-time fixes (gone next year)</span><span style="--k:#fbe3e6">Gap left</span></div>
@@ -251,7 +258,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   <div class="right">
     <section class="card" id="resCard">
       <h2>Your 2027 budget</h2>
-      <p class="sub">The Corporate Fund, the city's main operating budget, is forecast to come up $882.4 million short in 2027 (City of Chicago, 2027 Budget Forecast). By law the budget must balance. Pick what to raise, cut or borrow on the left.</p>
+      <p class="sub">The Corporate Fund, the city's main operating budget, starts $918.5 million short in 2027: the $882.4 million the city forecast in August, plus $36.1 million in costs it found before the Mayor's October proposal (City of Chicago, 2027 Budget Forecast and Overview). By law the budget must balance. Pick what to raise, cut or borrow on the left.</p>
       <p class="verdict" id="verdict"></p>
       <p class="who" id="whoLead"></p>
       <div class="whobar" id="whobar"></div>
@@ -259,6 +266,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
       <p class="gave" id="gave"></p>
       <div class="stats" id="stats"></div>
       <div class="finrow"><button class="sc-btn sc-primary" id="finish">Send it to the Council</button><span class="fine" id="finNote">See the front page and share your budget.</span></div>
+      <div class="saves" id="saves"><div class="saverow"><input id="saveName" maxlength="60" aria-label="Name this budget" placeholder="Name this budget"><button class="sc-btn" type="button" id="saveBtn">Save in this browser</button></div><ul id="saveList"></ul></div>
     </section>
     <section class="card" id="meCard">
       <h2>What it costs you <button class="ib" id="meInfo" aria-label="How this is estimated">i</button></h2>
@@ -333,7 +341,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
-const GAP = 882.4;                         // 2027 Corporate Fund gap, $M (City of Chicago 2027 Budget Forecast, Sept. 2026)
+const GAP = 918.5;                         // 2027 Corporate Fund gap, $M: the forecast's $882.4M (Aug. 2026) plus $36.1M in costs the city found before its October proposal (2027 Budget Overview, "budget adjustments from forecast")
 const LEVY = 1874.1;                       // city property tax levy 2027, $M, net of abatements (sum of "Property Tax Levy" lines, 2027 Budget Recommendations revenue data)
 const CITY_SHARE_BILL = 4457 / 5;          // median Chicago residential bill $4,457 (Cook County Treasurer, tax year 2024); the city's part is about one-fifth (2027 Budget Overview)
 const S = {
@@ -383,6 +391,12 @@ const S = {
   hotel:["City of Chicago: Hotel Accommodations Tax", "https://chicago.gov/city/en/depts/fin/supp_info/revenue/tax_list/hotel_accommodationstax.html"],
   cfhotel:["Civic Federation: Chicago's hotel taxes vs other cities", "https://civicfed.org/civic-federation/blog/how-do-chicagos-hotel-and-home-share-taxes-compare-other-cities"],
   soda:["Avalara: Cook County soda tax repealed (2017)", "https://www.avalara.com/taxrates/en/blog/2017/10/cook-county-soda-tax-repealed.html"],
+  gi:["City of Chicago: Resilient Communities Pilot (2022)", "https://www.chicago.gov/city/en/depts/mayor/press_room/press_releases/2022/april/CashAssistancePilot.html"],
+  rtc:["Injustice Watch: tenants' $20 million budget ask (2024)", "https://www.injusticewatch.org/project/tenant-trap/2024/chicago-tenants-push-for-20m-for-protections/"],
+  dcbb:["DCist: D.C.'s baby bonds (2021)", "https://dcist.com/story/21/10/20/low-income-dc-kids-will-get-up-to-1000-a-year-under-baby-bonds-program"],
+  plow:["City of Chicago: Plow the Sidewalks pilot", "https://chicago.gov/city/en/sites/plow-the-sidewalks-pilot/home/FAQs.html"],
+  oak:["Oakland City Auditor: vacant property tax audit (July 2026)", "https://www.oaklandauditor.com/wp-content/uploads/2026/07/20260710_PRESS-RELEASE_Vacant-Property-Tax.pdf"],
+  van:["City of Vancouver: Empty Homes Tax annual report", "https://vancouver.ca/files/cov/2025-empty-homes-tax-annual-report.pdf"],
   globest:["GlobeSt: Chicago transfer tax hike rejected", "https://www.globest.com/2024/03/25/chicago-property-transfer-tax-hike-rejected-by-voters"],
 };
 const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
@@ -392,7 +406,7 @@ const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], 
 const LEAD = {tax:"Raise or cut each one. Changes count every year.", dept:"Fund each department more or less, or take a savings idea. Cuts count every year.",
   one:"Money for this year only. Next year's budget starts that much further behind.", else:"From the Mayor's own task force and other cities. The City Council can pass all of these on its own.",
   state:"The city can't do these alone: each needs a new state law, or a citywide vote. They count toward your budget, but it only balances if Springfield or the voters say yes.",
-  add:"Two things the Mayor's plan spends money on beyond the forecast. Each one you turn on adds to the gap you have to close."};
+  add:"New spending: what the Mayor's plan adds, and ideas from other cities. Each one you turn on adds to the gap you have to close."};
 const L = [
   {id:"ptax", g:"tax", sub:"Property tax", kind:"rec", who:"home", t:"City property tax levy", type:"range", min:-300, max:400, step:25, mayor:0,
    info:"The city's part is about a fifth of a property tax bill; renters pay much of it through rent. The 2027 levy is $1.87 billion. The Mayor proposed +$300 million for 2025 and the Council voted it down 50 to 0. The 2027 plan has no increase. The Mayor's task force suggested raising it with inflation every year (about $56 million for 2026).", pro:["The biggest, steadiest money the city has", "Owners of expensive property pay more"], con:["Hits homeowners directly and renters through rent", "The Council voted a $300M increase down 50 to 0 in 2024"], s:["forecast", "treas", "nbc", "tfip"]},
@@ -419,7 +433,7 @@ const L = [
   {id:"bet", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Sports betting tax to 20%", type:"sw", amt:37, mayor:1, info:"From 10.25% of sportsbooks' revenue on Chicago bets, which the city started collecting in 2026. The sportsbooks sued in December 2025, saying only the state can tax betting, and bills in Springfield would ban it; neither had ended the tax as of the city's 2027 proposal, which counts on it.", pro:["Paid by sportsbook companies", "Already being collected"], con:["A court or the legislature could wipe it out", "Sportsbooks may pass it on with worse odds"], s:["release", "betlaw"]},
   {id:"liq", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Liquor tax to 3% on store sales", type:"sw", amt:13.8, mayor:1, info:"From 2.38% on alcohol bought to take home.", s:["ipi"]},
   {id:"pack", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"15¢ packaging tax", type:"sw", amt:9, mayor:1, info:"On each non-food, non-medical package, like the bag tax.", s:["release"]},
-  {id:"other", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"Other fees in the Mayor's plan", type:"sw", amt:20.8, mayor:1, info:"The rest of the $447.2 million in new revenue in the Mayor's plan, not itemized in the overview.", s:["forecast"]},
+  {id:"other", g:"tax", sub:"Taxes on what people buy", kind:"rec", who:"cons", t:"The rest of the Mayor's new revenue (the city doesn't list it)", type:"sw", amt:20.8, mayor:1, info:"The Mayor's plan counts $447.2 million in new revenue. The pieces the city names add up to $426.4 million: the lease tax, the employer tax, sports betting, liquor, packaging, bus- and bike-lane cameras and the ticket amnesty, each its own option here. The city's budget overview and press release don't say what the last $20.8 million is, so it can't be broken out. In the city's revenue data the biggest new or growing lines that no option here covers are a new $8.3 million \u201cmiscellaneous revenue\u201d line and $9.2 million more from \u201cother charges\u201d for services; whether those are this money isn't stated.", s:["forecast", "release", "data"]},
   {id:"fuel", g:"tax", sub:"Cars and driving", kind:"rec", who:"drive", t:"City gas tax", type:"opts", opts:[["5¢", -24.2], ["8¢ today", 0], ["10¢", 16.1], ["13¢", 40.3]], start:1, mayor:1,
    info:"Chicago adds 8¢ a gallon (since 2021, up from 5¢) on top of the state and county gas taxes. It brings in $64.5 million in 2027, about $8.1 million per cent; other rates scale that (an assumption: some drivers fill up in the suburbs).",
    pro:["Drivers pay for the wear and traffic they cause", "Small per gallon: 5¢ more is about 75¢ a tank"], con:["Easy to dodge by buying gas outside the city", "Hits people who have to drive, like shift workers"], s:["fuel", "data"]},
@@ -434,7 +448,7 @@ const L = [
   {id:"hlth", g:"dept", sub:"Savings ideas", kind:"rec", who:"workers", t:"Workers pay more toward health care", type:"opts", opts:[["No", 0], ["Low", 41.6], ["High", 52.2]], mayor:0,
    info:"The Mayor's task force compared Chicago with the State of Illinois, Cook County, Houston, Los Angeles and New York, where workers pay more of their health plans. Most of it needs union contracts to change. Estimates from the task force's 2025 interim report.", s:["tf", "tfip"]},
   {id:"plan", g:"dept", sub:"Savings ideas", kind:"rec", who:"city", t:"Cheaper health plans and drug contracts", type:"opts", opts:[["No", 0], ["Low", 22.1], ["High", 25.5]], mayor:0,
-   info:"Plan design ($12 million) plus rebidding the drug and insurance contracts ($10.1–13.5 million), from the Mayor's task force.", s:["tf"]},
+   info:"The city pays for health insurance for its workers and their families: $792.7 million for employee benefits in 2027. The Mayor's task force found two ways to pay less without workers paying more. <b>Plan design</b> (about $12 million): changing how the plan is set up, such as which doctors and hospitals are in its network and how it steers people to lower-cost care and generic drugs; the task force doesn't list its exact changes. <b>Rebidding contracts</b> ($10.1 million to $13.5 million): putting the city's deals with its pharmacy benefit manager (the company that runs the drug plan and negotiates prices with drug makers) and its insurance administrators out to bid again, as many employers do every few years to get better prices. Low is plan design plus the low end of rebidding; High uses the high end. Plan changes usually need the unions to agree.", pro:["Workers' share of the cost doesn't change", "Big employers rebid these contracts regularly"], con:["Network changes can mean switching doctors", "Savings depend on the bids that come in"], s:["tf", "forecast"]},
   {id:"hire", g:"dept", sub:"Savings ideas", kind:"rec", who:"city", t:"Hire faster, pay less overtime to cover", type:"sw", amt:25, mayor:0, info:"The task force estimated $25 million a year from filling jobs faster.", s:["tf"]},
   {id:"recov", g:"dept", sub:"Savings ideas", kind:"rec", who:"biz", t:"Charge for false alarms, parades and police at events", type:"sw", amt:34.2, mayor:0,
    info:"Charge for city services that are free today, and drop the mounted police unit. The pieces: fire alarm, hazmat and high-rise fees ($6.2M), false fire alarm charges ($4.7–6.6M, low end used), charging non-city parades ($11.9M), police at private events ($5.5M) and disbanding the mounted police unit ($5.9M). Los Angeles, New York, Seattle, Denver and others already charge most of these. Task force estimates.", s:["tf"]},
@@ -469,8 +483,25 @@ const L = [
    info:"Illinois shared 10% of its income tax with cities before 2011; it shares 6.47% of individual income tax now. Restoring it would pay Chicago up to $250 million, from other state spending. Task force estimate.", s:["tf"]},
   {id:"bch", g:"state", kind:"rec", who:"home", sub:"Needs a citywide vote", t:"Higher transfer tax on $1M+ sales (Bring Chicago Home)", type:"sw", amt:100, mayor:0,
    info:"State law says a city can only raise its transfer tax if voters approve it in a referendum. Supporters expected more than $100 million a year. Voters rejected it 53% to 47% in 2024. Big-sale taxes like it slowed apartment building in Los Angeles, so it trades budget money for fewer homes.", s:["globest", "rett_law"]},
-  {id:"inv", g:"add", kind:"cost", who:"none", t:"Pay for the Mayor's new programs: homelessness prevention, libraries, summer jobs, streets", type:"sw", amt:131.5, mayor:1, info:"Homelessness prevention ($30M), library subsidy ($30.9M), 40,000 summer youth jobs ($24M), streets and sanitation ($14.5M) and others ($32.1M).", s:["forecast", "release"]},
-  {id:"adj", g:"add", kind:"cost", who:"none", t:"Cover cost increases the city found after its forecast", type:"sw", amt:36.1, mayor:1, info:"Between the city's budget forecast and the Mayor's proposal, the city found $36.1 million in higher costs it has to cover (the proposal lists them as budget adjustments). Leaving this off doesn't make the costs go away; it only shows how the plan was built.", s:["forecast"]},
+  {id:"inv", gone:true, g:"add", kind:"cost", who:"none", t:"Pay for the Mayor's new programs: homelessness prevention, libraries, summer jobs, streets", type:"sw", amt:131.5, mayor:0, info:"Homelessness prevention ($30M), library subsidy ($30.9M), 40,000 summer youth jobs ($24M), streets and sanitation ($14.5M) and others ($32.1M).", s:["forecast", "release"]},
+  {id:"adj", gone:true, g:"add", kind:"cost", who:"none", t:"Cover cost increases the city found after its forecast", type:"sw", amt:36.1, mayor:0, info:"Between the city's budget forecast and the Mayor's proposal, the city found $36.1 million in higher costs it has to cover (the proposal lists them as budget adjustments). Leaving this off doesn't make the costs go away; it only shows how the plan was built.", s:["forecast"]},
+  /* added Nov. 13, 2026 (plan codes are positional: new options go at the end) */
+  {id:"m_dfss", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"More for homeless services", type:"sw", amt:15, mayor:1, info:"More money for the Department of Family and Support Services' homeless services (shelter, outreach and help finding housing), which the city says makes up for federal cuts. One of three homelessness pieces in the Mayor's plan that together are meant to keep 3,000 Chicagoans in their homes.", s:["release"]},
+  {id:"m_trust", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Rent help through the Low-Income Housing Trust Fund", type:"sw", amt:13, mayor:1, info:"The Chicago Low-Income Housing Trust Fund pays part of the rent for very low-income tenants. The plan adds $13 million.", s:["release"]},
+  {id:"m_flex", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Housing for people cycling through jails and shelters (Flexible Housing Pool)", type:"sw", amt:2, mayor:1, info:"The Flexible Housing Pool pays rent and services so people who keep cycling through jails, hospitals and shelters can move into housing.", s:["release"]},
+  {id:"m_lib", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Pay for libraries from the main budget", type:"sw", amt:30.9, mayor:1, info:"The library is mostly paid for by its own property tax levy. The plan gives it $30.9 million from the main budget instead of raising that levy, so branches keep their programs and hours.", s:["release", "forecast"]},
+  {id:"m_jobs", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Summer jobs for 40,000 young people", type:"sw", amt:24, mayor:1, info:"Chicago Youth Works hired a record 33,000 young people in 2026. $24 million funds 40,000 paid summer jobs in 2027.", s:["release", "forecast"]},
+  {id:"m_trees", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"More for Streets and Sanitation", type:"sw", amt:14.5, mayor:1, info:"More money for Streets and Sanitation, the department that picks up garbage, sweeps streets, fights rats and trims trees. The Mayor also announced 10 new tree-trimming crews to trim 10,000 more trees a year after storms caused nearly 44,000 tree emergencies in 2026; the overview doesn't say whether they are part of this line.", s:["forecast"]},
+  {id:"m_cvi", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"More street outreach to stop shootings", type:"sw", amt:7, mayor:1, info:"Community violence intervention: 390 more street outreach workers and 50 Youth Peacekeepers, bringing the city's total to $40.6 million.", s:["release", "forecast"]},
+  {id:"m_early", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Keep raises for early childhood teachers", type:"sw", amt:7, mayor:1, info:"Keeps pay raises for more than 3,000 early childhood workers across 86 programs.", s:["release", "forecast"]},
+  {id:"m_just", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"Free legal workshops (Community Justice Initiative)", type:"sw", amt:2.5, mayor:1, info:"Free legal education workshops in communities hit hard by violence and incarceration.", s:["release"]},
+  {id:"m_rest", g:"add", sub:"In the Mayor's plan", kind:"cost", who:"none", t:"The rest of the Mayor's new programs (the city doesn't price them one by one)", type:"sw", amt:15.6, mayor:1, info:"The plan's new spending totals $131.5 million. The named pieces above add up to $115.9 million. The rest, $15.6 million, covers things the city announced without a price each: a new city mental health clinic, the CARE crisis teams running seven days a week, and the Legal Protection Fund for immigrants ($3 million, kept from 2026).", s:["release", "forecast"]},
+  {id:"gi", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"$500 a month in cash for 5,000 struggling families", type:"sw", amt:31.5, mayor:0, info:"Chicago did this once: the Resilient Communities Pilot paid 5,000 low-income households $500 a month for a year in 2022–23, for $31.5 million, paid with federal pandemic money. Cities from Stockton to Denver have run similar programs. This brings it back for a year from the main budget.", pro:["Families decide what they need most", "Chicago already ran it and knows how"], con:["Reaches 5,000 households, a small share of the families who would qualify", "Ends when the money does"], s:["gi"]},
+  {id:"rtc", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"A free lawyer for every low-income tenant facing eviction", type:"sw", amt:4, mayor:0, info:"About 20,000 evictions are filed in Chicago each year, and most tenants go to court without a lawyer. New York City guarantees one to low-income tenants. Chicago's pilot ran on $8 million of federal money for three years and got $750,000 to stretch into 2025; tenant groups estimated $4 million a year to make it permanent.", pro:["Tenants with lawyers are far more likely to stay housed", "Cheaper than shelter for a family that loses its home"], con:["$4 million is the advocates' estimate; serving every case could cost more"], s:["rtc"]},
+  {id:"bonds_kids", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"Baby bonds: a savings account for every child born into a low-income family", type:"sw", amt:31, mayor:0, info:"Washington, D.C. gives children born into low-income families $500 at birth and up to $1,000 a year until 18, to use for college, a home or a business. It budgeted $32 million for the first four years, about $8 million a year. Chicago has about 3.9 times D.C.'s population, so a Chicago version would cost about $31 million a year to start (an assumption: scaled by population), and more as more children join each year.", pro:["Builds wealth for kids who start with none", "Money goes to education, a home or a business"], con:["Costs grow every year as more children enroll", "Pays off in 18 years, not during this budget"], s:["dcbb"]},
+  {id:"plow", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"City crews clear sidewalks of snow, starting in four neighborhoods", type:"sw", amt:3.5, mayor:0, info:"Montreal, Toronto and Rochester, New York clear sidewalks themselves instead of leaving it to each owner. The City Council approved a Chicago pilot in four zones with many older residents, young kids and people with disabilities; the city's report put its cost at $1.1 million to $3.5 million a year (the top is used here).", pro:["Helps people who can't shovel, and everyone who walks", "Tested first in four zones"], con:["Citywide would cost far more", "Snowy winters cost more than mild ones"], s:["plow"]},
+  {id:"preserve", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"Keep homes affordable near the Obama Presidential Center", type:"sw", amt:12.5, mayor:0, info:"Tenant and community groups asked for $12.5 million to help keep South Shore and Woodlawn homes affordable as the Obama Presidential Center opens nearby: money for longtime residents and for buying and keeping buildings affordable.", pro:["Acts before rents jump", "Targets the neighborhoods most at risk"], con:["One area of the city", "$12.5 million buys a limited number of homes"], s:["rtc"]},
+  {id:"vacant", g:"state", sub:"Needs a state law", kind:"rec", who:"biz", t:"Tax empty buildings and lots, like Oakland and Vancouver", type:"sw", amt:31, mayor:0, info:"Oakland charges owners of vacant properties $3,000 to $6,000 a year; it collected about $29.8 million over six years, about $5 million a year. Vancouver taxes homes left empty. Chicago has about 6.2 times Oakland's population, so a similar tax here might raise about $31 million a year (an assumption: scaled by population). Illinois' constitution requires property taxes to be uniform, so a separate tax on empty property would most likely need a state law (Chicago charges a $300 vacant building registration fee today).", pro:["Pushes owners to fix up, rent or sell empty property", "Owners who sit on empty lots pay, not residents"], con:["Needs Springfield", "Owners of struggling buildings may not be able to pay"], s:["oak", "van"]},
 ];
 const WHO = {home:["Homeowners and renters", "#2b5da0"], biz:["Businesses and institutions", "#6a4fb0"], cons:["Shoppers, visitors and riders", "#b07a1f"], drive:["Drivers", "#9a5b3f"],
   city:["City government (efficiency)", "#1f7a45"], workers:["City workers", "#3d8f8a"], svc:["City services", "#c0392b"], state:["The state budget", "#7d8a99"],
@@ -502,7 +533,7 @@ const SLICES = [["First $50,000", 0, 5e4], ["$50,000 to $100,000", 5e4, 1e5], ["
 function incBy(){ const r = st.inc, I = DATA && DATA.inc; const out = {mid:0, rich:0, slice:[0, 0, 0, 0, 0]}; if (!I) return out;
   I.m.forEach((row, c) => row.forEach((v, k) => { const t = RATES[r[k]] / 100 * v / 1e6; out[c < 3 ? "mid" : "rich"] += t; out.slice[k] += t; })); return out; }
 function taxOn(x){ return SLICES.reduce((t, [, lo, hi], k) => t + RATES[st.inc[k]] / 100 * Math.max(0, Math.min(x, hi) - lo), 0); }
-function amt(l){ const v = st[l.id]; if (l.type === "income"){ const b = incBy(); return b.mid + b.rich; } if (l.type === "range") return v; if (l.type === "opts") return l.opts[v][1]; return v ? l.amt : 0; }
+function amt(l){ if (l.gone) return 0; const v = st[l.id]; if (l.type === "income"){ const b = incBy(); return b.mid + b.rich; } if (l.type === "range") return v; if (l.type === "opts") return l.opts[v][1]; return v ? l.amt : 0; }
 function m(x){ if (!x) return "$0"; const a = Math.abs(x), s = x < 0 ? "−" : ""; return s + "$" + (a >= 1000 ? (a / 1000).toFixed(2) + "B" : (a >= 100 ? Math.round(a) : a.toFixed(1)) + "M"); }
 function money(x){ return (x < 0 ? "−" : "") + "$" + Math.abs(Math.round(x)).toLocaleString("en-US"); }
 const signed = x => x > 0.05 ? "+" + m(x) : x < -0.05 ? m(x) : "$0";
@@ -552,7 +583,7 @@ const pctTxt = p => (p > 0 ? "+" : p < 0 ? "−" : "") + Math.abs(p) + "%";
 function dNote(d, p, n){ return p ? `${p < 0 ? "About " + n.toLocaleString("en-US") + " fewer" : "About " + n.toLocaleString("en-US") + " more"} positions if spread evenly` : `${m(corp27(d))} in 2027`; }
 function renderLevers(){
   let h = `<p class="lead">${LEAD[tab]}</p>`, sub = null;
-  for (const l of L.filter(l => l.g === tab)){ if (l.sub && l.sub !== sub){ sub = l.sub; h += subh(sub); } h += leverHtml(l); }
+  for (const l of L.filter(l => l.g === tab && !l.gone)){ if (l.sub && l.sub !== sub){ sub = l.sub; h += subh(sub); } h += leverHtml(l); }
   if (tab === "dept"){
     if (!DATA) h += `<p class="lead">Loading departments…</p>`;
     else for (const [g, ids] of DGROUPS){ const ds = ids.map(deptById).filter(d => d && corp27(d) >= 4); h += subh(g) + ds.map(deptHtml).join(""); }
@@ -614,6 +645,22 @@ function totals(){
   return {rec, one, cost, back, more, by, gave, state, need:GAP + cost, left:GAP + cost - rec - one};
 }
 function update(){ renderTabs(); renderLevers(); renderBar(); renderResult(); save(); }
+/* Saved budgets (Kyle, Nov. 13): kept in this browser only. The last plan you worked on comes back when you return. */
+const SAVES_K = "sc-budget-saves", LAST_K = "sc-budget-last";
+const getSaves = () => { try { return JSON.parse(localStorage.getItem(SAVES_K) || "[]"); } catch (e){ return []; } };
+const putSaves = v => { try { localStorage.setItem(SAVES_K, JSON.stringify(v.slice(0, 20))); } catch (e){} };
+function renderSaves(){
+  const v = getSaves(), el = $("saveList"); if (!el) return;
+  el.innerHTML = v.map((x, i) => `<li><button type="button" class="sv-open" data-i="${i}"><b></b><span>${x.left <= 0.05 ? "Balanced" : m(x.left) + " to go"}${window.scFmt ? " · " + scFmt.date(x.t, {year:false}) : ""}</span></button><button type="button" class="sv-del" data-i="${i}" aria-label="Delete">×</button></li>`).join("");
+  el.querySelectorAll(".sv-open b").forEach((b, i) => b.textContent = v[i].name);
+  el.querySelectorAll(".sv-open").forEach(b => b.onclick = () => { location.hash = v[+b.dataset.i].hash; L.forEach(l => st[l.id] = startOf(l)); for (const k in dpct) delete dpct[k]; load(); update(); });
+  el.querySelectorAll(".sv-del").forEach(b => b.onclick = () => { v.splice(+b.dataset.i, 1); putSaves(v); renderSaves(); });
+}
+$("saveBtn").onclick = () => {
+  save(); const v = getSaves(), name = ($("saveName").value || "").trim() || "Budget " + (v.length + 1);
+  v.unshift({name, hash:location.hash, left:Math.max(0, totals().left), t:Date.now()}); putSaves(v); $("saveName").value = ""; renderSaves();
+  $("saveBtn").textContent = "Saved"; setTimeout(() => $("saveBtn").textContent = "Save in this browser", 1600);
+};
 function renderBar(){
   const T = totals(), need = Math.max(1, T.need), left = T.left;
   $("gapN").textContent = left > 0.05 ? m(left) : left < -0.05 ? m(-left) : "$0";
@@ -880,7 +927,7 @@ function frontPage(){
   const deck = !bal ? `Even with the choices so far, the main budget can't pass until the last ${m(T.left)} is found.` :
     `${newTax ? `${m(newTax)} in new taxes and fees` : "No new taxes"}, ${T.one ? `${m(T.one)} in one-time money` : "no one-time money"}${T.back ? `, and ${m(T.back)} in tax cuts` : ""}. Next year's gap: ${g28 > 0.05 ? m(g28) : "none"}.`;
   const story = [
-    `The plan ${bal ? "closes" : "chips away at"} the $882.4 million hole in the city's main budget${mvs.length ? `, leaning hardest on ${mvs.slice(0, 3).map(([l, v]) => `“${l.t}” (${m(v)})`).join(", ")}` : ""}.`,
+    `The plan ${bal ? "closes" : "chips away at"} the $918.5 million hole in the city's main budget${mvs.length ? `, leaning hardest on ${mvs.slice(0, 3).map(([l, v]) => `“${l.t}” (${m(v)})`).join(", ")}` : ""}.`,
     Object.keys(T.by).length ? `Who pays: ${Object.entries(T.by).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${WHO[k][0].toLowerCase()}, ${m(v)}`).join("; ")}.` : "",
     `For a renter making $75,000 with no car, it works out to about ${(() => { const s0 = {...me}; Object.assign(me, {home:"rent", car:0, bldg:1, inc:75000}); const t = meLines().reduce((a, l) => a + l[1], 0); Object.assign(me, s0); return Math.abs(t) < 0.5 ? "nothing" : money(Math.abs(t)) + (t > 0 ? " more" : " less"); })()} a year.`,
     rateFlags().filter(f => f[0] === "bad").length ? `What the rating agencies would notice: ${rateFlags().filter(f => f[0] === "bad").map(f => f[1].split(".")[0]).join(". ")}.` : `Rating agencies have asked for budgets like this one.`,
@@ -929,13 +976,19 @@ $("finish").onclick = frontPage;
 function save(){
   const code = L.map(l => l.type === "income" ? "1" + st.inc.join("") : st[l.id]).join(".") + "~" + Object.entries(dpct).filter(([, p]) => p).map(([k, p]) => k + ":" + p).join(",");
   try { history.replaceState(null, "", "#b2." + code); } catch (e){}
+  try { localStorage.setItem(LAST_K, "#b2." + code); } catch (e){}
 }
 function load(){
+  if (!/^#b2\./.test(location.hash)){ try { const last = localStorage.getItem(LAST_K); if (last) history.replaceState(null, "", last); } catch (e){} }
   const h = location.hash.match(/^#b2\.([-\d.]+)~([-\d:,]*)$/); if (!h) return;
   const v = h[1].split("."); L.forEach((l, i) => { const n = +v[i]; if (v[i] === undefined || !isFinite(n)) return;
     if (l.type === "income"){ const d = v[i].slice(1).split("").map(Number); if (d.length === 5 && d.every(x => x >= 0 && x < RATES.length)) st.inc = d; return; }
     if (l.type === "opts" && (n < 0 || n >= l.opts.length)) return; if (l.type === "range" && (n < l.min || n > l.max)) return; st[l.id] = n; });
   for (const kv of h[2].split(",").filter(Boolean)){ const [k, p] = kv.split(":"); if (Math.abs(+p) <= 20) dpct[k] = +p; }
+  // codes shared before Nov. 13, 2026 end at "adj": their one switch for the Mayor's programs now turns on each program
+  const iInv = L.findIndex(l => l.id === "inv");
+  if (v.length <= iInv + 2 && +v[iInv] === 1) L.forEach(l => { if (/^m_/.test(l.id)) st[l.id] = 1; });
+  st.inv = 0; st.adj = 0;
 }
 function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
 $("mayor").onclick = () => { L.forEach(l => st[l.id] = l.type === "income" ? [0, 0, 0, 0, 0] : l.mayor); for (const k in dpct) delete dpct[k]; update(); };
@@ -943,13 +996,13 @@ $("reset").onclick = () => { L.forEach(l => st[l.id] = startOf(l)); for (const k
 L.forEach(l => st[l.id] = startOf(l));
 $("histSeg").querySelectorAll("button").forEach(b => b.onclick = () => { histMode = b.dataset.k; $("histSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderHist(); });
 $("srcs").innerHTML = `Numbers are millions of dollars for the 2027 Corporate Fund unless noted. Sources: ${src("forecast", "release", "data", "tf", "bga", "ipi", "budgit", "treas", "cf")}. Past budgets are what the City Council passed (Budget Ordinance data); pensions before 2024 are the city's own historic contribution figures. "Today's dollars" uses the U.S. consumer price index (BLS CPI-U). Position counts spread a change evenly over a department: the share of its Corporate Fund money that pays people, divided by its average 2027 salary (an assumption; benefits aren't counted). Task force figures are its 2025 estimates for 2026. This is a teaching tool, not the city's budget model: the options interact in ways it doesn't capture.`;
-load();
+load(); renderSaves();
 fetch("data/budget.json").then(r => r.json()).then(d => { DATA = d; VOTE = d.votes || null; renderWhere(); renderHist(); renderCmp(); update(); });
 update();
 (function(){ const t = document.getElementById("tabs"); if (!t) return; const e = () => t.classList.toggle("more-r", t.scrollWidth > t.clientWidth + 2 && t.scrollLeft + t.clientWidth < t.scrollWidth - 4);
   t.addEventListener("scroll", e, {passive:true}); addEventListener("resize", e); new MutationObserver(e).observe(t, {childList:true}); e(); })();
 </script>
-<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("budget", {title:"Balance the Chicago Budget", body:"<p>Chicago's 2027 budget starts $882 million short. Raise or cut taxes, fund departments up or down, or reach for one-time money until the gap reads $0.</p><p>Every option is something the City Council can really do, or would have to ask Springfield for, with its dollar amount and sources behind the (i).</p>", art:"/shape/art/budget.webp"}));</script>
+<script>document.addEventListener("DOMContentLoaded", () => window.scIntro && scIntro("budget", {title:"Balance the Chicago Budget", body:"<p>Chicago's 2027 budget starts $918.5 million short. Raise or cut taxes, fund departments up or down, or reach for one-time money until the gap reads $0.</p><p>Every option is something the City Council can really do, or would have to ask Springfield for, with its dollar amount and sources behind the (i).</p>", art:"/shape/art/budget.webp"}));</script>
 <script>
 /* phones: "See your results" while the results are below the options; "Back to the options" once past them */
 (function(){ const j = document.getElementById("jump"), res = document.getElementById("resCard"), pan = document.querySelector(".panel"), gap = document.getElementById("gapN");

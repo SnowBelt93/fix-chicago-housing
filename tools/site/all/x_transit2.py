@@ -1,6 +1,9 @@
 # Transit, Nov. 13, 2026: BRT and streetcar lines replace the buses on their street
 from i18n_re import Q
 T = {
+    'trips a weekday': ('viajes por día laborable', '工作日出行', 'przejazdów w dzień roboczy'),
+    'would use it': ('lo usarían', '会乘坐它', 'by z niej korzystało'),
+    'of them new to transit': ('de ellos, nuevos en el transporte', '其中新增的公交出行', 'z nich nowych w transporcie'),
     'fewer transit trips a weekday': ('viajes menos en transporte por día laborable', '工作日减少的公交出行', 'mniej przejazdów transportem w dzień roboczy'),
     'riders lose the bus between your stations': ('los pasajeros pierden el autobús entre tus estaciones', '乘客失去了你的车站之间的公交', 'pasażerowie tracą autobus między twoimi stacjami'),
     "It replaces the bus on its street, and its stations are far apart, so trips from the stops in between get slower. Add stations about every half mile, or run it more often.":
@@ -9,6 +12,14 @@ T = {
          'Zastępuje autobus na swojej ulicy, a jej stacje są daleko od siebie, więc przejazdy z przystanków pośrodku się wydłużają. Dodaj stacje mniej więcej co pół mili albo zwiększ częstotliwość.'),
 }
 R = [
+    Q('The other {#} already go by transit, many on the bus it replaces. The plan\'s total counts only the new ones.',
+      'Los otros {1} ya van en transporte, muchos en el autobús que reemplaza. El total del plan cuenta solo los nuevos.',
+      '其余 {1} 人次本来就乘公共交通，很多是坐它取代的公交。方案总数只计新增部分。',
+      'Pozostałe {1} już jedzie transportem, wielu autobusem, który zastępuje. Suma planu liczy tylko nowe.'),
+    Q('The other {#} already go by transit and just get there faster. The plan\'s total counts only the new ones.',
+      'Los otros {1} ya van en transporte y solo llegan más rápido. El total del plan cuenta solo los nuevos.',
+      '其余 {1} 人次本来就乘公共交通，只是更快到达。方案总数只计新增部分。',
+      'Pozostałe {1} już jedzie transportem i po prostu dociera szybciej. Suma planu liczy tylko nowe.'),
     Q('{} trips a weekday would use it; {} of them already go by transit, many on the bus it replaces.',
       '{1} viajes por día laborable lo usarían; {2} de ellos ya van en transporte, muchos en el autobús que reemplaza.',
       '工作日约 {1} 人次会乘坐；其中 {2} 人次本来就乘公共交通，很多是坐它取代的公交。',

@@ -117,6 +117,10 @@ aside#panel{position:fixed;left:20px;top:84px;bottom:20px;width:380px;background
 .ib{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);background:#fff;color:var(--mute);font:italic 600 12px/1 Georgia,serif;display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer}
 .ib:hover{color:var(--ink);border-color:var(--ink)}
 .big-num .ib{align-self:center}
+.big-num.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:14px;align-items:start}
+.big-num.two > div{display:flex;flex-direction:column;gap:4px}
+.big-num.two > div + div{border-left:1px solid var(--line,#e3e5e8);padding-left:14px}
+.big-num.two .n{font-size:38px}
 .warns{display:flex;flex-wrap:wrap;gap:6px}
 .warn{font-size:13px;font-weight:600;color:#7a4b00;background:#fdf3e1;border:1px solid #f1d9a8;border-radius:14px;padding:5px 10px;text-align:left}
 .official{position:relative;display:flex;flex-direction:column;gap:2px;padding:10px 40px 10px 14px;border-radius:14px;background:#eef3fa;font-size:13.5px;color:var(--ink2)}
@@ -283,6 +287,10 @@ dialog[open]::backdrop{animation:dlgFade .24s ease-out}
 }
 @media (max-width:1240px){ #tbar .top{display:none} }
 @media (max-width:1060px){ #tbar{gap:18px} #tbar .tplan,#tbar .sc-sep{display:none} }
+/* iPads (Kyle, Nov. 13): the numbers give way before Start over is pushed off the screen */
+@media (min-width:860px){ #tbar > .sc-m{min-width:0;flex:0 1 auto} #tbar > .sc-m span{white-space:normal;max-width:15ch} #tbar .sc-push{flex:none;margin-left:auto} }
+@media (min-width:860px) and (max-width:1366px){ #tbar{gap:18px} #tbar .tplan{width:auto} }
+@media (min-width:860px) and (max-width:1200px){ #tbar .tco2{display:none} }
 @media (max-width:859px){
   #tbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) ;gap:8px;padding:10px 12px;min-height:0}
   #tbar .tplan,#tbar .sc-sep,#tbar .top,#tbar .tco2{display:none}
@@ -1126,6 +1134,7 @@ function applyFreshMap(){
 let TRIPM = null;   // the fitted trip model (trip.json)
 const TRIPS = new Map(), T0C = new Map();   // results by line; today's transit minutes from a zone (today's network never changes)
 const TRIP_R = 2414;         // zones within 1.5 miles of a new station (walk or a short bus ride; assumption)
+let TRIP_R2 = 1609, TRIP_SAMPLE = 4;   // and within a mile of any station on an L or Metra line it connects to, every fourth place (assumption)
 function carMin(d){ const km = 1.3 * d / 1000, v = 30 + 15 * Math.min(1, km / 30); return 5 + 60 * km / v; }   // same as tripmodel.py
 function lineKey(L){ return freshKey() + "|" + (L.mode || L.type) + "|" + (L.head || 0) + "|" + (L.pts || []).map(p => Math.round(p.x) + "," + Math.round(p.y)).join(";") + "|" + (L.shape ? L.shape.length : 0); }
 function tripResult(L){
@@ -1155,8 +1164,22 @@ function tripRefresh(){   // re-draw whatever is showing once a line's trips are
 function tripCompute(L, r, done){
   const T = TRIPM, P = T.mode, nz = NW.nz, Z = NW.Z, Wk = T.zones.workers, NC = T.zones.nocar, LND = T.zones.lnd, LNJ = T.zones.lnj, S = T.zones.S, TM = T.tmax;
   const g = afterGraph([L]);
-  const pts = L.mode === "lane" ? samplePath(laneShape(L), 600) : L.pts.map(p => [p.x, p.y]), inA = new Uint8Array(nz), A = [];
-  for (const [x, y] of pts) near(NW.zg, x, y, TRIP_R, z => Z.x[z], z => Z.y[z], z => { if (!inA[z]){ inA[z] = 1; A.push(z); } });
+  const pts = L.mode === "lane" ? samplePath(laneShape(L), 600) : L.pts.map(p => [p.x, p.y]), inA = new Uint8Array(nz), A = [], wt = new Float32Array(nz);
+  for (const [x, y] of pts) near(NW.zg, x, y, TRIP_R, z => Z.x[z], z => Z.y[z], z => { if (!inA[z]){ inA[z] = 1; A.push(z); wt[z] = 1; } });
+  // A line that connects to the L or Metra also speeds up trips that start and end far from it (Blue Line riders reaching the
+  // Orange Line without going through the Loop, say). Count those too: places within a mile of any station on a line it meets,
+  // sampled every TRIP_SAMPLE-th place and weighted up so it stays quick.
+  if (L.mode !== "lane" && window.TRIP_FAR !== false){
+    const met = new Set();
+    for (const [x, y] of pts){
+      for (const st of LST) if (Math.hypot(st.x - x, st.y - y) < 400) st.lines.forEach(l => met.add("L:" + l));
+      for (const st of MST) if (Math.hypot(st.x - x, st.y - y) < 400) st.lines.forEach(l => met.add("M:" + l));
+    }
+    if (met.size){
+      const far = [...LST.filter(st => st.lines.some(l => met.has("L:" + l))), ...MST.filter(st => st.lines.some(l => met.has("M:" + l)))];
+      for (const st of far) near(NW.zg, st.x, st.y, TRIP_R2, z => Z.x[z], z => Z.y[z], z => { if (!inA[z]){ inA[z] = 2; if (z % TRIP_SAMPLE === 0){ A.push(z); wt[z] = TRIP_SAMPLE; } } });
+    }
+  }
   const sig = u => 1 / (1 + Math.exp(-u));
   let i = 0, nw = 0, gr = 0, dm = 0, pairs = 0;
   const step = () => {
@@ -1171,12 +1194,12 @@ function tripCompute(L, r, done){
         const dist = Math.hypot(Z.x[z] - Z.x[d], Z.y[z] - Z.y[d]), c = carMin(dist), e = Math.exp(-T.gamma * c);
         pairs++;
         if (Wk[z] && Z.jobs[d]){   // people living here, working there
-          const f = Wk[z] * Z.jobs[d] * e / S[z], u = P.const + P.no_car * NC[z] + P.ln_jobs_density * LNJ[d] + P.ln_density * LND[z];
+          const f = wt[z] * Wk[z] * Z.jobs[d] * e / S[z], u = P.const + P.no_car * NC[z] + P.ln_jobs_density * LNJ[d] + P.ln_density * LND[z];
           const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
           nw += f * (p1 - p0); if (t1 < TM) gr += f * p1; dm += f * (p1 - p0) * dist;
         }
         if (!inA[d] && Wk[d] && Z.jobs[z]){   // people living there, working here (same minutes both ways)
-          const f = Wk[d] * Z.jobs[z] * e / S[d], u = P.const + P.no_car * NC[d] + P.ln_jobs_density * LNJ[z] + P.ln_density * LND[d];
+          const f = wt[z] * Wk[d] * Z.jobs[z] * e / S[d], u = P.const + P.no_car * NC[d] + P.ln_jobs_density * LNJ[z] + P.ln_density * LND[d];
           const p0 = sig(u + P.per_min * (t0v - c)), p1 = sig(u + P.per_min * (t1 - c));
           nw += f * (p1 - p0); if (t1 < TM) gr += f * p1; dm += f * (p1 - p0) * dist;
         }
@@ -2137,13 +2160,24 @@ function refreshDraw(){
   $("drawDone").disabled = p.length < 2; $("drawUndo").disabled = !p.length;
   renderPlan();
 }
+// an extension of an L line starts out as frequent as the line it extends (the Red Line runs every 6 minutes midday, so 5)
+function extHead(pts, M){
+  if (M.kind !== "rail" || !NW || !pts.length) return M.head;
+  let hw = 0;
+  for (const p of [pts[0], pts[pts.length - 1]]){
+    const st = p.snap && p.snap.kind === "L" && p.snap.ref; if (!st || !TERMINALS.test(st.name.split(" (")[0])) continue;
+    for (const pat of NW.net.pats) if (st.lines.some(l => pat.r === "cta:" + l)){ const h = Math.min(...pat.hw); if (h < 999 && (!hw || h < hw)) hw = h; }
+  }
+  if (!hw) return M.head;
+  const ok = M.heads.filter(h => h <= hw); return ok.length ? Math.max(...ok) : Math.min(...M.heads);
+}
 function finishDraw(){
   if (!drawing || drawing.pts.length < (drawing.mode === "infill" ? 1 : 2)) return;
   const M = MODES[drawing.mode];
   let L = drawing.editing;
   if (L){ L.pts = drawing.pts; delete L.shape; delete L.buildShape; delete L.buildMi; }   // edited stations: the line goes straight (or along streets) again
   else {
-    L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:M.head, name:drawing.mode === "infill" ? infillName(drawing.pts[0]) : autoName(drawing.mode, drawing.pts)};
+    L = {type:"draw", id:Date.now().toString(36), mode:drawing.mode, pts:drawing.pts, head:extHead(drawing.pts, M), name:drawing.mode === "infill" ? infillName(drawing.pts[0]) : autoName(drawing.mode, drawing.pts)};
     lines.push(L);
   }
   drawing = null; document.body.classList.remove("drawing", "infill"); map.getCanvas().style.cursor = ""; hint(""); map.getSource("preview").setData(fc([]));
@@ -2565,7 +2599,7 @@ function openLine(L){
   // riders, with what goes into them behind (i)
   let why = "";
   if (isM) why += `<p>${L.line} riders today: about ${num(L.base)} a weekday on ${L.tripsNow} trains. ${L.tripsNew > L.tripsNow ? `This runs ${Math.round(L.tripsNew)} trains a weekday.` : "It already runs that often."} Riders come from Metra's 2018 station counts scaled to today, and how riders responded to more trains in Boston.</p>`;
-  else if (isR) why += `<p>Trips a weekday that move to transit because this ${isI ? "station" : "line"} gets people there faster. The tool looks at every neighborhood within 1.5 miles of ${isI ? "it" : "its stations"}: where the people who live there work, and where the people who work there live (fit to Census home-to-work flows), and how long each trip takes by transit today, by transit with ${isI ? "the new stop" : "this line"}, and by car. How many switch for a given time saving comes from how people actually get to work in each census tract today (the fit explains ${Math.round(TRIPM.fit.tract_r2 * 100)}% of the difference between tracts). A trip that isn't faster counts for nothing, so a line next to one Chicago already has adds almost no one. Trips that aren't commutes are scaled from today's ridership.</p><p>About ${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit${M.kind === "bus" && NW && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}` : ""}. The range is the model's typical miss for a single station (about a third either way).</p>`;
+  else if (isR) why += `<p>Trips a weekday that move to transit because this ${isI ? "station" : "line"} gets people there faster. The tool looks at every neighborhood within 1.5 miles of ${isI ? "it" : "its stations"}, plus places near the L and Metra lines it connects to: where the people who live there work, and where the people who work there live (fit to Census home-to-work flows), and how long each trip takes by transit today, by transit with ${isI ? "the new stop" : "this line"}, and by car. How many switch for a given time saving comes from how people actually get to work in each census tract today (the fit explains ${Math.round(TRIPM.fit.tract_r2 * 100)}% of the difference between tracts). A trip that isn't faster counts for nothing, so a line next to one Chicago already has adds almost no one. Trips that aren't commutes are scaled from today's ridership.</p><p>About ${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit${M.kind === "bus" && NW && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}` : ""}. The range is the model's typical miss for a single station (about a third either way).</p>`;
   else if (isI) why += `<p>People entering the new station on a weekday, from the same model of today's L stations, with the trains that already pass by (${L.near ? "as many as stop at " + esc(L.near.name.split(" (")[0]) : "the line's service"}). Only the people and jobs nearby that aren't already within a 10-minute walk of an L or Metra station (${Math.round((L.newShare || 0) * 100)}% here) count as new riders; the rest would have walked to a station on either side. A single station's estimate is typically off by about 37%.</p>`;
   else if (M.kind === "rail") why += `<p>New riders a weekday. A model of today's L stations (the people and jobs near each, its buses, how often trains come, and how many jobs you can reach in 45 minutes) says about ${num(L.riders)} people would board at its stations. Most people near a new station already have one: only those with no L station within a 10-minute walk count as new riders (half of them where a Metra station is that close), plus the share the model ties to faster trips (more jobs within 45 minutes). The rest would just switch from a station they already use. A single station's estimate is typically off by about 37%.</p>`;
   else if (L.fromModel) why += `<p>No bus runs along this line today, so riders come from a model of CTA bus routes, given the people and jobs along them and how often buses come. Typically off by about 37%.</p>`;
@@ -2579,9 +2613,11 @@ function openLine(L){
   if (!isM && !isR && L.gainOld > 50) why += `<p>The L stations it connects to gain about ${num(L.gainOld)} riders, from people who can now reach more jobs within 45 minutes.</p>`;
   const loses = isR && L.newRiders < -50;   // a BRT or streetcar with few stations can leave bus riders worse off than today
   let h = loses ? `<div class="big-num"><span class="n">${num(-L.newRiders)}</span><span class="l">fewer transit trips a weekday<br>riders lose the bus between your stations</span>${ib("riders", "Where the riders come from", why)}</div>`
+    : isR && L.riders > 50   // two numbers side by side (Kyle, Nov. 13): everyone who'd ride it, and the part that's new to transit
+    ? `<div class="big-num two"><div><span class="n">${num(L.riders)}</span><span class="l">trips a weekday<br>would use it</span></div><div><span class="n">${num(riders)}</span><span class="l">of them new to transit<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : "&nbsp;"}</span></div>${ib("riders", "Where the riders come from", why)}</div>`
     : `<div class="big-num"><span class="n">${num(riders)}</span><span class="l">${isR ? "new transit trips a weekday" : isM ? "new riders a weekday" : "riders a weekday"}<br>${hi > lo * 1.02 ? `likely ${num(lo)}–${num(hi)}` : isM ? "from Metra's counts" : "from today's bus counts"}</span>${ib("riders", "Where the riders come from", why)}</div>`;
   if (loses) h += `<p class="note">It replaces the bus on its street, and its stations are far apart, so trips from the stops in between get slower. Add stations about every half mile, or run it more often.</p>`;
-  else if (isR && L.riders > 50) h += `<p class="note">${num(L.riders)} trips a weekday would use it${L.riders - riders > 50 ? `; ${num(L.riders - riders)} of them already go by transit${M && M.kind === "bus" && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}` : ""}.</p>`;
+  else if (isR && L.riders > 50 && L.riders - riders > 50) h += `<p class="note">The other ${num(L.riders - riders)} already go by transit${M && M.kind === "bus" && replacedSegs(L).length ? ", many on the bus it replaces" : " and just get there faster"}. The plan's total counts only the new ones.</p>`;
   if (isI) h += `<p class="note">Trains stop as often as they do at ${L.near ? esc(L.near.name.split(" (")[0]) : "the next station"}: about every ${L.head} minutes.</p>`;
   else h += `<div style="display:flex;flex-direction:column;gap:8px"><span class="sec">${isM ? "A train every" : M.unit}</span><div class="seg" role="radiogroup" aria-label="How often">${heads.map(x => `<button type="button" role="radio" aria-checked="${x === L.head}" data-h="${x}">${x} min</button>`).join("")}</div></div>`;
   // things to watch, one line each; the explanation is behind the line
@@ -3209,7 +3245,7 @@ function openSources(){
   <p>Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href="https://mobilitydatabase.org/feeds/gtfs/mdb-585" target="_blank" rel="noopener">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.</p>
   <h3>Assumptions (not measured)</h3>
   <ul>
-  <li>New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit, and minutes spent walking and waiting count double (716 puts that weight at 2–3×; we use the low end). Only trips the line makes faster count. Each commute is 2 trips a day; ${Math.round((TRIPM ? TRIPM.wfh : 0.16) * 100)}% of workers work from home; other trips scale from today's 1.12 million weekday riders. Trips riding through the area without starting or ending within 1.5 miles of a station aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.</li>
+  <li>New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit, and minutes spent walking and waiting count double (716 puts that weight at 2–3×; we use the low end). Only trips the line makes faster count (and, for a BRT or streetcar, trips that get slower because it replaces the bus). Places within a mile of any station on an L or Metra line the new line connects to are counted too, every fourth one weighted up, so a crosstown line gets credit for trips like Blue Line to Orange Line that no longer go through the Loop. Each commute is 2 trips a day; ${Math.round((TRIPM ? TRIPM.wfh : 0.16) * 100)}% of workers work from home; other trips scale from today's 1.12 million weekday riders. Other trips riding through the area without starting or ending in those places aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.</li>
   <li>Bus lanes: where the lane runs, buses ride 15% faster (studies find 5–25%: <a href="https://www.movemn.org/wp-content/uploads/2021/05/Boost-The-Bus_Technical-Fact-Sheet.pdf" target="_blank" rel="noopener">Move Minnesota, citing UCLA ITS 2019</a>), all day; a bus ride between two stops counts as on the lane when both stops are within 45 m of it and it runs along it. Cost $100,000–$500,000 a mile (same source). Bus hours saved = minutes saved × midday buses an hour × 18 hours, at $${BUS_HR.toFixed(0)} an hour (NTD 2024).</li>
   <li>Starting from scratch: switched-off routes are removed from every trip. Your network's riders = today's 1.12 million × the trips your network carries ÷ the trips today's carries, both from the trip model, counting only trips faster than walking, on every fourth half-mile square near a stop. The model holds people's homes, jobs and car ownership fixed, so a city with far less transit would in time look different too.</li>
   <li>A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within ${L_SNAP_M} m.</li>

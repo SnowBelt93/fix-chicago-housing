@@ -138,7 +138,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
       const a = adFor(el.dataset.ad); if (!a){ el.remove(); return; }
       el.classList.add("sc-ad");
       if (a === "house"){
-        el.innerHTML = `<span class="sc-ad-l">Local sponsor</span><a class="sc-ad-b" href="/advertise/"><img src="/shape/art/ad-house.webp" alt="" width="96" height="64" loading="lazy" onerror="this.remove()"><span><b>Your Chicago business here</b><span>One small card, seen by people who care where this city is headed. Chicago businesses only.</span></span></a>`;
+        el.innerHTML = `<span class="sc-ad-l">Local sponsor</span><a class="sc-ad-b" href="/advertise/"><img src="/shape/art/ad-house.webp" alt="" width="96" height="40" loading="lazy" onerror="this.remove()"><span><b>Your Chicago business here</b><span>One small card, seen by people who care where this city is headed. Chicago businesses only.</span></span></a>`;
       } else {
         el.innerHTML = `<span class="sc-ad-l">Local sponsor</span><a class="sc-ad-b" href="${esc(a.url)}" target="_blank" rel="sponsored noopener">${a.logo ? `<img src="${esc(a.logo)}" alt="" width="96" height="64" loading="lazy">` : ""}<span><b>${esc(a.name)}</b><span>${esc(a.line)}</span></span></a>`;
       }
@@ -466,6 +466,10 @@ window.scMap = {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fit); else fit();
   addEventListener("resize", fit); if (document.fonts) document.fonts.ready.then(fit);
+  // buttons added after load (feedback, language) can squeeze the tabs too: check again when the header's contents change
+  let q = 0; const later = () => { if (!q) q = requestAnimationFrame(() => { q = 0; fit(); }); };
+  const go = () => { const h = document.querySelector(".sc-head"); if (h) new MutationObserver(later).observe(h, {childList:true, subtree:true}); later(); setTimeout(fit, 1500); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
 })();
 
 
