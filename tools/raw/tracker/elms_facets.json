@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155508
+     "count": 155517
     },
     {
      "value": "Committee on Finance",
-     "count": 13894
+     "count": 13899
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10589
+     "count": 10614
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,15 +174,15 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118248
+     "count": 118273
     },
     {
      "value": "Claim",
-     "count": 29689
+     "count": 29694
     },
     {
      "value": "Resolution",
-     "count": 20580
+     "count": 20589
     },
     {
      "value": "Order",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2191
+     "count": 2221
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 91
+     "count": 100
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29982
+     "count": 29987
     },
     {
      "value": "Reilly, Brendan",
@@ -288,7 +288,7 @@
     },
     {
      "value": "Quinn, Marty",
-     "count": 3345
+     "count": 3350
     },
     {
      "value": "Smith, Michele",
@@ -372,7 +372,7 @@
     },
     {
      "value": "Gardiner, James M.",
-     "count": 1532
+     "count": 1541
     },
     {
      "value": "Cappleman, James",
@@ -412,7 +412,7 @@
     },
     {
      "value": "Taliaferro, Chris",
-     "count": 1274
+     "count": 1276
     },
     {
      "value": "Austin, Carrie M.",
@@ -492,7 +492,7 @@
     },
     {
      "value": "Martin, Matthew J.",
-     "count": 812
+     "count": 813
     },
     {
      "value": "Mell, Deborah",
@@ -504,7 +504,7 @@
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 746
+     "count": 747
     },
     {
      "value": "Suarez, Regner Ray",
@@ -523,11 +523,11 @@
      "count": 609
     },
     {
-     "value": "Cullerton, Timothy M.",
-     "count": 595
+     "value": "Lee, Nicole T.",
+     "count": 596
     },
     {
-     "value": "Lee, Nicole T.",
+     "value": "Cullerton, Timothy M.",
      "count": 595
     },
     {
@@ -548,11 +548,11 @@
     },
     {
      "value": "Rodriguez Sanchez, Rossana",
-     "count": 502
+     "count": 503
     },
     {
      "value": "Hadden, Maria E.",
-     "count": 457
+     "count": 459
     },
     {
      "value": "Graham, Deborah L.",
@@ -620,7 +620,7 @@
     },
     {
      "value": "Cruz, Ruth",
-     "count": 227
+     "count": 228
     },
     {
      "value": "Smith, Mary Ann",
@@ -644,11 +644,11 @@
     },
     {
      "value": "Quezada, Anthony J.",
-     "count": 183
+     "count": 187
     },
     {
      "value": "Burnett, Walter R.",
-     "count": 177
+     "count": 183
     },
     {
      "value": "Robinson, Lamont J.",
@@ -680,7 +680,7 @@
     },
     {
      "value": "Knudsen, Timothy R.",
-     "count": 125
+     "count": 126
     },
     {
      "value": "Olivo, Frank",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 169809
+     "count": 169848
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7557
+     "count": 7596
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30000
+     "count": 30005
     },
     {
      "value": "42",
@@ -876,7 +876,7 @@
     },
     {
      "value": "27",
-     "count": 6335
+     "count": 6341
     },
     {
      "value": "14",
@@ -908,19 +908,19 @@
     },
     {
      "value": "47",
-     "count": 3636
-    },
-    {
-     "value": "43",
-     "count": 3466
+     "count": 3637
     },
     {
      "value": "13",
-     "count": 3465
+     "count": 3470
+    },
+    {
+     "value": "43",
+     "count": 3467
     },
     {
      "value": "11",
-     "count": 3351
+     "count": 3352
     },
     {
      "value": "25",
@@ -932,7 +932,7 @@
     },
     {
      "value": "45",
-     "count": 3005
+     "count": 3014
     },
     {
      "value": "50",
@@ -956,7 +956,7 @@
     },
     {
      "value": "35",
-     "count": 2326
+     "count": 2330
     },
     {
      "value": "28",
@@ -988,7 +988,7 @@
     },
     {
      "value": "31",
-     "count": 1976
+     "count": 1977
     },
     {
      "value": "37",
@@ -996,7 +996,7 @@
     },
     {
      "value": "30",
-     "count": 1905
+     "count": 1906
     },
     {
      "value": "19",
@@ -1016,15 +1016,15 @@
     },
     {
      "value": "49",
-     "count": 1752
+     "count": 1754
     },
     {
      "value": "33",
-     "count": 1744
+     "count": 1745
     },
     {
      "value": "29",
-     "count": 1729
+     "count": 1731
     },
     {
      "value": "06",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1839
+     "count": 1850
     },
     {
      "value": "Placed on File",
@@ -1177,7 +1177,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 276
+     "count": 295
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1193,7 +1193,7 @@
     },
     {
      "value": "Accepted",
-     "count": 88
+     "count": 97
     },
     {
      "value": "Recommended to Pass",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163725
+     "count": 163755
     },
     {
      "value": "YES",
-     "count": 18222
+     "count": 18231
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 181949,
-  "pages": 181949
+  "count": 181988,
+  "pages": 181988
  }
 }
