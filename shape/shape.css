@@ -351,3 +351,4 @@ html.sc-zh body{word-break:normal;line-break:strict}
 .sc-pghead .sc-pgart{width:100%;height:auto;display:block}
 @media (max-width:760px){.sc-pghead{grid-template-columns:minmax(0,1fr);gap:4px}.sc-pghead .sc-pgart{order:-1;max-height:140px;width:auto;max-width:100%;justify-self:start}}
 @media print{.sc-pghead{display:block}.sc-pghead .sc-pgart{display:none}}
+.sc-head.sc-tight .sc-brand span{display:none}

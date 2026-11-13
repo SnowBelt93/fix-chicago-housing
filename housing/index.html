@@ -352,7 +352,8 @@ body:not(.sheetmin) .mapctl button[data-cam="in"],body:not(.sheetmin) .mapctl bu
 /* frosted panels: a little of the map shows through, text stays crisp */
 .hud,.sheet,.legend,.mapctl,.credit{background:rgba(255,255,255,.9) !important;-webkit-backdrop-filter:blur(12px) saturate(1.15);backdrop-filter:blur(12px) saturate(1.15)}
 .hud .scoreband{background:rgba(43,93,160,.96)}
-@media (max-width:859px){ .hud,.sheet,.legend,.mapctl,.credit{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(255,255,255,.97) !important} }   /* blur behind panels is costly on phones while the map moves */
+@media (max-width:859px){ .hud,.sheet,.legend,.mapctl,.credit{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(255,255,255,.97) !important} }
+@media (max-width:859px){ .credit{max-width:calc(100% - 140px);line-height:1.35} }   /* leaves room for the Map key button beside it */   /* blur behind panels is costly on phones while the map moves */
 @media (min-width:860px){
   body:not(.wide) .sheet .tabs{padding-right:38px;padding-left:4px}
   body:not(.wide) .sheet .tab{padding-left:4px;padding-right:4px;font-size:12.5px}

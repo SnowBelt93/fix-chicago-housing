@@ -869,7 +869,7 @@ html{background:var(--sc-page)}
 body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(--sc-ink);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
 .pg .sc-head{position:sticky;top:0}
 .pg main{max-width:var(--sc-w-wide);margin:0 auto;padding:22px 20px 56px;display:flex;flex-direction:column;gap:22px}
-.pg a{color:var(--sc-navy)}
+.pg main a{color:var(--sc-navy)}
 .pg .card{background:#fff;border:1px solid var(--sc-line);border-radius:18px;box-shadow:0 1px 2px rgba(20,30,50,.04)}
 .pg a.card{text-decoration:none;color:var(--sc-ink);transition:transform .15s,border-color .15s,box-shadow .15s}
 @media (hover:hover){ .pg a.card:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 18px rgba(43,93,160,.14)} }

@@ -347,7 +347,142 @@ def lost():
     for x in (-38, -20, -6): tree(x, f + 25, 0.9)
     street_life(86, f, seed=13, trees=False)
 
-TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost")}
+
+# ---------- Progress section pictures and About ----------
+def cone(x, y): cyl(x, y, 0.1, 0.32, 0.9, mat("#e07a3f", rough=0.5), verts=14, bevel=0.02, r2=0.06); box(x, y, 0.1, 0.8, 0.8, 0.08, mat("#e07a3f", rough=0.5), bevel=0.02)
+
+def street_flat(w, d, grass=True):
+    slab(w, d); f = -d / 2; W = w - 0.5
+    box(0, f + 3.0, 0, W, 5.6, 0.05, mat(ASPHALT, rough=0.9), bevel=0.02); box(0, f + 5.95, 0, W, 0.3, 0.2, mat("curb", rough=0.8), bevel=0.04)
+    box(0, f + 8.6, 0, W, 5.0, 0.16, mat("curb", rough=0.85), bevel=0.03)
+    if grass: box(0, f + 11.1 + (d - 11.1) / 2, 0, W, d - 11.6, 0.08, mat(GRASS, rough=0.95), bevel=0.04)
+    return f
+
+def p_homes():
+    by = street_base(88, 34); f = -17
+    midrise(-28, by, W=18, floors=5, D=13, seed=31); flats(-12, by, floors=3, D=12, wall="#cfc6b2")
+    frame_up(4, by, 13, 12, 4, done=2); crane(12, by + 9, 0, 22, 13, ang=math.radians(190), m=mat("star", rough=0.45))
+    sixflat(23, by, D=12, wall="#c99a6a"); garage(23, by + 16.5, w=7, col="#d9cfbe")              # a new coach house behind
+    cottage(37, by)
+    box(37, by - 2.6, 0.1, 0.12, 0.12, 1.7, "steel", bevel=0); box(37, by - 2.6, 1.6, 1.6, 0.08, 1.0, mat("white", rough=0.6), bevel=0.02)   # a permit card in the window yard
+    hardhat(2, by - 1.4); street_life(88, f, seed=21, skip=((0, 10),)); crowd(-30, 30, f + 8.4, f + 10.2, 7, seed=21)
+
+def p_zoning():
+    by = street_base(88, 34); f = -17
+    for x, w, c in ((-30, 13, "rt4"), (-15, 13, "rm5"), (6, 22, "rm6"), (28, 13, "rt4")): lot_mark(x, by - 3.3, w, LEVEL[c])
+    bungalow(-30, by, D=11); flats(-15, by, floors=3, D=12)
+    frame_up(6, by, 20, 12, 5, done=3); crane(16, by + 10, 0, 24, 15, ang=math.radians(200), m=mat("star", rough=0.45))
+    box(28, by + 5, 0.1, 12, 12, 0.06, mat("#cdbfa6", rough=0.95), bevel=0.05)                    # rezoned, nothing yet
+    for sx in (-5.5, 5.5):
+        for sy in (-5.5, 5.5): box(28 + sx, by + 5 + sy, 0, 0.12, 0.12, 1.2, "star", bevel=0)
+    for x in (-22.5, -8, 17.5): fence(x, by - 3.0, x, by + 11, h=1.1)
+    street_life(88, f, seed=22); crowd(-34, 34, f + 8.4, f + 10.2, 6, seed=22)
+
+def p_affordable():
+    by = street_base(88, 34); f = -17
+    midrise(-4, by, W=34, floors=6, D=13, panel="#ebe5d9", aff=0.85, seed=23, col2="#a9c4b0")
+    flats(-33, by, floors=3, D=12, porch=True); bungalow(30, by, D=11)
+    paved(-4, by - 1.6, 4, 3.4)
+    for k in range(4): person(-8 + k * 1.3, by - 2.0 - (k % 2) * 0.4, ("navy", "gold", "green", "star")[k], h=1.0 if k % 2 == 0 else 0.6)
+    street_life(88, f, seed=23, skip=((-12, 6),)); crowd(14, 34, f + 8.4, f + 10.2, 4, seed=23)
+
+def p_rents():
+    by = street_base(88, 34); f = -17
+    flats(-26, by, floors=3, D=12, porch=True); flats(-12, by, floors=2, D=11, wall="#b86b4f", brick_side="#a65a42")
+    sixflat(6, by, D=12); midrise(29, by, W=16, floors=5, D=13, seed=24)
+    box(6, by - 2.8, 0.1, 0.1, 0.1, 1.6, "steel", bevel=0); box(6, by - 2.8, 1.55, 1.4, 0.07, 0.8, mat("star", rough=0.5), bevel=0.02)   # a red rental sign
+    truck(-2, f + 3.2, "#f4f5f6")                                                                     # moving day
+    for k, (x, y) in enumerate(((3.6, f + 8.0), (4.4, f + 8.4), (4.0, f + 8.0))): box(x, y, 0.16 + (0.55 if k == 2 else 0), 0.8, 0.7, 0.55, mat("#c9a77c", rough=0.9), bevel=0.04)
+    person(2.4, f + 8.6, "navy"); person(5.6, f + 9.4, "gold")
+    street_life(88, f, seed=24, parked=False); cars(-40, -8, f + 4.6, seed=24)
+
+def p_transit():
+    f = street_flat(96, 32); W = 95.5
+    yy = f + 20
+    el_track([(-48, yy), (48, yy)], z=7.0); el_station(10, yy, z=7.0, L=34); ltrain(-2, yy, 7.9, cars=3, stripe="star")
+    bus(-26, f + 3.6, stripe="navy"); box(-26, f + 8.0, 0.16, 6, 1.2, 2.4, mat("glass", rough=0.2, alpha=0.5), bevel=0.05)   # a bus shelter
+    crowd(-30, -21, f + 7.4, f + 9.6, 6, seed=25); crowd(0, 20, f + 7.4, f + 10.0, 7, seed=26)
+    for x in (-44, -38, 34, 42): tree(x, f + 27, 0.9)
+    car(28, f + 1.8, "#8f3b34"); car(40, f + 4.3, "#c9ced3", flip=True)
+
+def p_streets():
+    f = street_flat(92, 32); W = 91.5
+    box(0, f + 4.6, 0.06, W, 2.4, 0.01, mat("#c4504a", rough=0.8), bevel=0)                        # a red bus lane
+    bus(-18, f + 4.6, stripe="navy")
+    for k in range(9): box(18 + k * 1.1, f + 3.0, 0.06, 0.55, 5.4, 0.01, "white", bevel=0)           # a crosswalk
+    box(0, f + 1.4, 0.06, W, 0.15, 0.01, "white", bevel=0)
+    box(0, f + 12.6, 0, W, 2.2, 0.06, mat("#7fb36f", rough=0.8), bevel=0.02)                         # a protected bike lane on the far side
+    for k in range(int(W / 3)): box(-W / 2 + 1.5 + k * 3, f + 11.4, 0.06, 0.5, 0.3, 0.35, "white", bevel=0.05)
+    for x in (-30, 6, 34): person(x, f + 12.6, "green" if x > 0 else "gold", h=1.0)
+    for x in (16, 30): cyl(x, f + 6.3, 0.1, 0.1, 4.2, "steel", verts=8, bevel=0); box(x, f + 6.3, 4.0, 0.5, 0.5, 1.2, "ink", bevel=0.05); sphere(x, f + 6.0, 4.85, 0.16, mat("green", emit=2.0), sub=2)
+    crowd(17, 27, f + 6.8, f + 8.6, 6, seed=27); flats(-36, f + 16, floors=3, D=10); sixflat(-20, f + 16, D=10); midrise(5, f + 16, W=18, floors=4, D=10, seed=27); flats(26, f + 16, floors=2, D=10, wall="#b86b4f")
+    car(36, f + 2.0, "#5f7d8c"); car(-38, f + 2.0, "#e8e4d8")
+
+def p_capital():
+    f = street_flat(90, 30)
+    box(10, f + 3.0, 0.06, 40, 5.4, 0.02, mat("#3a3f45", rough=0.6), bevel=0)                        # fresh asphalt
+    o = cyl(14, f + 3.0, 0.9, 0.9, 2.6, mat("#cfd3d6", rough=0.4, metal=0.3), verts=24); o.rotation_euler = (math.pi / 2, 0, 0); o.location = (14, f + 4.3, 0.95)   # a roller drum
+    box(17, f + 3.0, 1.0, 3.4, 2.2, 1.6, mat("#f2c53d", rough=0.5), bevel=0.15); box(17.6, f + 3.0, 2.6, 1.6, 1.6, 1.4, mat("#f2c53d", rough=0.5), bevel=0.1)
+    for x in (-9, -6, -3, 30, 33): cone(x, f + 1.0)
+    p = cyl(-22, f + 3.0, 0.9, 0.7, 10, mat("navy", rough=0.6), verts=20); p.rotation_euler = (0, math.pi / 2, 0); p.location = (-27, f + 3.0, 0.7)   # a new water main beside the trench
+    box(-22, f + 4.2, 0.07, 12, 1.6, 0.03, mat("#9c8a70", rough=0.95), bevel=0)
+    hardhat(-18, f + 6.5); hardhat(8, f + 6.8, "#e07a3f"); hardhat(22, f + 7.0)
+    coins(-38, f + 8.4, 8, r=1.3); coins(-35, f + 8.6, 5, r=1.3)
+    flats(-30, f + 15, floors=3, D=10); sixflat(-12, f + 15, D=10); midrise(10, f + 15, W=18, floors=4, D=10, seed=28); bungalow(32, f + 15, D=10)
+
+def p_projects():
+    w, d = 104, 36; slab(w, d); f = -d / 2; W = w - 0.5
+    box(0, f + 3.4, 0.02, W, 6.4, 0.04, mat("lake", rough=0.08, spec=0.7), bevel=0.02); box(0, f + 9.0, 0, W, 3.6, 0.2, mat("curb", rough=0.85), bevel=0.03)
+    y0 = f + 13
+    glass_tower(-38, y0, W=12, D=11, floors=14, FH=2.3, podium=1); glass_tower(-22, y0, W=11, D=10, floors=9, FH=2.3, podium=1, glass="#7fa6c4")
+    frame_up(-6, y0, 14, 12, 12, FH=2.3, done=6, col="#c9d6e2"); crane(3, y0 + 7, 0, 34, 18, ang=math.radians(190), m=mat("star", rough=0.45))
+    frame_up(14, y0, 13, 12, 5, FH=2.3, done=1); crane(22, y0 + 9, 0, 24, 14, ang=math.radians(205), m=mat("star", rough=0.45))
+    box(36, y0 + 6, 0.1, 22, 16, 0.06, mat("#cdbfa6", rough=0.95), bevel=0.05)
+    for sx in (-10, 0, 10): box(36 + sx, y0 - 1.6, 0, 0.12, 0.12, 1.2, "star", bevel=0)
+    for k in range(12): tree(-W / 2 + 5 + k * 8.4, f + 8.6, 0.7)
+    crowd(-46, 46, f + 8.4, f + 10.0, 10, seed=29)
+
+def p_springfield():
+    w, d = 80, 40; slab(w, d); f = -d / 2
+    box(0, f + 5, 0, 79.5, 9, 0.12, mat("curb", rough=0.85), bevel=0.03); box(0, 6, 0, 79.5, 27, 0.1, mat(GRASS, rough=0.95), bevel=0.04)
+    st = mat("#e8e2d6", rough=0.75); y = 4
+    box(0, y, 0.1, 54, 14, 9, st, bevel=0.2); box(0, y, 9.1, 56, 15, 0.8, mat("#d9d1c1", rough=0.8), bevel=0.1)
+    for k in range(9): box(-12 + k * 3, y - 7.4, 2.4, 0.9, 0.9, 6.6, st, bevel=0.1)                    # columns
+    box(0, y - 7.0, 9.1, 30, 1.6, 2.4, st, bevel=0.1); gable(0, y - 7.0, 11.5, 30, 1.6, 3.2, st)
+    for k in range(5): box(0, y - 8.4 - k * 0.6, 0.1 + k * 0.0, 30 - k * 0.6, 0.6, 2.2 - k * 0.45, mat("#ddd6c8", rough=0.8), bevel=0.04)   # steps
+    cyl(0, y, 9.9, 7.2, 4.5, st, verts=40, bevel=0.1)
+    for k in range(16):
+        a = 2 * math.pi * k / 16; box(7.0 * math.cos(a), y + 7.0 * math.sin(a), 10.2, 0.6, 0.6, 3.9, mat("#d9d1c1", rough=0.8), bevel=0.05)
+    sphere(0, y, 14.4, 6.6, mat("#b9c4bf", rough=0.4, metal=0.35), sub=3, sz=0.95); cyl(0, y, 20.4, 1.3, 2.4, st, verts=20); sphere(0, y, 22.8, 1.0, mat("#b9c4bf", rough=0.4, metal=0.35), sub=2)
+    for x in (-34, 34):
+        cyl(x, f + 8, 0.1, 0.12, 9, "steel", verts=8, bevel=0); box(x + 1.6, f + 8, 7.4, 3.0, 0.06, 1.8, mat("navy", rough=0.6), bevel=0.02)
+    for x in (-30, -22, 22, 30): tree(x, 14, 1.0)
+    crowd(-20, 20, f + 2.5, f + 7.0, 12, seed=30)
+
+def p_decisions():
+    w, d = 50, 32; slab(w, d); box(0, 0, 0, 49.5, 31.5, 0.1, mat("#d9cdb8", rough=0.8), bevel=0.03)   # a council chamber floor
+    wood = mat("#9c7354", rough=0.6)
+    box(0, 12, 0.1, 22, 4, 2.4, wood, bevel=0.1); box(0, 13.6, 2.5, 22, 1.0, 1.4, wood, bevel=0.06)   # the dais
+    star(0, 14.2, 5.6, 1.4)
+    for row, r in enumerate((10, 15, 20)):
+        for k in range(9):
+            a = math.radians(200 + k * 17.5); x, y = r * math.cos(a), 14 + r * math.sin(a)
+            box(x, y, 0.1, 2.6, 1.2, 1.0, wood, bevel=0.05, rot=a + math.pi / 2)
+            person(x - 0.9 * math.cos(a), y - 0.9 * math.sin(a), ("navy", "gold", "green", "star", "#7a5ea8", "#5f7d8c")[(k + row) % 6], h=0.95)
+    box(0, -4, 0.1, 1.6, 1.2, 1.5, wood, bevel=0.06); person(0, -5.3, "navy")                         # someone giving public comment
+    for x in range(-20, 21, 4): person(x, -12 + (x % 3), h=1.0)
+
+def about():
+    f = street_flat(100, 34); W = 99.5
+    yy = f + 26
+    el_track([(-50, yy), (50, yy)], z=7.0); ltrain(-30, yy, 7.9, cars=3, stripe="#41b6e6")
+    bungalow(-36, f + 13, D=10); flats(-22, f + 13, floors=3, D=11, porch=True); sixflat(-6, f + 13, D=11)
+    midrise(14, f + 13, W=18, floors=5, D=12, seed=32); frame_up(32, f + 13, 12, 11, 4, done=2); crane(39, f + 21, 0, 22, 12, ang=math.radians(200), m=mat("star", rough=0.45))
+    bus(-10, f + 3.6, stripe="navy"); car(20, f + 1.8, "#d7a13b")
+    for x in (-44, -29, -14, 6, 24): tree(x, f + 10.5, 0.8)
+    crowd(-46, 46, f + 7.4, f + 9.8, 12, seed=32)
+
+TOPICS = {k: globals()[k] for k in ("history", "zoning", "illegal", "shortage", "rents", "prerogative", "aro", "megaprojects", "modes", "funding", "nita", "riders", "deal", "grants", "plans", "lost", "p_homes", "p_zoning", "p_affordable", "p_rents", "p_transit", "p_streets", "p_capital", "p_projects", "p_springfield", "p_decisions", "about")}
 
 # ---------- the lot exhibit: one standard 25 x 125 ft lot (7.6 x 38 m), four districts ----------
 LOTW, LOTD = 7.6, 38.0

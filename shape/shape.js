@@ -429,3 +429,18 @@ window.scMap = {
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", add); else add();
 })();
+
+/* Narrow headers: on map pages the header carries Sources and Share too; when "Shape Chicago" would run under the buttons,
+   keep only the star (class sc-tight on the header). */
+(function(){
+  function fit(){
+    document.querySelectorAll(".sc-head").forEach(h => {
+      const b = h.querySelector(".sc-brand span"), r = h.querySelector(".sc-r"); if (!b || !r) return;
+      h.classList.remove("sc-tight");
+      if (b.getBoundingClientRect().right > r.getBoundingClientRect().left - 6) h.classList.add("sc-tight");
+    });
+  }
+  const go = () => { fit(); setTimeout(fit, 400); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
+  addEventListener("resize", fit); addEventListener("load", fit);
+})();
