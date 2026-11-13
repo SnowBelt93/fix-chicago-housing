@@ -786,8 +786,8 @@ def springfield():
         hist = ''.join(f'<li><span>{day(d, True) if d else ""}</span> {esc(c)}: {esc(act(a))}</li>' for d, c, a in b['hist'])
         return (f'<li class="bill" data-tp="{" ".join(b["tp"])}" data-st="{b["st"]}"><div class="bh"><a class="bid" href="{b["url"]}" target="_blank" rel="noopener">{b["id"][:2]} {b["id"][2:]}</a>'
                 f'<span class="chip {cls}">{esc(b["lab"])}</span>{tags}</div><b class="bt">{esc(name)}</b>'
-                f'<p class="fine">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(act(last[2]))}{" · rewritten by an amendment" if b.get("rewritten") else ""}</p>'
-                f'<details><summary>What it does</summary><p class="sub">{esc(syn_clean(b["syn"]))}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist">{hist}</ol>' if hist else '') + '</details></li>')
+                f'<p class="fine" translate="no" lang="en">Sponsor: {b["bych"]} {esc(b["by"])} · last action {when}: {esc(act(last[2]))}{" · rewritten by an amendment" if b.get("rewritten") else ""}</p>'
+                f'<details><summary>What it does</summary><p class="sub" translate="no" lang="en">{esc(syn_clean(b["syn"]))}{"…" if len(b["syn"]) >= 900 else ""}</p>' + (f'<ol class="bhist" translate="no" lang="en">{hist}</ol>' if hist else '') + '</details></li>')
     order = sorted(L, key=lambda b: (-(b['id'] in WATCH), -b['st'], -int((b['last'][0] or '0').replace('-', ''))))
     STAGES = (('0', 'Any stage'), ('3', 'Passed a chamber or more'), ('6', 'Became law'))
     cnt = {k: sum(1 for b in L if k in b["tp"]) for k in TOPIC}

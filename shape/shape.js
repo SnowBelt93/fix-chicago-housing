@@ -363,7 +363,7 @@ window.scMap = {
   const SKIP = "script,style,code,pre,textarea,[translate=no],.sc-lang,.sc-langlink";
   let W = {};   // words used inside patterns: "{{Nov}}" in a replacement becomes W.Nov (month and day names)
   let depth = 0;   // [[text]] in a replacement: translate that piece too (exact text, then patterns, at most 3 levels deep)
-  const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.+?)\]\]/g, (m, w) => { if (depth > 2) return w; depth++; const t = tr(w); depth--; return t != null ? t : w; });
+  const words = v => v.replace(/\{\{([^}]+)\}\}/g, (m, w) => W[w] != null ? W[w] : w).replace(/\[\[(.*?)\]\]/g, (m, w) => { if (!w.trim()) return w; if (depth > 2) return w; depth++; const t = tr(w); depth--; return t != null ? t : w; });
   function tr(s){ const k = norm(s); if (!k) return null; if (T[k] != null) return T[k];
     for (const [re, to] of R) if (re.test(k)) return words(k.replace(re, to)); return null; }
   function text(n){ const v = tr(n.nodeValue); if (v != null && v !== norm(n.nodeValue)){ const m = n.nodeValue.match(/^\s*/)[0], e = n.nodeValue.match(/\s*$/)[0]; n.nodeValue = m + v + e; } }
