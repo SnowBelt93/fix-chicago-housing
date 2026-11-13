@@ -402,7 +402,7 @@
         const KEY = kind === "housing" ? MINE : SMINE;
         try { const ids = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!ids.includes(j.id)) ids.push(j.id); localStorage.setItem(KEY, JSON.stringify(ids.slice(-40))); } catch (e) {}
         const href = "/plans/#" + (kind === "housing" ? "" : kind + "-") + j.id;
-        msg.innerHTML = 'Shared as <b>' + esc(title) + '</b>' + (author ? ' by ' + esc(author) : "") + '. <a href="' + href + '">See it in Neighbors\' plans</a>';
+        msg.innerHTML = 'Shared as <b>' + esc(title) + '</b>' + (author ? ' by ' + esc(author) : "") + '. <a href="' + href + '">See it on Plans people made</a>';
         go.textContent = "Shared";
         const after = host.querySelector(".pshafter"); after.innerHTML = "";
         after.append(deleteBtn(kind, j.id, () => { go.textContent = opt.go || "Share it on Plans people made"; go.disabled = false; msg.textContent = ""; after.innerHTML = ""; }));
