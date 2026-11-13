@@ -190,3 +190,4 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
   .pg table.stack td:not(:first-child)::before{content:attr(data-l);display:block;font-size:11.5px;color:var(--sc-mute)}
   .pg table.proj td:nth-child(4),.pg table.proj td:last-child{grid-column:1/-1} .pg ol.dl li{grid-template-columns:86px minmax(0,1fr)} .pg ol.dl .st{grid-column:2}.pg table.proj td:nth-child(2)::before{content:none}
 }
+@media (max-width:480px){.pg .chip{white-space:normal}}

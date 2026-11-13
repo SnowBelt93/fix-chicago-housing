@@ -209,9 +209,9 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   .sc-fan{display:none}
 }
 @media (max-width:560px){
-  .bar{display:grid;grid-template-columns:auto 1fr;gap:8px 12px}
+  .bar{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:8px 12px}
   .gapm{min-width:0} .gapm b{font-size:22px}
-  .btns{justify-self:end;align-self:center} .btns .sc-btn{padding:0 11px;font-size:13px;min-height:34px}
+  .btns{justify-self:end;align-self:center;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px;min-width:0} .btns .sc-btn{padding:0 11px;font-size:13px;min-height:34px}
   .meter{grid-column:1/-1;min-width:0} .mlab{display:none} .bar .sc-m{display:none}
 }
 @media (prefers-reduced-motion:reduce){ .track i,.whobar i{transition:none} }

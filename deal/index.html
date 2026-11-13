@@ -29,7 +29,8 @@ h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:
 .grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:24px;align-items:start}
 .card{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px;margin:0 0 16px}
 form.card{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain}
-fieldset{border:0;margin:0 0 16px;padding:0}
+fieldset{border:0;margin:0 0 16px;padding:0;min-width:0}
+.grid>*{min-width:0}
 legend,.lab{font-size:14px;font-weight:600;margin:0 0 8px;padding:0;display:block}
 .sub{font-weight:400;color:var(--sc-mute)}
 input[type=text],input[type=number],select{font:inherit;font-size:15px;width:100%;padding:10px 12px;border:1px solid var(--sc-line);border-radius:10px;background:#fff;color:var(--sc-ink)}
@@ -504,7 +505,7 @@ function sensGrid(){
   const mx = Math.max(1, ...cells.flat());
   const col = v => { const t = Math.min(1, v / mx); return v <= 0.5 ? "#e3f1e6" : `rgba(228,0,43,${(0.06 + t * 0.30).toFixed(2)})`; };
   const base = model();
-  return `<table class="sens"><thead><tr><th>Mortgage rate</th>${C.map(c => `<th>Cost ${c ? (c > 0 ? "+" : "−") + Math.abs(c * 100) + "%" : "as is"}</th>`).join("")}</tr></thead><tbody>${R.map((r, i) => `<tr><td>${((base.rate + r) * 100).toFixed(2)}%</td>${C.map((c, j) => `<td class="c${!r && !c ? " here" : ""}" style="background:${col(cells[i][j])}">${cells[i][j] > 0.5 ? kay(cells[i][j]) : "$0"}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  return `<div style="overflow-x:auto;max-width:100%"><table class="sens"><thead><tr><th>Mortgage rate</th>${C.map(c => `<th>Cost ${c ? (c > 0 ? "+" : "−") + Math.abs(c * 100) + "%" : "as is"}</th>`).join("")}</tr></thead><tbody>${R.map((r, i) => `<tr><td>${((base.rate + r) * 100).toFixed(2)}%</td>${C.map((c, j) => `<td class="c${!r && !c ? " here" : ""}" style="background:${col(cells[i][j])}">${cells[i][j] > 0.5 ? kay(cells[i][j]) : "$0"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function run(){

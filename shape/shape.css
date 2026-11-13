@@ -487,3 +487,7 @@ html body .sc-pghead.noart{grid-template-columns:minmax(0,1fr) !important}
 .sc-stamp{animation:sc-gpop .5s cubic-bezier(.3,1.7,.5,1)}
 @keyframes sc-gpop{from{transform:scale(.5) rotate(-12deg)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){ [data-popin].sc-popready :is(img,svg.picon){opacity:1;transform:none;animation:none !important} .sc-stamp{animation:none} }
+/* touch targets on (i) reach 14px past the button; never let that widen the page */
+@media (pointer:coarse){ html{overflow-x:clip} }
+
+.sc-fcol a{white-space:normal !important;overflow-wrap:anywhere;max-width:100%}
