@@ -111,6 +111,12 @@ T = {
     'Learn the basics behind this': ('Aprende lo básico detrás de esto', '了解背后的基础知识', 'Poznaj podstawy'),
     'Price: one zoning change': ('Precio: un cambio de zonificación', '售价：一次分区变更', 'Cena: jedna zmiana strefy'),
     'Fifteen years of your choices, simulated block by block': ('Quince años de tus decisiones, simulados cuadra por cuadra', '你十五年的选择，逐个街区模拟', 'Piętnaście lat twoich decyzji, symulowanych kwartał po kwartale'),
+    'Most endorsed': ('Más respaldados', '最多人支持', 'Najczęściej popierane'),
+    'Newest': ('Más nuevos', '最新', 'Najnowsze'),
+    'Before 1880': ('Antes de 1880', '1880 年以前', 'Przed 1880'),
+    'Unknown': ('Desconocido', '未知', 'Nieznany'),
+    '2000 on': ('2000 en adelante', '2000 年以后', 'Od 2000'),
+    '› Simulators › Plans people made': ('› Simuladores › Planes de la gente', '› 模拟器 › 大家做的方案', '› Symulatory › Plany innych'),
     # pensions
     'Keep the city\'s extra "advance" payment': ('Mantener el pago "adelantado" adicional de la ciudad', '保留市政府额外的"预付款"', 'Utrzymać dodatkową „zaliczkową” wpłatę miasta'),
     'A one-time deposit in 2027': ('Un depósito único en 2027', '2027 年一次性存入', 'Jednorazowa wpłata w 2027'),

@@ -96,5 +96,5 @@ HR = [
     ['^Plus (\\d+) other committee meetings\\. They are on the <a href="([^"]+)" target="_blank" rel="noopener">City Clerk\'s site</a>\\.$',
      '另有 $1 次委员会会议，见<a href="$2" target="_blank" rel="noopener">市书记官网站</a>。',
      'Oraz $1 innych posiedzeń komisji. Są na <a href="$2" target="_blank" rel="noopener">stronie sekretarza miasta</a>.'],
-    ['^(.+?)<span class="hz">Votes on housing or zoning</span>$', '$1<span class="hz">对住房或分区表决</span>', '$1<span class="hz">Głosowania ws. mieszkań lub strefowania</span>'],
+    ['^(.+?)<span class="hz">Votes on housing or zoning</span>$', '[[$1]]<span class="hz">对住房或分区表决</span>', '[[$1]]<span class="hz">Głosowania ws. mieszkań lub strefowania</span>'],
 ]

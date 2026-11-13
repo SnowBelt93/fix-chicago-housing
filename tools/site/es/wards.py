@@ -59,7 +59,7 @@ T = {
 H = {}
 HR = [
     ['^Plus (\\d+) other committee meetings\\. They are on the <a href="([^"]+)" target="_blank" rel="noopener">City Clerk\'s site</a>\\.$', 'Y $1 sesiones de comités más. Están en el <a href="$2" target="_blank" rel="noopener">sitio de la Secretaría Municipal</a>.'],
-    ['^(.+?)<span class="hz">Votes on housing or zoning</span>$', '$1<span class="hz">Vota sobre vivienda o zonificación</span>'],
+    ['^(.+?)<span class="hz">Votes on housing or zoning</span>$', '[[$1]]<span class="hz">Vota sobre vivienda o zonificación</span>'],
 ]
 from core import MF, DF
 R = [
