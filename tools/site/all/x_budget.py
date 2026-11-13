@@ -107,7 +107,7 @@ R = [
     Q("{} a year on a typical home's bill", '{1} al año en la factura de una vivienda típica', '典型住房账单每年 {1}', '{1} rocznie na rachunku typowego domu'),
     Q('{#} positions if spread evenly', '{1} puestos si se reparte parejo', '平均分摊约 {1} 个岗位', '{1} etatów przy równym rozłożeniu'),
     Q('{#} returns reach it', '{1} declaraciones llegan a este tramo', '{1} 份报税达到此档', '{1} zeznań sięga tego progu'),
-    Q('Cut {}', 'Recortar {1}', '削减 {1}', 'Cięcie {1}'), Q('Raise {}', 'Aumentar {1}', '增加 {1}', 'Wzrost {1}'),
+    ['^Cut ([A-Z][^0-9·.,;:]{0,50})$', 'Recortar [[$1]]', '削减 [[$1]]', 'Cięcie [[$1]]'], ['^Raise ([A-Z][^0-9·.,;:]{0,50})$', 'Aumentar [[$1]]', '增加 [[$1]]', 'Wzrost [[$1]]'],
     Q('Paid by: {}', 'Lo pagan: {1}', '由谁付：{1}', 'Płacą: {1}'),
     ['^homeowners and renters$', 'propietarios e inquilinos', '房主和租户', 'właściciele i najemcy'], ['^businesses and institutions$', 'empresas e instituciones', '企业和机构', 'firmy i instytucje'],
     ['^shoppers, visitors and riders$', 'compradores, visitantes y pasajeros', '购物者、游客和乘客', 'kupujący, goście i pasażerowie'], ['^drivers$', 'conductores', '司机', 'kierowcy'],

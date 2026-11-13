@@ -255,5 +255,5 @@ R = [
     Q('Your {} in one-time money is gone after 2027. {}', 'Tus {1} en dinero de una vez desaparecen después de 2027. {2}', '你的 {1} 一次性资金在 2027 年后就没了。{2}', 'Twoje {1} jednorazowych pieniędzy znika po 2027. {2}'),
     Q('See results · {} to close ↓', 'Ver resultados · faltan {1} ↓', '查看结果 · 还差 {1} ↓', 'Zobacz wyniki · zostało {1} ↓'),
     ['^See results · surplus ↓$', 'Ver resultados · superávit ↓', '查看结果 · 盈余 ↓', 'Zobacz wyniki · nadwyżka ↓'], ['^See results · balanced ↓$', 'Ver resultados · cuadrado ↓', '查看结果 · 已平衡 ↓', 'Zobacz wyniki · zbilansowany ↓'],
-    Q('About {}', 'Acerca de {1}', '关于{1}', 'O: {1}'),
+    ['^About ([A-Z][^0-9·.,;:]{0,50})$', 'Acerca de [[$1]]', '关于[[$1]]', 'O: [[$1]]'],
 ]

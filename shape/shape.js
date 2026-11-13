@@ -346,7 +346,7 @@ window.scMap = {
     document.body.appendChild(d);
   }
   // Pages translated in full; on any other page a reader in another language gets one short note (once per page per visit).
-  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/", "/learn/", "/privacy/", "/terms/", "/support/", "/plans/", "/community/", "/tracker/", "/lot/", "/deal/", "/budget/", "/pensions/", "/bears/", "/history/"];
+  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/", "/learn/", "/privacy/", "/terms/", "/support/", "/plans/", "/community/", "/tracker/", "/lot/", "/deal/", "/budget/", "/pensions/", "/bears/", "/history/", "/housing/", "/transit/", "/advertise/"];
   const fullAt = p => FULL.includes(p) || /^\/progress\//.test(p) || /^\/embed\//.test(p);
   function partial(){
     if (lang === "en" || fullAt(location.pathname) || document.querySelector(".sc-err404")) return;

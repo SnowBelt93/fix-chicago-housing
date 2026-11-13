@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sponsor spots · Shape Chicago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/shape/shape.css">
+<style>
+body{margin:0;background:var(--sc-page,#f3f5f7);font-family:var(--sc-font);color:var(--sc-ink)}
+.sc-head{position:sticky;top:0}
+main{max-width:1040px;margin:0 auto;padding:36px 20px 72px}
+h1{font-size:36px;letter-spacing:-.02em;margin:0 0 10px}
+.lede{font-size:17px;line-height:1.5;color:var(--sc-ink2);max-width:720px;margin:0 0 10px}
+.rules{font-size:14.5px;line-height:1.55;color:var(--sc-ink2);max-width:760px;margin:0 0 30px;padding:0 0 0 18px}
+.spot{display:grid;grid-template-columns:minmax(0,330px) minmax(0,1fr);gap:26px;align-items:start;background:#fff;border:1px solid var(--sc-line);border-radius:18px;padding:22px;margin:0 0 18px}
+.spot h2{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
+.spot .where{font-size:13px;font-weight:600;color:var(--sc-navy);margin:0 0 10px}
+.spot p{font-size:14.5px;line-height:1.55;color:var(--sc-ink2);margin:0 0 8px}
+.spot ul{margin:0;padding-left:18px;font-size:14px;line-height:1.5;color:var(--sc-ink2)}
+.stage{background:var(--sc-page,#f3f5f7);border-radius:14px;padding:18px;min-width:0}
+.fake{color:var(--sc-mute);font-size:12px;margin:10px 0 0}
+/* shared label */
+.lbl{font:600 11.5px/1 var(--sc-font);color:var(--sc-mute);letter-spacing:0}
+/* 1: ward sponsor strip */
+.wardhead{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:16px}
+.wardhead h3{margin:0 0 4px;font-size:22px}.wardhead .al{font-size:14px;color:var(--sc-ink2);margin:0 0 12px}
+.wstrip{display:flex;align-items:center;gap:12px;border-top:1px solid var(--sc-line);padding-top:12px}
+.wstrip .logo{width:40px;height:40px;border-radius:10px;background:#e9e2d4;display:grid;place-items:center;font:700 15px var(--sc-font);color:#6b5a2e;flex:none}
+.wstrip b{display:block;font-size:14px}.wstrip span{font-size:13px;color:var(--sc-ink2)}
+/* 2: underwriting line */
+.pghead{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:16px}
+.pghead .trail{font-size:12.5px;color:var(--sc-mute);margin:0 0 6px}.pghead h3{font-size:26px;margin:0 0 6px}.pghead .ld{font-size:14.5px;color:var(--sc-ink2);margin:0 0 10px}
+.uw{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sc-ink2)}.uw i{width:22px;height:22px;border-radius:6px;background:#d8e4f2;display:inline-block}
+/* 3: news card */
+.news{display:grid;gap:10px}
+.ncard{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:14px;display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px}
+.ncard .ph{height:64px;border-radius:10px;background:#dfe6ee}.ncard b{font-size:14.5px;display:block;margin:0 0 4px}.ncard span{font-size:12.5px;color:var(--sc-mute)}
+.ncard.sp{border-style:dashed;border-color:#c9d3df}.ncard.sp .ph{background:#efe8da}
+/* 4: classifieds on the front page */
+.paper{background:#fbfaf6;border:1px solid #ddd8cb;border-radius:6px;padding:16px;font-family:'Source Serif 4',Georgia,serif;color:#15181c}
+.paper .np{font:800 26px/1 'Big Shoulders Display',sans-serif;text-align:center;letter-spacing:.01em;margin:0 0 6px}
+.paper .rule{height:0;border-top:2px solid #41b6e6;border-bottom:2px solid #41b6e6;height:3px;margin:0 0 10px}
+.paper .hl{font:800 22px/1.05 'Big Shoulders Display',sans-serif;margin:0 0 10px}
+.cls{border-top:2px solid #15181c;padding-top:8px}
+.cls h4{font:800 15px/1 'Big Shoulders Display',sans-serif;letter-spacing:.04em;margin:0 0 8px}
+.cls .row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.cls .ad{border:1px solid #15181c;padding:8px;font-size:12.5px;line-height:1.35}.cls .ad b{display:block;font-size:13px}
+/* 5: learn */
+.topic{background:#fff;border:1px solid var(--sc-line);border-radius:14px;padding:16px}
+.topic h3{font-size:19px;margin:0 0 6px}.topic p{font-size:14px;color:var(--sc-ink2);margin:0 0 10px}
+.topic .end{border-top:1px solid var(--sc-line);padding-top:10px;font-size:13px;color:var(--sc-ink2)}
+@media (max-width:760px){ .spot{grid-template-columns:minmax(0,1fr)} .cls .row{grid-template-columns:minmax(0,1fr)} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+<h1>Sponsor spots: five options</h1>
+<p class="lede">Each spot is built for this site rather than a generic ad box. They sit where people are reading, not where they're working in a tool, and each one says plainly that it's a sponsor. Pick the ones you like; the advertise page will then describe only those.</p>
+<ul class="rules">
+<li>Never on the maps, inside a simulator while someone is using it, or on Your address pages (people make real decisions there).</li>
+<li>One sponsor per spot, labeled, plain link, no tracking. The businesses shown below are made up.</li>
+</ul>
+
+<section class="spot">
+  <div><h2>1. Ward sponsor</h2><p class="where">Your ward page, under the alderperson</p>
+    <p>One local business per ward, shown only on that ward's page and in the ward's feed. A bakery in Ward 1 reaches the people who follow Ward 1, the most local audience the site has.</p>
+    <ul><li>50 spots, sold ward by ward</li><li>Must be in the ward</li><li>Never on wards' votes or rezoning lists</li></ul></div>
+  <div class="stage"><div class="wardhead"><h3>Ward 32</h3><p class="al">Alderperson and office contact · Bucktown, Lincoln Park, Roscoe Village</p>
+    <div class="wstrip"><span class="logo">EH</span><div><span class="lbl">Ward 32 neighbor sponsor</span><b>Example Hardware</b><span>Keys, paint and advice on the corner since 1979.</span></div></div></div>
+    <p class="fake">Example business, made up.</p></div>
+</section>
+
+<section class="spot">
+  <div><h2>2. Section underwriter</h2><p class="where">Top of a Progress section, under the title</p>
+    <p>Like public radio: "Homes added is supported by…", one short line and a small logo. Fits firms that want to be seen backing good information, such as architects, builders, credit unions and foundations.</p>
+    <ul><li>Eight sections, one underwriter each</li><li>Underwriters never see numbers early or change them</li></ul></div>
+  <div class="stage"><div class="pghead"><p class="trail">Home › Progress › Homes added</p><h3>Homes added</h3><p class="ld">How many homes Chicago permitted this year, and where.</p>
+    <p class="uw"><i></i><span><span class="lbl">Supported by</span> Example Architects, a neighborhood design firm</span></p></div>
+    <p class="fake">Example business, made up.</p></div>
+</section>
+
+<section class="spot">
+  <div><h2>3. Card in the news</h2><p class="where">News page and the home page's "This week", once per page</p>
+    <p>Looks like the other news cards, with a dashed edge and a "Local sponsor" label, after the eighth story. Good for events, openings and nonprofits' calls to action.</p>
+    <ul><li>One at a time, changes weekly</li><li>Never made to look like a headline</li></ul></div>
+  <div class="stage"><div class="news">
+    <div class="ncard"><div class="ph"></div><div><b>Example headline about a zoning vote</b><span>A local outlet · 3 hours ago</span></div></div>
+    <div class="ncard sp"><div class="ph"></div><div><span class="lbl">Local sponsor</span><b>Open studios this weekend: 60 artists, free</b><span>Example Arts Group</span></div></div>
+    <div class="ncard"><div class="ph"></div><div><b>Example headline about the transit budget</b><span>A local outlet · 5 hours ago</span></div></div></div>
+    <p class="fake">Example sponsor and headlines, made up.</p></div>
+</section>
+
+<section class="spot">
+  <div><h2>4. Classifieds on the front page</h2><p class="where">Bottom of the housing and budget newspaper front pages</p>
+    <p>The results pages already look like a newspaper, so the sponsors become its classifieds: three small boxed notices under the box score. People share these front pages, so the classifieds travel with them (the share image leaves them off).</p>
+    <ul><li>Three slots, rotating daily</li><li>Text only, newspaper type</li></ul></div>
+  <div class="stage"><div class="paper"><p class="np">The Chicago Plan</p><div class="rule"></div><p class="hl">City Adds 98,000 Homes; Rents Ease</p>
+    <div class="cls"><h4>CLASSIFIEDS</h4><div class="row">
+      <div class="ad"><b>Fix your two-flat</b>Free boiler check with any repair. Example Mechanical.</div>
+      <div class="ad"><b>First home?</b>Free homebuyer class every Saturday. Example Credit Union.</div>
+      <div class="ad"><b>Volunteer tutors needed</b>Two hours a week. Example Reading Group.</div></div></div></div>
+    <p class="fake">Example sponsors, made up.</p></div>
+</section>
+
+<section class="spot">
+  <div><h2>5. Explainer sponsor</h2><p class="where">End of a Learn topic</p>
+    <p>"This explainer is supported by…" after the topic's sources, matched by subject: a housing nonprofit on the zoning topic, a bike shop on bus lanes, a library friends group on the budget.</p>
+    <ul><li>About 15 topics</li><li>Subject match, but no say over the text</li></ul></div>
+  <div class="stage"><div class="topic"><h3>What zoning decides</h3><p>Why most of Chicago can only hold one or two homes per lot…</p>
+    <p class="end"><span class="lbl">This explainer is supported by</span> Example Housing Group, a Chicago nonprofit</p></div>
+    <p class="fake">Example sponsor, made up.</p></div>
+</section>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
+<script src="/shape/shape.js" defer></script>
+</body>
+</html>

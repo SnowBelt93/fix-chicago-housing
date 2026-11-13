@@ -1,0 +1,458 @@
+[
+ {
+  "tag": "LI",
+  "h": "<b>Riders on new L lines</b> come from a model of how many people use each of today's L stations, based on who lives and works nearby and how many buses stop there.",
+  "t": "Riders on new L lines come from a model of how many people use each of today's L stations, based on who lives and works nearby and how many buses stop there.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "<b>BRT and streetcars</b> start from the riders on the buses they replace, plus the bump faster service got in Cleveland.",
+  "t": "BRT and streetcars start from the riders on the buses they replace, plus the bump faster service got in Cleveland.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "<b>Travel times</b> use CTA and Metra's real weekday schedules, with your new lines added.",
+  "t": "Travel times use CTA and Metra's real weekday schedules, with your new lines added.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "<b>Costs</b> use the agency's own figure when a proposal has one, otherwise a per-mile range from real projects, in today's dollars.",
+  "t": "Costs use the agency's own figure when a proposal has one, otherwise a per-mile range from real projects, in today's dollars.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "<b>Car trips and CO₂</b> use surveys of how new riders used to travel, and Chicago's actual train and bus energy use.",
+  "t": "Car trips and CO₂ use surveys of how new riders used to travel, and Chicago's actual train and bus energy use.",
+  "n": 1
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Riders on a new subway or elevated line",
+  "t": "Riders on a new subway or elevated line",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "A statistical model fit to how many people entered each of Chicago's 143 L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and how many jobs you can reach from it within 45 minutes by transit. It explains 57% of the differences between stations; a typical station estimate is off by about 37%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.",
+  "t": "A statistical model fit to how many people entered each of Chicago's 143 L stations on an average 2025 weekday. Each station gets the people and jobs in the Census blocks closer to it than to any other L station (within ¾ mile), the bus trips stopping within ¼ mile, whether it's an end of the line or a transfer, its distance from the Loop, and how many jobs you can reach from it within 45 minutes by transit. It explains 57% of the differences between stations; a typical station estimate is off by about 37%. The range shown is the middle 60% of the model's misses. A new station takes some riders from nearby L stations, and the tool shows that.",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Trains: riders rise about 0.5% for each 1% more trains, the average in <a href=\"https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf\" target=\"_blank\" rel=\"noopener\">TCRP Report 95, Chapter 9</a> (p. 9-4).",
+  "t": "Trains: riders rise about 0.5% for each 1% more trains, the average in TCRP Report 95, Chapter 9 (p. 9-4).",
+  "n": 1
+ },
+ {
+  "tag": "P",
+  "h": "Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all 143 stations, the real number falls inside the shown range for 59% of them. Whole lines miss by more, because a line's stations share its quirks: predicting each L line from the others gives 0.6× (Red) to 2.4× (Orange, which the airport skews) its real riders.",
+  "t": "Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all 143 stations, the real number falls inside the shown range for 59% of them. Whole lines miss by more, because a line's stations share its quirks: predicting each L line from the others gives 0.6× (Red) to 2.4× (Orange, which the airport skews) its real riders.",
+  "n": 0
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Travel times and jobs within 45 minutes",
+  "t": "Travel times and jobs within 45 minutes",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between buses or trains, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. \"Hours saved\" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less. Check: the average resident of the region can reach about 196,000 jobs within 45 minutes by transit in the tool; the University of Minnesota's Access Across America (2018, 7–9am, <a href=\"https://cts-d10resmod-prd.oit.umn.edu/pdf/cts-20-01.pdf\" target=\"_blank\" rel=\"noopener\">Table 2</a>) gives Chicago 125,826 within 40 minutes and 228,599 within 50, about 177,000 at 45. Not included: Pace buses, and services with no midday trips (they come back when a Metra upgrade adds them). New rail stations don't count bus routes that run along the line itself, only ones that cross it, so adding stations doesn't keep adding the same buses.",
+  "t": "The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between buses or trains, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. \"Hours saved\" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less. Check: the average resident of the region can reach about 196,000 jobs within 45 minutes by transit in the tool; the University of Minnesota's Access Across America (2018, 7–9am, Table 2) gives Chicago 125,826 within 40 minutes and 228,599 within 50, about 177,000 at 45. Not included: Pace buses, and services with no midday trips (they come back when a Metra upgrade adds them). New rail stations don't count bus routes that run along the line itself, only ones that cross it, so adding stations doesn't keep adding the same buses.",
+  "n": 1
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Riders on BRT or a streetcar",
+  "t": "Riders on BRT or a streetcar",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to 124 CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about 37%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf\" target=\"_blank\" rel=\"noopener\">FTA before-and-after studies, 2012</a>, p. 5). The range runs from 5%, the low end of what FTA says is common (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf\" target=\"_blank\" rel=\"noopener\">FTA, Characteristics of BRT</a>, p. E-6: gains \"of between 5 and 25 percent are common\"), to 51% on LA's Orange Line (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf\" target=\"_blank\" rel=\"noopener\">FTA Report 0004</a>, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (<a href=\"https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>, <a href=\"https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership\" target=\"_blank\" rel=\"noopener\">FTA</a>). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. <a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf\" target=\"_blank\" rel=\"noopener\">Kansas City</a>, <a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50213.pdf\" target=\"_blank\" rel=\"noopener\">Detroit</a>, NTD 2024).",
+  "t": "Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to 124 CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about 37%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (FTA before-and-after studies, 2012, p. 5). The range runs from 5%, the low end of what FTA says is common (FTA, Characteristics of BRT, p. E-6: gains \"of between 5 and 25 percent are common\"), to 51% on LA's Orange Line (FTA Report 0004, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (FTA, FTA). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. Kansas City, Detroit, NTD 2024).",
+  "n": 7
+ },
+ {
+  "tag": "P",
+  "h": "In the travel-time network and the trip model, a BRT or streetcar takes the place of every CTA bus route that runs along it for at least 800 m (or half the line, if it's shorter; an assumption): those buses stop running on that stretch, and the new line runs at least as often as they did together. Trips that get slower without them, like ones from a stop between two of the new stations or ones that now change vehicles twice, count against the line.",
+  "t": "In the travel-time network and the trip model, a BRT or streetcar takes the place of every CTA bus route that runs along it for at least 800 m (or half the line, if it's shorter; an assumption): those buses stop running on that stretch, and the new line runs at least as often as they did together. Trips that get slower without them, like ones from a stop between two of the new stations or ones that now change vehicles twice, count against the line.",
+  "n": 0
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Metra upgrades",
+  "t": "Metra upgrades",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Station boardings from Metra's fall 2018 counts (<a href=\"https://datahub.nita.illinois.gov/media/resources/metra-ridership-station-boarding-alighting-survey-1979-2018\" target=\"_blank\" rel=\"noopener\">Illinois data hub</a>), scaled to today by Metra's trips in 2024 vs. 2018 (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf\" target=\"_blank\" rel=\"noopener\">NTD 2024</a>: 35.1M; <a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2018/50118.pdf\" target=\"_blank\" rel=\"noopener\">NTD 2018</a>: 68.4M) and 2025's 8% growth (<a href=\"https://www.progressiverailroading.com/passenger_rail/news/CTA-Metra-logged-rail-ridership-growth-in-2025--76274\" target=\"_blank\" rel=\"noopener\">Progressive Railroading</a>): ×0.5531. Each line's riders are twice its boardings outside downtown, since downtown terminals serve several lines. Riders rise 0.41% per 1% more trains where trains came every 10–50 minutes and 0.76% where they came less often, from Boston's commuter rail experiments (<a href=\"https://libraryarchives.metro.net/DPGTL/2026-heavrin/2004-TCRP-system-changes-handbook-ch-09.pdf\" target=\"_blank\" rel=\"noopener\">TCRP Report 95, ch. 9</a>, Table 9-5, p. 9-12). Studies cover service increases up to about double (Tri-Rail +60% trains, Boston &amp; Maine +77%), so the tool doesn't go past double. Wires: Caltrain's electrification, $2.44B for 52 miles (<a href=\"https://masstransitmag.com/rail/infrastructure/article/21249277/caltrain-electrification-project-cost-increases-but-still-on-schedule-for-2024\" target=\"_blank\" rel=\"noopener\">Mass Transit</a>).",
+  "t": "Station boardings from Metra's fall 2018 counts (Illinois data hub), scaled to today by Metra's trips in 2024 vs. 2018 (NTD 2024: 35.1M; NTD 2018: 68.4M) and 2025's 8% growth (Progressive Railroading): ×0.5531. Each line's riders are twice its boardings outside downtown, since downtown terminals serve several lines. Riders rise 0.41% per 1% more trains where trains came every 10–50 minutes and 0.76% where they came less often, from Boston's commuter rail experiments (TCRP Report 95, ch. 9, Table 9-5, p. 9-12). Studies cover service increases up to about double (Tri-Rail +60% trains, Boston & Maine +77%), so the tool doesn't go past double. Wires: Caltrain's electrification, $2.44B for 52 miles (Mass Transit).",
+  "n": 6
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Cost to build, per mile",
+  "t": "Cost to build, per mile",
+  "n": 0
+ },
+ {
+  "tag": "TH",
+  "h": "Type",
+  "t": "Type",
+  "n": 0
+ },
+ {
+  "tag": "TD",
+  "h": "$965M: LA Purple Line Section 2, $2.5B for 2.59 mi (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-2-Profile-AR25.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>)",
+  "t": "$965M: LA Purple Line Section 2, $2.5B for 2.59 mi (FTA)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$1.41B: LA Purple Line Section 3, $3.6B for 2.56 mi (<a href=\"https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/CA-Los-Angeles-Westside-Purple-Line-Extension-Section-3-Profile-AR25.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>)",
+  "t": "$1.41B: LA Purple Line Section 3, $3.6B for 2.56 mi (FTA)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "Elevated",
+  "t": "Elevated",
+  "n": 0
+ },
+ {
+  "tag": "TD",
+  "h": "$384M: Seattle Lynnwood Link, part elevated, part at ground level (<a href=\"https://transit.dot.gov/sites/fta.dot.gov/files/2024-03/WA-Lynnwood-Link-Extension-Profile-AR25.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>)",
+  "t": "$384M: Seattle Lynnwood Link, part elevated, part at ground level (FTA)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$1.05B: Chicago Red Line Extension, $5.75B for 5.5 mi, mostly elevated (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-01/IL-Chicago-Red-Line-Extension-FFGA-Profile-FY26-01-16-2025_0.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>)",
+  "t": "$1.05B: Chicago Red Line Extension, $5.75B for 5.5 mi, mostly elevated (FTA)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$43M: Detroit QLine (<a href=\"https://www.masstransitmag.com/rail/article/12366313/detroits-qline-streetcar-getting-on-track-with-partnerships-innovation-and-tenacity\" target=\"_blank\" rel=\"noopener\">Mass Transit</a>)",
+  "t": "$43M: Detroit QLine (Mass Transit)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$100M: Kansas City Main St. (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-02/MO-Kansas-City-Streetcar-Main-St-Ext-Project-FFGA-Profile-FY22.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>)",
+  "t": "$100M: Kansas City Main St. (FTA)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$10.4M: Ashland Avenue BRT, $166M for about 16 mi (<a href=\"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf\" target=\"_blank\" rel=\"noopener\">CMAP 2026 plan</a>, 2025 dollars)",
+  "t": "$10.4M: Ashland Avenue BRT, $166M for about 16 mi (CMAP 2026 plan, 2025 dollars)",
+  "n": 1
+ },
+ {
+  "tag": "TD",
+  "h": "$23.9M: Pulaski Road bus priority, $323M for about 13.5 mi (same source); Chicago's other four studied corridors run $18–21M",
+  "t": "$23.9M: Pulaski Road bus priority, $323M for about 13.5 mi (same source); Chicago's other four studied corridors run $18–21M",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "A proposal left as proposed uses its own official estimate (CTA, FTA or CMAP) instead of the per-mile range, in today's dollars; year-of-spending totals stay as published. Edit its stations and it goes back to the range.",
+  "t": "A proposal left as proposed uses its own official estimate (CTA, FTA or CMAP) instead of the per-mile range, in today's dollars; year-of-spending totals stay as published. Edit its stations and it goes back to the range.",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Each project's cost is moved from the year it was funded (or opened, where that's the year the source gives) to 2026 Q1 dollars with FHWA's National Highway Construction Cost Index (<a href=\"https://data.transportation.gov/Research-and-Statistics/NHCCI/r94d-n4f9/about_data\" target=\"_blank\" rel=\"noopener\">FHWA NHCCI</a>), which roughly doubled from 2008 to 2025. It's a highway-construction index, so it's only a rough guide for tunnels, rail systems and vehicles. Official year-of-spending totals (like the Red Line Extension's $5.75 billion, spent through 2031) are shown as published. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City's streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.",
+  "t": "Each project's cost is moved from the year it was funded (or opened, where that's the year the source gives) to 2026 Q1 dollars with FHWA's National Highway Construction Cost Index (FHWA NHCCI), which roughly doubled from 2008 to 2025. It's a highway-construction index, so it's only a rough guide for tunnels, rail systems and vehicles. Official year-of-spending totals (like the Red Line Extension's $5.75 billion, spent through 2031) are shown as published. Time to build, from approval to opening: Red Line Extension about 6.5 years, LA Purple Line about 10, Lynnwood Link about 5.5, Kansas City's streetcar extension 3.5 years of construction, Indianapolis Red Line about 1.5.",
+  "n": 1
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "New stations on existing lines",
+  "t": "New stations on existing lines",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "A new stop gets the trains that already pass (as many as stop at the nearest station on that line), and its riders come from the same L station model, including riders it takes from the stations on either side; only people and jobs not already within a 10-minute walk of an L or Metra station count as new riders. Where lines share tracks (Green and Pink on Lake Street), the stop gets all of their trains. Stations closer than 400 m to an existing one aren't allowed. Cost per station: Morgan on the Green and Pink Lines, $38 million, opened 2012 (<a href=\"https://ggwash.org/view/39328\" target=\"_blank\" rel=\"noopener\">Greater Greater Washington</a>), to Damen on the Green Line, $80 million, opened 2024 (<a href=\"https://abc7chicago.com/post/new-cta-damen-station-opens/15145575/\" target=\"_blank\" rel=\"noopener\">ABC7</a>); Cermak-McCormick Place cost about $50 million (2015). Riders already on the train lose about a minute at each new stop; the tool doesn't count that.",
+  "t": "A new stop gets the trains that already pass (as many as stop at the nearest station on that line), and its riders come from the same L station model, including riders it takes from the stations on either side; only people and jobs not already within a 10-minute walk of an L or Metra station count as new riders. Where lines share tracks (Green and Pink on Lake Street), the stop gets all of their trains. Stations closer than 400 m to an existing one aren't allowed. Cost per station: Morgan on the Green and Pink Lines, $38 million, opened 2012 (Greater Greater Washington), to Damen on the Green Line, $80 million, opened 2024 (ABC7); Cermak-McCormick Place cost about $50 million (2015). Riders already on the train lose about a minute at each new stop; the tool doesn't count that.",
+  "n": 2
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Trip times, funding and timelines",
+  "t": "Trip times, funding and timelines",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Trip times use the same midday network as jobs within 45 minutes: the fastest combination of walking, waiting and riding between two points, today and with your plan. Funding splits each line's build cost into the most federal Capital Investment Grants could pay (or the share a funded project actually got, like the Red Line Extension's 34%) and the rest, compared with NITA's proposed $9.73 billion 2027–2031 capital program for the whole region (<a href=\"https://www.metro-magazine.com/news/nita-proposes-5b-operating-budget-97b-capital-program-for-2027\" target=\"_blank\" rel=\"noopener\">Metro Magazine, Nov. 3, 2026</a>). A single new station gets no federal share: those grants pay for new lines and extensions, and Chicago's recent stations were paid for locally. Metra fares use Metra's average of about $5.32 a trip (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2022/50118.pdf\" target=\"_blank\" rel=\"noopener\">NTD 2022</a>). Saved plans for Compare plans stay in your browser only.",
+  "t": "Trip times use the same midday network as jobs within 45 minutes: the fastest combination of walking, waiting and riding between two points, today and with your plan. Funding splits each line's build cost into the most federal Capital Investment Grants could pay (or the share a funded project actually got, like the Red Line Extension's 34%) and the rest, compared with NITA's proposed $9.73 billion 2027–2031 capital program for the whole region (Metro Magazine, Nov. 3, 2026). A single new station gets no federal share: those grants pay for new lines and extensions, and Chicago's recent stations were paid for locally. Metra fares use Metra's average of about $5.32 a trip (NTD 2022). Saved plans for Compare plans stay in your browser only.",
+  "n": 2
+ },
+ {
+  "tag": "P",
+  "h": "Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf\" target=\"_blank\" rel=\"noopener\">CTA</a>), Metra $656.28 per car-hour at 29.28 mph (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf\" target=\"_blank\" rel=\"noopener\">Metra</a>), BRT speed 13.19 mph (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50050.pdf\" target=\"_blank\" rel=\"noopener\">IndyGo</a>), streetcar $453.94 per hour at 7.10 mph (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf\" target=\"_blank\" rel=\"noopener\">KC Streetcar</a>).",
+  "t": "Cost per vehicle (or rail car) hour and average speed from each agency's 2024 National Transit Database profile: CTA rail $203.81 per car-hour at 16.98 mph and CTA bus $197.88 per hour (CTA), Metra $656.28 per car-hour at 29.28 mph (Metra), BRT speed 13.19 mph (IndyGo), streetcar $453.94 per hour at 7.10 mph (KC Streetcar).",
+  "n": 4
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Paying for it, and benefit-cost",
+  "t": "Paying for it, and benefit-cost",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Federal Capital Investment Grants can cover up to 60% of a New Starts project and 80% of a Small Starts project (<a href=\"https://transit.dot.gov/sites/fta.dot.gov/files/2022-01/Fact-Sheet-Capital-Investment-Grants-Program.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>); the tool calls a project under $400 million Small Starts. The Red Line Extension got $1.97 billion of $5.75 billion, 34% (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/2025-11/FY26-Annual-Report-on-Funding-Recommendations.pdf\" target=\"_blank\" rel=\"noopener\">FTA FY26 report</a>). Fares: the CTA took in $1.15 per trip in 2024 and spent $6.20 per trip to run service (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf\" target=\"_blank\" rel=\"noopener\">NTD 2024</a>).",
+  "t": "Federal Capital Investment Grants can cover up to 60% of a New Starts project and 80% of a Small Starts project (FTA); the tool calls a project under $400 million Small Starts. The Red Line Extension got $1.97 billion of $5.75 billion, 34% (FTA FY26 report). Fares: the CTA took in $1.15 per trip in 2024 and spent $6.20 per trip to run service (NTD 2024).",
+  "n": 3
+ },
+ {
+  "tag": "P",
+  "h": "Benefit-cost follows USDOT's 2026 guidance (<a href=\"https://www.transportation.gov/sites/dot.gov/files/2025-12/Benefit%20Cost%20Analysis%20Guidance%202026%20Update%20%28Final%29.pdf\" target=\"_blank\" rel=\"noopener\">USDOT, December 2025</a>): a 7% real discount rate, up to 30 years of operation after opening, and no dollar value on CO₂. Travel time saved is valued at $21.80 an hour in 2024 dollars, raised to today with CPI-U (BLS), from USDOT's February 2026 webinar citing the guidance's Appendix A (<a href=\"https://www.transportation.gov/sites/dot.gov/files/2026-02/BUILD%20Grants%20Preparing%20a%20Benefit-Cost%20Analysis%202-2-26.pdf\" target=\"_blank\" rel=\"noopener\">USDOT BUILD webinar</a>). As the guidance directs, riders new to transit get half the time saving (the \"rule of half\"), and net running costs are subtracted from benefits, while build costs, spread evenly over the years it takes to build, are the cost side. Metra presets use CMAP's capital cost; a Metra upgrade with no build cost shows no ratio. It counts only travel time, so it understates projects whose value comes from reliability, safety or new development.",
+  "t": "Benefit-cost follows USDOT's 2026 guidance (USDOT, December 2025): a 7% real discount rate, up to 30 years of operation after opening, and no dollar value on CO₂. Travel time saved is valued at $21.80 an hour in 2024 dollars, raised to today with CPI-U (BLS), from USDOT's February 2026 webinar citing the guidance's Appendix A (USDOT BUILD webinar). As the guidance directs, riders new to transit get half the time saving (the \"rule of half\"), and net running costs are subtracted from benefits, while build costs, spread evenly over the years it takes to build, are the cost side. Metra presets use CMAP's capital cost; a Metra upgrade with no build cost shows no ratio. It counts only travel time, so it understates projects whose value comes from reliability, safety or new development.",
+  "n": 2
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Real proposals",
+  "t": "Real proposals",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Presets use each agency's own description. Station spots are placed where the named streets cross on OpenStreetMap, or between neighboring cross streets when a small street isn't on the main-road map; the Red Line Extension's are approximate (CTA names cross streets only). Official costs and riders are shown next to the tool's, and CMAP's numbers are the extra weekday transit trips across the whole region in its 2050 model (<a href=\"https://cmap.illinois.gov/wp-content/uploads/2026-RTP-Regional-Capital-Projects-Benefits-Report-Appendix.pdf\" target=\"_blank\" rel=\"noopener\">CMAP 2026 plan</a>), a different measure from riders on the line.",
+  "t": "Presets use each agency's own description. Station spots are placed where the named streets cross on OpenStreetMap, or between neighboring cross streets when a small street isn't on the main-road map; the Red Line Extension's are approximate (CTA names cross streets only). Official costs and riders are shown next to the tool's, and CMAP's numbers are the extra weekday transit trips across the whole region in its 2050 model (CMAP 2026 plan), a different measure from riders on the line.",
+  "n": 1
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Cars and CO₂",
+  "t": "Cars and CO₂",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "People per car trip: 1.5 (<a href=\"https://www.energy.gov/cmei/vehicles/articles/fotw-1333-march-11-2024-2022-average-number-occupants-trip-household\" target=\"_blank\" rel=\"noopener\">NHTS 2022</a>). A car makes about 400 g of CO₂ a mile from its tailpipe (<a href=\"https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle\" target=\"_blank\" rel=\"noopener\">EPA</a>). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50066.pdf\" target=\"_blank\" rel=\"noopener\">CTA, NTD 2024</a>), 21.7 on Metra (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50118.pdf\" target=\"_blank\" rel=\"noopener\">Metra, NTD 2024</a>), 1.9 on streetcars (<a href=\"https://www.apta.com/wp-content/uploads/APTA-2025-Public-Transportation-Fact-Book.pdf\" target=\"_blank\" rel=\"noopener\">APTA 2025 Fact Book</a>). The CO₂ figures count only those car trips; the new service's own power and fuel isn't subtracted (the details table still shows it). Fleet emissions for Cleaner transit come from Chicago's own fuel and power use in 2024 (<a href=\"https://data.transportation.gov/d/8ehq-7his\" target=\"_blank\" rel=\"noopener\">NTD fuel and energy data</a>): the L used 363.6 million kWh for 69.6 million car-miles (5.2 kWh a car-mile), CTA buses 14.7 million gallons of diesel for 49.6 million miles, CTA's electric buses go 0.28 miles per kWh, Metra burned 26.2 million gallons of diesel and its electric line used 50.6 million kWh. Diesel makes 10.18 kg of CO₂ a gallon (FTA). Power comes from the RFC West grid at 911.4 lb of CO₂ per MWh (<a href=\"https://www.epa.gov/egrid/summary-data\" target=\"_blank\" rel=\"noopener\">EPA eGRID2023</a>). Streetcars use FTA's factor for this grid region, 3.49 kg a mile (<a href=\"https://transit.dot.gov/sites/fta.dot.gov/files/2024-04/Greenhouse-Gas-Emissions-from-Transit-Projects-Programmatic-Assessment-Report-0263.pdf\" target=\"_blank\" rel=\"noopener\">FTA 2024</a>, Table A-12). Cars: about 1.5% of Illinois' 10.23 million registered vehicles are electric (about 156,000, Illinois Secretary of State via the Chicago Tribune, 2025; <a href=\"https://www.autosinnovate.org/resources/insights/il\" target=\"_blank\" rel=\"noopener\">Alliance for Automotive Innovation</a>), at 3.6 miles per kWh (<a href=\"https://afdc.energy.gov/vehicles/electric-emissions-sources\" target=\"_blank\" rel=\"noopener\">DOE</a>), so the average car mile makes a bit less than a gas car's 400 g.",
+  "t": "People per car trip: 1.5 (NHTS 2022). A car makes about 400 g of CO₂ a mile from its tailpipe (EPA). A car trip replaced is as long as the average transit trip: 6.07 mi on the L and 2.47 on CTA buses (CTA, NTD 2024), 21.7 on Metra (Metra, NTD 2024), 1.9 on streetcars (APTA 2025 Fact Book). The CO₂ figures count only those car trips; the new service's own power and fuel isn't subtracted (the details table still shows it). Fleet emissions for Cleaner transit come from Chicago's own fuel and power use in 2024 (NTD fuel and energy data): the L used 363.6 million kWh for 69.6 million car-miles (5.2 kWh a car-mile), CTA buses 14.7 million gallons of diesel for 49.6 million miles, CTA's electric buses go 0.28 miles per kWh, Metra burned 26.2 million gallons of diesel and its electric line used 50.6 million kWh. Diesel makes 10.18 kg of CO₂ a gallon (FTA). Power comes from the RFC West grid at 911.4 lb of CO₂ per MWh (EPA eGRID2023). Streetcars use FTA's factor for this grid region, 3.49 kg a mile (FTA 2024, Table A-12). Cars: about 1.5% of Illinois' 10.23 million registered vehicles are electric (about 156,000, Illinois Secretary of State via the Chicago Tribune, 2025; Alliance for Automotive Innovation), at 3.6 miles per kWh (DOE), so the average car mile makes a bit less than a gas car's 400 g.",
+  "n": 10
+ },
+ {
+  "tag": "P",
+  "h": "Rider surveys on new lines found 10–31% of all riders used to drive: 10% on Las Vegas MAX (<a href=\"https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf\" target=\"_blank\" rel=\"noopener\">FTA 2006</a>, p. v), 25% on LA's Orange Line BRT (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf\" target=\"_blank\" rel=\"noopener\">FTA</a>, p. xvi), about 31% on the Expo Line extension (70% new riders, 44% of them former drivers; <a href=\"https://www.masstransitmag.com/rail/press-release/12257690/\" target=\"_blank\" rel=\"noopener\">Mass Transit</a>). Among riders who were new to transit, 33–78% used to drive (the same three surveys). The tool uses the all-rider share for new rail lines, after taking out riders who switch from nearby L stations, and the new-rider share for riders a BRT or streetcar adds beyond today's buses. It shows the middle of each range.",
+  "t": "Rider surveys on new lines found 10–31% of all riders used to drive: 10% on Las Vegas MAX (FTA 2006, p. v), 25% on LA's Orange Line BRT (FTA, p. xvi), about 31% on the Expo Line extension (70% new riders, 44% of them former drivers; Mass Transit). Among riders who were new to transit, 33–78% used to drive (the same three surveys). The tool uses the all-rider share for new rail lines, after taking out riders who switch from nearby L stations, and the new-rider share for riders a BRT or streetcar adds beyond today's buses. It shows the middle of each range.",
+  "n": 3
+ },
+ {
+  "tag": "P",
+  "h": "Today's CTA and Metra emissions come from the fuel and power use above. <b>Electric CTA buses</b>: every bus battery-powered, using CTA's electric buses' 0.28 miles per kWh; the CTA plans an all-electric fleet by 2040 for $1.8–3.1 billion in added capital (<a href=\"https://www.transitchicago.com/assets/1/6/Charging_Forward_Report_2-10-22_(FINAL).pdf\" target=\"_blank\" rel=\"noopener\">CTA Charging Forward, 2022</a>, pp. 4, 13). It has about 25 electric buses of about 1,900 today (<a href=\"https://chicago.suntimes.com/transportation/2025/11/21/cta-hybrid-bus-federal-grant\" target=\"_blank\" rel=\"noopener\">Sun-Times, 2025</a>). The CTA's own estimate is a 73% cut in bus CO₂; the tool's is smaller because it uses today's grid. <b>Electric Metra</b>: overhead wires on the 419 diesel route miles (measured from Metra's schedule maps), using Metra Electric's energy per car-mile, at Caltrain's $47 million a mile; Metra hasn't priced it. Metra is buying 8 two-car battery trains for $154 million for the Rock Island's Beverly branch (<a href=\"https://wbez.org/environment-public-health/2024/02/22/metra-to-buy-first-battery-powered-trains-as-part-of-effort-to-provide-more-frequent-all-day-service\" target=\"_blank\" rel=\"noopener\">WBEZ, 2024</a>). <b>Clean power grid</b>: Illinois' Climate and Equitable Jobs Act requires fossil power plants to reach zero emissions by 2045 and sets a goal of 100% clean energy by 2050 (<a href=\"https://www.illinois.gov/content/dam/soi/en/web/illinois/iisnewsattachments/23893-climate-and-equitable-jobs-act.pdf\" target=\"_blank\" rel=\"noopener\">State of Illinois</a>); the switch shows that end state, with electric trains, buses and cars at zero CO₂ from power.",
+  "t": "Today's CTA and Metra emissions come from the fuel and power use above. Electric CTA buses: every bus battery-powered, using CTA's electric buses' 0.28 miles per kWh; the CTA plans an all-electric fleet by 2040 for $1.8–3.1 billion in added capital (CTA Charging Forward, 2022, pp. 4, 13). It has about 25 electric buses of about 1,900 today (Sun-Times, 2025). The CTA's own estimate is a 73% cut in bus CO₂; the tool's is smaller because it uses today's grid. Electric Metra: overhead wires on the 419 diesel route miles (measured from Metra's schedule maps), using Metra Electric's energy per car-mile, at Caltrain's $47 million a mile; Metra hasn't priced it. Metra is buying 8 two-car battery trains for $154 million for the Rock Island's Beverly branch (WBEZ, 2024). Clean power grid: Illinois' Climate and Equitable Jobs Act requires fossil power plants to reach zero emissions by 2045 and sets a goal of 100% clean energy by 2050 (State of Illinois); the switch shows that end state, with electric trains, buses and cars at zero CO₂ from power.",
+  "n": 7
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "NITA and the cuts it stopped",
+  "t": "NITA and the cuts it stopped",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "The Northern Illinois Transit Authority Act (<a href=\"https://legiscan.com/IL/bill/SB2111/\" target=\"_blank\" rel=\"noopener\">SB 2111, Public Act 104-0457</a>) passed Oct. 31, 2025, was signed Dec. 16, 2025, and NITA took over from the RTA on Sept. 1, 2026. In March 2025 the agencies warned that without new state money 2026 service would fall about 40% (<a href=\"https://www.cbsnews.com/amp/chicago/news/service-cuts-cta-metra-pace-without-bailout\" target=\"_blank\" rel=\"noopener\">CBS Chicago</a>, <a href=\"https://news.wttw.com/2025/03/21/transit-agencies-release-dire-warning-looming-service-cuts-bus-and-train-lines-overnight\" target=\"_blank\" rel=\"noopener\">WTTW</a>). The tool shows a simple version of that: every CTA and Metra route running 60% as often (each wait 1/0.6 as long) in the midday travel-time network, with jobs within 45 minutes recomputed for every zone in the region. Riders today: 2025 weekday L entries and bus riders, plus Metra boardings at every station (2018 counts scaled to 2025); riders fall 0.5% for each 1% fewer trips (TCRP Report 95, ch. 9), and car trips use the same 10–31% driver share as new lines. Pace isn't in the travel-time network yet. New yearly operating money: about $1.2 billion in 2027 (NITA), $1.5 billion a year (WBEZ). Each plan's running cost after its fares is shown as a share of the $1.2 billion. No published estimate exists for how many riders one fare would add in Chicago, so the tool adds none; the Cook County fare pilot and Toronto's One Fare are described for context only.",
+  "t": "The Northern Illinois Transit Authority Act (SB 2111, Public Act 104-0457) passed Oct. 31, 2025, was signed Dec. 16, 2025, and NITA took over from the RTA on Sept. 1, 2026. In March 2025 the agencies warned that without new state money 2026 service would fall about 40% (CBS Chicago, WTTW). The tool shows a simple version of that: every CTA and Metra route running 60% as often (each wait 1/0.6 as long) in the midday travel-time network, with jobs within 45 minutes recomputed for every zone in the region. Riders today: 2025 weekday L entries and bus riders, plus Metra boardings at every station (2018 counts scaled to 2025); riders fall 0.5% for each 1% fewer trips (TCRP Report 95, ch. 9), and car trips use the same 10–31% driver share as new lines. Pace isn't in the travel-time network yet. New yearly operating money: about $1.2 billion in 2027 (NITA), $1.5 billion a year (WBEZ). Each plan's running cost after its fares is shown as a share of the $1.2 billion. No published estimate exists for how many riders one fare would add in Chicago, so the tool adds none; the Cook County fare pilot and Toronto's One Fare are described for context only.",
+  "n": 3
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "CO₂ 5 to 10 years after opening",
+  "t": "CO₂ 5 to 10 years after opening",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Each line's CO₂ is averaged over years 5 to 10 after it would open (today + its build years: subway 8, elevated 6, streetcar 4, BRT 2, added Metra trains 2, Metra wires 7, like Caltrain). Two things change by then. The grid: CO₂ per kWh follows the EIA's projection for the PJM / Commonwealth Edison region relative to 2025, which falls to about 42–47% of today's in 2035–2040 as coal plants close (<a href=\"https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_54.12.xlsx\" target=\"_blank\" rel=\"noopener\">EIA Annual Energy Outlook 2026, table 54.12</a>, Counterfactual Baseline), applied to today's RFC West rate. Cars: the share of electric cars on the road and gas cars' mileage follow the EIA's national projection (<a href=\"https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_39.xlsx\" target=\"_blank\" rel=\"noopener\">table 39</a>, <a href=\"https://www.eia.gov/outlooks/aeo/supplement/excel/suptab_40.xlsx\" target=\"_blank\" rel=\"noopener\">table 40</a>: 2% of US cars and light trucks electric in 2025, 21% in 2035, 32% in 2040), scaled to Illinois' 1.5% today. Diesel buses and trains don't get cleaner unless you turn on electric buses or Metra under Cleaner transit. Riders are the tool's estimate for a line that has settled in: new lines in the US reached about 92% of their forecasts about two years after opening, on average (<a href=\"https://www.transit.dot.gov/sites/fta.dot.gov/files/2021-08/Predicted-vs-Actual-Impacts-of-CIG-Projects-2020.pdf\" target=\"_blank\" rel=\"noopener\">FTA 2020</a>, Table 3.3-2).",
+  "t": "Each line's CO₂ is averaged over years 5 to 10 after it would open (today + its build years: subway 8, elevated 6, streetcar 4, BRT 2, added Metra trains 2, Metra wires 7, like Caltrain). Two things change by then. The grid: CO₂ per kWh follows the EIA's projection for the PJM / Commonwealth Edison region relative to 2025, which falls to about 42–47% of today's in 2035–2040 as coal plants close (EIA Annual Energy Outlook 2026, table 54.12, Counterfactual Baseline), applied to today's RFC West rate. Cars: the share of electric cars on the road and gas cars' mileage follow the EIA's national projection (table 39, table 40: 2% of US cars and light trucks electric in 2025, 21% in 2035, 32% in 2040), scaled to Illinois' 1.5% today. Diesel buses and trains don't get cleaner unless you turn on electric buses or Metra under Cleaner transit. Riders are the tool's estimate for a line that has settled in: new lines in the US reached about 92% of their forecasts about two years after opening, on average (FTA 2020, Table 3.3-2).",
+  "n": 4
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "CO₂ in the long run",
+  "t": "CO₂ in the long run",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Over time, transit changes where people live and work: more homes and jobs near stations, shorter trips, fewer cars. Studies measure this as a multiplier on the driving a line replaces directly. APTA's national default is 1.9 (<a href=\"https://onlinepubs.trb.org/onlinepubs/tcrp/docs/TCRPJ-11Task3-FR.pdf\" target=\"_blank\" rel=\"noopener\">Bailey et al. 2008, for TCRP</a>); a 2024 study of household travel surveys in 28 US regions found 6.1–9.5, median 6.59, higher where transit systems are bigger (<a href=\"https://link.springer.com/article/10.1007/s11116-024-10542-0\" target=\"_blank\" rel=\"noopener\">Sabouri, Ewing &amp; Kalantari, Transportation, 2024</a>). The long-run figure uses 1.9 at the low end and 6.59 at the high end. It describes regions decades after building transit, and only happens if zoning allows homes near stations.",
+  "t": "Over time, transit changes where people live and work: more homes and jobs near stations, shorter trips, fewer cars. Studies measure this as a multiplier on the driving a line replaces directly. APTA's national default is 1.9 (Bailey et al. 2008, for TCRP); a 2024 study of household travel surveys in 28 US regions found 6.1–9.5, median 6.59, higher where transit systems are bigger (Sabouri, Ewing & Kalantari, Transportation, 2024). The long-run figure uses 1.9 at the low end and 6.59 at the high end. It describes regions decades after building transit, and only happens if zoning allows homes near stations.",
+  "n": 2
+ },
+ {
+  "tag": "LI",
+  "h": "Lines, stations and trains: <a href=\"https://www.transitchicago.com/downloads/sch_data/google_transit.zip\" target=\"_blank\" rel=\"noopener\">CTA</a> and <a href=\"https://schedules.metrarail.com/gtfs/schedule.zip\" target=\"_blank\" rel=\"noopener\">Metra</a> schedules for a weekday (2026-11-04).",
+  "t": "Lines, stations and trains: CTA and Metra schedules for a weekday (2026-11-04).",
+  "n": 2
+ },
+ {
+  "tag": "LI",
+  "h": "People: 2020 Census blocks (<a href=\"https://www2.census.gov/geo/tiger/TIGER2020/TABBLOCK20/\" target=\"_blank\" rel=\"noopener\">Census TIGER</a>), 8.4 million people in Cook and the five collar counties.",
+  "t": "People: 2020 Census blocks (Census TIGER), 8.4 million people in Cook and the five collar counties.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "Jobs: Census LEHD LODES 2022 (<a href=\"https://lehd.ces.census.gov/data/\" target=\"_blank\" rel=\"noopener\">LEHD</a>), 4.1 million jobs.",
+  "t": "Jobs: Census LEHD LODES 2022 (LEHD), 4.1 million jobs.",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "Streets, expressways and rivers: © OpenStreetMap contributors (ODbL), for snapping, crossings and the basic map.",
+  "t": "Streets, expressways and rivers: © OpenStreetMap contributors (ODbL), for snapping, crossings and the basic map.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "L riders: CTA station entries by day, 2025 (<a href=\"https://data.cityofchicago.org/d/5neh-572f\" target=\"_blank\" rel=\"noopener\">Chicago Data Portal</a>). Bus riders: CTA ridership by route, 2025 (<a href=\"https://data.cityofchicago.org/d/jyb9-n7fm\" target=\"_blank\" rel=\"noopener\">Chicago Data Portal</a>).",
+  "t": "L riders: CTA station entries by day, 2025 (Chicago Data Portal). Bus riders: CTA ridership by route, 2025 (Chicago Data Portal).",
+  "n": 2
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Map layers",
+  "t": "Map layers",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "The little train on the Brown Line is an Easter egg: four real-size cars (a 3D model made in Blender once you zoom in) running Kimball to the Loop and back at 1.5 times real speed (17 mph average). Zoom in on the Brown Line to find it. It doesn't affect any number.",
+  "t": "The little train on the Brown Line is an Easter egg: four real-size cars (a 3D model made in Blender once you zoom in) running Kimball to the Loop and back at 1.5 times real speed (17 mph average). Zoom in on the Brown Line to find it. It doesn't affect any number.",
+  "n": 0
+ },
+ {
+  "tag": "P",
+  "h": "Commuter rail: Metra and the South Shore Line (NICTD schedule, <a href=\"https://mobilitydatabase.org/feeds/gtfs/mdb-585\" target=\"_blank\" rel=\"noopener\">Mobility Database</a>). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.",
+  "t": "Commuter rail: Metra and the South Shore Line (NICTD schedule, Mobility Database). The South Shore Line is shown for context; the tool's numbers use the CTA and Metra. People and jobs per square mile: 2020 Census blocks and 2022 LEHD jobs, smoothed over about 400 m.",
+  "n": 1
+ },
+ {
+  "tag": "SUMMARY",
+  "h": "Assumptions (not measured)",
+  "t": "Assumptions (not measured)",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit, and minutes spent walking and waiting count double (716 puts that weight at 2–3×; we use the low end). Only trips the line makes faster count (and, for a BRT or streetcar, trips that get slower because it replaces the bus). Places within a mile of any station on an L or Metra line the new line connects to are counted too, every fourth one weighted up, so a crosstown line gets credit for trips like Blue Line to Orange Line that no longer go through the Loop. Each commute is 2 trips a day; 16% of workers work from home; other trips scale from today's 1.12 million weekday riders. Other trips riding through the area without starting or ending in those places aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.",
+  "t": "New riders come from a trip model (v54): for every half-mile square within 1.5 miles of a new line's stations, where its workers commute and where its jobs' workers live (a gravity model fit to Census LODES 2022 home-to-work flows), how long each trip takes by transit today and with the line (the midday network, door to door), and by car (5 minutes to park plus 1.3 × the straight-line distance at 30–45 km/h). Whether someone takes transit is a logit fit to how people get to work in each census tract (ACS 2019–2023) and to the share by county of work (CTPP via MPC, scaled to today); the time effect is set at −0.028 per minute (NCHRP Report 716's typical value), not fit, and minutes spent walking and waiting count double (716 puts that weight at 2–3×; we use the low end). Only trips the line makes faster count (and, for a BRT or streetcar, trips that get slower because it replaces the bus). Places within a mile of any station on an L or Metra line the new line connects to are counted too, every fourth one weighted up, so a crosstown line gets credit for trips like Blue Line to Orange Line that no longer go through the Loop. Each commute is 2 trips a day; 16% of workers work from home; other trips scale from today's 1.12 million weekday riders. Other trips riding through the area without starting or ending in those places aren't counted, and the minutes from A to B are assumed the same as B to A. People switching to transit were in cars with 1.1 to 1.25 people.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Bus lanes: where the lane runs, buses ride 15% faster (studies find 5–25%: <a href=\"https://www.movemn.org/wp-content/uploads/2021/05/Boost-The-Bus_Technical-Fact-Sheet.pdf\" target=\"_blank\" rel=\"noopener\">Move Minnesota, citing UCLA ITS 2019</a>), all day; a bus ride between two stops counts as on the lane when both stops are within 45 m of it and it runs along it. Cost $100,000–$500,000 a mile (same source). Bus hours saved = minutes saved × midday buses an hour × 18 hours, at $198 an hour (NTD 2024).",
+  "t": "Bus lanes: where the lane runs, buses ride 15% faster (studies find 5–25%: Move Minnesota, citing UCLA ITS 2019), all day; a bus ride between two stops counts as on the lane when both stops are within 45 m of it and it runs along it. Cost $100,000–$500,000 a mile (same source). Bus hours saved = minutes saved × midday buses an hour × 18 hours, at $198 an hour (NTD 2024).",
+  "n": 1
+ },
+ {
+  "tag": "LI",
+  "h": "Starting from scratch: switched-off routes are removed from every trip. Your network's riders = today's 1.12 million × the trips your network carries ÷ the trips today's carries, both from the trip model, counting only trips faster than walking, on every fourth half-mile square near a stop. The model holds people's homes, jobs and car ownership fixed, so a city with far less transit would in time look different too.",
+  "t": "Starting from scratch: switched-off routes are removed from every trip. Your network's riders = today's 1.12 million × the trips your network carries ÷ the trips today's carries, both from the trip model, counting only trips faster than walking, on every fourth half-mile square near a stop. The model holds people's homes, jobs and car ownership fixed, so a city with far less transit would in time look different too.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within 250 m.",
+  "t": "A 10-minute walk is ½ mile, straight line. Bus transfers count stops within ¼ mile; an L transfer is within 250 m.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Service runs 20 hours a day (Metra upgrades: 18), at the chosen frequency except the last 5 hours, when trains and buses come half as often.",
+  "t": "Service runs 20 hours a day (Metra upgrades: 18), at the chosen frequency except the last 5 hours, when trains and buses come half as often.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.",
+  "t": "When a new line extends past one of today's L terminals, CTA buses that stop within 400 m of the old terminal and within a mile of a new station are moved to that station. They bring riders who now board there; those riders are counted as switching stations, not as new riders, so they don't change car trips or CO₂.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": " A year is 328 average weekdays, the ratio of 2025 L rides to an average 2025 weekday, used for riders and service on every mode, Metra included.",
+  "t": "A year is 328 average weekdays, the ratio of 2025 L rides to an average 2025 weekday, used for riders and service on every mode, Metra included.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "A new station within 400 m of a Metra station counts as a transfer.",
+  "t": "A new station within 400 m of a Metra station counts as a transfer.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "BRT and streetcar lines replace the CTA buses that run along them; the buses' riders, hours and emissions move to the new line.",
+  "t": "BRT and streetcar lines replace the CTA buses that run along them; the buses' riders, hours and emissions move to the new line.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run 4 cars, and today's Metra trains average 6 for the electric-train CO₂ savings.",
+  "t": "New L trains are sized to riders: 4 cars under 20,000 riders a weekday, 6 under 50,000, otherwise 8 (the CTA runs 4- to 8-car trains). Added Metra trains run 4 cars, and today's Metra trains average 6 for the electric-train CO₂ savings.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "CO₂ is the car trips a line takes off the road (plus diesel replaced by wires on Metra); the power and fuel to run new service isn't subtracted.",
+  "t": "CO₂ is the car trips a line takes off the road (plus diesel replaced by wires on Metra); the power and fuel to run new service isn't subtracted.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Metra's diesel and electric fuel per car-mile apply to new or added trains too; revenue miles stand in for all miles.",
+  "t": "Metra's diesel and electric fuel per car-mile apply to new or added trains too; revenue miles stand in for all miles.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "The surveyed shares of riders who used to drive apply to Chicago lines too.",
+  "t": "The surveyed shares of riders who used to drive apply to Chicago lines too.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Riders on a new L line are people entering its stations, one way; the trip back enters at another station, so cars, fares and time saved count 2 trips per rider. A rail rider's car trip would have been at least the station's straight-line distance to the Loop × 1.2 (road miles), or the L average of 6.07 miles if longer.",
+  "t": "Riders on a new L line are people entering its stations, one way; the trip back enters at another station, so cars, fares and time saved count 2 trips per rider. A rail rider's car trip would have been at least the station's straight-line distance to the Loop × 1.2 (road miles), or the L average of 6.07 miles if longer.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Cost per ride spreads the build cost evenly over 30 years with no interest.",
+  "t": "Cost per ride spreads the build cost evenly over 30 years with no interest.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Opening years assume work is approved in 2027; years from approval to opening come from similar projects (a new station: 3, from Morgan and Damen's construction).",
+  "t": "Opening years assume work is approved in 2027; years from approval to opening come from similar projects (a new station: 3, from Morgan and Damen's construction).",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "A trip that rides a line extension and then the line it extends counts a wait at the old end of the line, though in practice it would be the same train.",
+  "t": "A trip that rides a line extension and then the line it extends counts a wait at the old end of the line, though in practice it would be the same train.",
+  "n": 0
+ },
+ {
+  "tag": "LI",
+  "h": "Not modeled: riders on buses that cross a new rail line switching to it, slower trips from closely spaced stations, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.",
+  "t": "Not modeled: riders on buses that cross a new rail line switching to it, slower trips from closely spaced stations, new homes and jobs a line attracts over time, fare changes, crowding, and park-and-ride.",
+  "n": 0
+ }
+]
