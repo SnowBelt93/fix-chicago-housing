@@ -337,7 +337,7 @@ window.scMap = {
     document.body.appendChild(d);
   }
   // Pages translated in full; on any other page a reader in another language gets one short note (once per page per visit).
-  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html"];
+  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/"];
   function partial(){
     if (lang === "en" || FULL.includes(location.pathname) || document.querySelector(".sc-err404")) return;
     const k = "sc-part-" + location.pathname; try { if (sessionStorage.getItem(k)) return; } catch (e) {}

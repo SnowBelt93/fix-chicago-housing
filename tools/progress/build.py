@@ -242,9 +242,18 @@ document.querySelectorAll("[data-until]").forEach(e => {{ const d = Math.ceil((n
 </body>
 </html>
 '''
+ART = {k: os.path.exists(os.path.join(ROOT, 'shape', 'art', 'progress', k + '.webp')) for k in ('homes', 'zoning', 'affordable', 'rents', 'transit', 'streets', 'capital', 'projects', 'springfield', 'decisions')}
+def art(slug):
+    """The section's clay picture beside the headline (tools/art/learn2.py p_<slug>), or nothing."""
+    if not ART.get(slug): return ''
+    from PIL import Image
+    w, h = Image.open(os.path.join(ROOT, 'shape', 'art', 'progress', slug + '.webp')).size
+    return f'<img class="sc-pgart" src="/shape/art/progress/{slug}.webp" width="{w}" height="{h}" alt="" decoding="async">'
 def top(slug, name, h1, thru):
     PINFO.setdefault(slug, {}).update(name=name, thru=thru)
-    return f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> {name}</p><h1>{h1}</h1><p class="fine">{thru}</p></div>'
+    t = f'<p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> {name}</p><h1>{h1}</h1><p class="fine">{thru}</p>'
+    a = art(slug)
+    return f'<div class="top sc-pghead"><div>{t}</div>{a}</div>' if a else f'<div class="top">{t}</div>'
 def bottom(slug, note, src):
     PINFO.setdefault(slug, {}).update(src=src)
     i = [s for s, _ in SECTIONS].index(slug); prv = SECTIONS[i - 1] if i else None; nxt = SECTIONS[i + 1] if i + 1 < len(SECTIONS) else None
@@ -828,8 +837,8 @@ def decision(D):
     li = ''.join(f'<li data-date="{iso}"><span class="when">{d}</span><span class="what">{t}</span><span class="st"></span></li>' for iso, d, t in D['dates'])
     sides = ''.join(f'<section class="card pad"><h2>{t}</h2><ul class="dot">' + ''.join(f'<li>{x}</li>' for x in L) + '</ul></section>' for t, L in D['sides'])
     weigh = ''.join(f'<a class="card wy" href="{u}"' + (' target="_blank" rel="noopener"' if u.startswith('http') else '') + f'><b>{t} ›</b><span>{x}</span></a>' for t, u, x in D['weigh'])
-    body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> <a href="/progress/decisions/">Decisions</a></p><h1>{D["h1"]}</h1>'
-            f'<p class="fine">{D["what"]}: <span data-until="{D["vote"]}"></span> · checked {D["checked"]}</p></div>'
+    body = (f'<div class="top sc-pghead"><div><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> <a href="/progress/decisions/">Decisions</a></p><h1>{D["h1"]}</h1>'
+            f'<p class="fine">{D["what"]}: <span data-until="{D["vote"]}"></span> · checked {D["checked"]}</p></div>{art("decisions")}</div>'
             + tiles(D['tiles'], cols=len(D['tiles']))
             + card('Who decides', '', f'<p class="sub">{D["who"]}</p>')
             + f'<div class="strip c2">{sides}</div>'
@@ -840,7 +849,7 @@ def decision(D):
 def decisions_index():
     cards = ''.join(f'<a class="card dec" href="/progress/decisions/{D["slug"]}/"><span class="dt"><span>{D["mon"]}</span><b>{D["d"]}</b></span><span class="tx"><b>{D["name"]}</b><span>{D["card"]}</span></span><span class="go" data-until="{D["vote"]}"></span></a>' for D in sorted(DECISIONS, key=lambda D: D['vote']))
     h1 = 'Votes coming up on Chicago’s money, homes and transit.'
-    body = (f'<div class="top"><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>{h1}</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>'
+    body = (f'<div class="top sc-pghead"><div><p class="eyebrow"><a href="/progress/">Progress</a> <span aria-hidden="true">›</span> Decisions</p><h1>{h1}</h1><p class="fine">Each page says what’s on the table, who decides, the dates and how to weigh in.</p></div>{art("decisions")}</div>'
             f'<div class="strip c2">{cards}</div><p class="fine note">Bills in Springfield have their own page: <a href="/progress/springfield/">In Springfield ›</a></p>')
     return page('decisions', 'Decisions coming up', h1, body)
 
@@ -994,6 +1003,8 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 .pg .lede{margin:0;font-size:15.5px;line-height:23px;color:var(--sc-ink2);max-width:860px}
 .pg .call{margin:0;font-size:14.5px;line-height:21px;color:var(--sc-ink2);background:#f6f7f9;border-radius:12px;padding:12px 14px}
 .pg .note{max-width:980px}.pg .src{max-width:980px}
+.pg .top.sc-pghead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,360px);gap:28px;align-items:center}.pg .top.sc-pghead .sc-pgart{max-height:200px;width:auto;max-width:100%;justify-self:end}
+@media (max-width:760px){.pg .top.sc-pghead{grid-template-columns:minmax(0,1fr);gap:4px}.pg .top.sc-pghead .sc-pgart{max-height:130px;justify-self:start}}
 .pg .eyebrow{margin:0;font-size:14px;font-weight:600;color:var(--sc-mute)}.pg .eyebrow a{color:var(--sc-navy);text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(43,93,160,.45)}.pg .eyebrow a:hover{text-decoration-color:currentColor}
 .pg .top{display:flex;flex-direction:column;gap:8px}
 .pg .chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--sc-line);color:var(--sc-ink2);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:700;white-space:nowrap;align-self:flex-start}
