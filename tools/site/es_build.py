@@ -10,7 +10,7 @@ norm = lambda s: re.sub(r'\s+', ' ', s).strip()
 def load(d):
     sys.path.insert(0, d)
     for k in list(sys.modules):
-        if k in ('core', 'home', 'wards', 'progress', 'about'): del sys.modules[k]
+        if k in ('core', 'home', 'wards', 'progress', 'about', 'grants', 'misc'): del sys.modules[k]
     mods = []
     for p in sorted(glob.glob(os.path.join(d, '*.py'))):
         spec = importlib.util.spec_from_file_location(os.path.basename(p)[:-3], p); m = importlib.util.module_from_spec(spec); sys.modules[spec.name] = m; spec.loader.exec_module(m); mods.append(m)

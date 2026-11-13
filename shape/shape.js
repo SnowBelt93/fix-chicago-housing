@@ -299,9 +299,9 @@ window.scMap = {
    Anything without a translation stays in English. New text added by a page later (a simulator's results, a pop-up) is
    translated as it appears. Elements marked translate="no" (names, addresses, codes) are left alone. */
 (function(){
-  const LANGS = {en: {n: "English", c: "EN", html: "en"}, es: {n: "Español", c: "ES", html: "es", offer: "Este sitio también está en español.", yes: "Leer en español", no: "No, gracias"},
-    zh: {n: "中文", c: "中文", html: "zh-Hans", offer: "本网站也有中文版。", yes: "阅读中文版", no: "不用了"},
-    pl: {n: "Polski", c: "PL", html: "pl", offer: "Ta strona jest też po polsku.", yes: "Czytaj po polsku", no: "Nie, dziękuję"}};
+  const LANGS = {en: {n: "English", c: "EN", html: "en"}, es: {n: "Español", c: "ES", html: "es", offer: "Este sitio también está en español.", yes: "Leer en español", no: "No, gracias", part: "Esta página solo está traducida en parte. El resto sigue en inglés.", ok: "Entendido"},
+    zh: {n: "中文", c: "中文", html: "zh-Hans", offer: "本网站也有中文版。", yes: "阅读中文版", no: "不用了", part: "本页面只翻译了一部分，其余仍为英文。", ok: "知道了"},
+    pl: {n: "Polski", c: "PL", html: "pl", offer: "Ta strona jest też po polsku.", yes: "Czytaj po polsku", no: "Nie, dziękuję", part: "Ta strona jest przetłumaczona tylko częściowo. Reszta jest po angielsku.", ok: "Rozumiem"}};
   const KEY = "sc-lang", qs = new URLSearchParams(location.search).get("lang");
   let lang = "en"; try { if (LANGS[qs]) localStorage.setItem(KEY, qs); lang = localStorage.getItem(KEY) || "en"; } catch (e) { if (LANGS[qs]) lang = qs; }
   if (!LANGS[lang]) lang = "en";
@@ -336,7 +336,17 @@ window.scMap = {
     d.children[1].onclick = () => { done(); window.scSetLang(want); }; d.children[2].onclick = done;
     document.body.appendChild(d);
   }
-  function go(){ button(); offer(); if (lang !== "en") translate(); }
+  // Pages translated in full; on any other page a reader in another language gets one short note (once per page per visit).
+  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html"];
+  function partial(){
+    if (lang === "en" || FULL.includes(location.pathname) || document.querySelector(".sc-err404")) return;
+    const k = "sc-part-" + location.pathname; try { if (sessionStorage.getItem(k)) return; } catch (e) {}
+    const L = LANGS[lang], d = document.createElement("div"); d.className = "sc-langoffer"; d.setAttribute("role", "status"); d.setAttribute("translate", "no");
+    d.innerHTML = '<span></span><button type="button" class="sc-btn"></button>'; d.children[0].textContent = L.part; d.children[1].textContent = L.ok;
+    d.children[1].onclick = () => { try { sessionStorage.setItem(k, "1"); } catch (e) {} d.remove(); };
+    document.body.appendChild(d); setTimeout(() => d.isConnected && d.children[1].click(), 9000);
+  }
+  function go(){ button(); offer(); partial(); if (lang !== "en") translate(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(go, 0)); else setTimeout(go, 0);
   if (lang === "en") return;
   document.documentElement.lang = LANGS[lang].html; document.documentElement.classList.add("sc-" + lang, "sc-tr");

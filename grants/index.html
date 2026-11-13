@@ -155,7 +155,7 @@ details.no .prog{opacity:.75}
   </fieldset>
   <fieldset class="checks" id="buyq"><label><input type="checkbox" id="first"> I haven't owned a home in the last three years</label></fieldset>
   </div>
-  <p class="note">Income limits use HUD's <span id="limYr">current income limits</span> for the Chicago area. Programs check your papers themselves; this only points you to the right ones.</p>
+  <p class="note"><span id="limYr">Income limits use HUD's current income limits for the Chicago area.</span> <span>Programs check your papers themselves; this only points you to the right ones.</span></p>
 </form>
 
 <section aria-live="polite">
@@ -239,21 +239,22 @@ function remindIcs(p){
   const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Shape Chicago//Grants and help//EN", "BEGIN:VEVENT", `UID:${p.id}-${day}@shapechicago`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
     `DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${day2}`, `SUMMARY:Check if ${p.name} is open`, `DESCRIPTION:${(txt + " " + p.link).replace(/[,;]/g, "\\$&")}`, `URL:${p.link}`, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([ics], {type:"text/calendar"})); a.download = p.id + "-reminder.ics"; document.body.appendChild(a); a.click(); a.remove();
-  toast("Reminder for " + t.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}));
+  toast("Reminder set for " + t.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"}));
 }
 function card(p, res, s){
   const st = p.status || ["", ""], old = (Date.now() - new Date(p.checked + "T12:00:00").getTime()) / 864e5 > 90;
   const src = (p.src || []).map(x => `<a href="${esc(x[1])}" target="_blank" rel="noopener">${esc(x[0])}</a>`).join(" · ");
   const ok = res.filter(r => r[0] === 2).map(r => r[1]), mb = res.filter(r => r[0] === 1).map(r => r[1]), no = res.filter(r => r[0] === 0).map(r => r[1]);
-  const one = s === 0 ? `<p class="one n"><b>Doesn't fit:</b> ${esc(no.join("; "))}</p>` : s === 1 ? `<p class="one m"><b>To check:</b> ${esc(mb.join("; "))}</p>` : ok.length ? `<p class="one y"><b>Fits:</b> ${esc(ok.slice(0, 3).join(" · "))}</p>` : "";
+  const spans = (L, sep) => L.map(x => `<span>${esc(x)}</span>`).join(sep);   // one text node per reason, so translations match whole phrases
+  const one = s === 0 ? `<p class="one n"><b>Doesn't fit:</b> ${spans(no, "; ")}</p>` : s === 1 ? `<p class="one m"><b>To check:</b> ${spans(mb, "; ")}</p>` : ok.length ? `<p class="one y"><b>Fits:</b> ${spans(ok.slice(0, 3), " · ")}</p>` : "";
   const on = LIST.has(p.id), open = OPENED.has(p.id);
   return `<article class="prog${on ? " starred" : ""}" data-id="${esc(p.id)}"><div class="top"><button type="button" class="star" data-star="${esc(p.id)}" aria-pressed="${on}" title="${on ? "Remove from my list" : "Add to my list"}" aria-label="${on ? "Remove from my list" : "Add to my list"}: ${esc(p.name)}">${on ? "★" : "☆"}</button>
     <div><p class="amt">${esc(p.short || p.amount)}</p><h3>${esc(p.name)}</h3><p class="by">${esc(p.by)}</p></div><span class="pill ${st[0]}">${STATUS[st[0]] || ""}</span></div>
     ${one}
     <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">How to apply</a><button type="button" class="ghost" data-more="${esc(p.id)}" aria-expanded="${open}">${open ? "Less" : "Details"}</button>${p.remind && st[0] !== "open" ? `<button type="button" class="ghost" data-remind="${esc(p.id)}">Remind me when it opens</button>` : ""}</div>
-    <div class="more" ${open ? "" : "hidden"}><p><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
-      <p>${esc(st[1])}</p>${p.note ? `<p class="fine">${esc(p.note)}</p>` : ""}
-      <p class="srcs">Source: ${src} · <span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}${old ? " · may be out of date" : ""}</span></p></div></article>`;
+    <div class="more" ${open ? "" : "hidden"}>${window.scLang && scLang !== "en" ? `<p class="fine">Program details come from each agency in English.</p>` : ""}<p lang="en" translate="no"><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
+      <p lang="en" translate="no">${esc(st[1])}</p>${p.note ? `<p class="fine" lang="en" translate="no">${esc(p.note)}</p>` : ""}
+      <p class="srcs"><span>Source:</span> <span lang="en" translate="no">${src}</span> · <span class="${old ? "stale" : ""}">Checked ${new Date(p.checked + "T12:00:00").toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})}</span>${old ? " · <span>may be out of date</span>" : ""}</p></div></article>`;
 }
 function render(){
   const A = answers(), roles = [...SEL], has = r => SEL.has(r);
@@ -275,20 +276,19 @@ function render(){
   const srt = arr => arr.sort((a, b) => key(a) - key(b));
   const yes = srt(scored.filter(x => x.s === 2)), may = srt(scored.filter(x => x.s === 1)), no = srt(scored.filter(x => x.s === 0));
   const sumMax = yes.filter(x => x.p.max && ["grant", "forgivable"].includes(x.p.form)).reduce((t, x) => t + x.p.max, 0);
-  const whoTxt = ONLYLIST ? "on your list" : "for " + roles.map(r => WHO[r]).join(" and ");
   let h = listBar() + filterBar();
-  h += `<div class="sum"><h2>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</h2><span>${may.length ? may.length + " more to check · " : ""}${all} programs ${esc(whoTxt)}</span></div>`;
+  h += `<div class="sum"><h2>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</h2><span>${may.length ? `<span>${may.length} more to check</span> · ` : ""}<span>${all} programs ${ONLYLIST ? "on your list" : "checked"}</span></span></div>`;
   h += sumMax ? `<p class="total">Grants you likely fit list up to <b>${money(sumMax)}</b> between them. Some can't be combined; each program decides.</p>` : `<p class="total"></p>`;
   h += yes.map(x => card(x.p, x.res, x.s)).join("") || '<p class="empty">Nothing fits every answer yet. Check the ones below.</p>';
   if (may.length) h += `<p class="grp">Might fit: one more thing to check</p>` + may.map(x => card(x.p, x.res, x.s)).join("");
   if (no.length) h += `<details class="no"><summary>Doesn't fit your answers (${no.length})</summary>${no.map(x => card(x.p, x.res, x.s)).join("")}</details>`;
   $("out").innerHTML = h; bindOut(); writeUrl();
   $("gbar").hidden = false; document.body.classList.add("hasbar");
-  $("gbarTxt").innerHTML = `<b>${yes.length}</b> likely fit${may.length ? ` · ${may.length} to check` : ""}`;
+  $("gbarTxt").innerHTML = `<span>${yes.length} likely fit${yes.length === 1 ? "s" : ""}</span>${may.length ? ` · <span>${may.length} more to check</span>` : ""}`;
 }
 function listBar(){
   if (!LIST.size) return "";
-  return `<div class="mylist"><b>★ My list: ${LIST.size} program${LIST.size > 1 ? "s" : ""}</b><button type="button" data-l="view">${ONLYLIST ? "Show everything" : "Show only my list"}</button><button type="button" data-l="print">Print</button><button type="button" data-l="copy">Copy link</button><button type="button" data-l="clear">Clear</button></div>`;
+  return `<div class="mylist"><b>★ <span>My list: ${LIST.size} program${LIST.size > 1 ? "s" : ""}</span></b><button type="button" data-l="view">${ONLYLIST ? "Show everything" : "Show only my list"}</button><button type="button" data-l="print">Print</button><button type="button" data-l="copy">Copy link</button><button type="button" data-l="clear">Clear</button></div>`;
 }
 function filterBar(){
   return `<div class="bar"><div class="chips" role="group" aria-label="Kind of help">${Object.entries(KINDS).map(([k, [lab]]) => `<button type="button" data-kind="${k}" aria-pressed="${KIND === k}">${lab}</button>`).join("")}</div>
@@ -323,7 +323,7 @@ async function onPlace(P){
   const layers = {tif: (G.tif || [])[0] || false, qct: !!(G.qct26 || G.qct27), oz: !!F.oz, hist: F.nr ? F.nr[0][0] : false};
   PLACE = {...P, layers}; window.scSetAddr && scSetAddr(P.label);
   const bits = [P.ward ? "Ward " + P.ward : null, layers.tif ? "TIF district: " + layers.tif : "Not in a TIF district", layers.oz ? "Opportunity Zone" : null, layers.qct ? "Qualified Census Tract" : null, layers.hist ? "National Register: " + layers.hist : null].filter(Boolean);
-  $("place").textContent = bits.join(" · ");
+  $("place").innerHTML = bits.map(b => `<span>${esc(b)}</span>`).join(" · ");
   render();
 }
 /* deal-check layers (TIF, NOF, QCT) for a point, from grants/data/g tiles (tools/grants/build.py) */
@@ -338,7 +338,7 @@ async function fetchG(lon, lat){
 }
 (async function(){
   [DATA, LIM] = await Promise.all([fetch("data/programs.json").then(r => r.json()), fetch("data/limits.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
-  if (LIM) $("limYr").textContent = LIM.label;
+  if (LIM) $("limYr").textContent = `Income limits use HUD's ${LIM.label} for the Chicago area.`;
   $("checkedNote").innerHTML = `Programs last checked ${new Date(DATA.checked + "T12:00:00").toLocaleDateString("en-US", {month:"long", day:"numeric", year:"numeric"})}. Something wrong or missing? <a href="#feedback" onclick="event.preventDefault(); window.scFeedback && window.scFeedback()">Tell us</a>.`;
   const setRole = (r, on) => { on ? SEL.add(r) : SEL.delete(r); const b = document.querySelector(`#role [data-r="${r}"]`); b && b.setAttribute("aria-pressed", on); };
   document.querySelectorAll("#role button").forEach(b => b.onclick = () => { setRole(b.dataset.r, !SEL.has(b.dataset.r)); ONLYLIST = false; render(); });
