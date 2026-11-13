@@ -333,3 +333,10 @@ html.sc-zh body{word-break:normal;line-break:strict}
 .sc-atl a[aria-current="page"]{background:var(--sc-navy);color:#fff}
 @media (max-width:420px){ .sc-atl{width:100%} .sc-atl a{flex:1;justify-content:center;padding:7px 6px;font-size:13px;text-align:center} }
 @media print{ .sc-atabs{display:none} }
+
+/* bigger tap areas found in the Nov. 12 sweep (links in tables, Springfield bill numbers, deal check assumption rows) */
+@media (pointer:coarse){
+  td a,.pg .bid{display:inline-block;padding:10px 0;margin:-10px 0}
+  .prow input{min-height:40px} .prow .rst{width:40px;height:40px}
+  .tbtn{min-height:40px}
+}
