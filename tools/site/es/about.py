@@ -4,8 +4,8 @@ T = {
     'Shape Chicago is a free, independent site about how Chicago builds homes, runs transit and spends its money. It counts what actually happens, explains why, and lets you test a change before City Hall votes on it.':
         'Shape Chicago es un sitio gratuito e independiente sobre cómo Chicago construye vivienda, opera su transporte y gasta su dinero. Cuenta lo que de verdad pasa, explica por qué y te deja probar un cambio antes de que el Ayuntamiento lo vote.',
     'Who makes it': 'Quién lo hace',
-    "It's built by a Chicago development and housing professional, with AI coding tools doing the programming. It started as a side project to answer one question: why doesn't Chicago build more homes? It grew from there.":
-        'Lo hace un profesional de desarrollo y vivienda de Chicago, con herramientas de inteligencia artificial que escriben el código. Empezó como un proyecto personal para responder una pregunta: ¿por qué Chicago no construye más vivienda? Y creció desde ahí.',
+    "It's built by a Chicago development and housing professional. It started as a side project to answer one question: why doesn't Chicago build more homes? It grew from there.":
+        'Lo hace un profesional de desarrollo y vivienda de Chicago. Empezó como un proyecto personal para responder una pregunta: ¿por qué Chicago no construye más vivienda? Y creció desde ahí.',
     "It's independent and fan-made: not affiliated with the City of Chicago, the CTA, Metra, Pace, any alderperson, campaign or party, or the builder's employer.":
         'Es independiente y hecho por un aficionado: no tiene relación con la Ciudad de Chicago, la CTA, Metra, Pace, ningún concejal, campaña o partido, ni con el empleador de quien lo hace.',
     "What's here": 'Qué hay aquí', 'How the numbers are handled': 'Cómo manejamos los números',

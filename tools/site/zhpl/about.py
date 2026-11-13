@@ -5,9 +5,9 @@ T = {
         ('Shape Chicago 是一个免费的独立网站，关注芝加哥如何建造住房、运营公共交通以及如何花钱。它统计真实发生的事情，解释原因，并让你在市政厅投票之前先试试一项改变。',
          'Shape Chicago to bezpłatna, niezależna strona o tym, jak Chicago buduje mieszkania, prowadzi transport publiczny i wydaje pieniądze. Liczy to, co naprawdę się dzieje, wyjaśnia dlaczego i pozwala sprawdzić zmianę, zanim ratusz nad nią zagłosuje.'),
     'Who makes it': ('谁在做这个网站', 'Kto to robi'),
-    "It's built by a Chicago development and housing professional, with AI coding tools doing the programming. It started as a side project to answer one question: why doesn't Chicago build more homes? It grew from there.":
-        ('网站由一位芝加哥的开发和住房领域从业者制作，编程由 AI 编程工具完成。它最初是一个业余项目，想回答一个问题：为什么芝加哥不多建些住房？后来逐渐发展起来。',
-         'Tworzy ją specjalista od inwestycji i mieszkalnictwa z Chicago, a programowaniem zajmują się narzędzia AI. Zaczęło się od projektu po godzinach, który miał odpowiedzieć na jedno pytanie: dlaczego Chicago nie buduje więcej mieszkań? Potem się rozrosło.'),
+    "It's built by a Chicago development and housing professional. It started as a side project to answer one question: why doesn't Chicago build more homes? It grew from there.":
+        ('网站由一位芝加哥的开发和住房领域从业者制作。它最初是一个业余项目，想回答一个问题：为什么芝加哥不多建些住房？后来逐渐发展起来。',
+         'Tworzy ją specjalista od inwestycji i mieszkalnictwa z Chicago. Zaczęło się od projektu po godzinach, który miał odpowiedzieć na jedno pytanie: dlaczego Chicago nie buduje więcej mieszkań? Potem się rozrosło.'),
     "It's independent and fan-made: not affiliated with the City of Chicago, the CTA, Metra, Pace, any alderperson, campaign or party, or the builder's employer.":
         ('它是独立的爱好者作品：与芝加哥市政府、CTA、Metra、Pace、任何市议员、竞选团队或政党，以及作者的雇主均无关。',
          'Jest niezależna i amatorska: niezwiązana z miastem Chicago, CTA, Metrą, Pace, żadnym radnym, kampanią ani partią, ani z pracodawcą autora.'),
