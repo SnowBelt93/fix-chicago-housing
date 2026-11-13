@@ -346,9 +346,10 @@ window.scMap = {
     document.body.appendChild(d);
   }
   // Pages translated in full; on any other page a reader in another language gets one short note (once per page per visit).
-  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/"];
+  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/", "/learn/", "/privacy/", "/terms/", "/support/", "/plans/", "/community/", "/tracker/", "/lot/", "/deal/", "/budget/", "/pensions/", "/bears/", "/history/"];
+  const fullAt = p => FULL.includes(p) || /^\/progress\//.test(p) || /^\/embed\//.test(p);
   function partial(){
-    if (lang === "en" || FULL.includes(location.pathname) || document.querySelector(".sc-err404")) return;
+    if (lang === "en" || fullAt(location.pathname) || document.querySelector(".sc-err404")) return;
     const k = "sc-part-" + location.pathname; try { if (sessionStorage.getItem(k)) return; } catch (e) {}
     const L = LANGS[lang], d = document.createElement("div"); d.className = "sc-langoffer"; d.setAttribute("role", "status"); d.setAttribute("translate", "no");
     d.innerHTML = '<span></span><button type="button" class="sc-btn"></button>'; d.children[0].textContent = L.part; d.children[1].textContent = L.ok;
