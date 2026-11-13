@@ -125,6 +125,48 @@ def load_zoning():
                         addrs=zoning_addresses(title), homes=narrative_units(texts) if texts else None, have_text=bool(texts)))
     return out
 
+def zoning_sites():
+    """Rezoned areas on the city's zoning map, keyed by the City Clerk record number that created them (O2016-6365 and
+    O2026-0029425 forms both normalized), as lists of rings with bounding boxes. The map keeps only each lot's latest change."""
+    fn = os.path.join(os.path.dirname(RAW), 'zoning.geojson.gz')
+    if not os.path.exists(fn): return {}
+    S = collections.defaultdict(list)
+    for f in json.load(gzip.open(fn))['features']:
+        d = (f['properties'] or {}).get('clerk_docn'); g = f.get('geometry')
+        if not d or not g: continue
+        polys = g['coordinates'] if g['type'] == 'MultiPolygon' else [g['coordinates']] if g['type'] == 'Polygon' else []
+        for poly in polys:
+            ring = poly[0]; xs = [p[0] for p in ring]; ys = [p[1] for p in ring]
+            S[recnorm(d)].append((min(xs), min(ys), max(xs), max(ys), ring))
+    return S
+
+def recnorm(r): return re.sub(r'-0+(\d)', r'-\1', (r or '').strip().upper())
+
+def inside(x, y, ring):
+    c = False; n = len(ring)
+    for i in range(n):
+        x1, y1 = ring[i][:2]; x2, y2 = ring[i - 1][:2]
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / ((y2 - y1) or 1e-12) + x1: c = not c
+    return c
+
+def link_sites(Z, J):
+    """Add permit projects for new homes that sit inside the area the zoning change rezoned (from the zoning map), on or after
+    the day it passed. Together with the address match this is 'a permit on the rezoned site'."""
+    S = zoning_sites()
+    if not S: return Z
+    pts = [j for j in J if j['homes'] and j.get('lon') and j.get('lat')]
+    for z in Z:
+        z.setdefault('projects', [])
+        if not z['passed'] or not z['final']: continue
+        rings = S.get(recnorm(z['rec']))
+        if not rings: continue
+        d0 = datetime.date.fromisoformat(z['final'])
+        for j in pts:
+            if j['date'] < d0 or j['date'] > d0 + datetime.timedelta(days=6 * 365) or j in z['projects']: continue
+            x, y = j['lon'], j['lat']
+            if any(b[0] <= x <= b[2] and b[1] <= y <= b[3] and inside(x, y, b[4]) for b in rings): z['projects'].append(j); z['site'] = True
+    return Z
+
 def link_zoning(Z, J):
     """Match each passed zoning change to permit projects at the same address issued after it was introduced."""
     idx = collections.defaultdict(list)
@@ -186,7 +228,7 @@ def main():
     pts = [[round(j['lon'], 5), round(j['lat'], 5), j['homes'], j['year'], {'finished': 0, 'building': 1, 'expired': 2}[j['stage']]]
            for j in J if j['homes'] and j['lon'] and j['year'] >= 2019]
     # zoning
-    Z = link_zoning(load_zoning(), J)
+    Z = link_sites(link_zoning(load_zoning(), J), J)
     zy = collections.defaultdict(lambda: dict(introduced=0, passed=0, t1=0, homes=0, with_count=0, permitted_homes=0))
     for z in Z:
         if z['intro']: zy[int(z['intro'][:4])]['introduced'] += 1
