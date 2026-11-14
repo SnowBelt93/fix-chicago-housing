@@ -5,11 +5,11 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155520
+     "count": 155521
     },
     {
      "value": "Committee on Finance",
-     "count": 13908
+     "count": 13909
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
@@ -17,7 +17,7 @@
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
-     "count": 1030
+     "count": 1035
     },
     {
      "value": "Committee on Transportation and Public Way",
@@ -178,7 +178,7 @@
     },
     {
      "value": "Claim",
-     "count": 29702
+     "count": 29703
     },
     {
      "value": "Resolution",
@@ -186,7 +186,7 @@
     },
     {
      "value": "Order",
-     "count": 9268
+     "count": 9273
     },
     {
      "value": "Appointment",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 638
+     "count": 639
     },
     {
      "value": "Oath of Office",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2243
+     "count": 2249
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 101
+     "count": 102
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29994
+     "count": 29995
     },
     {
      "value": "Reilly, Brendan",
@@ -372,7 +372,7 @@
     },
     {
      "value": "Gardiner, James M.",
-     "count": 1541
+     "count": 1545
     },
     {
      "value": "Cappleman, James",
@@ -404,7 +404,7 @@
     },
     {
      "value": "La Spata, Daniel",
-     "count": 1296
+     "count": 1297
     },
     {
      "value": "Moore, Joseph",
@@ -472,7 +472,7 @@
     },
     {
      "value": "Napolitano, Anthony V.",
-     "count": 870
+     "count": 871
     },
     {
      "value": "Mitchell, Gregory I.",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169872
+     "count": 169878
     },
     {
      "value": "YES",
-     "count": 12141
+     "count": 12142
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7621
+     "count": 7628
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30012
+     "count": 30013
     },
     {
      "value": "42",
@@ -884,7 +884,7 @@
     },
     {
      "value": "01",
-     "count": 5253
+     "count": 5254
     },
     {
      "value": "15",
@@ -932,7 +932,7 @@
     },
     {
      "value": "45",
-     "count": 3014
+     "count": 3018
     },
     {
      "value": "50",
@@ -1032,7 +1032,7 @@
     },
     {
      "value": "41",
-     "count": 1594
+     "count": 1595
     },
     {
      "value": "36",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1870
+     "count": 1871
     },
     {
      "value": "Placed on File",
@@ -1177,7 +1177,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 297
+     "count": 302
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1188,12 +1188,12 @@
      "count": 161
     },
     {
-     "value": "Agreed Calendar",
+     "value": "Accepted",
      "count": 99
     },
     {
-     "value": "Accepted",
-     "count": 98
+     "value": "Agreed Calendar",
+     "count": 99
     },
     {
      "value": "Recommended to Pass",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163780
+     "count": 163787
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182013,
-  "pages": 182013
+  "count": 182020,
+  "pages": 182020
  }
 }
