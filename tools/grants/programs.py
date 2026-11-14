@@ -251,9 +251,15 @@ SHORT = {'homegrown': 'Up to $70,000', 'dpp': 'Up to $10,000', 'ihda': 'Up to $1
   'iahtc': 'Donors get 50% back as a state credit', 'ahp': 'Up to $2 million', 'ilhtc': 'Up to $3 million', 'oz': 'Federal tax break for investors', 'missing': '$1 lots plus up to $150,000 a home'}
 REMIND = {'hrp': [3, 1, 'Registration has opened in March for about two weeks.'], 'ehrp': [11, 1, 'It has opened Nov. 1 each winter.'],
   'liheap': [10, 1, 'Applications open Oct. 1.'], 'ahp': [5, 1, "FHLBank Chicago opened its 2026 round May 4."]}
+# Kyle, Nov. 14, 2026: the site leaves out money for building or financing housing (it's too close to his day job).
+# Programs only for developers and nonprofits drop out; mixed ones keep their other roles.
+NO_DEV = {'developer', 'nonprofit'}
+DROP = {'clihtf', 'ahsap', 'ilhtc'}   # landlord-side affordable housing finance and the historic rehab credit
 out = []
 for p in P:
-    p = dict(p); p['for'] = p.pop('for_'); p['short'] = SHORT[p['id']]
+    p = dict(p); p['for'] = [r for r in p.pop('for_') if r not in NO_DEV]
+    if not p['for'] or p['id'] in DROP: continue
+    p['short'] = SHORT[p['id']]
     if p['id'] in REMIND: p['remind'] = REMIND[p['id']]
     out.append(p)
 LIHEAP = {'note': '30-day gross household income, program year 2026-27', 'src': 'https://dceo.illinois.gov/communityservices/homeweatherization/communityactionagencies/helpillinoisfamilies.html',

@@ -108,7 +108,7 @@ details.no .prog{opacity:.75}
 <body>
 <header class="sc-head">
 <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
-<nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/">Zoning and rules</a><a href="/grants/" aria-current="page">Grants and help</a><a href="/deal/">Affordable deal check</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+<nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" aria-current="page" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/">Zoning and rules</a><a href="/grants/" aria-current="page">Grants and help</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
 <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main class="sc-main">
@@ -128,7 +128,6 @@ details.no .prog{opacity:.75}
       <button type="button" data-r="renter" aria-pressed="false">Renting</button>
       <button type="button" data-r="landlord" aria-pressed="false">A building I rent out</button>
       <button type="button" data-r="business" aria-pressed="false">A storefront or business building</button>
-      <button type="button" data-r="developer" aria-pressed="false">Building housing</button>
     </div>
   </fieldset>
   <fieldset><label class="lab" for="q">Address <span style="font-weight:400;color:var(--sc-mute)">(optional, in Chicago)</span></label>
@@ -162,7 +161,6 @@ details.no .prog{opacity:.75}
 </form>
 
 <section aria-live="polite">
-  <a class="deal" id="dealLink" href="/deal/" hidden><div><b>Building affordable housing?</b><span>The deal check scores a site against the city's tax credit plan, estimates the cost and builds a capital stack from the sources it qualifies for.</span></div><span class="sc-btn">Open the deal check</span></a>
   <div id="out"><p class="empty">Pick what you're working on to see programs.</p></div>
   <div class="warn"><b>Watch for grant scams.</b>Real programs never charge a fee to apply or ask for a gift card, wire or crypto. They come from a city, county, state or federal agency, a utility, or a nonprofit the agency names. If someone calls you about a grant you didn't apply for, hang up and call 311.</div>
   <p class="note" id="checkedNote" style="margin-top:14px"></p>
@@ -180,10 +178,10 @@ const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;
 const money = n => "$" + Math.round(n).toLocaleString("en-US");
 let DATA = null, LIM = null, PLACE = null;
 const SEL = new Set();
-const ROLES = {buyer:["buyer"], owner:["owner"], renter:["renter"], landlord:["landlord"], business:["business", "landlord"], developer:["developer", "nonprofit"]};
+const ROLES = {buyer:["buyer"], owner:["owner"], renter:["renter"], landlord:["landlord"], business:["business", "landlord"]};
 const TITLE = {buyer:"Find money for buying a home", owner:"Find money for your home", renter:"Find help with rent and bills", landlord:"Find money for your building",
-  business:"Find money for your business building", developer:"Find money to build housing"};
-const WHO = {buyer:"buyers", owner:"homeowners", renter:"renters", landlord:"building owners", business:"business buildings", developer:"housing builders"};
+  business:"Find money for your business building"};
+const WHO = {buyer:"buyers", owner:"homeowners", renter:"renters", landlord:"building owners", business:"business buildings"};
 const STATUS = {open:"Open now", rolling:"Rolling", seasonal:"Opens each year", round:"Opens in rounds", waitlist:"Waiting list", closed:"Closed for now"};
 const SORDER = {open:0, rolling:1, waitlist:2, seasonal:3, round:4, closed:9};
 const KINDS = {all:["All", null], grant:["Grants", ["grant", "forgivable"]], loan:["Loans", ["loan"]], tax:["Tax breaks and credits", ["tax", "credit"]], help:["Services and land", ["service", "land"]]};
@@ -262,7 +260,7 @@ function card(p, res, s){
 function render(){
   const A = answers(), roles = [...SEL], has = r => SEL.has(r);
   $("hh").hidden = !(has("buyer") || has("owner") || has("renter"));
-  $("ownq").hidden = !has("owner"); $("buyq").hidden = !has("buyer"); $("dealLink").hidden = !has("developer");
+  $("ownq").hidden = !has("owner"); $("buyq").hidden = !has("buyer");
   $("ttl").textContent = roles.length === 1 ? TITLE[roles[0]] : roles.length ? "Find money and help for your plans" : "Find money and help in Chicago";
   const L80 = limit(80, A.n);
   $("amiNote").textContent = L80 ? `For ${A.n} ${A.n > 1 ? "people" : "person"}: 50% of area median income is ${money(limit(50, A.n))}, 80% is ${money(L80)}, 120% is ${money(limit(120, A.n))}.` : "";
@@ -325,11 +323,11 @@ async function onPlace(P){
   const F = await SCAddr.rules(P.lon, P.lat), G = await fetchG(P.lon, P.lat);
   const layers = {tif: (G.tif || [])[0] || false, qct: !!(G.qct26 || G.qct27), oz: !!F.oz, hist: F.nr ? F.nr[0][0] : false};
   PLACE = {...P, layers}; window.scSetAddr && scSetAddr(P.label);
-  const bits = [P.ward ? "Ward " + P.ward : null, layers.tif ? "TIF district: " + layers.tif : "Not in a TIF district", layers.oz ? "Opportunity Zone" : null, layers.qct ? "Qualified Census Tract" : null, layers.hist ? "National Register: " + layers.hist : null].filter(Boolean);
+  const bits = [P.ward ? "Ward " + P.ward : null, layers.tif ? "TIF district: " + layers.tif : "Not in a TIF district", layers.hist ? "National Register: " + layers.hist : null].filter(Boolean);
   $("place").innerHTML = bits.map(b => `<span>${esc(b)}</span>`).join(" · ");
   render();
 }
-/* deal-check layers (TIF, NOF, QCT) for a point, from grants/data/g tiles (tools/grants/build.py) */
+/* address layers (TIF, NOF, QCT) for a point, from grants/data/g tiles (tools/grants/build.py) */
 const GT = new Map();
 async function fetchG(lon, lat){
   const [ix, iy] = SCAddr.tkey(lon, lat), k = ix + "_" + iy;

@@ -152,7 +152,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
   }
   window.scShowAds = () => load().then(render);
   const FOOT = [["Simulators", [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/plans/","Plans people made"]]],
-    ["Your address", [["/lot/","Zoning and rules"],["/grants/","Grants and help"],["/deal/","Affordable deal check"]]],
+    ["Your address", [["/lot/","Zoning and rules"],["/grants/","Grants and help"]]],
     ["Follow along", [["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"]]],
     ["About", [["/about/","About this site"],["/press/","For media"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
   function footer(){
@@ -346,7 +346,7 @@ window.scMap = {
     document.body.appendChild(d);
   }
   // Pages translated in full; on any other page a reader in another language gets one short note (once per page per visit).
-  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/", "/learn/", "/privacy/", "/terms/", "/support/", "/plans/", "/community/", "/tracker/", "/lot/", "/deal/", "/budget/", "/pensions/", "/bears/", "/history/", "/housing/", "/transit/", "/advertise/"];
+  const FULL = ["/", "/index.html", "/wards/", "/news/", "/press/", "/progress/", "/grants/", "/404.html", "/about/", "/learn/", "/privacy/", "/terms/", "/support/", "/plans/", "/community/", "/tracker/", "/lot/", "/budget/", "/pensions/", "/bears/", "/history/", "/housing/", "/transit/", "/advertise/"];
   const fullAt = p => FULL.includes(p) || /^\/progress\//.test(p) || /^\/embed\//.test(p);
   function partial(){
     if (lang === "en" || fullAt(location.pathname) || document.querySelector(".sc-err404")) return;
@@ -408,11 +408,11 @@ window.scMap = {
   b.setAttribute("data-cf-beacon", JSON.stringify({token: CF_TOKEN})); document.head.appendChild(b);
 })();
 
-/* "Your address": the lot tool, grants finder and deal check share one address. Any element with [data-atabs] becomes a tab row
+/* "Your address": the lot tool and grants finder share one address. Any element with [data-atabs] becomes a tab row
    linking the three, each carrying ?q=<address>. Pages call window.scSetAddr(label) when someone picks an address; the address is
    kept in this browser (localStorage "sc-addr") so the next tab opens on it. */
 (function(){
-  const TABS = [["/lot/", "Zoning and rules", "Zoning"], ["/grants/", "Grants and help", "Grants"], ["/deal/", "Affordable deal check", "Deal check"]];   // long and phone labels
+  const TABS = [["/lot/", "Zoning and rules", "Zoning"], ["/grants/", "Grants and help", "Grants"] ];   // long and phone labels
   const get = () => { try { return localStorage.getItem("sc-addr") || ""; } catch(e){ return ""; } };
   function draw(){
     const a = get();

@@ -20,7 +20,6 @@ PAGES = [
     ("bears", "stadium.png", "Where Should the Bears Play?", "Compare every proposed site on trains, parking, hotels and what's in the way."),
     ("lot", "lot.png", "Zoning and rules", "Look up any Chicago address: what its zoning allows, the rules on it and what sells nearby."),
     ("grants", "grants.png", "Grants and help", "City, county, state and federal programs you might qualify for, and where to apply."),
-    ("deal", "deal.png", "Affordable deal check", "A first look at one site: tax credit fit, cost and how the money could stack up."),
     ("learn", "zoning.png", "Learn", "Short, hands-on explainers on how Chicago builds homes, runs transit and pays for it."),
     ("news", "news.png", "Chicago planning news", "Headlines on housing, transit and the budget from Chicago outlets, every few hours."),
     ("wards", "wards.png", "Your ward", "Your alderperson's votes, the rezonings and permits in your ward, and meetings coming up."),
