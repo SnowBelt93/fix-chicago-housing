@@ -213,7 +213,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   </div>
 </div>
 <p>The rents in a tax credit building are capped so people earning about 60% of the area median or less can afford them. That leaves enough to pay back only a small mortgage. Most of the money comes from investors who buy federal tax credits, and the rest, the gap, has to come from public sources the developer competes for: the city's housing money, TIF, state loans and others. Interest rates matter less than you might think here, because the mortgage is such a small slice.</p>
-<p class="src">Numbers: the deal check's defaults for a 50-home, five-story building at 3251 W. Division St., Nov. 2026 (a real 44-home building there cost $36 million). Sources: <a href="https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html" target="_blank" rel="noopener">City of Chicago, 2025 Qualified Allocation Plan</a> · <a href="https://chicagoyimby.com/2026/05/city-council-approves-affordable-development-in-humboldt-park.html" target="_blank" rel="noopener">Chicago YIMBY, May 2026</a></p></section>
+<p class="src">Numbers: our estimate for a 50-home, five-story building at 3251 W. Division St., Nov. 2026 (a real 44-home building there cost $36 million). Sources: <a href="https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html" target="_blank" rel="noopener">City of Chicago, 2025 Qualified Allocation Plan</a> · <a href="https://chicagoyimby.com/2026/05/city-council-approves-affordable-development-in-humboldt-park.html" target="_blank" rel="noopener">Chicago YIMBY, May 2026</a></p></section>
 <section class="topic" id="megaprojects"><h2>How do megaprojects get paid for?</h2><img class="art" src="/shape/art/learn/megaprojects.webp" width="1693" height="720" alt="" loading="lazy" decoding="async">
 <div class="play" id="pTif">
   <p class="q">With tax increment financing, an area's property taxes are frozen at today's level for 23 years, and the growth pays for roads and utilities there. Say a site pays $10 million a year today. How fast will its taxes grow?</p>
@@ -312,7 +312,7 @@ $("rtN").oninput = rents; rents();
 // prerogative
 pick($("prChips"), "a", a => { $("prOut").innerHTML = a === "1" ? `<b class="good">Right: usually just one.</b> Your alderperson. The rest of the Council almost always follows the local alderperson on zoning in their ward.` : `<b class="bad">On paper, yes. In practice, usually just one:</b> your alderperson. The Council almost always defers on zoning in their ward.`; });
 
-// Who pays for an affordable building: the deal check's defaults, 50 homes, five stories, 7.2% mortgage (Nov. 2026)
+// Who pays for an affordable building: our estimate, 50 homes, five stories, 7.2% mortgage (Nov. 2026)
 const DEAL = {9:[["Mortgage the rents can repay", 2.45, "#2b5da0"], ["Tax credit investors", 14.9, "#5f8fcf"], ["Developer waits for part of its fee", 1.25, "#a9c2e6"], ["The gap: public money it must win", 18.2, "#e4002b"]],
               4:[["Mortgage the rents can repay", 2.45, "#2b5da0"], ["Tax credit investors", 11.6, "#5f8fcf"], ["Developer waits for part of its fee", 1.25, "#a9c2e6"], ["The gap: public money it must win", 21.6, "#e4002b"]]};
 function drawDeal(c){ const L = DEAL[c], T = L.reduce((t, x) => t + x[1], 0);
