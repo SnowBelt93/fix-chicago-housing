@@ -523,3 +523,17 @@ html.sc-fixhead.sc-stickhead .sc-head{position:sticky !important;top:0 !importan
 html.sc-fixhead.sc-scrolled .sc-head{box-shadow:0 1px 0 var(--sc-line),0 6px 18px rgba(26,29,33,.06)}
 input[type=range]:not(.yrrange){accent-color:var(--sc-navy)}
 html.sc-fixhead{scroll-padding-top:calc(var(--sc-head) + 12px)}
+
+/* ONE FOOTER: pages' own footer, nav and heading rules used to leak into the shared footer (tracker's big headings,
+   home's squeezed columns, budget/news/wards 40 px wider). These pin it to one look everywhere. */
+html body footer.sc-foot{display:block !important;margin:12px 0 0 !important;padding:0 !important;border:0 !important;border-top:1px solid var(--sc-line) !important;background:#fff !important;font:400 14px/1.4 var(--sc-font) !important;color:var(--sc-mute) !important;text-align:left !important;max-width:none !important;width:auto !important}
+html body footer.sc-foot .sc-foot-in{box-sizing:border-box !important;max-width:1240px !important;width:100% !important;margin:0 auto !important;padding:32px 20px 28px !important;display:grid !important;grid-template-columns:minmax(200px,1.2fr) 3.8fr !important;gap:24px 32px !important}
+html body footer.sc-foot nav{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:20px 24px !important;margin:0 !important;padding:0 !important;max-width:none !important;flex:none !important;justify-content:normal !important}
+html body footer.sc-foot .sc-fcol{display:flex !important;flex-direction:column !important;gap:2px !important;min-width:0 !important}
+html body footer.sc-foot .sc-fcol h2{font:600 13px/1.3 var(--sc-font) !important;color:var(--sc-ink) !important;margin:0 0 6px !important;padding:0 !important;letter-spacing:0 !important;text-transform:none !important;border:0 !important}
+html body footer.sc-foot nav a{font-size:14px !important;color:var(--sc-ink2) !important;text-decoration:none !important;padding:4px 0 !important;line-height:1.3 !important;white-space:normal !important;background:none !important}
+html body footer.sc-foot nav a:hover{color:var(--sc-navy) !important;text-decoration:underline !important}
+html body footer.sc-foot .sc-fextra{font-size:13px !important}
+@media (max-width:860px){ html body footer.sc-foot .sc-foot-in{grid-template-columns:1fr !important} }
+@media (max-width:560px){ html body footer.sc-foot .sc-foot-in{padding:26px 16px 22px !important} html body footer.sc-foot nav{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:18px 16px !important} }
+@media (pointer:coarse){ html body footer.sc-foot nav a{min-height:44px;display:flex !important;align-items:center} }

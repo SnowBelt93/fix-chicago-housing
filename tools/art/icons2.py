@@ -147,6 +147,25 @@ def subway():
     tree(3.4, 3.6, 0.1, 0.55); person(1.4, 3.0, "star", 1.0); person(-2.6, 3.6, "gold", 0.9)
     for o in bpy.data.objects:                          # lift it so the shadow floor sits under the tunnel
         if o.type == "MESH": o.location.z += 3.55
+def train():
+    """Home tile for the transit simulator: one big L car on a short elevated deck, front toward the viewer."""
+    tile(); walk(0, -3.9, T, 1.4)
+    z = 3.0
+    box(0, 0.6, z, T + 0.2, 3.6, 0.55, "steel", bevel=0.05)                                    # deck
+    for x in (-3.6, 3.6):
+        for y in (-0.9, 2.1): box(x, y, 0, 0.4, 0.4, z, "steel", bevel=0.03)                  # columns
+        box(x, 0.6, z - 0.45, 0.45, 3.6, 0.45, "steel", bevel=0.03)                           # cross beams
+    for y in (-0.15, 1.35): box(0, y, z + 0.55, T + 0.2, 0.14, 0.12, "#8a9099", bevel=0)      # rails
+    silver = mat("#dfe3e8", rough=0.3, metal=0.45)
+    box(0.6, 0.6, z + 0.75, 7.6, 2.5, 2.7, silver, bevel=0.45)                                # the car
+    box(0.6, -0.66, z + 1.95, 6.8, 0.05, 0.85, "glassdk", bevel=0.01)                         # side windows
+    box(0.6, -0.67, z + 1.45, 7.62, 0.05, 0.26, mat("#41b6e6", rough=0.4), bevel=0.01)        # flag-blue stripe
+    box(4.42, 0.6, z + 1.95, 0.05, 1.7, 0.95, "glassdk", bevel=0.01)                          # front window
+    for y in (-0.15, 1.35): box(4.43, y, z + 1.15, 0.05, 0.32, 0.22, mat("#fff6c8", rough=0.2, emit=1.5), bevel=0.01)   # headlights
+    box(4.43, 0.6, z + 2.98, 0.05, 1.1, 0.28, mat("#41b6e6", rough=0.4, emit=0.6), bevel=0.01)   # destination sign
+    for x in (-1.8, 3.0): box(x, -0.66, z + 0.85, 1.1, 0.05, 1.9, mat("#b9c0c8", rough=0.4), bevel=0.01)   # doors
+    tree(-3.8, -3.6, 0.1, 0.5); person(2.4, -3.8, "star", 0.9)
+
 def elevated():
     tile()
     el_track([(-5.2, 0.4), (5.2, 0.4)], z=4.2, train=True, train_at=0.02, cars=1, stripe="star")
@@ -182,7 +201,7 @@ def metra():
 
 ICONS = dict(icons.ICONS)
 ICONS.update({k: v for k, v in globals().items() if k in ("build", "aro", "permits", "mega", "vland", "pre", "mpls", "camb", "small", "park", "comm", "vac",
-              "social", "down", "pmin", "mora", "rentc", "xfer", "subway", "elevated", "streetcar", "brt", "infill", "metra")})
+              "social", "down", "pmin", "mora", "rentc", "xfer", "subway", "train", "elevated", "streetcar", "brt", "infill", "metra")})
 
 def render_icon(name, out, size=256):
     reset(); random.seed(7)

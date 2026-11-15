@@ -199,7 +199,7 @@ def page(slug, title, desc, main):
 <main class="sc-main">
 {main}
 </main>
-<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago, CTA, Metra or Pace.</footer>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 <script src="/shape/shape.js"></script>
 <script>
 /* "In N days" on the decisions coming up */
