@@ -164,7 +164,7 @@ dialog.sc-intro{width:min(520px,calc(100vw - 32px));padding:0;overflow:hidden}
 /* one hover rule: things you can open lift a little and get a navy edge; buttons darken; switches and sliders stay put */
 @media (hover:hover){
   .sc-lift{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
-  .sc-lift:hover{transform:translateY(-2px);border-color:var(--sc-sec,var(--sc-navy)) !important;box-shadow:0 6px 16px color-mix(in srgb,var(--sc-sec,#2b5da0) 16%,transparent) !important}
+  .sc-lift:hover{transform:translateY(-2px);border-color:var(--sc-navy) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important}
   .sc-btn{transition:background-color .15s ease,border-color .15s ease}
   .sc-btn:not(.primary):not(:disabled):hover{background:#e9ecf0;border-color:#c4cad2}
 }
@@ -180,7 +180,7 @@ body.sc-gray{background:var(--sc-page)}
 /* plan cards (shape/plans.js): home page and /plans/ */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 .pcard{display:flex;flex-direction:column;background:#fff;border:1px solid var(--sc-line);border-radius:18px;overflow:hidden;text-decoration:none;color:var(--sc-ink);font-family:var(--sc-font)}
-@media (hover:hover){ .pcard{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .pcard:hover{transform:translateY(-2px);border-color:var(--sc-sec,var(--sc-navy));box-shadow:0 6px 16px color-mix(in srgb,var(--sc-sec,#2b5da0) 16%,transparent)} }
+@media (hover:hover){ .pcard{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .pcard:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
 .pmapw{position:relative;background:#f3f5f7;display:flex;justify-content:center;padding:12px 0 6px;border-bottom:1px solid var(--sc-line)}
 .pmap{height:170px;width:auto;display:block}
 .pmap.empty{height:170px}
@@ -537,26 +537,3 @@ html body footer.sc-foot .sc-fextra{font-size:13px !important}
 @media (max-width:860px){ html body footer.sc-foot .sc-foot-in{grid-template-columns:1fr !important} }
 @media (max-width:560px){ html body footer.sc-foot .sc-foot-in{padding:26px 16px 22px !important} html body footer.sc-foot nav{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:18px 16px !important} }
 @media (pointer:coarse){ html body footer.sc-foot nav a{min-height:44px;display:flex !important;align-items:center} }
-
-/* SECTION COLORS (Nov. 14, 2026; mockups: claude.ai/artifact/AVjwVpZDKYfU8UrMsQWssn).
-   One quiet color per menu section. It only tints the panel behind clay art, the trail link, a dot beside each menu
-   heading and the hover edge of cards that open another page. Buttons, switches and selected options stay navy.
-   <html data-sec> is set by shape.js from the path; a link to another section carries that section's color. */
-:root{--sc-sec:#2b5da0;--sc-sec-ink:#2b5da0;--sc-sec-tint:#e8eff8}
-[data-sec="addr"],a[href^="/lot/"],a[href^="/grants/"],.sc-sims:has(> .sc-simbtn[data-menu="Your address"]){--sc-sec:#2e7d4f;--sc-sec-ink:#2e7d4f;--sc-sec-tint:#e5f2ea}
-[data-sec="prog"],a[href^="/progress/"],a[href^="/tracker/"],.sc-sims:has(> .sc-simbtn[data-menu="Progress"]){--sc-sec:#6a4c9c;--sc-sec-ink:#6a4c9c;--sc-sec-tint:#efeaf7}
-[data-sec="ward"],a[href^="/wards/"]{--sc-sec:#b4541a;--sc-sec-ink:#a34b15;--sc-sec-tint:#fbede3}
-[data-sec="news"],a[href^="/news/"]{--sc-sec:#475467;--sc-sec-ink:#475467;--sc-sec-tint:#eef1f5}
-[data-sec="learn"],a[href^="/learn/"],a[href^="/history/"],a[href^="/about/"]{--sc-sec:#0f7680;--sc-sec-ink:#0f7680;--sc-sec-tint:#e2f1f2}
-[data-sec="sim"],a[href^="/housing/"],a[href^="/transit/"],a[href^="/budget/"],a[href^="/pensions/"],a[href^="/bears/"],a[href^="/plans/"],a[href^="/community/"],.sc-sims:has(> .sc-simbtn[data-menu="Simulators"]){--sc-sec:#2b5da0;--sc-sec-ink:#2b5da0;--sc-sec-tint:#e8eff8}
-/* page header: the clay picture sits on its section's tint; the trail names the section in its color */
-html body .sc-pghead .sc-pgart{background:var(--sc-sec-tint) !important;border-radius:18px !important;padding:14px 18px !important;box-sizing:border-box !important}
-@media (max-width:760px){ html body .sc-pghead .sc-pgart{padding:8px 12px !important;border-radius:14px !important} }
-html body .sc-pghead :is(.sc-trail,.eyebrow) a:not(:first-child){color:var(--sc-sec-ink) !important;font-weight:600 !important;text-decoration-color:color-mix(in srgb,var(--sc-sec-ink) 40%,transparent) !important}
-/* a dot beside each section in the header and the phone menu (white on the navy current tab) */
-.sc-nav > a::before,.sc-nav .sc-simbtn::before,.sc-simhd::before,dialog.sc-menu h2[data-sec]::before,dialog.sc-menu .sc-menu-more a::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--sc-sec);margin-right:7px}
-.sc-nav .sc-simbtn::before{margin-right:1px}
-.sc-simhd{display:flex;align-items:center}
-dialog.sc-menu h2[data-sec]{display:flex;align-items:center}
-.sc-nav > a[aria-current="page"]::before,.sc-nav .sc-simbtn[aria-current="page"]::before,dialog.sc-menu .sc-menu-more a[aria-current="page"]::before{background:rgba(255,255,255,.85)}
-@media print{ html body .sc-pghead .sc-pgart{background:none !important} }
