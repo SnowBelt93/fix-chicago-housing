@@ -270,7 +270,8 @@ export class Community {
     return json({ok: true, likes: this.sql.exec("SELECT likes FROM splans WHERE id = ?", id).one().likes});
   }
 
-  // Plans posted on fixchicagohousing.com (the fix-chicago-housing Worker) are copied in, at most every 6 hours, until launch.
+  // Plans posted on fixchicagohousing.com (the fix-chicago-housing Worker) are copied in, at most every 6 hours. Only through the
+  // service binding: since launch that domain redirects here, so a public fetch would read our own gallery.
   // Imported plans keep their old endorsements; endorsements made here are added on top.
   async sync(){
     const last = +((this.sql.exec("SELECT v FROM meta WHERE k = 'sync'").toArray()[0] || {}).v || 0);
@@ -278,7 +279,7 @@ export class Community {
     this.sql.exec("INSERT OR REPLACE INTO meta (k, v) VALUES ('sync', ?)", String(Date.now()));
     const get = async q => {
       const u = "https://fixchicagohousing.com/api/gallery?" + q;
-      try { const r = this.env.OLD ? await this.env.OLD.fetch(new Request(u)) : await fetch(u); return r.ok ? ((await r.json()).plans || []) : []; } catch (e) { return []; }
+      try { if (!this.env.OLD) return []; const r = await this.env.OLD.fetch(new Request(u)); return r.ok ? ((await r.json()).plans || []) : []; } catch (e) { return []; }
     };
     const seen = new Map();
     for (const q of ["sort=top", "sort=new"]) for (const P of await get(q)) seen.set(P.id, P);

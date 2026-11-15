@@ -187,7 +187,7 @@ def page(slug, title, desc, main):
 <meta name="description" content="{esc(desc)}">
 <meta property="og:title" content="{esc(title)}">
 <meta property="og:description" content="{esc(desc)}">
-<meta property="og:image" content="https://shape-chicago.hd9bt6x5mn.workers.dev/shape/art/og-progress.jpg">
+<meta property="og:image" content="https://shapechicago.city/shape/art/og-progress.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1172,7 +1172,7 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
 
 MOVED_ROOM = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Zoning · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/zoning/#room"><link rel="canonical" href="/progress/zoning/"></head><body><p><a href="/progress/zoning/#room">Room to grow is now part of Zoning.</a></p></body></html>\n'
 MOVED = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Homes added · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/homes/#lost"><link rel="canonical" href="/progress/homes/"></head><body><p><a href="/progress/homes/#lost">Homes lost is now part of Homes added.</a></p></body></html>\n'
-SITE = 'https://shape-chicago.hd9bt6x5mn.workers.dev'   # launch to-do: the new domain
+SITE = 'https://shapechicago.city'
 def write_embeds(pages):
     """/embed/<id>/: one card alone, for news sites to put in an iframe; /press/: the list, with how to cite."""
     script = re.search(r'<script>\n/\* "In N days".*?</script>', pages['homes'], re.S).group(0)

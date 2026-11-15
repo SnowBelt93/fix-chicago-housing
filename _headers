@@ -4,5 +4,17 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
   Content-Security-Policy: frame-ancestors *
   Strict-Transport-Security: max-age=31536000
-  # preview only: keep search engines off the workers.dev copy until launch (remove at launch)
+
+# the workers.dev preview copy stays out of search engines (shapechicago.city is the real site)
+https://shape-chicago.hd9bt6x5mn.workers.dev/*
+  X-Robots-Tag: noindex
+
+# pages that aren't part of the public site yet
+/preview/*
+  X-Robots-Tag: noindex
+/progress/preview/*
+  X-Robots-Tag: noindex
+/support/*
+  X-Robots-Tag: noindex
+/advertise/*
   X-Robots-Tag: noindex
