@@ -502,9 +502,17 @@ html body .sc-pghead.noart{grid-template-columns:minmax(0,1fr) !important}
 .sc-slide > .sc-thumb.hard{background:var(--sc-hard,#b3001e)}
 html body .sc-slide > button{position:relative;z-index:1;transition:color .2s}
 html body :is(.sc-seg,.seg,.seg2,.tabs,.stabs).sc-slide.sc-slide:not(.sc-head *) > button{background:transparent !important}
+/* chip and tile groups: only the picked one goes clear so the sliding pill shows through it */
+html body :is(.opts,.chips,.chiprow,.bfilt,.tiers,.vote).sc-slide.sc-one:not(.sc-head *) > button:is([aria-pressed="true"],[aria-checked="true"],[aria-selected="true"],.on){background:transparent !important;border-color:transparent !important}
 @media (prefers-reduced-motion:reduce){ .sc-slide > .sc-thumb{transition:none} }
 /* the on/off switch keeps its shape everywhere, whatever row it sits in (an iPad touch rule had stretched it into a pill) */
 html body button.sc-switch{width:46px !important;height:28px !important;min-height:0 !important;min-width:0 !important;padding:0 !important;border:0 !important;border-radius:14px !important;flex:none !important;box-sizing:border-box !important}
 /* the address tabs use their short names whenever their own box is narrow (the lot tool's panel on an iPad), not only on phones */
 .sc-atabs{container-type:inline-size}
 @container (max-width:600px){ .sc-atl{display:flex;width:100%;box-sizing:border-box} .sc-atl a{flex:1;justify-content:center;padding:7px 6px;text-align:center} .sc-atlong{display:none} .sc-atshort{display:inline} }
+
+/* Page pills slide across pages (shape.js "Page pills"): one navy pill behind the current header item / address tab */
+.sc-pagepill{position:absolute;left:0;top:0;z-index:0;border-radius:999px;background:var(--sc-navy);pointer-events:none;transition:transform .34s cubic-bezier(.3,.8,.25,1),width .34s cubic-bezier(.3,.8,.25,1),height .34s}
+.sc-haspill > a,.sc-haspill > .sc-sims > .sc-simbtn{position:relative;z-index:1}
+html body .sc-haspill > a[aria-current="page"],html body .sc-haspill > .sc-sims > .sc-simbtn[aria-current="page"]{background:transparent !important;box-shadow:none !important}
+@media (prefers-reduced-motion:reduce){ .sc-pagepill{transition:none} }

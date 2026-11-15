@@ -524,30 +524,51 @@ window.scMap = {
    the buttons themselves go transparent (html .sc-slide in shape.css). Red when the picked option is .hard. */
 (function(){
   if (window.scSlideOn) return; window.scSlideOn = true;
-  const TRACK = ".sc-seg,.seg,.seg2,.tabs,.stabs";
+  const TRACK = ".sc-seg,.seg,.seg2,.tabs,.stabs,.opts,.chips,.chiprow,.bfilt,.tiers,.vote";
+  // gray switch rows always show one pick; chip and tile groups (.opts .chips .chiprow .bfilt .tiers .vote) slide only
+  // while exactly one option is picked (a multi-pick group keeps its own colors), and the pill copies the chip's corners
+  const ROWS = ".sc-seg,.seg,.seg2,.tabs,.stabs";
   const PICK = '[aria-pressed="true"],[aria-checked="true"],[aria-selected="true"],[aria-current="page"],.on';
   const ok = t => !t.closest(".sc-head,dialog.sc-menu") && !t.classList.contains("sc-noslide");
   const ro = "ResizeObserver" in window ? new ResizeObserver(es => es.forEach(e => place(e.target))) : null;
-  function thumb(t){   // pages that redraw a row (innerHTML) drop the pill: put it back
+  // pages that redraw a row (innerHTML) drop the pill and often the row itself: remember where each row's pill was
+  // (keyed by the row's id, or its nearest id'd ancestor + position) so a redrawn row's new pill starts there and slides
+  const MEMO = new Map();
+  function rowKey(t){
+    if (t.id) return "#" + t.id;
+    const a = t.parentElement && t.parentElement.closest("[id]"), root = a || document.body;
+    return (a ? "#" + a.id : "body") + ">" + [...root.querySelectorAll(TRACK)].indexOf(t);
+  }
+  function thumb(t){
     let th = t.querySelector(":scope > .sc-thumb");
-    if (!th){ th = document.createElement("span"); th.className = "sc-thumb"; th.setAttribute("aria-hidden", "true"); t.insertBefore(th, t.firstChild); }
+    if (!th){ th = document.createElement("span"); th.className = "sc-thumb"; th.setAttribute("aria-hidden", "true"); t.insertBefore(th, t.firstChild); th._new = true; }
     return th;
   }
   function place(t){
     if (![...t.children].some(c => c.tagName === "BUTTON")) return;
     const th = thumb(t);
-    const b = [...t.children].find(c => c.tagName === "BUTTON" && c.matches(PICK) && c.offsetParent !== null);
+    const picks = [...t.children].filter(c => c.tagName === "BUTTON" && c.matches(PICK) && c.offsetParent !== null && !c.classList.contains("sc-switch"));
+    const b = picks.length === 1 || t.matches(ROWS) ? picks[0] : null;
+    t.classList.toggle("sc-one", !!b);
     if (!b || !b.offsetWidth){ th.style.opacity = "0"; return; }
-    const first = th.style.opacity !== "1";
-    if (first) th.style.transition = "none";
-    th.style.width = b.offsetWidth + "px"; th.style.height = b.offsetHeight + "px";
-    th.style.transform = "translate(" + b.offsetLeft + "px," + b.offsetTop + "px)";
+    th.style.borderRadius = getComputedStyle(b).borderRadius;
+    const first = th.style.opacity !== "1", key = rowKey(t), was = MEMO.get(key);
+    const now = {x: b.offsetLeft, y: b.offsetTop, w: b.offsetWidth, h: b.offsetHeight, t: Date.now()};
+    const set = r => { th.style.width = r.w + "px"; th.style.height = r.h + "px"; th.style.transform = "translate(" + r.x + "px," + r.y + "px)"; };
     th.classList.toggle("hard", b.classList.contains("hard"));
-    th.style.opacity = "1";
-    if (first){ th.offsetWidth; th.style.transition = ""; }
+    if (first && th._new && was && (was.x !== now.x || was.y !== now.y)){
+      th.style.transition = "none"; set(was); th.style.opacity = "1"; th.offsetWidth; th.style.transition = "";
+      requestAnimationFrame(() => set(now));
+    } else {
+      if (first) th.style.transition = "none";
+      set(now); th.style.opacity = "1";
+      if (first){ th.offsetWidth; th.style.transition = ""; }
+    }
+    th._new = false; MEMO.set(key, now);
   }
   function arm(t){
     if (t.dataset.scSlide || !ok(t)) return;
+    if (t.querySelector(":scope > .sc-switch")) return;
     if (![...t.children].some(c => c.tagName === "BUTTON")) return;
     t.dataset.scSlide = "1"; t.classList.add("sc-slide");
     if (getComputedStyle(t).position === "static") t.style.position = "relative";
@@ -561,4 +582,37 @@ window.scMap = {
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", go); else go();
   window.addEventListener("load", () => document.querySelectorAll(".sc-slide").forEach(place));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => document.querySelectorAll(".sc-slide").forEach(place));
+})();
+
+/* Page pills slide across pages (Kyle, Nov. 14, 2026): the navy pill on the header's current page and on the address tabs
+   (Zoning | Grants) moves from where it was on the last page to where it is on this one, instead of jumping. One span
+   (.sc-pagepill) sits behind the current item; on pagehide its spot is saved, and the next page starts it there. */
+(function(){
+  if (window.scPagePill) return; window.scPagePill = true;
+  const KEY = "sc-pill", reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const tracks = () => [["nav", document.querySelector(".sc-head .sc-nav")], ["atab", document.querySelector(".sc-atl")]].filter(x => x[1]);
+  const cur = t => t.querySelector(':scope > a[aria-current="page"]') || (t.querySelector(':scope > .sc-sims > .sc-simbtn[aria-current="page"]'));
+  function rect(t, el){ const a = t.getBoundingClientRect(), b = el.getBoundingClientRect(); return {x: b.left - a.left + t.scrollLeft, y: b.top - a.top + t.scrollTop, w: b.width, h: b.height}; }
+  function put(p, r){ p.style.width = r.w + "px"; p.style.height = r.h + "px"; p.style.transform = `translate(${r.x}px,${r.y}px)`; }
+  let saved = {}; try { const s = JSON.parse(sessionStorage.getItem(KEY) || "null"); if (s && Date.now() - s.t < 4000) saved = s.r; sessionStorage.removeItem(KEY); } catch (e) {}
+  function setup(){
+    tracks().forEach(([k, t]) => {
+      const el = cur(t); if (!el || t.querySelector(":scope > .sc-pagepill")) return;
+      if (getComputedStyle(t).position === "static") t.style.position = "relative";
+      const p = document.createElement("span"); p.className = "sc-pagepill"; p.setAttribute("aria-hidden", "true");
+      t.insertBefore(p, t.firstChild); t.classList.add("sc-haspill");
+      const now = rect(t, el), from = saved[k];
+      if (from && !reduce && (Math.abs(from.x - now.x) > 2 || Math.abs(from.w - now.w) > 2)){
+        p.style.transition = "none"; put(p, from); p.offsetWidth; p.style.transition = ""; requestAnimationFrame(() => put(p, now));
+      } else put(p, now);
+      const re = () => put(p, rect(t, el));
+      if ("ResizeObserver" in window) new ResizeObserver(re).observe(t); addEventListener("resize", re);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(re);
+    });
+  }
+  addEventListener("pagehide", () => {
+    const r = {}; tracks().forEach(([k, t]) => { const el = cur(t); if (el) r[k] = rect(t, el); });
+    try { sessionStorage.setItem(KEY, JSON.stringify({t: Date.now(), r})); } catch (e) {}
+  });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup); else setup();
 })();
