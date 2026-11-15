@@ -304,7 +304,9 @@ select.pick, input.txt{width:100%;min-width:0;border:1px solid var(--line);borde
 .tip b{display:block;font-family:var(--f-display,inherit);font-size:17px;margin:2px 0 3px}.tip p{margin:0 0 10px;color:#dfe5ee}
 .tip .step{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9fb3cc}
 .tip .row{display:flex;justify-content:space-between;gap:8px}.tip .btn.quiet{color:#cfd8e4;background:transparent;border-color:rgba(255,255,255,.3)}
-.tour-hi{outline:3px solid var(--star,#e4002b);outline-offset:3px;border-radius:6px}
+/* the walkthrough ring sits just inside its target, so a scrolling row (the tab bar) can't cut it off */
+.tour-hi{outline:3px solid var(--star,#e4002b) !important;outline-offset:-3px !important;border-radius:6px}
+.tabs .tour-hi,.sc-seg .tour-hi,.seg2 .tour-hi{border-radius:999px}
 .mapctl{position:absolute;z-index:3;right:12px;top:calc(var(--hudH, 300px) + 22px);display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 4px 14px rgba(28,36,48,.14);overflow:hidden}
 .mapctl button{width:40px;height:38px;border:0;border-bottom:1px solid var(--line);background:none;font:600 18px/1 var(--f-body);color:var(--ink);cursor:pointer}
 .mapctl button:last-child{border-bottom:0}.mapctl button:hover{background:var(--paper-2)}
