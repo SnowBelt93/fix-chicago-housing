@@ -41,7 +41,7 @@ a{color:var(--sc-navy)}
 .site span:not(.dot){grid-column:2 / 4;font-size:12.5px;color:var(--sc-mute)}
 .site i{grid-row:1;grid-column:3;font-style:normal;font-size:12px;font-weight:600;color:var(--sc-mute);background:var(--sc-seg);border-radius:8px;padding:3px 7px}
 .site[aria-pressed="true"]{border-color:var(--sc-navy);box-shadow:inset 0 0 0 2px var(--sc-navy);background:#eef3fa}
-@media (hover:hover){ .site{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .site:not([aria-pressed="true"]):hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (hover:hover){ .site{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .site:not([aria-pressed="true"]):hover{transform:translateY(-2px);border-color:var(--sc-sec,var(--sc-navy));box-shadow:0 6px 16px color-mix(in srgb,var(--sc-sec,#2b5da0) 16%,transparent)} }
 .pinrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0 2px}
 .chk{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--sc-ink2);cursor:pointer}
 .chk input{width:16px;height:16px;accent-color:var(--sc-navy)}

@@ -96,6 +96,16 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     const n = document.querySelector(".sc-nav"); n && n.addEventListener("scroll", again, {passive:true});
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
+/* Section colors: <html data-sec> picks the page's section color (shape.css "SECTION COLORS"). */
+window.scSecOf = function(p){ p = p || "";
+  if (/^\/(housing|transit|budget|pensions|bears|plans|community)\//.test(p)) return "sim";
+  if (/^\/(lot|grants)\//.test(p)) return "addr";
+  if (/^\/(progress|tracker|embed|press)\//.test(p)) return "prog";
+  if (/^\/wards\//.test(p)) return "ward";
+  if (/^\/news\//.test(p)) return "news";
+  if (/^\/(learn|history|about|privacy|terms|support|advertise|feedback)\//.test(p)) return "learn";
+  return ""; };
+(function(){ const s = window.scSecOf(location.pathname); if (s) document.documentElement.dataset.sec = s; })();
 /* Phones: one Menu button instead of the tab bar. The sheet is built from the same nav markup (tools/site/nav.py). */
 (function(){
   function f(){
@@ -106,7 +116,8 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
     const dlg = document.createElement("dialog"); dlg.className = "sc-menu"; dlg.setAttribute("aria-label", "Pages");
     let html = '<div class="sc-menu-top"><b>Shape Chicago</b><button type="button" class="sc-btn" data-close>Close</button></div>';
     nav.querySelectorAll(".sc-sims").forEach(g => {
-      const t = g.querySelector(".sc-simhd"); html += '<h2>' + (t ? t.textContent : "") + '</h2><div class="sc-menu-g">';
+      const t = g.querySelector(".sc-simhd"), a0 = g.querySelector(".sc-simmenu a"), sec = a0 ? window.scSecOf(a0.getAttribute("href")) : "";
+      html += '<h2' + (sec ? ' data-sec="' + sec + '"' : "") + '>' + (t ? t.textContent : "") + '</h2><div class="sc-menu-g">';
       g.querySelectorAll(".sc-simmenu a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.classList.contains("sc-simalt") ? ' class="alt"' : "") + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; });
       html += '</div>'; });
     html += '<div class="sc-menu-g sc-menu-more">'; nav.querySelectorAll(":scope > a").forEach(a => { html += '<a href="' + a.getAttribute("href") + '"' + (a.getAttribute("aria-current") ? ' aria-current="page"' : "") + '>' + a.textContent + '</a>'; }); html += '</div>';

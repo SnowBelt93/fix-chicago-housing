@@ -1015,7 +1015,7 @@ body.pg{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(
 .pg main a{color:var(--sc-navy)}
 .pg .card{background:#fff;border:1px solid var(--sc-line);border-radius:18px;box-shadow:0 1px 2px rgba(20,30,50,.04)}
 .pg a.card{text-decoration:none;color:var(--sc-ink);transition:transform .15s,border-color .15s,box-shadow .15s}
-@media (hover:hover){ .pg a.card:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 18px rgba(43,93,160,.14)} }
+@media (hover:hover){ .pg a.card:hover{transform:translateY(-2px);border-color:var(--sc-sec,var(--sc-navy));box-shadow:0 6px 18px color-mix(in srgb,var(--sc-sec,#2b5da0) 16%,transparent)} }
 .pg .pad{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .pg h1{margin:0;font-size:32px;line-height:1.2;letter-spacing:-.02em;font-weight:600;max-width:900px}
 .pg h2{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
