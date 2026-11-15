@@ -398,11 +398,12 @@ window.scMap = {
   }
 })();
 
-/* Cloudflare Web Analytics on every page: counts page views, no cookies, nothing personal. Off on claude.ai previews and local
-   files. At launch, add the new domain under Cloudflare → Web Analytics and paste its token here if it differs. */
+/* Cloudflare Web Analytics on every page: counts page views, no cookies, nothing personal. Only on shapechicago.city (its own
+   Web Analytics site, set to "JS Snippet installation" so Cloudflare doesn't add a second copy); off on the workers.dev
+   preview, claude.ai previews and local files. */
 (function(){
-  const CF_TOKEN = "1e9dc637635a4e7c8afaa420c1136085";
-  if (!/^https?:$/.test(location.protocol) || /claude|anthropic|usercontent|localhost|127\.0\.0\.1/.test(location.hostname)) return;
+  const CF_TOKEN = "4c952e5d784e48f3af91e460f80d0a17";
+  if (location.protocol !== "https:" || !/(^|\.)shapechicago\.city$/.test(location.hostname)) return;
   if (document.querySelector('script[src*="cloudflareinsights"]')) return;
   const b = document.createElement("script"); b.defer = true; b.src = "https://static.cloudflareinsights.com/beacon.min.js";
   b.setAttribute("data-cf-beacon", JSON.stringify({token: CF_TOKEN})); document.head.appendChild(b);
