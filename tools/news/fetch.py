@@ -58,7 +58,13 @@ PLAN = r'\b(zoning|rezon\w*|permits?|develop(er|ers|ment|ments)|redevelop\w*|bud
 # "tower" and "stadium" on their own bring in stair climbs and game stories: they count only next to a word about building or paying for one
 SOLO = r'\b(tower|stadium)\b'
 BUILD = r'\b(plans?|planned|propos\w*|approv\w*|permits?|stor(y|ies)|site|build\w*|built|construction|zoning|rezon\w*|funding|financing|subsid\w*|tax(es)?|vote[sd]?|bill|deal|lease|develop\w*|demoli\w*|convert\w*|conversion|apartments?|condos?|homes)\b'
+# Bears stadium stories are kept (tagged "bears") even though game coverage is dropped: they need "Bears", a stadium or site word, and no game words
+BEARS_SITE = r'\b(stadium|Arlington Park|Arlington Heights|Hammond|Wolf Lake|South Works|Soldier Field|Michael Reese|Prairie Shores|stadium authority|veto session|dome|domed)\b'
+BEARS_GAME = r'\b(game|games|win|wins|won|loss|losses|beat|beats|draft|quarterback|QB|coach|coaches|injur\w*|playoffs?|score[sd]?|touchdowns?|roster|trade|season opener|kickoff time|tickets? on sale)\b'
+def bears(title):
+    return bool(re.search(r'\bBears\b', title) and re.search(BEARS_SITE, title, re.I) and not re.search(BEARS_GAME, title, re.I))
 def on_topic(name, title):
+    if bears(title): return ['development', 'bears']
     tags = [k for k, rx in TOPICS.items() if re.search(rx, title, re.I if k != 'transit' else 0)]   # topics from the headline only
     if tags == ['development'] and re.search(SOLO, title, re.I) and not re.search(BUILD, title, re.I) \
        and not re.search(TOPICS['development'].replace('tower|', '').replace('stadium|', ''), title, re.I): return []
@@ -70,7 +76,7 @@ FIRST = ['Block Club Chicago', 'Chicago YIMBY', 'Streetsblog Chicago', 'WTTW New
 CHI = r'\b(Chicago|Chicagoans?|Loop|South Side|West Side|North Side|Cook County|CTA|Metra|Johnson administration|City Council)\b'
 # extra feeds read on top of each outlet's main feed: WordPress search feeds (?s=term&feed=rss2) reach further back on
 # the topics we keep, since a main feed only holds the latest 10 to 20 stories
-WP_TERMS = ['zoning', 'housing', 'development', 'apartments', 'CTA', 'budget', 'City Council', 'affordable']
+WP_TERMS = ['zoning', 'housing', 'development', 'apartments', 'CTA', 'budget', 'City Council', 'affordable', 'Bears stadium']
 EXTRA = [(name, base + '/?s=' + urllib.parse.quote_plus(t) + '&feed=rss2') for name, base in
          [('Block Club Chicago', 'https://blockclubchicago.org'), ('South Side Weekly', 'https://southsideweekly.com'), ('Chicago Defender', 'https://chicagodefender.com'), ('The TRiiBE', 'https://thetriibe.com'),
           ('Streetsblog Chicago', 'https://chi.streetsblog.org'), ('Chicago YIMBY', 'https://chicagoyimby.com')] for t in WP_TERMS]
@@ -124,7 +130,7 @@ old = []
 if os.path.exists(OUT):
     try: old = json.load(open(OUT)).get('items', [])
     except Exception: old = []
-old = [o for o in old if not re.search(NOT, o['t'], re.I) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and on_topic(o['s'], o['t'])]   # re-check kept items against the current rules
+old = [o for o in old if (bears(o['t']) or not re.search(NOT, o['t'], re.I)) and not (o['s'] in STATEWIDE and not re.search(CHI, o['t'])) and on_topic(o['s'], o['t'])]   # re-check kept items against the current rules
 seen = {o['u'] for o in old}; items = list(old); status = {}
 now = dt.datetime.now(dt.timezone.utc)
 LOCAL = {n: l for n, l, _ in SOURCES}
@@ -143,7 +149,7 @@ for name, urls in jobs:
         title = html.unescape(re.sub(r'<[^>]+>', '', title)).strip(); d = when(date)
         if not title or not link or link in seen or not d or (now - d).days > 45: continue
         blob = title + ' ' + html.unescape(re.sub(r'<[^>]+>', ' ', desc or ''))[:600] + ' ' + ' '.join(cats)
-        if re.search(NOT, title, re.I): continue
+        if re.search(NOT, title, re.I) and not bears(title): continue
         tags = on_topic(name, title)
         if not tags: continue
         if name in STATEWIDE and not re.search(CHI, title): continue          # statewide outlets: Chicago must be in the headline
