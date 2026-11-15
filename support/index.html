@@ -51,7 +51,8 @@ textarea{min-height:110px}
 .ok{color:#1f7a45;font-weight:600}
 .kofi{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px 20px 8px;margin:8px 0 8px}
 .kofi h2{margin-top:0}
-#kofiframe{display:block;border:0;width:100%;max-width:520px;margin:12px auto 4px;background:#f9f9f9;border-radius:12px}
+.kofiwrap{--k:1;width:min(400px,100%);height:calc(574px * var(--k));margin:14px auto 6px;overflow:hidden;border-radius:16px}
+#kofiframe{display:block;border:0;width:400px;height:712px;background:transparent;transform:scale(var(--k));transform-origin:0 0}
 .kofialt{font-size:14px;text-align:center;color:var(--sc-mute)}
 @media (max-width:640px){ .hero{grid-template-columns:1fr} .hero img{max-width:260px} .cards{grid-template-columns:1fr} }
 </style>
@@ -67,7 +68,16 @@ textarea{min-height:110px}
 <section class="kofi" aria-labelledby="kofiH">
 <h2 id="kofiH">Chip in</h2>
 <p>Payments go through Ko-fi, which takes the card or PayPal payment. We never see your card details.</p>
-<iframe id="kofiframe" src="https://ko-fi.com/shapechicago/?hidefeed=true&amp;widget=true&amp;embed=true&amp;preview=true" title="Chip in to Shape Chicago on Ko-fi" height="712" loading="lazy"></iframe>
+<div class="kofiwrap" id="kofiwrap"><iframe id="kofiframe" src="https://ko-fi.com/shapechicago/?hidefeed=true&amp;widget=true&amp;embed=true&amp;preview=true" title="Chip in to Shape Chicago on Ko-fi" width="400" height="712" loading="lazy"></iframe></div>
+<script>
+/* Ko-fi's panel is a 400px-wide white card on its own gray page. Show only the card: crop the gray below it and
+   scale the whole panel down on narrow screens so the crop stays exact. */
+(function(){
+  const w = document.getElementById("kofiwrap");
+  const fit = () => w.style.setProperty("--k", Math.min(1, w.clientWidth / 400));
+  fit(); if (window.ResizeObserver) new ResizeObserver(fit).observe(w); else addEventListener("resize", fit);
+})();
+</script>
 <p class="kofialt">Panel not showing? <a href="https://ko-fi.com/shapechicago" target="_blank" rel="noopener">Chip in on Ko-fi</a>.</p>
 </section>
 
