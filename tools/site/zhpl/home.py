@@ -40,8 +40,8 @@ T = {
         ('打开红线延伸等真实提案，或画出你自己的地铁、有轨电车或快速公交线路。看看乘客数、造价、汽车出行和二氧化碳。', 'Włącz prawdziwe projekty, np. przedłużenie Czerwonej Linii, albo narysuj własne metro, tramwaj lub linię BRT. Zobacz pasażerów, koszt, przejazdy autem i CO₂.'),
     'Riders · cost · cars · CO₂': ('乘客 · 造价 · 汽车 · 二氧化碳', 'Pasażerowie · koszt · auta · CO₂'),
     'A balance beam with stacks of gold coins on one side and a little city block with a bus on the other.': ('一个天平，一边是一摞摞金币，另一边是一个带公交车的小街区。', 'Waga z monetami po jednej stronie i małym kwartałem miasta z autobusem po drugiej.'),
-    "The 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.":
-        ('2027 年预算一开始就差 8.824 亿美元。选择真实的税收、削减和一次性措施来补上缺口，看看谁来买单，并和往年及市长的方案比较。', 'Budżetowi na 2027 r. brakuje na starcie 882,4 mln dolarów. Wybierz prawdziwe podatki, cięcia i jednorazowe rozwiązania, zobacz, kto płaci, i porównaj z poprzednimi latami oraz planem burmistrza.'),
+    "The 2027 budget starts $918.5 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.":
+        ('2027 年预算一开始就差 9.185 亿美元。选择真实的税收、削减和一次性措施来补上缺口，看看谁来买单，并和往年及市长的方案比较。', 'Budżetowi na 2027 r. brakuje na starcie 918,5 mln dolarów. Wybierz prawdziwe podatki, cięcia i jednorazowe rozwiązania, zobacz, kto płaci, i porównaj z poprzednimi latami oraz planem burmistrza.'),
     'Taxes · cuts · pensions · past years': ('税收 · 削减 · 养老金 · 往年', 'Podatki · cięcia · emerytury · poprzednie lata'), 'Balance it': ('去平衡', 'Zrównoważ'),
     'Four stacks of gold coins, one per city pension fund, each well short of a blue ring marking 90% funded.': ('四摞金币，每个市养老基金一摞，都远低于代表 90% 资金充足的蓝色圆环。', 'Cztery stosy monet, po jednym na każdy miejski fundusz emerytalny, każdy daleko poniżej niebieskiej obręczy oznaczającej 90% pokrycia.'),
     "Chicago's four city pension funds hold about a quarter of what they owe. Choose how much the city pays, what investments earn and whether to borrow. See when each fund gets to 90%, and the bill.":
@@ -72,7 +72,7 @@ T = {
     'How big is the shortage?': ('住房短缺有多大？', 'Jak duży jest niedobór?'), "The region's gap, and Chicago's share": ('整个地区的缺口，以及芝加哥的份额', 'Luka w regionie i udział Chicago'),
     'Do new apartments lower rents?': ('新公寓会降低租金吗？', 'Czy nowe mieszkania obniżają czynsze?'), 'What the studies find': ('研究发现了什么', 'Co pokazują badania'),
     'Who pays for a new line?': ('新线路谁来出钱？', 'Kto płaci za nową linię?'), 'Federal grants, the state and NITA': ('联邦拨款、州政府和 NITA', 'Dotacje federalne, stan i NITA'),
-    'Zone for more homes': ('为更多住房划分区', 'Wyznacz strefy pod więcej mieszkań'), 'Draw a new line': ('画一条新线路', 'Narysuj nową linię'), 'Close the $882M gap': ('补上 8.82 亿美元缺口', 'Zamknij lukę 882 mln $'),
+    'Zone for more homes': ('为更多住房划分区', 'Wyznacz strefy pod więcej mieszkań'), 'Draw a new line': ('画一条新线路', 'Narysuj nową linię'), 'Close the $919M gap': ('补上 9.19 亿美元缺口', 'Zamknij lukę 919 mln $'),
     'Pay down the debt': ('偿还欠账', 'Spłać dług'), 'What can you build?': ('你能建什么？', 'Co możesz zbudować?'), 'Votes and rezonings': ('投票和分区变更', 'Głosowania i zmiany strefowania'),
     'homes by 2041': ('套住房（到 2041 年）', 'mieszkań do 2041 r.'), 'new transit trips a weekday': ('每个工作日新增的公交出行', 'nowych przejazdów w dzień roboczy'), 'to build': ('建设费用', 'na budowę'),
     'the 2027 budget': ('2027 年预算', 'budżet na 2027 r.'), 'a year for a typical homeowner': ('普通房主每年', 'rocznie dla typowego właściciela domu'), '90% funded': ('资金达到 90%', '90% pokrycia'),

@@ -124,12 +124,29 @@ def xfer():
 
 # transit modes
 def subway():
-    tile(); walk(0, 0, T, T - 0.4)
-    box(-1.6, -0.6, -0.02, 4.0, 5.0, 0.06, mat("#3a424c", rough=0.6), bevel=0.02)          # the stairs going down
-    for k in range(6): box(-1.6, -2.6 + k * 0.7, -0.02 - k * 0.0, 3.6, 0.5, 0.06, "#6b737c", bevel=0.01)
-    for side in (-1, 1): box(-1.6 + side * 2.0, -0.6, 0, 0.2, 5.0, 1.0, "steel", bevel=0.02)
-    box(-1.6, 1.9, 0, 4.2, 0.25, 2.6, "steel", bevel=0.03); box(-1.6, 1.95, 2.0, 2.4, 0.06, 0.6, "star", bevel=0.01)
-    tree(3.2, 2.2, 0.1, 0.5); person(2.6, -2.4, "navy", 1.2)
+    """A cutaway: street on top, the tunnel below with a train, stairs going down to it."""
+    dk = mat("#3a424c", rough=0.7); earth = mat("earth", rough=0.95)
+    box(0, 1.0, -4.6, T, T - 2.0, 4.25, earth, bevel=0.3)               # ground behind the tunnel
+    box(0, -4.0, -4.6, T, 2.0, 0.5, earth, bevel=0.15)                    # tunnel floor (front edge)
+    box(0, -2.0, -4.6, T, 6.0, 0.5, dk, bevel=0.05)
+    box(0, -2.0, -1.05, T, 6.0, 0.7, earth, bevel=0.15)                    # the street slab over the tunnel
+    box(0, 0, -0.35, T, T, 0.35, mat("street", rough=0.9), bevel=0.25)
+    walk(0, 3.4, T, 3.2)
+    box(0, -2.0, -4.1, T - 0.2, 0.05, 2.6, dk, bevel=0)                  # the tunnel's back wall
+    for y in (-3.9, -2.7): box(0, y, -4.1, T - 0.4, 0.12, 0.1, "steel", bevel=0)
+    box(0, -3.3, -4.0, T - 0.6, 2.4, 2.4, mat("#d7dbe0", rough=0.35, metal=0.4), bevel=0.3)   # the train
+    box(0, -4.52, -2.85, T - 1.2, 0.05, 0.75, "glassdk", bevel=0.01)
+    box(0, -4.53, -3.4, T - 0.6, 0.05, 0.18, "star", bevel=0.01)
+    for x in (-3.2, 0, 3.2): box(x, -4.54, -3.85, 0.9, 0.05, 1.6, "glassdk", bevel=0.01)
+    # the entrance: stairs down through the sidewalk, rails and a navy sign post
+    for k in range(5): box(-2.6, 2.4 + k * 0.45, -0.3 - (4 - k) * 0.28, 1.8, 0.45, 0.28, "#9aa1a9", bevel=0.01)
+    for side in (-1, 1): box(-2.6 + side * 1.0, 3.3, 0.1, 0.12, 2.4, 0.9, "steel", bevel=0.02)
+    box(-2.6, 2.15, 0.1, 2.1, 0.12, 0.9, "steel", bevel=0.02)
+    cyl(-0.9, 2.2, 0.1, 0.12, 3.2, "steel", verts=8, bevel=0)
+    box(-0.9, 2.2, 2.6, 1.6, 0.18, 0.9, "navy", bevel=0.05); box(-0.9, 2.1, 2.85, 1.0, 0.05, 0.4, "white", bevel=0.01)
+    tree(3.4, 3.6, 0.1, 0.55); person(1.4, 3.0, "star", 1.0); person(-2.6, 3.6, "gold", 0.9)
+    for o in bpy.data.objects:                          # lift it so the shadow floor sits under the tunnel
+        if o.type == "MESH": o.location.z += 3.55
 def elevated():
     tile()
     el_track([(-5.2, 0.4), (5.2, 0.4)], z=4.2, train=True, train_at=0.02, cars=1, stripe="star")

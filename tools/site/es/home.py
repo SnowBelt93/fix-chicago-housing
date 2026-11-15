@@ -35,8 +35,8 @@ T = {
         'Activa propuestas reales como la extensión de la Línea Roja, o dibuja tu propia línea de metro, tranvía o autobús rápido (BRT). Ve pasajeros, costo, viajes en carro y CO₂.',
     'Riders · cost · cars · CO₂': 'Pasajeros · costo · carros · CO₂',
     'A balance beam with stacks of gold coins on one side and a little city block with a bus on the other.': 'Una balanza con monedas de oro de un lado y una pequeña cuadra con un autobús del otro.',
-    "The 2027 budget starts $882.4 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.":
-        'Al presupuesto 2027 le faltan $882.4 millones. Elige impuestos, recortes y soluciones únicas reales para cerrarlo, ve quién paga y compara con años pasados y con el plan del alcalde.',
+    "The 2027 budget starts $918.5 million short. Pick real taxes, cuts and one-time fixes to close it, see who pays, and compare with past years and the Mayor's plan.":
+        'Al presupuesto 2027 le faltan $918.5 millones. Elige impuestos, recortes y soluciones únicas reales para cerrarlo, ve quién paga y compara con años pasados y con el plan del alcalde.',
     'Taxes · cuts · pensions · past years': 'Impuestos · recortes · pensiones · años pasados', 'Balance it': 'Equilibrarlo',
     'Four stacks of gold coins, one per city pension fund, each well short of a blue ring marking 90% funded.': 'Cuatro pilas de monedas, una por cada fondo de pensiones de la ciudad, todas lejos de un aro azul que marca el 90% financiado.',
     "Chicago's four city pension funds hold about a quarter of what they owe. Choose how much the city pays, what investments earn and whether to borrow. See when each fund gets to 90%, and the bill.":
@@ -67,7 +67,7 @@ T = {
     'How big is the shortage?': '¿Qué tan grande es el déficit?', "The region's gap, and Chicago's share": 'El déficit de la región y la parte de Chicago',
     'Do new apartments lower rents?': '¿Los apartamentos nuevos bajan los alquileres?', 'What the studies find': 'Lo que encuentran los estudios',
     'Who pays for a new line?': '¿Quién paga una línea nueva?', 'Federal grants, the state and NITA': 'Fondos federales, el estado y NITA',
-    'Zone for more homes': 'Zonifica para más viviendas', 'Draw a new line': 'Dibuja una línea nueva', 'Close the $882M gap': 'Cierra el déficit de $882M',
+    'Zone for more homes': 'Zonifica para más viviendas', 'Draw a new line': 'Dibuja una línea nueva', 'Close the $919M gap': 'Cierra el déficit de $919M',
     'Pay down the debt': 'Paga la deuda', 'What can you build?': '¿Qué puedes construir?', 'Votes and rezonings': 'Votos y cambios de zonificación',
     'homes by 2041': 'viviendas para 2041', 'new transit trips a weekday': 'viajes nuevos en transporte por día laborable', 'to build': 'para construir',
     'the 2027 budget': 'el presupuesto 2027', 'a year for a typical homeowner': 'al año para un propietario típico', '90% funded': '90% financiado',

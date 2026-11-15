@@ -603,11 +603,14 @@ window.scMap = {
       t.insertBefore(p, t.firstChild); t.classList.add("sc-haspill");
       const now = rect(t, el), from = saved[k];
       if (from && !reduce && (Math.abs(from.x - now.x) > 2 || Math.abs(from.w - now.w) > 2)){
-        p.style.transition = "none"; put(p, from); p.offsetWidth; p.style.transition = ""; requestAnimationFrame(() => put(p, now));
+        p.style.transition = "none"; put(p, from); p.offsetWidth; p.style.transition = "";
+        let done = false; const go = () => { if (!done){ done = true; put(p, rect(t, el)); } };
+        requestAnimationFrame(go); setTimeout(go, 80);          // a hidden tab never runs rAF
       } else put(p, now);
       const re = () => put(p, rect(t, el));
       if ("ResizeObserver" in window) new ResizeObserver(re).observe(t); addEventListener("resize", re);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(re);
+      addEventListener("load", re); addEventListener("pageshow", re); setTimeout(re, 700);
     });
   }
   addEventListener("pagehide", () => {

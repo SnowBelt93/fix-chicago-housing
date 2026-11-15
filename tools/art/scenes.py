@@ -187,8 +187,8 @@ def budget():
     """Balance the Chicago Budget: a balance beam on a city block, a stack of coins on one pan and a little block of
     flats, a fire station and a bus on the other, level."""
     random.seed(5)
-    ground(64, 34)
-    sidewalk(0, -12, 64, 2.2)
+    ground(54, 24)
+    sidewalk(0, -10.9, 54, 2.2)
     # the fulcrum and beam
     cyl(0, 0, 0.0, 2.2, 1.0, mat("steel", rough=0.4), verts=32)
     box(0, 0, 1.0, 1.6, 1.6, 12.0, mat("steel", rough=0.4), bevel=0.15)
@@ -208,7 +208,7 @@ def budget():
     box(20, -3.4, 6.6, 6.0, 1.9, 1.6, mat("#f4f5f6", rough=0.35), bevel=0.4)          # a bus
     box(20, -4.37, 7.5, 5.4, 0.05, 0.5, "glassdk", bevel=0)
     tree(20 + 4.6, 2.4, 6.6, 0.45)
-    tree(-26, 9, 0, 0.9); tree(27, 10, 0, 0.8); tree(-9, -10, 0, 0.7)
+    tree(-24, 8, 0, 0.9); tree(24.5, 9, 0, 0.8); tree(-9, -8.5, 0, 0.7)
     return dict(ortho=54, target=(0, -1, 7), elev=22, azim=-100, sun=(42, -150))
 
 def pensions():
@@ -347,36 +347,46 @@ def prism(ring, z, h, m, name="prism"):
     return o
 
 def wards():
-    """Ward housing records: all 50 wards as raised clay tiles, each as tall as the homes it permitted in the last 12
-    months (Permit Tracker, tracker/data.json), the tallest marked with a red star. Seen from over the lake."""
+    """Ward housing records: all 50 wards as raised clay tiles (shape/wardshapes.json, shared borders), each as tall
+    as the homes it permitted in the last 12 months (Permit Tracker, tracker/data.json), the tallest marked with a red
+    star. North is up; Lake Michigan follows the real shoreline (meta.json lake)."""
     import json, os
     root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
-    W = json.load(open(os.path.join(root, "wards.json")))
+    WS = json.load(open(os.path.join(root, "shape", "wardshapes.json")))
+    q = WS["q"]
     T = {w["ward"]: w for w in json.load(open(os.path.join(root, "tracker", "data.json")))["wards"]}
     lon0, lat0, k = -87.68, 41.84, 1.3        # 1.3 scene units per km
     kx, ky = 111.32 * math.cos(math.radians(lat0)) * k, 110.57 * k
     P = lambda lo, la: ((lo - lon0) * kx, (la - lat0) * ky)
     top = max(T[w]["last12"] for w in T)
-    ramp = ["#86c6e8", "#56b0e0", "#3a96d2", "#2f74b8", "#2b5da0", "#1d4580"]
+    ramp = ["#e4e2db", "#d3d8de", "#a9bfd6", "#7b9cc4", "#4d76ad", "#2b5da0"]
     best = max(T, key=lambda w: T[w]["last12"])
-    box(-4, -1, -2.4, 56, 62, 1.8, mat("#dfe2da", rough=0.9), bevel=0.25)
-    box(20, -1, -0.75, 8, 62, 0.5, mat("lake", rough=0.08, spec=0.6), bevel=0.15)    # the lake along the east edge
-    for w in W:
-        n = T.get(w["ward"], {}).get("last12", 0); f = (n / top) ** 0.6
-        h = 0.4 + 10 * f; col = ramp[min(5, int(f * 5.99))]
-        for poly in w["polys"]:
-            ring = [P(*p) for p in poly[0]]
-            if len(ring) > 3 and ring[0] == ring[-1]: ring = ring[:-1]
-            # simplify: drop points closer than 0.15 units
-            out = [ring[0]]
-            for p in ring[1:]:
-                if math.hypot(p[0] - out[-1][0], p[1] - out[-1][1]) > 0.15: out.append(p)
-            if len(out) >= 3: prism(out, -0.6, h + 0.6, mat(col, rough=0.6), name="w%d" % w["ward"])
-        if w["ward"] == best:
-            bx, by = P(w["lon"], w["lat"])
-            cyl(bx, by, h, 0.12, 3.2, "steel", verts=8, bevel=0)
-            star_pin(bx, by, h + 3.2)
-    return dict(ortho=74, target=(-5, -1, 1), elev=40, azim=-6, sun=(42, -40))
+    from shapely.geometry import Polygon, box as sbox
+    from shapely.ops import unary_union
+    def rings_of(g):
+        gs = [g] if g.geom_type == "Polygon" else list(getattr(g, "geoms", []))
+        return [list(x.exterior.coords)[:-1] for x in gs if x.geom_type == "Polygon" and x.area > 0.2]
+    # the lake: meta.json's polygon clipped to a box around the city
+    lake = Polygon([P(lo, la) for lo, la in json.load(open(os.path.join(root, "meta.json")))["lake"][0]]).buffer(0)
+    city = unary_union([Polygon([P(r[i] * q, r[i + 1] * q) for i in range(0, len(r), 2)]).buffer(0)
+                        for rs in WS["wards"].values() for r in rs])
+    lake = lake.intersection(city.buffer(7, join_style=1)).intersection(sbox(-30, -29.5, 30, 27.5)).simplify(0.05)
+    for r in rings_of(lake): prism(r, -0.9, 0.35, mat("#8cc4e8", rough=0.12, spec=0.6), name="lake")
+    order = sorted(T, key=lambda w: T[w]["last12"])           # color by rank so the map isn't all one shade
+    cent = {}
+    for wk, rings in WS["wards"].items():
+        wn = int(wk); n = T.get(wn, {}).get("last12", 0); f = (n / top) ** 0.5
+        h = 0.35 + 6.0 * f; col = ramp[min(5, int(order.index(wn) / 50 * 6))] if wn in T else ramp[0]
+        polys = [Polygon([P(r[i] * q, r[i + 1] * q) for i in range(0, len(r), 2)]).buffer(0) for r in rings]
+        geom = unary_union(polys).simplify(0.06)
+        rs = rings_of(geom)
+        for r in rs: prism(r, -0.9, h + 0.9, mat(col, rough=0.6), name="w%d" % wn)
+        big = max(([geom] if geom.geom_type == "Polygon" else list(geom.geoms)), key=lambda x: x.area)
+        c = big.representative_point(); cent[wn] = (c.x, c.y, h)
+    bx, by, h = cent[best]
+    cyl(bx, by, h, 0.14, 3.0, "steel", verts=8, bevel=0)
+    star_pin(bx, by, h + 3.0, s=1.1, rot=math.radians(-38))
+    return dict(ortho=90, target=(0, 1.5, 0), elev=36, azim=-38, sun=(45, -130), floor=-0.9)
 
 def star_pin(x, y, z, s=1.0, rot=0.0):
     """A red six-point star standing on edge, facing the camera's side."""
@@ -439,16 +449,18 @@ def storefront():
     return dict(ortho=18, target=(0, -1, 3.6), elev=14, azim=-104, sun=(40, -150))
 
 def jar():
-    """Chip in: a tip jar of gold coins with a red star label, on a little block of sidewalk."""
+    """Chip in: a glass tip jar of gold coins with a red star label, on a little block of sidewalk."""
     box(0, 0, -0.5, 9, 7, 0.5, mat("curb", rough=0.85), bevel=0.15)
-    g = mat("#dceef8", rough=0.05, spec=0.8, alpha=0.28)
-    cyl(0, 0, 0, 1.9, 4.2, g, verts=48, bevel=0.06)
+    gold = mat("gold", rough=0.3, metal=0.75)
+    for k in range(7):                                     # a neat stack, then a few leaning on it
+        cyl(0.1 * (k % 2), -0.05 * (k % 3), 0.06 + k * 0.24, 1.25, 0.22, gold, verts=36, bevel=0.03)
+    for (x, y, z) in [(-0.6, 0.9, 0.06), (0.8, 0.8, 0.06), (-0.4, 0.5, 0.3)]:
+        cyl(x, y, z, 0.75, 0.22, gold, verts=32, bevel=0.03)
+    cyl(0, 0, 0, 1.9, 4.2, mat("#f4fafd", rough=0.02, spec=0.9, alpha=0.07), verts=48, bevel=0.06)
     cyl(0, 0, 4.2, 1.6, 0.45, mat("#d7dbe0", rough=0.3, metal=0.6), verts=48, bevel=0.04)
-    for k in range(9):
-        a = k * 0.7; cyl(0.25 * math.cos(a), 0.25 * math.sin(a), 0.08 + k * 0.22, 1.35, 0.2, mat("gold", rough=0.3, metal=0.75), verts=36, bevel=0.03)
-    for (x, y, z, rx) in [(2.6, -1.2, 0, 0), (3.1, 0.6, 0, 0), (2.8, -0.2, 0.21, 0)]:
-        cyl(x, y, z, 0.7, 0.2, mat("gold", rough=0.3, metal=0.75), verts=32, bevel=0.03)
-    star_pin(0, -2.0, 1.1, 0.7, rot=math.pi / 2)
+    for (x, y, z) in [(2.6, -1.2, 0), (3.1, 0.6, 0), (2.8, -0.2, 0.21)]:
+        cyl(x, y, z, 0.7, 0.2, gold, verts=32, bevel=0.03)
+    star_pin(-0.12, -1.96, 1.9, 0.55, rot=-math.pi / 2)    # the star on the glass
     return dict(ortho=10, target=(0.4, 0, 2.1), elev=16, azim=-100, sun=(42, -140))
 
 def stadium():

@@ -69,5 +69,6 @@ $("rmForm").onsubmit = e => { e.preventDefault(); const m = $("rm").value.match(
 $("keyForm").onsubmit = e => { e.preventDefault(); const k = $("key").value.trim(); if (k) load(k); };
 try { const k = localStorage.getItem("sc-fb-key"); if (k){ $("key").value = k; load(k); } } catch (e){}
 </script>
+<p style="max-width:760px;margin:40px auto 24px;padding:0 20px;font-size:12px;color:#5d6570">Not affiliated with the City of Chicago.</p>
 </body>
 </html>
