@@ -395,7 +395,7 @@ function nearLake(lon, lat){ const [x, y] = xy(lon, lat); let best = 1e9;
 
 /* ---------- the map ---------- */
 let map, mode = "list", cur = null, pin = null, M = {};
-function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(city|com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
 async function initMap(){
   let style = {version:8, glyphs:"https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf", sources:{}, layers:[{id:"bg", type:"background", paint:{"background-color":"#eef1f4"}}]};
   if (ownDomain()) try { style = await fetch("https://tiles.openfreemap.org/styles/positron").then(r => r.json()); } catch (e) {}

@@ -1867,7 +1867,7 @@ function evalMetra(L){
 }
 
 /* ---------- map ---------- */
-function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(city|com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
 function fallbackStyle(){
   const lake = {type:"FeatureCollection", features:(NET.lake || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
   const city = {type:"FeatureCollection", features:(NET.cityOutline || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};

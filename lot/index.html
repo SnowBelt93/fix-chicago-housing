@@ -269,7 +269,7 @@ function ringLL(T, f){ const [x0, y0] = corner(T.ix, T.iy), out = []; for (let i
 
 /* ---------- map ---------- */
 let map;
-function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(city|com|org)|workers\.dev)$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
 async function initMap(){
   let style = {version:8, sources:{}, layers:[{id:"bg", type:"background", paint:{"background-color":"#eef1f4"}}]}, credit = "City of Chicago, Cook County Assessor";
   if (ownDomain()){
