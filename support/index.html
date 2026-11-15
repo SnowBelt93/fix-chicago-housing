@@ -51,7 +51,7 @@ textarea{min-height:110px}
 .ok{color:#1f7a45;font-weight:600}
 .kofi{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px 20px 8px;margin:8px 0 8px}
 .kofi h2{margin-top:0}
-.kofiwrap{--k:1;width:min(400px,100%);height:calc(574px * var(--k));margin:14px auto 6px;overflow:hidden;border-radius:16px}
+.kofiwrap{--k:1;width:min(400px,100%);height:calc(574px * var(--k));margin:4px auto 6px;overflow:hidden;border-radius:16px}
 #kofiframe{display:block;border:0;width:400px;height:712px;background:transparent;transform:scale(var(--k));transform-origin:0 0}
 .kofialt{font-size:14px;text-align:center;color:var(--sc-mute)}
 @media (max-width:640px){ .hero{grid-template-columns:1fr} .hero img{max-width:260px} .cards{grid-template-columns:1fr} }
@@ -65,9 +65,7 @@ textarea{min-height:110px}
 </header>
 <main class="sc-main sc-narrow">
 <div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › Support</p><h1>Support Shape Chicago</h1><p class="sc-lede">Shape Chicago is free, has no accounts and never will. If it helped you understand your city, you can chip in to keep it running.</p></div><img class="sc-pgart" src="/shape/art/support.webp" width="600" height="420" alt=""></div>
-<section class="kofi" aria-labelledby="kofiH">
-<h2 id="kofiH">Chip in</h2>
-<p>Payments go through Ko-fi, which takes the card or PayPal payment. We never see your card details.</p>
+<section class="kofi" aria-label="Chip in on Ko-fi">
 <div class="kofiwrap" id="kofiwrap"><iframe id="kofiframe" src="https://ko-fi.com/shapechicago/?hidefeed=true&amp;widget=true&amp;embed=true&amp;preview=true" title="Chip in to Shape Chicago on Ko-fi" width="400" height="712" loading="lazy"></iframe></div>
 <script>
 /* Ko-fi's panel is a 400px-wide white card on its own gray page. Show only the card: crop the gray below it and
