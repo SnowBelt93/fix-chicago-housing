@@ -394,11 +394,11 @@ html body :is(.sc-btn.primary,.sc-btn.sc-primary,.btn.primary,.btn.dark,button.n
 html body .btn.quiet{background:transparent !important;border-color:transparent !important;color:var(--sc-navy) !important;border-radius:999px !important}
 html body #playRow > button{border-radius:999px !important}
 html body .btn.quiet:hover{background:var(--sc-seg)}
-/* buttons on the dark walkthrough tip: light text and a white main button so both read on the dark card */
+/* buttons on the dark walkthrough tip: light text on Skip, and the same navy main button with white text as everywhere else (a lighter edge keeps it visible on the dark card) */
 html body .tip .btn.quiet{color:#d6e4f5 !important}
 html body .tip .btn.quiet:hover{background:rgba(255,255,255,.12) !important}
-html body .tip .btn.primary{background:#fff !important;border-color:#fff !important;color:var(--sc-ink) !important}
-html body .tip .btn.primary:hover{background:#e8eef6 !important;border-color:#e8eef6 !important}
+html body .tip .btn.primary{background:var(--sc-navy) !important;border-color:#5b86c4 !important;color:#fff !important}
+html body .tip .btn.primary:hover{background:var(--sc-navy2) !important;border-color:#7aa0d6 !important;color:#fff !important}
 html body :is(.sc-btn,.btn):disabled{opacity:.45;cursor:default}
 html body .btn[aria-pressed="true"]{background:var(--sc-navy);border-color:var(--sc-navy);color:#fff}
 
