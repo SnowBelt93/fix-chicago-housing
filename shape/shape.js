@@ -502,8 +502,10 @@ window.scMap = {
   function popin(root){
     (root.querySelectorAll ? root.querySelectorAll("[data-popin]:not(.sc-popready)") : []).forEach(c => {
       c.classList.add("sc-popready"); if (RM) { c.classList.add("sc-popgo"); return; }
-      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ c.classList.add("sc-popgo"); io.disconnect(); } }), {threshold: .25});
-      io.observe(c);
+      // threshold 0: a tall grid (the home tools on a phone) is never 25% on screen, so it never popped in
+      const show = () => { c.classList.add("sc-popgo"); io.disconnect(); };
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) show(); }), {threshold: 0, rootMargin: "0px 0px 80px 0px"});
+      io.observe(c); setTimeout(() => { if (!c.classList.contains("sc-popgo") && c.getBoundingClientRect().top < innerHeight * 2) show(); }, 2500);
     });
   }
   window.scBurst = el => {
