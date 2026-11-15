@@ -63,6 +63,19 @@
 if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|anthropic|usercontent/.test(location.hostname)){
   addEventListener("load", () => { navigator.serviceWorker.register("/sw.js").catch(() => {}); });
 }
+/* Sticky top bar: on every page that scrolls (not the map tools, whose header sits over a full-screen map) */
+(function(){
+  const MAPS = /^\/(housing|transit|bears|lot|history)\//;
+  if (MAPS.test(location.pathname)) return;
+  const fix = () => { const h = document.querySelector(".sc-head");
+    if (!h) return; const pos = getComputedStyle(h).position;   // sticky or fixed headers already stay put
+    if (pos === "absolute") document.documentElement.classList.add("sc-fixhead");
+    else if (pos === "relative" || pos === "static") document.documentElement.classList.add("sc-fixhead", "sc-stickhead"); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fix); else fix();
+  const on = () => document.documentElement.classList.toggle("sc-scrolled", scrollY > 4);
+  addEventListener("scroll", on, {passive:true}); on();
+})();
+
 /* Header menus (Simulators, Progress): each button opens a list under it (fixed, so the scrolling tab bar can't clip it) */
 (function(){
   function f(){

@@ -29,7 +29,7 @@ a{color:var(--sc-navy)}
 .intro{grid-column:1 / -1}
 h1{font-size:var(--sc-h1);line-height:1.05;letter-spacing:-.03em;font-weight:600;margin:0 0 12px}
 .intro p{font-size:18px;line-height:1.55;color:var(--sc-ink2);margin:0;max-width:36em}
-nav.toc{position:sticky;top:20px;align-self:start}
+nav.toc{position:sticky;top:calc(var(--sc-head) + 20px);align-self:start}
 .toc h3{font-size:13px;font-weight:600;color:var(--sc-mute);margin:0 0 6px}
 .toc ul{list-style:none;margin:0 0 20px;padding:0;display:flex;flex-direction:column;gap:2px}
 .toc a{display:block;padding:6px 10px;border-radius:8px;text-decoration:none;color:var(--sc-ink2);font-size:14px;line-height:1.3}
@@ -37,7 +37,7 @@ nav.toc{position:sticky;top:20px;align-self:start}
 .toc a.on{background:var(--sc-seg);color:var(--sc-ink);font-weight:600}
 .topic{padding:0 0 34px;margin:0 0 34px;border-bottom:1px solid var(--sc-line)}
 .topic:last-child{border-bottom:0}
-.part{margin:6px 0 26px;padding:16px 20px;border-radius:16px;background:var(--sc-navy);color:#fff;scroll-margin-top:80px}.part h2{margin:0;font-size:21px;font-weight:600;letter-spacing:-.01em}.part p{margin:4px 0 0;font-size:15px;line-height:1.4;opacity:.9}
+.part{margin:6px 0 26px;padding:16px 20px;border-radius:16px;background:var(--sc-navy);color:#fff;scroll-margin-top:calc(var(--sc-head) + 20px)}.part h2{margin:0;font-size:21px;font-weight:600;letter-spacing:-.01em}.part p{margin:4px 0 0;font-size:15px;line-height:1.4;opacity:.9}
 .topic h2{font-size:26px;letter-spacing:-.02em;font-weight:600;margin:0 0 10px}
 .topic .art{width:100%;height:auto;display:block;margin:2px 0 14px;border-radius:18px;background:linear-gradient(180deg,#f6f8f5,#e8ede7)}
 .topic .lead{font-size:19px;line-height:1.45;color:var(--sc-ink);font-weight:500}
@@ -59,7 +59,11 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
   .wrap{grid-template-columns:1fr;gap:20px;padding:28px 16px 48px}
   h1{font-size:34px} .intro p{font-size:16px}
   nav.toc{display:none}
-  .tocsel{display:flex} .topic{scroll-margin-top:72px}
+  .tocsel{display:flex} .topic,.part{scroll-margin-top:calc(var(--sc-head) + 64px)}
+  /* phones: the four "get involved" links become one swipeable row, so the first question shows sooner */
+  .involve{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:16px -16px 0;padding:0 16px 4px;scrollbar-width:none}
+  .involve::-webkit-scrollbar{display:none}
+  .involve a{flex:0 0 72%;scroll-snap-align:start;padding:10px 12px}
   .topic h2{font-size:22px} .topic .lead{font-size:17px}
   footer .fw{flex-direction:column;align-items:flex-start;padding-inline:16px}
 }
@@ -113,7 +117,7 @@ footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
 /* Nov 8: selected = solid navy */
 .toc a.on{background:var(--sc-navy) !important;color:#fff !important}
 /* phones: one "Jump to a topic" menu instead of a row of pills (sticky under the header) */
-.tocsel{display:none;position:sticky;top:0;z-index:5;align-items:center;gap:10px;margin:0 -16px;padding:10px 16px;background:var(--sc-page,#f3f5f7);border-bottom:1px solid var(--sc-line)}
+.tocsel{display:none;position:sticky;top:var(--sc-head);z-index:5;align-items:center;gap:10px;margin:0 -16px;padding:10px 16px;background:var(--sc-page,#f3f5f7);border-bottom:1px solid var(--sc-line)}
 .tocsel label{font-size:13px;font-weight:600;color:var(--sc-ink2);white-space:nowrap}
 .tocsel select{flex:1;min-width:0;font:500 15px var(--sc-font);color:var(--sc-ink);background:#fff;border:1px solid var(--sc-line);border-radius:10px;padding:0 12px;min-height:42px}
 /* Nov 8: one hover rule for everything you can open (see shape.css) */

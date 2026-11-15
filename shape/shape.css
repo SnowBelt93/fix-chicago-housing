@@ -516,3 +516,10 @@ html body button.sc-switch{width:46px !important;height:28px !important;min-heig
 .sc-haspill > a,.sc-haspill > .sc-sims > .sc-simbtn{position:relative;z-index:1}
 html body .sc-haspill > a[aria-current="page"],html body .sc-haspill > .sc-sims > .sc-simbtn[aria-current="page"]{background:transparent !important;box-shadow:none !important}
 @media (prefers-reduced-motion:reduce){ .sc-pagepill{transition:none} }
+
+/* Sticky top bar on scrolling pages (shape.js adds .sc-fixhead) */
+html.sc-fixhead .sc-head{position:fixed;transition:box-shadow .2s}
+html.sc-fixhead.sc-stickhead .sc-head{position:sticky !important;top:0 !important}
+html.sc-fixhead.sc-scrolled .sc-head{box-shadow:0 1px 0 var(--sc-line),0 6px 18px rgba(26,29,33,.06)}
+input[type=range]:not(.yrrange){accent-color:var(--sc-navy)}
+html.sc-fixhead{scroll-padding-top:calc(var(--sc-head) + 12px)}

@@ -845,6 +845,18 @@ DECISIONS = [
    'weigh': [('Comment on the budget', NITA_COMMENT, 'NITA’s page with the full proposal and how to comment'), ('See what new service does', '/transit/', 'Switch on proposals and see riders, cost and trip times'), ('What the 2025 law changed', '/learn/#nita', 'One minute on the new agency and its money')],
    'sources': [src('NITA press release, Nov. 2026', NITA_BUDGET), src('NITA: 2027 regional transit budget', NITA_COMMENT)],
    'note': 'All figures are from NITA’s proposal. The board can change it before the vote.'},
+  {'slug': 'bears-stadium', 'vote': '2026-12-03', 'what': 'Veto session ends', 'mon': 'DEC', 'd': '3', 'checked': 'Nov. 14, 2026',
+   'name': 'Where the Bears build', 'card': 'Arlington Heights or Hammond · Illinois lawmakers could vote by Dec. 3',
+   'h1': 'Illinois lawmakers could vote on a Bears stadium bill in the veto session, which ends Dec. 3. Indiana already passed its law.',
+   'who': 'The Bears pick the site. Illinois needs a new law to set up a stadium authority; Indiana passed its version in February 2026. The Bears say Arlington Park and Hammond are their only two options.',
+   'tiles': [('2', 'sites the Bears call their options: Arlington Park and Hammond'), ('Dec. 3', 'last day of the Illinois veto session'), ('$197.2M', 'what the Bears paid for Arlington Park in 2023'), ('$2B', 'private money the Bears say they’d put into a Hammond stadium')],
+   'sides': [('Illinois: Arlington Heights', ['A bill would let a town set up a stadium authority that owns the stadium, so it would pay no property taxes', 'The Bears would pay to build it; public money would cover roads and infrastructure', 'The Bears bought the 326-acre Arlington Park site in 2023', 'Developers have also pitched South Works and the Michael Reese site in Chicago; both would need the same law']),
+             ('Indiana: Hammond', ['Senate Bill 27 (signed Feb. 26, 2026) created a Northwest Indiana Stadium Authority', 'It would be paid for by food and beverage, hotel and admissions taxes and toll road fees', 'The Bears are checking two sites near Wolf Lake', 'On Nov. 7 Indiana’s governor urged the Bears to “fully commit”'])],
+   'dates': [('2026-02-26', 'Feb. 26', 'Indiana’s governor signs the stadium authority law'), ('2026-11-04', 'Nov. 4', 'Bears leaders and the NFL commissioner meet Illinois lawmakers'), ('2026-11-07', 'Nov. 7', 'Indiana’s governor urges the Bears to fully commit to Hammond'),
+             ('2026-11-12', 'Nov. 12', 'Developers pitch a stadium at the Michael Reese site'), ('2026-11-19', 'Nov. 17–19', 'Illinois veto session, first week'), ('2026-12-03', 'Dec. 1–3', 'Veto session, second week: the last chance this year for the Illinois bill')],
+   'weigh': [('Compare the sites', '/bears/', 'Trains, parking, hotels and neighbors, measured the same way at every site'), ('Contact your state lawmakers', 'https://www.ilga.gov/', 'The Illinois General Assembly’s site lists your senator and representative'), ('Follow the bills', '/progress/springfield/', 'Every Chicago bill in Springfield, updated daily')],
+   'sources': [src('CBS Chicago, Oct. 29, 2026', 'https://www.cbsnews.com/chicago/news/chicago-bears-stadium-deal-springfield-vote-november-veto-session/'), src('FOX 32, Nov. 6, 2026', 'https://www.fox32chicago.com/news/chicago-bears-weigh-illinois-stadium-options-indiana-seeks-commitment'), src('WTTW, Nov. 6, 2026', 'https://news.wttw.com/2026/11/06/pritzker-says-chicago-bears-stadium-legislation-could-be-voted-fall-veto-session'), src('Chicago Sun-Times, Feb. 26, 2026', 'https://chicago.suntimes.com/bears/2026/02/26/bears-stadium-hammond-indiana-hammong-senate-passes-bill-27-arlington-heights-george-mccaaskey-kevin-warren-nfl'), src('Chicago Sun-Times, Nov. 12, 2026', 'https://chicago.suntimes.com/bears-stadium/2026/11/12/michael-reese-hospital-developers-10-billion-stadium-bears')],
+   'note': 'No vote had happened when this was checked. The Illinois bill’s details could change before a vote.'},
 ]
 def decision(D):
     li = ''.join(f'<li data-date="{iso}"><span class="when">{d}</span><span class="what">{t}</span><span class="st"></span></li>' for iso, d, t in D['dates'])
@@ -897,7 +909,26 @@ def overview():
     cards = ''.join(f'<a class="card sec" href="/progress/{k}/"><span class="t">{name[k]}<span aria-hidden="true">›</span></span><span class="n{" sm" if len(n) > 9 else ""}">{n}</span><span class="d">{d}</span>{g}<span class="ch">{c}</span></a>' for k, n, d, g, c in SECS)
     grid = f'<section class="blk"><h2>Everything else we count</h2><div class="grid4">{cards}</div></section>'
     foot = '<p class="fine src">Each section lists its own sources and shows the date its data runs through. Homes permitted updates every morning; the other sections were last checked ' + SNAP + '.</p>'
-    return page('', 'Progress', 'What Chicago built, rezoned and ran, and where its big projects stand, counted from public records.', head + lead + decs + grid + foot)
+    return page('', 'Progress', 'What Chicago built, rezoned and ran, and where its big projects stand, counted from public records.', head + week() + lead + decs + grid + foot)
+
+def week():
+    # what changed in the last seven days, so a return visit shows movement first
+    import datetime as dt
+    end = dt.date.fromisoformat(T['through']); start = (end - dt.timedelta(days=6)).isoformat()
+    today = dt.date.fromisoformat(TODAY); wk = (today - dt.timedelta(days=6)).isoformat()
+    pr = [p for p in T.get('projects', []) if start <= p.get('date', '') <= T['through'] and not p.get('partial')]
+    homes = sum(p.get('homes') or 0 for p in pr)
+    zn = [z for z in T.get('zoning', {}).get('recent', []) if (z.get('final') or '') >= wk]
+    try: bl = [b for b in json.load(open(os.path.join(ROOT, 'tracker', 'bills.json')))['bills'] if b.get('last') and b['last'][0] >= wk]
+    except Exception: bl = []
+    try: nw = [i for i in json.load(open(os.path.join(ROOT, 'news', 'data', 'news.json')))['items'] if i['d'][:10] >= wk]
+    except Exception: nw = []
+    bits = []
+    if pr: bits.append(f'<a href="/progress/homes/"><b>{f(homes)}</b><span>homes permitted in {len(pr)} new {"building" if len(pr) == 1 else "buildings"} of 5+ homes</span></a>')
+    bits.append(f'<a href="/progress/zoning/"><b>{len(zn)}</b><span>zoning {"change" if len(zn) == 1 else "changes"} passed</span></a>')
+    if bl: bits.append(f'<a href="/progress/springfield/"><b>{len(bl)}</b><span>Chicago {"bill" if len(bl) == 1 else "bills"} moved in Springfield</span></a>')
+    if nw: bits.append(f'<a href="/news/"><b>{len(nw)}</b><span>new {"story" if len(nw) == 1 else "stories"} in the news</span></a>')
+    return f'<section class="wk" aria-label="This week"><span class="wkh">This week</span>{"".join(f"<span>{b}</span>" for b in bits)}</section>'
 
 # ---------------------------------------------------------------- Progress, next version (preview at /progress/preview/; Kyle asked to see it before it replaces the overview)
 LAWS = [('2021-03-17', 'Demolition fee near the 606 and in Pilsen'), ('2021-04-21', 'Affordable housing rule raised (ARO)'), ('2022-07-20', 'More homes allowed near transit (ETOD)'),
@@ -1168,6 +1199,13 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
   .pg table.proj td:nth-child(4),.pg table.proj td:last-child{grid-column:1/-1} .pg ol.dl li{grid-template-columns:86px minmax(0,1fr)} .pg ol.dl .st{grid-column:2}.pg table.proj td:nth-child(2)::before{content:none}
 }
 @media (max-width:480px){.pg .chip{white-space:normal}}
+
+/* "This week" strip at the top of the overview */
+.pg .wk{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:4px 0 18px;padding:12px 14px;background:#fff;border:1px solid var(--sc-line);border-radius:14px}
+.pg .wk .wkh{font-weight:700;font-size:13px;color:var(--sc-ink);margin-right:4px}
+.pg .wk a{display:inline-flex;gap:5px;align-items:baseline;padding:6px 12px;border-radius:999px;background:var(--sc-seg,#eef1f4);color:var(--sc-ink);text-decoration:none;font-size:13.5px}
+.pg .wk a:hover{background:#e3e9f2}
+.pg .wk b{color:var(--sc-navy)}
 '''
 
 MOVED_ROOM = '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Zoning · Progress · Shape Chicago</title><meta http-equiv="refresh" content="0; url=/progress/zoning/#room"><link rel="canonical" href="/progress/zoning/"></head><body><p><a href="/progress/zoning/#room">Room to grow is now part of Zoning.</a></p></body></html>\n'

@@ -813,7 +813,7 @@ function money(n){ const a = Math.abs(n);
   if (a >= 1e6) return "$" + Math.round(n / 1e6).toLocaleString() + "M";
   if (a >= 1e3) return "$" + Math.round(n / 1e3) + "K";
   return "$" + Math.round(n); }
-function moneyRange(a, b){ const fa = money(a), fb = money(b);
+function moneyRange(a, b){ const fa = money(a), fb = money(b); if (fa === fb) return fa;
   if (fa.slice(-1) === fb.slice(-1) && fa.slice(-1).match(/[BMK]/)) return fa.slice(0, -1) + "–" + fb.slice(1); return fa + "–" + fb; }
 const miFmt = m => (m / MI).toFixed(m / MI < 10 ? 1 : 0);
 
@@ -898,7 +898,7 @@ function buildNet(net){
   const zStops = new Array(nz);   // stops within 1/2 mile of each zone: [stop, minutes, ...]
   for (let z = 0; z < nz; z++){ const a = []; near(sg, Z.x[z], Z.y[z], net.accessM, k => sx[k], k => sy[k], (k, d2) => a.push(k, Math.sqrt(d2) / net.walk)); zStops[z] = a; }
   NW = {net, nS, N, sx, sy, sg, adj, posStop, hw, posRoute, Z, nz, zg, zStops, served:[...Array(nz).keys()].filter(z => zStops[z].length)};
-  for (const k in SOLO) delete SOLO[k];
+  for (const k in SOLO) delete SOLO[k]; for (const k in SOLOC) delete SOLOC[k];
   if (cur) openLine(cur); else if ($("vStart").classList.contains("on")) openStart(); else if ($("vGroup").classList.contains("on")) openGroup(nav.g); else if ($("vNita").classList.contains("on")) renderNITA();
   renderBar();
 }
@@ -1100,12 +1100,12 @@ function freshSystem(){   // {today, mine} once both are counted; starts the wor
 function setFresh(on, keep){
   if (on && !FRESH) FRESH = {on:new Set(keep === "all" ? ROUTES() : [])};
   if (!on) FRESH = null;
-  T0C.clear(); TRIPS.clear(); for (const k in SOLO) delete SOLO[k]; AFTER = null; SOLOG.clear(); ACC0.clear(); TT.clear && TT.clear();
+  T0C.clear(); TRIPS.clear(); for (const k in SOLO) delete SOLO[k]; for (const k in SOLOC) delete SOLOC[k]; AFTER = null; SOLOG.clear(); ACC0.clear(); TT.clear && TT.clear();
   save(); applyFreshMap(); renderPlan(); if ($("vStart").classList.contains("on")) openStart();
 }
 function toggleRoute(r, on){
   if (!FRESH) return; if (r !== "__none__"){ if (on) FRESH.on.add(r); else FRESH.on.delete(r); }
-  T0C.clear(); TRIPS.clear(); for (const k in SOLO) delete SOLO[k]; AFTER = null; SOLOG.clear(); TT.clear && TT.clear();
+  T0C.clear(); TRIPS.clear(); for (const k in SOLO) delete SOLO[k]; for (const k in SOLOC) delete SOLOC[k]; AFTER = null; SOLOG.clear(); TT.clear && TT.clear();
   save(); applyFreshMap(); renderBar(); renderFresh();
 }
 function applyFreshMap(){
@@ -1265,7 +1265,7 @@ function loadGeo(){
       GEO.rail = {segs, G, cell};
     }
     $("snapRow").style.display = "";
-    buildRoads(); for (const k in SOLO) delete SOLO[k];
+    buildRoads(); for (const k in SOLO) delete SOLO[k]; for (const k in SOLOC) delete SOLOC[k];
     if (lines.some(L => L.type !== "metra" && onStreets(L.mode))){ renderPlan(); if (cur) openLine(cur); else { renderMyLines(); renderGroups(); renderBar(); } }
     if (map && map.getSource("geo-water") && !ownDomain()) drawGeoBase();
   }).catch(() => {});
@@ -2429,11 +2429,34 @@ function showOff(L){
 }
 function loadPreset(P){ let L = presetLine(P); if (!L){ L = presetToLine(P); lines.push(L); save(); } openLine(L); }   // open its full numbers
 // riders for a proposal on its own, for the list (cached; computed off the main path)
-const SOLO = {};
+const SOLO = {}, SOLOC = {};
+// build cost spread over 30 years plus a year's running cost, over a year of new transit trips (null when it adds none)
+function costPerNew(L){ const n = L.newRiders || 0; if (n <= 0) return null; const cap = L.capitalToday ? (L.capitalToday[0] + L.capitalToday[1]) / 2 : 0;
+  return (cap / 30 + (L.opYear || 0)) / (n * YEAR_DAYS); }
+// where a line's cost per new trip sits among the official rail and bus proposals worked out so far
+function costRank(v, self){
+  const ps = PRESETS.filter(P => P.group !== "metra" && P.id !== self), have = ps.map(P => [P, SOLOC[P.id]]).filter(([, c]) => c != null);
+  if (v == null || have.length < 4) return "";
+  have.sort((a, b) => a[1] - b[1]); const cheaper = have.filter(([, c]) => c > v).length;
+  return `<p class="fnote rankline">Cost per new trip: cheaper than ${cheaper} of ${have.length} ${self ? "other " : ""}official rail and bus proposals. Cheapest: ${esc(have[0][0].name)} (${cptFmt(have[0][1])}); most expensive: ${esc(have[have.length - 1][0].name)} (${cptFmt(have[have.length - 1][1])}).</p>`;
+}
+const cptFmt = v => v <= 0 ? "saves money" : "$" + (v < 10 ? v.toFixed(2) : Math.round(v).toLocaleString("en-US"));
+let rankQ = null;
+function warmRanks(){   // work out the proposals' numbers a few at a time, then redraw the open line
+  if (rankQ || !PRESETS.length) return;
+  rankQ = PRESETS.filter(P => P.group !== "metra" && SOLO[P.id] == null).slice();
+  let tries = 0;
+  const step = () => { const P = rankQ.shift(); if (P) soloRiders(P); if (rankQ.length) return setTimeout(step, 30);
+    if (cur && $("rankHere")) $("rankHere").innerHTML = costRank(costPerNew(cur), cur.preset);
+    const left = PRESETS.filter(P => P.group !== "metra" && SOLO[P.id] == null);   // still waiting on the trip model: look again
+    if (left.length && ++tries < 12){ rankQ = left; setTimeout(step, 2500); } else rankQ = null; };
+  setTimeout(step, 30);
+}
 function soloRiders(P){
   if (SOLO[P.id] != null || !NW) return SOLO[P.id];
   const keep = lines, L = presetToLine(P); lines = [L];
-  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.waiting ? null : (L.newRiders || 0); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
+  try { evaluate(); SOLO[P.id] = L.type === "metra" ? (L.riders[0] + L.riders[1]) / 2 : L.waiting ? null : (L.newRiders || 0);
+    if (L.type !== "metra" && !L.waiting) SOLOC[P.id] = costPerNew(L); } catch (e) { SOLO[P.id] = 0; }   // net new riders, the same figure the top bar adds up
   lines = keep; return SOLO[P.id];
 }
 function openGroup(g){
@@ -2650,13 +2673,15 @@ function openLine(L){
     ${tile(num(L.jobs), "jobs within a 10-min walk")}
     ${tile(L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0", isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`, "build", "Cost to build", `<p>${isI ? `From Chicago's recent new stations: Morgan on the Green and Pink Lines, $38 million (opened 2012; <a href="https://ggwash.org/view/39328" target="_blank" rel="noopener">GGWash</a>), to Damen on the Green Line, $80 million (opened 2024; <a href="https://abc7chicago.com/post/new-cta-damen-station-opens/15145575/" target="_blank" rel="noopener">ABC7</a>), in ${COSTIX ? COSTIX.latest : "today's"} dollars.` : L.costOfficial ? (() => { const o = PRESETS.find(q => q.id === L.preset).official; return o.yoe && o.costYear >= NOW_YEAR - 3 ? `The official estimate for this proposal (see below), as published: year-of-spending dollars, so it already includes inflation through construction.` : `The official estimate for this proposal (see below), brought from ${o.costYear} to today's dollars.`; })() + (isM ? "" : " Edit its stations and it switches to the per-mile range.") : `From the cost per mile of recent projects of this kind, in ${COSTIX ? COSTIX.latest : "today's"} dollars (FHWA's highway construction cost index).`} ${pay.grants}</p>`)}
     ${isI ? tile("Same trains", "no new service to run", "run", "Cost to run", "<p>The trains already run past; the station's own upkeep and staffing aren't counted.</p>") : tile(money(Math.abs(L.opYear)), L.opYear < 0 ? "a year saved on buses" : "a year to run", "run", "Cost to run", `<p>${!isM && L.baseBusMi > 0 ? "After the buses it replaces. " : ""}${pay.fares}</p>`)}
+    ${!isM && !L.waiting && costPerNew(L) != null ? tile(costPerNew(L) <= 0 ? "Saves money" : cptFmt(costPerNew(L)), costPerNew(L) <= 0 ? "bus savings outweigh the build cost" : "cost per new transit trip", "cpt", "Cost per new trip", "<p>The build cost (middle of its range) spread evenly over 30 years with no interest, plus a year's running cost, divided by a year of new transit trips (" + YEAR_DAYS + " weekday-equivalents). It only counts trips that are new to transit, so a line people mostly switch to looks expensive. For scale: a CTA trip costs about $" + CTA_COST_PER_TRIP.toFixed(2) + " to run today.</p>") : ""}
     ${cars >= 0 ? tile(num(cars), "fewer car trips a day", "", "", "", "g") : tile(num(-cars), "more car trips a day (fewer buses than today)")}
     ${tile(co2Word(co2), "CO₂ a year from fewer car trips", "co2", "Lower CO₂ from fewer car trips", co2Why, co2 >= 0 ? "g" : "")}
     ${tile(co2Word((L.co2Long[0] + L.co2Long[1]) / 2), "CO₂ a year in the long run, as neighborhoods grow", "co2l", "CO₂ in the long run", longWhy, (L.co2Long[0] + L.co2Long[1]) / 2 >= 0 ? "g" : "")}
     ${!isM && L.mode === "elevated" ? dispTile(L) : ""}
     ${travelTiles(L)}
     ${B && !B.noCapital ? tile(B.ratio < 0 ? "Below 0" : B.ratio.toFixed(B.ratio < 10 ? 1 : 0) + " to 1", "benefit-cost (partial)", "bca", "Benefit-cost", "<p>Benefits, less running costs, for each dollar of build cost over 30 years, using USDOT's method and 7% discount rate. Counts travel time saved only (new riders get half, as USDOT directs). Agencies also count crashes avoided, reliability and new development, and USDOT no longer puts a dollar value on CO₂. Long-lived rail projects score low at 7%.</p>", B.ratio >= 1 ? "g" : "") : ""}
-  </div>`;
+  </div><div id="rankHere">${!isM && !L.waiting ? costRank(costPerNew(L), L.preset) : ""}</div>`;
+  if (!isM && !L.waiting) setTimeout(warmRanks, 400);
   if (!isM){
     h += `<div class="chips">` +
       (L.xferL.map(l => { const ll = NET.lLines.find(x => x.id === l); return `<span class="chip"><span class="dot" style="background:${ll.color}"></span>${L_NAMES[l] || l}</span>`; }).join("")) +

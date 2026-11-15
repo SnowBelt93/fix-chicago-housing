@@ -191,3 +191,10 @@ body.emb .embf{margin:0;padding:10px 24px 14px;border-top:1px solid var(--sc-lin
   .pg table.proj td:nth-child(4),.pg table.proj td:last-child{grid-column:1/-1} .pg ol.dl li{grid-template-columns:86px minmax(0,1fr)} .pg ol.dl .st{grid-column:2}.pg table.proj td:nth-child(2)::before{content:none}
 }
 @media (max-width:480px){.pg .chip{white-space:normal}}
+
+/* "This week" strip at the top of the overview */
+.pg .wk{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:4px 0 18px;padding:12px 14px;background:#fff;border:1px solid var(--sc-line);border-radius:14px}
+.pg .wk .wkh{font-weight:700;font-size:13px;color:var(--sc-ink);margin-right:4px}
+.pg .wk a{display:inline-flex;gap:5px;align-items:baseline;padding:6px 12px;border-radius:999px;background:var(--sc-seg,#eef1f4);color:var(--sc-ink);text-decoration:none;font-size:13.5px}
+.pg .wk a:hover{background:#e3e9f2}
+.pg .wk b{color:var(--sc-navy)}

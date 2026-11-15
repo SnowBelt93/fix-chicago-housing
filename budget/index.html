@@ -38,7 +38,11 @@ main{display:grid;grid-template-columns:minmax(380px,460px) 1fr;gap:20px;padding
 .tabs.more-r{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 36px),transparent)}
 .tab{font:inherit;font-size:14px;font-weight:600;border:0;background:transparent;color:var(--sc-mute);padding:8px 12px;border-radius:14px;cursor:pointer;white-space:nowrap}
 .tab[aria-selected="true"]{background:var(--sc-seg);color:var(--sc-ink)}
-.tab small{font-weight:500;color:var(--sc-faint);margin-left:4px}
+.tab small{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:var(--sc-navy);color:#fff;font-size:11px;font-weight:700;box-sizing:border-box}
+.tab[aria-selected="true"] small{background:#fff;color:var(--sc-navy)}
+/* six tabs in a 3 x 2 grid: no sideways scrolling, same pill look as every other switch row */
+html body #tabs.tabs{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;border-radius:20px !important;margin:10px 12px 6px;border-bottom:0 !important;-webkit-mask-image:none;mask-image:none}
+html body #tabs.tabs .tab{justify-content:center;text-align:center}
 .levers{overflow:auto;padding:12px 14px 20px;overscroll-behavior:contain}
 .lead{font-size:13.5px;color:var(--sc-mute);margin:2px 2px 12px;line-height:1.5}
 .lv{border:1px solid var(--sc-line);border-radius:14px;padding:12px 14px;margin-bottom:10px;transition:border-color .15s,background .15s}
@@ -232,6 +236,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 #saveList .sv-open{flex:1;min-width:0;text-align:left;background:#fff;border:1px solid var(--sc-line);border-radius:12px;padding:8px 12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
 #saveList .sv-open:hover{border-color:var(--sc-navy)}#saveList .sv-open span{font-size:13px;color:var(--sc-mute)}
 #saveList .sv-del{width:40px;border:1px solid var(--sc-line);border-radius:12px;background:#fff;font-size:18px;color:var(--sc-mute);cursor:pointer}
+#gapFront{margin-top:8px;min-height:34px !important;font-size:13px !important;animation:sc-pop .5s cubic-bezier(.3,1.6,.5,1)}
 </style>
 </head>
 <body>
@@ -241,7 +246,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <section class="bar" aria-label="Your budget">
-  <div class="gapm"><b id="gapN">$918.5M</b><span id="gapL">still to close in 2027</span></div>
+  <div class="gapm"><b id="gapN">$918.5M</b><span id="gapL">still to close in 2027</span><button type="button" class="sc-btn sc-primary" id="gapFront" hidden>See your front page</button></div>
   <div class="meter">
     <div class="track" role="img" id="track" aria-label="How much of the gap is closed"><i class="rec" id="tRec"></i><i class="one" id="tOne"></i></div>
     <div class="mlab"><span style="--k:var(--sc-navy)">Lasting fixes</span><span style="--k:#a9c3e3">One-time fixes (gone next year)</span><span style="--k:#fbe3e6">Gap left</span></div>
@@ -402,7 +407,7 @@ const S = {
 const src = (...k) => k.map(x => `<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join(", ");
 /* Every option, in millions of 2027 dollars. amt > 0 closes the gap (a tax raised, a cut); amt < 0 widens it (a tax cut).
    kind: rec = counts every year, one = this year only, cost = new spending. sub = the heading it sits under in its tab. */
-const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], ["else", "Ideas"], ["state", "Ask Springfield"], ["add", "Spending"]];
+const GROUPS = [["tax", "Taxes"], ["dept", "Departments"], ["one", "One-time"], ["else", "Ideas"], ["state", "Springfield"], ["add", "Spending"]];
 const LEAD = {tax:"Raise or cut each one. Changes count every year.", dept:"Fund each department more or less, or take a savings idea. Cuts count every year.",
   one:"Money for this year only. Next year's budget starts that much further behind.", else:"From the Mayor's own task force and other cities. The City Council can pass all of these on its own.",
   state:"The city can't do these alone: each needs a new state law, or a citywide vote. They count toward your budget, but it only balances if Springfield or the voters say yes.",
@@ -666,7 +671,7 @@ function renderBar(){
   $("gapN").textContent = left > 0.05 ? m(left) : left < -0.05 ? m(-left) : "$0";
   $("gapN").className = left <= 0.05 ? "ok" : "bad";
   $("gapL").textContent = left > 0.05 ? "still to close in 2027" : left < -0.05 ? "extra: a surplus" : "balanced";
-  { const closed = left <= 0.05; if (closed && window.__gapOpen === true && window.scBurst) scBurst($("gapN")); window.__gapOpen = !closed; }   // clay stars when the gap closes
+  { const closed = left <= 0.05; if (closed && window.__gapOpen === true && window.scBurst) scBurst($("gapN")); window.__gapOpen = !closed; $("gapFront").hidden = !closed; }   // clay stars when the gap closes
   $("tRec").style.width = Math.min(100, 100 * T.rec / need) + "%";
   $("tOne").style.width = Math.max(0, Math.min(100 - 100 * T.rec / need, 100 * T.one / need)) + "%";
   $("track").setAttribute("aria-label", `${Math.round(Math.min(100, 100 * (T.rec + T.one) / need))}% of the gap closed`);
@@ -970,7 +975,7 @@ function shareCard(head, deck){
     const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "chicago-budget.png"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   });
 }
-$("finish").onclick = frontPage;
+$("finish").onclick = frontPage; $("gapFront").onclick = frontPage;
 
 /* save / share: the plan lives in the URL hash */
 function save(){

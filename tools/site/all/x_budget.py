@@ -10,7 +10,7 @@ T = {
     'more a year for a typical homeowner': ('más al año para un propietario típico', '典型房主每年多付', 'więcej rocznie dla typowego właściciela domu'), 'less a year for a typical homeowner': ('menos al año para un propietario típico', '典型房主每年少付', 'mniej rocznie dla typowego właściciela domu'),
     "Load the Mayor's plan": ('Cargar el plan del alcalde', '载入市长的方案', 'Wczytaj plan burmistrza'), 'Start over': ('Empezar de nuevo', '重新开始', 'Od nowa'),
     'Taxes': ('Impuestos', '税收', 'Podatki'), 'Departments': ('Departamentos', '部门', 'Wydziały'), 'One-time': ('De una vez', '一次性', 'Jednorazowe'), 'Ideas': ('Ideas', '新点子', 'Pomysły'),
-    'Ask Springfield': ('Pedirle a Springfield', '求助州议会', 'Poproś Springfield'), 'Spending': ('Gasto', '支出', 'Wydatki'),
+    'Springfield': ('Springfield', '州议会', 'Springfield'), 'Ask Springfield': ('Pedirle a Springfield', '求助州议会', 'Poproś Springfield'), 'Spending': ('Gasto', '支出', 'Wydatki'),
     'Raise or cut each one. Changes count every year.': ('Sube o baja cada uno. Los cambios cuentan cada año.', '逐项加或减。改动每年都算。', 'Podnieś lub obniż każdy. Zmiany liczą się co roku.'),
     'Fund each department more or less, or take a savings idea. Cuts count every year.': ('Da más o menos dinero a cada departamento, o toma una idea de ahorro. Los recortes cuentan cada año.', '给每个部门增减经费，或采用省钱方案。削减每年都算。', 'Daj każdemu wydziałowi więcej lub mniej albo weź pomysł na oszczędności. Cięcia liczą się co roku.'),
     "Money for this year only. Next year's budget starts that much further behind.": ('Dinero solo para este año. El presupuesto del próximo año empieza igual de atrasado.', '只管今年的钱。明年的预算会落后同样多。', 'Pieniądze tylko na ten rok. Przyszłoroczny budżet zacznie o tyle bardziej w tyle.'),

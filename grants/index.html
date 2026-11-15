@@ -28,7 +28,7 @@ h1{font-size:40px;line-height:1.08;letter-spacing:-.03em;font-weight:600;margin:
 .priv{font-size:14px;color:var(--sc-mute);margin:0 0 28px}
 .grid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px;align-items:start}
 .card{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px}
-form.card{position:sticky;top:16px}
+form.card{position:sticky;top:calc(var(--sc-head) + 16px)}
 fieldset{border:0;margin:0 0 18px;padding:0}
 legend,.lab{font-size:14px;font-weight:600;margin:0 0 8px;padding:0;display:block}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -253,7 +253,7 @@ function card(p, res, s){
     <div><p class="amt">${esc(p.short || p.amount)}</p><h3>${esc(p.name)}</h3><p class="by">${esc(p.by)}</p></div><span class="pill ${st[0]}">${STATUS[st[0]] || ""}</span></div>
     ${one}
     <div class="acts"><a class="sc-btn" href="${esc(p.link)}" target="_blank" rel="noopener">How to apply</a><button type="button" class="ghost" data-more="${esc(p.id)}" aria-expanded="${open}">${open ? "Less" : "Details"}</button>${p.remind && st[0] !== "open" ? `<button type="button" class="ghost" data-remind="${esc(p.id)}">Remind me when it opens</button>` : ""}</div>
-    <div class="more" ${open ? "" : "hidden"}>${window.scLang && scLang !== "en" ? `<p class="fine">Program details come from each agency in English.</p>` : ""}<p lang="en" translate="no"><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
+    <div class="more" ${open ? "" : "hidden"}>${window.scLang && scLang !== "en" ? `<p class="fine">Program details come from each agency in English.</p>` : ""}<p><b>${esc(p.amount)}</b></p>${res.length ? `<ul class="why">${res.map(r => `<li class="${"nmy"[r[0]]}">${esc(r[1])}</li>`).join("")}</ul>` : ""}
       <p lang="en" translate="no">${esc(st[1])}</p>${p.note ? `<p class="fine" lang="en" translate="no">${esc(p.note)}</p>` : ""}
       <p class="srcs"><span>Source:</span> <span lang="en" translate="no">${src}</span> · <span class="${old ? "stale" : ""}">Checked ${scFmt.date(p.checked)}</span>${old ? " · <span>may be out of date</span>" : ""}</p></div></article>`;
 }

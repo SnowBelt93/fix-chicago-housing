@@ -65,7 +65,19 @@ h1{font-size:25px;line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:
 .ald b{display:block;font-size:15px} .ald span{font-size:13px;color:var(--sc-ink2)}
 .steps{margin:0 0 12px;padding-left:20px;font-size:13.5px;line-height:1.5;color:var(--sc-ink2)}
 .steps li{margin-bottom:6px} .steps b{color:var(--sc-ink)}
-@media print{ body *{visibility:hidden} #out, #out *{visibility:visible} #out{position:absolute;inset:0;overflow:visible;max-height:none} .jump{display:none} }
+.ponly{display:none}
+table.nd{width:100%;border-collapse:collapse;font-size:13px}
+table.nd th,table.nd td{padding:6px 4px;border-bottom:1px solid var(--sc-line);text-align:right;font-variant-numeric:tabular-nums}
+table.nd th:first-child,table.nd td:first-child{text-align:left}
+table.nd th{font-size:12px;color:var(--sc-mute);font-weight:600}
+.ndwrap{overflow-x:auto}
+/* print: one page for a neighbor or an alderperson's office */
+@media print{ @page{margin:14mm}
+  body *{visibility:hidden} #out, #out *{visibility:visible} #out{position:absolute;inset:0;overflow:visible;max-height:none;padding:0}
+  .jump, #sPrice, #sBiz, .links, #srcBtn{display:none !important}
+  table.nd td:first-child{color:#1a1d21}
+  .ponly{display:block;font-size:11px;color:#3d434b;border-bottom:1px solid #ccc;padding-bottom:6px;margin-bottom:10px}
+  .sec{break-inside:avoid;margin-top:10px} .big .n{font-size:40px} }
 .res{margin-top:16px;animation:rin .28s ease-out}
 @keyframes rin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .addr{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
@@ -410,6 +422,7 @@ function show(T, k, fly){
   const floorsOK = I.pd || I.nohomes || I.unknown ? 0 : envOf(I, lot).floors;
   draw3d(T, B, stories, I, lot, lon, lat);
   $("out").innerHTML = `<div class="res">
+    <div class="ponly"><b>Shape Chicago · What can I build on my lot?</b> Printed ${new Date().toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"})} · ${esc(location.origin + "/lot/" + location.hash)} · Not affiliated with the City of Chicago. A quick check, not legal advice.</div>
     <p class="addr">${esc(addrTxt)}</p>
     <p class="sub">${ward ? "Ward " + ward + " · " : ""}${esc(clsName(cls))}</p>
     <nav class="jump" aria-label="Sections"><a href="#sOver">Zoning</a><a href="#sRules">Rules</a><a href="#sBuild">Build more</a><a href="#sPrice">Prices</a><a href="#sBiz">Businesses</a><a href="#sNext">Next steps</a><button type="button" id="lotPrint">Print</button></nav>
@@ -425,6 +438,7 @@ function show(T, k, fly){
       ${yr ? `<div><b>${yr}</b><span>Built</span></div>` : ""}
     </div>
     </section>
+    ${nextDoor(T, k)}
     <section id="sRules" class="sec"><h2>Rules that apply here</h2><div class="rl" id="rules"><p class="how">Checking…</p></div></section>
     <section id="sBuild" class="sec"><h2>Build more homes here</h2>
       <div class="cards2">
@@ -461,11 +475,29 @@ function show(T, k, fly){
     const y = t.getBoundingClientRect().top - out.getBoundingClientRect().top + out.scrollTop - (bar ? bar.offsetHeight : 0) - 4;
     out.scrollTo({top: Math.max(0, y), behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); });
   $("lotPrint").onclick = () => window.print();
+  $("out").querySelectorAll("[data-nk]").forEach(b => b.onclick = () => show(T, +b.dataset.nk, true));
   enrich(lon, lat, pAddr, ward ? +ward : null);
   const ctr = B ? ringLL(T, B[4]).reduce((a, q, i, L) => [a[0] + q[0] / L.length, a[1] + q[1] / L.length], [0, 0]) : null;
   rules(lon, lat, ctr ? [[lon, lat], ctr] : [[lon, lat]]);
   prices(lon, lat);
   $("out").scrollTop = 0;
+}
+
+// the closest other lots in the same tile (different building), so neighbors can compare: zoning, lot, homes now and allowed
+function nextDoor(T, k){
+  const P = T.p[k], [, px, py] = P, bi0 = P[8], out = [];
+  T.p.forEach((q, j) => { if (j === k || (bi0 >= 0 && q[8] === bi0) || !q[12]) return; const d = Math.hypot((q[1] - px) * 0.0829, (q[2] - py) * 0.111);
+    if (d < 70) out.push([d, j]); });
+  out.sort((a, b) => a[0] - b[0]);
+  const seen = new Set(), rows = [];
+  for (const [, j] of out){ const q = T.p[j], a = title(q[12]); if (seen.has(a)) continue; seen.add(a);
+    const zc = q[9] >= 0 ? T.zn[q[9]] : null, I = zoneInfo(zc), B = q[8] >= 0 ? T.b[q[8]] : null;
+    const lot = q[4] || (B ? Math.max(2 * B[0], 3125) : 3125), now = q[11] || (q[5] >= 0 ? q[5] : (B && B[2]) || null);
+    rows.push(`<tr><td><button type="button" class="lnkbtn" data-nk="${j}">${esc(a)}</button></td><td>${zc ? esc(zc) : "–"}</td><td>${fmt(lot)}${q[4] ? "" : "*"}</td><td>${now == null ? "?" : fmt(now)}</td><td>${I.pd ? "PD" : I.nohomes ? "0" : fmt(homesFor(I, lot))}</td></tr>`);
+    if (rows.length === 4) break; }
+  if (!rows.length) return "";
+  return `<section id="sNext2" class="sec"><h2>Next door</h2><div class="ndwrap"><table class="nd"><tr><th>Lot</th><th>Zoning</th><th>Lot sq ft</th><th>Homes now</th><th>Allowed</th></tr>${rows.join("")}</table></div>
+    <p class="how">The closest lots with their own building. * lot estimated from the building. Tap one to open it.</p></section>`;
 }
 
 const CODE_USE = "https://codelibrary.amlegal.com/codes/chicago/latest/chicagozoning_il/0-0-0-49164";
