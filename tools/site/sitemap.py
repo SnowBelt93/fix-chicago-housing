@@ -3,7 +3,7 @@ tools/progress/build.py has its own SITE for embeds."""
 import os, datetime, subprocess
 SITE = 'https://shapechicago.city'
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-SKIP = {'/feedback/', '/advertise/', '/progress/preview/', '/preview/ads/', '/preview/motion/', '/support/', '/progress/lost/', '/progress/room/', '/street/'}
+SKIP = {'/feedback/', '/advertise/', '/progress/preview/', '/preview/ads/', '/preview/motion/', '/progress/lost/', '/progress/room/', '/street/'}
 pages = []
 for dp, dn, fn in os.walk(ROOT):
     dn[:] = sorted(d for d in dn if d not in ('node_modules', 'tools', '.git', 'embed', 'worker', 'shape', 'b'))

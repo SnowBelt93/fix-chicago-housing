@@ -118,7 +118,8 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); })();
 
 /* Support and local sponsors. Settings live in /shape/site.json (no code change needed to switch them on):
-   - [data-support] elements become a "Chip in" button once support.url is set (until then they are removed: no Support link at launch).
+   - [data-support] elements become a "Chip in" button once support.url is set (until then they are removed). The button opens /support/,
+     which embeds Ko-fi's panel; on /support/ itself it opens the Ko-fi page.
    - [data-ad="<slot>"] elements show one local sponsor for that slot (rotating by day), or a small
      "Your Chicago business here" card when ads.showHouse is true. No ad scripts, no tracking, no cookies:
      a sponsor is a plain link with rel="sponsored". */
@@ -147,14 +148,15 @@ if ("serviceWorker" in navigator && location.protocol === "https:" && !/claude|a
       el.dataset.supportDone = 1;
       const s = (site && site.support) || {}, ext = !!s.url;
       if (!ext){ el.remove(); return; }
-      el.innerHTML = `<a class="sc-btn sc-support" href="${ext ? esc(s.url) : "/support/"}"${ext ? ' target="_blank" rel="noopener"' : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>${esc(s.label || "Chip in")}</a>`;
+      const here = location.pathname.startsWith("/support");
+      el.innerHTML = `<a class="sc-btn sc-support" href="${here ? esc(s.url) : "/support/"}"${here ? ' target="_blank" rel="noopener"' : ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg>${esc(s.label || "Chip in")}</a>`;
     });
   }
   window.scShowAds = () => load().then(render);
   const FOOT = [["Simulators", [["/housing/","Housing"],["/transit/","Transit"],["/budget/","Budget"],["/pensions/","Pensions"],["/bears/","Bears stadium"],["/plans/","Plans people made"]]],
     ["Your address", [["/lot/","Zoning and rules"],["/grants/","Grants and help"]]],
     ["Follow along", [["/progress/","Progress"],["/wards/","Your ward"],["/news/","News"],["/learn/","Learn"]]],
-    ["About", [["/about/","About this site"],["/press/","For media"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
+    ["About", [["/about/","About this site"],["/press/","For media"],["/support/","Support"],["/privacy/","Privacy"],["/terms/","Terms"]]]];
   function footer(){
     /* the shared footer: <footer class="sc-foot" data-sc-foot>Not affiliated…</footer> keeps its line and gets the brand,
        four columns of page links, and a bottom row (feedback, languages, support) that later scripts fill (.sc-fextra) */

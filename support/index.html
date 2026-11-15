@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Support · Shape Chicago</title>
 <meta name="description" content="Chip in to keep Shape Chicago free.">
+<meta property="og:url" content="https://shapechicago.city/support/">
 <meta property="og:image" content="https://shapechicago.city/shape/art/og-home.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#ffffff">
@@ -48,6 +49,10 @@ label{font-size:14px;font-weight:600;color:var(--sc-ink)}
 input,textarea,select{font:inherit;font-size:15px;padding:10px 12px;border:1px solid var(--sc-line2);border-radius:10px;width:100%;margin-top:4px}
 textarea{min-height:110px}
 .ok{color:#1f7a45;font-weight:600}
+.kofi{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:20px 20px 8px;margin:8px 0 8px}
+.kofi h2{margin-top:0}
+#kofiframe{display:block;border:0;width:100%;max-width:520px;margin:12px auto 4px;background:#f9f9f9;border-radius:12px}
+.kofialt{font-size:14px;text-align:center;color:var(--sc-mute)}
 @media (max-width:640px){ .hero{grid-template-columns:1fr} .hero img{max-width:260px} .cards{grid-template-columns:1fr} }
 </style>
 </head>
@@ -58,7 +63,14 @@ textarea{min-height:110px}
   <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
 </header>
 <main class="sc-main sc-narrow">
-<div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › Support</p><h1>Support Shape Chicago</h1><p class="sc-lede">Shape Chicago is free, has no accounts and never will. If it helped you understand your city, you can chip in to keep it running.</p><p data-support></p></div><img class="sc-pgart" src="/shape/art/support.webp" width="600" height="420" alt=""></div>
+<div class="sc-pghead"><div><p class="sc-trail"><a href="/">Home</a> › Support</p><h1>Support Shape Chicago</h1><p class="sc-lede">Shape Chicago is free, has no accounts and never will. If it helped you understand your city, you can chip in to keep it running.</p></div><img class="sc-pgart" src="/shape/art/support.webp" width="600" height="420" alt=""></div>
+<section class="kofi" aria-labelledby="kofiH">
+<h2 id="kofiH">Chip in</h2>
+<p>Payments go through Ko-fi, which takes the card or PayPal payment. We never see your card details.</p>
+<iframe id="kofiframe" src="https://ko-fi.com/shapechicago/?hidefeed=true&amp;widget=true&amp;embed=true&amp;preview=true" title="Chip in to Shape Chicago on Ko-fi" height="712" loading="lazy"></iframe>
+<p class="kofialt">Panel not showing? <a href="https://ko-fi.com/shapechicago" target="_blank" rel="noopener">Chip in on Ko-fi</a>.</p>
+</section>
+
 <h2>What it pays for</h2>
 <ul>
 <li><b>Hosting and the domain.</b> The maps, data files and plan gallery run on Cloudflare.</li>
@@ -66,11 +78,8 @@ textarea{min-height:110px}
 <li><b>New tools.</b> More of the city's big questions, done the same way: every number linked to its source.</li>
 </ul>
 <h2>What it doesn't buy</h2>
-<p>Influence. Supporters don't get a say in what the tools show, and no number changes for anyone. If you'd rather put your business in front of people who use the site, see <a href="/advertise/">advertising</a>.</p>
-<p class="upd" id="soon"></p>
-<script>
-fetch("/shape/site.json").then(r => r.json()).then(s => { if (!(s.support && s.support.url)) document.getElementById("soon").textContent = "The payment link is being set up. Check back soon."; }).catch(() => {});
-</script>
+<p>Influence. Supporters don't get a say in what the tools show, and no number changes for anyone.</p>
+
 </main>
 <footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 </body>
