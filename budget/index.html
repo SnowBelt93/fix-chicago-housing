@@ -170,6 +170,13 @@ dialog.sc-info .src{font-size:12.5px;color:var(--sc-mute)}
 .vtally{font-size:22px;font-weight:600;letter-spacing:-.015em;margin:4px 0}
 .vtally.ok{color:var(--sc-green)} .vtally.bad{color:var(--sc-hard)}
 .vwhy{font-size:13.5px;color:var(--sc-ink2);margin:6px 0 0;padding-left:18px} .vwhy li{margin:3px 0}
+/* Your extra money (Nov. 16, 2026) */
+#exPick{margin:4px 0 12px;flex-wrap:wrap}
+.exstats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden}
+.exstats div{background:#fff;padding:12px 14px}.exstats b{display:block;font-size:20px;font-weight:600;color:var(--sc-green)}.exstats span{font-size:12.5px;color:var(--sc-mute);display:block;line-height:1.4}
+.exchart{margin:12px 0 4px}.exchart svg{width:100%;height:auto;display:block}.exchart text{font:11px var(--sc-font);fill:var(--sc-mute)}
+.excmp{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}.excmp th,.excmp td{text-align:left;padding:6px 6px;border-top:1px solid var(--sc-line)}.excmp th{font-weight:600;color:var(--sc-mute);font-size:12px}.excmp td.n{text-align:right;white-space:nowrap}.excmp tr.on td{background:#eef3fa;font-weight:600}
+@media (max-width:560px){ .exstats{grid-template-columns:1fr} #exPick{display:grid !important;grid-template-columns:1fr 1fr} .excmp td.n{white-space:normal} }
 .nexty{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sc-line);border:1px solid var(--sc-line);border-radius:14px;overflow:hidden}
 .nexty div{background:#fff;padding:12px 14px} .nexty b{display:block;font-size:20px;font-weight:600} .nexty b.ok{color:var(--sc-green)} .nexty b.bad{color:var(--sc-hard)}
 .nexty span{font-size:12.5px;color:var(--sc-mute);display:block;line-height:1.4}
@@ -304,6 +311,12 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
       <p class="sub">A budget needs 26 of 50 votes in the City Council.</p>
       <div id="voteBody"><p class="fine">Loading how alderpeople voted on recent budgets…</p></div>
     </section>
+    <section class="card" id="extraCard" hidden>
+      <h2 id="exH">Your extra money <button class="ib" id="exInfo" aria-label="How this is estimated">i</button></h2>
+      <p class="sub" id="exSub"></p>
+      <div class="seg2" role="radiogroup" id="exPick" aria-label="What to do with the extra money"><button role="radio" aria-checked="true" data-k="debt">Pay down debt</button><button role="radio" aria-checked="false" data-k="pen">Pensions</button><button role="radio" aria-checked="false" data-k="resv">Reserves</button><button role="radio" aria-checked="false" data-k="carry">Save for 2028</button></div>
+      <div id="exBody"></div>
+    </section>
     <section class="card" id="nextCard">
       <h2>The next two years <button class="ib" id="nextInfo" aria-label="How this is estimated">i</button></h2>
       <p class="sub">The city's own forecast says the gap keeps growing. One-time money doesn't help next year; lasting fixes do.</p>
@@ -394,6 +407,10 @@ const S = {
   betlaw:["Capitol News Illinois: the fight over Chicago's betting tax (Mar. 2026)", "https://capitolnewsillinois.com/news/sports-betting-tax-becomes-battleground-between-chicago-and-state-lawmakers"],
   mpc_cong:["Metropolitan Planning Council: urban core congestion pricing (Jan. 2025)", "https://metroplanning.org/wp-content/uploads/2025/02/CongestionPricingProgram-IB.pdf"],
   ilcon:["Illinois Constitution, Article VII, Section 6(e) (home rule limits)", "https://law.counselstack.com/constitution/il/VII/6"],
+  bb25:["Bond Buyer: Chicago's June 2025 GO bonds, 5.6% true interest cost", "https://bondbuyer.com/news/go-deal-demonstrates-continued-demand-for-chicago-paper"],
+  cfdebt:["Civic Federation: Chicago's debt burden (Nov. 2024)", "https://civicfed.org/blog/high-chicago-debt-burden-contributes-citys-fiscal-challenges"],
+  gfoa:["GFOA: fund balance guidelines (at least two months of spending)", "https://www.gfoa.org/materials/fund-balance-guidelines-for-the-general-fund"],
+  pacfr:["The four city pension funds' 2024 reports (assumed returns, 90% target dates)", "https://www.chicago.gov/city/en/depts/fin/supp_info/CAFR.html"],
   fc27:["City of Chicago 2027 Budget Forecast (Aug. 2026)", "https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Forecast/2027_Chicago_Budget_Forecast.pdf"],
   acs_units:["Census ACS 2024: Chicago homes and vacant homes", "https://data.census.gov/table/ACSDT1Y2024.B25004?g=160XX00US1714000"],
   dss:["City of Chicago: residential garbage collection (about 600,000 households)", "https://chicago.gov/city/en/depts/streets/provdrs/streets_san/svcs/residential_garbagecollection.html"],
@@ -739,7 +756,7 @@ function renderResult(){
     <div><b>${m(T.one)}</b><span>one-time money: 2028 starts at least this far behind</span></div>
     <div><b>${hb ? (hb > 0 ? "+" : "") + money(hb) : "$0"}</b><span>a year for a typical homeowner (city part of a $4,457 bill)</span></div>
     <div><b>${T.back + T.more ? m(T.back + T.more) : "$0"}</b><span>tax cuts and new spending you added to the gap</span></div>`;
-  renderMe(); renderNext(); renderRate(); renderMis(); renderVotes();
+  renderMe(); renderExtra(); renderNext(); renderRate(); renderMis(); renderVotes();
 }
 /* where the 2027 Corporate Fund goes */
 let DATA = null;
@@ -875,13 +892,70 @@ $("meInfo").onclick = () => info("How this is estimated", `<p>Every number here 
   <li>Utility and everyday taxes: the change spread over Chicago's ${HH.toLocaleString("en-US")} households (Census ACS 2024), with households paying half of utility taxes and 60% of everyday taxes (assumptions; businesses and visitors pay the rest).</li></ul>
   <p class="src">Sources: ${src("treas", "cf_cons", "dss", "acs_units")}</p>`);
 
+/* ---- Your extra money (Kyle, Nov. 16, 2026): what a surplus does if it pays down debt, goes to the pensions, sits in reserves or carries into 2028 ---- */
+const DEBT_RATE = 0.056, DEBT_YEARS = 20;     // 5.6% true interest cost on the city's June 2025 GO bonds (Bond Buyer); 20 years left on the bonds retired (assumption)
+const PEN_RATE = 0.0666, PEN_YEARS = 29;      // the four funds' assumed returns, weighted by unfunded liability (6.62–6.75%); state law's 90% targets are 2055–2058, about 29 years from 2028 (assumption: savings spread evenly)
+const RESERVES = 700;                          // about $700M (Sun-Times, July 2026)
+const EX_K = "sc-budget-extra";
+let exPick = (() => { try { return localStorage.getItem(EX_K) || "debt"; } catch (e){ return "debt"; } })();
+const level = (x, r, n) => x * r / (1 - Math.pow(1 + r, -n));   // equal yearly payment that repays x at rate r over n years
+function extraUse(T){
+  T = T || totals(); const x = Math.max(0, -T.left);
+  if (x < 1) return {x:0, yr:0, n:0, k:exPick};
+  if (exPick === "debt") return {x, k:"debt", yr:level(x, DEBT_RATE, DEBT_YEARS), n:DEBT_YEARS};
+  if (exPick === "pen") return {x, k:"pen", yr:level(x, PEN_RATE, PEN_YEARS), n:PEN_YEARS};
+  if (exPick === "carry") return {x, k:"carry", yr:0, n:0, y28:x};
+  return {x, k:"resv", yr:0, n:0};
+}
+function corpTotal(){ return DATA && DATA.corp27 ? DATA.corp27.reduce((t, r) => t + r[1], 0) / 1e6 : 0; }
+function renderExtra(){
+  const T = totals(), card = $("extraCard"), E = extraUse(T);
+  card.hidden = E.x < 1; if (card.hidden) return;
+  $("exH").firstChild.nodeValue = `Your extra ${m(E.x)} `;
+  $("exSub").textContent = "Spent once, it can still lower the city's bills for years. Pick where it goes.";
+  $("exPick").querySelectorAll("button").forEach(b => b.setAttribute("aria-checked", String(b.dataset.k === E.k)));
+  const debt = level(E.x, DEBT_RATE, DEBT_YEARS), pen = level(E.x, PEN_RATE, PEN_YEARS), two = corpTotal() / 6;
+  let stats = "", chart = "", note = "";
+  if (E.k === "debt" || E.k === "pen"){
+    const tot = E.yr * E.n, end = 2027 + E.n;
+    let cum = 0, pay = 0; for (let y = 2028; y <= end; y++){ cum += E.yr; if (!pay && cum >= E.x) pay = y; }
+    stats = `<div><b>${m(E.yr)} a year</b><span>lower ${E.k === "debt" ? "debt payments" : "required pension payments"}, 2028–${end}</span></div><div><b>${m(tot)}</b><span>in payments the city skips over ${E.n} years</span></div><div><b>${m(tot - E.x)}</b><span>of that is interest${E.k === "pen" ? " the funds would have earned on it" : " the city never pays"}</span></div>`;
+    // cumulative savings against the money spent
+    const W = Math.max(300, Math.min(760, $("exBody").clientWidth || 600)), H = W < 500 ? 130 : 150, pad = 26, n = E.n, max = Math.max(tot, E.x) * 1.05, bw = (W - pad - 8) / n;
+    let bars = ""; cum = 0;
+    for (let i = 0; i < n; i++){ cum += E.yr; const h = cum / max * (H - 30); bars += `<rect x="${pad + i * bw + 1}" y="${H - 18 - h}" width="${Math.max(1, bw - 2)}" height="${h}" rx="1.5" fill="${cum >= E.x ? "var(--sc-green)" : "#a9c3e3"}"/>`; }
+    const yx = H - 18 - E.x / max * (H - 30);
+    chart = `<div class="exchart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Savings add up to ${m(tot)} by ${end}, passing the ${m(E.x)} spent in ${pay}">${bars}<line x1="${pad}" x2="${W - 4}" y1="${yx}" y2="${yx}" stroke="var(--sc-ink)" stroke-dasharray="4 3"/><text x="${pad + 2}" y="${yx - 4}">Spent in 2027: ${m(E.x)}</text><text x="${pad}" y="${H - 4}">2028</text><text x="${W - 4}" y="${H - 4}" text-anchor="end">${end}</text></svg></div>
+      <p class="fine">Savings so far, year by year. They pass the ${m(E.x)} spent in ${pay}.</p>`;
+    if (E.k === "debt" && amt(L.find(l => l.id === "bonds")) > 0) note = `<p class="fine">Your plan also borrows ${m(480)} for police settlements. Borrowing ${m(E.x)} less does the same thing as paying it down, at about the same rate.</p>`;
+    if (E.k === "pen") note = `<p class="fine">State law sets each year's pension payment to reach 90% funded by 2055–2058, so money put in early means smaller required payments later. <a href="/pensions/">Try a one-time deposit in the pensions simulator</a></p>`;
+  } else if (E.k === "resv"){
+    stats = `<div><b>${m(RESERVES + E.x)}</b><span>in reserves, up from about ${m(RESERVES)}</span></div><div><b>${two ? m(two) : "…"}</b><span>two months of the main budget, the reserve finance officers recommend</span></div><div><b>$0 a year</b><span>no lower bills, but money on hand for a recession</span></div>`;
+    note = `<p class="fine">Rating agencies watch reserves; KBRA lists spending them down as a reason it could downgrade the city.</p>`;
+  } else {
+    stats = `<div><b>${m(E.x)}</b><span>off the 2028 gap</span></div><div><b>Once</b><span>it helps one year, like any one-time money</span></div><div><b>$0 after</b><span>2029 and later are unchanged</span></div>`;
+  }
+  const row = (k, t, a, b) => `<tr class="${E.k === k ? "on" : ""}"><td>${t}</td><td class="n">${a}</td><td class="n">${b}</td></tr>`;
+  $("exBody").innerHTML = `<div class="exstats">${stats}</div>${chart}${note}
+    <table class="excmp"><thead><tr><th>Where ${m(E.x)} goes</th><th class="n">Each year after</th><th class="n">Total saved</th></tr></thead><tbody>
+    ${row("debt", "Pay down debt", m(debt) + " for 20 yrs", m(debt * DEBT_YEARS))}${row("pen", "Pensions", m(pen) + " for 29 yrs", m(pen * PEN_YEARS))}${row("resv", "Reserves", "$0", "Cushion")}${row("carry", "Save for 2028", "2028 only", m(E.x))}</tbody></table>`;
+}
+$("exPick").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return; exPick = b.dataset.k; try { localStorage.setItem(EX_K, exPick); } catch (er){} renderExtra(); renderNext(); });
+$("exInfo").onclick = () => info("What extra money can do", `<p>A surplus is spent once, but where it goes decides whether later budgets feel it.</p>
+  <p><b>Pay down debt:</b> retire city bonds that would otherwise be repaid in equal payments over about 20 years (an assumption) at 5.6%, the interest rate on the city's June 2025 bonds. Every dollar retired skips that dollar plus its interest. Most city bonds can't be paid off early until their call date, so the city would buy them back or set money aside to pay them (defeasance), which usually saves somewhat less. General obligation debt payments were $470.8 million in 2025 and come mostly from the property tax levy, so lower payments free levy money for other costs or a smaller tax bill.</p>
+  <p><b>Pensions:</b> an extra payment earns the funds' assumed return, about 6.7%, and state law's payments are set to reach 90% funded by 2055–2058, so the required payments fall. This tool spreads that evenly over the 29 years from 2028 (an assumption); the pensions simulator models it year by year.</p>
+  <p><b>Reserves:</b> no lower bills, but cash for a recession. Finance officers recommend at least two months of spending, about ${m(corpTotal() / 6)} for the main budget.</p>
+  <p><b>Save for 2028:</b> next year's gap shrinks once.</p>
+  <p class="src">Sources: ${src("bb25", "cfdebt", "pacfr", "fc27", "gfoa", "reserves")}</p>`);
+
 /* ---- The next two years: the city's base forecast gaps, minus your lasting fixes ---- */
 const FCST = {2027:882.4, 2028:942.7, 2029:1023.6}, FCST_GOOD = {2028:575.6, 2029:441.7};   // 2027 Budget Forecast, base and positive outlooks
 function renderNext(){
-  const T = totals(), lasting = T.rec - T.cost;   // recurring fixes minus tax cuts and new spending (one-time money drops out)
+  const T = totals(), E = extraUse(T), lasting = T.rec - T.cost + E.yr;   // recurring fixes minus tax cuts and new spending (one-time money drops out), plus yearly savings from a surplus that pays down debt or pensions
+  const c28 = E.k === "carry" ? E.x : 0;
   const cell = (y, g, sub) => `<div><b class="${g > 0.05 ? "bad" : "ok"}">${g > 0.05 ? m(g) + " short" : g < -0.05 ? m(-g) + " to spare" : "Balanced"}</b><span>${sub}</span></div>`;
-  $("nextBody").innerHTML = `<div class="nexty">${cell(2027, T.left, "2027, this budget")}${cell(2028, FCST[2028] - lasting, `2028 (city forecast: ${m(FCST[2028])} gap)`)}${cell(2029, FCST[2029] - lasting, `2029 (forecast: ${m(FCST[2029])})`)}</div>
-    <p class="fine" style="margin-top:8px">${T.one > 0.05 ? `Your ${m(T.one)} in one-time money is gone after 2027. ` : ""}${T.cost > 0.05 ? `Tax cuts and new spending cost ${m(T.cost)} every year. ` : ""}In a stronger economy the city expects ${m(FCST_GOOD[2028])} and ${m(FCST_GOOD[2029])} gaps instead.</p>`;
+  $("nextBody").innerHTML = `<div class="nexty">${cell(2027, T.left, "2027, this budget")}${cell(2028, FCST[2028] - lasting - c28, `2028 (city forecast: ${m(FCST[2028])} gap)`)}${cell(2029, FCST[2029] - lasting, `2029 (forecast: ${m(FCST[2029])})`)}</div>
+    <p class="fine" style="margin-top:8px">${T.one > 0.05 ? `Your ${m(T.one)} in one-time money is gone after 2027. ` : ""}${T.cost > 0.05 ? `Tax cuts and new spending cost ${m(T.cost)} every year. ` : ""}${E.yr > 0.05 ? `Your extra ${m(E.x)} ${E.k === "debt" ? "pays down debt" : "goes to the pensions"}, saving ${m(E.yr)} a year. ` : c28 ? `Your extra ${m(E.x)} carries into 2028. ` : ""}In a stronger economy the city expects ${m(FCST_GOOD[2028])} and ${m(FCST_GOOD[2029])} gaps instead.</p>`;
 }
 $("nextInfo").onclick = () => info("The next two years", `<p>The city's August 2026 forecast projects the main budget's gap before any fixes: $882.4 million in 2027, $942.7 million in 2028 and $1.02 billion in 2029 in its base case ($575.6 million and $441.7 million in a stronger economy). This card subtracts your lasting fixes from each year, assuming they hold their value, and adds back your tax cuts and new spending. One-time money counts only in 2027. Borrowing for settlements also adds interest in later years, which isn't counted here.</p><p class="src">Source: ${src("fc27")}</p>`);
 
@@ -968,7 +1042,7 @@ function topMoves(){
 }
 function frontPage(){
   const T = totals(), bal = T.left <= 0.05, e = VOTE ? voteEst() : null, mvs = topMoves(), hb = CITY_SHARE_BILL * amt(L[0]) / LEVY;
-  const lasting = T.rec - T.cost, g28 = FCST[2028] - lasting;
+  const EX = extraUse(T), lasting = T.rec - T.cost + EX.yr, g28 = FCST[2028] - lasting - (EX.k === "carry" ? EX.x : 0);
   const head = !bal ? `City still ${m(T.left)} short as budget deadline nears` : e && e.yes < 26 ? `Budget balances, but falls short in Council, ${e.yes}–${50 - e.yes}` :
     `${e ? "Council passes" : "City balances"} ${T.state > 0.05 ? "a budget built on Springfield's help" : T.one < 0.05 ? "a budget with no one-time gimmicks" : "the 2027 budget"}${e ? `, ${e.yes}–${50 - e.yes}` : ""}`;
   const taxes = T.rec + T.one, newTax = L.filter(l => (l.g === "tax" || l.g === "else" || l.g === "state") && amt(l) > 0).reduce((t, l) => t + amt(l), 0);
@@ -989,6 +1063,7 @@ function frontPage(){
       <tr><td>Lasting fixes</td><td>${m(T.rec)}</td></tr><tr><td>One-time money</td><td>${m(T.one)}</td></tr>
       <tr><td>Tax cuts and new spending</td><td>${m(T.cost)}</td></tr>
       <tr><td>Typical homeowner, per year</td><td>${hb ? (hb > 0 ? "+" : "") + money(hb) : "$0"}</td></tr>
+      ${EX.x >= 1 ? `<tr><td>Extra money</td><td>${m(EX.x)}: ${EX.k === "debt" ? `pays down debt, ${m(EX.yr)} a year` : EX.k === "pen" ? `to pensions, ${m(EX.yr)} a year` : EX.k === "resv" ? "into reserves" : "saved for 2028"}</td></tr>` : ""}
       <tr><td>2028 gap</td><td>${g28 > 0.05 ? m(g28) : "None"}</td></tr>
       ${e && bal ? `<tr><td>Council vote (estimate)</td><td>${e.yes}–${50 - e.yes}</td></tr>` : ""}
       ${T.state > 0.05 ? `<tr><td>Needs Springfield or voters</td><td>${m(T.state)}</td></tr>` : ""}</table></div></div>
