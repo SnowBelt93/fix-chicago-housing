@@ -15,7 +15,7 @@ body{margin:0;background:var(--sc-page);font-family:var(--sc-font);color:var(--s
 main{max-width:var(--sc-w-list);margin:0 auto;padding:36px 20px 60px}
 h1{font-size:28px;letter-spacing:-.02em;margin:0 0 6px}
 p.lead{color:var(--sc-ink2);margin:0 0 20px}
-.key{display:flex;gap:8px;margin:0 0 22px}
+.key{display:flex;gap:8px;margin:0 0 22px}.key[hidden]{display:none}
 .key input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--sc-line);border-radius:10px;font:15px var(--sc-font)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
 .chips button{border:1px solid var(--sc-line);background:#fff;border-radius:999px;padding:6px 12px;font:500 13.5px var(--sc-font);cursor:pointer}
@@ -30,7 +30,7 @@ p.lead{color:var(--sc-ink2);margin:0 0 20px}
 <main>
   <h1>Feedback inbox</h1>
   <p class="lead">Notes people sent from the Feedback button. Only someone with the key can read them.</p>
-  <form class="key" id="keyForm"><input id="key" type="password" autocomplete="off" placeholder="Feedback key" aria-label="Feedback key"><button class="sc-btn" type="submit">Open</button></form>
+  <form class="key" id="keyForm"><input id="key" type="password" autocomplete="new-password" autocapitalize="off" spellcheck="false" placeholder="Feedback key" aria-label="Feedback key"><button class="sc-btn" type="submit">Open</button></form>
   <form class="key" id="rmForm" hidden><input id="rm" autocomplete="off" placeholder="Remove a shared plan: paste its link, like …/plans/#transit-12" aria-label="Link of a shared plan to remove"><button class="sc-btn" type="submit">Remove</button></form>
   <p id="rmMsg" class="fine" role="status"></p>
   <div class="chips" id="pages"></div>
@@ -59,7 +59,8 @@ function draw(){
 async function load(key){
   $("msg").textContent = "Loading…";
   try { const r = await fetch("/api/feedback", {headers:{"x-feedback-key": key}});
-    if (r.status === 403){ $("msg").textContent = "That key didn't work, or no key is set on the site yet."; $("list").innerHTML = ""; return; }
+    if (r.status === 403){ const e = ((await r.json().catch(() => ({}))).error) || ""; try { localStorage.removeItem("sc-fb-key"); } catch (x){}
+      $("msg").textContent = e === "no key set" ? "The site has no key yet. In Cloudflare, add FEEDBACK_KEY as a Secret on the shape-chicago Worker (Settings → Variables and Secrets), then try again." : "That key doesn't match the one set on the site. Check for a typo, or clear the box and paste it again (your browser may have filled in an old one)."; $("rmForm").hidden = true; $("list").innerHTML = ""; return; }
     ALL = (await r.json()).feedback || []; KEY = key; $("rmForm").hidden = false; try { localStorage.setItem("sc-fb-key", key); } catch (e){}
     draw();
   } catch (e){ $("msg").textContent = "Couldn't load the notes."; }

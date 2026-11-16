@@ -75,9 +75,12 @@ export default {
     const wf = url.pathname.match(/^\/api\/ward\/(\d{1,2})\.xml$/);
     if (wf && +wf[1] >= 1 && +wf[1] <= 50) return wardFeed(+wf[1], url, env);
     if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(req);
-    if (url.pathname === "/api/feedback" && req.method === "GET" && (!env.FEEDBACK_KEY || (req.headers.get("x-feedback-key") || url.searchParams.get("key")) !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
+    // The key is compared with spaces and line breaks trimmed off both ends (a pasted secret often ends in a newline).
+    const fbKey = String(env.FEEDBACK_KEY || "").trim();
+    const keyErr = k => !fbKey ? "no key set" : String(k || "").trim() !== fbKey ? "wrong key" : "";
+    if (url.pathname === "/api/feedback" && req.method === "GET"){ const e = keyErr(req.headers.get("x-feedback-key") || url.searchParams.get("key")); if (e) return json({error: e}, 403); }
     const admin = url.pathname === "/api/admin/remove" && req.method === "POST";
-    if (admin && (!env.FEEDBACK_KEY || req.headers.get("x-feedback-key") !== env.FEEDBACK_KEY)) return json({error: "not allowed"}, 403);
+    if (admin){ const e = keyErr(req.headers.get("x-feedback-key")); if (e) return json({error: e}, 403); }
     const stub = env.COMMUNITY.get(env.COMMUNITY.idFromName("v1"));
     const ip = req.headers.get("cf-connecting-ip") || "0";
     let body = req.method === "POST" ? await req.text() : undefined;
