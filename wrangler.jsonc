@@ -17,5 +17,9 @@
   // the old site's Worker, to copy plans people posted there into this gallery until launch (worker/index.js sync())
   "services": [{ "binding": "OLD", "service": "fix-chicago-housing" }],
   "workers_dev": true,
+  // keep variables set in the Cloudflare dashboard when this file deploys (FEEDBACK_KEY should be a Secret, which is kept anyway)
+  "keep_vars": true,
+  // To email feedback to hello@shapechicago.city: onboard the domain in Cloudflare Email Service, then add
+  //   "send_email": [{ "name": "EMAIL", "allowed_destination_addresses": ["hello@shapechicago.city"] }],
   "observability": { "enabled": true }
 }

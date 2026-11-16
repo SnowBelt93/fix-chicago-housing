@@ -415,7 +415,7 @@ export class Community {
 
   // "Report this name": three different people → the typed name and "by" name are hidden (the list name shows instead).
   // The first report also lands in the private feedback inbox so it can be looked at.
-  report(b, who){
+  async report(b, who){
     const kind = String(b.kind || ""), id = Math.round(+b.id);
     if (!(id > 0) || !(kind === "housing" || SIM[kind])) return json({error: "invalid"}, 400);
     const T = kind === "housing" ? "plans" : "splans", r = this.sql.exec(`SELECT title, author FROM ${T} WHERE id = ?`, id).toArray()[0];
@@ -423,7 +423,7 @@ export class Community {
     if (this.sql.exec("SELECT COUNT(*) AS n FROM reports WHERE who = ? AND ts > ?", who, Date.now() - 864e5).one().n >= 20) return json({error: "slow down"}, 429);
     try { this.sql.exec("INSERT INTO reports (kind, id, who, ts) VALUES (?, ?, ?, ?)", kind, id, who, Date.now()); } catch (e) { return json({ok: true}); }
     const n = this.sql.exec("SELECT COUNT(*) AS n FROM reports WHERE kind = ? AND id = ?", kind, id).one().n;
-    if (n === 1) this.sql.exec("INSERT INTO feedback (text, page, who, ts) VALUES (?, 'report', ?, ?)", `Reported plan name (${kind} #${id}): "${r.title || ""}" by "${r.author || ""}"`, who, Date.now());
+    if (n === 1){ const t = `Reported plan name (${kind} #${id}): "${r.title || ""}" by "${r.author || ""}"`; this.sql.exec("INSERT INTO feedback (text, page, who, ts) VALUES (?, 'report', ?, ?)", t, who, Date.now()); await this.mail("A plan name was reported", `${t}\n\nRemove it at https://shapechicago.city/feedback/ if it breaks the rules.`); }
     if (n >= 3) this.sql.exec(`UPDATE ${T} SET nameoff = 1 WHERE id = ?`, id);
     this.comm = null;
     return json({ok: true, hidden: n >= 3});
@@ -452,12 +452,22 @@ export class Community {
     return json(d, 200, {"cache-control": "public, max-age=300"});
   }
 
-  addFeedback(b, who){
+  async addFeedback(b, who){
     const text = String(b.text || "").trim().slice(0, 2000), page = String(b.page || "").replace(/[^a-z/-]/g, "").slice(0, 40);
     if (text.length < 3) return json({error: "empty"}, 400);
     if (this.sql.exec("SELECT COUNT(*) AS n FROM feedback WHERE who = ?", who).one().n >= 10) return json({error: "slow down"}, 429);
     this.sql.exec("INSERT INTO feedback (text, page, who, ts) VALUES (?, ?, ?, ?)", text, page, who, Date.now());
+    await this.mail(page === "advertise" ? "Advertising inquiry" : `Feedback from ${page || "the site"}`, `${text}\n\nPage: ${page || "(none)"}\nSent: ${new Date().toISOString()}\nAll notes: https://shapechicago.city/feedback/`);
     return json({ok: true});
+  }
+
+  // Email a copy to the owner (Kyle, Nov. 16, 2026). Needs the send_email binding EMAIL (Cloudflare Email Service) in wrangler.jsonc;
+  // without it, notes are only kept in the inbox at /feedback/. Plain text only: the note is whatever a visitor typed.
+  async mail(subject, text){
+    if (!this.env.EMAIL) return;
+    try {
+      await this.env.EMAIL.send({to: this.env.FEEDBACK_TO || "hello@shapechicago.city", from: {email: "feedback@shapechicago.city", name: "Shape Chicago feedback"}, subject: subject.slice(0, 120), text});
+    } catch (e) { console.log("feedback email failed", String(e && e.message || e)); }
   }
 
   like(id, who){
