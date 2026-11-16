@@ -244,6 +244,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 .shb .fine{font-size:13px;color:var(--sc-mute);margin:0 0 10px}
 .shsum{margin:6px 0 0;font-size:14px}
 .shrow{display:flex;gap:8px;flex-wrap:wrap}
+html body .lv .opts button:disabled{opacity:.45;cursor:not-allowed}
 #reset .rsi{display:none;width:18px;height:18px}
 @media (max-width:560px){
   .bar .btns{grid-column:1/-1;justify-self:stretch;flex-wrap:nowrap;justify-content:flex-start;margin-left:0}
@@ -407,6 +408,9 @@ const S = {
   betlaw:["Capitol News Illinois: the fight over Chicago's betting tax (Mar. 2026)", "https://capitolnewsillinois.com/news/sports-betting-tax-becomes-battleground-between-chicago-and-state-lawmakers"],
   mpc_cong:["Metropolitan Planning Council: urban core congestion pricing (Jan. 2025)", "https://metroplanning.org/wp-content/uploads/2025/02/CongestionPricingProgram-IB.pdf"],
   ilcon:["Illinois Constitution, Article VII, Section 6(e) (home rule limits)", "https://law.counselstack.com/constitution/il/VII/6"],
+  permits:["City of Chicago: building permits (fees paid on 2025 new-construction permits)", "https://data.cityofchicago.org/Buildings/Building-Permits/ydr8-5enu"],
+  cf2020:["Civic Federation: the city's levy and new property (Nov. 2020)", "https://www.civicfed.org/civic-federation/blog/city-chicago%E2%80%99s-property-tax-increase-proposal"],
+  tracker:["Shape Chicago permit tracker: the pace that closes the city's share of the shortage", "/tracker/"],
   bb25:["Bond Buyer: Chicago's June 2025 GO bonds, 5.6% true interest cost", "https://bondbuyer.com/news/go-deal-demonstrates-continued-demand-for-chicago-paper"],
   cfdebt:["Civic Federation: Chicago's debt burden (Nov. 2024)", "https://civicfed.org/blog/high-chicago-debt-burden-contributes-citys-fiscal-challenges"],
   gfoa:["GFOA: fund balance guidelines (at least two months of spending)", "https://www.gfoa.org/materials/fund-balance-guidelines-for-the-general-fund"],
@@ -541,11 +545,14 @@ const L = [
   {id:"plow", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"City crews clear sidewalks of snow, starting in four neighborhoods", type:"sw", amt:3.5, mayor:0, info:"Montreal, Toronto and Rochester, New York clear sidewalks themselves instead of leaving it to each owner. A city working group recommended a Chicago pilot in four zones with many older residents, young kids and people with disabilities, at $1.1 million to $3.5 million a year (the top is used here). A City Council committee voted down a scaled-back version 13 to 4 in October 2025.", pro:["Helps people who can't shovel, and everyone who walks", "Tested first in four zones"], con:["Citywide would cost far more", "Snowy winters cost more than mild ones"], s:["plow", "plowno"]},
   {id:"preserve", g:"add", sub:"Ideas from other cities", kind:"cost", who:"none", t:"Keep homes affordable near the Obama Presidential Center", type:"sw", amt:12.5, mayor:0, info:"Tenant and community groups asked for $12.5 million to help keep South Shore and Woodlawn homes affordable as the Obama Presidential Center opens nearby: money for longtime residents and for buying and keeping buildings affordable.", pro:["Acts before rents jump", "Targets the neighborhoods most at risk"], con:["One area of the city", "$12.5 million buys a limited number of homes"], s:["rtc"]},
   {id:"vacant", g:"state", sub:"Needs a state law", kind:"rec", who:"biz", t:"Tax empty buildings and lots, like Oakland and Vancouver", type:"sw", amt:31, mayor:0, info:"Oakland charges owners of vacant properties $3,000 to $6,000 a year; it collected about $29.8 million over six years, about $5 million a year. Vancouver taxes homes left empty. Chicago has about 6.2 times Oakland's population, so a similar tax here might raise about $31 million a year (an assumption: scaled by population). Illinois' constitution requires property taxes to be uniform, so a separate tax on empty property would most likely need a state law (Chicago charges a $300 vacant building registration fee today).", pro:["Pushes owners to fix up, rent or sell empty property", "Owners who sit on empty lots pay, not residents"], con:["Needs Springfield", "Owners of struggling buildings may not be able to pay"], s:["oak", "van"]},
+  {id:"homes", g:"else", sub:"Grow the tax base", kind:"rec", who:"growth", growth:1, t:"More homes get built", type:"opts", opts:[["Today's pace", 0], ["My housing plan", 0], ["Twice today's pace", 0], ["The housing goal's pace", 0]], mayor:0,
+   info:"New homes pay the city a little right away and more over time. This counts three things, kept low on purpose. Permit fees when a building starts: $1,727 a home, what the city collected per home on 2025 new-construction permits. The city's part of each new home's property tax, about $891 on a typical bill, counted at a quarter: the city only sometimes raises its levy to take in new buildings, and homes in TIF districts pay into the TIF instead. City taxes on what a household buys and on its utilities, about $765 a year, counted for half the new homes, since many people moving in already live in Chicago. People move in two years after the permit (an assumption). Not counted: the state income tax share, which follows the census, and the cost of serving new residents. My housing plan uses the homes from the last plan you ran in the housing simulator on this device. Twice today's pace adds 3,916 homes a year to the 3,916 permitted in 2025. The housing goal's pace is 10,387 a year, what it takes to close the city's share of the shortage by 2041.",
+   pro:["Grows the tax base instead of raising rates", "Keeps growing every year the homes keep coming"], con:["Small at first: homes take years to fill", "The city has to zone for it and builders have to build; the budget can't make that happen"], s:["permits", "treas", "cf2020", "data", "tracker"]},
 ];
 const WHO = {home:["Homeowners and renters", "#2b5da0"], biz:["Businesses and institutions", "#6a4fb0"], cons:["Shoppers, visitors and riders", "#b07a1f"], drive:["Drivers", "#9a5b3f"],
   city:["City government (efficiency)", "#1f7a45"], workers:["City workers", "#3d8f8a"], svc:["City services", "#c0392b"], state:["The state budget", "#7d8a99"],
   mid:["People earning under $200,000", "#4d7fc0"], rich:["People earning over $200,000", "#1b3f73"], cushion:["The city's reserves", "#c9a227"],
-  future:["Future taxpayers", "#e07a8b"], risk:["A bet on the economy", "#b8c0ca"], none:["Money already in hand", "#a9c3e3"]};
+  future:["Future taxpayers", "#e07a8b"], risk:["A bet on the economy", "#b8c0ca"], none:["Money already in hand", "#a9c3e3"], growth:["New homes and residents", "#5a8f3c"]};
 /* departments: what each does (for the (i)) and how they're grouped; dollars come from the budget data */
 const DEPT_INFO = {"57":"Patrol, detectives and 911 response. About 93% of its money pays people, so cuts mean fewer officers or less overtime.",
   "59":"Firefighting and ambulances. Staffing per truck is set by contract, so cuts mean fewer companies or slower response.",
@@ -559,7 +566,7 @@ const DEPT_INFO = {"57":"Patrol, detectives and 911 response. About 93% of its m
   "39":"Runs elections.", "15":"Alderpeople's offices and committees.", "6":"City technology and data.", "1":"The Mayor's office.", "25":"City vehicle stickers, records and Council files.",
   "35":"Buys goods and services for the city.", "3":"Investigates waste and fraud in city government.", "33":"Hiring, testing and labor relations.", "30":"Hearings on city tickets and violations.",
   "28":"Invests the city's cash.", "5":"Writes the budget."};
-const SUBICON = {"Property tax":"b_property", "Sales tax":"b_sales", "Taxes on businesses":"b_biz", "Taxes on what people buy":"b_buy", "Cars and driving":"b_drive", "Savings ideas":"b_savings", "The city could do it":"b_people", "Needs a state law":"b_state", "Public safety":"b_safety", "City services":"b_services", "Running the city":"b_civic"};
+const SUBICON = {"Property tax":"b_property", "Sales tax":"b_sales", "Taxes on businesses":"b_biz", "Taxes on what people buy":"b_buy", "Cars and driving":"b_drive", "Savings ideas":"b_savings", "The city could do it":"b_people", "Grow the tax base":"b_property", "Needs a state law":"b_state", "Public safety":"b_safety", "City services":"b_services", "Running the city":"b_civic"};
 const subh = t => `<h4 class="subh" data-popin>${SUBICON[t] ? `<img src="/shape/art/icons/${SUBICON[t]}.webp" width="40" height="40" alt="" loading="lazy">` : ""}${t}</h4>`;
 const DGROUPS = [["Public safety", ["57", "59", "51", "58", "60"]], ["City services", ["81", "50", "84", "41", "21", "54", "67", "70", "73", "72"]],
   ["Running the city", ["38", "27", "31", "39", "15", "6", "1", "25", "35", "3", "33", "30", "28", "5"]]];
@@ -593,7 +600,7 @@ function leverHtml(l){
   const a = amt(l), cost = l.kind === "cost", on = !!a;
   let ctl = "";
   if (l.type === "sw") ctl = `<button class="sc-switch" role="switch" aria-checked="${!!st[l.id]}" aria-label="${l.t}"></button>`;
-  const opts = l.type === "opts" ? `<div class="ctl opts">${l.opts.map((o, i) => `<button data-i="${i}" aria-pressed="${st[l.id] === i}">${o[0]}</button>`).join("")}</div>` : "";
+  const opts = l.type === "opts" ? `<div class="ctl opts">${l.opts.map((o, i) => `<button data-i="${i}" aria-pressed="${st[l.id] === i}"${l.id === "homes" && i === 1 && !housingLink() ? " disabled" : ""}>${o[0]}</button>`).join("")}</div>${l.id === "homes" ? `<p class="dnote">${homesNote()}</p>` : ""}` : "";
   if (l.type === "income") return incomeHtml(l, a);
   const rng = l.type === "range" ? `<div class="ctl"><input type="range" min="${l.min}" max="${l.max}" step="${l.step}" value="${st[l.id]}" aria-label="${l.t}"><div class="rrow"><span>Cut ${m(-l.min)}</span><span class="live">${ptaxNote(a)}</span><span>Raise ${m(l.max)}</span></div></div>` : "";
   return `<div class="lv ${on ? "on" : ""} ${cost || a < 0 ? "cost" : ""}" data-id="${l.id}">
@@ -621,6 +628,7 @@ function deptHtml(d){
 const pctTxt = p => (p > 0 ? "+" : p < 0 ? "−" : "") + Math.abs(p) + "%";
 function dNote(d, p, n){ return p ? `${p < 0 ? "About " + n.toLocaleString("en-US") + " fewer" : "About " + n.toLocaleString("en-US") + " more"} positions if spread evenly` : `${m(corp27(d))} in 2027`; }
 function renderLevers(){
+  homesOpts();
   let h = `<p class="lead">${LEAD[tab]}</p>`, sub = null;
   for (const l of L.filter(l => l.g === tab && !l.gone)){ if (l.sub && l.sub !== sub){ sub = l.sub; h += subh(sub); } h += leverHtml(l); }
   if (tab === "dept"){
@@ -673,7 +681,32 @@ function deptInfo(d){
     <p><button class="sc-btn" id="toCmp">Compare it over the years</button></p>`);
   $("toCmp").onclick = () => { $("infoDlg").close(); cmpMode = "one"; cmpDept = d.id; $("cmpSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x.dataset.k === "one")); renderCmp(); $("cmpCard").scrollIntoView({behavior:"smooth", block:"start"}); };
 }
+/* ---- More homes get built (Kyle, Nov. 16, 2026): what new homes add to city revenue, counted conservatively ---- */
+const HB_PERMIT = 1727;                   // permit fees paid per home on 2025 new-construction permits with homes: $6.85M on 3,964 homes (city building permits data)
+const HB_PTAX = CITY_SHARE_BILL * 0.25;   // the city's part of a typical bill, counted at 25%: the levy takes in new buildings only some years (Civic Federation) and TIF districts keep the rest (assumption)
+const HB_RES = 765 * 0.5;                 // city taxes a household pays on purchases and utilities: (sales 678.1 × 60% + utilities 391.2 × 50% + amusement, soda, bag, liquor, cigarettes, gas 491.0 × 60%) ÷ 1,172,455 households ≈ $765 (2027 revenue data, this tool's resident shares), counted for half the new homes (the rest move from elsewhere in Chicago; assumption)
+const HB_LAG = 2;                         // years from permit to move-in (assumption)
+const HB_PACE = 3916, HB_GOAL = 10387;    // homes permitted in 2025 (Census); the pace that closes the city's share of the shortage by 2041 (permit tracker)
+function housingLink(){ try { const v = JSON.parse(localStorage.getItem("sc-housing-link") || "null"); return v && Array.isArray(v.cum) && v.cum.length >= 15 ? v : null; } catch (e){ return null; } }
+function homesOcc(Y, k){   // homes lived in by the end of year Y, beyond today's pace
+  if (k === 1){ const h = housingLink(); const i = Math.min(15, Y - 2026); return !h || i < 1 ? 0 : h.cum[i - 1]; }
+  const E = k === 2 ? HB_PACE : k === 3 ? HB_GOAL - HB_PACE : 0;
+  return E * Math.max(0, Y - (2026 + HB_LAG));
+}
+function homesRev(Y, k){
+  if (k == null) k = st.homes || 0; if (!k) return 0;
+  const permits = Math.max(0, homesOcc(Y + HB_LAG, k) - homesOcc(Y + HB_LAG - 1, k));
+  return (permits * HB_PERMIT + homesOcc(Y, k) * (HB_PTAX + HB_RES)) / 1e6;
+}
+function homesOpts(){ const l = L.find(x => x.id === "homes"); if (l) l.opts.forEach((o, i) => o[1] = Math.round(homesRev(2027, i) * 10) / 10); }
+function homesNote(){
+  const k = st.homes || 0, h = housingLink();
+  if (!k) return h ? "Pick a pace, or use the homes from your housing plan." : "Pick a pace. To use your own plan, run one in the housing simulator first.";
+  const by = homesOcc(2041, k), lead = k === 1 ? `Your housing plan: about ${Math.round(by).toLocaleString("en-US")} more homes lived in by 2041. ` : "";
+  return `${lead}Adds ${m(homesRev(2029))} in 2029, ${m(homesRev(2035))} in 2035 and ${m(homesRev(2041))} in 2041.`;
+}
 function totals(){
+  homesOpts();
   let rec = 0, one = 0, cost = 0, back = 0, more = 0, state = 0; const by = {}, gave = {};
   for (const l of L) if (l.g === "state"){ const a = amt(l); if (a > 0) state += a; }
   const add = (a, kind, who) => { if (!a) return; if (kind === "cost"){ cost += a; more += a; return; }
@@ -951,11 +984,11 @@ $("exInfo").onclick = () => info("What extra money can do", `<p>A surplus is spe
 /* ---- The next two years: the city's base forecast gaps, minus your lasting fixes ---- */
 const FCST = {2027:882.4, 2028:942.7, 2029:1023.6}, FCST_GOOD = {2028:575.6, 2029:441.7};   // 2027 Budget Forecast, base and positive outlooks
 function renderNext(){
-  const T = totals(), E = extraUse(T), lasting = T.rec - T.cost + E.yr;   // recurring fixes minus tax cuts and new spending (one-time money drops out), plus yearly savings from a surplus that pays down debt or pensions
+  const T = totals(), E = extraUse(T), lasting = T.rec - T.cost + E.yr, hg = y => homesRev(y) - homesRev(2027);   // new homes keep adding revenue after 2027   // recurring fixes minus tax cuts and new spending (one-time money drops out), plus yearly savings from a surplus that pays down debt or pensions
   const c28 = E.k === "carry" ? E.x : 0;
   const cell = (y, g, sub) => `<div><b class="${g > 0.05 ? "bad" : "ok"}">${g > 0.05 ? m(g) + " short" : g < -0.05 ? m(-g) + " to spare" : "Balanced"}</b><span>${sub}</span></div>`;
-  $("nextBody").innerHTML = `<div class="nexty">${cell(2027, T.left, "2027, this budget")}${cell(2028, FCST[2028] - lasting - c28, `2028 (city forecast: ${m(FCST[2028])} gap)`)}${cell(2029, FCST[2029] - lasting, `2029 (forecast: ${m(FCST[2029])})`)}</div>
-    <p class="fine" style="margin-top:8px">${T.one > 0.05 ? `Your ${m(T.one)} in one-time money is gone after 2027. ` : ""}${T.cost > 0.05 ? `Tax cuts and new spending cost ${m(T.cost)} every year. ` : ""}${E.yr > 0.05 ? `Your extra ${m(E.x)} ${E.k === "debt" ? "pays down debt" : "goes to the pensions"}, saving ${m(E.yr)} a year. ` : c28 ? `Your extra ${m(E.x)} carries into 2028. ` : ""}In a stronger economy the city expects ${m(FCST_GOOD[2028])} and ${m(FCST_GOOD[2029])} gaps instead.</p>`;
+  $("nextBody").innerHTML = `<div class="nexty">${cell(2027, T.left, "2027, this budget")}${cell(2028, FCST[2028] - lasting - hg(2028) - c28, `2028 (city forecast: ${m(FCST[2028])} gap)`)}${cell(2029, FCST[2029] - lasting - hg(2029), `2029 (forecast: ${m(FCST[2029])})`)}</div>
+    <p class="fine" style="margin-top:8px">${[T.one > 0.05 ? `Your ${m(T.one)} in one-time money is gone after 2027.` : "", T.cost > 0.05 ? `Tax cuts and new spending cost ${m(T.cost)} every year.` : "", st.homes ? `More homes add ${m(homesRev(2028))} in 2028 and ${m(homesRev(2029))} in 2029.` : "", E.yr > 0.05 ? `Your extra ${m(E.x)} ${E.k === "debt" ? "pays down debt" : "goes to the pensions"}, saving ${m(E.yr)} a year.` : c28 ? `Your extra ${m(E.x)} carries into 2028.` : "", `In a stronger economy the city expects ${m(FCST_GOOD[2028])} and ${m(FCST_GOOD[2029])} gaps instead.`].filter(Boolean).map(t => `<span>${t}</span>`).join(" ")}</p>`;
 }
 $("nextInfo").onclick = () => info("The next two years", `<p>The city's August 2026 forecast projects the main budget's gap before any fixes: $882.4 million in 2027, $942.7 million in 2028 and $1.02 billion in 2029 in its base case ($575.6 million and $441.7 million in a stronger economy). This card subtracts your lasting fixes from each year, assuming they hold their value, and adds back your tax cuts and new spending. One-time money counts only in 2027. Borrowing for settlements also adds interest in later years, which isn't counted here.</p><p class="src">Source: ${src("fc27")}</p>`);
 
@@ -990,8 +1023,8 @@ const MIS = [
   ["noprop", "Leave property taxes alone", "Balance it without raising the property tax.", T => T.left <= 0.05 && amt(L[0]) <= 0],
   ["noone", "No gimmicks", "Balance it with no one-time money at all.", T => T.left <= 0.05 && T.one < 0.05],
   ["local", "No help needed", "Balance it with nothing from Springfield or the voters.", T => T.left <= 0.05 && T.state < 0.05],
-  ["cuts", "Cut your way there", "Balance it with no new taxes or fees.", T => T.left <= 0.05 && L.every(l => l.kind === "cost" || l.g === "dept" || l.g === "one" || amt(l) <= 0)],
-  ["rich", "Tax the top", "Balance it where every new tax falls on people earning over $200,000 or businesses.", T => T.left <= 0.05 && Object.keys(T.by).every(k => ["rich", "biz", "city", "svc", "none", "workers"].includes(k))],
+  ["cuts", "Cut your way there", "Balance it with no new taxes or fees.", T => T.left <= 0.05 && L.every(l => l.kind === "cost" || l.g === "dept" || l.g === "one" || l.growth || amt(l) <= 0)],
+  ["rich", "Tax the top", "Balance it where every new tax falls on people earning over $200,000 or businesses.", T => T.left <= 0.05 && Object.keys(T.by).every(k => ["rich", "biz", "city", "svc", "none", "workers", "growth"].includes(k))],
   ["cut", "Cut taxes and still balance", "Lower at least one tax, use no one-time money, and still balance.", T => T.left <= 0.05 && T.back > 0.05 && T.one < 0.05],
   ["pass", "Get 26 votes", "Balance it with a plan that would likely pass the Council.", T => T.left <= 0.05 && voteCount() >= 26],
   ["aaa", "Make the agencies happy", "Balance it with nothing the rating agencies would flag.", T => T.left <= 0.05 && !rateFlags().some(f => f[0] === "bad")],
@@ -1011,7 +1044,7 @@ const VGROUP = {A:"backed both the Mayor's 2025 budget and the Council's 2026 bu
   C:"backed the Mayor's 2025 budget but voted against the Council's 2026 budget without his head tax", D:"voted against both"};
 function voteEst(){
   const T = totals(), a = id => amt(L.find(l => l.id === id)), pt = a("ptax"), head = a("head") > 0, inc = st.inc.some(Boolean);
-  const newTax = L.some(l => l.kind === "rec" && l.g !== "dept" && amt(l) > 0) || head;
+  const newTax = L.some(l => l.kind === "rec" && l.g !== "dept" && !l.growth && amt(l) > 0) || head;
   const rule = {
     A: [pt < 300, pt >= 300 ? "a $300M+ property tax hike, which all 50 voted down in 2024" : ""],
     B: [pt <= 0 && !head, head ? "the head tax" : pt > 0 ? "a property tax increase" : ""],
@@ -1047,10 +1080,10 @@ function topMoves(){
 }
 function frontPage(){
   const T = totals(), bal = T.left <= 0.05, e = VOTE ? voteEst() : null, mvs = topMoves(), hb = CITY_SHARE_BILL * amt(L[0]) / LEVY;
-  const EX = extraUse(T), lasting = T.rec - T.cost + EX.yr, g28 = FCST[2028] - lasting - (EX.k === "carry" ? EX.x : 0);
+  const EX = extraUse(T), lasting = T.rec - T.cost + EX.yr, g28 = FCST[2028] - lasting - (homesRev(2028) - homesRev(2027)) - (EX.k === "carry" ? EX.x : 0);
   const head = !bal ? `City still ${m(T.left)} short as budget deadline nears` : e && e.yes < 26 ? `Budget balances, but falls short in Council, ${e.yes}–${50 - e.yes}` :
     `${e ? "Council passes" : "City balances"} ${T.state > 0.05 ? "a budget built on Springfield's help" : T.one < 0.05 ? "a budget with no one-time gimmicks" : "the 2027 budget"}${e ? `, ${e.yes}–${50 - e.yes}` : ""}`;
-  const taxes = T.rec + T.one, newTax = L.filter(l => (l.g === "tax" || l.g === "else" || l.g === "state") && amt(l) > 0).reduce((t, l) => t + amt(l), 0);
+  const taxes = T.rec + T.one, newTax = L.filter(l => (l.g === "tax" || l.g === "else" || l.g === "state") && !l.growth && amt(l) > 0).reduce((t, l) => t + amt(l), 0);
   const deck = !bal ? `Even with the choices so far, the main budget can't pass until the last ${m(T.left)} is found.` :
     `${newTax ? `${m(newTax)} in new taxes and fees` : "No new taxes"}, ${T.one ? `${m(T.one)} in one-time money` : "no one-time money"}${T.back ? `, and ${m(T.back)} in tax cuts` : ""}. Next year's gap: ${g28 > 0.05 ? m(g28) : "none"}.`;
   const story = [
@@ -1120,6 +1153,7 @@ function load(){
 }
 function info(title, html){ const d = $("infoDlg"); d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b style="font-size:17px">${title}</b><button class="sc-btn" onclick="this.closest('dialog').close()">Close</button></header><div style="padding:8px 18px 18px">${html}</div>`; d.showModal(); }
 $("mayor").onclick = () => { L.forEach(l => st[l.id] = l.type === "income" ? [0, 0, 0, 0, 0] : l.mayor); for (const k in dpct) delete dpct[k]; update(); };
+addEventListener("storage", e => { if (e.key === "sc-housing-link") update(); });   // a housing plan run in another tab
 $("reset").onclick = () => { L.forEach(l => st[l.id] = startOf(l)); for (const k in dpct) delete dpct[k]; update(); };
 L.forEach(l => st[l.id] = startOf(l));
 $("histSeg").querySelectorAll("button").forEach(b => b.onclick = () => { histMode = b.dataset.k; $("histSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-checked", x === b)); renderHist(); });

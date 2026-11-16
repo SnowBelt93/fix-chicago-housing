@@ -2658,6 +2658,9 @@ function totals(useYear){
   aff = useYear ? Math.max(0, (zone > 0 ? affReq * zoneNow / zone : 0) + affOther * f) : affReq + affOther;   // by the year shown
   return {parts, total, replaced, walk, aff, affReq, sides, sw: sw + ph.lots, touchedPct: n ? touched / n * 100 : 0, zoneFull: zone};
 }
+/* The budget simulator can count this plan's homes (Kyle, Nov. 16, 2026): homes added by the end of each year 2027–2041, kept in this browser only */
+let linkT = 0;
+function publishLink(){ clearTimeout(linkT); linkT = setTimeout(() => { const cum = []; for (let y = 1; y <= YEARS; y++) cum.push(Math.round(planHomesAt(y))); lsSet("sc-housing-link", {t: Date.now(), cum}); }, 600); }
 function planHomesAt(y){
   let z = 0;
   for (const k in AREAS){ const b = AREAS[k].byYear; for (let j = 1; j <= y; j++) z += b[j]; }
@@ -3923,6 +3926,7 @@ function render(){
   $("officeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.v === plan.office)));
   renderHood(); renderHoodList(); renderMissions(tf); renderPolicies(); renderImpact(tf);
   if (year === YEARS) checkUnlocks(tf.total);
+  if (year === YEARS && loaded === 77 && dataReady) publishLink();
   updateCode(); autosave();
   deckgl.setProps({layers: layers()});
 }
