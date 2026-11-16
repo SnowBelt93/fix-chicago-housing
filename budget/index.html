@@ -229,13 +229,27 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 }
 /* Nov 8: selected = solid navy */
 .tab[aria-selected="true"],.seg2 button[aria-checked="true"]{background:var(--sc-navy) !important;color:#fff !important;box-shadow:none !important}
+/* Share or save (Kyle, Nov. 16): one button in the top bar */
+#shareOpen{gap:6px} #shareOpen svg{width:16px;height:16px;flex:none}
+.shdlg{max-width:min(520px,94vw)}
+.shb{padding:4px 18px 20px}
+.shb h3{font-size:15px;margin:18px 0 6px}
+.shb .fine{font-size:13px;color:var(--sc-mute);margin:0 0 10px}
+.shsum{margin:6px 0 0;font-size:14px}
+.shrow{display:flex;gap:8px;flex-wrap:wrap}
+#reset .rsi{display:none;width:18px;height:18px}
+@media (max-width:560px){
+  .bar .btns{grid-column:1/-1;justify-self:stretch;flex-wrap:nowrap;justify-content:flex-start;margin-left:0}
+  html body .bar .btns .sc-btn{white-space:normal !important;line-height:1.15;min-width:0;flex:0 1 auto;text-align:center;font-size:12.5px !important;padding:0 9px !important}
+  #reset{margin-left:auto;padding:0 !important;width:40px;justify-content:center} #reset .rsl{display:none} #reset .rsi{display:block}
+}
 .saves{margin-top:14px;border-top:1px solid var(--sc-line);padding-top:14px}
 .saverow{display:flex;gap:8px;flex-wrap:wrap}.saverow input{flex:1 1 200px;min-width:0}
-#saveList{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
-#saveList li{display:flex;gap:6px;align-items:stretch}
-#saveList .sv-open{flex:1;min-width:0;text-align:left;background:#fff;border:1px solid var(--sc-line);border-radius:12px;padding:8px 12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
-#saveList .sv-open:hover{border-color:var(--sc-navy)}#saveList .sv-open span{font-size:13px;color:var(--sc-mute)}
-#saveList .sv-del{width:40px;border:1px solid var(--sc-line);border-radius:12px;background:#fff;font-size:18px;color:var(--sc-mute);cursor:pointer}
+.svlist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.svlist li{display:flex;gap:6px;align-items:stretch}
+.svlist .sv-open{flex:1;min-width:0;text-align:left;background:#fff;border:1px solid var(--sc-line);border-radius:12px;padding:8px 12px;font:inherit;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.svlist .sv-open:hover{border-color:var(--sc-navy)}.svlist .sv-open span{font-size:13px;color:var(--sc-mute)}
+.svlist .sv-del{width:40px;border:1px solid var(--sc-line);border-radius:12px;background:#fff;font-size:18px;color:var(--sc-mute);cursor:pointer}
 #gapFront{margin-top:8px;min-height:34px !important;font-size:13px !important;animation:sc-pop .5s cubic-bezier(.3,1.6,.5,1)}
 </style>
 </head>
@@ -252,7 +266,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
     <div class="mlab"><span style="--k:var(--sc-navy)">Lasting fixes</span><span style="--k:#a9c3e3">One-time fixes (gone next year)</span><span style="--k:#fbe3e6">Gap left</span></div>
   </div>
   <div class="sc-m hm"><b id="homeN">$0</b><span id="homeL">more a year for a typical homeowner</span></div>
-  <div class="btns"><button class="sc-btn" id="mayor">Load the Mayor's plan</button><button class="sc-btn" id="reset">Start over</button></div>
+  <div class="btns"><button class="sc-btn sc-primary" id="shareOpen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Share or save</button><button class="sc-btn" id="mayor">Load the Mayor's plan</button><button class="sc-btn" id="reset" aria-label="Start over"><svg class="rsi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="rsl">Start over</span></button></div>
 </section>
 <button type="button" id="jump" hidden></button>
 <main>
@@ -271,7 +285,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
       <p class="gave" id="gave"></p>
       <div class="stats" id="stats"></div>
       <div class="finrow"><button class="sc-btn sc-primary" id="finish">Send it to the Council</button><span class="fine" id="finNote">See the front page and share your budget.</span></div>
-      <div class="saves" id="saves"><div class="saverow"><input id="saveName" maxlength="60" aria-label="Name this budget" placeholder="Name this budget"><button class="sc-btn" type="button" id="saveBtn">Save in this browser</button></div><ul id="saveList"></ul></div>
+      <div class="saves" id="saves"><div class="saverow"><input id="saveName" maxlength="60" aria-label="Name this budget" placeholder="Name this budget"><button class="sc-btn" type="button" id="saveBtn">Save in this browser</button></div><ul id="saveList" class="svlist"></ul></div>
     </section>
     <section class="card" id="meCard">
       <h2>What it costs you <button class="ib" id="meInfo" aria-label="How this is estimated">i</button></h2>
@@ -342,6 +356,7 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 </main>
 <footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
 <dialog class="sc-info" id="infoDlg"></dialog>
+<dialog class="sc-info shdlg" id="shareDlg" aria-labelledby="shTitle"></dialog>
 <dialog class="paperdlg" id="paperDlg"><div class="paper" id="paper"></div></dialog>
 <script>
 "use strict";
@@ -656,18 +671,44 @@ function update(){ renderTabs(); renderLevers(); renderBar(); renderResult(); sa
 const SAVES_K = "sc-budget-saves", LAST_K = "sc-budget-last";
 const getSaves = () => { try { return JSON.parse(localStorage.getItem(SAVES_K) || "[]"); } catch (e){ return []; } };
 const putSaves = v => { try { localStorage.setItem(SAVES_K, JSON.stringify(v.slice(0, 20))); } catch (e){} };
-function renderSaves(){
-  const v = getSaves(), el = $("saveList"); if (!el) return;
+function renderSaves(){ renderSavesIn($("saveList")); renderSavesIn($("saveList2")); }
+function renderSavesIn(el){
+  const v = getSaves(); if (!el) return;
   el.innerHTML = v.map((x, i) => `<li><button type="button" class="sv-open" data-i="${i}"><b></b><span>${x.left <= 0.05 ? "Balanced" : m(x.left) + " to go"}${window.scFmt ? " · " + scFmt.date(x.t, {year:false}) : ""}</span></button><button type="button" class="sv-del" data-i="${i}" aria-label="Delete">×</button></li>`).join("");
   el.querySelectorAll(".sv-open b").forEach((b, i) => b.textContent = v[i].name);
-  el.querySelectorAll(".sv-open").forEach(b => b.onclick = () => { location.hash = v[+b.dataset.i].hash; L.forEach(l => st[l.id] = startOf(l)); for (const k in dpct) delete dpct[k]; load(); update(); });
+  el.querySelectorAll(".sv-open").forEach(b => b.onclick = () => { if ($("shareDlg").open) $("shareDlg").close(); location.hash = v[+b.dataset.i].hash; L.forEach(l => st[l.id] = startOf(l)); for (const k in dpct) delete dpct[k]; load(); update(); });
   el.querySelectorAll(".sv-del").forEach(b => b.onclick = () => { v.splice(+b.dataset.i, 1); putSaves(v); renderSaves(); });
 }
-$("saveBtn").onclick = () => {
-  save(); const v = getSaves(), name = ($("saveName").value || "").trim() || "Budget " + (v.length + 1);
-  v.unshift({name, hash:location.hash, left:Math.max(0, totals().left), t:Date.now()}); putSaves(v); $("saveName").value = ""; renderSaves();
-  $("saveBtn").textContent = "Saved"; setTimeout(() => $("saveBtn").textContent = "Save in this browser", 1600);
-};
+function saveAs(inp, btn, label){
+  save(); const v = getSaves(), name = (inp.value || "").trim() || "Budget " + (v.length + 1);
+  v.unshift({name, hash:location.hash, left:Math.max(0, totals().left), t:Date.now()}); putSaves(v); inp.value = ""; renderSaves();
+  btn.textContent = "Saved"; setTimeout(() => btn.textContent = label, 1600);
+}
+$("saveBtn").onclick = () => saveAs($("saveName"), $("saveBtn"), "Save in this browser");
+/* Share or save dialog: link, saved copies and Plans people made in one place */
+function openShare(){
+  save();
+  const T = totals(), bal = T.left <= 0.05, e = VOTE && bal ? voteEst() : null, hb = CITY_SHARE_BILL * amt(L[0]) / LEVY, d = $("shareDlg");
+  d.innerHTML = `<header style="display:flex;justify-content:space-between;align-items:center;padding:16px 18px 0"><b id="shTitle" style="font-size:17px">Share or save this budget</b><button class="sc-btn" type="button" id="shClose">Close</button></header>
+  <div class="shb">
+    <p class="shsum">${bal ? (T.left < -0.05 ? `Balanced, with ${m(-T.left)} to spare.` : "Balanced.") : `${m(T.left)} still to close.`}</p>
+    <h3>Send a link</h3><p class="fine">The link holds every choice you made. Anyone who opens it sees your budget and can change it.</p>
+    <div class="shrow">${navigator.share ? `<button class="sc-btn sc-primary" type="button" id="shNative">Share</button>` : ""}<button class="sc-btn${navigator.share ? "" : " sc-primary"}" type="button" id="shCopy">Copy link</button><button class="sc-btn" type="button" id="shFront">See your front page</button></div>
+    <h3>Save in this browser</h3><p class="fine">Only on this device. Your last budget also comes back when you return.</p>
+    <div class="saverow"><input id="shName" maxlength="60" aria-label="Name this budget" placeholder="Name this budget"><button class="sc-btn" type="button" id="shSave">Save</button></div><ul class="svlist" id="saveList2"></ul>
+    <h3>Post it to Plans people made</h3><p class="fine">Others can see it, endorse it and open it. <a href="/plans/?sim=budget">See the budgets people shared</a></p><div id="shBox"></div>
+  </div>`;
+  $("shClose").onclick = () => d.close();
+  if ($("shNative")) $("shNative").onclick = async () => { try { await navigator.share({title:"My Chicago budget", text:bal ? "I balanced Chicago's 2027 budget. Try yours:" : "My plan for Chicago's 2027 budget:", url:location.href}); } catch (er){} };
+  $("shCopy").onclick = async () => { try { await navigator.clipboard.writeText(location.href); $("shCopy").textContent = "Copied"; } catch (er){ $("shCopy").textContent = "Copy failed"; } setTimeout(() => $("shCopy").textContent = "Copy link", 1600); };
+  $("shFront").onclick = () => { d.close(); frontPage(); };
+  $("shSave").onclick = () => saveAs($("shName"), $("shSave"), "Save");
+  renderSaves();
+  if (window.SCPlans) SCPlans.shareBox($("shBox"), "budget", () => { save(); const t = totals(), r1 = v => Math.round(v * 10) / 10;
+    return {code:location.hash.slice(1), stats:{left:r1(Math.max(0, t.left)), need:r1(t.need), rec:r1(t.rec), one:r1(t.one), cost:r1(t.cost), state:r1(t.state), home:Math.round(hb), ...(e ? {yes:e.yes} : {})}}; });
+  d.showModal();
+}
+$("shareOpen").onclick = openShare;
 function renderBar(){
   const T = totals(), need = Math.max(1, T.need), left = T.left;
   $("gapN").textContent = left > 0.05 ? m(left) : left < -0.05 ? m(-left) : "$0";
