@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155521
+     "count": 155526
     },
     {
      "value": "Committee on Finance",
-     "count": 13909
+     "count": 13908
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10627
+     "count": 10629
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -21,7 +21,7 @@
     },
     {
      "value": "Committee on Transportation and Public Way",
-     "count": 205
+     "count": 206
     },
     {
      "value": "Committee on Committees and Rules",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118286
+     "count": 118289
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20589
+     "count": 20592
     },
     {
      "value": "Order",
-     "count": 9273
+     "count": 9274
     },
     {
      "value": "Appointment",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167356
+     "count": 167357
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2249
+     "count": 2253
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 102
+     "count": 104
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29995
+     "count": 29996
     },
     {
      "value": "Reilly, Brendan",
@@ -324,7 +324,7 @@
     },
     {
      "value": "Dowell, Pat",
-     "count": 2184
+     "count": 2185
     },
     {
      "value": "Laurino, Margaret",
@@ -344,7 +344,7 @@
     },
     {
      "value": "Mitts, Emma",
-     "count": 1948
+     "count": 1949
     },
     {
      "value": "Osterman, Harry",
@@ -472,7 +472,7 @@
     },
     {
      "value": "Napolitano, Anthony V.",
-     "count": 871
+     "count": 872
     },
     {
      "value": "Mitchell, Gregory I.",
@@ -512,7 +512,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 672
+     "count": 673
     },
     {
      "value": "O'Connor, Mary",
@@ -544,7 +544,7 @@
     },
     {
      "value": "Mosley, Ronnie L.",
-     "count": 542
+     "count": 541
     },
     {
      "value": "Rodriguez Sanchez, Rossana",
@@ -576,7 +576,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 395
+     "count": 396
     },
     {
      "value": "Thomas, Latasha R.",
@@ -680,7 +680,7 @@
     },
     {
      "value": "Knudsen, Timothy R.",
-     "count": 126
+     "count": 127
     },
     {
      "value": "Olivo, Frank",
@@ -704,7 +704,7 @@
     },
     {
      "value": "Yancy, Desmon C.",
-     "count": 79
+     "count": 80
     },
     {
      "value": "Lyle, Freddrenna",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169878
+     "count": 169884
     },
     {
      "value": "YES",
-     "count": 12142
+     "count": 12143
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7628
+     "count": 7635
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30013
+     "count": 30014
     },
     {
      "value": "42",
@@ -916,7 +916,7 @@
     },
     {
      "value": "43",
-     "count": 3467
+     "count": 3468
     },
     {
      "value": "11",
@@ -940,7 +940,7 @@
     },
     {
      "value": "39",
-     "count": 2853
+     "count": 2854
     },
     {
      "value": "26",
@@ -972,7 +972,7 @@
     },
     {
      "value": "03",
-     "count": 2119
+     "count": 2120
     },
     {
      "value": "38",
@@ -980,7 +980,7 @@
     },
     {
      "value": "21",
-     "count": 2005
+     "count": 2004
     },
     {
      "value": "Dept./Agency",
@@ -992,7 +992,7 @@
     },
     {
      "value": "37",
-     "count": 1948
+     "count": 1949
     },
     {
      "value": "30",
@@ -1028,11 +1028,11 @@
     },
     {
      "value": "06",
-     "count": 1628
+     "count": 1629
     },
     {
      "value": "41",
-     "count": 1595
+     "count": 1596
     },
     {
      "value": "36",
@@ -1056,7 +1056,7 @@
     },
     {
      "value": "05",
-     "count": 1275
+     "count": 1276
     },
     {
      "value": "20",
@@ -1169,15 +1169,15 @@
     },
     {
      "value": "Referred",
-     "count": 1871
+     "count": 1873
     },
     {
      "value": "Placed on File",
-     "count": 1660
+     "count": 1661
     },
     {
      "value": "Direct Introduction",
-     "count": 302
+     "count": 304
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Accepted",
-     "count": 99
+     "count": 101
     },
     {
      "value": "Agreed Calendar",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163787
+     "count": 163792
     },
     {
      "value": "YES",
-     "count": 18231
+     "count": 18233
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182020,
-  "pages": 182020
+  "count": 182027,
+  "pages": 182027
  }
 }
