@@ -25,3 +25,4 @@ H = {
          '<b>你的地址：</b>分区与规则，以及补助与帮助。',
          '<b>Twój adres:</b> Strefowanie i zasady oraz Dotacje i pomoc.'),
 }
+T['Want a reply? Email hello@shapechicago.city'] = ('¿Quieres respuesta? Escribe a hello@shapechicago.city', '需要回复？请发邮件至 hello@shapechicago.city', 'Chcesz odpowiedzi? Napisz na hello@shapechicago.city')

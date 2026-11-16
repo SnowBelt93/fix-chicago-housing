@@ -256,6 +256,7 @@ window.scWhenReady = fn => { if (document.readyState === "loading") addEventList
         <p>Something wrong, confusing or missing? Say what you'd change.</p>
         <label class="sc-fbl" for="scFbT">Your note</label><textarea id="scFbT" rows="5" maxlength="2000" placeholder="For example: the rent number on the housing page doesn't match the Sources tab."></textarea>
         <p class="sc-fbn">Notes are anonymous, so we can't reply. Please leave out names and contact details.</p>
+        <p class="sc-fbn sc-fbmail"><a href="mailto:hello@shapechicago.city">Want a reply? Email hello@shapechicago.city</a></p>
         <p class="sc-fbm" role="status" aria-live="polite"></p>
         <div class="sc-fbr"><button type="submit" class="sc-btn sc-fbsend">Send</button></div></form>`;
       document.body.appendChild(dlg);
@@ -275,7 +276,7 @@ window.scWhenReady = fn => { if (document.readyState === "loading") addEventList
         send.disabled = false;
       });
     }
-    dlg.querySelector(".sc-fbm").textContent = ""; dlg.showModal(); dlg.querySelector("textarea").focus();
+    dlg.querySelector(".sc-fbm").textContent = ""; dlg.querySelector(".sc-fbmail a").href = "mailto:hello@shapechicago.city?subject=" + encodeURIComponent("Shape Chicago: " + (location.pathname.replace(/index\.html$/, "") || "/")); dlg.showModal(); dlg.querySelector("textarea").focus();
   };
   function add(){
     const r = document.querySelector(".sc-head .sc-r");
