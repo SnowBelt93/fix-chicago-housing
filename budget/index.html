@@ -940,7 +940,7 @@ function renderExtra(){
     <table class="excmp"><thead><tr><th>Where ${m(E.x)} goes</th><th class="n">Each year after</th><th class="n">Total saved</th></tr></thead><tbody>
     ${row("debt", "Pay down debt", m(debt) + " for 20 yrs", m(debt * DEBT_YEARS))}${row("pen", "Pensions", m(pen) + " for 29 yrs", m(pen * PEN_YEARS))}${row("resv", "Reserves", "$0", "Cushion")}${row("carry", "Save for 2028", "2028 only", m(E.x))}</tbody></table>`;
 }
-$("exPick").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return; exPick = b.dataset.k; try { localStorage.setItem(EX_K, exPick); } catch (er){} renderExtra(); renderNext(); });
+$("exPick").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return; exPick = b.dataset.k; try { localStorage.setItem(EX_K, exPick); } catch (er){} renderExtra(); renderNext(); renderRate(); renderMis(); });
 $("exInfo").onclick = () => info("What extra money can do", `<p>A surplus is spent once, but where it goes decides whether later budgets feel it.</p>
   <p><b>Pay down debt:</b> retire city bonds that would otherwise be repaid in equal payments over about 20 years (an assumption) at 5.6%, the interest rate on the city's June 2025 bonds. Every dollar retired skips that dollar plus its interest. Most city bonds can't be paid off early until their call date, so the city would buy them back or set money aside to pay them (defeasance), which usually saves somewhat less. General obligation debt payments were $470.8 million in 2025 and come mostly from the property tax levy, so lower payments free levy money for other costs or a smaller tax bill.</p>
   <p><b>Pensions:</b> an extra payment earns the funds' assumed return, about 6.7%, and state law's payments are set to reach 90% funded by 2055–2058, so the required payments fall. This tool spreads that evenly over the 29 years from 2028 (an assumption); the pensions simulator models it year by year.</p>
@@ -961,20 +961,25 @@ $("nextInfo").onclick = () => info("The next two years", `<p>The city's August 2
 
 /* ---- What the rating agencies would notice: their own stated concerns, checked against your plan ---- */
 function rateFlags(){
-  const T = totals(), a = id => amt(L.find(l => l.id === id)), f = [];
+  const T = totals(), a = id => amt(L.find(l => l.id === id)), f = [], E = extraUse(T);
+  const oneNeed = Math.max(0, T.one - E.x);   // one-time money that actually covers costs; the rest only builds the surplus
   if (T.left > 0.05) f.push(["bad", "It doesn't balance. Every agency watches whether the city can pass a budget on time."]);
-  if (T.one > 100) f.push(["bad", `Leans on ${m(T.one)} in one-time money. KBRA's downgrade cited "continued reliance on one-time budgetary fixes"; S&P cited the same.`]);
+  if (oneNeed > 100) f.push(["bad", `Leans on ${m(oneNeed)} in one-time money to cover costs. KBRA's downgrade cited "continued reliance on one-time budgetary fixes"; S&P cited the same.`]);
+  else if (T.one > 0.05 && T.left <= 0.05 && (E.k === "debt" || E.k === "resv" || E.k === "pen")) f.push(["good", `Your ${m(T.one)} in one-time money isn't covering costs: it ends up ${E.k === "debt" ? "paying down debt" : E.k === "resv" ? "in reserves" : "in the pension funds"}. Lasting money covers the budget itself.`]);
   else if (T.one < 0.05 && T.left <= 0.05) f.push(["good", "No one-time money: every dollar keeps working next year."]);
+  if (E.k === "debt" && E.yr > 0.05) f.push(["good", `Pays down ${m(E.x)} in debt, cutting ${m(E.yr)} a year in fixed costs. Agencies weigh debt and pension payments as costs the city can't trim in a bad year.`]);
+  if (E.k === "resv" && E.x >= 1) f.push(["good", `Adds ${m(E.x)} to reserves. KBRA lists drawing reserves down as a downgrade risk; building them up is the opposite.`]);
+  if (E.k === "pen" && E.yr > 0.05) f.push(["good", `Puts ${m(E.x)} more into the pension funds, the city's biggest fixed cost.`]);
   if (a("resv")) f.push(["bad", "Spends reserves. KBRA lists using the Skyway and parking meter reserves to fill gaps as a reason it could downgrade."]);
   if (a("bonds")) f.push(["bad", "Borrows to pay settlements. KBRA lists borrowing for things other than buildings and equipment as a downgrade risk."]);
   if (a("pens")) f.push(["bad", "Cuts the extra pension payment. S&P pointed to exactly this when it turned Chicago's outlook negative."]);
-  if (T.rec - T.cost >= FCST[2028] - 0.05) f.push(["good", "Lasting fixes cover next year's gap too. KBRA says long-term revenue and spending reforms could lead to an upgrade."]);
+  if (T.rec - T.cost + E.yr >= FCST[2028] - 0.05) f.push(["good", "Lasting fixes cover next year's gap too. KBRA says long-term revenue and spending reforms could lead to an upgrade."]);
   if (T.state > 0.05) f.push(["bad", `Counts on ${m(T.state)} that needs Springfield or voters. Agencies rate what's law, not what's hoped for.`]);
   return f;
 }
 function renderRate(){
   const f = rateFlags(), bad = f.filter(x => x[0] === "bad").length, good = f.filter(x => x[0] === "good").length;
-  const v = bad >= 3 ? "Expect more downgrade pressure" : bad ? "More of the same: negative outlooks stay" : good ? "This is what the agencies have asked for" : "Nothing they'd flag either way";
+  const v = bad >= 3 ? "Expect more downgrade pressure" : bad && good ? "Some credit, but the negative outlooks likely stay" : bad ? "More of the same: negative outlooks stay" : good ? "This is what the agencies have asked for" : "Nothing they'd flag either way";
   $("rateBody").innerHTML = `<p class="rverdict">${v}</p><div class="rflags">${f.map(([k, t]) => `<div class="rflag ${k}"><i>${k === "good" ? "✓" : "!"}</i><span>${t}</span></div>`).join("")}</div>`;
 }
 $("rateInfo").onclick = () => info("Chicago's credit ratings", `<p>A credit rating is an agency's opinion of how likely Chicago is to pay its bonds back in full and on time. The scale runs from AAA down; anything BBB- (Baa3 at Moody's) or higher is "investment grade," and anything below is "junk" (speculative grade). Many pension funds and bond funds can only buy investment-grade bonds, so falling below that line would shrink the pool of buyers and raise the city's interest costs sharply.</p><p>Chicago's general obligation bonds today: S&P BBB, negative outlook (cut from BBB+ in January 2025); Fitch BBB+, negative (cut from A- on Feb. 25, 2026); KBRA BBB+, negative (cut from A- the same day, affirmed March 2, 2026); Moody's Baa3, stable (affirmed September 2025). A negative outlook means the agency sees at least a one-in-three chance of another cut within about two years.</p><p>What the agencies have said they want: recurring revenue or lasting cuts that close the structural gap, less one-time money and borrowing for operations, and a dedicated way to pay what the pension funds need. What they've said would hurt: using reserves such as the Skyway and parking meter funds to fill gaps, borrowing for things other than capital projects, and missing the city's own financial policies (KBRA, March 2026).</p><p>This card checks your plan against those statements. It's our reading, not a prediction.</p><p class="src">Sources: ${src("sp_cut", "sp_out", "fitch_bb", "fitch", "kbra26", "moodys25")}</p>`);

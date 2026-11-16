@@ -1,6 +1,7 @@
 # Nov. 16, 2026: budget "Your extra money" card (what a surplus does if it pays down debt, goes to pensions, reserves or 2028).
 from i18n_re import P, Q
 T = {
+    'Some credit, but the negative outlooks likely stay': ('Algo de crédito, pero las perspectivas negativas probablemente siguen', '有加分，但负面展望大概率不变', 'Trochę uznania, ale negatywne perspektywy pewnie zostaną'),
     "Spent once, it can still lower the city's bills for years. Pick where it goes.": (
         'Se gasta una sola vez, pero aún puede bajar las cuentas de la ciudad por años. Elige a dónde va.',
         '这笔钱只能花一次，但仍能在多年里减轻市政府的支出。选择它的去向。',
@@ -53,6 +54,13 @@ T = {
     'next year\'s gap shrinks once.': ('la brecha del año próximo baja una sola vez.', '明年的缺口缩小一次。', 'luka w przyszłym roku zmniejsza się jednorazowo.'),
 }
 R = [
+    Q('Leans on {#} in one-time money to cover costs. KBRA\'s downgrade cited "continued reliance on one-time budgetary fixes"; S&P cited the same.', 'Depende de {1} en dinero de una vez para cubrir gastos. La baja de KBRA citó la "dependencia continua de soluciones presupuestales de una vez"; S&P citó lo mismo.', '依赖 {1} 的一次性资金来支付开支。KBRA 降级时指出“持续依赖一次性预算措施”；标普也这么说。', 'Opiera się na {1} jednorazowych pieniędzy na pokrycie kosztów. KBRA przy obniżce wskazała „ciągłe poleganie na jednorazowych łatach budżetowych”; S&P wskazał to samo.'),
+    Q("Your {#} in one-time money isn't covering costs: it ends up paying down debt. Lasting money covers the budget itself.", 'Tus {1} en dinero de una vez no cubren gastos: terminan pagando deuda. El dinero duradero cubre el presupuesto.', '你的 {1} 一次性资金没有用来支付开支，而是用来偿还债务。预算本身由长期收入支撑。', 'Twoje {1} jednorazowych pieniędzy nie pokrywa kosztów: idzie na spłatę długu. Sam budżet pokrywają trwałe pieniądze.'),
+    Q("Your {#} in one-time money isn't covering costs: it ends up in reserves. Lasting money covers the budget itself.", 'Tus {1} en dinero de una vez no cubren gastos: terminan en las reservas. El dinero duradero cubre el presupuesto.', '你的 {1} 一次性资金没有用来支付开支，而是存入储备金。预算本身由长期收入支撑。', 'Twoje {1} jednorazowych pieniędzy nie pokrywa kosztów: trafia do rezerw. Sam budżet pokrywają trwałe pieniądze.'),
+    Q("Your {#} in one-time money isn't covering costs: it ends up in the pension funds. Lasting money covers the budget itself.", 'Tus {1} en dinero de una vez no cubren gastos: terminan en los fondos de pensiones. El dinero duradero cubre el presupuesto.', '你的 {1} 一次性资金没有用来支付开支，而是投入养老基金。预算本身由长期收入支撑。', 'Twoje {1} jednorazowych pieniędzy nie pokrywa kosztów: trafia do funduszy emerytalnych. Sam budżet pokrywają trwałe pieniądze.'),
+    Q("Pays down {#} in debt, cutting {#} a year in fixed costs. Agencies weigh debt and pension payments as costs the city can't trim in a bad year.", 'Paga {1} de deuda y recorta {2} al año en costos fijos. Las calificadoras ven los pagos de deuda y pensiones como costos que la ciudad no puede recortar en un mal año.', '偿还 {1} 债务，每年减少 {2} 的固定开支。评级机构把债务和养老金还款视为城市在困难年份也无法削减的开支。', 'Spłaca {1} długu, obniżając koszty stałe o {2} rocznie. Agencje traktują spłaty długu i emerytur jako koszty, których miasto nie może obciąć w złym roku.'),
+    Q("Adds {#} to reserves. KBRA lists drawing reserves down as a downgrade risk; building them up is the opposite.", 'Suma {1} a las reservas. KBRA menciona gastar las reservas como un riesgo de baja; aumentarlas es lo contrario.', '向储备金增加 {1}。KBRA 把动用储备列为降级风险；增加储备则相反。', 'Dodaje {1} do rezerw. KBRA wymienia uszczuplanie rezerw jako ryzyko obniżki; ich budowanie to coś odwrotnego.'),
+    Q("Puts {#} more into the pension funds, the city's biggest fixed cost.", 'Pone {1} más en los fondos de pensiones, el mayor costo fijo de la ciudad.', '向养老基金多投入 {1}，这是该市最大的固定开支。', 'Wpłaca {1} więcej do funduszy emerytalnych, największego kosztu stałego miasta.'),
     Q('Your extra {#}', 'Tus {1} extra', '你多出的 {1}', 'Twoje dodatkowe {1}'),
     Q('lower debt payments, 2028–{#}', 'menos en pagos de deuda, 2028–{1}', '减少的债务还款，2028–{1} 年', 'niższe spłaty długu, 2028–{1}'),
     Q('lower required pension payments, 2028–{#}', 'menos en pagos obligatorios a pensiones, 2028–{1}', '减少的法定养老金缴款，2028–{1} 年', 'niższe obowiązkowe wpłaty emerytalne, 2028–{1}'),
