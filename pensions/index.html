@@ -165,7 +165,7 @@ const $ = id => document.getElementById(id);
 let D = null;
 const S = {
   acfr:["City of Chicago 2024 Annual Comprehensive Financial Report (pension schedules)", "https://www.chicago.gov/content/dam/city/depts/fin/supp_info/CAFR/2024CAFR/ACFR_2024.pdf"],
-  ov26:["City of Chicago 2026 Budget Overview (pension contributions by fund)", "https://news.wttw.com/sites/default/files/article/file-attachments/2026%20City%20of%20Chicago%20Budget%20Overview.pdf"],
+  ov26:["City of Chicago 2026 Budget Overview (pension contributions by fund)", "https://www.chicago.gov/content/dam/city/depts/obm/supp_info/2026Budget/2026%20Budget%20Overview.pdf"],
   fc27:["City of Chicago 2027 Budget Forecast (projected contributions, advance payments, HB 3657)", "https://www.chicago.gov/content/dam/city/depts/obm/2027_Budget/Budget_Forecast/2027_Chicago_Budget_Forecast.pdf"],
   wttw:["WTTW: Chicago's pension debt rose to $36.4B in 2025 (city analysis)", "https://news.wttw.com/2026/07/06/chicago-s-pension-debt-increased-2025-364b-city-analysis"],
   ctw:["A City That Works: the state of Chicago pensions (2025)", "https://citythatworks.substack.com/p/a-2025-update-on-the-state-of-chicago"],
@@ -286,7 +286,7 @@ function render(){
 }
 
 /* ---- where the 2026 payment goes: benefits earned this year, interest on what's owed, and paying it down ---- */
-const LOCAL26 = 14798710, PENS26 = 2899698;   // $ thousands: 2026 city budget, all local funds, and pension fund appropriations (budget ordinance)
+const LOCAL26 = 12715446, PENS26 = 2760300;   // $ thousands: 2026 Budget Overview, net local budget (after transfers between funds and debt proceeds, which the raw ordinance data counts twice) and the four pension funds
 function renderInt(){
   const R = BASE; let U = 0, I = 0, N = 0, E = 0;
   for (const [k, f] of Object.entries(D.funds)){
