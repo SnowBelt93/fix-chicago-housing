@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155526
+     "count": 155529
     },
     {
      "value": "Committee on Finance",
-     "count": 13908
+     "count": 13917
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10629
+     "count": 10630
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -29,7 +29,7 @@
     },
     {
      "value": "Committee on Economic, Capital and Technology Development",
-     "count": 91
+     "count": 107
     },
     {
      "value": "Committee on Budget and Government Operations",
@@ -174,15 +174,15 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118289
+     "count": 118307
     },
     {
      "value": "Claim",
-     "count": 29703
+     "count": 29712
     },
     {
      "value": "Resolution",
-     "count": 20592
+     "count": 20594
     },
     {
      "value": "Order",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2253
+     "count": 2279
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 104
+     "count": 107
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 29996
+     "count": 30005
     },
     {
      "value": "Reilly, Brendan",
@@ -312,7 +312,7 @@
     },
     {
      "value": "Hopkins, Brian",
-     "count": 2311
+     "count": 2313
     },
     {
      "value": "Ervin, Jason C.",
@@ -335,12 +335,12 @@
      "count": 2139
     },
     {
-     "value": "Lightfoot, Lori E.",
-     "count": 2031
+     "value": "Dept./Agency",
+     "count": 2040
     },
     {
-     "value": "Dept./Agency",
-     "count": 2024
+     "value": "Lightfoot, Lori E.",
+     "count": 2031
     },
     {
      "value": "Mitts, Emma",
@@ -608,7 +608,7 @@
     },
     {
      "value": "Chico, Peter",
-     "count": 251
+     "count": 252
     },
     {
      "value": "Daley, Richard M.",
@@ -699,11 +699,11 @@
      "count": 91
     },
     {
-     "value": "Mendoza, Susana A.",
-     "count": 80
+     "value": "Yancy, Desmon C.",
+     "count": 81
     },
     {
-     "value": "Yancy, Desmon C.",
+     "value": "Mendoza, Susana A.",
      "count": 80
     },
     {
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 169884
+     "count": 169912
     },
     {
      "value": "YES",
-     "count": 12143
+     "count": 12144
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7635
+     "count": 7664
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30014
+     "count": 30022
     },
     {
      "value": "42",
@@ -896,7 +896,7 @@
     },
     {
      "value": "02",
-     "count": 4600
+     "count": 4602
     },
     {
      "value": "08",
@@ -979,12 +979,12 @@
      "count": 2030
     },
     {
-     "value": "21",
-     "count": 2004
+     "value": "Dept./Agency",
+     "count": 2005
     },
     {
-     "value": "Dept./Agency",
-     "count": 1989
+     "value": "21",
+     "count": 2004
     },
     {
      "value": "31",
@@ -1048,7 +1048,7 @@
     },
     {
      "value": "10",
-     "count": 1420
+     "count": 1421
     },
     {
      "value": "34",
@@ -1056,7 +1056,7 @@
     },
     {
      "value": "05",
-     "count": 1276
+     "count": 1277
     },
     {
      "value": "20",
@@ -1096,7 +1096,7 @@
     },
     {
      "value": "No Sponsor",
-     "count": 4
+     "count": 5
     },
     {
      "value": "Workforce Development",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1873
+     "count": 1883
     },
     {
      "value": "Placed on File",
@@ -1177,7 +1177,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 304
+     "count": 320
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Accepted",
-     "count": 101
+     "count": 104
     },
     {
      "value": "Agreed Calendar",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163792
+     "count": 163821
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182027,
-  "pages": 182027
+  "count": 182056,
+  "pages": 182056
  }
 }
