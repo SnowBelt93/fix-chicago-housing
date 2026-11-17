@@ -212,6 +212,8 @@ dialog.paperdlg::backdrop{background:rgba(10,14,20,.55)}
 @media (max-width:980px){
   main{grid-template-columns:1fr;padding:12px}
   .panel{position:static;max-height:none}
+  /* the option list scrolls with the page here: an overflow:auto box with overscroll-behavior:contain swallows touch scrolls in Firefox for Android even when it has nothing to scroll */
+  .levers{overflow:visible;overscroll-behavior:auto}
   .bar{gap:12px;padding:10px 14px}
   .bar .sc-m.hm{display:none}
   .gapm b{font-size:24px}
