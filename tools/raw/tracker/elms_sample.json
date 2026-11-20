@@ -66,103 +66,9 @@
   "lastPublicationDate": "2026-11-16T21:10:04+00:00"
  },
  {
-  "matterId": "5ED33460-E2C7-F111-AAAE-001DD80FDA55",
-  "fileYear": 2026,
-  "recordNumber": "O2026-0029425",
-  "legacyRecordNumber": "",
-  "status": "4-In Committee",
-  "legacyStatus": null,
-  "subStatus": "Referred",
-  "statusDescription": "4-In Committee",
-  "filingOffice": "Misc.",
-  "filingSponsor": "Misc. Transmittal",
-  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
-  "introductionDate": "2026-10-14T15:00:00+00:00",
-  "finalActionDate": null,
-  "shortTitle": null,
-  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
-  "routine": "YES",
-  "introductionType": "Council Introduction",
-  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
-  "controllingBodyId": null,
-  "keyLegislation": "NO",
-  "economicDisclosure": "YES",
-  "title": "Zoning Reclassification Map No. 9-L at 5555 W Newport Ave - App No. 23202T1",
-  "nicknameAlias": "",
-  "recordCreateDate": "2026-10-14T15:17:38+00:00",
-  "matterCategory": "ZONING RECLASSIFICATIONS",
-  "type": "Ordinance",
-  "originalRecordNumber": null,
-  "supersededBy": null,
-  "actions": [
-   {
-    "actionDate": "2026-10-14T05:00:00+00:00",
-    "journalPage": "50650",
-    "actionByName": "City Council",
-    "actionName": "Referred",
-    "actionText": "The matter was Referred to Committee.",
-    "meetingId": "",
-    "historyId": "6B49C40B-E5C7-F111-AAAE-001DD80FDA55",
-    "name": null,
-    "sort": 70,
-    "votes": []
-   }
-  ],
-  "sponsors": [
-   {
-    "office": "Misc.",
-    "sponsorName": "Misc. Transmittal",
-    "sponsorType": "Sponsor",
-    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
-   }
-  ],
-  "attachments": [
-   {
-    "fileName": "O2026-0029425 Ordinance.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f231f228-05e7-4d3c-8942-a789e4528fc9.pdf",
-    "attachmentType": "Legislation"
-   },
-   {
-    "fileName": "O2026-0029425 Narrative and Plans.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/a61a7527-bd61-4678-b32b-b29986013438.pdf",
-    "attachmentType": "Exhibits"
-   },
-   {
-    "fileName": "O2026-0029425 Application.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/b37813aa-91dc-44a9-af4e-9d5e703c6905.pdf",
-    "attachmentType": "Miscellaneous"
-   },
-   {
-    "fileName": "O2026-0029425 EDS.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/73d276d4-9d2c-4f35-9fde-7968bf0014ad.pdf",
-    "attachmentType": "EDS"
-   }
-  ],
-  "relations": [],
-  "agreedCalendar": "NO",
-  "timeline": [
-   {
-    "eventName": "AcceptedOn",
-    "timestamp": "2026-10-14T15:35:39+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "PostedOn",
-    "timestamp": "2026-10-14T15:35:48+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "SubmittedOn",
-    "timestamp": "1900-01-01T00:00:00+00:00",
-    "eventText": ""
-   }
-  ],
-  "lastPublicationDate": "2026-11-05T16:36:08+00:00"
- },
- {
   "matterId": "CD89F170-0CC4-F111-AAAE-001DD80FDA55",
   "fileYear": 2026,
-  "recordNumber": "O2026-0029372",
+  "recordNumber": "SO2026-0029372",
   "legacyRecordNumber": "",
   "status": "4-In Committee",
   "legacyStatus": null,
@@ -186,9 +92,21 @@
   "recordCreateDate": "2026-10-09T18:08:37+00:00",
   "matterCategory": "ZONING RECLASSIFICATIONS",
   "type": "Ordinance",
-  "originalRecordNumber": null,
+  "originalRecordNumber": "O2026-0029372",
   "supersededBy": null,
   "actions": [
+   {
+    "actionDate": "2026-11-17T06:00:00+00:00",
+    "journalPage": "",
+    "actionByName": "",
+    "actionName": "Substituted",
+    "actionText": "",
+    "meetingId": "",
+    "historyId": "B97A6EB3-5FE4-F111-84EA-001DD803894A",
+    "name": null,
+    "sort": 80,
+    "votes": []
+   },
    {
     "actionDate": "2026-10-14T05:00:00+00:00",
     "journalPage": "50650",
@@ -222,6 +140,16 @@
     "attachmentType": "Miscellaneous"
    },
    {
+    "fileName": "SO2026-0029372 Final Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/00084645-2098-46c5-b252-c0c28177e0e0.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "SO2026-0029372 Final Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/38bd9c38-f123-47be-b63b-2c86c16011d6.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
     "fileName": "O2026-0029372 EDS_Redacted.pdf",
     "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/995587f4-3843-459b-8e51-d8e00d91f2d2.pdf",
     "attachmentType": "EDS"
@@ -232,7 +160,9 @@
     "attachmentType": "Exhibits"
    }
   ],
-  "relations": [],
+  "relations": [
+   "SO2026-0029372"
+  ],
   "agreedCalendar": "NO",
   "timeline": [
    {
@@ -251,7 +181,7 @@
     "eventText": ""
    }
   ],
-  "lastPublicationDate": "2026-11-05T16:35:59+00:00"
+  "lastPublicationDate": "2026-11-19T21:30:08+00:00"
  },
  {
   "matterId": "6681C4AC-17C7-F111-AAAE-001DD80FDAD3",
@@ -321,9 +251,19 @@
     "attachmentType": "Miscellaneous"
    },
    {
+    "fileName": "O2026-0029394 Final Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/af4c42e8-d5c8-4ad3-a017-62c5c6adddfb.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
     "fileName": "O2026-0029394 Narrative and Plans.pdf",
     "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/079e42bc-3532-40cf-b878-fc3b63035c4c.pdf",
     "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029394 Final Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f7de01cb-5e3e-485a-a8ba-c9c5d5e6d0b0.pdf",
+    "attachmentType": "Legislation"
    }
   ],
   "relations": [],
@@ -345,7 +285,111 @@
     "eventText": ""
    }
   ],
-  "lastPublicationDate": "2026-11-05T16:31:32+00:00"
+  "lastPublicationDate": "2026-11-19T19:35:06+00:00"
+ },
+ {
+  "matterId": "5ED33460-E2C7-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029425",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 9-L at 5555 W Newport Ave - App No. 23202T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-14T15:17:38+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "50650",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "6B49C40B-E5C7-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029425 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f231f228-05e7-4d3c-8942-a789e4528fc9.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029425 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/a61a7527-bd61-4678-b32b-b29986013438.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029425 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/b37813aa-91dc-44a9-af4e-9d5e703c6905.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029425 Final Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/bb44ccb3-84ba-43ce-aca6-2035ddaef8f1.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029425 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/73d276d4-9d2c-4f35-9fde-7968bf0014ad.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029425 Final Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/4aa88c87-f933-4036-ad12-8ee9e6a2e25e.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-14T15:35:39+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-14T15:35:48+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-11-20T15:25:01+00:00"
  },
  {
   "matterId": "81E1AF6B-10C4-F111-AAAE-001DD80FDA55",
@@ -442,100 +486,6 @@
   "lastPublicationDate": "2026-11-05T16:31:23+00:00"
  },
  {
-  "matterId": "A87DEA3B-E5C7-F111-AAAE-001DD80FDA55",
-  "fileYear": 2026,
-  "recordNumber": "O2026-0029435",
-  "legacyRecordNumber": "",
-  "status": "4-In Committee",
-  "legacyStatus": null,
-  "subStatus": "Referred",
-  "statusDescription": "4-In Committee",
-  "filingOffice": "Misc.",
-  "filingSponsor": "Misc. Transmittal",
-  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
-  "introductionDate": "2026-10-14T15:00:00+00:00",
-  "finalActionDate": null,
-  "shortTitle": null,
-  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
-  "routine": "YES",
-  "introductionType": "Council Introduction",
-  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
-  "controllingBodyId": null,
-  "keyLegislation": "NO",
-  "economicDisclosure": "YES",
-  "title": "Zoning Reclassification Map No. 1-L at 4901 W Ferdinand St - App No. 23203T1",
-  "nicknameAlias": "",
-  "recordCreateDate": "2026-10-14T15:38:02+00:00",
-  "matterCategory": "ZONING RECLASSIFICATIONS",
-  "type": "Ordinance",
-  "originalRecordNumber": null,
-  "supersededBy": null,
-  "actions": [
-   {
-    "actionDate": "2026-10-14T05:00:00+00:00",
-    "journalPage": "50647",
-    "actionByName": "City Council",
-    "actionName": "Referred",
-    "actionText": "The matter was Referred to Committee.",
-    "meetingId": "",
-    "historyId": "EC7F1663-E7C7-F111-AAAE-001DD80FDA55",
-    "name": null,
-    "sort": 70,
-    "votes": []
-   }
-  ],
-  "sponsors": [
-   {
-    "office": "Misc.",
-    "sponsorName": "Misc. Transmittal",
-    "sponsorType": "Sponsor",
-    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
-   }
-  ],
-  "attachments": [
-   {
-    "fileName": "O2026-0029435 EDS.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/dc3ad4ac-7970-4c6a-83db-06098b80eae5.pdf",
-    "attachmentType": "EDS"
-   },
-   {
-    "fileName": "O2026-0029435 Ordinance.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/18eb4e03-5f3e-4f13-aaf9-193cd0fcddbb.pdf",
-    "attachmentType": "Legislation"
-   },
-   {
-    "fileName": "O2026-0029435 Application.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/3faae8b6-ed39-43f1-8d5d-de69bfe550e3.pdf",
-    "attachmentType": "Miscellaneous"
-   },
-   {
-    "fileName": "O2026-0029435 Narrative and Plans.pdf",
-    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/9d80ef33-2598-436a-8124-0500287b26a1.pdf",
-    "attachmentType": "Exhibits"
-   }
-  ],
-  "relations": [],
-  "agreedCalendar": "NO",
-  "timeline": [
-   {
-    "eventName": "AcceptedOn",
-    "timestamp": "2026-10-14T15:52:36+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "PostedOn",
-    "timestamp": "2026-10-14T15:52:43+00:00",
-    "eventText": ""
-   },
-   {
-    "eventName": "SubmittedOn",
-    "timestamp": "1900-01-01T00:00:00+00:00",
-    "eventText": ""
-   }
-  ],
-  "lastPublicationDate": "2026-11-05T16:31:27+00:00"
- },
- {
   "matterId": "89D014C2-10C7-F111-AAAE-001DD80FDAD3",
   "fileYear": 2026,
   "recordNumber": "O2026-0029387",
@@ -603,6 +553,16 @@
     "attachmentType": "Miscellaneous"
    },
    {
+    "fileName": "O2026-0029387 Final Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/846ff359-d60f-4b5b-8ca4-0af6655333af.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029387 Final Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/d14fcb3b-2fd8-4735-9ef5-f5cc74326352.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
     "fileName": "O2026-0029387 Ordinance.pdf",
     "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/f6110791-c3f9-4a32-9132-685057cea73c.pdf",
     "attachmentType": "Legislation"
@@ -627,7 +587,111 @@
     "eventText": ""
    }
   ],
-  "lastPublicationDate": "2026-11-05T16:36:17+00:00"
+  "lastPublicationDate": "2026-11-20T15:15:04+00:00"
+ },
+ {
+  "matterId": "A87DEA3B-E5C7-F111-AAAE-001DD80FDA55",
+  "fileYear": 2026,
+  "recordNumber": "O2026-0029435",
+  "legacyRecordNumber": "",
+  "status": "4-In Committee",
+  "legacyStatus": null,
+  "subStatus": "Referred",
+  "statusDescription": "4-In Committee",
+  "filingOffice": "Misc.",
+  "filingSponsor": "Misc. Transmittal",
+  "filingSponsorId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82",
+  "introductionDate": "2026-10-14T15:00:00+00:00",
+  "finalActionDate": null,
+  "shortTitle": null,
+  "committeReferral": "Committee on Zoning, Landmarks and Building Standards",
+  "routine": "YES",
+  "introductionType": "Council Introduction",
+  "controllingBody": "Committee on Zoning, Landmarks and Building Standards",
+  "controllingBodyId": null,
+  "keyLegislation": "NO",
+  "economicDisclosure": "YES",
+  "title": "Zoning Reclassification Map No. 1-L at 4901 W Ferdinand St - App No. 23203T1",
+  "nicknameAlias": "",
+  "recordCreateDate": "2026-10-14T15:38:02+00:00",
+  "matterCategory": "ZONING RECLASSIFICATIONS",
+  "type": "Ordinance",
+  "originalRecordNumber": null,
+  "supersededBy": null,
+  "actions": [
+   {
+    "actionDate": "2026-10-14T05:00:00+00:00",
+    "journalPage": "50647",
+    "actionByName": "City Council",
+    "actionName": "Referred",
+    "actionText": "The matter was Referred to Committee.",
+    "meetingId": "",
+    "historyId": "EC7F1663-E7C7-F111-AAAE-001DD80FDA55",
+    "name": null,
+    "sort": 70,
+    "votes": []
+   }
+  ],
+  "sponsors": [
+   {
+    "office": "Misc.",
+    "sponsorName": "Misc. Transmittal",
+    "sponsorType": "Sponsor",
+    "personId": "3F825C83-0E9C-ED11-AAD0-001DD804FC82"
+   }
+  ],
+  "attachments": [
+   {
+    "fileName": "O2026-0029435 EDS.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/dc3ad4ac-7970-4c6a-83db-06098b80eae5.pdf",
+    "attachmentType": "EDS"
+   },
+   {
+    "fileName": "O2026-0029435 Final Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/c2efeefe-390a-48ce-bae7-c84e6359ae6f.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029435 Final Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/6ac41d9d-d519-46e0-9968-21e451d0f85f.pdf",
+    "attachmentType": "Exhibits"
+   },
+   {
+    "fileName": "O2026-0029435 Ordinance.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/18eb4e03-5f3e-4f13-aaf9-193cd0fcddbb.pdf",
+    "attachmentType": "Legislation"
+   },
+   {
+    "fileName": "O2026-0029435 Application.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/3faae8b6-ed39-43f1-8d5d-de69bfe550e3.pdf",
+    "attachmentType": "Miscellaneous"
+   },
+   {
+    "fileName": "O2026-0029435 Narrative and Plans.pdf",
+    "path": "https://occprodstoragev1.blob.core.usgovcloudapi.net/matterattachmentspublic/9d80ef33-2598-436a-8124-0500287b26a1.pdf",
+    "attachmentType": "Exhibits"
+   }
+  ],
+  "relations": [],
+  "agreedCalendar": "NO",
+  "timeline": [
+   {
+    "eventName": "AcceptedOn",
+    "timestamp": "2026-10-14T15:52:36+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "PostedOn",
+    "timestamp": "2026-10-14T15:52:43+00:00",
+    "eventText": ""
+   },
+   {
+    "eventName": "SubmittedOn",
+    "timestamp": "1900-01-01T00:00:00+00:00",
+    "eventText": ""
+   }
+  ],
+  "lastPublicationDate": "2026-11-20T15:20:01+00:00"
  },
  {
   "matterId": "3E1386A4-FCC3-F111-AAAE-001DD80AA3CC",
