@@ -332,6 +332,7 @@ loadPlans();
 
 /* hero: a featured story (pinned in /shape/site.json "featured", else the newest well-tagged local story with a photo) and three live numbers */
 (function(){
+  if (!document.getElementById("feat")) return;
   const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const LOCAL = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WBEZ", "WTTW News", "Chicago Sun-Times", "South Side Weekly", "Chicago Reader", "Better Government Association", "Metropolitan Planning Council"];
   Promise.all([fetch("/news/data/news.json").then(r => r.json()), fetch("/shape/site.json").then(r => r.json()).catch(() => ({}))]).then(([d, site]) => {

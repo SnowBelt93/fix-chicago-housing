@@ -1495,6 +1495,13 @@ html body .hardmode{border-top:1px solid var(--sc-line) !important;padding-top:1
   html body .sheet.sheet .widebtn{top:16px !important;right:12px !important;width:34px !important;height:34px !important;min-height:0 !important;padding:0 !important;border-radius:50% !important;white-space:nowrap}
   html body.wide .sheet.sheet .widebtn{top:20px !important;right:18px !important}
 }
+
+/* "That's it? Yep." */
+.easy p{margin:0 0 12px;line-height:1.5}
+.easy .easyq{font-weight:600;margin-top:16px}
+.easyb{display:grid;gap:8px}
+html body .easyb .sc-btn{min-height:56px !important;height:auto;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;padding:8px 16px !important;border-radius:16px !important;text-align:left;width:100%}
+.easyb .sc-btn b{font-size:15px;font-weight:600} .easyb .sc-btn span{font-size:13px;font-weight:400;opacity:.85}
 </style>
 
 <div id="app">
@@ -3912,7 +3919,7 @@ function render(){
   // or when you switched modes, doesn't count, and dipping below and back (say, toggling downzoning) doesn't cheer again
   if (loaded === 77 && dataReady && year === YEARS){
     if (goal !== lastGoal){ if (g === "A+") cheered.add(goal); lastGoal = goal; }
-    else if (g === "A+" && lastGrade && lastGrade !== "A+" && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); }
+    else if (g === "A+" && lastGrade && lastGrade !== "A+" && !cheered.has(goal)){ cheered.add(goal); celebrate("Shortage closed! " + fmt(tf.total) + " homes"); if (plan.g === 3) setTimeout(() => easyNote(tf.touchedPct), reduceMotion ? 400 : 1800); }
   }
   if (loaded === 77 && lastGrade && lastGrade !== g && !reduceMotion){ ge.classList.remove("pop"); void ge.offsetWidth; ge.classList.add("pop"); }
   if (loaded === 77) lastGrade = g;
@@ -4569,6 +4576,25 @@ function lineChart(svg, base, mine, fy, fromZero, band){
 let toastT = 0;
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2400); }
 let fxParts = [], fxRaf = 0, fxW = 0, fxH = 0;
+/* "That's it? Yep." (Kyle, Nov. 20): the first time someone closes the normal-mode gap, say plainly that it was easy on paper,
+   why that's the point, what the map can't do, and offer the harder modes. Once per browser. */
+function easyNote(pct){
+  if (lsGet("fch-easy", 0)) return; lsSet("fch-easy", 1);
+  const p = pct < 10 && pct > 0 ? pct.toFixed(1) : String(Math.round(pct));
+  const box = document.createElement("div"); box.className = "easy";
+  box.innerHTML = '<p><b>On paper, that was easy.</b> <span>You let ' + p + '% of Chicago\'s lots hold more homes, and that covers the city\'s share of the shortage by 2041.</span></p>'
+    + '<p>That\'s the point: Chicago\'s shortage isn\'t a mystery, and zoning is the cheap part of fixing it.</p>'
+    + '<p>The hard part is what this map can\'t do for you: 26 votes on the City Council, neighbors at every hearing, and builders who can make the numbers work at today\'s interest rates.</p>'
+    + '<p class="easyq">Want a real challenge?</p><div class="easyb">'
+    + '<button type="button" class="sc-btn primary" data-easy="hard"><b>Try hard mode</b><span>Chicago covers the whole region\'s gap</span></button>'
+    + '<button type="button" class="sc-btn" data-easy="ward"><b>Try Every ward</b><span>Every ward has to zone its share</span></button>'
+    + '<button type="button" class="sc-btn" data-easy="go"><b>Keep going</b><span>Run your plan to 2041</span></button></div>';
+  openInfo("That's it? Yep.", box);
+  $("infoBody").querySelectorAll("[data-easy]").forEach(b => b.addEventListener("click", () => {
+    const k = b.dataset.easy; $("infoDlg").close();
+    if (k === "hard") setMode("hard"); else if (k === "ward") setMode("ward");
+  }));
+}
 function celebrate(msg){
   toast(msg);
   if (reduceMotion) return;
