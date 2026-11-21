@@ -276,6 +276,19 @@ html body a.bigbtn:hover{background:var(--sc-navy2) !important}
   .probs li.first a{grid-template-columns:1fr} .probs li.first .ph{aspect-ratio:1200/570;min-height:0} .probs li.first .num{font-size:30px}
   .addrrow form{flex-direction:column}
 }
+
+/* C */
+.lpc{padding-block:40px 24px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:start}
+.lpc h1{max-width:9em}
+.qs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.qs a{display:grid;grid-template-columns:112px 1fr 20px;align-items:center;gap:16px;background:#fff;border:1px solid var(--sc-line);border-radius:18px;padding:8px 18px 8px 8px;text-decoration:none;color:var(--sc-ink)}
+.qs img{width:112px;height:64px;object-fit:contain;border-radius:12px;background:linear-gradient(180deg,#f7f9f6,#e6ece6);display:block}
+.qs b{display:block;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.qs small{display:block;font-size:14px;color:var(--sc-mute);margin-top:2px}
+.qs svg{width:18px;height:18px;color:var(--sc-navy)}
+@media (hover:hover){ .qs a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .qs a:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (max-width:1000px){ .lpc{grid-template-columns:1fr;gap:20px} }
+@media (max-width:640px){ .lpc{padding-block:20px 8px;gap:14px} .qs{gap:8px} .qs a{grid-template-columns:76px 1fr 16px;gap:12px;padding:6px 14px 6px 6px;border-radius:16px} .qs img{width:76px;height:52px} .qs b{font-size:16px} .qs small{font-size:13px} }
 </style>
 </head>
 <body>
