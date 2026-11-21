@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="/shape/icon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/shape/icon-180.png"><link rel="manifest" href="/site.webmanifest"><script src="/shape/guard.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex"><title>Shape Chicago</title>
+<meta name="description" content="Free simulations on a real map of Chicago: try housing and transit ideas and see what they would do. Every number is sourced.">
+<meta property="og:title" content="Shape Chicago">
+<meta property="og:description" content="Free simulations on a real map of Chicago: try housing and transit ideas and see what they would do.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://shapechicago.city/shape/art/og-home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#ffffff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/shape/shape.css">
+<script src="/shape/shape.js" defer></script>
+<script src="/shape/plans.js"></script>
+<script src="/shape/ward.js"></script>
+<style>
+/* Shape Chicago home: the shared header, a short intro beside the map, one card per tool, plans people posted. */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--sc-page,#f3f5f7)}
+body{font-family:var(--sc-font);color:var(--sc-ink);-webkit-font-smoothing:antialiased}
+a{color:var(--sc-navy)}
+:focus-visible{outline:2px solid var(--sc-navy);outline-offset:2px}
+.sc-head{position:relative;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+.sc-head a.sc-btn{display:inline-flex;align-items:center;text-decoration:none}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left));padding-right:max(24px,env(safe-area-inset-right))}
+.hero{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:64px;align-items:center;padding-block:64px 72px}
+.hero h1{margin:0 0 18px;font-size:54px;line-height:1.04;letter-spacing:-.03em;font-weight:600;text-wrap:balance}
+.hero p{margin:0 0 28px;font-size:18px;line-height:1.55;color:var(--sc-ink2);max-width:34em}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.lg{min-height:46px;padding:0 20px;font-size:15px;border-radius:23px;display:inline-flex;align-items:center;text-decoration:none}
+.mapcard{border-radius:20px;overflow:hidden;border:1px solid var(--sc-line);background:var(--sc-map);height:420px;position:relative}
+.mapcard{background:radial-gradient(120% 90% at 60% 35%,#f7f9f6 0%,#e9eee8 70%,#dfe6e2 100%)}
+.mapcard img{width:100%;height:100%;display:block;object-fit:contain;padding:6px 4px 0}
+.mapcard .tag{position:absolute;left:16px;bottom:16px;background:#fff;border-radius:14px;padding:10px 14px;font-size:13px;color:var(--sc-ink2);box-shadow:var(--sc-shadow2);display:flex;flex-direction:column;gap:2px}
+.mapcard .tag b{font-size:15px;color:var(--sc-ink);font-weight:600}
+.hero2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:44px;align-items:start;padding-block:44px 52px}
+.hero2 h1{margin:6px 0 12px;font-size:50px;line-height:1.04;letter-spacing:-.03em;font-weight:600;text-wrap:balance}
+.addr{margin:0 0 22px;padding:16px 16px 14px;background:#fff;border:1px solid var(--sc-line);border-radius:16px;box-shadow:0 1px 2px rgba(20,30,50,.04);display:flex;flex-direction:column;gap:8px}
+.addr label{font-weight:600;font-size:16px}
+.addr .ar{display:flex;gap:8px}
+.addr input{flex:1;min-width:0;font:inherit;font-size:16px;border:1px solid var(--sc-line2,#cfd5dc);border-radius:12px;padding:10px 12px;color:var(--sc-ink);background:#fff}
+.addr input:focus{outline:2px solid var(--sc-navy);outline-offset:1px}
+.addr .sc-btn{min-height:44px;flex:none}
+.addr .ah{display:block;font-size:13px;color:var(--sc-mute)}
+@media (max-width:420px){ .addr .ar{flex-direction:column} }
+.hero2 .hl>p{margin:0 0 22px;font-size:17px;line-height:1.5;color:var(--sc-ink2);max-width:32em}
+.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quick a{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 8px;border:1px solid var(--sc-line);border-radius:16px;text-decoration:none;color:var(--sc-ink2);font-size:13.5px;background:#fff;transition:border-color .15s,box-shadow .15s,transform .15s}
+.quick a:hover{border-color:var(--sc-line2);box-shadow:var(--sc-shadow2);transform:translateY(-1px)}
+.quick img{width:56px;height:56px;flex:none}
+.quick b{display:block;font-size:16px;color:var(--sc-ink);font-weight:600}
+.feature{display:block;border-radius:20px;overflow:hidden;border:1px solid var(--sc-line);text-decoration:none;color:var(--sc-ink);background:#fff;transition:box-shadow .15s}
+.feature:hover{box-shadow:var(--sc-shadow2)}
+.fph{aspect-ratio:16/9;background:linear-gradient(180deg,#f6f8f5,#e8ede7);overflow:hidden}
+.fph img{width:100%;height:100%;object-fit:cover;display:block}
+.fph img.art{object-fit:contain}
+.ftx{padding:14px 18px 16px;display:flex;flex-direction:column;gap:5px}
+.ftx .fk{font-size:12.5px;font-weight:600;color:var(--sc-navy)}
+.ftx b{font-size:21px;line-height:1.25;letter-spacing:-.01em;font-weight:600;text-wrap:balance}
+.ftx .fx{font-size:14.5px;line-height:1.45;color:var(--sc-ink2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ftx .fs{font-size:13px;color:var(--sc-mute)}
+.pulse{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.pulse a{border:1px solid var(--sc-line);border-radius:14px;padding:10px 12px;text-decoration:none;color:var(--sc-mute);font-size:12.5px;line-height:1.35;background:#fff}
+.pulse a:hover{border-color:var(--sc-line2)}
+.pulse b{display:block;font-size:20px;color:var(--sc-ink);font-weight:600;letter-spacing:-.01em}
+@media (max-width:1000px){ .hero2{grid-template-columns:1fr;gap:22px;padding-block:24px 32px} .hero2 .hr{order:2} }
+@media (max-width:640px){ .hero2 h1{font-size:32px} .hero2 .hl>p{font-size:15.5px;margin-bottom:16px} .quick a{padding:8px 10px 8px 6px;gap:8px;font-size:12.5px} .quick img{width:44px;height:44px} .quick b{font-size:15px} .ftx b{font-size:18px} .pulse b{font-size:17px} .pulse a{padding:8px 10px;font-size:11.5px} }
+@media (max-width:360px){ .quick a{flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px} .quick img{width:38px;height:38px} }
+.band{padding-block:56px}
+.band.alt{background:transparent}
+.sh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:22px}
+.sh h2{margin:0;font-size:28px;letter-spacing:-.02em;font-weight:600}
+.sh span{font-size:14px;color:var(--sc-mute)}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+@media (max-width:1180px){ .tools{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.tools .tb p{font-size:14.5px}
+.tool{border:1px solid var(--sc-line);border-radius:20px;overflow:hidden;background:#fff;display:flex;flex-direction:column;color:inherit;text-decoration:none;transition:border-color .15s,box-shadow .15s}
+.tool:hover{border-color:var(--sc-line2);box-shadow:var(--sc-shadow2)}
+.thumb{aspect-ratio:800/380;background:var(--sc-map);border-bottom:1px solid var(--sc-line)}
+.thumb{background:linear-gradient(180deg,#f6f8f5,#e8ede7)}
+.thumb img{width:100%;height:100%;display:block;object-fit:contain;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.tool:hover .thumb img{transform:scale(1.03)}
+.thumb{overflow:hidden}
+.tb{padding:18px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.tn{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tn h3{margin:0;font-size:21px;font-weight:600;letter-spacing:-.01em}
+.chip{white-space:nowrap;flex:none;font-size:12px;font-weight:600;border-radius:10px;padding:3px 8px;background:var(--sc-seg);color:var(--sc-ink2)}
+.chip.live{background:var(--sc-greenbg);color:var(--sc-green)}
+.tb p{margin:0;font-size:15px;line-height:1.5;color:var(--sc-ink2)}
+.see{font-size:13px;color:var(--sc-mute)}
+.go{align-self:flex-start;margin-top:auto;display:inline-flex;align-items:center}
+.plans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.plan{background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;color:inherit;text-decoration:none}
+.plan:hover{border-color:var(--sc-line2)}
+.plan .top{display:flex;align-items:center;gap:10px}
+.gs{position:relative;width:34px;height:34px;flex:none}
+.gs svg{width:34px;height:34px}
+.gs span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px}
+.plan b{font-size:15.5px;font-weight:600}
+.plan .n{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.plan .n small{font-size:13px;font-weight:400;color:var(--sc-mute)}
+.plan .row{display:flex;justify-content:space-between;font-size:13px;color:var(--sc-mute)}
+.empty{grid-column:1 / -1;border:1px dashed var(--sc-line2);border-radius:16px;padding:22px;font-size:15px;color:var(--sc-mute);background:#fff}
+.empty a{font-weight:600}
+.learn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.learn a{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:1px solid var(--sc-line);border-radius:16px;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+.learn a:hover{border-color:var(--sc-line2);box-shadow:var(--sc-shadow2)}
+.learn b{font-size:16px;font-weight:600;color:var(--sc-ink)} .learn span{font-size:14px;color:var(--sc-mute)}
+.sh a{font-size:14px;font-weight:600;text-decoration:none}
+.sh .shl{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 18px}
+@media (max-width:1000px){ .learn{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:640px){ .learn{grid-template-columns:1fr} }
+.wnews{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.wnews a{display:flex;flex-direction:column;border:1px solid var(--sc-line);border-radius:16px;overflow:hidden;text-decoration:none;color:var(--sc-ink);background:#fff;transition:box-shadow .15s,transform .15s}
+.wnews a:hover{box-shadow:var(--sc-shadow2);transform:translateY(-1px)}
+.wnews .ph{aspect-ratio:16/10;background:var(--sc-seg);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.wnews .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.wnews .ph img.logo{width:48px;height:48px;object-fit:contain}
+.wnews .tx{padding:10px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.wnews b{font-size:15.5px;line-height:1.3;font-weight:600}
+.wnews small{font-size:12.5px;color:var(--sc-mute)}
+.wnews .new{font-size:11px;font-weight:600;background:#e3f3e8;color:#1f7a45;border-radius:8px;padding:1px 7px;align-self:flex-start}
+.wmore{margin:12px 0 22px;font-size:14px;font-weight:600} .wmore a{text-decoration:none}
+@media (max-width:1000px){ .wnews{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:640px){ .wnews{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none} .wnews a{flex:0 0 78%;scroll-snap-align:start} }
+.week{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.wk{border:1px solid var(--sc-line);border-radius:18px;padding:18px 20px;background:#fff;display:flex;flex-direction:column;gap:10px;min-width:0}
+.wk h3{margin:0;font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px}
+.wk h3 img{width:44px;height:30px;object-fit:contain}
+.wk ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.wk li{font-size:14.5px;line-height:1.38;color:var(--sc-ink2)}
+.wk li a{color:var(--sc-ink);text-decoration:none;font-weight:500}
+.wk li a:hover{color:var(--sc-navy);text-decoration:underline}
+.wk li small{display:block;font-size:12.5px;color:var(--sc-mute);margin-top:1px}
+.wk .more{margin-top:auto;font-size:14px;font-weight:600;text-decoration:none}
+.wk .new{font-size:11px;font-weight:600;background:#e3f3e8;color:#1f7a45;border-radius:8px;padding:1px 7px;margin-left:6px;vertical-align:1px}
+.wk select{font:inherit;font-size:14px;padding:6px 10px;border-radius:10px;border:1px solid var(--sc-line2);background:#fff}
+.wk .tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:7px;padding:0 6px;margin-right:4px}
+.tag.up{background:#e3f3e8;color:#1f7a45} .tag.down{background:#fde8ea;color:#b4001f} .tag.pd{background:#e8eef8;color:#2b5da0} .tag.same,.tag.other{background:var(--sc-seg);color:var(--sc-ink2)}
+@media (max-width:700px){ .week{grid-template-columns:1fr} }
+footer{border-top:1px solid var(--sc-line)}
+footer .wrap{padding-block:28px 36px;display:flex;justify-content:space-between;align-items:center;gap:20px;font-size:13px;color:var(--sc-mute)}
+footer .sc-brand{font-size:15px} footer .sc-brand svg{width:18px;height:18px}
+footer nav{display:flex;gap:6px 18px;flex-wrap:wrap;flex:0 1 auto;justify-content:flex-end;max-width:620px}
+footer nav a{color:var(--sc-ink2);text-decoration:none;white-space:nowrap}
+footer nav a:hover{color:var(--sc-navy);text-decoration:underline}
+@media (max-width:1000px){
+  .hero{grid-template-columns:1fr;gap:28px;padding-block:36px 40px}
+  .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:700px){ .tools{grid-template-columns:1fr} }
+@media (max-width:640px){
+  .wrap{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+  .hero h1{font-size:34px}
+  .hero p{font-size:16px}
+  .acts{flex-direction:column} .acts .lg{justify-content:center}
+  .mapcard{height:240px} .mapcard .tag{display:none}
+  .band{padding-block:32px}
+  .sh h2{font-size:22px}
+  .plans{grid-template-columns:1fr}
+  footer .wrap{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+/* Nov 8: one hover rule for everything you can open (see shape.css) */
+@media (hover:hover){ .quick a,.feature,.pulse a,.tool,.plan,.learn a,.wnews a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background-color .15s ease} .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:translateY(-2px);border-color:var(--sc-navy,#2b5da0) !important;box-shadow:0 6px 16px rgba(43,93,160,.14) !important} }
+@media (prefers-reduced-motion:reduce){ .quick a:hover,.feature:hover,.pulse a:hover,.tool:hover,.plan:hover,.learn a:hover,.wnews a:hover{transform:none} }
+.mine{margin:-6px 0 14px;font-size:15px;color:var(--sc-ink2)} .mine b{color:#1f6b44}
+/* your ward (shape/ward.js) */
+.yw{padding-top:8px}
+.ywcard{background:#fff;border:1px solid var(--sc-line);border-radius:20px;padding:22px 24px}
+.ywlede{margin:0 0 14px;font-size:16px;line-height:1.5;color:var(--sc-ink2);max-width:44em}
+.wpick{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.wpick .wpaddr{display:flex;flex-direction:column;gap:4px;flex:1 1 260px;font-size:13px;font-weight:600;color:var(--sc-mute)}
+.wpick input,.wpick select{font:inherit;font-size:15px;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--sc-line2);background:#fff;color:var(--sc-ink)}
+.wpick .sc-btn{min-height:42px}
+.wpick .wmsg{flex-basis:100%;margin:2px 0 0;font-size:14px;color:var(--sc-mute);min-height:1em}
+.ywgrid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:28px}
+.ywwho{display:flex;flex-direction:column;gap:10px}
+.ywwho .wn{font-size:44px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.ywwho .al{display:flex;align-items:center;gap:12px}
+.ywwho img{width:56px;height:56px;border-radius:50%;object-fit:cover;background:var(--sc-seg)}
+.ywwho .al b{display:block;font-size:16px} .ywwho .al span{font-size:13px;color:var(--sc-mute)}
+.ywwho .ct{display:flex;flex-direction:column;gap:0;font-size:14px}
+.ywwho .ct a{text-decoration:none;font-weight:500}
+.ywwho .ct a{padding:4px 0}
+@media (pointer:coarse){ .ywwho .ct a{padding:7px 0} }
+.ywwho .chg{font:inherit;font-size:13px;color:var(--sc-mute);background:none;border:0;padding:8px 0;margin:-8px 0;text-decoration:underline;cursor:pointer;align-self:flex-start}
+.ywnew{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.ywnew span{font-size:13.5px;font-weight:600;padding:5px 10px;border-radius:10px;background:#eef7f1;color:#1f6b44}
+.ywnew span.z{background:var(--sc-seg);color:var(--sc-mute)}
+.ywcols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+.ywcols h3{font-size:14px;font-weight:600;color:var(--sc-mute);margin:0 0 8px}
+.ywlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ywlist li{font-size:15px;line-height:1.35}
+.ywlist a{color:var(--sc-ink);text-decoration:none;font-weight:500}
+.ywlist a:hover{color:var(--sc-navy);text-decoration:underline}
+.ywlist small{display:block;font-size:12.5px;color:var(--sc-mute);margin-top:2px}
+.ywlist .nw{font-size:11px;font-weight:600;background:#e3f3e8;color:#1f7a45;border-radius:7px;padding:1px 6px;margin-right:6px;vertical-align:1px}
+.ywlist .tg{font-size:11.5px;font-weight:600;border-radius:7px;padding:1px 6px;margin-right:6px;background:#eef3fa;color:#1d4580}
+.ywlist .tg.dn{background:#fdecef;color:#a0001b} .ywlist .tg.pd{background:#f1ecf8;color:#5b3e8c} .ywlist .tg.eq{background:var(--sc-seg);color:var(--sc-mute)}
+.ywempty{font-size:14.5px;color:var(--sc-mute);margin:0}
+.ywact{margin-top:20px;padding-top:18px;border-top:1px solid var(--sc-line)}
+.ywact h3{font-size:14px;font-weight:600;color:var(--sc-mute);margin:0 0 10px}
+.ywbtns{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.ywbtns a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--sc-line);border-radius:14px;text-decoration:none;color:var(--sc-ink);background:#fff}
+.ywbtns a b{font-size:14.5px;font-weight:600} .ywbtns a span{font-size:13px;color:var(--sc-mute);line-height:1.35}
+@media (hover:hover){ .ywbtns a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .ywbtns a:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (max-width:900px){ .ywgrid,.ywcols{grid-template-columns:1fr} .ywgrid{gap:18px} .ywwho{flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 20px} .ywwho .wn{font-size:34px} }
+@media (max-width:640px){ .ywcard{padding:18px 16px} }
+#wkNews .ph img.topic{object-fit:contain;padding:8px;box-sizing:border-box;background:linear-gradient(180deg,#f6f8f5,#e8ede7)}
+
+/* landing preview (Nov. 20, 2026) */
+.lp{padding-block:28px 8px}
+.lp h1{margin:0 0 12px;font-size:56px;line-height:1.02;letter-spacing:-.035em;font-weight:600;text-wrap:balance;max-width:13em}
+.lp .lede{margin:0 0 22px;font-size:19px;line-height:1.5;color:var(--sc-ink2);max-width:32em}
+.lp .free{margin:12px 0 0;font-size:14px;color:var(--sc-mute)}
+.bigbtn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px !important;padding:0 26px !important;font-size:17px !important;border-radius:999px;text-decoration:none}
+.bigbtn svg{width:18px;height:18px}
+html body a.bigbtn{background:var(--sc-navy) !important;border-color:var(--sc-navy) !important;color:#fff !important}
+html body a.bigbtn:hover{background:var(--sc-navy2) !important}
+/* A */
+.lpa{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:40px;align-items:center;padding-block:40px 24px}
+.lpa .art{position:relative;aspect-ratio:1280/840;border-radius:24px;background:linear-gradient(180deg,#f7f9f6,#e6ece6);overflow:hidden}
+.lpa .art img{width:100%;height:100%;object-fit:contain;display:block}
+.lpa .art .stat{position:absolute;left:14px;bottom:14px;background:#fff;border-radius:16px;padding:10px 14px;box-shadow:var(--sc-shadow2);display:flex;flex-direction:column;gap:1px;font-size:13px;color:var(--sc-mute)}
+.lpa .art .stat b{font-size:24px;color:var(--sc-ink);letter-spacing:-.02em;font-weight:600}
+.how{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s}
+.how li{counter-increment:s;background:#fff;border:1px solid var(--sc-line);border-radius:16px;padding:14px 16px;font-size:14.5px;line-height:1.4;color:var(--sc-ink2)}
+.how li::before{content:counter(s);display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sc-navy);color:#fff;font-size:13px;font-weight:700;margin-bottom:8px}
+.how li b{display:block;color:var(--sc-ink);font-size:15.5px;font-weight:600;margin-bottom:2px}
+.more{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.more a{display:flex;flex-direction:column;gap:0;padding:0;overflow:hidden;background:#fff;border:1px solid var(--sc-line);border-radius:18px;text-decoration:none;color:var(--sc-ink2);font-size:13.5px;line-height:1.35}
+.more img{width:100%;aspect-ratio:1200/570;height:auto;object-fit:contain;background:linear-gradient(180deg,#f7f9f6,#e6ece6);display:block}
+.more span{padding:10px 14px 14px}
+.more b{display:block;font-size:16px;color:var(--sc-ink);font-weight:600;letter-spacing:-.01em}
+/* B */
+.lpb{padding-block:40px 24px}
+.probs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.probs a{display:grid;grid-template-rows:auto 1fr;height:100%;background:#fff;border:1px solid var(--sc-line);border-radius:22px;overflow:hidden;text-decoration:none;color:var(--sc-ink)}
+.probs .ph{aspect-ratio:1200/570;background:linear-gradient(180deg,#f7f9f6,#e6ece6)}
+.probs .ph img{width:100%;height:100%;object-fit:contain;display:block}
+.probs .tx{padding:14px 18px 18px;display:flex;flex-direction:column;gap:2px}
+.probs .num{font-size:30px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.probs .what{font-size:14px;color:var(--sc-mute)}
+.probs .go{margin-top:10px;font-size:16px;font-weight:600;color:var(--sc-navy);display:flex;align-items:center;gap:6px}
+.probs .go svg{width:16px;height:16px}
+.probs li.first{grid-column:span 2;grid-row:span 2}
+.probs li.first .ph{aspect-ratio:auto;height:100%;min-height:300px}
+.probs li.first a{grid-template-rows:1fr auto}
+.probs li.first .num{font-size:40px}
+.addrrow{margin-top:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid var(--sc-line);border-radius:18px;padding:14px 16px}
+.addrrow b{font-size:16px;font-weight:600} .addrrow span{font-size:14px;color:var(--sc-mute)}
+.addrrow form{display:flex;gap:8px;flex:1 1 360px}
+.addrrow input{flex:1;min-width:0;font:inherit;font-size:16px;border:1px solid var(--sc-line2,#cfd5dc);border-radius:12px;padding:10px 12px}
+@media (hover:hover){ .more a,.probs a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .more a:hover,.probs a:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (max-width:1000px){ .lpa{grid-template-columns:1fr;gap:20px} .more{grid-template-columns:repeat(2,minmax(0,1fr))} .probs{grid-template-columns:repeat(2,minmax(0,1fr))} .probs li.first{grid-row:auto} }
+@media (max-width:640px){
+  .lp h1{font-size:36px} .lp .lede{font-size:16.5px;margin-bottom:16px}
+  .lpa{padding-block:18px 8px} .lpa .art{order:-1;border-radius:18px;margin:0 -4px} .lpa .art .stat{left:10px;bottom:10px;padding:8px 12px} .lpa .art .stat b{font-size:20px}
+  .bigbtn{width:100%}
+  .how{grid-template-columns:1fr;gap:8px;margin-top:20px} .how li{display:grid;grid-template-columns:28px 1fr;column-gap:10px;padding:12px 14px} .how li::before{margin:0;grid-row:span 2}
+  .more{grid-template-columns:1fr 1fr;gap:10px} .more span{padding:8px 12px 12px} .more b{font-size:15px}
+  .lpb{padding-block:20px 8px}
+  .probs{grid-template-columns:1fr;gap:12px} .probs li.first{grid-column:auto}
+  .probs a{grid-template-rows:none;grid-template-columns:120px 1fr;align-items:center}
+  .probs .ph{aspect-ratio:auto;height:100%;min-height:104px}
+  .probs .tx{padding:12px 14px} .probs .num,.probs li.first .num{font-size:24px} .probs .go{margin-top:6px;font-size:15px}
+  .probs li.first a{grid-template-columns:1fr} .probs li.first .ph{aspect-ratio:1200/570;min-height:0} .probs li.first .num{font-size:30px}
+  .addrrow form{flex-direction:column}
+}
+
+/* C */
+.lpc{padding-block:40px 24px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:48px;align-items:start}
+.lpc h1{max-width:9em}
+.qs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.qs a{display:grid;grid-template-columns:112px 1fr 20px;align-items:center;gap:16px;background:#fff;border:1px solid var(--sc-line);border-radius:18px;padding:8px 18px 8px 8px;text-decoration:none;color:var(--sc-ink)}
+.qs img{width:112px;height:64px;object-fit:contain;border-radius:12px;background:linear-gradient(180deg,#f7f9f6,#e6ece6);display:block}
+.qs b{display:block;font-size:18px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.qs small{display:block;font-size:14px;color:var(--sc-mute);margin-top:2px}
+.qs svg{width:18px;height:18px;color:var(--sc-navy)}
+@media (hover:hover){ .qs a{transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease} .qs a:hover{transform:translateY(-2px);border-color:var(--sc-navy);box-shadow:0 6px 16px rgba(43,93,160,.14)} }
+@media (max-width:1000px){ .lpc{grid-template-columns:1fr;gap:20px} }
+@media (max-width:640px){ .lpc{padding-block:20px 8px;gap:14px} .qs{gap:8px} .qs a{grid-template-columns:76px 1fr 16px;gap:12px;padding:6px 14px 6px 6px;border-radius:16px} .qs img{width:76px;height:52px} .qs b{font-size:16px} .qs small{font-size:13px} }
+</style>
+</head>
+<body>
+<header class="sc-head">
+  <div class="sc-l"><a class="sc-brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#e4002b" d="M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z"/></svg><span>Shape Chicago</span></a>
+    <nav class="sc-nav" aria-label="Shape Chicago tools"><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Simulators">Simulators<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Simulators</span><a href="/housing/">Housing</a><a href="/transit/">Transit</a><a href="/budget/">Budget</a><a href="/pensions/">Pensions</a><a href="/bears/">Bears stadium</a><a href="/plans/" class="sc-simalt">Plans people made</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Your address">Your address<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Your address</span><a href="/lot/">Zoning and rules</a><a href="/grants/">Grants and help</a></div></div><div class="sc-sims"><button type="button" class="sc-simbtn" aria-haspopup="true" aria-expanded="false" data-menu="Progress">Progress<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4"/></svg></button><div class="sc-simmenu" role="menu" hidden><span class="sc-simhd">Progress</span><a href="/progress/">Overview</a><a href="/progress/homes/">Homes</a><a href="/progress/zoning/">Zoning</a><a href="/progress/affordable/">Affordable</a><a href="/progress/rents/">Rents and prices</a><a href="/progress/transit/">Transit</a><a href="/progress/streets/">Streets</a><a href="/progress/capital/">City money</a><a href="/progress/projects/">Big projects</a><a href="/progress/springfield/" class="sc-simalt">In Springfield</a><a href="/progress/decisions/">Decisions coming up</a></div></div><a href="/wards/">Your ward</a><a href="/news/">News</a><a href="/learn/">Learn</a></nav></div>
+  <div class="sc-r"><span class="sc-fan">Not affiliated with the City of Chicago.</span></div>
+</header>
+<main>
+  <section class="wrap lp lpc">
+    <div>
+      <h1>Ask a question about Chicago. Then try to fix it.</h1>
+      <p class="lede">Each one opens a simulator built on real city data. Change the rules and see what happens, with every number sourced.</p>
+      <p class="free">Free, no sign-up. Most take a couple of minutes.</p>
+    </div>
+    <div>
+      <ol class="qs" data-popin>
+        <li><a href="/housing/"><img src="/shape/art/hero.webp" alt="" width="1200" height="570"><span><b>Why is rent so high?</b><small>Rezone the city and watch 15 years of building</small></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/budget/"><img src="/shape/art/budget.webp" alt="" width="1200" height="570"><span><b>Where does the city's money go?</b><small>Close the $919M gap in the 2027 budget</small></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/pensions/"><img src="/shape/art/pensions.webp" alt="" width="1200" height="570"><span><b>Why does Chicago owe $36 billion in pensions?</b><small>Try to pay it down</small></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/transit/"><img src="/shape/art/transit.webp" alt="" width="1200" height="570"><span><b>Could a train reach my neighborhood?</b><small>Draw a line, see riders and cost</small></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a href="/bears/"><img src="/shape/art/stadium.webp" alt="" width="1200" height="570"><span><b>Where should the Bears play?</b><small>Compare six stadium sites</small></span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+      </ol>
+      <div class="addrrow"><div><b>Or start with your address</b><br><span>What the zoning allows, permits nearby, your alderperson and grants you might get.</span></div>
+<form action="/lot/" method="get" role="search"><label class="sr" for="homeQ" style="position:absolute;left:-9999px">Your address</label><input id="homeQ" name="q" type="search" placeholder="Your address, like 2150 N Milwaukee" autocomplete="street-address" required><button type="submit" class="sc-btn">Look it up</button></form></div>
+    </div>
+  </section>
+  <section class="band" aria-labelledby="weekH"><div class="wrap">
+    <div class="sh"><h2 id="weekH">This week in Chicago</h2><span id="weekNote">What changed since you last looked</span></div>
+    <div class="wnews" id="wkNews"></div>
+    <p class="wmore"><a href="/news/">All Chicago planning news</a></p>
+  </div></section>
+  <section class="band yw" id="ywSec" aria-labelledby="ywH"><div class="wrap">
+    <div class="sh"><h2 id="ywH">Your ward</h2><span id="ywNote"></span></div>
+    <div id="yw"><div class="ywcard"><p class="ywlede">Loading…</p></div></div>
+  </div></section>
+  <section class="band alt" aria-labelledby="plansH"><div class="wrap">
+    <div class="sh"><h2 id="plansH">What neighbors built</h2><span class="shl"><a href="/community/">What people picked most</a><a href="/plans/">All plans</a></span></div>
+    <p class="mine" id="mine" hidden></p>
+    <div class="pgrid" id="plans"><div class="empty">Loading plans…</div></div>
+  </div></section>
+  
+  <div class="wrap"><div data-ad="home"></div></div>
+  <section class="band alt" aria-labelledby="learnH"><div class="wrap">
+    <div class="sh"><h2 id="learnH">New to this? Start with the basics</h2><a href="/learn/">All topics</a></div>
+    <div class="learn">
+      <a href="/learn/#zoning"><b>Zoning, in plain English</b><span>What can go on a lot, and who decides</span></a>
+      <a href="/learn/#shortage"><b>How big is the shortage?</b><span>The region's gap, and Chicago's share</span></a>
+      <a href="/learn/#rents"><b>Do new apartments lower rents?</b><span>What the studies find</span></a>
+      <a href="/learn/#funding"><b>Who pays for a new line?</b><span>Federal grants, the state and NITA</span></a>
+    </div>
+  </div></section>
+</main>
+<footer class="sc-foot" data-sc-foot>Not affiliated with the City of Chicago.</footer>
+<script>
+const AREAS = ["", "Rogers Park", "West Ridge", "Uptown", "Lincoln Square", "North Center", "Lake View", "Lincoln Park", "Near North Side", "Edison Park", "Norwood Park", "Jefferson Park", "Forest Glen", "North Park", "Albany Park", "Portage Park", "Irving Park", "Dunning", "Montclare", "Belmont Cragin", "Hermosa", "Avondale", "Logan Square", "Humboldt Park", "West Town", "Austin", "West Garfield Park", "East Garfield Park", "Near West Side", "North Lawndale", "South Lawndale", "Lower West Side", "Loop", "Near South Side", "Armour Square", "Douglas", "Oakland", "Fuller Park", "Grand Boulevard", "Kenwood", "Washington Park", "Hyde Park", "Woodlawn", "South Shore", "Chatham", "Avalon Park", "South Chicago", "Burnside", "Calumet Heights", "Roseland", "Pullman", "South Deering", "East Side", "West Pullman", "Riverdale", "Hegewisch", "Garfield Ridge", "Archer Heights", "Brighton Park", "Mckinley Park", "Bridgeport", "New City", "West Elsdon", "Gage Park", "Clearing", "West Lawn", "Chicago Lawn", "West Englewood", "Englewood", "Greater Grand Crossing", "Ashburn", "Auburn Gresham", "Beverly", "Washington Heights", "Mount Greenwood", "Morgan Park", "Ohare", "Edgewater"];
+const STARP = "M12 1 L14.4 7.84 L21.53 6.5 L16.8 12 L21.53 17.5 L14.4 16.16 L12 23 L9.6 16.16 L2.47 17.5 L7.2 12 L2.47 6.5 L9.6 7.84 Z";
+const fmt = n => Number(n).toLocaleString("en-US");
+async function loadPlans(){
+  const el = document.getElementById("plans"), S = window.SCPlans;
+  const none = '<div class="empty">No plans shared yet. Build one in the <a href="/housing/">housing</a>, <a href="/transit/">transit</a>, <a href="/budget/">budget</a> or <a href="/pensions/">pensions</a> simulator and share it.</div>';
+  try {
+    const [G, r, r2] = await Promise.all([S.geo(), fetch("/api/gallery?sort=top&limit=4"), fetch("/api/sgallery?sort=top&limit=30").catch(() => null)]); if (!r.ok) throw 0;
+    const {plans} = await r.json(); let sims = [];
+    try { if (r2 && r2.ok){ const all = (await r2.json()).plans || []; for (const k of ["transit", "budget", "pensions"]){ const P = all.find(x => x.kind === k); if (P) sims.push(P); } } } catch (e) {}
+    if ((!plans || !plans.length) && !sims.length){ el.innerHTML = none; return; }
+    // the most endorsed housing plans, then the most endorsed plan from each other simulator: four cards in all
+    el.innerHTML = ""; const hs = (plans || []).slice(0, Math.max(1, 4 - sims.length));
+    hs.forEach(P => { const c = S.card(P, G); if (c) el.appendChild(c); });
+    sims.slice(0, 4 - hs.length).forEach(P => { const c = S.simCard(P, G); if (c) el.appendChild(c); });
+  } catch (e) { el.innerHTML = '<div class="empty">Plans people share show up here. Couldn\'t reach the gallery just now; <a href="/plans/">see all plans</a>.</div>'; }
+  const N = await S.myNews(); if (!N || !N.plans.length) return;
+  const fresh = N.plans.reduce((s, x) => s + x.fresh, 0);
+  if (fresh){ const m = document.getElementById("mine"); m.innerHTML = '<b>Your ' + (N.plans.length === 1 ? "plan has" : "plans have") + ' ' + S.fmt(fresh) + ' new ' + (fresh === 1 ? "endorsement" : "endorsements") + '</b> since you last looked. <a href="/plans/">See them</a>'; m.hidden = false; N.mark(); }
+}
+loadPlans();
+
+/* This week: the newest news, zoning changes and permits, loaded when the section comes into view. */
+(function(){
+  const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const day = d => scFmt.date(d, {year:false});
+  let seen = null; try { seen = localStorage.getItem("sc-home-seen"); } catch (e){}
+  function go(){
+    fetch("/news/data/news.json").then(r => r.json()).then(d => {
+      /* eight cards: outlets that mostly cover planning come first, at most three from one outlet, then newest first */
+      const PLAN = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WTTW News", "Better Government Association", "Metropolitan Planning Council"];
+      const pool = d.items.slice(0, 40), per = {};
+      const items = pool.filter(i => PLAN.includes(i.s)).concat(pool.filter(i => !PLAN.includes(i.s))).filter(i => (per[i.s] = (per[i.s] || 0) + 1) <= 3).slice(0, 8).sort((a, b) => a.d < b.d ? 1 : -1);
+      const fresh = seen ? d.items.filter(i => i.d > seen).length : 0;
+      const origin = u => { try { return new URL(u).origin; } catch (e){ return ""; } };
+      const TOPIC_ART = [["bears", "stadium.webp"], ["transit", "progress/transit.webp"], ["budget", "budget.webp"], ["zoning", "progress/zoning.webp"], ["housing", "progress/homes.webp"], ["development", "progress/projects.webp"], ["policy", "progress/decisions.webp"]];
+      const topicArt = i => "/shape/art/" + ((TOPIC_ART.find(([g]) => (i.g || []).includes(g)) || [0, "news.webp"])[1]);
+      document.getElementById("wkNews").innerHTML = items.map(i => `<a href="${esc(i.u)}" target="_blank" rel="noopener"><div class="ph">${i.i ? `<img src="${esc(i.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.className='topic';this.src='${topicArt(i)}'">` : `<img class="topic" src="${topicArt(i)}" alt="" loading="lazy">`}</div><div class="tx">${seen && i.d > seen ? '<span class="new">New</span>' : ""}<b translate="no" lang="en">${esc(i.t)}</b><small>${esc(i.s)} · ${day(i.d)}</small></div></a>`).join("") || "<p>No stories yet.</p>";
+      if (fresh) document.getElementById("weekNote").textContent = fresh + " new " + (fresh === 1 ? "story" : "stories") + " since your last visit";
+      try { localStorage.setItem("sc-home-seen", d.updated); } catch (e){}
+    }).catch(() => (document.getElementById("wkNews").innerHTML = "<p>Not available right now.</p>"));
+  }
+  const sec = document.getElementById("weekH").closest("section");
+  if ("IntersectionObserver" in window){ const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); go(); } }, {rootMargin:"400px"}); io.observe(sec); } else go();
+})();
+
+/* hero: a featured story (pinned in /shape/site.json "featured", else the newest well-tagged local story with a photo) and three live numbers */
+(function(){
+  if (!document.getElementById("feat")) return;
+  const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const LOCAL = ["Block Club Chicago", "Chicago YIMBY", "Streetsblog Chicago", "WBEZ", "WTTW News", "Chicago Sun-Times", "South Side Weekly", "Chicago Reader", "Better Government Association", "Metropolitan Planning Council"];
+  Promise.all([fetch("/news/data/news.json").then(r => r.json()), fetch("/shape/site.json").then(r => r.json()).catch(() => ({}))]).then(([d, site]) => {
+    const now = Date.now(), age = i => (now - Date.parse(i.d.replace("Z", ":00Z"))) / 864e5;
+    let f = site.featured && d.items.find(i => i.u === site.featured);
+    if (!f){
+      const score = i => (i.i ? 3 : 0) + (LOCAL.includes(i.s) ? 2 : 0) + i.g.filter(g => g !== "policy").length * 1.5 - Math.max(0, age(i) - 1) * 1.2;
+      f = d.items.filter(i => age(i) < 5).sort((a, b) => score(b) - score(a))[0] || d.items[0];
+    }
+    if (!f) return;
+    const a = document.getElementById("feat"); a.href = f.u; a.target = "_blank"; a.rel = "noopener";
+    document.getElementById("featK").textContent = "In the news";
+    for (const id of ["featT", "featX"]){ const e = document.getElementById(id); e.setAttribute("translate", "no"); e.lang = "en"; }   // outlets' own words stay as written
+    document.getElementById("featT").textContent = f.t; if (f.x) document.getElementById("featX").textContent = f.x;
+    document.getElementById("featS").textContent = f.s + " · " + scFmt.date(f.d, {year:false}) + " · More in Chicago planning news";
+    if (f.i){ const im = document.getElementById("featImg"); im.onerror = () => { im.src = "/shape/art/hero.webp"; im.className = "art"; }; im.referrerPolicy = "no-referrer"; im.src = f.i; }
+  }).catch(() => {});
+  document.getElementById("featImg").className = "art";
+  fetch("/tracker/data.json").then(r => r.json()).then(t => { document.getElementById("pHomes").textContent = Number(t.ytd.homes).toLocaleString("en-US"); document.getElementById("pHomesL").textContent = `homes permitted in ${t.ytd.year} so far`; }).catch(() => {});
+  fetch("/wards/data/meetings.json").then(r => r.json()).then(m => {
+    const up = m.meetings.find(x => Date.parse(x.d) > Date.now() - 2 * 3600e3 && /City Council|Zoning|Housing/.test(x.b) && !/cancel/i.test(x.st));
+    if (!up) return; const d = new Date(up.d);
+    document.getElementById("pMeet").textContent = scFmt.date(d, {year:false});
+    document.getElementById("pMeetL").textContent = "next " + (up.b === "City Council" ? "City Council meeting" : up.b.replace(/^Committee on /, "").replace(/,.*$/, "").toLowerCase() + " hearing");
+  }).catch(() => {});
+})();
+
+/* Your ward: pick it once (no account), then its news, zoning, permits, alderperson and ways to weigh in */
+(function(){
+  const S = window.SCWard, box = document.getElementById("yw"), note = document.getElementById("ywNote"), esc = S.esc;
+  const day = d => scFmt.date(String(d), {year:false});
+  const fmt = n => Number(n).toLocaleString("en-US");
+  const name = a => (a.name || "").split(",").reverse().join(" ").trim();
+  const last = a => (a.name || "").split(",")[0].trim();
+  function ask(){
+    note.textContent = "";
+    box.innerHTML = '<div class="ywcard"><p class="ywlede"><b>Follow your ward.</b> Every time you come back, see its news, the zoning changes it passed, the homes it permitted, your alderperson\'s votes, and the next chance to weigh in. No account: it stays in this browser.</p><div id="ywPick"></div></div>';
+    S.picker(document.getElementById("ywPick"), show);
+  }
+  async function show(n){
+    const since = S.seen();
+    let D; try { D = await S.summary(n, since); } catch (e) { box.innerHTML = '<div class="ywcard"><p class="ywempty">Couldn\'t load your ward right now.</p></div>'; return; }
+    const A = D.ald, f = D.fresh, origin = location.origin.replace(/^https?:/, "");
+    note.textContent = since ? "Since you last looked " + day(since) : "";
+    const chips = since ? [f.news ? f.news + " new " + (f.news === 1 ? "story" : "stories") : "", f.z ? f.z + " zoning " + (f.z === 1 ? "change" : "changes") + " passed" : "", f.homes ? fmt(f.homes) + " homes permitted" : ""].filter(Boolean) : [];
+    const news = D.news.slice(0, 5).map(i => '<li>' + (since && i.d > since ? '<span class="nw">New</span>' : "") + '<a href="' + esc(i.u) + '" target="_blank" rel="noopener" translate="no" lang="en">' + esc(i.t) + '</a><small>' + esc(i.s) + ' · ' + day(i.d) + (i.exact ? "" : " · nearby") + '</small></li>').join("");
+    const tag = z => z.k === "pd" ? '<span class="tg pd">Planned development</span>' : z.hf != null && z.ht != null ? (z.ht > z.hf ? '<span class="tg">More homes</span>' : z.ht < z.hf ? '<span class="tg dn">Fewer homes</span>' : '<span class="tg eq">Same homes</span>') : "";
+    const zs = D.z.slice(0, 3).map(z => '<li>' + tag(z) + '<a href="/wards/#' + n + '">' + esc(z.a) + '</a><small>' + (z.f && z.t ? esc(z.f) + " → " + esc(z.t) + " · " : "") + "passed " + day(z.d) + '</small></li>').join("");
+    const ps = D.permits.filter(p => +p.homes >= 2).slice(0, 2).map(p => '<li><a href="/tracker/#near">' + esc(p.addr) + '</a><small>' + fmt(p.homes) + ' homes permitted · ' + day(p.date) + '</small></li>').join("");
+    const zm = D.zoningMeet, tz = {timeZone:"America/Chicago"};
+    const meetTxt = zm ? scFmt.date(zm.d, {weekday:"short", year:false}) + (zm.c ? ". Written comments by " + esc(zm.c.replace(/, \d{4}/, "")) : "") : "";
+    box.innerHTML = '<div class="ywcard"><div class="ywgrid"><div class="ywwho"><span class="wn">Ward ' + n + '</span>'
+      + (A.name ? '<div class="al">' + (A.photo ? '<img src="' + esc(A.photo) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : "") + '<div><b>' + esc(name(A)) + '</b><span>Alderperson</span></div></div>' : "")
+      + '<div class="ct">' + (A.email ? '<a href="mailto:' + esc(A.email) + '">' + esc(A.email) + '</a>' : "") + (A.phone ? '<a href="tel:' + esc(A.phone.replace(/[^\d+]/g, "")) + '">' + esc(A.phone) + '</a>' : "") + (A.web ? '<a href="' + esc(A.web) + '" target="_blank" rel="noopener">Ward website</a>' : "") + '</div>'
+      + '<button type="button" class="chg" id="ywChange">Change ward</button></div><div>'
+      + (chips.length ? '<div class="ywnew">' + chips.map(c => '<span>' + c + '</span>').join("") + '</div>' : (since ? '<div class="ywnew"><span class="z">Nothing new since ' + day(since) + '</span></div>' : ""))
+      + '<div class="ywcols"><div><h3>News from your ward</h3>' + (news ? '<ul class="ywlist">' + news + '</ul>' : '<p class="ywempty">No stories about Ward ' + n + ' in the last few weeks.</p>') + '</div>'
+      + '<div><h3>Zoning and building</h3>' + (zs || ps ? '<ul class="ywlist">' + zs + ps + '</ul>' : '<p class="ywempty">No zoning changes or permits yet.</p>') + '</div></div></div></div>'
+      + '<div class="ywact"><h3>Weigh in</h3><div class="ywbtns">'
+      + (zm ? '<a href="https://chicityclerkelms.chicago.gov/Meeting/?meetingId=' + esc(zm.id) + '" target="_blank" rel="noopener"><b>Next zoning hearing</b><span>' + meetTxt + '</span></a>' : "")
+      + (A.email ? '<a href="mailto:' + esc(A.email) + '?subject=' + encodeURIComponent("From a Ward " + n + " resident") + '"><b>Email Ald. ' + esc(last(A)) + '</b><span>Say what you want built, or how they should vote</span></a>' : "")
+      + '<a href="/wards/#' + n + '"><b>Ward ' + n + '\'s full record</b><span>Votes on housing laws, every rezoning, permits</span></a>'
+      + '<a href="webcal://' + esc(origin.replace(/^\/\//, "")) + '/api/calendar.ics"><b>City Hall in your calendar</b><span>Every Council and committee meeting, kept up to date</span></a>'
+      + '<a href="/api/ward/' + n + '.xml"><b>Ward ' + n + ' news feed</b><span>For a feed reader. New stories and zoning changes</span></a>'
+      + '</div></div></div>';
+    document.getElementById("ywChange").addEventListener("click", () => { S.clear(); ask(); });
+    S.markSeen();
+  }
+  const sec = document.getElementById("ywSec");
+  const go = () => { const n = S.get(); if (n) show(n); else ask(); };
+  if ("IntersectionObserver" in window){ const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)){ io.disconnect(); go(); } }, {rootMargin:"600px"}); io.observe(sec); } else go();
+})();
+</script>
+</body>
+</html>
