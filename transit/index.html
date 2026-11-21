@@ -138,6 +138,23 @@ dialog.info p{font-size:14px;line-height:1.5;color:var(--ink2);margin:0 0 10px}
 .stat .k{font-size:12.5px;color:var(--mute);margin-top:2px;line-height:1.3}
 .stat.g{background:var(--greenbg)} .stat.g .v{color:var(--green)} .stat.g .k{color:var(--greenmute)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;font-weight:600}
+.flowbox{position:relative;display:flex;flex-direction:column;gap:4px;padding:12px 44px 12px 14px;border-radius:14px;background:var(--chip)}
+.flowbox .ib,.flowbox .fx{position:absolute;top:10px;right:10px}
+.flowbox.on{padding-right:14px;gap:6px}
+.flowbox .fx{width:28px;height:28px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:17px;line-height:1;color:var(--mute);padding:0}
+.flowbox .fname{font-size:16px;font-weight:600;color:var(--ink);padding-right:34px}
+.fbusy{border:0;background:none;padding:0;text-align:left;display:flex;flex-direction:column;gap:1px;min-height:28px}
+.fbusy b{font-weight:600;font-size:15px;color:var(--ink)}
+.fbusy span{font-size:13.5px;color:var(--ink2)}
+.fbusy:hover b{text-decoration:underline}
+.fside{margin-top:2px}
+.fside button{min-height:32px}
+.fplaces{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.fplaces li{display:flex;justify-content:space-between;gap:10px;color:var(--ink2)}
+.fplaces li b{font-weight:600;color:var(--ink)}
+.fpin{font:500 12px/1 "Instrument Sans",system-ui,sans-serif;color:var(--ink);background:#fff;border:1.5px solid #2b5da0;border-radius:12px;padding:5px 8px;white-space:nowrap;box-shadow:0 2px 6px rgba(20,28,40,.15);pointer-events:none}
+.fpin.work{border-color:#6a51a3}
+.fpin b{font-weight:600}
 .chip{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:14px;background:var(--chip)}
 .dot{width:9px;height:9px;border-radius:50%;flex:none}
 .note{font-size:13px;line-height:1.45;color:var(--mute);margin:0}
@@ -286,7 +303,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
         <button type="button" class="minicard" id="cleanCard"><b>Cleaner transit</b><span>Electric buses and trains</span></button>
         <button type="button" class="minicard" id="nitaCard"><b>NITA</b><span>The cuts it stopped</span></button>
       </div>
-      <p class="fan2">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</p>
+      <p class="fan2">A fan-made planning tool. Not affiliated with the City of Chicago, CTA or Metra.</p>
     </div>
   </section>
   <!-- a group of proposals -->
@@ -371,7 +388,7 @@ dialog::backdrop{background:rgba(20,28,40,.35)}
 <div id="legend"><div id="legT">People per square mile</div><div class="ramp" id="legRamp"></div><div class="rl"><span>1,000</span><span>50,000+</span></div></div>
 <div id="tip" role="status"></div>
 <div id="hint"></div>
-<div class="fan">A fan-made planning game. Not affiliated with the City of Chicago, CTA or Metra.</div>
+<div class="fan">A fan-made planning tool. Not affiliated with the City of Chicago, CTA or Metra.</div>
 
 <dialog id="srcDlg" aria-labelledby="srcH"><div class="dlg" id="srcBody"></div></dialog>
 <dialog id="infoDlg" class="info"><div class="dlg" id="infoBody"></div></dialog>
@@ -501,7 +518,7 @@ async function load(){
     fetch("data/net.json").then(r => r.json()), fetch("data/model.json").then(r => r.json()),
     fetch("data/blocks.bin").then(r => r.arrayBuffer())]);
   NET = net; MODEL = model;
-  fetch("data/network.json").then(r => r.json()).then(buildNet).catch(e => console.warn("network", e));
+  fetch("data/network.json").then(r => r.json()).then(buildNet).then(loadTrips).catch(e => console.warn("network", e));
   fetch("data/presets.json").then(r => r.json()).then(p => { PRESETS = p; if ($("vStart").classList.contains("on")) openStart(); }).catch(() => {});
   fetch("data/costindex.json").then(r => r.json()).then(c => { COSTIX = c; if (cur) openLine(cur); else renderBar(); }).catch(() => {});
   const n = new DataView(buf).getUint32(0, true);
@@ -574,6 +591,7 @@ function buildNet(net){
   for (let z = 0; z < nz; z++){ const a = []; near(sg, Z.x[z], Z.y[z], net.accessM, k => sx[k], k => sy[k], (k, d2) => a.push(k, Math.sqrt(d2) / net.walk)); zStops[z] = a; }
   NW = {net, nS, N, sx, sy, sg, adj, posStop, hw, posRoute, Z, nz, zg, zStops, served:[...Array(nz).keys()].filter(z => zStops[z].length)};
   for (const k in SOLO) delete SOLO[k];
+  STG.clear(); FLOWS.clear();
   if (cur) openLine(cur); else if ($("vStart").classList.contains("on")) openStart(); else if ($("vGroup").classList.contains("on")) openGroup(nav.g); else if ($("vNita").classList.contains("on")) renderNITA();
   renderBar();
 }
@@ -671,6 +689,255 @@ function travelReport(L, done){
     done && done();
   })();
   return res;
+}
+
+/* ---------- commute trips: who rides a new line, where they go, who leaves the car ----------
+   Real home-to-work trips (LODES 2022, 800 m zones) with today's transit "felt minutes" for each (tools/transit/trips.py).
+   Felt minutes: riding 1 a minute, walking and waiting 1.75 (Wardman et al. 2026), 15 more for each boarding (Jara-Díaz et al. 2022).
+   A trip uses a new line when boarding it at one station and leaving at another feels shorter than today's best trip; the chance a
+   commuter takes transit comes from a choice model fitted to ACS commute shares by tract. The line's rider estimate stays the
+   station/bus model's; these trips say where those riders go, where they live and work, and how many commuters stop driving. */
+let TRIPS = null;
+async function loadTrips(){
+  try {
+    const r = await fetch("data/trips.bin.gz"); if (!r.ok) return;
+    let buf = await r.arrayBuffer(), u8 = new Uint8Array(buf);
+    if (u8[0] === 0x1f && u8[1] === 0x8b){   // still gzipped (the host didn't decode it)
+      if (!("DecompressionStream" in window)) return;
+      buf = await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+    }
+    const dv = new DataView(buf), nz = dv.getUint32(0, true), nh = dv.getUint32(4, true), np = dv.getUint32(8, true);
+    let o = 12; const take = (Type, n) => { const a = new Type(buf.slice(o, o + n * Type.BYTES_PER_ELEMENT)); o += n * Type.BYTES_PER_ELEMENT; return a; };
+    const home = take(Uint16Array, nh), start = take(Uint32Array, nh + 1), work = take(Uint16Array, np), n = take(Uint16Array, np), gc = take(Uint8Array, np);
+    const nocar = take(Uint8Array, nz), drove = take(Uint8Array, nz), place = take(Uint8Array, nz);
+    const hOf = new Uint16Array(np); for (let i = 0; i < nh; i++) hOf.fill(home[i], start[i], start[i + 1]);
+    TRIPS = {nz, nh, np, home, start, work, n, gc, hOf, nocar:Float32Array.from(nocar, v => v / 250), drove:Float32Array.from(drove, v => v / 250), place};
+    FLOWS.clear();
+    if (cur && $("vLine").classList.contains("on")) openLine(cur);
+  } catch (e){ console.warn("trips", e); }
+}
+// Felt minutes (and real minutes on that same trip) from a point to every zone on today's network. Cached by point.
+const STG = new Map();
+function genSearch(x, y){
+  const key = Math.round(x) + "," + Math.round(y); let R = STG.get(key); if (R) return R;
+  const P = MODEL.trip, WW = P.walkW, WT = P.waitW, PEN = P.xferPen, CUT = P.gcMax;
+  const N = NW.N, nS = NW.nS, dist = new Float64Array(N).fill(Infinity), tim = new Float32Array(N), adj = NW.adj, hw = NW.hw;
+  let hk = new Float64Array(4096), hv = new Int32Array(4096), hn = 0, popD = 0;
+  const push = (v, d, t) => {
+    if (!(d < dist[v]) || d > CUT) return; dist[v] = d; tim[v] = t;
+    if (hn === hk.length){ const k2 = new Float64Array(hn * 2); k2.set(hk); hk = k2; const v2 = new Int32Array(hn * 2); v2.set(hv); hv = v2; }
+    let i = hn++; while (i > 0){ const p = (i - 1) >> 1; if (hk[p] <= d) break; hk[i] = hk[p]; hv[i] = hv[p]; i = p; } hk[i] = d; hv[i] = v;
+  };
+  const pop = () => {
+    const v = hv[0]; popD = hk[0]; hn--;
+    if (hn > 0){ const kd = hk[hn], kv = hv[hn]; let i = 0; for (;;){ let c = 2 * i + 1; if (c >= hn) break; if (c + 1 < hn && hk[c + 1] < hk[c]) c++; if (hk[c] >= kd) break; hk[i] = hk[c]; hv[i] = hv[c]; i = c; } hk[i] = kd; hv[i] = kv; }
+    return v;
+  };
+  const W = NW.net.walk, A = NW.net.accessM;
+  near(NW.sg, x, y, A, k => NW.sx[k], k => NW.sy[k], (k, d2) => { const m = Math.sqrt(d2) / W; push(k, WW * m, m); });
+  while (hn){
+    const v = pop(), d = popD; if (d > dist[v]) continue;
+    const a = adj[v], t0 = tim[v];
+    if (v < nS){
+      for (let i = 0; i < a.length; i += 2){
+        const to = a[i], w = a[i + 1];
+        if (w < 0){ const h = hw[to - nS] / 2; push(to, d + WT * h + PEN, t0 + h); }   // board: wait, plus the boarding penalty
+        else push(to, d + WW * w, t0 + w);                                              // walk to another stop
+      }
+    } else for (let i = 0; i < a.length; i += 2) push(a[i], d + a[i + 1], t0 + a[i + 1]);   // ride, or get off
+  }
+  const nz = NW.nz, gc = new Float32Array(nz).fill(Infinity), tm = new Float32Array(nz);
+  for (const z of NW.served){ const s = NW.zStops[z]; for (let i = 0; i < s.length; i += 2){ const c = dist[s[i]] + WW * s[i + 1]; if (c < gc[z]){ gc[z] = c; tm[z] = tim[s[i]] + s[i + 1]; } } }
+  near(NW.zg, x, y, A, z => NW.Z.x[z], z => NW.Z.y[z], (z, d2) => { const m = Math.sqrt(d2) / W; if (WW * m < gc[z]){ gc[z] = WW * m; tm[z] = m; } });
+  R = {gc, tm}; STG.set(key, R);
+  if (STG.size > 400) STG.delete(STG.keys().next().value);
+  return R;
+}
+const FLOWS = new Map();
+const flowLines = () => active().filter(L => L.type === "draw" && L.pts.length > 1);
+// Trips for the whole plan (async). Lines compete: each trip takes the line that makes it feel shortest.
+function tripFlow(done){
+  if (!TRIPS || !NW || !MODEL.trip) return null;
+  const LS = flowLines(), key = encodePlan() + "|" + LS.map(L => L.id).join(",");
+  let R = FLOWS.get(key);
+  if (R){ if (R.pending && done) R.wait.push(done); return R; }
+  R = {pending:true, wait:done ? [done] : [], lines:new Map()}; FLOWS.set(key, R);
+  if (FLOWS.size > 8) FLOWS.delete(FLOWS.keys().next().value);
+  const todo = []; for (const L of LS) for (const p of L.pts) todo.push(p);
+  let i = 0;
+  (function step(){
+    const t0 = performance.now();
+    while (i < todo.length && performance.now() - t0 < 35){ genSearch(todo[i].x, todo[i].y); i++; }
+    if (i < todo.length) return setTimeout(step, 0);
+    assignTrips(LS, R); R.pending = false;
+    const w = R.wait; R.wait = []; for (const f of w) f();
+  })();
+  return R;
+}
+const logit = v => 1 / (1 + Math.exp(-v));
+function assignTrips(LS, R){
+  const T = TRIPS, P = MODEL.trip, C = P.coef, np = T.np, nz = T.nz, Z = NW.Z;
+  const best = new Float32Array(np).fill(Infinity), bl = new Int8Array(np).fill(-1), ba = new Uint8Array(np), bb = new Uint8Array(np), btm = new Float32Array(np);
+  LS.forEach((L, li) => {
+    const k = L.pts.length, mpm = MODES[L.mode].speed * MI / 60, S = L.pts.map(p => genSearch(p.x, p.y));
+    const ride = []; for (let s = 0; s < k - 1; s++) ride.push(Math.hypot(L.pts[s + 1].x - L.pts[s].x, L.pts[s + 1].y - L.pts[s].y) / mpm);
+    const wait = L.head / 2, board = P.waitW * wait + P.xferPen;
+    const minF = new Float32Array(nz).fill(Infinity); for (const s of S) for (let z = 0; z < nz; z++) if (s.gc[z] < minF[z]) minF[z] = s.gc[z];
+    const af = new Float64Array(k), at = new Float64Array(k), ai = new Int16Array(k), bf = new Float64Array(k), bt = new Float64Array(k), bi = new Int16Array(k);
+    for (let hI = 0; hI < T.nh; hI++){
+      const h = T.home[hI]; if (minF[h] + board >= 255) continue;
+      // on the train arriving at each station, having boarded at an earlier one (each direction): felt minutes, real minutes, where boarded
+      let c = Infinity, ct = 0, ci = -1;
+      for (let s = 0; s < k; s++){ af[s] = c; at[s] = ct; ai[s] = ci; const b = S[s].gc[h] + board; if (b < c){ c = b; ct = S[s].tm[h] + wait; ci = s; } if (s < k - 1){ c += ride[s]; ct += ride[s]; } }
+      c = Infinity; ct = 0; ci = -1;
+      for (let s = k - 1; s >= 0; s--){ bf[s] = c; bt[s] = ct; bi[s] = ci; const b = S[s].gc[h] + board; if (b < c){ c = b; ct = S[s].tm[h] + wait; ci = s; } if (s > 0){ c += ride[s - 1]; ct += ride[s - 1]; } }
+      let minArr = Infinity; for (let s = 0; s < k; s++) minArr = Math.min(minArr, af[s], bf[s]);
+      for (let j = T.start[hI], e = T.start[hI + 1]; j < e; j++){
+        const w = T.work[j], g0 = T.gc[j] === 255 ? Infinity : T.gc[j], bar = Math.min(g0 - 0.5, best[j], 255);
+        if (minArr + minF[w] >= bar) continue;
+        let bc = Infinity, bA = 0, bB = 0, bT = 0;
+        for (let s = 0; s < k; s++){
+          const fw = S[s].gc[w]; if (fw === Infinity) continue;
+          if (af[s] + fw < bc){ bc = af[s] + fw; bA = ai[s]; bB = s; bT = at[s] + S[s].tm[w]; }
+          if (bf[s] + fw < bc){ bc = bf[s] + fw; bA = bi[s]; bB = s; bT = bt[s] + S[s].tm[w]; }
+        }
+        if (bc < bar){ best[j] = bc; bl[j] = li; ba[j] = bA; bb[j] = bB; btm[j] = bT; }
+      }
+    }
+  });
+  const out = LS.map(L => ({k:L.pts.length, on:0, newT:0, fromCar:0, board:new Float64Array(L.pts.length), seg:new Float64Array(L.pts.length - 1), tt:0, drive:0, pairs:[]}));
+  const on = new Float32Array(np), D = P.drive;
+  for (let j = 0; j < np; j++){
+    if (bl[j] < 0) continue;
+    const r = out[bl[j]], h = T.hOf[j], w = T.work[j], n = T.n[j], g0 = T.gc[j] === 255 ? Infinity : T.gc[j];
+    const km = Math.hypot(Z.x[h] - Z.x[w], Z.y[h] - Z.y[w]) / 1000, base = C.const + C.road_km * D.circuity * km + C.no_car * T.nocar[h];
+    const p1 = logit(base + C.gc * best[j]), p0 = g0 === Infinity ? 0 : logit(base + C.gc * g0), o = n * p1;
+    on[j] = o; r.on += o; r.newT += n * (p1 - p0); r.fromCar += n * (p1 - p0) * T.drove[h];
+    const a = ba[j], b = bb[j]; r.board[a] += o; r.board[b] += o;   // morning boarding at a, the trip home boards at b
+    for (let s = Math.min(a, b); s < Math.max(a, b); s++) r.seg[s] += 2 * o;
+    r.tt += o * btm[j]; r.drive += o * (D.terminal + D.circuity * km / D.kmh * 60);
+    r.pairs.push(j);
+  }
+  LS.forEach((L, i) => { const r = out[i]; r.pairs = Int32Array.from(r.pairs); r.a = ba; r.b = bb; r.onPair = on; R.lines.set(L.id, r); });
+}
+// a line's trip flow, scaled so its trips add up to the line's rider estimate (null while working)
+function flowOf(L, quiet){
+  const R = tripFlow(quiet ? null : () => { if (cur === L && $("vLine").classList.contains("on")) openLine(L); });
+  if (!R || R.pending) return R ? {pending:true} : null;
+  const r = R.lines.get(L.id); if (!r) return null;
+  const tripsLine = tripsPer(L) * L.riders;
+  r.scale = r.on > 1 ? tripsLine / (2 * r.on) : 0;
+  return r;
+}
+// names for a line's stations: an L or Metra station it joins, else the busiest bus route crossing there (not running along the line),
+// which names the cross street; a name the station before already took isn't reused
+function stationNames(L){
+  const sig = L.pts.map(q => Math.round(q.x) + "," + Math.round(q.y)).join(";");
+  if (L._names && L._namesSig === sig) return L._names;
+  const {cnt, samples} = routeCover(L.pts), par = new Set([...cnt].filter(([, c]) => c >= Math.max(3, samples * 0.1)).map(([r]) => r));
+  const street = streetOf(L.pts), short = nm => nm.replace(/^(North|South|East|West) /, "").replace(/ (Avenue|Street|Road|Boulevard|Drive|Parkway|Place)$/, "").trim();
+  const out = [];
+  L.pts.forEach((p, i) => {
+    if (p.snap){ out.push(p.snap.ref.name.split(" (")[0]); return; }
+    const a = L.pts[Math.max(0, i - 1)], c = L.pts[Math.min(L.pts.length - 1, i + 1)], lx = c.x - a.x, ly = c.y - a.y, ll = Math.hypot(lx, ly) || 1;
+    let nm = null, bd = 200;   // the nearest major street crossing the line here (OpenStreetMap)
+    geoNear("arterial", p.x, p.y, 200, sg => {
+      if (!sg[4]) return; const n = short(sg[4]); if (n === street || n === (street && short(street))) return;
+      const dx = sg[2] - sg[0], dy = sg[3] - sg[1], L2 = dx * dx + dy * dy || 1;
+      if (Math.abs(dx * lx + dy * ly) / Math.sqrt(L2) / ll > 0.7) return;   // runs along the line, not across it
+      let t = ((p.x - sg[0]) * dx + (p.y - sg[1]) * dy) / L2; t = Math.max(0, Math.min(1, t));
+      const d = Math.hypot(sg[0] + t * dx - p.x, sg[1] + t * dy - p.y); if (d < bd){ bd = d; nm = n; }
+    });
+    if (!nm){   // else the busiest bus route crossing here
+      let bt = 0;
+      near(SGRID, p.x, p.y, 250, k => STOPS.x[k], k => STOPS.y[k], k => { for (const r of STOPS.r[k]) if (!par.has(r) && NET.bus[r] && NET.bus[r].trips > bt){ bt = NET.bus[r].trips; nm = NET.bus[r].name.replace(/ ?(Express|Limited|Owl)$/i, "").split("/").pop().trim(); } });
+      if (nm === street) nm = null;
+    }
+    out.push(nm && !out.includes(nm) ? nm : "Station " + (i + 1));
+  });
+  L._names = out; L._namesSig = sig; return out;
+}
+const stationName = (L, i) => stationNames(L)[i];
+let FLOWSEL = null;   // {id, s, side:"home"|"work"}: the stretch picked on the map
+let FLOWPINS = [];   // neighborhood pills on the map for the picked stretch
+function clearPins(){ for (const m of FLOWPINS) m.remove(); FLOWPINS = []; }
+function renderFlow(){
+  if (!map || !map.getSource("flow")) return;
+  const L = cur && $("vLine").classList.contains("on") && cur.type === "draw" ? cur : null, r = L ? flowOf(L, true) : null;
+  clearPins();
+  if (!r || r.pending || !r.on){ map.getSource("flow").setData(fc([])); return; }
+  const mx = Math.max(...r.seg, 1), color = MODES[L.mode].color;
+  const sel = FLOWSEL && FLOWSEL.id === L.id && FLOWSEL.s < r.seg.length ? FLOWSEL.s : -1;
+  map.getSource("flow").setData(fc([...r.seg].map((v, s) => ({type:"Feature", properties:{s, r:v / mx, color, sel:s === sel, dim:sel >= 0 && s !== sel}, geometry:{type:"LineString", coordinates:[L.pts[s].ll, L.pts[s + 1].ll]}}))));
+  if (sel < 0) return;
+  const E = stretchEnds(L, r, sel), side = FLOWSEL.side || "home", boxes = [];
+  for (const [name, share, x, y] of (side === "home" ? E.topHome : E.topWork).slice(0, 3)){
+    const el = document.createElement("div"); el.className = "fpin " + side;
+    el.innerHTML = `${esc(name)} <b>${Math.round(share * 100)}%</b>`;
+    const ll = toLL(x, y), pt = map.project(ll), w = 16 + 7 * (name.length + 4), h = 26;
+    let dy = 0;   // pills that would overlap one already placed move down a row
+    while (boxes.some(b => Math.abs(b.x - pt.x) < (b.w + w) / 2 && Math.abs(b.y - (pt.y + dy)) < h) && dy < 6 * h) dy += h;
+    boxes.push({x:pt.x, y:pt.y + dy, w});
+    FLOWPINS.push(new maplibregl.Marker({element:el, offset:[0, dy]}).setLngLat(ll).addTo(map));
+  }
+}
+// where riders on one stretch live and work: top places with their share and rider-weighted center
+function stretchEnds(L, r, s){
+  const T = TRIPS, Z = NW.Z, ph = new Map(), pw = new Map(); let tot = 0;
+  const add = (m, p, z, o) => { let a = m.get(p); if (!a) m.set(p, a = [0, 0, 0]); a[0] += o; a[1] += o * Z.x[z]; a[2] += o * Z.y[z]; };
+  for (const j of r.pairs){
+    const a = r.a[j], b = r.b[j]; if (s < Math.min(a, b) || s >= Math.max(a, b)) continue;
+    const o = r.onPair[j], h = T.hOf[j], w = T.work[j]; tot += o;
+    add(ph, T.place[h], h, o); add(pw, T.place[w], w, o);
+  }
+  const top = m => [...m].sort((a, b) => b[1][0] - a[1][0]).slice(0, 5).map(([p, v]) => [MODEL.trip.places[p] || "Suburbs", tot ? v[0] / tot : 0, v[1] / v[0], v[2] / v[0]]);
+  return {tot, topHome:top(ph), topWork:top(pw)};
+}
+function selectStretch(L, s, side){
+  FLOWSEL = s == null ? null : {id:L.id, s, side:side || (FLOWSEL && FLOWSEL.side) || "home"};
+  renderFlow(); const box = $("flowBox"); if (box){ box.outerHTML = flowCard(L); bindFlowCard(L); }
+}
+// one card: the busiest stretch, or the stretch picked on the map with where its riders live or work
+function flowCard(L){
+  const r = flowOf(L, true); if (!r || r.pending || r.on < 20) return "";
+  const why = `<p>The band along the line is wider where more people ride (both ways, on a weekday). The pattern comes from real commutes; the totals match the line's rider estimate.</p><p>Tap a stretch to see the neighborhoods its riders live and work in.</p>`;
+  const sel = FLOWSEL && FLOWSEL.id === L.id && FLOWSEL.s < r.seg.length ? FLOWSEL.s : -1;
+  if (sel < 0){
+    let s = 0; for (let i = 1; i < r.seg.length; i++) if (r.seg[i] > r.seg[s]) s = i;
+    return `<div class="flowbox" id="flowBox">${ib("flow", "Where riders go", why)}<span class="sec">Busiest stretch</span>
+      <button type="button" class="fbusy" data-s="${s}"><b>${esc(stationName(L, s))} – ${esc(stationName(L, s + 1))}</b><span>${num(r.seg[s] * r.scale)} riders a weekday</span></button>
+      <span class="note">Tap the line to see where riders live and work.</span></div>`;
+  }
+  const E = stretchEnds(L, r, sel), side = FLOWSEL.side || "home", list = side === "home" ? E.topHome : E.topWork;
+  return `<div class="flowbox on" id="flowBox"><button type="button" class="fx" aria-label="Back to the busiest stretch">×</button>
+    <span class="sec">${num(r.seg[sel] * r.scale)} riders a weekday</span>
+    <b class="fname">${esc(stationName(L, sel))} – ${esc(stationName(L, sel + 1))}</b>
+    <div class="seg fside" role="radiogroup" aria-label="Show where riders"><button type="button" role="radio" data-side="home" aria-checked="${side === "home"}">Live</button><button type="button" role="radio" data-side="work" aria-checked="${side === "work"}">Work</button></div>
+    <ol class="fplaces ${side}">${list.slice(0, 3).map(([p, v]) => `<li><span>${esc(p)}</span><b>${Math.round(v * 100)}%</b></li>`).join("")}</ol></div>`;
+}
+function bindFlowCard(L){
+  const box = $("flowBox"); if (!box) return;
+  bindInfo(box);
+  const b = box.querySelector(".fbusy"); if (b) b.onclick = () => selectStretch(L, +b.dataset.s);
+  const x = box.querySelector(".fx"); if (x) x.onclick = () => selectStretch(L, null);
+  for (const t of box.querySelectorAll("[data-side]")) t.onclick = () => selectStretch(L, FLOWSEL.s, t.dataset.side);
+}
+// line view: the stretch card (placed under the frequency picker) and two tiles for the main grid
+function flowHtml(L){
+  if (L.type !== "draw") return "";
+  if (!TRIPS || !NW) return `<p class="note">Loading commute trips…</p>`;
+  const r = flowOf(L);
+  if (!r) return "";
+  if (r.pending) return `<p class="note">Working out where riders go…</p>`;
+  if (r.on < 20) return `<p class="note">Few commutes get faster with this line, so there's no trip pattern to show.</p>`;
+  return flowCard(L);
+}
+function flowTiles(L){
+  const r = L.type === "draw" && TRIPS ? flowOf(L, true) : null; if (!r || r.pending || r.on < 20) return "";
+  const P = MODEL.trip, tt = r.tt / r.on, dr = r.drive / r.on;
+  const whoWhy = `<p>From real commutes: the Census Bureau's 2022 count of where people who live in each block work (LODES), grouped into half-mile squares. A commute uses this line when boarding it at one station and leaving at another beats the best trip on today's schedules.</p><p>Trips are compared by how long they feel: waiting and walking count ${P.waitW}× riding time (<a href="https://eprints.whiterose.ac.uk/id/eprint/239301" target="_blank" rel="noopener">Wardman et al. 2026</a>, 606 studies), and each boarding adds ${P.xferPen} minutes (<a href="https://ideas.repec.org/a/eee/trapol/v125y2022icp48-55.html" target="_blank" rel="noopener">Jara-Díaz et al. 2022</a>: 13–18). How likely a commuter is to take transit comes from a model fitted to how people in ${num(P.fit.tracts)} census tracts get to work (ACS 2019–23): it explains ${Math.round(P.fit.r2_tract_share * 100)}% of the differences between tracts, using how the trip feels, its length and how many households have no car.</p><p>About ${num(r.on)} commuters would ride this line, ${num(r.newT)} of them new to transit; ${num(r.fromCar)} of those drive to work today (each tract's share of non-transit commuters who drive). Covers commutes only, so it's fewer than the car trips counted from rider surveys.</p>`;
+  const ddWhy = `<p>Average for commuters who'd use this line, door to door on today's midday schedules plus this line: ${Math.round(tt)} minutes, counting the walk, the wait and transfers.</p><p>Driving the same trips at rush hour: ${Math.round(dr)} minutes, at Chicago's 2025 morning rush average speed of ${P.drive.kmh} km/h (<a href="https://www.tomtom.com/traffic-index/chicago-il-traffic" target="_blank" rel="noopener">TomTom Traffic Index</a>) on roads ${P.drive.circuity}× the straight-line distance, plus ${P.drive.terminal} minutes to park and walk (assumptions).</p>`;
+  return tile(num(r.fromCar), "commuters who'd stop driving", "who", "Who switches", whoWhy, "g") + tile(`${Math.round(tt)} min`, `door to door (${Math.round(dr)} by car)`, "dd", "Door to door", ddWhy);
 }
 
 /* ---------- roads, rail corridors and rivers (OpenStreetMap) ---------- */
@@ -1025,7 +1292,7 @@ function evalMetra(L){
 }
 
 /* ---------- map ---------- */
-function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org))$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
+function ownDomain(){ return /(^|\.)(fixchicagohousing\.com|shapechicago\.(com|org|city))$/.test(location.hostname) || /[?&]tiles=1/.test(location.search); }
 function fallbackStyle(){
   const lake = {type:"FeatureCollection", features:(NET.lake || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
   const city = {type:"FeatureCollection", features:(NET.cityOutline || []).map(r => ({type:"Feature", geometry:{type:"Polygon", coordinates:[r]}}))};
@@ -1102,6 +1369,11 @@ async function initMap(){
   // user plan
   map.addSource("walk", {type:"geojson", data:fc([])});
   map.addLayer({id:"walk", type:"circle", source:"walk", paint:{"circle-radius":radiusExpr(WALK_M), "circle-color":"#1a1d21", "circle-opacity":0.06, "circle-pitch-alignment":"map"}});
+  // trip flow for the open line: a band as wide as the riders on each stretch (the picked stretch darker)
+  map.addSource("flow", {type:"geojson", data:fc([])});
+  map.addLayer({id:"flow", type:"line", source:"flow", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":["case", ["get", "sel"], "#41b6e6", ["get", "color"]], "line-opacity":["case", ["get", "sel"], 0.85, ["get", "dim"], 0.12, 0.22],
+    "line-width":["interpolate", ["linear"], ["zoom"], 9, ["+", ["case", ["get", "sel"], 9, 4], ["*", ["get", "r"], 14]], 14, ["+", ["case", ["get", "sel"], 18, 10], ["*", ["get", "r"], 40]]]}});
+  map.on("zoomend", () => { if (FLOWPINS.length) renderFlow(); });   // re-place the neighborhood pills so they don't overlap
   map.addSource("plan", {type:"geojson", data:fc([])});
   map.addLayer({id:"plan-case", type:"line", source:"plan", layout:{"line-join":"round", "line-cap":"round"}, paint:{"line-color":"#fff", "line-width":["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "sel"], 7, 5], 14, ["case", ["get", "sel"], 13, 10]]}});
   const planW = ["interpolate", ["linear"], ["zoom"], 9, ["case", ["get", "sel"], 4, 2.6], 14, ["case", ["get", "sel"], 8, 6]];
@@ -1247,7 +1519,8 @@ function renderPlan(){
 
 function show(id){ if (map && map.getLayer("metra-hi") && id !== "vMetra") map.setFilter("metra-hi", ["==", ["get", "id"], ""]);
   for (const v of document.querySelectorAll(".view")) v.classList.toggle("on", v.id === id);
-  const pm = $("planMini"); if (pm && !pm.classList.contains("empty")) pm.classList.toggle("hide", !(id === "vStart" || id === "vGroup")); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap); }
+  const pm = $("planMini"); if (pm && !pm.classList.contains("empty")) pm.classList.toggle("hide", !(id === "vStart" || id === "vGroup")); $("panel").scrollTop = 0; padMap(); requestAnimationFrame(padMap);
+  if (id !== "vLine") renderFlow(); }
 function padMap(){ // on phones the sheet covers the bottom of the map: keep the map's center above it
   if (!map) return;
   const phone = matchMedia("(max-width:859px)").matches, h = phone ? $("panel").getBoundingClientRect().height : 0;
@@ -1454,6 +1727,7 @@ function openLine(L){
     }
   }
   if (warns.length) h += `<div class="warns">${warns.map((w, i) => `<button type="button" class="warn" data-info="${regInfo("w" + i, w[0], `<p>${w[1]}</p>`)}">${w[0]}</button>`).join("")}</div>`;
+  h += flowHtml(L);
   if (isM && !L.alreadyElectric && !clean.metra) h += `<label class="toggle">Electric trains (overhead wires) <input type="checkbox" id="elec" ${L.electric ? "checked" : ""}></label>`;
   // the numbers
   const veh = isM ? "trains" : M.vehicle === "bus" ? "buses" : M.vehicle + "s";
@@ -1468,6 +1742,7 @@ function openLine(L){
     ${tile(L.capitalToday[1] > 0 ? (isM ? money(L.capitalToday[0]) : moneyRange(L.capitalToday[0], L.capitalToday[1])) : "$0", isM ? (L.electric ? "to put up wires" : "to build (uses today's tracks)") : `to build, ${M.years} years`, "build", "Cost to build", `<p>From the cost per mile of recent US projects of this kind, in ${COSTIX ? COSTIX.latest : "today's"} dollars (FHWA's highway construction cost index). ${pay.grants}</p>`)}
     ${tile(money(Math.abs(L.opYear)), L.opYear < 0 ? "a year saved on buses" : "a year to run", "run", "Cost to run", `<p>${!isM && L.baseBusMi > 0 ? "After the buses it replaces. " : ""}${pay.fares}</p>`)}
     ${cars >= 0 ? tile(num(cars), "fewer car trips a day", "", "", "", "g") : tile(num(-cars), "more car trips a day (fewer buses than today)")}
+    ${isM ? "" : flowTiles(L)}
     ${tile(co2Word(co2), "CO₂ a year, 5–10 years after opening", "co2", "CO₂ 5–10 years after opening", co2Why, co2 >= 0 ? "g" : "")}
     ${tile(co2Word((L.co2Long[0] + L.co2Long[1]) / 2), "CO₂ a year in the long run", "co2l", "CO₂ in the long run", longWhy, (L.co2Long[0] + L.co2Long[1]) / 2 >= 0 ? "g" : "")}
     ${travelTiles(L)}
@@ -1483,6 +1758,7 @@ function openLine(L){
   h += `<div class="links"><button type="button" class="back" data-info="${regInfo("how", "How these numbers work", detailsHtml(L))}">How these numbers work</button><button type="button" class="back" onclick="openSources()">All sources</button></div>`;
   $("lBody").innerHTML = h;
   bindInfo($("lBody"));
+  bindFlowCard(L); renderFlow();
   for (const b of $("lBody").querySelectorAll(".seg button")) b.onclick = () => { L.head = +b.dataset.h; save(); openLine(L); };
   if ($("elec")) $("elec").onchange = e => { L.electric = e.target.checked; save(); openLine(L); };
   const coords = isM ? NET.metraLines.find(l => l.id === L.line).paths.flat() : L.pts.map(p => p.ll);
@@ -1555,6 +1831,11 @@ function detailsHtml(L){
     if (M.kind === "bus" && !L.fromModel && MODE_LIFT[L.mode] > 1) rows.push(["Riders added by faster BRT service", "+" + Math.round((MODE_LIFT[L.mode] - 1) * 100) + "% (5–51%)"]);
     rows.push(["CO₂ from running the " + (M.vehicle === "bus" ? "buses" : M.vehicle + "s"), num(L.transitCO2) + " t a year"]);
   }
+  const fl = !isM && TRIPS ? flowOf(L, true) : null;
+  if (fl && !fl.pending && fl.on >= 20){
+    rows.push(["Commuters who'd ride it (commutes only)", num(fl.on)]);
+    rows.push(["…new to transit", num(fl.newT)]);
+  }
   rows.push(["Cost per ride (build over 30 years + running)", L.perRide > 0 ? "$" + L.perRide.toFixed(L.perRide < 10 ? 2 : 0) : "—"]);
   return `<table>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("")}</table>`;
 }
@@ -1563,6 +1844,11 @@ function detailsHtml(L){
 function bindMap(){
   map.on("click", e => {
     if (drawing){ addPoint(e); return; }
+    const box = [[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]];
+    if (cur && $("vLine").classList.contains("on") && map.getLayer("flow")){
+      const ff = map.queryRenderedFeatures(box, {layers:["flow"]});
+      if (ff.length){ const s = ff[0].properties.s; selectStretch(cur, FLOWSEL && FLOWSEL.id === cur.id && FLOWSEL.s === s ? null : s); return; }
+    }
     const f = map.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers:["pst", "plan"]});
     if (f.length){
       const c = f[0].geometry.type === "Point" ? f[0].geometry.coordinates : null;
@@ -1576,7 +1862,7 @@ function bindMap(){
       const a = drawing.pts[drawing.pts.length - 1].ll, sn = snapAt(e.lngLat, e.point);
       map.getSource("preview").setData(fc([{type:"Feature", geometry:{type:"LineString", coordinates:[a, sn ? sn.ref.ll : [e.lngLat.lng, e.lngLat.lat]]}}]));
     }
-    const f = map.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers:["pst", "lst", "mst", "sslst", "amst"].filter(id => map.getLayer(id))});
+    const f = map.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers:["pst", "lst", "mst", "sslst", "amst", "flow"].filter(id => map.getLayer(id))});
     tip(f[0], e.point);
   });
   map.on("mouseout", () => tip(null));
@@ -1591,6 +1877,10 @@ function tip(f, pt){
     h = `<b>${esc(s.name)}</b><span>Metra ${s.lines.join(", ")}</span>` + (s.boards ? `<span>About ${num(s.boards)} boardings a weekday</span>` : ""); }
   else if (f.layer.id === "amst" || f.layer.id === "sslst"){ const R = f.layer.id === "amst" ? NET.amtrak : NET.southShore, s = R.stations[f.properties.i];
     h = `<b>${esc(s.name.replace(/ Amtrak( Station)?$/, "").replace(/ Station$/, ""))}</b><span>${f.layer.id === "amst" ? "Amtrak: " + [...new Set(s.lines.map(id => (R.lines.find(l => l.id === id) || {}).name).filter(Boolean))].join(", ") : "South Shore Line"}</span>`; }
+  else if (f.layer.id === "flow"){
+    const L = cur, r = L && flowOf(L, true), s = f.properties.s; if (!r || r.pending || !r.seg || s >= r.seg.length) return t.style.display = "none";
+    h = `<b>${esc(stationName(L, s))} – ${esc(stationName(L, s + 1))}</b><span>${num(r.seg[s] * r.scale)} riders a weekday, both ways</span><span>Tap to see where they live and work</span>`;
+  }
   else if (f.layer.id === "pst"){
     const c = f.geometry.coordinates; let s = null, L = null;
     for (const l of lines) if (l.type === "draw" && l.st) for (const q of l.st) if (Math.abs(toLL(q.x, q.y)[0] - c[0]) < 1e-6 && Math.abs(toLL(q.x, q.y)[1] - c[1]) < 1e-6){ s = q; L = l; }
@@ -1671,6 +1961,10 @@ function openSources(){
   <p>Tested on the newest L stations, predicting each one from the others: Damen Green (opened 2024) 1,614 predicted vs 943 real; Cermak-McCormick Place (2015) 1,904 vs 1,572; Morgan (2012) 2,412 vs 3,800; Washington/Wabash (2017) 10,847 vs 6,930. Across all ${R.n} stations, the real number falls inside the shown range for ${Math.round((R.loo_inside_band || 0) * 100)}% of them. Whole lines miss by more, because a line's stations share its quirks: predicting each L line from the others gives 0.6× (Red) to 2.4× (Orange, which the airport skews) its real riders.</p>
   <h3>Travel times and jobs within 45 minutes</h3>
   <p>The tool builds the CTA and Metra network from their weekday schedules: every route's stop order and scheduled minutes between stops, and how often it runs between 10am and 3pm. A trip is a walk of up to ½ mile to a stop at 3 mph, a wait of half the time between ${"buses or trains"}, the ride, transfers by walking up to 400 m, and a walk of up to ½ mile at the end. Jobs within 45 minutes counts jobs (Census LEHD 2022) in 800 m squares whose centers you can reach that fast. A new line is added with its stations, its speed and how often it runs. "Hours saved" multiplies the line's riders by the average minutes saved on trips from nearby squares to the places that get faster, weighted by jobs there. Waits are averages: people who time their trips to a schedule wait less. Check: the average resident of the region can reach about 196,000 jobs within 45 minutes by transit in the tool; the University of Minnesota\'s Access Across America (2018, 7–9am, <a href="https://cts-d10resmod-prd.oit.umn.edu/pdf/cts-20-01.pdf" target="_blank" rel="noopener">Table 2</a>) gives Chicago 125,826 within 40 minutes and 228,599 within 50, about 177,000 at 45. Not included: Pace buses, and services with no midday trips (they come back when a Metra upgrade adds them). New rail stations don't count bus routes that run along the line itself, only ones that cross it, so adding stations doesn't keep adding the same buses.</p>
+  <h3>Where riders go, and who stops driving</h3>
+  <p>Real commutes: the Census Bureau's 2022 count of where people who live in each block work (<a href="https://lehd.ces.census.gov/data/lodes/LODES8/il/od/" target="_blank" rel="noopener">LODES</a>, all jobs), grouped into half-mile squares; ${MODEL.trip && MODEL.trip.kept ? num(MODEL.trip.kept.workers) + " commuters" : "commuters"} who live or work within reach of a line drawn in the tool. Each commute's best transit trip today is compared by how long it feels: waiting and walking count ${MODEL.trip ? MODEL.trip.waitW : 1.75}× riding time (<a href="https://eprints.whiterose.ac.uk/id/eprint/239301" target="_blank" rel="noopener">Wardman et al. 2026</a>, a review of 606 studies that finds the old rule of 2× too high) and each boarding adds ${MODEL.trip ? MODEL.trip.xferPen : 15} minutes (<a href="https://ideas.repec.org/a/eee/trapol/v125y2022icp48-55.html" target="_blank" rel="noopener">Jara-Díaz et al. 2022</a>, 13–18 minutes). A commute takes a new line when boarding at one of its stations and leaving at another feels shorter than today's trip.</p>
+  <p>How likely a commuter is to take transit comes from a model fitted to how people get to work in ${MODEL.trip ? num(MODEL.trip.fit.tracts) : "2,000"} census tracts in the region (<a href="https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/" target="_blank" rel="noopener">ACS 2019–23</a>, tables B08301 and B08201), using how the trip feels, its length and the share of households with no car. It explains ${MODEL.trip ? Math.round(MODEL.trip.fit.r2_tract_share * 100) : 61}% of the differences in transit use between tracts. Each felt minute lowers the odds by about ${MODEL.trip ? Math.abs(MODEL.trip.coef.gc * 100).toFixed(1) : "1.5"}%. Pace buses aren't in the network yet, so some suburban commutes look harder than they are.</p>
+  <p>Used for where riders go on the map (scaled to the line's rider estimate), where riders on a stretch live and work, door-to-door time, and commuters who'd stop driving (new transit commuters × the share of their tract's non-transit commuters who drive). It doesn't replace the rider estimate: assigned to today's network, it predicts individual L stations less well than the station model (log R² ${MODEL.trip ? MODEL.trip.check.log_r2 : "0.32"} vs ${R.r2}), since it counts commutes only and gives each trip one best route. Driving time: Chicago's 2025 morning rush average, ${MODEL.trip ? MODEL.trip.drive.kmh : 27.9} km/h (<a href="https://www.tomtom.com/traffic-index/chicago-il-traffic" target="_blank" rel="noopener">TomTom</a>), on roads 1.2× the straight-line distance, plus 6 minutes to park and walk (assumptions).</p>
   <h3>Riders on BRT or a streetcar</h3>
   <p>Where CTA buses already run along most of the line (stops within 250 m along at least 30% of it and 2 km), the new line replaces them. The estimate starts from those routes' real 2025 weekday riders on that stretch (their riders times the share of the route the line covers), then goes up or down 0.5% for each 1% more or fewer trips than those buses ran together. Their bus hours and emissions are subtracted. Where no bus runs today, it uses a model fit to ${Bm.n} CTA bus routes' 2025 weekday riders, from the people and jobs within ¼ mile of the route per mile; that model is typically off by about ${Math.round((Math.exp(Bm.median_abs_log_error) - 1) * 100)}%. BRT adds 31% more riders, from Cleveland's HealthLine, where corridor riders rose from 16,200 to 21,200 a weekday as trips got 21% faster (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/docs/2012_Before_and_After_Studies_of_New_Starts_Projects.pdf" target="_blank" rel="noopener">FTA before-and-after studies, 2012</a>, p. 5). The range runs from 5%, the low end of what FTA says is common (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/CBRT_2009_Update.pdf" target="_blank" rel="noopener">FTA, Characteristics of BRT</a>, p. E-6: gains "of between 5 and 25 percent are common"), to 51% on LA's Orange Line (<a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/FTA_Research_Report_0004_FINAL_2.pdf" target="_blank" rel="noopener">FTA Report 0004</a>, p. xvi). Las Vegas MAX gained 40% and LA Metro Rapid 26–33% (<a href="https://rosap.ntl.bts.gov/view/dot/35232/dot_35232_DS1.pdf" target="_blank" rel="noopener">FTA</a>, <a href="https://www.transit.dot.gov/research-innovation/metro-rapid-demonstration-program-evaluation-report-ridership" target="_blank" rel="noopener">FTA</a>). CTA's own 2013 modeling for Ashland BRT found 29–41% more riders. Streetcars get no boost: no study we found shows them beating a bus on the same street, and they average 7 mph. For scale, US streetcars carry about 650–2,200 riders a weekday per mile of route (e.g. <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/70271.pdf" target="_blank" rel="noopener">Kansas City</a>, <a href="https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2024/50213.pdf" target="_blank" rel="noopener">Detroit</a>, NTD 2024).</p>
   <h3>Metra upgrades</h3>

@@ -86,3 +86,13 @@ Subway: RLE ~6.5 yr; Second Ave Ph 2 ~9 yr; Purple Line Sec. 1 ~10 yr. Elevated/
 - CEJA (2021): private gas plants zero emissions by 2045, coal/oil by 2030, policy 100% clean energy by 2050 (State of Illinois summary).
 - EVs: ~156,000 BEVs registered in Illinois (SOS via Chicago Tribune, ~Nov 2025) of 10.23M vehicles (Alliance for Automotive Innovation, Dec 2024) ≈ 1.5%. DOE AFDC: 3.6 mi/kWh.
 - Results: CTA + Metra ≈ 588,000 t CO2/yr today (buses 150k, L 150k, Metra 288k). Electric buses −77k; electric Metra −122k; clean grid −171k; all three −588k. Western subway flips from ~13–14k t more to ~0.8–2.5k t less with all three.
+
+
+## Commute trips and rider choices (Nov 21, 2026)
+
+- Home-to-work trips: LEHD LODES 8, Illinois OD main file, 2022, all jobs (S000). https://lehd.ces.census.gov/data/lodes/LODES8/il/od/
+- Commute mode by home tract: ACS 2019–23 5-year, B08301 (means of transportation) and B08201 (household vehicles). https://www2.census.gov/programs-surveys/acs/summary_file/2023/table-based-SF/
+- Walk and wait time weights: Wardman, Murphy, Ojeda-Cabral, Mitrani, Neki & Humphreys (2026), "Value of time multipliers for walk time, wait time, service headway, displacement time, reliability and congested travel time: review and meta-analysis of worldwide evidence," Transportation Research Part A 207, 104925: 2,872 multipliers from 606 studies; supports cutting the conventional 2 to 1.75 or 1.5. https://eprints.whiterose.ac.uk/id/eprint/239301 — tool uses 1.75.
+- Transfer penalty: Jara-Díaz, Monzón, Cascajo & García-Martínez (2022), "An international time equivalency of the pure transfer penalty in urban transit trips," Transport Policy 125: 48–55; proposes 13–18 equivalent in-vehicle minutes. https://ideas.repec.org/a/eee/trapol/v125y2022icp48-55.html — tool uses 15.
+- Driving speed: TomTom Traffic Index 2025, Chicago: morning rush 21 min 30 s per 10 km, 27.9 km/h; evening rush 22.3 km/h; highway 57.8 km/h. https://www.tomtom.com/traffic-index/chicago-il-traffic
+- Assumptions: road distance 1.2× straight line; 6 minutes to park and walk; downtown parking not modeled separately (a downtown-job term fit to ~0).
