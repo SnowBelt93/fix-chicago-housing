@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155545
+     "count": 155554
     },
     {
      "value": "Committee on Finance",
-     "count": 13921
+     "count": 13923
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10729
+     "count": 10745
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -25,7 +25,7 @@
     },
     {
      "value": "Committee on Committees and Rules",
-     "count": 143
+     "count": 142
     },
     {
      "value": "Committee on Economic, Capital and Technology Development",
@@ -174,19 +174,19 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118410
+     "count": 118427
     },
     {
      "value": "Claim",
-     "count": 29715
+     "count": 29717
     },
     {
      "value": "Resolution",
-     "count": 20596
+     "count": 20597
     },
     {
      "value": "Order",
-     "count": 9276
+     "count": 9282
     },
     {
      "value": "Appointment",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167360
+     "count": 167361
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2371
+     "count": 2388
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 114
+     "count": 122
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 30008
+     "count": 30010
     },
     {
      "value": "Reilly, Brendan",
@@ -264,7 +264,7 @@
     },
     {
      "value": "Lopez, Raymond A.",
-     "count": 5083
+     "count": 5090
     },
     {
      "value": "Tunney, Thomas",
@@ -316,7 +316,7 @@
     },
     {
      "value": "Ervin, Jason C.",
-     "count": 2300
+     "count": 2309
     },
     {
      "value": "Fioretti, Bob",
@@ -344,7 +344,7 @@
     },
     {
      "value": "Mitts, Emma",
-     "count": 1956
+     "count": 1957
     },
     {
      "value": "Osterman, Harry",
@@ -428,7 +428,7 @@
     },
     {
      "value": "Tabares, Silvana",
-     "count": 1183
+     "count": 1184
     },
     {
      "value": "Beale, Anthony",
@@ -508,7 +508,7 @@
     },
     {
      "value": "Nugent, Samantha",
-     "count": 676
+     "count": 681
     },
     {
      "value": "Suarez, Regner Ray",
@@ -636,7 +636,7 @@
     },
     {
      "value": "Clay, Angela",
-     "count": 197
+     "count": 198
     },
     {
      "value": "Jackson, Sandi",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 170020
+     "count": 170046
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7774
+     "count": 7800
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30025
+     "count": 30027
     },
     {
      "value": "42",
@@ -888,7 +888,7 @@
     },
     {
      "value": "15",
-     "count": 5082
+     "count": 5089
     },
     {
      "value": "44",
@@ -940,7 +940,7 @@
     },
     {
      "value": "39",
-     "count": 2857
+     "count": 2862
     },
     {
      "value": "26",
@@ -948,7 +948,7 @@
     },
     {
      "value": "23",
-     "count": 2559
+     "count": 2560
     },
     {
      "value": "40",
@@ -960,7 +960,7 @@
     },
     {
      "value": "28",
-     "count": 2297
+     "count": 2306
     },
     {
      "value": "48",
@@ -992,7 +992,7 @@
     },
     {
      "value": "37",
-     "count": 1956
+     "count": 1957
     },
     {
      "value": "30",
@@ -1004,7 +1004,7 @@
     },
     {
      "value": "46",
-     "count": 1853
+     "count": 1854
     },
     {
      "value": "12",
@@ -1141,7 +1141,7 @@
    "values": [
     {
      "value": "Passed",
-     "count": 113425
+     "count": 113426
     },
     {
      "value": "Adopted",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1881
+     "count": 1885
     },
     {
      "value": "Placed on File",
@@ -1177,7 +1177,7 @@
     },
     {
      "value": "Direct Introduction",
-     "count": 415
+     "count": 428
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Accepted",
-     "count": 111
+     "count": 119
     },
     {
      "value": "Agreed Calendar",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163929
+     "count": 163954
     },
     {
      "value": "YES",
-     "count": 18235
+     "count": 18236
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182166,
-  "pages": 182166
+  "count": 182192,
+  "pages": 182192
  }
 }
