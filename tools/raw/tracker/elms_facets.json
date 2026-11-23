@@ -9,11 +9,11 @@
     },
     {
      "value": "Committee on Finance",
-     "count": 13923
+     "count": 13924
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10745
+     "count": 10750
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,11 +174,11 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118427
+     "count": 118432
     },
     {
      "value": "Claim",
-     "count": 29717
+     "count": 29718
     },
     {
      "value": "Resolution",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2388
+     "count": 2394
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 30010
+     "count": 30011
     },
     {
      "value": "Reilly, Brendan",
@@ -504,7 +504,7 @@
     },
     {
      "value": "Cardona, Jr., Felix",
-     "count": 752
+     "count": 754
     },
     {
      "value": "Nugent, Samantha",
@@ -572,7 +572,7 @@
     },
     {
      "value": "Hall, William E.",
-     "count": 401
+     "count": 402
     },
     {
      "value": "Chandler, Michael D.",
@@ -596,7 +596,7 @@
     },
     {
      "value": "Ramirez, Julia M.",
-     "count": 276
+     "count": 278
     },
     {
      "value": "Scott, Monique L.",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 170046
+     "count": 170052
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7800
+     "count": 7806
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30027
+     "count": 30028
     },
     {
      "value": "42",
@@ -988,7 +988,7 @@
     },
     {
      "value": "31",
-     "count": 1982
+     "count": 1984
     },
     {
      "value": "37",
@@ -1008,7 +1008,7 @@
     },
     {
      "value": "12",
-     "count": 1780
+     "count": 1782
     },
     {
      "value": "22",
@@ -1028,7 +1028,7 @@
     },
     {
      "value": "06",
-     "count": 1634
+     "count": 1635
     },
     {
      "value": "41",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1885
+     "count": 1891
     },
     {
      "value": "Placed on File",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163954
+     "count": 163960
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182192,
-  "pages": 182192
+  "count": 182198,
+  "pages": 182198
  }
 }
