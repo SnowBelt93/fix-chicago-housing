@@ -4,22 +4,22 @@
   "ids": [
    "cha_wait"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://cedaorg.net/bills": {
   "hash": "fd077bde2e44f9e9",
   "ids": [
    "liheap"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/emergency-heating-repair-program.html": {
-  "changed": "2026-11-16",
-  "hash": "afac65f4ce9e40ea",
+  "changed": "2026-11-24",
+  "hash": "ce0af2aa54c9d3c9",
   "ids": [
    "ehrp"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/home-repair-program.html": {
   "changed": "2026-11-16",
@@ -27,10 +27,10 @@
   "ids": [
    "hrp"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/sarfs.html": {
-  "error": "2026-11-16 HTTPError",
+  "error": "2026-11-24 HTTPError",
   "ids": [
    "sarfs"
   ]
@@ -42,17 +42,17 @@
    "nof",
    "sbif"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://chicagorealtor.com/chicago-just-launched-a-new-down-payment-assistance-program-heres-what-your-clients-need-to-know/": {
-  "error": "2026-11-16 HTTPError",
+  "error": "2026-11-24 HTTPError",
   "ids": [
    "homegrown"
   ]
  },
  "https://cookcountyassessoril.gov/exemptions": {
-  "changed": "2026-11-16",
-  "hash": "c66c6d4d7efb069e",
+  "changed": "2026-11-24",
+  "hash": "2de2ec40ae0e0eb9",
   "ids": [
    "ex_disab",
    "ex_freeze",
@@ -62,21 +62,21 @@
    "ex_senior",
    "ex_vetdis"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://dceo.illinois.gov/communityservices/homeweatherization.html": {
   "hash": "07d49bea09c54e3d",
   "ids": [
    "ihwap"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://dceo.illinois.gov/communityservices/homeweatherization/communityactionagencies/helpillinoisfamilies.html": {
   "hash": "ec17cc0b98a7eb3d",
   "ids": [
    "liheap"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://dnrhistoric.illinois.gov/preserve/statecredit.html": {
   "hash": "37d324361db0e3b9",
@@ -93,26 +93,27 @@
   "ok": "2026-11-12"
  },
  "https://news.wttw.com/2025/03/08/registration-opens-monday-chicago-s-home-repair-program-here-s-what-you-need-know": {
-  "changed": "2026-11-16",
-  "hash": "8db933fd9411e20b",
+  "changed": "2026-11-24",
+  "hash": "63188bd9dba104e5",
   "ids": [
    "hrp"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://resurrectionproject.org/homegrown/": {
-  "hash": "a2d47bbecdcba8c1",
+  "changed": "2026-11-24",
+  "hash": "df74ca02c8c4ea9a",
   "ids": [
    "homegrown"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://thecha.org/node/837": {
   "hash": "2f2c399be82757a1",
   "ids": [
    "cha_wait"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.chicago.gov/city/en/depts/doh/supp_info/2025-qualified-allocation-plan.html": {
   "changed": "2026-11-12",
@@ -125,7 +126,7 @@
   "ok": "2026-11-12"
  },
  "https://www.chicago.gov/city/en/depts/fss/provdrs/serv/svcs/homeless_prevention.html": {
-  "error": "2026-11-16 HTTPError",
+  "error": "2026-11-24 HTTPError",
   "ids": [
    "rap"
   ]
@@ -149,7 +150,7 @@
   "ids": [
    "homegrown"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.chicago.gov/missingmiddle": {
   "hash": "14f3be432b24d855",
@@ -159,18 +160,20 @@
   "ok": "2026-11-12"
  },
  "https://www.chicago.gov/nof": {
-  "hash": "3d54e9baeaef06d1",
+  "changed": "2026-11-24",
+  "hash": "045d8f79ff8207f8",
   "ids": [
    "nof"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.chicago.gov/sbif": {
-  "hash": "be53d10ab77f3105",
+  "changed": "2026-11-24",
+  "hash": "589691583b40ac60",
   "ids": [
    "sbif"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.cookcountyassessoril.gov/affordable-housing": {
   "hash": "7b701c490505db92",
@@ -193,7 +196,7 @@
   ]
  },
  "https://www.fhlbc.com/news/details/2026/01/20/fhlbank-chicago-launches-2026-downpayment-plus--grant-programs--unlocking--28-million-to-support-homebuyers-in-illinois-and-wisconsin": {
-  "error": "2026-11-16 HTTPError",
+  "error": "2026-11-24 HTTPError",
   "ids": [
    "dpp"
   ]
@@ -206,11 +209,12 @@
   "ok": "2026-11-12"
  },
  "https://www.fhlbc.com/news/news-detail/2026/07/28/fhlbank-chicago-adds-additional--17-million-to-2026-downpayment-plus--programs--bringing-total-funding-to--48-million": {
-  "hash": "233d2ff83e8f11f8",
+  "changed": "2026-11-24",
+  "hash": "fc1697f01c0064ae",
   "ids": [
    "dpp"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.ihda.org/developers/tax-credits/illinois-affordable-housing-tax-credit/": {
   "hash": "deb26ce6aac27d6a",
@@ -224,14 +228,14 @@
   "ids": [
    "ihda"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.illinoisrealtors.org/wp-content/uploads/2026/06/NineHomeFinancingPrograms_Jun2026.pdf": {
   "hash": "02f96951e2cdef63",
   "ids": [
    "ihda"
   ],
-  "ok": "2026-11-16"
+  "ok": "2026-11-24"
  },
  "https://www.nixonpeabody.com/-/media/files/alerts/2025/07/lihtc_and_obbba.pdf": {
   "hash": "916de399a71f9423",
