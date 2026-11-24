@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155554
+     "count": 155562
     },
     {
      "value": "Committee on Finance",
-     "count": 13924
+     "count": 13926
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10750
+     "count": 10759
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,15 +174,15 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118432
+     "count": 118443
     },
     {
      "value": "Claim",
-     "count": 29718
+     "count": 29720
     },
     {
      "value": "Resolution",
-     "count": 20597
+     "count": 20602
     },
     {
      "value": "Order",
@@ -198,7 +198,7 @@
     },
     {
      "value": "Communication",
-     "count": 639
+     "count": 640
     },
     {
      "value": "Oath of Office",
@@ -223,11 +223,11 @@
     },
     {
      "value": "3-Council Introduction",
-     "count": 12123
+     "count": 12124
     },
     {
      "value": "4-In Committee",
-     "count": 2394
+     "count": 2405
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 122
+     "count": 129
     },
     {
      "value": "0-PreDraft",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 30011
+     "count": 30014
     },
     {
      "value": "Reilly, Brendan",
@@ -280,7 +280,7 @@
     },
     {
      "value": "Harris, Michelle A.",
-     "count": 3962
+     "count": 3964
     },
     {
      "value": "Waguespack, Scott",
@@ -332,7 +332,7 @@
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2144
+     "count": 2146
     },
     {
      "value": "Dept./Agency",
@@ -404,7 +404,7 @@
     },
     {
      "value": "La Spata, Daniel",
-     "count": 1297
+     "count": 1304
     },
     {
      "value": "Moore, Joseph",
@@ -560,7 +560,7 @@
     },
     {
      "value": "Fuentes, Jessica L.",
-     "count": 451
+     "count": 452
     },
     {
      "value": "Mell, Richard F.",
@@ -596,7 +596,7 @@
     },
     {
      "value": "Ramirez, Julia M.",
-     "count": 278
+     "count": 279
     },
     {
      "value": "Scott, Monique L.",
@@ -631,12 +631,12 @@
      "count": 217
     },
     {
-     "value": "Rugai, Virginia",
-     "count": 199
+     "value": "Clay, Angela",
+     "count": 200
     },
     {
-     "value": "Clay, Angela",
-     "count": 198
+     "value": "Rugai, Virginia",
+     "count": 199
     },
     {
      "value": "Jackson, Sandi",
@@ -676,7 +676,7 @@
     },
     {
      "value": "Lawson, Bennett R.",
-     "count": 136
+     "count": 137
     },
     {
      "value": "Knudsen, Timothy R.",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 170052
+     "count": 170069
     },
     {
      "value": "YES",
-     "count": 12146
+     "count": 12148
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7806
+     "count": 7825
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30028
+     "count": 30031
     },
     {
      "value": "42",
@@ -884,7 +884,7 @@
     },
     {
      "value": "01",
-     "count": 5254
+     "count": 5261
     },
     {
      "value": "15",
@@ -892,7 +892,7 @@
     },
     {
      "value": "44",
-     "count": 5070
+     "count": 5071
     },
     {
      "value": "02",
@@ -900,7 +900,7 @@
     },
     {
      "value": "08",
-     "count": 3958
+     "count": 3960
     },
     {
      "value": "32",
@@ -928,7 +928,7 @@
     },
     {
      "value": "16",
-     "count": 3319
+     "count": 3321
     },
     {
      "value": "45",
@@ -944,7 +944,7 @@
     },
     {
      "value": "26",
-     "count": 2782
+     "count": 2783
     },
     {
      "value": "23",
@@ -1004,11 +1004,11 @@
     },
     {
      "value": "46",
-     "count": 1854
+     "count": 1856
     },
     {
      "value": "12",
-     "count": 1782
+     "count": 1783
     },
     {
      "value": "22",
@@ -1153,7 +1153,7 @@
     },
     {
      "value": "Council Introduction",
-     "count": 12123
+     "count": 12124
     },
     {
      "value": "Passed as Substitute",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1891
+     "count": 1902
     },
     {
      "value": "Placed on File",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Accepted",
-     "count": 119
+     "count": 126
     },
     {
      "value": "Agreed Calendar",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163960
+     "count": 163974
     },
     {
      "value": "YES",
-     "count": 18236
+     "count": 18241
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182198,
-  "pages": 182198
+  "count": 182217,
+  "pages": 182217
  }
 }
