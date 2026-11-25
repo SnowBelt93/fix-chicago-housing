@@ -5,15 +5,15 @@
    "values": [
     {
      "value": "City Council",
-     "count": 155562
+     "count": 155565
     },
     {
      "value": "Committee on Finance",
-     "count": 13926
+     "count": 13930
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
-     "count": 10759
+     "count": 10760
     },
     {
      "value": "Committee on Zoning, Landmarks and Building Standards",
@@ -174,7 +174,7 @@
    "values": [
     {
      "value": "Ordinance",
-     "count": 118443
+     "count": 118444
     },
     {
      "value": "Claim",
@@ -182,11 +182,11 @@
     },
     {
      "value": "Resolution",
-     "count": 20602
+     "count": 20603
     },
     {
      "value": "Order",
-     "count": 9282
+     "count": 9286
     },
     {
      "value": "Appointment",
@@ -194,11 +194,11 @@
     },
     {
      "value": "Report",
-     "count": 678
+     "count": 679
     },
     {
      "value": "Communication",
-     "count": 640
+     "count": 641
     },
     {
      "value": "Oath of Office",
@@ -219,7 +219,7 @@
    "values": [
     {
      "value": "90-Final",
-     "count": 167361
+     "count": 167362
     },
     {
      "value": "3-Council Introduction",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2405
+     "count": 2411
     },
     {
      "value": "5-Council Consideration",
@@ -235,7 +235,7 @@
     },
     {
      "value": "2-Submitted to Clerk",
-     "count": 129
+     "count": 130
     },
     {
      "value": "0-PreDraft",
@@ -332,11 +332,11 @@
     },
     {
      "value": "Coleman, Stephanie D.",
-     "count": 2146
+     "count": 2147
     },
     {
      "value": "Dept./Agency",
-     "count": 2040
+     "count": 2045
     },
     {
      "value": "Lightfoot, Lori E.",
@@ -404,7 +404,7 @@
     },
     {
      "value": "La Spata, Daniel",
-     "count": 1304
+     "count": 1305
     },
     {
      "value": "Moore, Joseph",
@@ -496,7 +496,7 @@
     },
     {
      "value": "Vasquez, Jr., Andre",
-     "count": 793
+     "count": 794
     },
     {
      "value": "Mell, Deborah",
@@ -765,11 +765,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 170069
+     "count": 170076
     },
     {
      "value": "YES",
-     "count": 12148
+     "count": 12149
     }
    ]
   },
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7825
+     "count": 7833
     },
     {
      "value": "2024",
@@ -884,7 +884,7 @@
     },
     {
      "value": "01",
-     "count": 5261
+     "count": 5262
     },
     {
      "value": "15",
@@ -928,7 +928,7 @@
     },
     {
      "value": "16",
-     "count": 3321
+     "count": 3322
     },
     {
      "value": "45",
@@ -952,7 +952,7 @@
     },
     {
      "value": "40",
-     "count": 2492
+     "count": 2493
     },
     {
      "value": "35",
@@ -979,11 +979,11 @@
      "count": 2032
     },
     {
-     "value": "21",
-     "count": 2005
+     "value": "Dept./Agency",
+     "count": 2010
     },
     {
-     "value": "Dept./Agency",
+     "value": "21",
      "count": 2005
     },
     {
@@ -1169,15 +1169,15 @@
     },
     {
      "value": "Referred",
-     "count": 1902
+     "count": 1903
     },
     {
      "value": "Placed on File",
-     "count": 1661
+     "count": 1662
     },
     {
      "value": "Direct Introduction",
-     "count": 428
+     "count": 433
     },
     {
      "value": "Published in Special Pamphlet",
@@ -1189,7 +1189,7 @@
     },
     {
      "value": "Accepted",
-     "count": 126
+     "count": 127
     },
     {
      "value": "Agreed Calendar",
@@ -1266,11 +1266,11 @@
    "values": [
     {
      "value": "NO",
-     "count": 163974
+     "count": 163981
     },
     {
      "value": "YES",
-     "count": 18241
+     "count": 18242
     }
    ]
   }
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182217,
-  "pages": 182217
+  "count": 182225,
+  "pages": 182225
  }
 }
