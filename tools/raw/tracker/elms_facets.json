@@ -9,7 +9,7 @@
     },
     {
      "value": "Committee on Finance",
-     "count": 13930
+     "count": 13931
     },
     {
      "value": "Committee on Pedestrian and Traffic Safety",
@@ -178,7 +178,7 @@
     },
     {
      "value": "Claim",
-     "count": 29720
+     "count": 29721
     },
     {
      "value": "Resolution",
@@ -227,7 +227,7 @@
     },
     {
      "value": "4-In Committee",
-     "count": 2411
+     "count": 2412
     },
     {
      "value": "5-Council Consideration",
@@ -248,7 +248,7 @@
    "values": [
     {
      "value": "Misc. Transmittal",
-     "count": 30014
+     "count": 30015
     },
     {
      "value": "Reilly, Brendan",
@@ -765,7 +765,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 170076
+     "count": 170077
     },
     {
      "value": "YES",
@@ -839,7 +839,7 @@
     },
     {
      "value": "2026",
-     "count": 7833
+     "count": 7834
     },
     {
      "value": "2024",
@@ -864,7 +864,7 @@
    "values": [
     {
      "value": "Misc.",
-     "count": 30031
+     "count": 30032
     },
     {
      "value": "42",
@@ -1169,7 +1169,7 @@
     },
     {
      "value": "Referred",
-     "count": 1903
+     "count": 1904
     },
     {
      "value": "Placed on File",
@@ -1266,7 +1266,7 @@
    "values": [
     {
      "value": "NO",
-     "count": 163981
+     "count": 163982
     },
     {
      "value": "YES",
@@ -1305,7 +1305,7 @@
  "meta": {
   "skip": 0,
   "top": 1,
-  "count": 182225,
-  "pages": 182225
+  "count": 182226,
+  "pages": 182226
  }
 }
